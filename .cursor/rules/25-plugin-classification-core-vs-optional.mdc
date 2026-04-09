@@ -1,0 +1,45 @@
+# Plugin Classification: Core vs Optional
+
+When adding a new plugin, always classify it explicitly:
+- `src/plugins/core/**`: lightweight plugins that provide default value for most Markdown pages, with low dependency/runtime cost.
+- `src/plugins/optional/**`: heavier or specialized plugins (diagrams, math, extra syntax) that may not be needed by most users and can increase bundle/runtime cost.
+
+## Decision Rules
+
+Classify as **core** only if all conditions are true:
+1. Useful for most common Markdown documents.
+2. Low runtime cost (light CPU/memory, no large library initialization).
+3. No heavy assets/dependencies (large fonts, parsers, renderers).
+4. Disabling it would noticeably degrade the baseline reading experience.
+
+Classify as **optional** if any condition is true:
+1. Adds large dependencies or many extra chunks/build output.
+2. Targets specialized content only (for example Mermaid, KaTeX).
+3. Has potential render overhead or side effects.
+4. Benefits from lazy/dynamic import for performance.
+
+## Defaults and Settings Shape
+
+- Add the plugin id in `src/plugins/plugin-types.js` (`PLUGIN_IDS`).
+- Add plugin defaults in:
+  - `CORE_PLUGIN_DEFAULTS` for core plugins.
+  - `OPTIONAL_PLUGIN_DEFAULTS` for optional plugins.
+- Default convention:
+  - Core: usually `enabled: true`.
+  - Optional:
+    - Lightweight optional (for example emoji/footnote): may be `enabled: true`.
+    - Heavy optional (for example mermaid/math): should default to `enabled: false`.
+
+## Required Integration Steps
+
+1. Add the plugin file to the correct folder group (`core` or `optional`).
+2. Register it in `src/plugins/plugin-manager.js`.
+3. Add its label in `src/viewer/shell/settings/settings-plugins-panel.js`.
+4. If runtime assets are needed, update `manifest.json` `web_accessible_resources`.
+5. If the plugin mutates DOM post-render, use `afterRender` with graceful fallback (never crash the viewer).
+
+## Safety Requirements
+
+- Any plugin-generated HTML must still pass through the sanitize pipeline.
+- Plugin failures must not break the full viewer; log warnings and keep safe fallback content.
+- Prefer dynamic import for heavy optional plugins.

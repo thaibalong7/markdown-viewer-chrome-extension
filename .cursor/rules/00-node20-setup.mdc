@@ -1,0 +1,10 @@
+---
+description: Environment setup: use Node 20 (nvm)
+alwaysApply: true
+---
+
+# Node 20 via nvm
+- Always switch to `node 20` via `nvm` before running `npm install` / `npm run dev` / `npm run build`.
+- Use the command: `nvm use 20`.
+- Quick verification: `node -v` and `npm -v`.
+- If you need to change the Node version, follow the constraint in `package.json` (engine `>=20`).

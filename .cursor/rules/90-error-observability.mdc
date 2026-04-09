@@ -1,0 +1,12 @@
+---
+description: Error handling, runtime safety, and observability
+globs: src/**/*.js
+alwaysApply: false
+---
+
+# Error Handling and Observability
+- Do not swallow async errors; either rethrow or return a structured error response (`{ ok: false, error }`) for runtime messages.
+- Keep background message handlers resilient: normalize unknown errors before logging/responding.
+- Use `logger` (`src/shared/helpers/logger.js`) instead of raw `console.*` so logs stay searchable and consistent.
+- Log intent + context (action, module, lightweight metadata), but avoid logging full document content or sensitive data.
+- Prefer explicit failure paths in bootstrap/render flows: fail fast on missing critical data and exit early on unsupported states.

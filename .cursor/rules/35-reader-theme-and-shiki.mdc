@@ -1,0 +1,33 @@
+---
+description: Reader theme presets, CSS variables, Shiki syntax themes, and fenced code styling
+globs: src/viewer/core/shiki*.js,src/theme/**/*.js,src/viewer/styles/content.css,src/viewer/app.js
+alwaysApply: false
+---
+
+# Reader theme and Shiki
+
+## UI theme (page chrome + markdown body)
+
+- **Preset source of truth**: `src/theme/themes/index.js` defines `BUILT_IN_THEMES` keys (`light`, `dark`, `vscode-light-plus`, `vscode-dark-plus`). Default preset lives in `src/settings/default-settings.js` (`theme.preset`).
+- **CSS variables**: `applyThemeSettings()` / `createThemeCssVars()` apply vars to the viewer root; typography and layout use the same settings object.
+- **Adding a preset**: Add colors in `src/theme/themes/`, register in `BUILT_IN_THEMES`, expose in settings UI if needed, then extend Shiki mapping below.
+
+## Shiki (fenced code colors)
+
+- **Config** (`src/viewer/core/shiki-config.js`): `PRESET_TO_SHIKI_THEME_ID` must map every **reader preset key** to a bundled Shiki theme id. `SHIKI_BUNDLED_THEME_IDS` must list every Shiki id used in that map (for `createHighlighter({ themes })`). `SHIKI_LANG_IDS` is the web bundle language allowlist.
+- **DOM fix** (`src/viewer/core/shiki-dom.js`): After `codeToHtml`, call `normalizeShikiPreWhitespace(pre)` so serialized newlines between `.line` spans do not interact badly with `white-space: pre` (blank lines) vs `normal` (lost tabs).
+- **Pipeline**: `renderDocument` → optional `applyShikiToFencedCode` → `sanitizeHtml`. Shiki emits inline `style` on `pre`, `code`, and token spans; DOMPurify allows `style` via `ADD_ATTR` in `sanitize-html.js`.
+
+## Full document re-render when theme changes
+
+- Shiki bakes colors into HTML; updating CSS variables alone does not refresh fenced blocks. If `partial.theme` is present in a settings patch, force a full markdown re-render (`patchNeedsFullRender` in `src/viewer/app.js`). Keep that invariant when changing style-only vs full-render logic.
+
+## CSS (`content.css`)
+
+- **Non-Shiki** fences: `pre:not(.shiki)` and `pre:not(.shiki) code` use theme vars (`--mdp-code-bg`, `--mdp-code-text`).
+- **Shiki** fences: `pre.shiki` / `pre.shiki code` use `white-space: pre` and `tab-size: 4`; rely on `normalizeShikiPreWhitespace` rather than `white-space: normal` on `code`.
+- **Specificity**: `.mdp-markdown-body pre.shiki code` must stay more specific than `.mdp-markdown-body code` so inline code `break-spaces` does not affect Shiki blocks.
+
+## Build
+
+- After changing Shiki config or viewer styles loaded as static assets, run `npm run build` and keep `manifest.json` `web_accessible_resources` in sync per `10-source-of-truth-build.mdc`.

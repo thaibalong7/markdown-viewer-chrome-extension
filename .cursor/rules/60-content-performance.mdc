@@ -1,0 +1,12 @@
+---
+description: Content script performance for all_urls scope
+globs: src/content/**/*.js
+alwaysApply: false
+---
+
+# Content Script Performance
+- The content script runs on `<all_urls>`, so bias toward cheap heuristics and early exits (`src/content/page-detector.js` and `src/content/bootstrap.js`).
+- Preserve the current gated fallback behavior: only attempt markdown extraction for low-confidence pages when there is at least one hint (`score` or `sourceType`).
+- Keep two extraction modes in `extractRawMarkdown()`: a cheap sample mode (TreeWalker + `maxChars`) and full mode only when we are likely to render.
+- Avoid introducing repeated full-page scans (continuous `querySelectorAll`/`innerText` loops) in content scripts.
+- Keep bootstrap idempotent for reinjection/HMR by clearing the mount target before creating app UI.

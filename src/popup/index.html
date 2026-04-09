@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Markdown Plus</title>
+    <style>
+      body { font-family: system-ui, sans-serif; min-width: 260px; padding: 12px; }
+      .row { margin-bottom: 10px; }
+      button { padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; cursor: pointer; }
+      pre { background: #f6f8fa; padding: 8px; border-radius: 8px; font-size: 12px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="row"><strong>Markdown Plus</strong></div>
+    <div class="row" id="status">Loading...</div>
+    <div class="row">
+      <button id="reset-settings">Reset settings</button>
+    </div>
+    <pre id="settings-preview"></pre>
+
+    <script type="module" src="index.js"></script>
+  </body>
+</html>

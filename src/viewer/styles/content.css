@@ -1,0 +1,400 @@
+.mdp-markdown-body {
+  max-width: var(--mdp-content-max-width);
+  margin: 0 auto;
+  line-height: var(--mdp-line-height);
+  font-size: var(--mdp-font-size);
+  font-family: var(--mdp-font-family);
+  color: var(--mdp-body-text);
+}
+.mdp-markdown-body h1,
+.mdp-markdown-body h2,
+.mdp-markdown-body h3,
+.mdp-markdown-body h4,
+.mdp-markdown-body h5,
+.mdp-markdown-body h6 {
+  margin-top: 1.4em;
+  margin-bottom: 0.6em;
+  line-height: 1.25;
+  color: var(--mdp-heading);
+}
+.mdp-markdown-body p,
+.mdp-markdown-body ul,
+.mdp-markdown-body ol,
+.mdp-markdown-body blockquote,
+.mdp-markdown-body pre {
+  margin: 0 0 1em;
+}
+.mdp-markdown-body ul,
+.mdp-markdown-body ol {
+  padding-inline-start: 2.5em;
+}
+.mdp-markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--mdp-border);
+  margin: 1.5em 0;
+}
+/* Plain fenced blocks when Shiki is off or failed; Shiki uses `pre.shiki` with theme inline colors. */
+.mdp-markdown-body pre:not(.shiki) {
+  overflow: auto;
+  padding: 12px;
+  background: var(--mdp-code-bg);
+  color: var(--mdp-code-text);
+  border-radius: 8px;
+  border: 1px solid var(--mdp-border);
+}
+
+/* Shiki: `.line` rows; inter-span newlines from `codeToHtml` are stripped in `normalizeShikiPreWhitespace` (`shiki-dom.js`)
+   so `white-space: pre` does not create blank lines and tabs/indent stay correct. */
+.mdp-markdown-body pre.shiki {
+  overflow-x: auto;
+  margin: 0 0 1em;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--mdp-border);
+  white-space: pre;
+  word-break: normal;
+  tab-size: 4;
+}
+
+.mdp-markdown-body pre.shiki code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  line-height: 1.42;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  white-space: pre;
+  display: block;
+}
+
+.mdp-markdown-body pre.shiki code .line {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.42;
+}
+
+/* Non-Shiki fences: preserve raw newlines from markdown-it */
+.mdp-markdown-body pre:not(.shiki) code {
+  display: block;
+  white-space: pre;
+  tab-size: 4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  line-height: 1.42;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+.mdp-markdown-body code {
+  background: var(--mdp-code-bg);
+  color: var(--mdp-code-text);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  white-space: break-spaces;
+}
+.mdp-markdown-body blockquote {
+  margin-left: 0;
+  padding-left: 12px;
+  border-left: 4px solid var(--mdp-border);
+  color: var(--mdp-muted);
+}
+
+.mdp-markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1em;
+}
+
+.mdp-markdown-body th,
+.mdp-markdown-body td {
+  border: 1px solid var(--mdp-table-border);
+  padding: 8px 10px;
+}
+
+.mdp-markdown-body thead th {
+  background: var(--mdp-table-header-bg);
+}
+
+.mdp-markdown-body tbody tr:nth-child(even) {
+  background: var(--mdp-table-row-alt-bg);
+}
+
+.mdp-task-list__item {
+  list-style: none;
+}
+
+.mdp-task-list__checkbox {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.mdp-markdown-body .mdp-heading-anchor {
+  margin-left: 0.4em;
+  opacity: 0;
+  text-decoration: none;
+  font-size: 0.85em;
+}
+
+.mdp-markdown-body h1:hover .mdp-heading-anchor,
+.mdp-markdown-body h2:hover .mdp-heading-anchor,
+.mdp-markdown-body h3:hover .mdp-heading-anchor,
+.mdp-markdown-body h4:hover .mdp-heading-anchor,
+.mdp-markdown-body h5:hover .mdp-heading-anchor,
+.mdp-markdown-body h6:hover .mdp-heading-anchor {
+  opacity: 1;
+}
+
+.mdp-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--mdp-table-border);
+  border-radius: 8px;
+}
+
+/* KaTeX (@mdit/plugin-katex) */
+.mdp-markdown-body .katex-display,
+.mdp-markdown-body p.katex-block {
+  margin: 0.45em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.mdp-markdown-body .katex-error {
+  color: var(--mdp-muted);
+}
+
+/* Mermaid (diagram source container before/after run) */
+.mdp-markdown-body .mdp-mermaid {
+  margin: 1em 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--mdp-border);
+  background: var(--mdp-code-bg);
+  overflow-x: auto;
+}
+.mdp-markdown-body .mdp-mermaid--error {
+  color: var(--mdp-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  white-space: pre-wrap;
+}
+
+/* Footnotes (markdown-it-footnote) */
+.mdp-markdown-body .footnotes-sep {
+  margin-top: 2em;
+}
+.mdp-markdown-body section.footnotes {
+  font-size: 0.9em;
+  color: var(--mdp-muted);
+}
+.mdp-markdown-body .footnote-ref a,
+.mdp-markdown-body .footnote-backref {
+  text-decoration: none;
+}
+.mdp-markdown-body .footnote-ref a:hover,
+.mdp-markdown-body .footnote-backref:hover {
+  text-decoration: underline;
+}
+.mdp-markdown-body {
+  max-width: var(--mdp-content-max-width);
+  margin: 0 auto;
+  line-height: var(--mdp-line-height);
+  font-size: var(--mdp-font-size);
+  font-family: var(--mdp-font-family);
+  color: var(--mdp-body-text);
+}
+.mdp-markdown-body h1,
+.mdp-markdown-body h2,
+.mdp-markdown-body h3,
+.mdp-markdown-body h4,
+.mdp-markdown-body h5,
+.mdp-markdown-body h6 {
+  margin-top: 1.4em;
+  margin-bottom: 0.6em;
+  line-height: 1.25;
+  color: var(--mdp-heading);
+}
+.mdp-markdown-body p,
+.mdp-markdown-body ul,
+.mdp-markdown-body ol,
+.mdp-markdown-body blockquote,
+.mdp-markdown-body pre {
+  margin: 0 0 1em;
+}
+.mdp-markdown-body ul,
+.mdp-markdown-body ol {
+  padding-inline-start: 2.5em;
+}
+.mdp-markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--mdp-border);
+  margin: 1.5em 0;
+}
+/* Plain fenced blocks when Shiki is off or failed; Shiki uses `pre.shiki` with theme inline colors. */
+.mdp-markdown-body pre:not(.shiki) {
+  overflow: auto;
+  padding: 12px;
+  background: var(--mdp-code-bg);
+  color: var(--mdp-code-text);
+  border-radius: 8px;
+  border: 1px solid var(--mdp-border);
+}
+
+/* Shiki: `.line` rows; inter-span newlines from `codeToHtml` are stripped in `normalizeShikiPreWhitespace` (`shiki-dom.js`)
+   so `white-space: pre` does not create blank lines and tabs/indent stay correct. */
+.mdp-markdown-body pre.shiki {
+  overflow-x: auto;
+  margin: 0 0 1em;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--mdp-border);
+  white-space: pre;
+  word-break: normal;
+  tab-size: 4;
+}
+
+.mdp-markdown-body pre.shiki code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  line-height: 1.42;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  white-space: pre;
+  display: block;
+}
+
+.mdp-markdown-body pre.shiki code .line {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.42;
+}
+
+/* Non-Shiki fences: preserve raw newlines from markdown-it */
+.mdp-markdown-body pre:not(.shiki) code {
+  display: block;
+  white-space: pre;
+  tab-size: 4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  line-height: 1.42;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+.mdp-markdown-body code {
+  background: var(--mdp-code-bg);
+  color: var(--mdp-code-text);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  white-space: break-spaces;
+}
+.mdp-markdown-body blockquote {
+  margin-left: 0;
+  padding-left: 12px;
+  border-left: 4px solid var(--mdp-border);
+  color: var(--mdp-muted);
+}
+
+.mdp-markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1em;
+}
+
+.mdp-markdown-body th,
+.mdp-markdown-body td {
+  border: 1px solid var(--mdp-table-border);
+  padding: 8px 10px;
+}
+
+.mdp-markdown-body thead th {
+  background: var(--mdp-table-header-bg);
+}
+
+.mdp-markdown-body tbody tr:nth-child(even) {
+  background: var(--mdp-table-row-alt-bg);
+}
+
+.mdp-task-list__item {
+  list-style: none;
+}
+
+.mdp-task-list__checkbox {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.mdp-markdown-body .mdp-heading-anchor {
+  margin-left: 0.4em;
+  opacity: 0;
+  text-decoration: none;
+  font-size: 0.85em;
+}
+
+.mdp-markdown-body h1:hover .mdp-heading-anchor,
+.mdp-markdown-body h2:hover .mdp-heading-anchor,
+.mdp-markdown-body h3:hover .mdp-heading-anchor,
+.mdp-markdown-body h4:hover .mdp-heading-anchor,
+.mdp-markdown-body h5:hover .mdp-heading-anchor,
+.mdp-markdown-body h6:hover .mdp-heading-anchor {
+  opacity: 1;
+}
+
+.mdp-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--mdp-table-border);
+  border-radius: 8px;
+}
+
+/* KaTeX (@mdit/plugin-katex) */
+.mdp-markdown-body .katex-display,
+.mdp-markdown-body p.katex-block {
+  margin: 0.45em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.mdp-markdown-body .katex-error {
+  color: var(--mdp-muted);
+}
+
+/* Mermaid (diagram source container before/after run) */
+.mdp-markdown-body .mdp-mermaid {
+  margin: 1em 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--mdp-border);
+  background: var(--mdp-code-bg);
+  overflow-x: auto;
+}
+.mdp-markdown-body .mdp-mermaid--error {
+  color: var(--mdp-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  white-space: pre-wrap;
+}
+
+/* Footnotes (markdown-it-footnote) */
+.mdp-markdown-body .footnotes-sep {
+  margin-top: 2em;
+}
+.mdp-markdown-body section.footnotes {
+  font-size: 0.9em;
+  color: var(--mdp-muted);
+}
+.mdp-markdown-body .footnote-ref a,
+.mdp-markdown-body .footnote-backref {
+  text-decoration: none;
+}
+.mdp-markdown-body .footnote-ref a:hover,
+.mdp-markdown-body .footnote-backref:hover {
+  text-decoration: underline;
+}

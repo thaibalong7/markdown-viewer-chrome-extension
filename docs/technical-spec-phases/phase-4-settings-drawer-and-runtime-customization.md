@@ -1,0 +1,26 @@
+# Phase 4 - Settings Drawer & Runtime Customization
+
+## Trạng thái
+✅ Completed
+
+## Mục tiêu
+Biến nút Settings ở góc trên bên phải thành điểm truy cập cấu hình thực sự, cho phép thay đổi runtime settings ngay trong viewer.
+
+## Deliverable
+- Nút Settings mở được drawer/panel
+- User chỉnh được các config nền tảng
+- Settings được lưu vào storage
+- Viewer tự update sau khi đổi setting
+
+## Files cần implement
+```text
+src/viewer/shell/settings-drawer.js
+src/viewer/actions/open-settings.js
+src/viewer/actions/update-settings.js
+src/viewer/state/settings-state.js
+src/viewer/styles/settings.css
+src/theme/theme-service.js
+src/theme/css-vars.js
+src/settings/settings.service.js
+src/viewer/app.js
+```

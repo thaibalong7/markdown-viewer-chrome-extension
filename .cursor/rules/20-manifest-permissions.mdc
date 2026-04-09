@@ -1,0 +1,12 @@
+---
+description: Manifest and permission change discipline for MV3 extension
+globs: manifest.json
+alwaysApply: false
+---
+
+# Manifest and Permission Discipline
+- Treat `manifest.json` as a high-risk config surface; keep permission scope minimal (least privilege).
+- Any change to `permissions` or `host_permissions` must include a clear reason tied to a concrete feature.
+- Keep `content_scripts`, `background.service_worker`, and HTML entry points aligned with actual source files in `src/`.
+- When adding viewer assets loaded at runtime (`fetch(chrome.runtime.getURL(...))`), update `web_accessible_resources` in the same change.
+- Preserve MV3 module conventions (`type: "module"` where required) and verify extension still loads after manifest edits.

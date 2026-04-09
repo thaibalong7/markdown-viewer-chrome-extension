@@ -1,0 +1,13 @@
+---
+description: Read core docs for project context before implementation
+alwaysApply: true
+---
+
+# Docs Context First
+- Before coding or refactoring, quickly read project context docs in `docs/`.
+- Start with `docs/project-overview-for-ai.md` for current architecture and module ownership.
+- Then review `docs/chrome-extension-markdown-viewer-plan.md` for roadmap/phase intent.
+- For performance-related tasks, also read `docs/performance-issues-audit.md`.
+- If the task maps to a specific phase, read the matching file in `docs/technical-spec-phases/`.
+- For reader theme presets, Shiki highlighting, or fenced-code CSS, follow `.cursor/rules/35-reader-theme-and-shiki.mdc`.
+- Treat docs as guidance and source code in `src/` as final runtime truth when conflicts appear.

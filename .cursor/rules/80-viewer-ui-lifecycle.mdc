@@ -1,0 +1,12 @@
+---
+description: Viewer UI lifecycle and TOC behavior
+globs: src/viewer/**/*.js
+alwaysApply: false
+---
+
+# Viewer UI Lifecycle
+- Keep `MarkdownViewerApp` lifecycle clean: `init()` mounts once, `updateSettings()` re-renders, and `destroy()` tears down DOM/listeners.
+- TOC rebuilds must dispose old listeners/controllers before creating new ones (`rebuild-toc.js` + `scroll-spy.js`).
+- Preserve stable shell structure and class names (`mdp-root`, `mdp-toolbar`, `mdp-sidebar`, `mdp-markdown-body`) because styles and behaviors depend on them.
+- Keep all markdown HTML insertion funneled through `renderIntoElement()` after sanitization in the renderer pipeline.
+- Theme preset changes that affect Shiki must trigger a full document re-render (see `patchNeedsFullRender` in `app.js` and `35-reader-theme-and-shiki.mdc`).

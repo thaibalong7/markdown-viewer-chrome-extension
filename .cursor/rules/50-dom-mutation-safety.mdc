@@ -1,0 +1,12 @@
+---
+description: DOM mutation safety in content and viewer
+globs: src/**/*.js
+alwaysApply: false
+---
+
+# DOM Mutation Safety
+- Any markdown HTML must go through `renderDocument()` sanitization before DOM insertion.
+- Restrict `innerHTML` usage to approved rendering boundaries (`renderIntoElement`, TOC container reset, controlled mount reset).
+- For dynamic text/UI labels, prefer `textContent` and DOM node APIs over HTML string concatenation.
+- Keep host-page impact minimal: mount extension UI only inside the dedicated viewer root (`mdp-viewer-root` + Shadow DOM when available).
+- When adding event listeners to generated nodes, provide teardown paths (`destroy()`/removeEventListener) to avoid leaks.

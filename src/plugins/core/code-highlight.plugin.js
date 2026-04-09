@@ -40,18 +40,45 @@ export const codeHighlightPlugin = {
       langEl.className = 'mdp-code-block__lang'
       langEl.textContent = lang || 'text'
 
-      const sep = document.createElement('span')
-      sep.className = 'mdp-code-block__sep'
-      sep.setAttribute('aria-hidden', 'true')
-
       const copyBtn = document.createElement('button')
       copyBtn.type = 'button'
       copyBtn.className = 'mdp-code-block__copy'
-      copyBtn.textContent = 'Copy'
       copyBtn.setAttribute('aria-label', 'Copy code to clipboard')
+      copyBtn.setAttribute('title', 'Copy code')
+
+      const copyIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+      copyIcon.setAttribute('class', 'mdp-code-block__copy-icon')
+      copyIcon.setAttribute('viewBox', '0 0 24 24')
+      copyIcon.setAttribute('width', '14')
+      copyIcon.setAttribute('height', '14')
+      copyIcon.setAttribute('aria-hidden', 'true')
+      copyIcon.setAttribute('focusable', 'false')
+
+      const copyBack = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      copyBack.setAttribute('x', '9')
+      copyBack.setAttribute('y', '9')
+      copyBack.setAttribute('width', '11')
+      copyBack.setAttribute('height', '11')
+      copyBack.setAttribute('rx', '2')
+      copyBack.setAttribute('fill', 'none')
+      copyBack.setAttribute('stroke', 'currentColor')
+      copyBack.setAttribute('stroke-width', '1.8')
+
+      const copyFront = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      copyFront.setAttribute('x', '4')
+      copyFront.setAttribute('y', '4')
+      copyFront.setAttribute('width', '11')
+      copyFront.setAttribute('height', '11')
+      copyFront.setAttribute('rx', '2')
+      copyFront.setAttribute('fill', 'none')
+      copyFront.setAttribute('stroke', 'currentColor')
+      copyFront.setAttribute('stroke-width', '1.8')
+
+      copyIcon.appendChild(copyBack)
+      copyIcon.appendChild(copyFront)
+      copyBtn.appendChild(copyIcon)
 
       actions.appendChild(langEl)
-      actions.appendChild(sep)
       actions.appendChild(copyBtn)
       meta.appendChild(actions)
 

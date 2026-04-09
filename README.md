@@ -99,4 +99,4 @@ Contributions are welcome.
 
 ## License
 
-MIT (or project owner decision).
+[MIT](LICENSE)

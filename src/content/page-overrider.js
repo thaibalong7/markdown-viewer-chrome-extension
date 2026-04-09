@@ -2,6 +2,8 @@ const ROOT_ID = 'mdp-viewer-root'
 const PREV_HTML_OVERFLOW_ATTR = 'data-mdp-prev-html-overflow'
 const PREV_BODY_OVERFLOW_ATTR = 'data-mdp-prev-body-overflow'
 const PREV_HTML_OVERSCROLL_ATTR = 'data-mdp-prev-html-overscroll'
+const PREV_BODY_ARIA_HIDDEN_ATTR = 'data-mdp-prev-body-aria-hidden'
+const PREV_BODY_INERT_ATTR = 'data-mdp-prev-body-inert'
 
 function lockBackgroundScroll(host) {
   const html = document.documentElement
@@ -27,12 +29,19 @@ function restoreOriginalPageVisibility(host) {
   const body = document.body
   if (!body || !host) return
   // Keep body in normal layout so third-party diagram/layout code can measure the page.
-  if (body.style.display === 'none') {
-    body.style.display = ''
+  if (!host.hasAttribute(PREV_BODY_ARIA_HIDDEN_ATTR)) {
+    body.hasAttribute('aria-hidden')
+      ? host.setAttribute(PREV_BODY_ARIA_HIDDEN_ATTR, body.getAttribute('aria-hidden') || '')
+      : host.setAttribute(PREV_BODY_ARIA_HIDDEN_ATTR, '__MISSING__')
   }
-  if (body.getAttribute('aria-hidden') === 'true') {
-    body.removeAttribute('aria-hidden')
+
+  if (!host.hasAttribute(PREV_BODY_INERT_ATTR)) {
+    host.setAttribute(PREV_BODY_INERT_ATTR, body.inert ? '1' : '0')
   }
+
+  // Prevent browser find/search from matching both the original page and viewer text.
+  body.setAttribute('aria-hidden', 'true')
+  body.inert = true
 }
 
 export function createViewerRoot() {

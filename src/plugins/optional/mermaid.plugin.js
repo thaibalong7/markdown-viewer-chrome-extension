@@ -1,9 +1,17 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { logger } from '../../shared/logger.js'
+import { attachMermaidActionsMenu } from './mermaid-actions.js'
 
 let mermaidImportPromise = null
 let mermaidInitializePromise = null
 let mermaidRenderCounter = 0
+let mermaidThemeKey = null
+
+function getMermaidThemeByPreset(preset) {
+  const key = String(preset || '').toLowerCase()
+  if (key === 'dark' || key === 'vscode-dark-plus') return 'dark'
+  return 'default'
+}
 
 function getMermaid() {
   if (!mermaidImportPromise) {
@@ -12,13 +20,19 @@ function getMermaid() {
   return mermaidImportPromise
 }
 
-function ensureMermaidInitialized() {
+function ensureMermaidInitialized(theme) {
+  if (mermaidThemeKey !== theme) {
+    mermaidInitializePromise = null
+    mermaidThemeKey = theme
+  }
+
   if (!mermaidInitializePromise) {
     mermaidInitializePromise = getMermaid().then((mermaid) => {
       mermaid.initialize({
         startOnLoad: false,
         suppressErrorRendering: true,
-        securityLevel: 'strict'
+        securityLevel: 'strict',
+        theme
       })
       return mermaid
     })
@@ -72,7 +86,7 @@ export const mermaidPlugin = {
       return defaultFence(tokens, idx, options, env, self)
     }
   },
-  async afterRender({ articleEl }) {
+  async afterRender({ articleEl, settings }) {
     if (!articleEl) return
 
     hoistMermaidPresToDivs(articleEl)
@@ -81,12 +95,15 @@ export const mermaidPlugin = {
     if (!nodes.length) return
 
     let mermaidApi
+    const mermaidTheme = getMermaidThemeByPreset(settings?.theme?.preset)
     try {
-      mermaidApi = await ensureMermaidInitialized()
+      mermaidApi = await ensureMermaidInitialized(mermaidTheme)
     } catch (error) {
       logger.warn('Mermaid initialization failed.', error)
       return
     }
+
+    const allCharts = [...articleEl.querySelectorAll('.mdp-markdown-body .mdp-mermaid')]
 
     for (const node of nodes) {
       const source = node.textContent || ''
@@ -101,6 +118,8 @@ export const mermaidPlugin = {
         const id = `mdp-mermaid-${mermaidRenderCounter}`
         const out = await mermaidApi.render(id, code)
         node.innerHTML = out.svg
+        const chartIndex = Math.max(1, allCharts.indexOf(node) + 1)
+        attachMermaidActionsMenu(node, { chartIndex })
       } catch (error) {
         logger.warn('Mermaid block rendering failed.', error)
         node.classList.add('mdp-mermaid--error')

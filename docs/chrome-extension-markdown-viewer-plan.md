@@ -829,25 +829,26 @@ Các plugin này nặng, thêm dependency, và thường cần xử lý runtime 
 
 ---
 
-## Phase 8.1 - Mermaid export actions (NEW)
+## Phase 8.1 - Mermaid export actions (DONE)
 
 ### Mục tiêu
 Mở rộng plugin Mermaid để người dùng có thể xuất sơ đồ ra ảnh trực tiếp từ viewer.
 
-### Kết quả cần đạt
-- Mỗi Mermaid block có action `Export`
-- Hỗ trợ export `SVG` (MVP), tùy chọn `PNG` ở bước sau
-- File export có tên mặc định theo thứ tự block hoặc tiêu đề section
-- Khi export lỗi, hiển thị thông báo nhẹ và không ảnh hưởng phần render còn lại
+### Kết quả đạt được
+- Mỗi Mermaid block có menu action dạng nút ba chấm ở góc trên bên phải
+- Hỗ trợ export `SVG` và `PNG`
+- `PNG` có lựa chọn độ phân giải: `1x`, `2x`, `3x`, `4x`
+- Tên file export mặc định theo format `mermaid-chart-{N}-{timestamp}.{ext}`
+- Background Mermaid đã đồng bộ với background xung quanh viewer
 
-### File nên implement
+### File đã implement
 - `src/plugins/optional/mermaid.plugin.js`
-- `src/viewer/actions/*` (handler cho export)
+- `src/plugins/optional/mermaid-actions.js`
+- `src/plugins/optional/mermaid-export.js`
 - `src/viewer/styles/content.css` (nút action cho block Mermaid)
-- cập nhật `src/viewer/shell/settings-drawer.js` (nếu có toggle định dạng export mặc định)
 
 ### Deliverable
-- Người dùng có thể export Mermaid chart thành ảnh ngay trong trang đọc Markdown.
+- Người dùng có thể export Mermaid chart thành `SVG/PNG` ngay trong trang đọc Markdown.
 
 ---
 

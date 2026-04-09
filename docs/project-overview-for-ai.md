@@ -11,6 +11,8 @@ Current implemented core:
 - Markdown render pipeline: `markdown-it` → plugin hooks → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
 - **Reader theme presets** (CSS variables on viewer root) aligned with **Shiki themes** for code blocks
 - **Plugin registry** (task lists, heading anchors, table wrapper, code-highlight toggle) via lifecycle hooks
+- Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
+- Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Left sidebar TOC with click-to-scroll + active heading tracking
 - Settings storage and runtime messaging
 - In-viewer settings drawer (reader, plugins, general); popup/options for settings inspection/editing
@@ -103,6 +105,13 @@ src/
       task-list.plugin.js
       anchor-heading.plugin.js
       table-enhance.plugin.js
+    optional/
+      emoji.plugin.js
+      footnote.plugin.js
+      math.plugin.js
+      mermaid.plugin.js
+      mermaid-actions.js
+      mermaid-export.js
   viewer/
     app.js
     actions/
@@ -226,6 +235,7 @@ Implemented strongly:
 - In-viewer settings drawer + runtime customization (Phase 4)
 - Theme presets + CSS-variable based theming (Phase 5)
 - **Plugin hooks + core plugins** (task list, anchor heading, table enhance, code-highlight gating for Shiki) — aligns with **parts of Phases 6–7** in planning docs
+- **Optional plugins completed** (Mermaid, Math, Footnote, Emoji), including Mermaid export actions (SVG + PNG with scale options)
 - Basic popup/options wiring (partial Phase 9)
 
 Not implemented yet (from planning docs):

@@ -17,7 +17,11 @@ A Chrome Extension that detects Markdown pages and turns raw text into a clean r
 - Renders content in a readable viewer layout.
 - Left sidebar Table of Contents with heading navigation.
 - Reader theme presets and typography controls.
-- Built-in plugin system with core plugins enabled by default.
+- Built-in plugin system with core and optional plugins.
+- Optional Mermaid support with diagram rendering.
+- Mermaid export actions:
+  - Download `SVG`
+  - Download `PNG` with resolution options (`1x`, `2x`, `3x`, `4x`)
 - User settings persisted through browser storage.
 
 ## Quick Start
@@ -75,7 +79,7 @@ Development notes:
 
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
 - `src/viewer` - Viewer UI, rendering flow, TOC, and settings drawer.
-- `src/plugins` - Plugin manager, plugin types, and core plugins.
+- `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
 - `src/background` - Runtime messaging and settings handlers.
 

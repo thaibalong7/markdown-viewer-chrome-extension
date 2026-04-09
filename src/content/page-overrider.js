@@ -26,7 +26,7 @@ function lockBackgroundScroll(host) {
 function restoreOriginalPageVisibility(host) {
   const body = document.body
   if (!body || !host) return
-  // Do not hide `<body>`: Mermaid needs a live render tree to measure SVG/text.
+  // Keep body in normal layout so third-party diagram/layout code can measure the page.
   if (body.style.display === 'none') {
     body.style.display = ''
   }

@@ -40,14 +40,7 @@ export function getShikiHighlighter() {
   return highlighterPromise
 }
 
-/**
- * Replace markdown-it fenced `<pre><code class="language-...">` blocks with Shiki HTML.
- * Requires a DOM (`document`). Unknown grammars leave the original block unchanged.
- *
- * @param {string} html
- * @param {object} settings
- * @returns {Promise<string>}
- */
+/** Replace fenced `<pre><code class="language-…">` with Shiki HTML (in-browser `document`). */
 export async function applyShikiToFencedCode(html, settings = {}) {
   if (typeof document === 'undefined') return html
 
@@ -68,7 +61,9 @@ export async function applyShikiToFencedCode(html, settings = {}) {
     if (!pre || pre.tagName !== 'PRE') continue
     const langMatch = String(code.className || '').match(/(?:^|\s)language-([\w-]+)/)
     if (!langMatch) continue
-    fencedBlocks.push({ pre, text: code.textContent ?? '', rawLang: langMatch[1] })
+    const rawLang = langMatch[1]
+    if (String(rawLang).toLowerCase() === 'mermaid') continue /* Mermaid plugin owns these fences */
+    fencedBlocks.push({ pre, text: code.textContent ?? '', rawLang })
   }
 
   await Promise.all(
@@ -79,7 +74,10 @@ export async function applyShikiToFencedCode(html, settings = {}) {
         tpl.innerHTML = out.trim()
         const nextPre = tpl.content.firstElementChild
         if (!nextPre) return
-        if (nextPre.tagName === 'PRE') normalizeShikiPreWhitespace(nextPre)
+        if (nextPre.tagName === 'PRE') {
+          nextPre.setAttribute('data-mdp-lang', rawLang)
+          normalizeShikiPreWhitespace(nextPre)
+        }
         pre.replaceWith(nextPre)
       } catch {
         /* unsupported grammar */

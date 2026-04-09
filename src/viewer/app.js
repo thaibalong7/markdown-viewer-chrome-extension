@@ -274,6 +274,19 @@ export class MarkdownViewerApp {
     this.articleHashLinkClickHandler = (event) => {
       const target = event.target
       if (!(target instanceof Element)) return
+
+      const codeCopyBtn = target.closest('button.mdp-code-block__copy')
+      if (codeCopyBtn && article.contains(codeCopyBtn)) {
+        event.preventDefault()
+        const block = codeCopyBtn.closest('.mdp-code-block')
+        const pre = block?.querySelector('pre')
+        if (pre) {
+          const text = pre.innerText ?? ''
+          void this.copyCodeWithToast(text)
+        }
+        return
+      }
+
       const link = target.closest('a[href^="#"]')
       if (!link || !article.contains(link)) return
       const href = link.getAttribute('href') || ''
@@ -304,6 +317,16 @@ export class MarkdownViewerApp {
     } catch (error) {
       logger.debug('Copy section link failed.', error)
       this.showToast('Could not copy link')
+    }
+  }
+
+  async copyCodeWithToast(text) {
+    try {
+      await copyTextToClipboard(text)
+      this.showToast('Copied')
+    } catch (error) {
+      logger.debug('Copy code failed.', error)
+      this.showToast('Could not copy')
     }
   }
 

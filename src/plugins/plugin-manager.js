@@ -19,10 +19,6 @@ const REGISTERED_PLUGINS = [
   mermaidPlugin
 ]
 
-function getRegisteredPlugins() {
-  return [...REGISTERED_PLUGINS]
-}
-
 function normalizeValue(nextValue, fallbackValue) {
   return typeof nextValue === 'undefined' ? fallbackValue : nextValue
 }
@@ -55,7 +51,7 @@ export function createPluginManager({ settings } = {}) {
     ...(settings?.plugins || {})
   }
 
-  const activePlugins = getRegisteredPlugins().filter((plugin) => isEnabledPlugin(plugin, mergedPluginSettings))
+  const activePlugins = REGISTERED_PLUGINS.filter((plugin) => isEnabledPlugin(plugin, mergedPluginSettings))
 
   return {
     getActivePlugins() {

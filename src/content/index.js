@@ -4,7 +4,7 @@ import katexCss from 'katex/dist/katex.min.css?inline'
 
 let viewerStylesPromise = null
 
-/** Vite emits absolute `/assets/...` URLs; in a content script those must point at the extension package. */
+/** Fallback: if any inlined CSS still uses root `/assets/…`, rewrite to the extension package (Vite `base: './'` fixes preloads; KaTeX fonts use `import.meta.url` in build). */
 function extensionizeKatexFontUrls(css) {
   const assetRoot = chrome.runtime.getURL('assets/')
   return String(css || '').replace(/url\(\/assets\//g, `url(${assetRoot}`)

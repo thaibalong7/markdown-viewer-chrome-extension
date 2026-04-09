@@ -26,10 +26,37 @@ function ensureMermaidInitialized() {
   return mermaidInitializePromise
 }
 
+function isMermaidFenceClass(className) {
+  return /\blanguage-mermaid\b/i.test(String(className || ''))
+}
+
+/** ```mermaid``` still as `<pre>` (incl. inside `.mdp-code-block`) → `.mdp-mermaid` text container. */
+function hoistMermaidPresToDivs(articleEl) {
+  for (const block of [...articleEl.querySelectorAll('.mdp-markdown-body .mdp-code-block')]) {
+    const pre = block.querySelector(':scope > pre')
+    const code = pre?.querySelector(':scope > code')
+    if (!code || !isMermaidFenceClass(code.className)) continue
+    const div = document.createElement('div')
+    div.className = 'mdp-mermaid'
+    div.textContent = String(code.textContent ?? '').trimEnd()
+    block.replaceWith(div)
+  }
+
+  for (const code of [...articleEl.querySelectorAll('.mdp-markdown-body pre > code')]) {
+    if (!isMermaidFenceClass(code.className)) continue
+    const pre = code.parentElement
+    if (!(pre instanceof HTMLPreElement)) continue
+    if (pre.parentElement?.classList.contains('mdp-code-block')) continue
+    const div = document.createElement('div')
+    div.className = 'mdp-mermaid'
+    div.textContent = String(code.textContent ?? '').trimEnd()
+    pre.replaceWith(div)
+  }
+}
+
 export const mermaidPlugin = {
   id: PLUGIN_IDS.MERMAID,
-  extendMarkdown({ markdownEngine, pluginSettings }) {
-    if (pluginSettings?.[PLUGIN_IDS.MERMAID]?.enabled !== true) return
+  extendMarkdown({ markdownEngine }) {
     const md = markdownEngine.instance
     const defaultFence = md.renderer.rules.fence
     if (typeof defaultFence !== 'function') return
@@ -38,23 +65,24 @@ export const mermaidPlugin = {
       const token = tokens[idx]
       const rawInfo = token.info ? String(token.info).trim() : ''
       const lang = rawInfo.split(/\s+/)[0] || ''
-      if (lang === 'mermaid') {
+      if (String(lang).toLowerCase() === 'mermaid') {
         const content = token.content.trimEnd()
         return `<div class="mdp-mermaid">${md.utils.escapeHtml(content)}</div>\n`
       }
       return defaultFence(tokens, idx, options, env, self)
     }
   },
-  async afterRender({ articleEl, pluginSettings }) {
-    if (pluginSettings?.[PLUGIN_IDS.MERMAID]?.enabled !== true) return
+  async afterRender({ articleEl }) {
     if (!articleEl) return
+
+    hoistMermaidPresToDivs(articleEl)
 
     const nodes = articleEl.querySelectorAll('.mdp-mermaid:not([data-mermaid-processed="true"])')
     if (!nodes.length) return
 
-    let mermaid
+    let mermaidApi
     try {
-      mermaid = await ensureMermaidInitialized()
+      mermaidApi = await ensureMermaidInitialized()
     } catch (error) {
       logger.warn('Mermaid initialization failed.', error)
       return
@@ -71,7 +99,7 @@ export const mermaidPlugin = {
       try {
         mermaidRenderCounter += 1
         const id = `mdp-mermaid-${mermaidRenderCounter}`
-        const out = await mermaid.render(id, code)
+        const out = await mermaidApi.render(id, code)
         node.innerHTML = out.svg
       } catch (error) {
         logger.warn('Mermaid block rendering failed.', error)

@@ -7,7 +7,7 @@ let mermaidRenderCounter = 0
 
 function getMermaid() {
   if (!mermaidImportPromise) {
-    mermaidImportPromise = import('mermaid').then((m) => m.default)
+    mermaidImportPromise = import('mermaid/dist/mermaid.esm.min.mjs').then((m) => m.default)
   }
   return mermaidImportPromise
 }
@@ -18,8 +18,7 @@ function ensureMermaidInitialized() {
       mermaid.initialize({
         startOnLoad: false,
         suppressErrorRendering: true,
-        securityLevel: 'strict',
-        theme: 'default'
+        securityLevel: 'strict'
       })
       return mermaid
     })

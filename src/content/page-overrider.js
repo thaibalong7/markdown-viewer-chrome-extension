@@ -23,21 +23,23 @@ function lockBackgroundScroll(host) {
   html.style.overscrollBehavior = 'none'
 }
 
-function hideOriginalPageContent(host) {
+function restoreOriginalPageVisibility(host) {
   const body = document.body
   if (!body || !host) return
-
-  // Keep only viewer root searchable/visible to avoid browser Find counting
-  // the original markdown source behind the overlay.
-  body.style.display = 'none'
-  body.setAttribute('aria-hidden', 'true')
+  // Do not hide `<body>`: Mermaid needs a live render tree to measure SVG/text.
+  if (body.style.display === 'none') {
+    body.style.display = ''
+  }
+  if (body.getAttribute('aria-hidden') === 'true') {
+    body.removeAttribute('aria-hidden')
+  }
 }
 
 export function createViewerRoot() {
   const existing = document.getElementById(ROOT_ID)
   if (existing) {
     lockBackgroundScroll(existing)
-    hideOriginalPageContent(existing)
+    restoreOriginalPageVisibility(existing)
     return {
       root: existing,
       shadowRoot: existing.shadowRoot || null
@@ -53,7 +55,7 @@ export function createViewerRoot() {
 
   document.documentElement.appendChild(host)
   lockBackgroundScroll(host)
-  hideOriginalPageContent(host)
+  restoreOriginalPageVisibility(host)
 
   let shadowRoot = null
   if (host.attachShadow) {

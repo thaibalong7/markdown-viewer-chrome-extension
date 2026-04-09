@@ -362,24 +362,24 @@ Huong dan test nhanh:
 
 Flowchart:
 ```mermaid
-flowchart LR
-  A[Detect markdown] --> B[Extract raw text]
-  B --> C[Render markdown-it]
-  C --> D[Run plugins]
-  D --> E[Sanitize HTML]
+graph TD
+  A[Detect markdown page] --> B[Extract raw markdown]
+  B --> C[Render with markdown-it]
+  C --> D[Apply plugins]
+  D --> E[Sanitize output]
   E --> F[Mount viewer]
 ```
 
 Sequence:
 ```mermaid
 sequenceDiagram
-  participant User
-  participant Viewer
-  participant Plugin
-  User->>Viewer: Open markdown page
-  Viewer->>Plugin: afterRender()
-  Plugin-->>Viewer: Enhance output
-  Viewer-->>User: Display final document
+  actor U as User
+  participant V as Viewer
+  participant P as Plugin
+  U->>V: Open markdown page
+  V->>P: Run afterRender hook
+  P-->>V: Return enhanced DOM
+  V-->>U: Show final document
 ```
 
 Invalid Mermaid (de test fallback):

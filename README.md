@@ -16,7 +16,7 @@ A Chrome Extension that detects Markdown pages and turns raw text into a clean r
 - Auto-detects Markdown-like pages.
 - Renders content in a readable viewer layout.
 - Left sidebar Table of Contents with heading navigation.
-- Reader theme presets and typography controls.
+- GitHub-inspired Light/Dark themes and typography controls.
 - Built-in plugin system with core and optional plugins.
 - Optional Mermaid support with diagram rendering.
 - Mermaid export actions:

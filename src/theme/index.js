@@ -3,66 +3,34 @@ const LIGHT_THEME_COLORS = {
   text: '#1f2328',
   heading: '#1f2328',
   border: '#d0d7de',
-  muted: '#57606a',
+  muted: '#656d76',
   codeBg: '#f6f8fa',
   codeText: '#1f2328',
   panelBg: '#f6f8fa',
   link: '#0969da',
   tableBorder: '#d0d7de',
   tableHeaderBg: '#f6f8fa',
-  tableRowAltBg: '#f8fafc'
+  tableRowAltBg: '#f6f8fa'
 }
 
 const DARK_THEME_COLORS = {
   background: '#0d1117',
-  text: '#c9d1d9',
-  heading: '#f0f6fc',
+  text: '#e6edf3',
+  heading: '#e6edf3',
   border: '#30363d',
-  muted: '#8b949e',
+  muted: '#7d8590',
   codeBg: '#161b22',
-  codeText: '#c9d1d9',
-  panelBg: '#111827',
-  link: '#58a6ff',
+  codeText: '#e6edf3',
+  panelBg: '#161b22',
+  link: '#2f81f7',
   tableBorder: '#30363d',
-  tableHeaderBg: '#111827',
-  tableRowAltBg: '#0f172a'
-}
-
-const VSCODE_DARK_PLUS_THEME_COLORS = {
-  background: '#1e1e1e',
-  text: '#d4d4d4',
-  heading: '#ffffff',
-  border: '#3c3c3c',
-  muted: '#a0a0a0',
-  codeBg: '#252526',
-  codeText: '#ce9178',
-  panelBg: '#252526',
-  link: '#4fc1ff',
-  tableBorder: '#3c3c3c',
-  tableHeaderBg: '#2d2d2d',
-  tableRowAltBg: '#242424'
-}
-
-const VSCODE_LIGHT_PLUS_THEME_COLORS = {
-  background: '#ffffff',
-  text: '#333333',
-  heading: '#1f1f1f',
-  border: '#e0e0e0',
-  muted: '#666666',
-  codeBg: '#f3f3f3',
-  codeText: '#a31515',
-  panelBg: '#f8f8f8',
-  link: '#006ab1',
-  tableBorder: '#e0e0e0',
-  tableHeaderBg: '#f2f2f2',
-  tableRowAltBg: '#fafafa'
+  tableHeaderBg: '#161b22',
+  tableRowAltBg: '#161b22'
 }
 
 export const BUILT_IN_THEMES = {
   light: LIGHT_THEME_COLORS,
-  dark: DARK_THEME_COLORS,
-  'vscode-dark-plus': VSCODE_DARK_PLUS_THEME_COLORS,
-  'vscode-light-plus': VSCODE_LIGHT_PLUS_THEME_COLORS
+  dark: DARK_THEME_COLORS
 }
 
 export function getThemeColorsByPreset(preset) {

@@ -710,7 +710,7 @@ Làm nút Settings góc trên bên phải hoạt động đầy đủ.
 Cho phép chỉnh sâu về giao diện.
 
 ### Kết quả cần đạt
-- Light/Dark/GitHub preset
+- Light/Dark preset (GitHub-style UI)
 - Custom color cho:
   - heading
   - body text
@@ -723,7 +723,6 @@ Cho phép chỉnh sâu về giao diện.
 ### File nên implement
 - `src/theme/themes/light.js`
 - `src/theme/themes/dark.js`
-- `src/theme/themes/github.js`
 - `src/viewer/core/style-generator.js`
 - cập nhật `src/viewer/shell/settings-drawer.js`
 - cập nhật `src/settings/default-settings.js`

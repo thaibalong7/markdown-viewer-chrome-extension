@@ -6,14 +6,12 @@
 import { bundledLanguagesInfo } from 'shiki/bundle/web'
 
 /** Bundled Shiki theme ids — must include one entry per reader preset in the map below (and match `BUILT_IN_THEMES` keys in `src/theme/index.js`). */
-export const SHIKI_BUNDLED_THEME_IDS = ['github-light', 'github-dark', 'light-plus', 'dark-plus']
+export const SHIKI_BUNDLED_THEME_IDS = ['github-light', 'github-dark']
 
 /** Reader `settings.theme.preset` → Shiki `codeToHtml` theme id. */
 const PRESET_TO_SHIKI_THEME_ID = {
   light: 'github-light',
-  dark: 'github-dark',
-  'vscode-light-plus': 'light-plus',
-  'vscode-dark-plus': 'dark-plus'
+  dark: 'github-dark'
 }
 
 /**

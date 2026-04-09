@@ -4,10 +4,10 @@
 ✅ Completed
 
 ## Mục tiêu
-Cho phép tùy biến sâu hơn về màu sắc và theme preset mà không cần full re-render cho hầu hết trường hợp.
+Cho phép tùy biến sâu hơn về màu sắc với 2 theme `light`/`dark` (GitHub-style) mà không cần full re-render cho hầu hết trường hợp.
 
 ## Deliverable
-- Có preset theme
+- Có 2 preset theme: `light`, `dark`
 - Có custom color cho các nhóm UI chính
 - Có live preview qua CSS variables
 - Settings drawer hỗ trợ chỉnh màu
@@ -16,7 +16,6 @@ Cho phép tùy biến sâu hơn về màu sắc và theme preset mà không cầ
 ```text
 src/theme/themes/light.js
 src/theme/themes/dark.js
-src/theme/themes/github.js
 src/viewer/core/style-generator.js
 src/theme/theme-service.js
 src/viewer/shell/settings-drawer.js

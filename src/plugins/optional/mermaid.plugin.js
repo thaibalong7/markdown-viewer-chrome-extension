@@ -9,7 +9,7 @@ let mermaidThemeKey = null
 
 function getMermaidThemeByPreset(preset) {
   const key = String(preset || '').toLowerCase()
-  if (key === 'dark' || key === 'vscode-dark-plus') return 'dark'
+  if (key === 'dark') return 'dark'
   return 'default'
 }
 

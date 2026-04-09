@@ -9,7 +9,7 @@ Current implemented core:
 - Raw Markdown extraction from page (`<pre>` or body text sampling)
 - Viewer mount in overlay + Shadow DOM (when available)
 - Markdown render pipeline: `markdown-it` → plugin hooks → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
-- **Reader theme presets** (CSS variables on viewer root) aligned with **Shiki themes** for code blocks
+- **Reader themes** (`light` / `dark`, default `light`) aligned with **Shiki themes** for code blocks
 - **Plugin registry** (task lists, heading anchors, table wrapper, code-highlight toggle) via lifecycle hooks
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
@@ -223,7 +223,7 @@ Default shape in `src/settings/index.js` (plugins come from `getDefaultPluginSet
 }
 ```
 
-Preset keys for theme/Shiki must match built-ins: `light`, `dark`, `vscode-light-plus`, `vscode-dark-plus`.
+Preset keys for theme/Shiki must match built-ins: `light`, `dark`.
 
 ## 7) Current state vs roadmap
 

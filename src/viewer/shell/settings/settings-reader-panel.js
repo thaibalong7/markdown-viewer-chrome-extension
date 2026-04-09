@@ -27,10 +27,8 @@ function createThemePresetSelect(value) {
   const select = document.createElement('select')
   select.className = 'mdp-settings__input'
   const themeLabels = {
-    light: 'Light (Basic)',
-    dark: 'Dark (Basic)',
-    'vscode-light-plus': 'VS Code Light+',
-    'vscode-dark-plus': 'VS Code Dark+'
+    light: 'Light',
+    dark: 'Dark'
   }
   for (const preset of Object.keys(BUILT_IN_THEMES)) {
     const option = document.createElement('option')

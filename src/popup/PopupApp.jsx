@@ -65,6 +65,10 @@ export function PopupApp() {
 
   function persistPatch(partial) {
     if (!partial) return
+    setSettings((previous) => {
+      if (!previous) return previous
+      return deepMerge(previous, partial)
+    })
     pendingPatchRef.current = deepMerge(pendingPatchRef.current, partial)
     if (persistTimerRef.current) {
       clearTimeout(persistTimerRef.current)

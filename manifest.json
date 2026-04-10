@@ -24,11 +24,6 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "src/viewer/styles/base.css",
-        "src/viewer/styles/layout.css",
-        "src/viewer/styles/content.css",
-        "src/viewer/styles/toc.css",
-        "src/viewer/styles/settings.css",
         "assets/*"
       ],
       "matches": ["<all_urls>"]

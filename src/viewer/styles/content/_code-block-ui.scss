@@ -1,0 +1,103 @@
+@use '../variables' as *;
+
+/* Fenced code: language + Copy overlay top-right, aligned with first code line (no extra top band) */
+.mdp-code-block {
+  position: relative;
+  margin: 0 0 1em;
+}
+
+.mdp-markdown-body .mdp-code-block pre.shiki,
+.mdp-markdown-body .mdp-code-block pre:not(.shiki) {
+  margin: 0;
+  padding: $code-padding;
+  border: 1px solid var(--mdp-border);
+  border-radius: 0 0 $radius-default $radius-default;
+  box-sizing: border-box;
+}
+
+.mdp-code-block__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 70%, transparent);
+  border-bottom: none;
+  border-radius: $radius-default $radius-default 0 0;
+  background: color-mix(in srgb, var(--mdp-panel-bg) 80%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.mdp-code-block__actions {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mdp-code-block__lang {
+  max-width: min(16rem, 55vw);
+  margin: 0;
+  padding: 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: $mono-font;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  line-height: 1.25;
+  color: var(--mdp-muted);
+  opacity: 0.72;
+  text-align: left;
+  white-space: nowrap;
+  user-select: text;
+}
+
+.mdp-code-block__copy {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 3px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mdp-muted);
+  cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 65%, transparent);
+  border-radius: $radius-tiny;
+  background: color-mix(in srgb, var(--mdp-panel-bg) 35%, transparent);
+  opacity: 0.62;
+  box-shadow: none;
+  transition:
+    opacity 0.15s ease,
+    color 0.12s ease,
+    background 0.12s ease,
+    border-color 0.12s ease;
+
+  &:hover {
+    color: var(--mdp-body-text);
+    opacity: 0.92;
+    background: color-mix(in srgb, var(--mdp-body-text) 7%, transparent);
+    border-color: color-mix(in srgb, var(--mdp-border) 90%, var(--mdp-body-text) 10%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: 1px;
+  }
+}
+
+.mdp-code-block__copy-icon {
+  display: block;
+  pointer-events: none;
+}
+
+/* Subtle horizontal scrollbar for code blocks */
+.mdp-markdown-body pre.shiki,
+.mdp-markdown-body pre:not(.shiki) {
+  @include scrollbar-thin;
+}

@@ -1,6 +1,6 @@
 ---
 description: Reader theme presets, CSS variables, Shiki syntax themes, and fenced code styling
-globs: src/viewer/core/shiki*.js,src/theme/**/*.js,src/viewer/styles/content.css,src/viewer/app.js
+globs: src/viewer/core/shiki*.js,src/theme/**/*.js,src/viewer/styles/content.scss,src/viewer/styles/content/**/*.scss,src/viewer/app.js
 alwaysApply: false
 ---
 
@@ -22,7 +22,7 @@ alwaysApply: false
 
 - Shiki bakes colors into HTML; updating CSS variables alone does not refresh fenced blocks. If `partial.theme` is present in a settings patch, force a full markdown re-render (`patchNeedsFullRender` in `src/viewer/app.js`). Keep that invariant when changing style-only vs full-render logic.
 
-## CSS (`content.css`)
+## Styles (`content.scss` via content script `?inline`)
 
 - **Non-Shiki** fences: `pre:not(.shiki)` and `pre:not(.shiki) code` use theme vars (`--mdp-code-bg`, `--mdp-code-text`).
 - **Shiki** fences: `pre.shiki` / `pre.shiki code` use `white-space: pre` and `tab-size: 4`; rely on `normalizeShikiPreWhitespace` rather than `white-space: normal` on `code`.
@@ -30,4 +30,4 @@ alwaysApply: false
 
 ## Build
 
-- After changing Shiki config or viewer styles loaded as static assets, run `npm run build` and keep `manifest.json` `web_accessible_resources` in sync per `10-source-of-truth-build.mdc`.
+- After changing Shiki config or viewer SCSS, run `npm run build`. Viewer SCSS is not exposed as standalone `web_accessible_resources`; it ships inside the content script bundle per `10-source-of-truth-build.mdc`.

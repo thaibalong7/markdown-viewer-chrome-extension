@@ -20,7 +20,7 @@ Current implemented core:
 ## 2) Tech stack and runtime
 
 - Runtime: Chrome Extension MV3
-- Build tool: Vite + `@crxjs/vite-plugin`
+- Build tool: Vite + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/index.js` (bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`)
 - Language: Vanilla JavaScript (ES modules)
 - Markdown: `markdown-it` + `markdown-it-anchor`
 - Fenced code highlighting: **Shiki** (`shiki/bundle/web`)
@@ -51,7 +51,7 @@ Generated output:
 
 ### 3.2 Core flow (implemented)
 
-1. Content script entry `src/content/index.js` loads viewer CSS from extension assets (`base`, `layout`, `content`, `toc`, `settings`).
+1. Content script entry `src/content/index.js` bundles compiled viewer SCSS (`?inline`) and injects those strings into the Shadow DOM (no `fetch` of per-sheet CSS assets).
 2. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()`.
 3. If needed, fallback sampling checks whether page text resembles Markdown.
 4. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
@@ -134,11 +134,19 @@ src/
         settings-reader-panel.js
         settings-plugins-panel.js
     styles/
-      base.css
-      layout.css
-      content.css
-      toc.css
-      settings.css
+      _variables.scss
+      base.scss
+      layout.scss
+      content.scss
+      toc.scss
+      settings.scss
+      content/
+        _typography.scss
+        _code-blocks.scss
+        _code-block-ui.scss
+        _tables.scss
+        _plugins.scss
+        _mermaid.scss
     state/
       viewer-state.js
   popup/
@@ -188,7 +196,7 @@ src/
   - **`patchNeedsFullRender`**: changing **`theme`** forces full markdown re-render (Shiki bakes colors into HTML; CSS vars alone do not update fences).
   - Otherwise typography/layout/color-only patches can avoid full document render per `STYLE_ONLY_KEYS` / layout allowlist.
 
-- `src/viewer/styles/content.css`
+- `src/viewer/styles/content.scss` (+ partials under `content/`) → compiled and inlined via the content script bundle
   - **`pre.shiki`**: `white-space: pre`, `tab-size: 4`, `.line` as `display: block`.
   - **`pre:not(.shiki)`**: theme vars for plain fenced blocks when Shiki off/unavailable.
 
@@ -245,7 +253,7 @@ Not implemented yet (from planning docs):
 ## 8) Performance hotspots already identified
 
 From `docs/performance-issues-audit.md`, notable risks:
-- CSS files fetched on content script startup
+- Viewer CSS bundled in the content script (no runtime fetch; still parse cost on every page)
 - Large-page text sampling / extraction cost
 - Scroll spy does O(N headings) work on updates
 - Repeated regex scans and full re-render on some settings updates
@@ -276,7 +284,7 @@ Use this audit as the baseline for optimization tasks.
   - Reader theme uses CSS vars; Shiki colors are inline in HTML. Ensure `patchNeedsFullRender` treats `theme` as full re-render; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/35-reader-theme-and-shiki.mdc`.
 
 - **Fenced code layout (lines, tabs)**:
-  - `normalizeShikiPreWhitespace`, `content.css` `pre.shiki` rules, and sanitize `ADD_ATTR` for Shiki output.
+  - `normalizeShikiPreWhitespace`, bundled viewer styles from `content/_code-blocks.scss` (`pre.shiki`), and sanitize `ADD_ATTR` for Shiki output.
 
 - **Plugin behavior**:
   - `src/plugins/plugin-manager.js`, individual plugins under `src/plugins/core/`, and `renderer.js` / `app.js` for `afterRender` DOM passes.
@@ -287,5 +295,5 @@ Use this audit as the baseline for optimization tasks.
 - Prefer `sendMessage()` wrapper instead of direct ad-hoc messaging in UI/content code.
 - Preserve viewer lifecycle: `init()` -> `updateSettings()` -> `destroy()`; document render is **async** (`await render()`).
 - Keep all source edits in `src/**` and rebuild for extension output (`npm run build`).
-- When adding runtime-fetched viewer assets, sync `manifest.json` `web_accessible_resources`.
+- When adding runtime-fetched extension assets (`fetch(chrome.runtime.getURL(...))`), sync `manifest.json` `web_accessible_resources`. Viewer chrome styles are not separate WAR entries (inlined in the content script).
 - For architecture detail on Shiki and presets, see `.cursor/rules/35-reader-theme-and-shiki.mdc` and this doc’s section 5.

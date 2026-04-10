@@ -1,0 +1,60 @@
+.mdp-sidebar {
+  position: sticky;
+  top: var(--mdp-toolbar-stack, 49px);
+  align-self: start;
+  height: calc(100vh - var(--mdp-toolbar-stack, 49px));
+  overflow-y: auto;
+}
+
+.mdp-toc {
+  width: 100%;
+
+  &__empty {
+    color: var(--mdp-muted);
+    font-size: 14px;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__item {
+    margin: 0;
+    padding: 0;
+  }
+
+  &__link {
+    display: block;
+    text-decoration: none;
+    color: var(--mdp-muted);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+      background: rgba(31, 35, 40, 0.06);
+      color: var(--mdp-text);
+    }
+
+    &.is-active {
+      background: var(--mdp-border);
+      color: var(--mdp-text);
+      font-weight: 600;
+    }
+
+    @for $i from 1 through 6 {
+      &--h#{$i} {
+        padding-left: #{10px + ($i - 1) * 8px};
+      }
+    }
+  }
+}

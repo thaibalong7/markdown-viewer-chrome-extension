@@ -1,5 +1,6 @@
 import { buildTocItems, renderToc } from '../core/toc-builder.js'
 import { createScrollSpy } from '../core/scroll-spy.js'
+import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX } from '../toolbar-metrics.js'
 
 function getScrollRoot(articleEl) {
   return articleEl?.closest?.('.mdp-root') || null
@@ -7,7 +8,7 @@ function getScrollRoot(articleEl) {
 
 function getToolbarHeight(scrollRoot) {
   const toolbarEl = scrollRoot?.querySelector?.('.mdp-toolbar')
-  return toolbarEl?.getBoundingClientRect?.().height || 56
+  return toolbarEl?.getBoundingClientRect?.().height || MDP_TOOLBAR_HEIGHT_FALLBACK_PX
 }
 
 function scrollToHeading({ scrollRoot, toolbarHeight, headingEl }) {

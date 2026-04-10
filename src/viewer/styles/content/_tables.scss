@@ -1,0 +1,28 @@
+.mdp-markdown-body {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 1em;
+  }
+
+  th,
+  td {
+    border: 1px solid var(--mdp-table-border);
+    padding: 8px 10px;
+  }
+
+  thead th {
+    background: var(--mdp-table-header-bg);
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--mdp-table-row-alt-bg);
+  }
+}
+
+.mdp-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--mdp-table-border);
+  border-radius: 8px;
+}

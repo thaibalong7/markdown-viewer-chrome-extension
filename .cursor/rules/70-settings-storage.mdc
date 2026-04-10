@@ -5,7 +5,7 @@ globs:
   - src/viewer/shell/settings/**/*.js
   - src/viewer/shell/settings-drawer.js
   - src/viewer/shell/viewer-shell.js
-  - src/viewer/styles/settings.css
+  - src/viewer/styles/settings.scss
   - src/theme/**/*.js
   - src/popup/**/*.js
   - src/options/**/*.js
@@ -42,7 +42,7 @@ Cross-cut with `30-mv3-messaging-architecture.mdc`. End-to-end flow: **defaults 
 - **Tab list**: `src/viewer/shell/settings/settings-tab-definitions.js` (`SETTINGS_TAB_IDS`, `SETTINGS_TABS`).
 - **Orchestration**: `src/viewer/shell/settings/settings-popup.js` (`createSettingsDrawer`) — rail, outside-dismiss, tab panels.
 - **Per-tab content**: new module under `src/viewer/shell/settings/` exporting a builder like `buildGeneralSettingsPanel`: `{ element, update(nextSettings), destroy() }`.
-- Wire the tab in `settings-popup.js`. **Styling**: `src/viewer/styles/settings.css`; prefer extending theme CSS vars in `src/theme/` when possible.
+- Wire the tab in `settings-popup.js`. **Styling**: `src/viewer/styles/settings.scss` (bundled via content script `?inline`); prefer extending theme CSS vars in `src/theme/` when possible.
 - **Shell**: pass new props through `viewer-shell.js` only when `createSettingsDrawer` needs them (e.g. `settingsButton`).
 - Public import path stays `src/viewer/shell/settings-drawer.js` (re-export).
 

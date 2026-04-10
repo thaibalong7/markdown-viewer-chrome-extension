@@ -64,14 +64,15 @@ npm run build
 
 Available scripts:
 
-- `npm run dev` - Start Vite development workflow.
-- `npm run build` - Build production extension output.
-- `npm run watch` - Build in watch mode.
+- `npm run dev` - Start Vite (viewer SCSS is compiled when the content script is built).
+- `npm run build` - Production extension output to `dist/`.
+- `npm run watch` - Vite build in watch mode.
 - `npm run preview` - Preview built output.
 
 Development notes:
 
 - Use Node 20 (`nvm use 20`) before running npm scripts.
+- Viewer styles live in `src/viewer/styles/**/*.scss` and are imported with `?inline` from `src/content/index.js`, so Vite bundles them into the content script (no generated `.css` next to sources).
 - Treat `src/**`, `manifest.json`, and `vite.config.mjs` as source of truth.
 - Do not edit `dist/**` manually; regenerate it with `npm run build`.
 

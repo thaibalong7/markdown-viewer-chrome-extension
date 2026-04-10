@@ -21,9 +21,9 @@ src/viewer/core/dom-renderer.js
 src/viewer/shell/viewer-shell.js
 src/viewer/shell/header-toolbar.js
 src/viewer/shell/content-pane.js
-src/viewer/styles/base.css
-src/viewer/styles/layout.css
-src/viewer/styles/content.css
+src/viewer/styles/base.scss
+src/viewer/styles/layout.scss
+src/viewer/styles/content.scss
 ```
 
 ## Definition of done

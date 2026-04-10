@@ -17,7 +17,7 @@ src/viewer/core/toc-builder.js
 src/viewer/core/scroll-spy.js
 src/viewer/shell/toc-sidebar.js
 src/viewer/actions/rebuild-toc.js
-src/viewer/styles/toc.css
+src/viewer/styles/toc.scss
 src/viewer/app.js
 src/viewer/shell/viewer-shell.js
 ```

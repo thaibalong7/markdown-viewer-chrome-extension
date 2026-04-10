@@ -1,0 +1,57 @@
+@use '../variables' as *;
+
+/* Plain fenced blocks when Shiki is off or failed; Shiki uses `pre.shiki` with theme inline colors. */
+.mdp-markdown-body pre:not(.shiki) {
+  overflow: auto;
+  padding: $code-padding;
+  background: var(--mdp-code-bg);
+  color: var(--mdp-code-text);
+  border-radius: $radius-default;
+  border: 1px solid var(--mdp-border);
+}
+
+/* Shiki: `.line` rows; inter-span newlines from `codeToHtml` are stripped in `normalizeShikiPreWhitespace` (`shiki-dom.js`)
+   so `white-space: pre` does not create blank lines and tabs/indent stay correct. */
+.mdp-markdown-body pre.shiki {
+  overflow-x: auto;
+  margin: 0 0 1em;
+  padding: $code-padding;
+  border-radius: $radius-default;
+  border: 1px solid var(--mdp-border);
+  white-space: pre;
+  word-break: normal;
+  tab-size: 4;
+}
+
+.mdp-markdown-body pre.shiki code {
+  font-family: $mono-font;
+  font-size: $code-font-size;
+  line-height: $code-line-height;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  white-space: pre;
+  display: block;
+}
+
+.mdp-markdown-body pre.shiki code .line {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: $code-line-height;
+}
+
+/* Non-Shiki fences: preserve raw newlines from markdown-it */
+.mdp-markdown-body pre:not(.shiki) code {
+  display: block;
+  white-space: pre;
+  tab-size: 4;
+  font-family: $mono-font;
+  font-size: $code-font-size;
+  line-height: $code-line-height;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}

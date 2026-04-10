@@ -11,7 +11,7 @@ Bổ sung các plugin mạnh hơn cho tài liệu kỹ thuật/phức tạp: Mer
 - [x] Math render được nếu bật plugin
 - [x] Footnote và Emoji hỗ trợ nếu cần
 - [x] Plugin failure có fallback graceful
-- [ ] Follow-up: export Mermaid chart ra image (ưu tiên SVG, mở rộng PNG)
+- [x] Follow-up: export Mermaid chart ra image (ưu tiên SVG, mở rộng PNG)
 
 ## Files cần implement
 ```text

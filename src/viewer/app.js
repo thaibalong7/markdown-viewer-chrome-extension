@@ -9,6 +9,7 @@ import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { DEFAULT_SETTINGS } from '../settings/index.js'
 import { logger } from '../shared/logger.js'
 import { isPlainObject } from '../shared/deep-merge.js'
+import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX } from './toolbar-metrics.js'
 
 const STYLE_ONLY_KEYS = new Set(['theme', 'typography', 'colors', 'layout'])
 const STYLE_ONLY_LAYOUT_KEYS = new Set(['showToc', 'tocWidth', 'contentMaxWidth'])
@@ -342,7 +343,8 @@ export class MarkdownViewerApp {
     const scrollRoot = this.parts?.root || this.parts?.article?.closest?.('.mdp-root')
     if (!scrollRoot) return
     const toolbarEl = scrollRoot.querySelector('.mdp-toolbar')
-    const toolbarHeight = toolbarEl?.getBoundingClientRect?.().height || 56
+    const toolbarHeight =
+      toolbarEl?.getBoundingClientRect?.().height || MDP_TOOLBAR_HEIGHT_FALLBACK_PX
 
     const rootRect = scrollRoot.getBoundingClientRect()
     const headingRect = headingEl.getBoundingClientRect()

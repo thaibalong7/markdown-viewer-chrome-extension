@@ -1,0 +1,54 @@
+.mdp-markdown-body {
+  max-width: var(--mdp-content-max-width);
+  margin: 0 auto;
+  line-height: var(--mdp-line-height);
+  font-size: var(--mdp-font-size);
+  font-family: var(--mdp-font-family);
+  color: var(--mdp-body-text);
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 1.4em;
+    margin-bottom: 0.6em;
+    line-height: 1.25;
+    color: var(--mdp-heading);
+  }
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  pre {
+    margin: 0 0 1em;
+  }
+
+  ul,
+  ol {
+    padding-inline-start: 2.5em;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--mdp-border);
+    margin: 1.5em 0;
+  }
+
+  code {
+    background: var(--mdp-code-bg);
+    color: var(--mdp-code-text);
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+    white-space: break-spaces;
+  }
+
+  blockquote {
+    margin-left: 0;
+    padding-left: 12px;
+    border-left: 4px solid var(--mdp-border);
+    color: var(--mdp-muted);
+  }
+}

@@ -21,7 +21,7 @@ src/viewer/core/renderer.js
 src/plugins/registry/plugin-manager.js
 src/content/page-detector.js
 src/content/raw-content-extractor.js
-src/viewer/styles/content.css
+src/viewer/styles/content.scss
 src/viewer/core/renderer.js
 src/plugins/core/code-highlight.plugin.js
 ```

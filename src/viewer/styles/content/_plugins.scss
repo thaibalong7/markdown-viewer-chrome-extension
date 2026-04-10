@@ -1,0 +1,57 @@
+.mdp-task-list__item {
+  list-style: none;
+}
+
+.mdp-task-list__checkbox {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.mdp-markdown-body {
+  .mdp-heading-anchor {
+    margin-left: 0.4em;
+    opacity: 0;
+    text-decoration: none;
+    font-size: 0.85em;
+  }
+
+  h1:hover .mdp-heading-anchor,
+  h2:hover .mdp-heading-anchor,
+  h3:hover .mdp-heading-anchor,
+  h4:hover .mdp-heading-anchor,
+  h5:hover .mdp-heading-anchor,
+  h6:hover .mdp-heading-anchor {
+    opacity: 1;
+  }
+
+  /* KaTeX (@mdit/plugin-katex) */
+  .katex-display,
+  p.katex-block {
+    margin: 0.45em 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .katex-error {
+    color: var(--mdp-muted);
+  }
+
+  /* Footnotes (markdown-it-footnote) */
+  .footnotes-sep {
+    margin-top: 2em;
+  }
+
+  section.footnotes {
+    font-size: 0.9em;
+    color: var(--mdp-muted);
+  }
+
+  .footnote-ref a,
+  .footnote-backref {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

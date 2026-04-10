@@ -15,15 +15,14 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Danh sách issue theo mức độ ưu tiên
 
-## Issue #1 [HIGH] Fetch CSS quá sớm khi tải trang
+## Issue #1 [HIGH] Chuỗi CSS viewer nằm trong bundle content script (mọi trang)
 
-- **Vị trí:** `src/content/index.js` (`start()`)
-- **Hiện trạng:** Tiến hành fetch nhiều file CSS ngay lúc content script khởi động.
-- **Tác động CPU/RAM:** Extension có match `<all_urls>`, nên chi phí fetch + parse + tạo chuỗi CSS xảy ra trên cả trang không phải markdown. Tạo overhead startup và memory churn không cần thiết.
-- **Khuyến nghị fix:**
-  - Chỉ load CSS sau khi detect markdown thành công.
-  - Dùng `Promise.all` để fetch song song.
-  - Cache CSS theo cấp module để tránh tải lại/re-allocate.
+- **Vị trí:** `src/content/index.js` (import `../viewer/styles/*.scss?inline`)
+- **Hiện trạng (cập nhật):** Không còn `fetch` nhiều file CSS; Vite biên dịch SCSS và gộp vào bundle content script. Vẫn: mỗi lần content script chạy trên `<all_urls>`, engine parse/eval bundle (kèm chuỗi CSS lớn) trước khi biết có phải markdown hay không.
+- **Tác động CPU/RAM:** Bỏ được I/O fetch runtime; vẫn có chi phí parse JS + giữ chuỗi style trong memory trên trang không mount viewer.
+- **Khuyến nghị fix tiếp:**
+  - `import()` động sau khi detect markdown thành công (code-split chunk chứa SCSS `?inline`).
+  - Hoặc tách nhánh “light” detect trước, chỉ load viewer khi cần.
 
 ## Issue #2 [HIGH] Trích xuất `innerText` toàn trang có thể rất nặng
 
@@ -90,7 +89,7 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Quick wins nên làm trước
 
-1. Fix Issue #1: Defer CSS fetch đến sau detect markdown.
+1. Fix Issue #1: Cân nhắc defer / dynamic import chunk chứa viewer CSS sau detect markdown.
 2. Fix Issue #2: Thêm giới hạn kích thước extraction trong `extractRawMarkdown`.
 3. Fix Issue #5: Tối ưu `updateSettings` để tránh full rerender với style-only changes.
 4. Fix Issue #6: Chuyển TOC click handler sang event delegation.

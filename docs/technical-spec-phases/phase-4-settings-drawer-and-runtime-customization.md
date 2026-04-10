@@ -18,7 +18,7 @@ src/viewer/shell/settings-drawer.js
 src/viewer/actions/open-settings.js
 src/viewer/actions/update-settings.js
 src/viewer/state/settings-state.js
-src/viewer/styles/settings.css
+src/viewer/styles/settings.scss
 src/theme/theme-service.js
 src/theme/css-vars.js
 src/settings/settings.service.js

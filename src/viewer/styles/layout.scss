@@ -1,8 +1,12 @@
+@use 'variables' as v;
+
 .mdp-root {
+  --mdp-toolbar-stack: #{v.$mdp-toolbar-stack};
   background: var(--mdp-bg);
   color: var(--mdp-text);
   min-height: 100vh;
 }
+
 .mdp-toolbar {
   position: sticky;
   top: 0;
@@ -11,16 +15,21 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px 16px;
+  box-sizing: border-box;
+  min-height: var(--mdp-toolbar-stack);
+  padding: 6px 12px;
   border-bottom: 1px solid var(--mdp-border);
   background: var(--mdp-bg);
+
+  &__title {
+    font-weight: 700;
+  }
+
+  &__actions {
+    margin-left: auto;
+  }
 }
-.mdp-toolbar__title {
-  font-weight: 700;
-}
-.mdp-toolbar__actions {
-  margin-left: auto;
-}
+
 .mdp-button {
   border: 1px solid var(--mdp-border);
   background: var(--mdp-panel-bg);
@@ -29,28 +38,34 @@
   border-radius: 8px;
   cursor: pointer;
 }
+
 .mdp-body {
   display: grid;
   grid-template-columns: var(--mdp-toc-width) minmax(0, 1fr);
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - var(--mdp-toolbar-stack));
+
+  /* Sidebar `display:none` removes it from grid; single visible child must not land on the 0px TOC track. */
+  &--no-toc {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
-/* Sidebar `display:none` removes it from grid; single visible child must not land on the 0px TOC track. */
-.mdp-body.mdp-body--no-toc {
-  grid-template-columns: minmax(0, 1fr);
-}
+
 .mdp-sidebar {
   border-right: 1px solid var(--mdp-border);
   background: var(--mdp-panel-bg);
   padding: 16px;
+
+  &__title {
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  &__placeholder {
+    color: var(--mdp-muted);
+    font-size: 14px;
+  }
 }
-.mdp-sidebar__title {
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.mdp-sidebar__placeholder {
-  color: var(--mdp-muted);
-  font-size: 14px;
-}
+
 .mdp-content-pane {
   padding: 24px;
 }

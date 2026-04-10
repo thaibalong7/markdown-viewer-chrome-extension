@@ -1,7 +1,9 @@
+import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX } from '../toolbar-metrics.js'
+
 export function createScrollSpy({
   scrollRoot,
   headings,
-  getToolbarHeight = () => 56,
+  getToolbarHeight = () => MDP_TOOLBAR_HEIGHT_FALLBACK_PX,
   onActiveIdChange
 }) {
   if (!scrollRoot || !headings?.length) {
@@ -14,7 +16,7 @@ export function createScrollSpy({
   let rafId = 0
 
   function computeActiveId() {
-    const toolbarHeight = Number(getToolbarHeight()) || 56
+    const toolbarHeight = Number(getToolbarHeight()) || MDP_TOOLBAR_HEIGHT_FALLBACK_PX
     const rootRect = scrollRoot.getBoundingClientRect()
     const threshold = scrollRoot.scrollTop + toolbarHeight + 8
 

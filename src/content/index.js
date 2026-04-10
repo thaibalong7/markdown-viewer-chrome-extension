@@ -1,8 +1,11 @@
 import { bootstrap } from './bootstrap.js'
 import { logger } from '../shared/logger.js'
 import katexCss from 'katex/dist/katex.min.css?inline'
-
-let viewerStylesPromise = null
+import baseCss from '../viewer/styles/base.scss?inline'
+import layoutCss from '../viewer/styles/layout.scss?inline'
+import contentCss from '../viewer/styles/content.scss?inline'
+import tocCss from '../viewer/styles/toc.scss?inline'
+import settingsCss from '../viewer/styles/settings.scss?inline'
 
 /** Fallback: if any inlined CSS still uses root `/assets/…`, rewrite to the extension package (Vite `base: './'` fixes preloads; KaTeX fonts use `import.meta.url` in build). */
 function extensionizeKatexFontUrls(css) {
@@ -10,32 +13,15 @@ function extensionizeKatexFontUrls(css) {
   return String(css || '').replace(/url\(\/assets\//g, `url(${assetRoot}`)
 }
 
-async function fetchStyleText(path) {
-  const response = await fetch(chrome.runtime.getURL(path))
-  if (!response.ok) {
-    throw new Error(`Failed to fetch style: ${path}`)
+/** Viewer SCSS is compiled by Vite and bundled into the content script (no separate CSS under `src/` or `fetch` at runtime). */
+function getViewerStyles() {
+  return {
+    baseCss,
+    layoutCss,
+    contentCss: `${contentCss}\n${extensionizeKatexFontUrls(katexCss)}`,
+    tocCss,
+    settingsCss
   }
-  return response.text()
-}
-
-async function getViewerStyles() {
-  if (!viewerStylesPromise) {
-    viewerStylesPromise = Promise.all([
-      fetchStyleText('src/viewer/styles/base.css'),
-      fetchStyleText('src/viewer/styles/layout.css'),
-      fetchStyleText('src/viewer/styles/content.css'),
-      fetchStyleText('src/viewer/styles/toc.css'),
-      fetchStyleText('src/viewer/styles/settings.css')
-    ]).then(([baseCss, layoutCss, contentCss, tocCss, settingsCss]) => ({
-      baseCss,
-      layoutCss,
-      contentCss: `${contentCss}\n${extensionizeKatexFontUrls(katexCss)}`,
-      tocCss,
-      settingsCss
-    }))
-  }
-
-  return viewerStylesPromise
 }
 
 (async function start() {

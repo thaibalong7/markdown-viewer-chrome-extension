@@ -6,6 +6,7 @@ alwaysApply: true
 
 # Source of Truth and Build Artifacts
 - Treat `src/**`, `manifest.json`, and `vite.config.mjs` as source of truth; `dist/**` is generated output.
+- Viewer styles: edit `src/viewer/styles/**/*.scss`; Vite compiles them when the content script imports them with `?inline` (bundled into `dist/**`, no `.css` files under `src/viewer/styles/`).
 - Do not hand-edit `dist/**`; regenerate it via `npm run build` after source changes that affect packaged output.
 - When adding viewer styles or static assets loaded by content scripts, keep `manifest.json` `web_accessible_resources` in sync.
 - Keep ESM import paths explicit with `.js` extensions in source files to match current module style.

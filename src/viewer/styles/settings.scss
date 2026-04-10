@@ -1,21 +1,23 @@
 .mdp-settings-drawer {
   position: fixed;
-  top: 64px;
+  top: calc(var(--mdp-toolbar-stack, 49px) + 8px);
   right: 12px;
   z-index: 5;
   width: min(540px, calc(100vw - 24px));
-  max-height: calc(100vh - 76px);
+  max-height: calc(100vh - var(--mdp-toolbar-stack, 49px) - 20px);
   display: block;
   pointer-events: none;
   transform: translateY(-6px) scale(0.985);
   opacity: 0;
-  transition: transform 180ms ease, opacity 180ms ease;
-}
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
 
-.mdp-settings-drawer.is-open {
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-  opacity: 1;
+  &.is-open {
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    opacity: 1;
+  }
 }
 
 .mdp-settings-panel {
@@ -23,7 +25,7 @@
   flex-direction: row;
   align-items: stretch;
   width: 100%;
-  max-height: calc(100vh - 76px);
+  max-height: calc(100vh - var(--mdp-toolbar-stack, 49px) - 20px);
   border: 1px solid var(--mdp-border);
   border-radius: 14px;
   background: color-mix(in srgb, var(--mdp-panel-bg) 88%, transparent);
@@ -61,17 +63,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.mdp-settings__tab:hover {
-  color: var(--mdp-text);
-  background: color-mix(in srgb, var(--mdp-panel-bg) 80%, transparent);
-}
+  &:hover {
+    color: var(--mdp-text);
+    background: color-mix(in srgb, var(--mdp-panel-bg) 80%, transparent);
+  }
 
-.mdp-settings__tab.is-active {
-  color: var(--mdp-link);
-  border-color: var(--mdp-border);
-  background: color-mix(in srgb, var(--mdp-panel-bg) 90%, var(--mdp-link));
+  &.is-active {
+    color: var(--mdp-link);
+    border-color: var(--mdp-border);
+    background: color-mix(in srgb, var(--mdp-panel-bg) 90%, var(--mdp-link));
+  }
 }
 
 .mdp-settings__main {
@@ -89,15 +91,15 @@
   gap: 10px;
   flex: 0 0 auto;
   padding: 14px 14px 10px;
+
+  .mdp-button {
+    padding: 7px 11px;
+  }
 }
 
 .mdp-settings__title {
   margin: 0;
   font-size: 16px;
-}
-
-.mdp-settings__header .mdp-button {
-  padding: 7px 11px;
 }
 
 .mdp-settings__tab-panels {
@@ -133,11 +135,11 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
 
-.mdp-settings__field--inline {
-  flex-direction: row;
-  align-items: center;
+  &--inline {
+    flex-direction: row;
+    align-items: center;
+  }
 }
 
 .mdp-settings__label {
@@ -152,23 +154,23 @@
   background: var(--mdp-bg);
   color: var(--mdp-text);
   padding: 8px 10px;
-}
 
-.mdp-settings__input--color {
-  min-height: 38px;
-  padding: 4px;
-  cursor: pointer;
+  &--color {
+    min-height: 38px;
+    padding: 4px;
+    cursor: pointer;
+  }
 }
 
 @media (max-width: 640px) {
   .mdp-settings-drawer {
-    top: 60px;
+    top: calc(var(--mdp-toolbar-stack, 49px) + 6px);
     right: 8px;
     width: min(540px, calc(100vw - 16px));
-    max-height: calc(100vh - 68px);
+    max-height: calc(100vh - var(--mdp-toolbar-stack, 49px) - 16px);
   }
 
   .mdp-settings-panel {
-    max-height: calc(100vh - 68px);
+    max-height: calc(100vh - var(--mdp-toolbar-stack, 49px) - 16px);
   }
 }

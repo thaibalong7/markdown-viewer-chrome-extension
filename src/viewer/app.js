@@ -19,6 +19,7 @@ export class MarkdownViewerApp {
     this.articleHashLinkClickHandler = null
     this._smoothInitialHashScroll = false
     this._toastTimer = null
+    this._renderToken = 0
   }
 
   init() {
@@ -82,7 +83,45 @@ export class MarkdownViewerApp {
     scrollRoot.scrollTo({ top: nextTop, behavior: 'auto' })
   }
 
+  static _isObject(value) {
+    return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+  }
+
+  static _collectChangedPaths(previous, next, basePath = '', out = new Set()) {
+    if (previous === next) return out
+
+    const prevObj = MarkdownViewerApp._isObject(previous)
+    const nextObj = MarkdownViewerApp._isObject(next)
+
+    if (!prevObj || !nextObj) {
+      if (basePath) out.add(basePath)
+      return out
+    }
+
+    const keys = new Set([...Object.keys(previous), ...Object.keys(next)])
+    for (const key of keys) {
+      const nextPath = basePath ? `${basePath}.${key}` : key
+      MarkdownViewerApp._collectChangedPaths(previous[key], next[key], nextPath, out)
+    }
+    return out
+  }
+
+  static _needsFullRender(previousSettings, nextSettings) {
+    const changedPaths = MarkdownViewerApp._collectChangedPaths(previousSettings, nextSettings)
+    if (!changedPaths.size) return false
+
+    const styleOnlyPrefixes = ['typography.', 'layout.contentMaxWidth', 'layout.showToc', 'layout.tocWidth']
+
+    for (const path of changedPaths) {
+      const isStyleOnly = styleOnlyPrefixes.some((prefix) => path === prefix || path.startsWith(prefix))
+      if (!isStyleOnly) return true
+    }
+
+    return false
+  }
+
   async render({ preserveScroll = false, honorHash = true } = {}) {
+    const renderToken = ++this._renderToken
     const scrollSnapshot = preserveScroll ? this.captureScrollPosition() : null
     let result
     try {
@@ -91,11 +130,14 @@ export class MarkdownViewerApp {
       logger.error('Failed to render markdown document.', error)
       return null
     }
+    if (renderToken !== this._renderToken) return null
     renderIntoElement(this.parts.article, result.html)
+    if (renderToken !== this._renderToken) return null
     await result.pluginManager?.afterRender({
       articleEl: this.parts.article,
       settings: this.settings
     })
+    if (renderToken !== this._renderToken) return null
     this.syncTocVisibility()
     if (scrollSnapshot) {
       this.restoreScrollPosition(scrollSnapshot)
@@ -268,8 +310,13 @@ export class MarkdownViewerApp {
   }
 
   async updateSettings(nextSettings) {
+    const prevSettings = this.settings
     this.settings = nextSettings
     this.applyReaderStyles()
+    if (!MarkdownViewerApp._needsFullRender(prevSettings, nextSettings)) {
+      this.syncTocVisibility()
+      return null
+    }
     return this.render({ preserveScroll: true, honorHash: false })
   }
 

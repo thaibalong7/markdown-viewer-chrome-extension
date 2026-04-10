@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { MESSAGE_TYPES, sendMessage } from '../../messaging/index.js'
 import { deepMerge } from '../../shared/deep-merge.js'
 
-const DEBOUNCE_MS = 220
+const DEBOUNCE_MS = 360
 
 /**
  * Load settings from the background service worker and persist partial patches with debounce.

@@ -7,6 +7,16 @@ import { MarkdownViewerApp } from '../viewer/app.js'
 
 export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, getViewerStyles }) {
   logger.info('Content bootstrap started.')
+  const protocol = window.location?.protocol || ''
+  const pathname = window.location?.pathname || ''
+
+  // Product decision: MR view only applies to local opened Markdown files,
+  // not remote web links that happen to serve markdown-like content.
+  const isLocalMarkdownFile = protocol === 'file:' && /\.(md|markdown|mdown)$/i.test(pathname)
+  if (!isLocalMarkdownFile) {
+    logger.debug('Skip viewer mount: current URL is not a local markdown file.')
+    return
+  }
 
   const detection = detectMarkdownPage({
     location: window.location,

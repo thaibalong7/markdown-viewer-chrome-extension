@@ -146,7 +146,7 @@ export function PopupApp() {
                   checked={settings.enabled !== false}
                   onChange={(event) => persistPatch({ enabled: event.target.checked })}
                 />
-                <span className="popup-label">Enable Markdown Plus on markdown pages</span>
+                <span className="popup-label">Enable Markdown Plus on local markdown files</span>
               </label>
             )}
 

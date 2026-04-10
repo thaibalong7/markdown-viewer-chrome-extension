@@ -1,4 +1,5 @@
 import { exportMermaidPng, exportMermaidSvg } from './mermaid-export.js'
+import { logger } from '../../shared/logger.js'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
@@ -145,7 +146,9 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
         })
       }
       closeMenu()
-    } catch {}
+    } catch (error) {
+      logger.warn('Mermaid export action failed.', error)
+    }
   })
 
   root.appendChild(trigger)

@@ -2,6 +2,7 @@ import { logger } from '../shared/logger.js'
 import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { detectMarkdownPage } from './page-detector.js'
 import { extractRawMarkdown } from './raw-content-extractor.js'
+import { looksLikeMarkdownText } from './text-sampling.js'
 import { createViewerRoot } from './page-overrider.js'
 import { MarkdownViewerApp } from '../viewer/app.js'
 
@@ -24,21 +25,6 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, getVie
   })
 
   logger.debug('Detection result:', detection)
-
-  function looksLikeMarkdownText(text) {
-    const value = String(text || '')
-    if (value.length < 200) return false
-    return (
-      /^(#{1,6}\s+)/m.test(value) ||
-      /^```/m.test(value) ||
-      /^>\s+/m.test(value) ||
-      /^(\-|\*|\+)\s+/m.test(value) ||
-      /^\d+\.\s+/m.test(value) ||
-      /^(\s*[-*_]{3,}\s*)$/m.test(value) ||
-      /\*\*[^*]+\*\*/.test(value) ||
-      /\[[^\]]+\]\([^)]+\)/.test(value)
-    )
-  }
 
   let extraction = null
   if (!detection.isMarkdown) {

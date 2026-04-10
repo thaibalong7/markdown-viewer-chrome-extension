@@ -45,9 +45,5 @@ export function renderMarkdown(markdown, { markdownEngine } = {}) {
   const source = String(markdown || '')
   const engine = markdownEngine?.instance || createBaseEngine()
   const html = engine.render(source)
-  return {
-    html,
-    tokens: [],
-    metadata: {}
-  }
+  return { html }
 }

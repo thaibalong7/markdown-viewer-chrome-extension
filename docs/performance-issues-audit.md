@@ -47,7 +47,7 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Issue #4 [MEDIUM] Regex scan lặp lại trên sample text lớn
 
-- **Vị trí:** `src/content/page-detector.js`, `src/content/bootstrap.js`
+- **Vị trí:** `src/content/page-detector.js`, `src/content/bootstrap.js`, `src/content/text-sampling.js` (heuristic dùng chung)
 - **Hiện trạng:** Nhiều regex pass trên mẫu text lớn (20k-50k) trong detect/fallback.
 - **Tác động CPU:** Tăng chi phí startup, đặc biệt do content script chạy rộng.
 - **Khuyến nghị fix:**
@@ -80,7 +80,7 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Issue #8 [LOW] Ghi log payload settings đầy đủ
 
-- **Vị trí:** `src/settings/settings.service.js`
+- **Vị trí:** `src/settings/index.js` (`saveSettings`)
 - **Hiện trạng:** Có log object settings lớn.
 - **Tác động:** Overhead console/serialization khi debug.
 - **Khuyến nghị fix:** Log metadata gọn (keys changed) thay vì full payload.

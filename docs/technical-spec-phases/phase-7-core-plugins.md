@@ -1,5 +1,7 @@
 # Phase 7 - Core Plugins
 
+> **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
+
 ## Mục tiêu
 Triển khai nhóm plugin thiết yếu, ít rủi ro nhưng nâng trải nghiệm xem Markdown rõ rệt.
 

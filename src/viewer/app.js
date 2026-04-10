@@ -1,31 +1,10 @@
 import { createShell } from './shell/viewer-shell.js'
 import { renderDocument, renderIntoElement } from './core/renderer.js'
 import { rebuildToc } from './actions/rebuild-toc.js'
-import { createPluginState } from './state/viewer-state.js'
 import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
-import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX } from './toolbar-metrics.js'
-
-async function copyTextToClipboard(text) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text)
-    return
-  }
-  const ta = document.createElement('textarea')
-  ta.value = text
-  ta.setAttribute('readonly', '')
-  ta.style.position = 'fixed'
-  ta.style.left = '-9999px'
-  document.body.appendChild(ta)
-  ta.focus()
-  ta.select()
-  try {
-    const ok = document.execCommand('copy')
-    if (!ok) throw new Error('execCommand copy returned false')
-  } finally {
-    ta.remove()
-  }
-}
+import { copyTextToClipboard } from '../shared/clipboard.js'
+import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from './toolbar-metrics.js'
 
 export class MarkdownViewerApp {
   constructor({ markdown, settings, container, styles = [] }) {
@@ -36,7 +15,6 @@ export class MarkdownViewerApp {
     this.parts = null
     this.tocController = null
     this.shellController = null
-    this.pluginState = null
     this.hashChangeHandler = null
     this.articleHashLinkClickHandler = null
     this._smoothInitialHashScroll = false
@@ -44,7 +22,6 @@ export class MarkdownViewerApp {
   }
 
   init() {
-    this.pluginState = createPluginState(this.settings)
     const shell = createShell({ styles: this.styles })
 
     this.parts = shell.parts
@@ -117,8 +94,7 @@ export class MarkdownViewerApp {
     renderIntoElement(this.parts.article, result.html)
     await result.pluginManager?.afterRender({
       articleEl: this.parts.article,
-      settings: this.settings,
-      plugins: this.pluginState?.get() || {}
+      settings: this.settings
     })
     this.syncTocVisibility()
     if (scrollSnapshot) {
@@ -154,6 +130,68 @@ export class MarkdownViewerApp {
     }, 2200)
   }
 
+  /**
+   * @param {MouseEvent} event
+   * @param {HTMLElement} article
+   * @returns {boolean} true if handled (caller should not process further)
+   */
+  _handleCodeCopyClick(event, article) {
+    const target = event.target
+    if (!(target instanceof Element)) return false
+    const codeCopyBtn = target.closest('button.mdp-code-block__copy')
+    if (!codeCopyBtn || !article.contains(codeCopyBtn)) return false
+    event.preventDefault()
+    const block = codeCopyBtn.closest('.mdp-code-block')
+    const pre = block?.querySelector('pre')
+    if (pre) {
+      const text = pre.innerText ?? ''
+      void this.copyCodeWithToast(text)
+    }
+    return true
+  }
+
+  /**
+   * @param {MouseEvent} event
+   * @param {HTMLElement} article
+   * @returns {boolean} true if handled
+   */
+  _handleAnchorLinkClick(event, article) {
+    const target = event.target
+    if (!(target instanceof Element)) return false
+    const link = target.closest('a[href^="#"]')
+    if (!link || !article.contains(link)) return false
+    const href = link.getAttribute('href') || ''
+    const id = decodeURIComponent(href.slice(1))
+    if (!id) return false
+    if (!link.classList.contains('mdp-heading-anchor')) return false
+    event.preventDefault()
+    const hash = `#${encodeURIComponent(id)}`
+    const baseUrl = window.location.href.replace(/#.*$/, '')
+    const url = `${baseUrl}${hash}`
+    window.history.replaceState(null, '', hash)
+    void this.copySectionLinkWithToast(url)
+    return true
+  }
+
+  /**
+   * @param {MouseEvent} event
+   * @param {HTMLElement} article
+   * @returns {boolean} true if handled
+   */
+  _handleHashLinkClick(event, article) {
+    const target = event.target
+    if (!(target instanceof Element)) return false
+    const link = target.closest('a[href^="#"]')
+    if (!link || !article.contains(link)) return false
+    const href = link.getAttribute('href') || ''
+    const id = decodeURIComponent(href.slice(1))
+    if (!id) return false
+    event.preventDefault()
+    window.history.replaceState(null, '', `#${encodeURIComponent(id)}`)
+    this.scrollToHash({ behavior: 'smooth' })
+    return true
+  }
+
   bindHashNavigation() {
     const article = this.parts?.article
     if (!article) return
@@ -164,40 +202,9 @@ export class MarkdownViewerApp {
     window.addEventListener('hashchange', this.hashChangeHandler)
 
     this.articleHashLinkClickHandler = (event) => {
-      const target = event.target
-      if (!(target instanceof Element)) return
-
-      const codeCopyBtn = target.closest('button.mdp-code-block__copy')
-      if (codeCopyBtn && article.contains(codeCopyBtn)) {
-        event.preventDefault()
-        const block = codeCopyBtn.closest('.mdp-code-block')
-        const pre = block?.querySelector('pre')
-        if (pre) {
-          const text = pre.innerText ?? ''
-          void this.copyCodeWithToast(text)
-        }
-        return
-      }
-
-      const link = target.closest('a[href^="#"]')
-      if (!link || !article.contains(link)) return
-      const href = link.getAttribute('href') || ''
-      const id = decodeURIComponent(href.slice(1))
-      if (!id) return
-
-      if (link.classList.contains('mdp-heading-anchor')) {
-        event.preventDefault()
-        const hash = `#${encodeURIComponent(id)}`
-        const baseUrl = window.location.href.replace(/#.*$/, '')
-        const url = `${baseUrl}${hash}`
-        window.history.replaceState(null, '', hash)
-        void this.copySectionLinkWithToast(url)
-        return
-      }
-
-      event.preventDefault()
-      window.history.replaceState(null, '', `#${encodeURIComponent(id)}`)
-      this.scrollToHash({ behavior: 'smooth' })
+      if (this._handleCodeCopyClick(event, article)) return
+      if (this._handleAnchorLinkClick(event, article)) return
+      this._handleHashLinkClick(event, article)
     }
     article.addEventListener('click', this.articleHashLinkClickHandler)
   }
@@ -239,7 +246,8 @@ export class MarkdownViewerApp {
 
     const rootRect = scrollRoot.getBoundingClientRect()
     const headingRect = headingEl.getBoundingClientRect()
-    const targetTop = headingRect.top - rootRect.top + scrollRoot.scrollTop - (toolbarHeight + 8)
+    const targetTop =
+      headingRect.top - rootRect.top + scrollRoot.scrollTop - (toolbarHeight + SCROLL_PADDING_PX)
     scrollRoot.scrollTo({ top: targetTop, behavior })
   }
 
@@ -268,7 +276,6 @@ export class MarkdownViewerApp {
   destroy() {
     if (this._toastTimer) clearTimeout(this._toastTimer)
     this._toastTimer = null
-    this.pluginState = null
     if (this.shellController?.destroy) this.shellController.destroy()
     this.shellController = null
     if (this.hashChangeHandler) {

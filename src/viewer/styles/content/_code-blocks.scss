@@ -10,7 +10,7 @@
   border: 1px solid var(--mdp-border);
 }
 
-/* Shiki: `.line` rows; inter-span newlines from `codeToHtml` are stripped in `normalizeShikiPreWhitespace` (`shiki-dom.js`)
+/* Shiki: `.line` rows; inter-span newlines from `codeToHtml` are stripped in `normalizeShikiPreWhitespace` (`shiki-highlighter.js`)
    so `white-space: pre` does not create blank lines and tabs/indent stay correct. */
 .mdp-markdown-body pre.shiki {
   overflow-x: auto;

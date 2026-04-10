@@ -55,12 +55,13 @@ async function saveSettings(partialSettings) {
 
 async function resetSettings() {
   const storage = getStorageArea()
+  const fresh = deepMerge({}, DEFAULT_SETTINGS)
   await storage.set({
-    [STORAGE_KEYS.SETTINGS]: DEFAULT_SETTINGS
+    [STORAGE_KEYS.SETTINGS]: fresh
   })
 
   logger.info('Settings reset to default.')
-  return DEFAULT_SETTINGS
+  return fresh
 }
 
 function mergeWithDefaults(value) {

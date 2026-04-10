@@ -1,33 +1,4 @@
-function getTextSample(root, maxChars = 20000) {
-  if (!root) return ''
-
-  const doc = root.ownerDocument
-  const defaultView = doc?.defaultView
-  const NodeFilterConst =
-    defaultView?.NodeFilter ??
-    (typeof NodeFilter !== 'undefined' ? NodeFilter : null)
-
-  if (!doc || !NodeFilterConst) return ''
-
-  // Use TreeWalker + early stop to avoid building huge `innerText` strings.
-  const walker = doc.createTreeWalker(root, NodeFilterConst.SHOW_TEXT)
-  let out = ''
-
-  let node
-  while ((node = walker.nextNode())) {
-    const t = node?.nodeValue || ''
-    // Skip whitespace-only nodes.
-    if (!t.trim()) continue
-
-    // Add a separator so regexes that rely on line starts keep working.
-    if (out) out += '\n'
-    out += t
-
-    if (out.length >= maxChars) break
-  }
-
-  return out.slice(0, maxChars)
-}
+import { getTextSample, looksLikeMarkdownText } from './text-sampling.js'
 
 export function detectMarkdownPage({ location, document }) {
   const reasons = []
@@ -59,18 +30,7 @@ export function detectMarkdownPage({ location, document }) {
       reasons.push('Single <pre> is large enough to consider')
     }
 
-    const looksLikeMarkdown = (
-      /^(#{1,6}\s+)/m.test(preText) ||
-      /^```/m.test(preText) ||
-      /^>\s+/m.test(preText) ||
-      /^(\-|\*|\+)\s+/m.test(preText) ||
-      /^\d+\.\s+/m.test(preText) ||
-      /^(\s*[-*_]{3,}\s*)$/m.test(preText) ||
-      /\*\*[^*]+\*\*/.test(preText) ||
-      /\[[^\]]+\]\([^)]+\)/.test(preText)
-    )
-
-    if (looksLikeMarkdown) {
+    if (looksLikeMarkdownText(preText)) {
       score += 4
       reasons.push('Single <pre> contains markdown-like tokens')
     } else if (preText.length > 400) {
@@ -83,7 +43,7 @@ export function detectMarkdownPage({ location, document }) {
   // Only scan the page text when we don't already have enough evidence.
   // This prevents heavy CPU/RAM spikes on every tab because the content script runs on `<all_urls>`.
   if (score < 3 && body) {
-    const bodyTextSample = getTextSample(body, 20000).trim()
+    const bodyTextSample = getTextSample(body, 20_000).trim()
 
     if ((bodyTextSample.match(/^#{1,6}\s+/gm) || []).length >= 2) {
       score += 2

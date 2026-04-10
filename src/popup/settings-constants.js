@@ -1,3 +1,30 @@
+import { DEFAULT_SETTINGS } from '../settings/index.js'
+
+export const THEME_LABELS = {
+  light: 'Light',
+  dark: 'Dark'
+}
+
+/** Display names for plugin toggles (keys match `PLUGIN_IDS` / persisted `settings.plugins`). */
+export const PLUGIN_LABELS = {
+  codeHighlight: 'Code highlight',
+  taskList: 'Task list',
+  anchorHeading: 'Anchor heading',
+  tableEnhance: 'Table enhance',
+  emoji: 'Emoji',
+  footnote: 'Footnotes',
+  math: 'Math (KaTeX)',
+  mermaid: 'Mermaid diagrams'
+}
+
+export function createReaderUiDefaultsPatch() {
+  return {
+    theme: { ...DEFAULT_SETTINGS.theme },
+    typography: { ...DEFAULT_SETTINGS.typography },
+    layout: { ...DEFAULT_SETTINGS.layout }
+  }
+}
+
 export const SETTINGS_TAB_IDS = {
   SETTINGS: 'settings',
   READER: 'reader',

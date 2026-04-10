@@ -1,5 +1,7 @@
 # Phase 3 - Table of Contents Left Sidebar
 
+> **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
+
 ## Mục tiêu
 Hoàn thiện Table of Contents ở sidebar bên trái, có thể click để điều hướng và highlight section đang active khi scroll.
 

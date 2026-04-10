@@ -52,7 +52,7 @@ export async function renderDocument(markdown, settings = {}) {
   return {
     html: safeHtml,
     pluginManager,
-    metadata: result.metadata || {},
+    metadata: {},
     warnings: []
   }
 }

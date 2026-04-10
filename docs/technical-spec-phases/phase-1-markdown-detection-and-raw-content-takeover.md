@@ -1,5 +1,7 @@
 # Phase 1 - Markdown Detection & Raw Content Takeover
 
+> **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
+
 ## Mục tiêu
 Phát hiện trang Markdown hoặc raw text có xác suất cao là Markdown, sau đó lấy raw content và takeover page bằng root container.
 

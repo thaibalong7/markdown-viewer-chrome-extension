@@ -1,5 +1,7 @@
 # Phase 2 - Core Markdown Rendering MVP
 
+> **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
+
 ## Mục tiêu
 Biến raw markdown thành HTML dễ đọc, có layout viewer cơ bản, có nút Settings placeholder ở góc trên bên phải.
 

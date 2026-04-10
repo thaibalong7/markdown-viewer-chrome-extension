@@ -9,4 +9,4 @@ alwaysApply: false
 - TOC rebuilds must dispose old listeners/controllers before creating new ones (`rebuild-toc.js` + `scroll-spy.js`).
 - Preserve stable shell structure and class names (`mdp-root`, `mdp-toolbar`, `mdp-sidebar`, `mdp-markdown-body`) because styles and behaviors depend on them.
 - Keep all markdown HTML insertion funneled through `renderIntoElement()` after sanitization in the renderer pipeline.
-- Theme preset changes that affect Shiki must trigger a full document re-render (see `patchNeedsFullRender` in `app.js` and `35-reader-theme-and-shiki.mdc`).
+- Theme preset changes that affect Shiki require a full document re-render; today `updateSettings()` always re-renders (see `35-reader-theme-and-shiki.mdc` if adding style-only updates).

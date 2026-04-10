@@ -34,7 +34,7 @@ Classify as **optional** if any condition is true:
 
 1. Add the plugin file to the correct folder group (`core` or `optional`).
 2. Register it in `src/plugins/plugin-manager.js`.
-3. Add its label in `src/viewer/shell/settings/settings-plugins-panel.js`.
+3. Add its label in `src/popup/settings-constants.js` (`PLUGIN_LABELS`) and ensure the plugin appears in `PluginsPanel.jsx` (driven by merged plugin defaults).
 4. If runtime assets are needed, update `manifest.json` `web_accessible_resources`.
 5. If the plugin mutates DOM post-render, use `afterRender` with graceful fallback (never crash the viewer).
 

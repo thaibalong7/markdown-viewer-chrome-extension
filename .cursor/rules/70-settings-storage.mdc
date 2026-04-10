@@ -1,55 +1,49 @@
 ---
-description: Settings — storage, schema, messaging, viewer tabs, popup/options
+description: Settings — storage, schema, messaging, popup/options
 globs:
   - src/settings/**/*.js
-  - src/viewer/shell/settings/**/*.js
-  - src/viewer/shell/settings-drawer.js
-  - src/viewer/shell/viewer-shell.js
-  - src/viewer/styles/settings.scss
-  - src/theme/**/*.js
+  - src/popup/**/*.jsx
   - src/popup/**/*.js
+  - src/theme/**/*.js
   - src/options/**/*.js
+  - src/background/message-router.js
 alwaysApply: false
 ---
 
 # Settings (storage + authoring)
 
-Cross-cut with `30-mv3-messaging-architecture.mdc`. End-to-end flow: **defaults → merge in `settings.service.js` → `GET_SETTINGS` / `SAVE_SETTINGS` / `RESET_SETTINGS` → viewer/options/popup via `sendMessage()`.**
+Cross-cut with `30-mv3-messaging-architecture.mdc`. End-to-end flow: **defaults → merge in `src/settings/index.js` → `GET_SETTINGS` / `SAVE_SETTINGS` / `RESET_SETTINGS` → popup/options/content via `sendMessage()`**; background broadcasts **`SETTINGS_UPDATED`** after save so the content script can call `app.updateSettings()` or teardown.
 
 ## Storage and schema
 
-- Keep settings ownership centralized in `src/settings/settings.service.js` (load/merge/save/reset).
-- Persist only with keys from `src/settings/storage-keys.js` (currently `mdViewer.settings`).
+- Keep settings ownership centralized in **`src/settings/index.js`** (`settingsService`: load/merge/save/reset). Storage key is inline (`STORAGE_KEYS.SETTINGS`, currently `mdViewer.settings`).
 - Preserve default-safe loading with `deepMerge(DEFAULT_SETTINGS, raw)` so new keys get sane defaults.
-- If schema changes incompatibly, bump `settings.version` in `default-settings.js` and add an explicit migration in `settings.service.js` (do not rely on merge alone).
-- `popup` and `options` must use runtime messaging (`MESSAGE_TYPES` + `sendMessage`); **never** read/write `chrome.storage` directly from those pages.
+- If schema changes incompatibly, bump `settings.version` in `DEFAULT_SETTINGS` and add an explicit migration in `settings/index.js` (do not rely on merge alone).
+- `popup` and `options` must use runtime messaging (`MESSAGE_TYPES` + `sendMessage` from `src/messaging/index.js`); **never** read/write `chrome.storage` directly from those pages.
 
 ## Adding or changing a setting
 
 ### Schema and defaults
 
-- Add or extend fields in `src/settings/default-settings.js`. New nested objects should have complete default shapes so merge stays safe.
-- Read/write storage stays only in `settings.service.js`.
+- Add or extend fields on **`DEFAULT_SETTINGS`** in `src/settings/index.js`. New nested objects should have complete default shapes so merge stays safe.
 
 ### Messaging
 
-- Prefer **partial updates** with existing `MESSAGE_TYPES.SAVE_SETTINGS` and the `{ ok, data }` / `{ ok, error }` envelope.
+- Prefer **partial updates** with `MESSAGE_TYPES.SAVE_SETTINGS` and the `{ ok, data }` / `{ ok, error }` envelope.
 - Add a new `MESSAGE_TYPES` value only when not expressible as save/get/reset; register it in `src/background/message-router.js`.
-- UIs use `sendMessage()` from `src/messaging/send-message.js`, not raw `chrome.runtime.sendMessage`.
 
-### Viewer settings UI (tabs)
+### Settings UI (primary: React popup)
 
-- **Tab list**: `src/viewer/shell/settings/settings-tab-definitions.js` (`SETTINGS_TAB_IDS`, `SETTINGS_TABS`).
-- **Orchestration**: `src/viewer/shell/settings/settings-popup.js` (`createSettingsDrawer`) — rail, outside-dismiss, tab panels.
-- **Per-tab content**: new module under `src/viewer/shell/settings/` exporting a builder like `buildGeneralSettingsPanel`: `{ element, update(nextSettings), destroy() }`.
-- Wire the tab in `settings-popup.js`. **Styling**: `src/viewer/styles/settings.scss` (bundled via content script `?inline`); prefer extending theme CSS vars in `src/theme/` when possible.
-- **Shell**: pass new props through `viewer-shell.js` only when `createSettingsDrawer` needs them (e.g. `settingsButton`).
-- Public import path stays `src/viewer/shell/settings-drawer.js` (re-export).
+- **Tab rail / ids**: `src/popup/settings-constants.js` (`SETTINGS_TAB_IDS`, `SETTINGS_TABS`, `PLUGIN_LABELS`, `FONT_FAMILY_PRESETS`, reader reset helper).
+- **Shell**: `src/popup/PopupApp.jsx` — loading/error, tab switching, footer status.
+- **Persistence**: `src/popup/hooks/useSettingsPersistence.js` — load + debounced `SAVE_SETTINGS`.
+- **Panels**: `src/popup/panels/GeneralPanel.jsx`, `ReaderPanel.jsx`, `PluginsPanel.jsx`.
+- **Styles**: `src/popup/popup.scss`.
 
 ### Applying in the viewer
 
-- Live updates: `MarkdownViewerApp` / `createUpdateSettingsAction`; patches must match the persisted shape (merge → debounced persist).
-- Prefer `applyThemeSettings` / `css-vars` for look-and-feel-only changes instead of duplicating CSS paths.
+- Live updates: content script listens for `SETTINGS_UPDATED` and calls **`MarkdownViewerApp.updateSettings()`** (full re-render today).
+- Reader chrome: `applyThemeSettings()` / CSS vars from `src/theme/index.js`.
 
 ### Build
 

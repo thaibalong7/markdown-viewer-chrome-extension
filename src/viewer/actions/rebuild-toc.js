@@ -1,6 +1,6 @@
 import { buildTocItems, renderToc } from '../core/toc-builder.js'
 import { createScrollSpy } from '../core/scroll-spy.js'
-import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX } from '../toolbar-metrics.js'
+import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from '../toolbar-metrics.js'
 
 function getScrollRoot(articleEl) {
   return articleEl?.closest?.('.mdp-root') || null
@@ -19,13 +19,13 @@ function scrollToHeading({ scrollRoot, toolbarHeight, headingEl }) {
     const rootRect = scrollRoot.getBoundingClientRect()
     const headingRect = headingEl.getBoundingClientRect()
     const targetTop =
-      headingRect.top - rootRect.top + scrollRoot.scrollTop - (toolbarHeight + 8)
+      headingRect.top - rootRect.top + scrollRoot.scrollTop - (toolbarHeight + SCROLL_PADDING_PX)
     scrollRoot.scrollTo({ top: targetTop, behavior: 'smooth' })
     return
   }
 
   // Fallback: document scrolling.
-  const toolbarOffset = toolbarHeight + 8
+  const toolbarOffset = toolbarHeight + SCROLL_PADDING_PX
   const top = headingEl.getBoundingClientRect().top + window.scrollY - toolbarOffset
   window.scrollTo({ top, behavior: 'smooth' })
 }

@@ -15,13 +15,13 @@ Current implemented core:
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Left sidebar TOC with click-to-scroll + active heading tracking
 - Settings storage and runtime messaging
-- In-viewer settings drawer (reader, plugins, general); popup/options for settings inspection/editing
+- **Extension popup (React)** for reader/plugins/general settings; minimal **options** page (JSON-oriented); no in-viewer settings drawer yet
 
 ## 2) Tech stack and runtime
 
 - Runtime: Chrome Extension MV3
 - Build tool: Vite + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/index.js` (bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`)
-- Language: Vanilla JavaScript (ES modules)
+- Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer/plugins; **React** for `src/popup/` (`PopupApp.jsx` + tab panels)
 - Markdown: `markdown-it` + `markdown-it-anchor`
 - Fenced code highlighting: **Shiki** (`shiki/bundle/web`)
 - Sanitization: `dompurify`
@@ -41,23 +41,25 @@ Generated output:
 
 - `background`: central runtime message handling and settings operations
 - `content`: detect/extract/mount flow on web pages
-- `viewer`: UI shell + **async** render pipeline + TOC + settings drawer
+- `viewer`: UI shell + **async** render pipeline + TOC (no settings UI in-page)
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
-- `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML), `plugin-state` in viewer
-- `settings`: defaults, storage key, deep-merge persistence service
-- `popup` / `options`: UI entrypoints for reading/updating settings
-- `messaging`: message constants and shared `sendMessage()`
-- `shared/helpers`: common logger
+- `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
+- `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
+- `popup` / `options`: UI entrypoints for reading/updating settings (popup is primary)
+- `messaging`: message constants and shared `sendMessage()` in `src/messaging/index.js`
+- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`
 
 ### 3.2 Core flow (implemented)
 
 1. Content script entry `src/content/index.js` bundles compiled viewer SCSS (`?inline`) and injects those strings into the Shadow DOM (no `fetch` of per-sheet CSS assets).
-2. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()`.
-3. If needed, fallback sampling checks whether page text resembles Markdown.
-4. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
-5. If enabled, Markdown is extracted (`single <pre>` preferred, else `getTextSample` via TreeWalker on `body`).
-6. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
-7. `MarkdownViewerApp` builds shell, applies theme CSS variables, runs **`await renderDocument()`** (async), injects HTML, runs **`pluginManager.afterRender()`**, builds TOC.
+2. **Product gate:** `bootstrap.js` only mounts the viewer for **local `file:`** URLs whose path ends in `.md` / `.markdown` / `.mdown` (not remote pages).
+3. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()` (shared text sampling / heuristics in `text-sampling.js`).
+4. If needed, fallback sampling checks whether page text resembles Markdown (`looksLikeMarkdownText`).
+5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
+6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
+7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
+8. `MarkdownViewerApp` builds shell, applies theme CSS variables, runs **`await renderDocument()`** (async), injects HTML, runs **`pluginManager.afterRender({ articleEl, settings })`**, builds TOC.
+9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
 
@@ -74,6 +76,7 @@ Message types (current):
 - `GET_SETTINGS`
 - `SAVE_SETTINGS`
 - `RESET_SETTINGS`
+- `SETTINGS_UPDATED` (broadcast from background after save; content script applies patches)
 
 ## 4) Actual folder map (current repository)
 
@@ -88,6 +91,7 @@ src/
     page-detector.js
     raw-content-extractor.js
     page-overrider.js
+    text-sampling.js
   messaging/
     index.js
   settings/
@@ -97,6 +101,7 @@ src/
   shared/
     logger.js
     deep-merge.js
+    clipboard.js
   plugins/
     plugin-types.js
     plugin-manager.js
@@ -114,10 +119,9 @@ src/
       mermaid-export.js
   viewer/
     app.js
+    toolbar-metrics.js
     actions/
-      open-settings.js
       rebuild-toc.js
-      update-settings.js
     core/
       markdown-engine.js
       renderer.js
@@ -127,19 +131,12 @@ src/
       shiki-highlighter.js
     shell/
       viewer-shell.js
-      settings/
-        settings-popup.js
-        settings-tab-definitions.js
-        settings-general-panel.js
-        settings-reader-panel.js
-        settings-plugins-panel.js
     styles/
       _variables.scss
       base.scss
       layout.scss
       content.scss
       toc.scss
-      settings.scss
       content/
         _typography.scss
         _code-blocks.scss
@@ -147,17 +144,28 @@ src/
         _tables.scss
         _plugins.scss
         _mermaid.scss
-    state/
-      viewer-state.js
   popup/
     index.html
-    index.js
+    index.jsx
+    PopupApp.jsx
+    popup.scss
+    settings-constants.js
+    hooks/
+      useSettingsPersistence.js
+    panels/
+      GeneralPanel.jsx
+      ReaderPanel.jsx
+      PluginsPanel.jsx
   options/
     index.html
     index.js
 ```
 
 ## 5) Key modules and responsibilities
+
+- `src/content/text-sampling.js`
+  - `getTextSample(root, maxChars)` — TreeWalker sampling (used by detector + extractor).
+  - `looksLikeMarkdownText(text)` — shared markdown-like heuristic for detector + bootstrap fallback.
 
 - `src/content/page-detector.js`
   - Scoring heuristic for Markdown probability.
@@ -193,8 +201,8 @@ src/
   - Builds CSS custom properties from settings preset + typography + layout; applied to viewer root via `applyThemeSettings()`.
 
 - `src/viewer/app.js`
-  - **`patchNeedsFullRender`**: changing **`theme`** forces full markdown re-render (Shiki bakes colors into HTML; CSS vars alone do not update fences).
-  - Otherwise typography/layout/color-only patches can avoid full document render per `STYLE_ONLY_KEYS` / layout allowlist.
+  - Orchestrates shell mount, theme vars, **`updateSettings()` → full `render()`** (no style-only fast path yet). Changing theme still requires re-render because Shiki bakes colors into fenced-code HTML.
+  - Hash navigation, heading-anchor copy, code-block copy (`shared/clipboard.js`), toast UI, TOC rebuild.
 
 - `src/viewer/styles/content.scss` (+ partials under `content/`) → compiled and inlined via the content script bundle
   - **`pre.shiki`**: `white-space: pre`, `tab-size: 4`, `.line` as `display: block`.
@@ -225,11 +233,17 @@ Default shape in `src/settings/index.js` (plugins come from `getDefaultPluginSet
     codeHighlight: { enabled: true },
     taskList: { enabled: true },
     anchorHeading: { enabled: true },
-    tableEnhance: { enabled: true }
+    tableEnhance: { enabled: true },
+    emoji: { enabled: true },
+    footnote: { enabled: true },
+    math: { enabled: false },
+    mermaid: { enabled: false }
   },
   version: 1
 }
 ```
+
+Defaults for optional plugins come from `getDefaultPluginSettings()` in `src/plugins/plugin-types.js`. **Settings UI:** React popup (`PopupApp` + `panels/*`); labels in `popup/settings-constants.js`.
 
 Preset keys for theme/Shiki must match built-ins: `light`, `dark`.
 
@@ -240,7 +254,7 @@ Implemented strongly:
 - Markdown detection/takeover (Phase 1)
 - Core rendering MVP (Phase 2)
 - TOC left sidebar (Phase 3)
-- In-viewer settings drawer + runtime customization (Phase 4)
+- Runtime customization via **extension popup** + `SETTINGS_UPDATED` messaging (Phase 4 intent; no in-viewer drawer)
 - Theme presets + CSS-variable based theming (Phase 5)
 - **Plugin hooks + core plugins** (task list, anchor heading, table enhance, code-highlight gating for Shiki) — aligns with **parts of Phases 6–7** in planning docs
 - **Optional plugins completed** (Mermaid, Math, Footnote, Emoji), including Mermaid export actions (SVG + PNG with scale options)
@@ -278,10 +292,10 @@ Use this audit as the baseline for optimization tasks.
   - Inspect `src/background/message-router.js` + `src/settings/index.js`.
 
 - Popup/options not syncing:
-  - Inspect `src/popup/index.js`, `src/options/index.js`, and message type usage.
+  - Inspect `src/popup/index.jsx`, `src/popup/PopupApp.jsx`, `src/popup/hooks/useSettingsPersistence.js`, `src/options/index.js`, and message type usage (`SETTINGS_UPDATED` on the content script).
 
 - **Theme vs fenced code colors**:
-  - Reader theme uses CSS vars; Shiki colors are inline in HTML. Ensure `patchNeedsFullRender` treats `theme` as full re-render; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/35-reader-theme-and-shiki.mdc`.
+  - Reader theme uses CSS vars; Shiki colors are inline in HTML. Today **`updateSettings` always full re-renders**; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/35-reader-theme-and-shiki.mdc`.
 
 - **Fenced code layout (lines, tabs)**:
   - `normalizeShikiPreWhitespace`, bundled viewer styles from `content/_code-blocks.scss` (`pre.shiki`), and sanitize `ADD_ATTR` for Shiki output.
@@ -293,7 +307,7 @@ Use this audit as the baseline for optimization tasks.
 
 - Keep message names centralized in `src/messaging/index.js`.
 - Prefer `sendMessage()` wrapper instead of direct ad-hoc messaging in UI/content code.
-- Preserve viewer lifecycle: `init()` -> `updateSettings()` -> `destroy()`; document render is **async** (`await render()`).
+- Preserve viewer lifecycle: `init()` -> `updateSettings()` -> `destroy()`; document render is **async** (`await render()`). Method name on the class is `updateSettings` (not `patchNeedsFullRender` — that optimization is not implemented).
 - Keep all source edits in `src/**` and rebuild for extension output (`npm run build`).
 - When adding runtime-fetched extension assets (`fetch(chrome.runtime.getURL(...))`), sync `manifest.json` `web_accessible_resources`. Viewer chrome styles are not separate WAR entries (inlined in the content script).
 - For architecture detail on Shiki and presets, see `.cursor/rules/35-reader-theme-and-shiki.mdc` and this doc’s section 5.

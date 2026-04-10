@@ -7,7 +7,7 @@ alwaysApply: false
 # Rendering Security Rules
 - Keep the rendering pipeline intact: `renderMarkdown()` -> `sanitizeHtml()` -> `renderIntoElement()`.
 - Never inject raw output from `renderMarkdown()`; all HTML must pass through `sanitizeHtml()` in `src/viewer/core/renderer.js`.
-- `sanitizeHtml` uses `DOMPurify` with a `window`-based purifier instance from `src/viewer/core/sanitize-html.js`; preserve this runtime pattern when refactoring.
+- `sanitizeHtml` lives in `src/viewer/core/renderer.js` and uses `DOMPurify` with a `window`-based purifier instance; preserve this runtime pattern when refactoring (or extract to a dedicated module if the file grows).
 - If you modify MarkdownIt or `markdown-it-anchor` config, preserve heading `id` generation because TOC code in `src/viewer/core/toc-builder.js` relies on it.
 - External markdown links should keep `target="_blank"` and `rel="noopener noreferrer"` in `src/viewer/core/markdown-engine.js`.
 - Keep viewer isolation via Shadow DOM in `src/content/page-overrider.js` to reduce host-page CSS and DOM conflicts.

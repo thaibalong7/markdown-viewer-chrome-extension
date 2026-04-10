@@ -1,5 +1,7 @@
 # Phase 9 - Popup & Options Page
 
+> **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
+
 ## Mục tiêu
 Hoàn thiện trải nghiệm cấu hình extension bên ngoài viewer runtime bằng popup và options page đầy đủ.
 

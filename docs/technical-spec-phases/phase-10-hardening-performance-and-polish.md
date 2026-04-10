@@ -1,5 +1,7 @@
 # Phase 10 - Hardening, Performance & Polish
 
+> **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
+
 ## Mục tiêu
 Nâng chất lượng sản phẩm để gần mức production-ready: ổn định hơn, mượt hơn, ít edge-case hơn.
 

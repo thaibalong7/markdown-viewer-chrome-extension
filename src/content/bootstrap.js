@@ -5,7 +5,7 @@ import { extractRawMarkdown } from './raw-content-extractor.js'
 import { createViewerRoot } from './page-overrider.js'
 import { MarkdownViewerApp } from '../viewer/app.js'
 
-export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, settingsCss, getViewerStyles }) {
+export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, getViewerStyles }) {
   logger.info('Content bootstrap started.')
 
   const detection = detectMarkdownPage({
@@ -81,11 +81,11 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, settin
     return
   }
 
-  const styles = baseCss && layoutCss && contentCss && tocCss && settingsCss
-    ? { baseCss, layoutCss, contentCss, tocCss, settingsCss }
+  const styles = baseCss && layoutCss && contentCss && tocCss
+    ? { baseCss, layoutCss, contentCss, tocCss }
     : await getViewerStyles?.()
 
-  if (!styles?.baseCss || !styles?.layoutCss || !styles?.contentCss || !styles?.tocCss || !styles?.settingsCss) {
+  if (!styles?.baseCss || !styles?.layoutCss || !styles?.contentCss || !styles?.tocCss) {
     throw new Error('Viewer styles are missing.')
   }
 
@@ -99,9 +99,10 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, settin
     markdown: extraction.markdown,
     settings,
     container: mountTarget,
-    styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss, styles.settingsCss]
+    styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss]
   })
 
   app.init()
   logger.info('Markdown viewer mounted successfully.')
+  return app
 }

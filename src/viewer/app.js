@@ -1,40 +1,10 @@
 import { createShell } from './shell/viewer-shell.js'
 import { renderDocument, renderIntoElement } from './core/renderer.js'
 import { rebuildToc } from './actions/rebuild-toc.js'
-import { createOpenSettingsAction } from './actions/open-settings.js'
-import { createUpdateSettingsAction } from './actions/update-settings.js'
-import { createPluginState, createSettingsState } from './state/viewer-state.js'
+import { createPluginState } from './state/viewer-state.js'
 import { applyThemeSettings } from '../theme/index.js'
-import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
-import { DEFAULT_SETTINGS } from '../settings/index.js'
 import { logger } from '../shared/logger.js'
-import { isPlainObject } from '../shared/deep-merge.js'
 import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX } from './toolbar-metrics.js'
-
-const STYLE_ONLY_KEYS = new Set(['theme', 'typography', 'colors', 'layout'])
-const STYLE_ONLY_LAYOUT_KEYS = new Set(['showToc', 'tocWidth', 'contentMaxWidth'])
-
-function patchNeedsFullRender(partial = {}) {
-  if (!isPlainObject(partial)) return true
-  const keys = Object.keys(partial)
-  if (!keys.length) return false
-  // Shiki bakes syntax colors into fenced-block HTML; CSS vars cannot refresh them.
-  if (partial.theme != null) return true
-  if (keys.some((key) => !STYLE_ONLY_KEYS.has(key))) return true
-
-  const layoutPatch = partial.layout
-  if (!layoutPatch) return false
-  if (!isPlainObject(layoutPatch)) return true
-  return Object.keys(layoutPatch).some((key) => !STYLE_ONLY_LAYOUT_KEYS.has(key))
-}
-
-function createReaderUiDefaultsPatch() {
-  return {
-    theme: { ...DEFAULT_SETTINGS.theme },
-    typography: { ...DEFAULT_SETTINGS.typography },
-    layout: { ...DEFAULT_SETTINGS.layout }
-  }
-}
 
 async function copyTextToClipboard(text) {
   if (navigator.clipboard?.writeText) {
@@ -66,10 +36,7 @@ export class MarkdownViewerApp {
     this.parts = null
     this.tocController = null
     this.shellController = null
-    this.settingsState = null
     this.pluginState = null
-    this.openSettingsAction = null
-    this.updateSettingsAction = null
     this.hashChangeHandler = null
     this.articleHashLinkClickHandler = null
     this._smoothInitialHashScroll = false
@@ -77,46 +44,8 @@ export class MarkdownViewerApp {
   }
 
   init() {
-    this.settingsState = createSettingsState(this.settings)
     this.pluginState = createPluginState(this.settings)
-    let settingsAction = null
-
-    const shell = createShell({
-      onSettingsClick: () => {
-        if (settingsAction) settingsAction.toggle()
-      },
-      onSettingsClose: () => {
-        if (settingsAction) settingsAction.close()
-      },
-      onSettingsChange: (partial) => {
-        if (this.updateSettingsAction) this.updateSettingsAction.update(partial)
-      },
-      onSettingsReset: async () => {
-        if (this.updateSettingsAction) this.updateSettingsAction.cancelPending()
-        try {
-          const resetPatch = createReaderUiDefaultsPatch()
-          const response = await sendMessage({
-            type: MESSAGE_TYPES.SAVE_SETTINGS,
-            payload: resetPatch
-          })
-          if (!response?.ok) {
-            throw new Error(response?.error || 'Failed to reset reader UI settings.')
-          }
-
-          const nextSettings = response.data
-          this.settings = nextSettings
-          this.settingsState.replace(nextSettings)
-          this.pluginState = createPluginState(nextSettings)
-          this.parts.settingsController.update(nextSettings)
-          this.applyReaderStyles()
-          await this.render({ preserveScroll: true, honorHash: false })
-        } catch (error) {
-          logger.error('Failed to reset reader UI settings.', error)
-        }
-      },
-      settings: this.settingsState.get(),
-      styles: this.styles
-    })
+    const shell = createShell({ styles: this.styles })
 
     this.parts = shell.parts
     this.shellController = shell
@@ -125,44 +54,6 @@ export class MarkdownViewerApp {
       this.container.appendChild(styleElement)
     }
     this.container.appendChild(shell.element)
-
-    settingsAction = createOpenSettingsAction({
-      applyOpenState: (open) => this.parts.settingsController.setOpen(open),
-      settingsButton: this.parts.settingsButton
-    })
-    this.openSettingsAction = settingsAction
-
-    this.updateSettingsAction = createUpdateSettingsAction({
-      settingsState: this.settingsState,
-      onApply: (nextSettings, partial) => {
-        this.settings = nextSettings
-        this.parts.settingsController.update(nextSettings)
-        this.applyReaderStyles()
-        this.syncTocVisibility()
-        if (patchNeedsFullRender(partial)) {
-          void this.render({ preserveScroll: true, honorHash: false })
-        }
-      },
-      onPersist: async (partial) => {
-        const response = await sendMessage({
-          type: MESSAGE_TYPES.SAVE_SETTINGS,
-          payload: partial
-        })
-        if (!response?.ok) {
-          throw new Error(response?.error || 'Failed to save settings.')
-        }
-
-        const persisted = response.data
-        this.settings = persisted
-        this.settingsState.replace(persisted)
-        this.pluginState = createPluginState(persisted)
-        this.parts.settingsController.update(persisted)
-        return persisted
-      },
-      onError: (error) => {
-        logger.error('Failed to persist viewer settings.', error)
-      }
-    })
 
     this._smoothInitialHashScroll = Boolean(window.location.hash)
     this.applyReaderStyles()
@@ -377,10 +268,6 @@ export class MarkdownViewerApp {
   destroy() {
     if (this._toastTimer) clearTimeout(this._toastTimer)
     this._toastTimer = null
-    if (this.updateSettingsAction) this.updateSettingsAction.destroy()
-    this.updateSettingsAction = null
-    this.openSettingsAction = null
-    this.settingsState = null
     this.pluginState = null
     if (this.shellController?.destroy) this.shellController.destroy()
     this.shellController = null

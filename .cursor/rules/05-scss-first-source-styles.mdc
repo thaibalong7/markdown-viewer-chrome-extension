@@ -1,0 +1,7 @@
+# SCSS-first for Source Styles
+
+- Prefer `.scss` for all new style sources under `src/**` (popup, options, viewer, shared UI).
+- Do not add new `.css` source files in `src/**` unless required by a third-party package import or a strict platform constraint.
+- When touching an existing local `.css` style file in `src/**`, migrate it to `.scss` in the same change when feasible and low-risk.
+- Import local styles from entry modules as `.scss` (for example `import './popup.scss'`).
+- Keep generated output in `dist/**` as build artifacts; never edit it manually.

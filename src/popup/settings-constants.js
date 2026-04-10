@@ -1,4 +1,15 @@
-/** Presets: label in UI, value is full CSS font-family (persisted). */
+export const SETTINGS_TAB_IDS = {
+  SETTINGS: 'settings',
+  READER: 'reader',
+  PLUGINS: 'plugins'
+}
+
+export const SETTINGS_TABS = [
+  { id: SETTINGS_TAB_IDS.SETTINGS, label: 'Settings', icon: '\u2699', title: 'Extension settings' },
+  { id: SETTINGS_TAB_IDS.READER, label: 'Reader', icon: '\u{1F4D6}', title: 'Reader UI' },
+  { id: SETTINGS_TAB_IDS.PLUGINS, label: 'Plugins', icon: '\u{1F9E9}', title: 'Plugin toggles' }
+]
+
 export const FONT_FAMILY_PRESETS = [
   {
     label: 'System UI',
@@ -51,40 +62,3 @@ export const FONT_FAMILY_PRESETS = [
     value: '"New York", "Georgia Pro", Georgia, "Times New Roman", serif'
   }
 ]
-
-export function buildGeneralSettingsPanel({ settings, onChange }) {
-  const root = document.createElement('div')
-  root.className = 'mdp-settings__tab-panel-inner'
-
-  const enabledField = document.createElement('label')
-  enabledField.className = 'mdp-settings__field mdp-settings__field--inline'
-  const enabledInput = document.createElement('input')
-  enabledInput.type = 'checkbox'
-  enabledInput.checked = settings?.enabled !== false
-  const enabledLabel = document.createElement('span')
-  enabledLabel.className = 'mdp-settings__label'
-  enabledLabel.textContent = 'Enable Markdown Plus on markdown pages'
-  enabledField.appendChild(enabledInput)
-  enabledField.appendChild(enabledLabel)
-
-  root.appendChild(enabledField)
-
-  const emitEnabledChange = () => {
-    if (typeof onChange !== 'function') return
-    onChange({ enabled: enabledInput.checked })
-  }
-
-  enabledInput.addEventListener('change', emitEnabledChange)
-
-  const api = {
-    element: root,
-    update(nextSettings) {
-      enabledInput.checked = nextSettings?.enabled !== false
-    },
-    destroy() {
-      enabledInput.removeEventListener('change', emitEnabledChange)
-    }
-  }
-
-  return api
-}

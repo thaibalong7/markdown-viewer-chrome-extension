@@ -37,8 +37,8 @@
     margin: 1.5em 0;
   }
 
-  code {
-    background: var(--mdp-code-bg);
+  :not(pre) > code {
+    background: color-mix(in srgb, var(--mdp-code-bg) 95%, var(--mdp-body-text));
     color: var(--mdp-code-text);
     padding: 0.15em 0.35em;
     border-radius: 4px;

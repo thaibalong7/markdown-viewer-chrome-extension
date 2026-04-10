@@ -44,6 +44,31 @@ function restoreOriginalPageVisibility(host) {
   body.inert = true
 }
 
+function restoreBackgroundScroll(host) {
+  const html = document.documentElement
+  const body = document.body
+  if (!html || !body || !host) return
+
+  html.style.overflow = host.getAttribute(PREV_HTML_OVERFLOW_ATTR) || ''
+  body.style.overflow = host.getAttribute(PREV_BODY_OVERFLOW_ATTR) || ''
+  html.style.overscrollBehavior = host.getAttribute(PREV_HTML_OVERSCROLL_ATTR) || ''
+}
+
+function restoreOriginalPageInteractivity(host) {
+  const body = document.body
+  if (!body || !host) return
+
+  const prevAriaHidden = host.getAttribute(PREV_BODY_ARIA_HIDDEN_ATTR)
+  if (prevAriaHidden === '__MISSING__' || prevAriaHidden === null) {
+    body.removeAttribute('aria-hidden')
+  } else {
+    body.setAttribute('aria-hidden', prevAriaHidden)
+  }
+
+  const prevInert = host.getAttribute(PREV_BODY_INERT_ATTR)
+  body.inert = prevInert === '1'
+}
+
 export function createViewerRoot() {
   const existing = document.getElementById(ROOT_ID)
   if (existing) {
@@ -75,4 +100,13 @@ export function createViewerRoot() {
     root: host,
     shadowRoot
   }
+}
+
+export function teardownViewerRoot() {
+  const host = document.getElementById(ROOT_ID)
+  if (!host) return
+
+  restoreBackgroundScroll(host)
+  restoreOriginalPageInteractivity(host)
+  host.remove()
 }

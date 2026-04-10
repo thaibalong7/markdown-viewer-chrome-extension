@@ -12,10 +12,15 @@ import {
   clearOriginalFileUrl,
   getActiveSidebarTab,
   getOriginalFileUrl,
+  getSidebarWidthPx,
   isOnOriginalFile,
   setActiveSidebarTab,
-  setOriginalFileUrlIfUnset
+  setOriginalFileUrlIfUnset,
+  setSidebarWidthPx
 } from './explorer/explorer-state.js'
+
+const SIDEBAR_MIN_WIDTH_PX = 220
+const SIDEBAR_MAX_WIDTH_PX = 520
 
 export class MarkdownViewerApp {
   constructor({ markdown, settings, container, styles = [] }) {
@@ -36,6 +41,10 @@ export class MarkdownViewerApp {
     this._tabFilesClick = null
     this._tabOutlineClick = null
     this._currentFileUrl = window.location.href
+    this._sidebarResizePointerDown = null
+    this._sidebarResizePointerMove = null
+    this._sidebarResizePointerUp = null
+    this._sidebarResizeKeyDown = null
   }
 
   init() {
@@ -54,6 +63,7 @@ export class MarkdownViewerApp {
     void this.render()
     this.bindHashNavigation()
     this._initExplorer()
+    this._initSidebarResize()
   }
 
   applyReaderStyles() {
@@ -75,11 +85,40 @@ export class MarkdownViewerApp {
     if (sidebar) {
       const showToc = layout.showToc !== false
       sidebar.style.display = showToc ? '' : 'none'
+      this._applySidebarWidth()
       const body = sidebar.parentElement
       if (body?.classList?.contains('mdp-body')) {
         body.classList.toggle('mdp-body--no-toc', !showToc)
       }
     }
+  }
+
+  _resolveSidebarWidth() {
+    const layoutWidth = Number(this.settings?.layout?.tocWidth)
+    const storedWidth = getSidebarWidthPx()
+    const base = Number.isFinite(storedWidth) ? storedWidth : layoutWidth
+    const fallback = 280
+    return this._clampSidebarWidth(Number.isFinite(base) ? base : fallback)
+  }
+
+  _clampSidebarWidth(widthPx) {
+    const width = Number(widthPx)
+    if (!Number.isFinite(width)) return SIDEBAR_MIN_WIDTH_PX
+    return Math.max(SIDEBAR_MIN_WIDTH_PX, Math.min(SIDEBAR_MAX_WIDTH_PX, Math.round(width)))
+  }
+
+  _setSidebarWidth(widthPx, { persist = false } = {}) {
+    const root = this.parts?.root
+    if (!root) return
+    const clamped = this._clampSidebarWidth(widthPx)
+    root.style.setProperty('--mdp-toc-width', `${clamped}px`)
+    const handle = this.parts?.resizeHandle
+    if (handle) handle.setAttribute('aria-valuenow', String(clamped))
+    if (persist) setSidebarWidthPx(clamped)
+  }
+
+  _applySidebarWidth() {
+    this._setSidebarWidth(this._resolveSidebarWidth(), { persist: false })
   }
 
   getScrollRoot() {
@@ -370,6 +409,75 @@ export class MarkdownViewerApp {
     void this._runSiblingScan(this._currentFileUrl)
   }
 
+  _initSidebarResize() {
+    const { resizeHandle, root, sidebar } = this.parts || {}
+    if (!resizeHandle || !root || !sidebar) return
+
+    this._sidebarResizePointerDown = (event) => {
+      if (event.button !== 0) return
+      event.preventDefault()
+
+      const startX = event.clientX
+      const startWidth = sidebar.getBoundingClientRect().width
+      root.classList.add('is-resizing-sidebar')
+
+      this._sidebarResizePointerMove = (moveEvent) => {
+        const deltaX = moveEvent.clientX - startX
+        this._setSidebarWidth(startWidth + deltaX, { persist: false })
+      }
+
+      this._sidebarResizePointerUp = () => {
+        const width = sidebar.getBoundingClientRect().width
+        this._setSidebarWidth(width, { persist: true })
+        root.classList.remove('is-resizing-sidebar')
+        if (this._sidebarResizePointerMove) {
+          window.removeEventListener('pointermove', this._sidebarResizePointerMove)
+        }
+        if (this._sidebarResizePointerUp) {
+          window.removeEventListener('pointerup', this._sidebarResizePointerUp)
+        }
+        this._sidebarResizePointerMove = null
+        this._sidebarResizePointerUp = null
+      }
+
+      window.addEventListener('pointermove', this._sidebarResizePointerMove)
+      window.addEventListener('pointerup', this._sidebarResizePointerUp)
+    }
+
+    this._sidebarResizeKeyDown = (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return
+      event.preventDefault()
+      const currentWidth = sidebar.getBoundingClientRect().width
+      const delta = event.key === 'ArrowRight' ? 16 : -16
+      this._setSidebarWidth(currentWidth + delta, { persist: true })
+    }
+
+    resizeHandle.addEventListener('pointerdown', this._sidebarResizePointerDown)
+    resizeHandle.addEventListener('keydown', this._sidebarResizeKeyDown)
+    this._applySidebarWidth()
+  }
+
+  _destroySidebarResize() {
+    const { resizeHandle, root } = this.parts || {}
+    root?.classList.remove('is-resizing-sidebar')
+    if (this._sidebarResizePointerMove) {
+      window.removeEventListener('pointermove', this._sidebarResizePointerMove)
+    }
+    if (this._sidebarResizePointerUp) {
+      window.removeEventListener('pointerup', this._sidebarResizePointerUp)
+    }
+    if (resizeHandle && this._sidebarResizePointerDown) {
+      resizeHandle.removeEventListener('pointerdown', this._sidebarResizePointerDown)
+    }
+    if (resizeHandle && this._sidebarResizeKeyDown) {
+      resizeHandle.removeEventListener('keydown', this._sidebarResizeKeyDown)
+    }
+    this._sidebarResizePointerDown = null
+    this._sidebarResizePointerMove = null
+    this._sidebarResizePointerUp = null
+    this._sidebarResizeKeyDown = null
+  }
+
   /**
    * @param {string} fileUrl
    * @returns {string}
@@ -475,7 +583,7 @@ export class MarkdownViewerApp {
       void this._navigateToSiblingFile(original, { replaceHistory: true })
     }
 
-    const ctx = { showBack, backLabel, onBack }
+    const ctx = { showBack, backLabel, onBack, currentFileUrl }
 
     if (!files.length) {
       this._explorerPanel.showEmpty(ctx)
@@ -531,6 +639,7 @@ export class MarkdownViewerApp {
     this.articleHashLinkClickHandler = null
     if (this.tocController) this.tocController.destroy()
     this.tocController = null
+    this._destroySidebarResize()
     this._destroyExplorer()
     this.container.innerHTML = ''
     this.parts = null

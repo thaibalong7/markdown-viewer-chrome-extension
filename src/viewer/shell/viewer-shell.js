@@ -101,6 +101,16 @@ function createTocSidebar() {
   sidebar.appendChild(outlinePanel)
   sidebar.appendChild(filesPanel)
 
+  const resizeHandle = document.createElement('div')
+  resizeHandle.className = 'mdp-sidebar__resize-handle'
+  resizeHandle.setAttribute('role', 'separator')
+  resizeHandle.setAttribute('aria-label', 'Resize sidebar')
+  resizeHandle.setAttribute('aria-orientation', 'vertical')
+  resizeHandle.setAttribute('aria-valuemin', '220')
+  resizeHandle.setAttribute('aria-valuemax', '520')
+  resizeHandle.setAttribute('tabindex', '0')
+  sidebar.appendChild(resizeHandle)
+
   return {
     element: sidebar,
     tocContainer,
@@ -109,7 +119,8 @@ function createTocSidebar() {
     tabFiles,
     tabOutline,
     filesPanel,
-    outlinePanel
+    outlinePanel,
+    resizeHandle
   }
 }
 
@@ -130,7 +141,8 @@ export function createShell({ styles = [] } = {}) {
     tabFiles,
     tabOutline,
     filesPanel,
-    outlinePanel
+    outlinePanel,
+    resizeHandle
   } = createTocSidebar()
 
   body.appendChild(sidebar)
@@ -153,6 +165,7 @@ export function createShell({ styles = [] } = {}) {
       tabOutline,
       filesPanel,
       outlinePanel,
+      resizeHandle,
       contentPane: contentPane.element,
       article: contentPane.article
     }

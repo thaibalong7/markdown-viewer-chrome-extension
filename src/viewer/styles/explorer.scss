@@ -53,14 +53,59 @@
 .mdp-explorer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   min-height: 0;
+}
+
+.mdp-explorer__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 8px;
+  background: var(--mdp-surface);
+}
+
+.mdp-explorer__heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mdp-explorer__heading {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mdp-text);
+}
+
+.mdp-explorer__meta {
+  font-size: 11px;
+  color: var(--mdp-muted);
+}
+
+.mdp-explorer__path {
+  border: 1px solid var(--mdp-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: var(--mdp-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mdp-explorer__back-btn {
   width: 100%;
-  text-align: center;
-  font-size: 13px;
+  text-align: left;
+  font-size: 12px;
+  padding: 6px 8px;
 }
 
 .mdp-explorer__loading,
@@ -80,13 +125,15 @@
   gap: 2px;
 }
 
-.mdp-explorer__item {
+.mdp-explorer__node {
   margin: 0;
   padding: 0;
 }
 
-.mdp-explorer__file-btn {
-  display: block;
+.mdp-explorer__node-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
   text-align: left;
   border: none;
@@ -112,4 +159,24 @@
     color: var(--mdp-text);
     font-weight: 600;
   }
+}
+
+.mdp-explorer__node-depth {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__node-icon {
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.mdp-explorer__node-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

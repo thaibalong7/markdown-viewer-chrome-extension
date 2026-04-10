@@ -1,5 +1,6 @@
 const KEY_ORIGINAL = 'mdp:explorer:originalFile'
 const KEY_ACTIVE_TAB = 'mdp:explorer:activeTab'
+const KEY_SIDEBAR_WIDTH = 'mdp:sidebar:width'
 
 /** @typedef {'files' | 'outline'} ExplorerTabId */
 
@@ -64,6 +65,32 @@ export function getActiveSidebarTab() {
 export function setActiveSidebarTab(tabId) {
   try {
     sessionStorage.setItem(KEY_ACTIVE_TAB, tabId)
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * @returns {number | null}
+ */
+export function getSidebarWidthPx() {
+  try {
+    const raw = Number(sessionStorage.getItem(KEY_SIDEBAR_WIDTH))
+    if (!Number.isFinite(raw) || raw <= 0) return null
+    return raw
+  } catch {
+    return null
+  }
+}
+
+/**
+ * @param {number} widthPx
+ */
+export function setSidebarWidthPx(widthPx) {
+  try {
+    const n = Number(widthPx)
+    if (!Number.isFinite(n) || n <= 0) return
+    sessionStorage.setItem(KEY_SIDEBAR_WIDTH, String(Math.round(n)))
   } catch {
     /* ignore */
   }

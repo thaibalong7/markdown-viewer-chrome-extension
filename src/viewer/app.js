@@ -4,6 +4,7 @@ import { rebuildToc } from './actions/rebuild-toc.js'
 import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
 import { copyTextToClipboard } from '../shared/clipboard.js'
+import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from './toolbar-metrics.js'
 import { scanSiblingFiles } from './explorer/sibling-scanner.js'
 import { createExplorerPanel } from './explorer/explorer-panel.js'
@@ -34,6 +35,7 @@ export class MarkdownViewerApp {
     this._explorerPanel = null
     this._tabFilesClick = null
     this._tabOutlineClick = null
+    this._currentFileUrl = window.location.href
   }
 
   init() {
@@ -352,7 +354,12 @@ export class MarkdownViewerApp {
     setOriginalFileUrlIfUnset(window.location.href)
     this._applySidebarTabFromStorage()
 
-    this._explorerPanel = createExplorerPanel({ container: explorerContainer })
+    this._explorerPanel = createExplorerPanel({
+      container: explorerContainer,
+      onNavigate: (href) => {
+        void this._navigateToSiblingFile(href)
+      }
+    })
     this._explorerPanel.showLoading()
 
     this._tabFilesClick = () => this.setSidebarTab('files')
@@ -360,7 +367,7 @@ export class MarkdownViewerApp {
     tabFiles.addEventListener('click', this._tabFilesClick)
     tabOutline.addEventListener('click', this._tabOutlineClick)
 
-    void this._runSiblingScan(window.location.href)
+    void this._runSiblingScan(this._currentFileUrl)
   }
 
   /**
@@ -376,6 +383,75 @@ export class MarkdownViewerApp {
     } catch {
       return 'original file'
     }
+  }
+
+  /**
+   * @param {string} fileUrl
+   * @returns {string}
+   */
+  static _normalizeFileUrlForCompare(fileUrl) {
+    try {
+      const u = new URL(fileUrl)
+      u.hash = ''
+      if (u.protocol !== 'file:') return fileUrl
+      let p = u.pathname
+      if (p.endsWith('/')) p = p.slice(0, -1)
+      return `${u.protocol}//${u.host}${p}`
+    } catch {
+      return fileUrl
+    }
+  }
+
+  _updateUrlWithoutReload(fileUrl, { replace = false } = {}) {
+    try {
+      if (replace) {
+        window.history.replaceState(null, '', fileUrl)
+      } else {
+        window.history.pushState(null, '', fileUrl)
+      }
+    } catch {
+      // file:// environments can reject history URL changes.
+    }
+  }
+
+  async _navigateToSiblingFile(fileUrl, { replaceHistory = false } = {}) {
+    if (!fileUrl || !this._explorerPanel) return
+
+    const current = MarkdownViewerApp._normalizeFileUrlForCompare(this._currentFileUrl)
+    const target = MarkdownViewerApp._normalizeFileUrlForCompare(fileUrl)
+    if (current === target) return
+
+    this.parts?.article?.setAttribute('aria-busy', 'true')
+
+    try {
+      const response = await sendMessage({
+        type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT,
+        payload: { url: fileUrl }
+      })
+      if (!response?.ok) {
+        throw new Error(response?.error || 'Could not load file.')
+      }
+
+      const nextMarkdown = String(response.data?.text || '')
+      if (!nextMarkdown.trim()) {
+        throw new Error('File is empty or not readable.')
+      }
+
+      this.markdown = nextMarkdown
+      this._smoothInitialHashScroll = false
+      this._currentFileUrl = fileUrl
+      await this.render({ preserveScroll: false, honorHash: false })
+      this.getScrollRoot()?.scrollTo({ top: 0, behavior: 'auto' })
+      this._updateUrlWithoutReload(fileUrl, { replace: replaceHistory })
+      document.title = `${MarkdownViewerApp._markdownFileTitleFromUrl(fileUrl)} - Markdown Plus`
+    } catch (error) {
+      logger.warn('Failed to navigate to sibling markdown file.', error)
+      this.showToast('Could not open file')
+    } finally {
+      this.parts?.article?.removeAttribute('aria-busy')
+    }
+
+    await this._runSiblingScan(this._currentFileUrl)
   }
 
   async _runSiblingScan(currentFileUrl) {
@@ -396,7 +472,7 @@ export class MarkdownViewerApp {
     const onBack = () => {
       if (!original) return
       clearOriginalFileUrl()
-      window.location.href = original
+      void this._navigateToSiblingFile(original, { replaceHistory: true })
     }
 
     const ctx = { showBack, backLabel, onBack }

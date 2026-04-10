@@ -2,7 +2,7 @@
  * Imperative Files tab UI: loading, empty state, sibling list, back to original.
  * @param {object} options
  * @param {HTMLElement} options.container
- * @param {() => void} [options.onNavigate] - called before location change (optional)
+ * @param {(href: string) => void} [options.onNavigate] - called before in-viewer navigation (optional)
  */
 export function createExplorerPanel({ container, onNavigate } = {}) {
   const root = document.createElement('div')
@@ -45,6 +45,18 @@ export function createExplorerPanel({ container, onNavigate } = {}) {
     if (listClickCleanup) {
       listClickCleanup()
       listClickCleanup = null
+    }
+  }
+
+  /**
+   * @param {string} href
+   */
+  function markActiveFile(href) {
+    if (!href) return
+    const fileButtons = listEl.querySelectorAll('.mdp-explorer__file-btn')
+    for (const btn of fileButtons) {
+      const isActive = btn.getAttribute('data-file-href') === href
+      btn.classList.toggle('is-active', isActive)
     }
   }
 
@@ -115,12 +127,13 @@ export function createExplorerPanel({ container, onNavigate } = {}) {
       btn.type = 'button'
       btn.className = 'mdp-explorer__file-btn'
       if (file.isActive) btn.classList.add('is-active')
+      btn.setAttribute('data-file-href', file.href)
       btn.textContent = file.displayName
       btn.setAttribute('title', file.href)
       btn.addEventListener('click', () => {
         if (file.isActive) return
-        onNavigate?.()
-        window.location.href = file.href
+        markActiveFile(file.href)
+        onNavigate?.(file.href)
       })
 
       li.appendChild(btn)

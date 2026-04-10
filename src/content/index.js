@@ -7,6 +7,7 @@ import baseCss from '../viewer/styles/base.scss?inline'
 import layoutCss from '../viewer/styles/layout.scss?inline'
 import contentCss from '../viewer/styles/content.scss?inline'
 import tocCss from '../viewer/styles/toc.scss?inline'
+import explorerCss from '../viewer/styles/explorer.scss?inline'
 
 /** Fallback: if any inlined CSS still uses root `/assets/…`, rewrite to the extension package (Vite `base: './'` fixes preloads; KaTeX fonts use `import.meta.url` in build). */
 function extensionizeKatexFontUrls(css) {
@@ -20,7 +21,8 @@ function getViewerStyles() {
     baseCss,
     layoutCss,
     contentCss: `${contentCss}\n${extensionizeKatexFontUrls(katexCss)}`,
-    tocCss
+    tocCss,
+    explorerCss
   }
 }
 

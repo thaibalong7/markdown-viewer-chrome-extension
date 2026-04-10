@@ -3,7 +3,29 @@
   top: var(--mdp-toolbar-stack, 49px);
   align-self: start;
   height: calc(100vh - var(--mdp-toolbar-stack, 49px));
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.mdp-sidebar-panel--outline {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .mdp-toc {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+.mdp-sidebar-panel--files {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .mdp-toc {

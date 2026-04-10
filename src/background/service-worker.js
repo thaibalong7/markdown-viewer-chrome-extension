@@ -1,11 +1,20 @@
 import { logger } from '../shared/logger.js'
 import { routeMessage } from './message-router.js'
 
+const MESSAGE_TYPES_SKIP_SERVICE_ROUTING = new Set([
+  'MDP_OFFSCREEN_FETCH',
+  'MDP_OFFSCREEN_FETCH_DONE'
+])
+
 chrome.runtime.onInstalled.addListener(() => {
   logger.info('Background service worker installed.')
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (MESSAGE_TYPES_SKIP_SERVICE_ROUTING.has(message?.type)) {
+    return false
+  }
+
   Promise.resolve(routeMessage(message, sender))
     .then((result) => sendResponse({ ok: true, data: result }))
     .catch((error) => {

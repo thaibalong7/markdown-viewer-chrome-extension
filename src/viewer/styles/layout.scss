@@ -51,6 +51,9 @@
 }
 
 .mdp-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   border-right: 1px solid var(--mdp-border);
   background: var(--mdp-panel-bg);
   padding: 16px;
@@ -58,6 +61,7 @@
   &__title {
     font-weight: 700;
     margin-bottom: 8px;
+    flex-shrink: 0;
   }
 
   &__placeholder {

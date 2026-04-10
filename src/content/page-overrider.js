@@ -2,7 +2,6 @@ const ROOT_ID = 'mdp-viewer-root'
 const PREV_HTML_OVERFLOW_ATTR = 'data-mdp-prev-html-overflow'
 const PREV_BODY_OVERFLOW_ATTR = 'data-mdp-prev-body-overflow'
 const PREV_HTML_OVERSCROLL_ATTR = 'data-mdp-prev-html-overscroll'
-const PREV_BODY_ARIA_HIDDEN_ATTR = 'data-mdp-prev-body-aria-hidden'
 const PREV_BODY_INERT_ATTR = 'data-mdp-prev-body-inert'
 
 function lockBackgroundScroll(host) {
@@ -29,18 +28,12 @@ function restoreOriginalPageVisibility(host) {
   const body = document.body
   if (!body || !host) return
   // Keep body in normal layout so third-party diagram/layout code can measure the page.
-  if (!host.hasAttribute(PREV_BODY_ARIA_HIDDEN_ATTR)) {
-    body.hasAttribute('aria-hidden')
-      ? host.setAttribute(PREV_BODY_ARIA_HIDDEN_ATTR, body.getAttribute('aria-hidden') || '')
-      : host.setAttribute(PREV_BODY_ARIA_HIDDEN_ATTR, '__MISSING__')
-  }
-
   if (!host.hasAttribute(PREV_BODY_INERT_ATTR)) {
     host.setAttribute(PREV_BODY_INERT_ATTR, body.inert ? '1' : '0')
   }
 
-  // Prevent browser find/search from matching both the original page and viewer text.
-  body.setAttribute('aria-hidden', 'true')
+  // Exclude the underlying document from interaction while the viewer is open.
+  // Use inert only: aria-hidden on <body> triggers a Chrome warning and hides the whole tree from AT.
   body.inert = true
 }
 
@@ -57,13 +50,6 @@ function restoreBackgroundScroll(host) {
 function restoreOriginalPageInteractivity(host) {
   const body = document.body
   if (!body || !host) return
-
-  const prevAriaHidden = host.getAttribute(PREV_BODY_ARIA_HIDDEN_ATTR)
-  if (prevAriaHidden === '__MISSING__' || prevAriaHidden === null) {
-    body.removeAttribute('aria-hidden')
-  } else {
-    body.setAttribute('aria-hidden', prevAriaHidden)
-  }
 
   const prevInert = host.getAttribute(PREV_BODY_INERT_ATTR)
   body.inert = prevInert === '1'

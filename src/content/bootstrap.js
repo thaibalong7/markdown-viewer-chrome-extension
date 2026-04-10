@@ -6,7 +6,7 @@ import { looksLikeMarkdownText } from './text-sampling.js'
 import { createViewerRoot } from './page-overrider.js'
 import { MarkdownViewerApp } from '../viewer/app.js'
 
-export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, getViewerStyles }) {
+export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explorerCss, getViewerStyles }) {
   logger.info('Content bootstrap started.')
   const protocol = window.location?.protocol || ''
   const pathname = window.location?.pathname || ''
@@ -77,11 +77,17 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, getVie
     return
   }
 
-  const styles = baseCss && layoutCss && contentCss && tocCss
-    ? { baseCss, layoutCss, contentCss, tocCss }
+  const styles = baseCss && layoutCss && contentCss && tocCss && explorerCss
+    ? { baseCss, layoutCss, contentCss, tocCss, explorerCss }
     : await getViewerStyles?.()
 
-  if (!styles?.baseCss || !styles?.layoutCss || !styles?.contentCss || !styles?.tocCss) {
+  if (
+    !styles?.baseCss ||
+    !styles?.layoutCss ||
+    !styles?.contentCss ||
+    !styles?.tocCss ||
+    !styles?.explorerCss
+  ) {
     throw new Error('Viewer styles are missing.')
   }
 
@@ -95,7 +101,7 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, getVie
     markdown: extraction.markdown,
     settings,
     container: mountTarget,
-    styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss]
+    styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss, styles.explorerCss]
   })
 
   app.init()

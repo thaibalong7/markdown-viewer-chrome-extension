@@ -5,6 +5,16 @@ import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
 import { copyTextToClipboard } from '../shared/clipboard.js'
 import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from './toolbar-metrics.js'
+import { scanSiblingFiles } from './explorer/sibling-scanner.js'
+import { createExplorerPanel } from './explorer/explorer-panel.js'
+import {
+  clearOriginalFileUrl,
+  getActiveSidebarTab,
+  getOriginalFileUrl,
+  isOnOriginalFile,
+  setActiveSidebarTab,
+  setOriginalFileUrlIfUnset
+} from './explorer/explorer-state.js'
 
 export class MarkdownViewerApp {
   constructor({ markdown, settings, container, styles = [] }) {
@@ -20,6 +30,10 @@ export class MarkdownViewerApp {
     this._smoothInitialHashScroll = false
     this._toastTimer = null
     this._renderToken = 0
+    /** @type {ReturnType<typeof createExplorerPanel> | null} */
+    this._explorerPanel = null
+    this._tabFilesClick = null
+    this._tabOutlineClick = null
   }
 
   init() {
@@ -37,6 +51,7 @@ export class MarkdownViewerApp {
     this.applyReaderStyles()
     void this.render()
     this.bindHashNavigation()
+    this._initExplorer()
   }
 
   applyReaderStyles() {
@@ -309,6 +324,111 @@ export class MarkdownViewerApp {
     })
   }
 
+  /**
+   * @param {'files' | 'outline'} tabId
+   */
+  setSidebarTab(tabId) {
+    const { tabFiles, tabOutline, filesPanel, outlinePanel } = this.parts || {}
+    if (!tabFiles || !tabOutline || !filesPanel || !outlinePanel) return
+
+    setActiveSidebarTab(tabId)
+    const isFiles = tabId === 'files'
+    filesPanel.hidden = !isFiles
+    outlinePanel.hidden = isFiles
+    tabFiles.classList.toggle('is-active', isFiles)
+    tabOutline.classList.toggle('is-active', !isFiles)
+    tabFiles.setAttribute('aria-selected', String(isFiles))
+    tabOutline.setAttribute('aria-selected', String(!isFiles))
+  }
+
+  _applySidebarTabFromStorage() {
+    this.setSidebarTab(getActiveSidebarTab())
+  }
+
+  _initExplorer() {
+    const { explorerContainer, tabFiles, tabOutline } = this.parts || {}
+    if (!explorerContainer || !tabFiles || !tabOutline) return
+
+    setOriginalFileUrlIfUnset(window.location.href)
+    this._applySidebarTabFromStorage()
+
+    this._explorerPanel = createExplorerPanel({ container: explorerContainer })
+    this._explorerPanel.showLoading()
+
+    this._tabFilesClick = () => this.setSidebarTab('files')
+    this._tabOutlineClick = () => this.setSidebarTab('outline')
+    tabFiles.addEventListener('click', this._tabFilesClick)
+    tabOutline.addEventListener('click', this._tabOutlineClick)
+
+    void this._runSiblingScan(window.location.href)
+  }
+
+  /**
+   * @param {string} fileUrl
+   * @returns {string}
+   */
+  static _markdownFileTitleFromUrl(fileUrl) {
+    try {
+      const p = new URL(fileUrl).pathname
+      const base = p.split('/').filter(Boolean).pop() || ''
+      const name = base.replace(/\.(md|markdown|mdown)$/i, '')
+      return decodeURIComponent(name) || 'original file'
+    } catch {
+      return 'original file'
+    }
+  }
+
+  async _runSiblingScan(currentFileUrl) {
+    if (!this._explorerPanel) return
+
+    let files = []
+    try {
+      files = await scanSiblingFiles(currentFileUrl)
+    } catch (error) {
+      logger.warn('Sibling scan failed.', error)
+    }
+
+    const original = getOriginalFileUrl()
+    const showBack = Boolean(original && !isOnOriginalFile(currentFileUrl))
+    const backLabel = showBack
+      ? `Back to ${MarkdownViewerApp._markdownFileTitleFromUrl(original)}`
+      : undefined
+    const onBack = () => {
+      if (!original) return
+      clearOriginalFileUrl()
+      window.location.href = original
+    }
+
+    const ctx = { showBack, backLabel, onBack }
+
+    if (!files.length) {
+      this._explorerPanel.showEmpty(ctx)
+      return
+    }
+
+    this._explorerPanel.showFiles(files, {
+      ...ctx,
+      currentFileUrl,
+      originalFileUrl: original
+    })
+  }
+
+  _destroyExplorer() {
+    const { tabFiles, tabOutline } = this.parts || {}
+    if (this._tabFilesClick && tabFiles) {
+      tabFiles.removeEventListener('click', this._tabFilesClick)
+    }
+    if (this._tabOutlineClick && tabOutline) {
+      tabOutline.removeEventListener('click', this._tabOutlineClick)
+    }
+    this._tabFilesClick = null
+    this._tabOutlineClick = null
+    if (this._explorerPanel) {
+      this._explorerPanel.destroy()
+      this._explorerPanel = null
+    }
+  }
+
   async updateSettings(nextSettings) {
     const prevSettings = this.settings
     this.settings = nextSettings
@@ -333,9 +453,10 @@ export class MarkdownViewerApp {
       this.parts.article.removeEventListener('click', this.articleHashLinkClickHandler)
     }
     this.articleHashLinkClickHandler = null
-    this.container.innerHTML = ''
-    this.parts = null
     if (this.tocController) this.tocController.destroy()
     this.tocController = null
+    this._destroyExplorer()
+    this.container.innerHTML = ''
+    this.parts = null
   }
 }

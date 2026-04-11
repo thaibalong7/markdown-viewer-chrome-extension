@@ -1,5 +1,6 @@
 import { exportMermaidPng, exportMermaidSvg } from './mermaid-export.js'
 import { logger } from '../../shared/logger.js'
+import { attachTooltip, VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../viewer/tooltip.js'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
@@ -61,7 +62,10 @@ export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast
   copyBtn.type = 'button'
   copyBtn.className = 'mdp-mermaid-toolbar__copy'
   copyBtn.setAttribute('aria-label', 'Copy Mermaid source')
-  copyBtn.setAttribute('title', 'Copy Mermaid source')
+  attachTooltip(copyBtn, {
+    text: 'Copy Mermaid source',
+    showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
+  })
   copyBtn.appendChild(createIconCopy())
 
   copyBtn.addEventListener('click', (event) => {
@@ -154,7 +158,6 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   trigger.type = 'button'
   trigger.className = 'mdp-mermaid-actions__trigger'
   trigger.setAttribute('aria-label', 'Mermaid chart actions')
-  trigger.setAttribute('title', 'Chart actions')
   trigger.setAttribute('aria-haspopup', 'menu')
   trigger.setAttribute('aria-expanded', 'false')
   trigger.appendChild(createIconDots())
@@ -284,6 +287,11 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
     window.removeEventListener('pointerdown', onWindowPointerDown)
     window.removeEventListener('keydown', onWindowKeyDown)
   }
+
+  attachTooltip(trigger, {
+    text: 'Export this diagram: SVG (vector) or PNG at 1x–4x resolution.',
+    showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
+  })
 
   trigger.addEventListener('click', (event) => {
     event.preventDefault()

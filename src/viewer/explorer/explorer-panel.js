@@ -1,5 +1,6 @@
 import { normalizeFileUrlForCompare } from './sibling-scanner.js'
 import { explorerModeBadgeLabel } from './explorer-files-context.js'
+import { attachTooltip } from '../tooltip.js'
 
 /**
  * @typedef {import('./explorer-files-context.js').ExplorerFilesContext} ExplorerFilesContext
@@ -160,7 +161,18 @@ export function createExplorerPanel({
   /** @type {(() => void) | null} */
   let progressCancelHandler = null
 
+  /** @type {Array<() => void>} */
+  const explorerTooltipDestroys = []
+  /** @type {Array<() => void>} */
+  let treeRowTooltipDestroys = []
+
   container.appendChild(root)
+
+  explorerTooltipDestroys.push(
+    attachTooltip(exitWorkspaceBtn, {
+      text: 'Leave workspace mode and return to the file list for the current folder. The original file is restored when needed.'
+    }).destroy
+  )
 
   openOtherBtn.addEventListener('click', () => onOpenAnotherFolder?.())
   exitWorkspaceBtn.addEventListener('click', () => onExitWorkspace?.())
@@ -211,6 +223,8 @@ export function createExplorerPanel({
 
   /** Clears the tree list DOM (removes rows; drops old listeners with nodes). */
   function clearTreeListDom() {
+    for (const d of treeRowTooltipDestroys) d()
+    treeRowTooltipDestroys = []
     listEl.replaceChildren()
   }
 
@@ -510,6 +524,10 @@ export function createExplorerPanel({
       backBtn.removeEventListener('click', backHandler)
       backHandler = null
     }
+    for (const d of treeRowTooltipDestroys) d()
+    treeRowTooltipDestroys = []
+    for (const d of explorerTooltipDestroys) d()
+    explorerTooltipDestroys.length = 0
     root.remove()
   }
 
@@ -630,6 +648,12 @@ function appendTreeNode(parent, node, treeCtx) {
   row.appendChild(chev)
   row.appendChild(icon)
   row.appendChild(label)
+
+  treeRowTooltipDestroys.push(
+    attachTooltip(row, {
+      text: `Expand or collapse “${node.name}”.`
+    }).destroy
+  )
 
   const childUl = document.createElement('ul')
   childUl.className = 'mdp-explorer__tree-children'

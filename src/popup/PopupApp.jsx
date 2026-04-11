@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { getDefaultPluginSettings } from '../plugins/plugin-types.js'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
 import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
+import { Tooltip } from './components/Tooltip.jsx'
 import { GeneralPanel } from './panels/GeneralPanel.jsx'
 import { ReaderPanel } from './panels/ReaderPanel.jsx'
 import { PluginsPanel } from './panels/PluginsPanel.jsx'
@@ -41,16 +42,16 @@ export function PopupApp() {
       <div className="popup-settings-panel">
         <nav className="popup-settings-rail" aria-label="Settings sections">
           {SETTINGS_TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`popup-settings-tab ${activeTab === tab.id ? 'is-active' : ''}`}
-              aria-label={tab.label}
-              title={tab.title}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              {tab.icon}
-            </button>
+            <Tooltip key={tab.id} content={`${tab.title}. Switch section.`}>
+              <button
+                type="button"
+                className={`popup-settings-tab ${activeTab === tab.id ? 'is-active' : ''}`}
+                aria-label={tab.label}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.icon}
+              </button>
+            </Tooltip>
           ))}
         </nav>
 

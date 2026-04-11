@@ -109,3 +109,20 @@
 .mdp-content-pane {
   padding: 24px;
 }
+
+/* Floating tooltips (appended to ShadowRoot or body by `tooltip.js`) */
+.mdp-tooltip {
+  box-sizing: border-box;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--mdp-text);
+  background: var(--mdp-panel-bg);
+  border: 1px solid var(--mdp-border);
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--mdp-text) 12%, transparent);
+  pointer-events: none;
+  text-align: left;
+}

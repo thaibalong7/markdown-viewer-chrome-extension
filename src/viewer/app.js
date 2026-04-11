@@ -30,6 +30,7 @@ import {
   injectCurrentMarkdownAtRootIfMissing
 } from './explorer/explorer-files-context.js'
 import { createExplorerPanel } from './explorer/explorer-panel.js'
+import { attachTooltip } from './tooltip.js'
 import {
   clearWorkspaceRootUrl,
   getActiveSidebarTab,
@@ -77,6 +78,8 @@ export class MarkdownViewerApp {
     this._sidebarResizePointerMove = null
     this._sidebarResizePointerUp = null
     this._sidebarResizeKeyDown = null
+    /** @type {(() => void) | null} */
+    this._resizeHandleTooltipDestroy = null
     /** @type {'sibling' | 'workspace'} */
     this._explorerMode = 'sibling'
     /** @type {import('./explorer/folder-scanner.js').ExplorerTreeNode | null} */
@@ -989,10 +992,16 @@ export class MarkdownViewerApp {
 
     resizeHandle.addEventListener('pointerdown', this._sidebarResizePointerDown)
     resizeHandle.addEventListener('keydown', this._sidebarResizeKeyDown)
+    this._resizeHandleTooltipDestroy?.()
+    this._resizeHandleTooltipDestroy = attachTooltip(resizeHandle, {
+      text: 'Drag to resize the sidebar. When focused, use Left/Right Arrow keys (16px per step).'
+    }).destroy
     this._applySidebarWidth()
   }
 
   _destroySidebarResize() {
+    this._resizeHandleTooltipDestroy?.()
+    this._resizeHandleTooltipDestroy = null
     const { resizeHandle, root } = this.parts || {}
     root?.classList.remove('is-resizing-sidebar')
     if (this._sidebarResizePointerMove) {

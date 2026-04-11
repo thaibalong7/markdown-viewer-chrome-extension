@@ -1,4 +1,5 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
+import { attachTooltip, VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../viewer/tooltip.js'
 
 const PRE_SELECTOR = '.mdp-markdown-body pre'
 
@@ -44,7 +45,10 @@ export const codeHighlightPlugin = {
       copyBtn.type = 'button'
       copyBtn.className = 'mdp-code-block__copy'
       copyBtn.setAttribute('aria-label', 'Copy code to clipboard')
-      copyBtn.setAttribute('title', 'Copy code')
+      attachTooltip(copyBtn, {
+        text: 'Copy code',
+        showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
+      })
 
       const copyIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       copyIcon.setAttribute('class', 'mdp-code-block__copy-icon')

@@ -17,6 +17,20 @@ export const PLUGIN_LABELS = {
   mermaid: 'Mermaid diagrams'
 }
 
+/** Short English hints for plugin toggles (popup tooltips). */
+export const PLUGIN_HINTS = {
+  codeHighlight:
+    'Colors fenced code with Shiki. When off, code blocks use plain monospace styling (faster, fewer bytes).',
+  taskList: 'Renders GitHub-style task lists. Checkboxes are read-only in the viewer.',
+  anchorHeading: 'Adds a “#” control on headings to copy a deep link to that section.',
+  tableEnhance: 'Wraps wide tables for horizontal scrolling and slightly richer table chrome.',
+  emoji: 'Enables :shortcode:-style emoji where the emoji plugin supports them.',
+  footnote: 'Renders footnote markers, definitions, and return links in the document.',
+  math: 'Renders LaTeX-style math via KaTeX. Heavier than plain Markdown; enable when needed.',
+  mermaid:
+    'Renders Mermaid diagrams from ```mermaid``` fences. When on, charts can be exported from the viewer.'
+}
+
 export function createReaderUiDefaultsPatch() {
   return {
     theme: { ...DEFAULT_SETTINGS.theme },

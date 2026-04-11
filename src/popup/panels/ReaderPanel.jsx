@@ -1,5 +1,6 @@
 import React from 'react'
 import { BUILT_IN_THEMES } from '../../theme/index.js'
+import { Tooltip } from '../components/Tooltip.jsx'
 import {
   createReaderUiDefaultsPatch,
   FONT_FAMILY_PRESETS,
@@ -33,23 +34,27 @@ export function ReaderPanel({ settings, onPatch }) {
 
       <label className="popup-field">
         <span className="popup-label">Font family</span>
-        <select
-          className="popup-input"
-          value={settings.typography?.fontFamily || FONT_FAMILY_PRESETS[0].value}
-          onChange={(event) =>
-            onPatch({
-              typography: {
-                fontFamily: event.target.value
-              }
-            })
-          }
+        <Tooltip
+          content="Uses fonts installed on your system. Presets list several fallbacks if the first choice is missing."
         >
-          {FONT_FAMILY_PRESETS.map((preset) => (
-            <option key={preset.value} value={preset.value}>
-              {preset.label}
-            </option>
-          ))}
-        </select>
+          <select
+            className="popup-input"
+            value={settings.typography?.fontFamily || FONT_FAMILY_PRESETS[0].value}
+            onChange={(event) =>
+              onPatch({
+                typography: {
+                  fontFamily: event.target.value
+                }
+              })
+            }
+          >
+            {FONT_FAMILY_PRESETS.map((preset) => (
+              <option key={preset.value} value={preset.value}>
+                {preset.label}
+              </option>
+            ))}
+          </select>
+        </Tooltip>
       </label>
 
       <label className="popup-field">
@@ -73,21 +78,23 @@ export function ReaderPanel({ settings, onPatch }) {
 
       <label className="popup-field">
         <span className="popup-label">Line height</span>
-        <input
-          className="popup-input"
-          type="number"
-          min="1.2"
-          max="2.2"
-          step="0.1"
-          value={Number(settings.typography?.lineHeight || 1.7)}
-          onChange={(event) =>
-            onPatch({
-              typography: {
-                lineHeight: Number(event.target.value) || 1.7
-              }
-            })
-          }
-        />
+        <Tooltip content="Unitless line-spacing multiplier (e.g. 1.7 ≈ 170% of font size). Not pixels.">
+          <input
+            className="popup-input"
+            type="number"
+            min="1.2"
+            max="2.2"
+            step="0.1"
+            value={Number(settings.typography?.lineHeight || 1.7)}
+            onChange={(event) =>
+              onPatch({
+                typography: {
+                  lineHeight: Number(event.target.value) || 1.7
+                }
+              })
+            }
+          />
+        </Tooltip>
       </label>
 
       <label className="popup-field">

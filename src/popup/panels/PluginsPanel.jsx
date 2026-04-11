@@ -1,5 +1,6 @@
 import React from 'react'
-import { PLUGIN_LABELS } from '../settings-constants.js'
+import { Tooltip } from '../components/Tooltip.jsx'
+import { PLUGIN_HINTS, PLUGIN_LABELS } from '../settings-constants.js'
 
 /**
  * @param {{ pluginsSnapshot: Record<string, { enabled?: boolean }>, onPatch: (partial: object) => void }} props
@@ -22,7 +23,9 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
               })
             }
           />
-          <span className="popup-label">{PLUGIN_LABELS[pluginId] || pluginId}</span>
+          <Tooltip content={PLUGIN_HINTS[pluginId] || ''}>
+            <span className="popup-label">{PLUGIN_LABELS[pluginId] || pluginId}</span>
+          </Tooltip>
         </label>
       ))}
     </>

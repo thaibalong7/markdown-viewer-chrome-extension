@@ -1,40 +1,7 @@
 import { exportMermaidPng, exportMermaidSvg } from './mermaid-export.js'
 import { logger } from '../../shared/logger.js'
+import { createCopyIconSvg, SVG_NS } from '../../viewer/icons.js'
 import { attachTooltip, VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../viewer/tooltip.js'
-
-const SVG_NS = 'http://www.w3.org/2000/svg'
-
-function createIconCopy() {
-  const icon = document.createElementNS(SVG_NS, 'svg')
-  icon.setAttribute('viewBox', '0 0 24 24')
-  icon.setAttribute('width', '14')
-  icon.setAttribute('height', '14')
-  icon.setAttribute('aria-hidden', 'true')
-  icon.setAttribute('focusable', 'false')
-
-  const back = document.createElementNS(SVG_NS, 'rect')
-  back.setAttribute('x', '9')
-  back.setAttribute('y', '9')
-  back.setAttribute('width', '11')
-  back.setAttribute('height', '11')
-  back.setAttribute('rx', '2')
-  back.setAttribute('fill', 'none')
-  back.setAttribute('stroke', 'currentColor')
-  back.setAttribute('stroke-width', '1.8')
-
-  const front = document.createElementNS(SVG_NS, 'rect')
-  front.setAttribute('x', '4')
-  front.setAttribute('y', '4')
-  front.setAttribute('width', '11')
-  front.setAttribute('height', '11')
-  front.setAttribute('rx', '2')
-  front.setAttribute('fill', 'none')
-  front.setAttribute('stroke', 'currentColor')
-  front.setAttribute('stroke-width', '1.8')
-
-  icon.append(back, front)
-  return icon
-}
 
 function ensureMermaidToolbar(containerEl) {
   let toolbar = containerEl.querySelector(':scope > .mdp-mermaid-toolbar')
@@ -66,7 +33,7 @@ export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast
     text: 'Copy Mermaid source',
     showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
   })
-  copyBtn.appendChild(createIconCopy())
+  copyBtn.appendChild(createCopyIconSvg())
 
   copyBtn.addEventListener('click', (event) => {
     event.preventDefault()

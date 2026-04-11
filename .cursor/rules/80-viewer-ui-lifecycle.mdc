@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 
 # Viewer UI Lifecycle
-- Keep `MarkdownViewerApp` lifecycle clean: `init()` mounts once, `updateSettings()` re-renders, and `destroy()` tears down DOM/listeners.
+- Keep `MarkdownViewerApp` lifecycle clean: `init()` mounts once, `updateSettings()` re-renders, and `destroy()` tears down DOM/listeners. Sub-controllers created in `init()` — `createArticleInteractions`, `createSidebarResize`, `createExplorerController` — must each receive `destroy()` (or equivalent) from `MarkdownViewerApp.destroy()`.
 - TOC rebuilds must dispose old listeners/controllers before creating new ones (`rebuild-toc.js` + `scroll-spy.js`).
 - Preserve stable shell structure and class names (`mdp-root`, `mdp-toolbar`, `mdp-sidebar`, `mdp-markdown-body`) because styles and behaviors depend on them.
 - Keep all markdown HTML insertion funneled through `renderIntoElement()` after sanitization in the renderer pipeline.

@@ -3,7 +3,7 @@ import {
   fileUrlIsUnderDirectoryUrl,
   isMarkdownFileHref,
   normalizeFileUrlForCompare
-} from './sibling-scanner.js'
+} from './url-utils.js'
 
 /**
  * @typedef {'folder' | 'workspace'} ExplorerModeBadgeId

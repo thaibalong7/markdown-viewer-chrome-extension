@@ -1,13 +1,16 @@
+import {
+  DEFAULT_EXPLORER_MAX_FILES,
+  DEFAULT_EXPLORER_MAX_FOLDERS,
+  DEFAULT_EXPLORER_MAX_SCAN_DEPTH
+} from '../../shared/constants/explorer.js'
 import { logger } from '../../shared/logger.js'
 import {
   collectEntriesFromChromeAddRow,
   fetchDirectoryListingHtml,
   fetchFileAsText,
-  isMarkdownFileHref,
-  normalizeDirectoryUrl,
-  normalizeFileUrlForCompare,
   posixPathRelativeToFileRoot
 } from './sibling-scanner.js'
+import { isMarkdownFileHref, normalizeDirectoryUrl, normalizeFileUrlForCompare } from './url-utils.js'
 import { createGitignoreMatcher, pruneExplorerFoldersWithoutMarkdown } from './gitignore-matcher.js'
 
 /**
@@ -112,9 +115,9 @@ function sortListingEntries(entries) {
  */
 export async function scanFolderRecursive(rootDirUrl, options = {}) {
   const {
-    maxScanDepth = 3,
-    maxFiles = 2000,
-    maxFolders = 500,
+    maxScanDepth = DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
+    maxFiles = DEFAULT_EXPLORER_MAX_FILES,
+    maxFolders = DEFAULT_EXPLORER_MAX_FOLDERS,
     onProgress,
     signal,
     currentFileUrl,

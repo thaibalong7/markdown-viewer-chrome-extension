@@ -1,4 +1,4 @@
-const SVG_NS = 'http://www.w3.org/2000/svg'
+import { SVG_NS } from '../../viewer/icons.js'
 
 function formatExportTimestamp(date = new Date()) {
   const year = String(date.getFullYear())

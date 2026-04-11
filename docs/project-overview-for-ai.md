@@ -48,7 +48,7 @@ Generated output:
 - `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
 - `popup` / `options`: UI entrypoints for reading/updating settings (popup is primary)
 - `messaging`: message constants and shared `sendMessage()` in `src/messaging/index.js`
-- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`
+- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `settings-diff.js` (settings path diff / full-render gate), `constants/viewer.js` (toolbar/scroll/sidebar/copy timing), `constants/explorer.js` (virtual workspace URL prefixes + scan fallbacks when settings fields are missing)
 
 ### 3.2 Core flow (implemented)
 
@@ -59,7 +59,7 @@ Generated output:
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
 7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
-8. `MarkdownViewerApp` builds shell, applies theme CSS variables, runs **`await renderDocument()`** (async), injects HTML, runs **`pluginManager.afterRender({ articleEl, settings })`**, builds TOC.
+8. `MarkdownViewerApp` builds shell, applies theme CSS variables, runs **`await renderDocument()`** (async), injects HTML, runs **`pluginManager.afterRender({ articleEl, settings, copyCodeWithToast })`**, builds TOC; Files/workspace UI is owned by **`createExplorerController()`** in `explorer/explorer-controller.js`.
 9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
@@ -87,6 +87,7 @@ src/
   background/
     service-worker.js
     message-router.js
+    offscreen-fetch.js
   content/
     index.js
     bootstrap.js
@@ -104,6 +105,10 @@ src/
     logger.js
     deep-merge.js
     clipboard.js
+    settings-diff.js
+    constants/
+      viewer.js
+      explorer.js
   plugins/
     plugin-types.js
     plugin-manager.js
@@ -121,13 +126,24 @@ src/
       mermaid-export.js
   viewer/
     app.js
+    article-interactions.js
+    icons.js
+    scroll-utils.js
+    sidebar-resize.js
+    toast.js
+    tooltip.js
     toolbar-metrics.js
     explorer/
-      sibling-scanner.js
-      folder-scanner.js
+      explorer-controller.js
       explorer-panel.js
+      explorer-tree-renderer.js
       explorer-files-context.js
       explorer-state.js
+      folder-scanner.js
+      gitignore-matcher.js
+      sibling-scanner.js
+      url-utils.js
+      workspace-picker.js
     actions/
       rebuild-toc.js
     core/
@@ -210,24 +226,45 @@ src/
   - Builds CSS custom properties from settings preset + typography + layout; applied to viewer root via `applyThemeSettings()`.
 
 - `src/viewer/app.js`
-  - Orchestrates shell mount, theme vars, **`updateSettings()` → full `render()`** (no style-only fast path yet). Changing theme still requires re-render because Shiki bakes colors into fenced-code HTML.
-  - Hash navigation, heading-anchor copy, code-block copy (`shared/clipboard.js`), toast UI, TOC rebuild.
-  - **Explorer:** sibling vs **workspace** mode (`sessionStorage` via `explorer-state.js`); `_openWorkspaceFolder` / directory-picker workspaces / `_exitWorkspace`, `scanFolderRecursive`, in-viewer file navigation with tree active state.
+  - **`MarkdownViewerApp`**: shell mount, theme vars, async **`render()`** pipeline, **`updateSettings()`** (uses `needsFullRender()` from `shared/settings-diff.js` — no style-only fast path yet; theme still forces full re-render for Shiki).
+  - Composes **`createArticleInteractions()`** (hash navigation, heading-anchor copy, code-block copy via `shared/clipboard.js`, toast wiring) and **`createSidebarResize()`** (TOC width drag + keyboard).
+  - Delegates Files/workspace flows to **`createExplorerController()`** in `explorer/explorer-controller.js`.
+
+- `src/viewer/explorer/explorer-controller.js`
+  - Sibling vs **workspace** mode, directory-picker / webkit scans, `scanFolderRecursive`, `FETCH_FILE_AS_TEXT` navigation, virtual `mdp-ws-*` file reads, back button sync; uses `explorer-state.js` for `sessionStorage`.
+
+- `src/shared/constants/viewer.js`
+  - Viewer-wide numeric constants: toolbar height fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `sidebar-resize.js`, `article-interactions.js`; `toolbar-metrics.js` re-exports scroll metrics for compatibility).
+
+- `src/shared/constants/explorer.js`
+  - `MDP_WS_FILE` / `MDP_WS_DIR` prefixes and default scan limits when persisted `settings.explorer` fields are missing; used by `explorer-controller.js`, `workspace-picker.js`, `folder-scanner.js`. **`url-utils.js` re-exports** the `MDP_WS_*` symbols for older import paths.
+
+- `src/viewer/explorer/url-utils.js`
+  - Pure `file:` / virtual URL helpers: `isWorkspaceVirtualHref`, `getParentDirectoryUrl`, `normalizeDirectoryUrl`, `normalizeFileUrlForCompare`, `pathInputToFileDirectoryUrl`, `isMarkdownFileHref`, `MARKDOWN_EXT`; re-exports `MDP_WS_FILE` / `MDP_WS_DIR` from `shared/constants/explorer.js`.
 
 - `src/viewer/explorer/sibling-scanner.js`
-  - `getParentDirectoryUrl`, `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (parses Chrome `addRow()` listing HTML), `scanSiblingFiles`, `pathInputToFileDirectoryUrl` (path / `file:` → directory URL), virtual workspace URL prefixes + `isWorkspaceVirtualHref` / `normalizeFileUrlForCompare`.
+  - Directory listing fetch + parsing: `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (Chrome `addRow()` HTML), `scanSiblingFiles`, `resolveListingHrefToFileUrl`, `posixPathRelativeToFileRoot`.
 
 - `src/viewer/explorer/workspace-picker.js`
-  - `showDirectoryPicker` scan (`scanWorkspaceFromDirectoryHandle`), `webkitdirectory` + optional `File.path` → `file:` root (`tryFileDirectoryUrlFromWebkitFiles`), else `scanWorkspaceFromWebkitFileList` (virtual `mdp-ws-*` hrefs + `File` readers in `MarkdownViewerApp`).
+  - `showDirectoryPicker` scan (`scanWorkspaceFromDirectoryHandle`), `webkitdirectory` + optional `File.path` → `file:` root (`tryFileDirectoryUrlFromWebkitFiles`), else `scanWorkspaceFromWebkitFileList` (virtual `mdp-ws-*` hrefs + in-tab `File` / handle readers wired from `explorer-controller.js`).
 
 - `src/viewer/explorer/folder-scanner.js`
   - `scanFolderRecursive` — BFS-style recursive directory fetch, `maxScanDepth` / `maxFiles` / `maxFolders`, `AbortSignal`, progress callback; builds tree of folders + markdown files only.
 
 - `src/viewer/explorer/explorer-panel.js`
-  - Imperative Files tab UI: **context strip** (mode badge, current file line, workspace status, optional “not in tree” warning), flat list, tree, loading/progress with cancel + headline, actions; `setFilesContext()` for post-navigation refresh.
+  - Imperative Files tab shell: **context strip**, actions, loading/progress, orchestrates list/tree bodies built via **`explorer-tree-renderer.js`** (`createFileRow`, `appendTreeNode`, depth notices, summaries).
+
+- `src/viewer/explorer/explorer-tree-renderer.js`
+  - DOM builders for flat rows and folder tree nodes (`createFileRow`, `appendTreeNode`), `shortenPath`, `buildDepthNotice`, `countMarkdownFilesInTree`, `createSetSummary`, `getDirectoryLabelFromUrl`.
 
 - `src/viewer/explorer/explorer-files-context.js`
-  - Pure helpers: `buildExplorerFilesContext`, `explorerTreeContainsFileHref` (plus internal label helpers) — used by `MarkdownViewerApp` to drive Files orientation UI.
+  - Pure helpers: `buildExplorerFilesContext`, `explorerTreeContainsFileHref` — consumed by **`explorer-controller.js`** for the Files context strip.
+
+- `src/viewer/scroll-utils.js`
+  - Shared scroll math for in-viewer headings (`scrollToElementInViewer`, `getToolbarHeightInScrollRoot`) — used by **`article-interactions.js`** and **`rebuild-toc.js`**.
+
+- `src/viewer/icons.js`
+  - `SVG_NS`, `createCopyIconSvg()` — shared by code-highlight and Mermaid toolbar (`mermaid-export.js` uses `SVG_NS`).
 
 - `src/viewer/explorer/explorer-state.js`
   - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`.
@@ -268,7 +305,7 @@ Default shape in `src/settings/index.js` (plugins come from `getDefaultPluginSet
     mermaid: { enabled: false }
   },
   explorer: {
-    maxScanDepth: 3,
+    maxScanDepth: 4,
     maxFiles: 2000,
     maxFolders: 500
   },
@@ -335,10 +372,10 @@ Use this audit as the baseline for optimization tasks.
   - `normalizeShikiPreWhitespace`, bundled viewer styles from `content/_code-blocks.scss` (`pre.shiki`), and sanitize `ADD_ATTR` for Shiki output.
 
 - **Plugin behavior**:
-  - `src/plugins/plugin-manager.js`, individual plugins under `src/plugins/core/`, and `renderer.js` / `app.js` for `afterRender` DOM passes.
+  - `src/plugins/plugin-manager.js`, individual plugins under `src/plugins/core/`, and `renderer.js` / `app.js` (`copyCodeWithToast` from `article-interactions.js`) for `afterRender` DOM passes.
 
 - **Files explorer / workspace**:
-  - `src/viewer/explorer/*`, `FETCH_FILE_AS_TEXT` in `message-router.js` + offscreen fetch; requires **Allow access to file URLs** for `file:` reads.
+  - `src/viewer/explorer/explorer-controller.js` + `explorer-panel.js` / `folder-scanner.js` / `sibling-scanner.js` / `url-utils.js` / `workspace-picker.js`, `FETCH_FILE_AS_TEXT` in `message-router.js` + offscreen fetch; requires **Allow access to file URLs** for `file:` reads.
 
 ## 10) Operational notes for contributors and AI agents
 

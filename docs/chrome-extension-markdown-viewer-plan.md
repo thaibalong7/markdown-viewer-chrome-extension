@@ -949,6 +949,8 @@ Nếu cần MVP ngắn nhất:
 
 Nếu chỉ chọn ít file để bắt đầu trước, nên ưu tiên:
 
+> **Ghi chú (repo hiện tại):** Cây thư mục dưới đây phản ánh spec gốc; mã nguồn thực tế đã tách viewer thành nhiều module (ví dụ `src/viewer/explorer/explorer-controller.js`, `article-interactions.js`, `sidebar-resize.js`, `shared/settings-diff.js`, `shared/constants/viewer.js`, `shared/constants/explorer.js`). Xem [`project-overview-for-ai.md`](./project-overview-for-ai.md) mục 4–5 để bám đúng cấu trúc đang build.
+
 - `manifest.json`
 - `src/content/bootstrap.js`
 - `src/content/page-detector.js`

@@ -1,33 +1,9 @@
 import { buildTocItems, renderToc } from '../core/toc-builder.js'
 import { createScrollSpy } from '../core/scroll-spy.js'
-import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from '../toolbar-metrics.js'
+import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../scroll-utils.js'
 
 function getScrollRoot(articleEl) {
   return articleEl?.closest?.('.mdp-root') || null
-}
-
-function getToolbarHeight(scrollRoot) {
-  const toolbarEl = scrollRoot?.querySelector?.('.mdp-toolbar')
-  return toolbarEl?.getBoundingClientRect?.().height || MDP_TOOLBAR_HEIGHT_FALLBACK_PX
-}
-
-function scrollToHeading({ scrollRoot, toolbarHeight, headingEl }) {
-  if (!scrollRoot || !headingEl) return
-
-  // We support the intended case where the viewer is inside `.mdp-root`.
-  if (typeof scrollRoot.scrollTo === 'function') {
-    const rootRect = scrollRoot.getBoundingClientRect()
-    const headingRect = headingEl.getBoundingClientRect()
-    const targetTop =
-      headingRect.top - rootRect.top + scrollRoot.scrollTop - (toolbarHeight + SCROLL_PADDING_PX)
-    scrollRoot.scrollTo({ top: targetTop, behavior: 'smooth' })
-    return
-  }
-
-  // Fallback: document scrolling.
-  const toolbarOffset = toolbarHeight + SCROLL_PADDING_PX
-  const top = headingEl.getBoundingClientRect().top + window.scrollY - toolbarOffset
-  window.scrollTo({ top, behavior: 'smooth' })
 }
 
 function updateHash(id) {
@@ -50,7 +26,7 @@ export function rebuildToc({ articleEl, tocContainerEl } = {}) {
   const headingsById = new Map(tocItems.map((item) => [item.id, item.el]))
   const headingEls = tocItems.map((item) => ({ id: item.id, el: item.el }))
   const scrollRoot = getScrollRoot(articleEl)
-  const toolbarHeightGetter = () => getToolbarHeight(scrollRoot || articleEl)
+  const toolbarHeightGetter = () => getToolbarHeightInScrollRoot(scrollRoot || articleEl)
 
   let currentActiveId = null
   const setActive = (id) => {
@@ -75,7 +51,12 @@ export function rebuildToc({ articleEl, tocContainerEl } = {}) {
       const toolbarHeight = toolbarHeightGetter()
       setActive(id)
       updateHash(id)
-      scrollToHeading({ scrollRoot, toolbarHeight, headingEl })
+      scrollToElementInViewer({
+        element: headingEl,
+        scrollRoot,
+        toolbarHeight,
+        behavior: 'smooth'
+      })
     }
 
     link.addEventListener('click', handler)

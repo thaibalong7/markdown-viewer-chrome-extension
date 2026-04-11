@@ -1,4 +1,4 @@
-import { normalizeFileUrlForCompare } from './sibling-scanner.js'
+import { normalizeFileUrlForCompare } from './url-utils.js'
 
 const KEY_ORIGINAL = 'mdp:explorer:originalFile'
 const KEY_ACTIVE_TAB = 'mdp:explorer:activeTab'

@@ -1,4 +1,9 @@
 import { getDefaultPluginSettings } from '../plugins/plugin-types.js'
+import {
+  DEFAULT_EXPLORER_MAX_FILES,
+  DEFAULT_EXPLORER_MAX_FOLDERS,
+  DEFAULT_EXPLORER_MAX_SCAN_DEPTH
+} from '../shared/constants/explorer.js'
 import { deepMerge } from '../shared/deep-merge.js'
 import { logger } from '../shared/logger.js'
 
@@ -23,9 +28,9 @@ export const DEFAULT_SETTINGS = {
   },
   plugins: getDefaultPluginSettings(),
   explorer: {
-    maxScanDepth: 4,
-    maxFiles: 2000,
-    maxFolders: 500
+    maxScanDepth: DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
+    maxFiles: DEFAULT_EXPLORER_MAX_FILES,
+    maxFolders: DEFAULT_EXPLORER_MAX_FOLDERS
   },
   version: 1
 }

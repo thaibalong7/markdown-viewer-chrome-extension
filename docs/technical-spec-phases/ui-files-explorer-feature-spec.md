@@ -202,13 +202,14 @@ Khi user chọn folder:
 
 ### 6.4 Max scan depth
 Phải có một config cụ thể, ví dụ:
-- mặc định `maxScanDepth = 3`
+- mặc định `maxScanDepth = 4` (nguồn duy nhất: `DEFAULT_EXPLORER_MAX_SCAN_DEPTH` trong `src/shared/constants/explorer.js`, được `DEFAULT_SETTINGS.explorer` tái sử dụng)
 
 Ý nghĩa:
 - root = depth 0
 - thư mục con trực tiếp = depth 1
 - thư mục cháu = depth 2
 - thư mục chắt = depth 3
+- thư mục sâu hơn một cấp nữa = depth 4 (giới hạn mặc định)
 
 Nếu vượt quá depth này:
 - không scan sâu hơn
@@ -232,7 +233,7 @@ Các giới hạn này giúp tránh trường hợp:
 {
   explorer: {
     enabled: true,
-    maxScanDepth: 3,
+    maxScanDepth: 4,
     maxFiles: 2000,
     maxFolders: 500,
     showOnlySupportedFiles: true,

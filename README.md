@@ -80,10 +80,13 @@ Development notes:
 ## Project Structure
 
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
-- `src/viewer` - Viewer UI, rendering flow, TOC, and Files explorer (sidebar).
+- `src/viewer` - Viewer shell, async render + TOC (`app.js`), article clicks/hash scroll (`article-interactions.js`), sidebar resize (`sidebar-resize.js`), shared scroll/icon helpers (`scroll-utils.js`, `icons.js`), Files tab (`explorer/*` including `explorer-controller.js` for workspace/sibling orchestration).
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
+- `src/shared` - Cross-cutting utilities (`logger`, `deep-merge`, `clipboard`, `settings-diff`) and **shared constants** (`constants/viewer.js` for toolbar/scroll/sidebar/copy UX; `constants/explorer.js` for workspace virtual URL prefixes and explorer scan defaults).
 - `src/background` - Runtime messaging and settings handlers.
+
+For an up-to-date file tree and module notes, see [`docs/project-overview-for-ai.md`](docs/project-overview-for-ai.md).
 
 ## Contributing
 

@@ -1,4 +1,4 @@
-import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from '../toolbar-metrics.js'
+import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from '../../shared/constants/viewer.js'
 
 export function createScrollSpy({
   scrollRoot,

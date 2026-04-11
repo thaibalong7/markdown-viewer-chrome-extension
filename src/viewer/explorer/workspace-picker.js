@@ -1,7 +1,14 @@
 import { describeFileSystemHandleForLog } from '../../shared/fs-handle-debug.js'
+import {
+  DEFAULT_EXPLORER_MAX_FILES,
+  DEFAULT_EXPLORER_MAX_FOLDERS,
+  DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
+  MDP_WS_DIR,
+  MDP_WS_FILE
+} from '../../shared/constants/explorer.js'
 import { logger } from '../../shared/logger.js'
 import { createGitignoreMatcher, pruneExplorerFoldersWithoutMarkdown } from './gitignore-matcher.js'
-import { MDP_WS_DIR, MDP_WS_FILE, pathInputToFileDirectoryUrl } from './sibling-scanner.js'
+import { pathInputToFileDirectoryUrl } from './url-utils.js'
 
 /** @typedef {import('./folder-scanner.js').ExplorerTreeNode} ExplorerTreeNode */
 /** @typedef {import('./folder-scanner.js').ScanFolderStats} ScanFolderStats */
@@ -168,9 +175,9 @@ async function* iterateDirectoryEntries(dir, signal) {
  */
 export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {}) {
   const {
-    maxScanDepth = 3,
-    maxFiles = 2000,
-    maxFolders = 500,
+    maxScanDepth = DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
+    maxFiles = DEFAULT_EXPLORER_MAX_FILES,
+    maxFolders = DEFAULT_EXPLORER_MAX_FOLDERS,
     signal,
     currentFileUrl,
     onProgress,
@@ -373,9 +380,9 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
  */
 export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
   const {
-    maxScanDepth = 3,
-    maxFiles = 2000,
-    maxFolders = 500,
+    maxScanDepth = DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
+    maxFiles = DEFAULT_EXPLORER_MAX_FILES,
+    maxFolders = DEFAULT_EXPLORER_MAX_FOLDERS,
     signal,
     onProgress,
     respectGitignore = true

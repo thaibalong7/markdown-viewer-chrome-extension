@@ -1,4 +1,5 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
+import { createCopyIconSvg } from '../../viewer/icons.js'
 import { attachTooltip, VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../viewer/tooltip.js'
 
 const PRE_SELECTOR = '.mdp-markdown-body pre'
@@ -50,36 +51,7 @@ export const codeHighlightPlugin = {
         showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
       })
 
-      const copyIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-      copyIcon.setAttribute('class', 'mdp-code-block__copy-icon')
-      copyIcon.setAttribute('viewBox', '0 0 24 24')
-      copyIcon.setAttribute('width', '14')
-      copyIcon.setAttribute('height', '14')
-      copyIcon.setAttribute('aria-hidden', 'true')
-      copyIcon.setAttribute('focusable', 'false')
-
-      const copyBack = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-      copyBack.setAttribute('x', '9')
-      copyBack.setAttribute('y', '9')
-      copyBack.setAttribute('width', '11')
-      copyBack.setAttribute('height', '11')
-      copyBack.setAttribute('rx', '2')
-      copyBack.setAttribute('fill', 'none')
-      copyBack.setAttribute('stroke', 'currentColor')
-      copyBack.setAttribute('stroke-width', '1.8')
-
-      const copyFront = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-      copyFront.setAttribute('x', '4')
-      copyFront.setAttribute('y', '4')
-      copyFront.setAttribute('width', '11')
-      copyFront.setAttribute('height', '11')
-      copyFront.setAttribute('rx', '2')
-      copyFront.setAttribute('fill', 'none')
-      copyFront.setAttribute('stroke', 'currentColor')
-      copyFront.setAttribute('stroke-width', '1.8')
-
-      copyIcon.appendChild(copyBack)
-      copyIcon.appendChild(copyFront)
+      const copyIcon = createCopyIconSvg({ className: 'mdp-code-block__copy-icon' })
       copyBtn.appendChild(copyIcon)
 
       actions.appendChild(langEl)

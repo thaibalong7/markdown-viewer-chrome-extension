@@ -1,5 +1,6 @@
 import { describeFileSystemHandleForLog } from '../../shared/fs-handle-debug.js'
 import { logger } from '../../shared/logger.js'
+import { createGitignoreMatcher, pruneExplorerFoldersWithoutMarkdown } from './gitignore-matcher.js'
 import { MDP_WS_DIR, MDP_WS_FILE, pathInputToFileDirectoryUrl } from './sibling-scanner.js'
 
 /** @typedef {import('./folder-scanner.js').ExplorerTreeNode} ExplorerTreeNode */
@@ -162,6 +163,7 @@ async function* iterateDirectoryEntries(dir, signal) {
  * @param {AbortSignal} [options.signal]
  * @param {string} [options.currentFileUrl]
  * @param {(p: ScanFolderStats & { currentFolder?: string }) => void} [options.onProgress]
+ * @param {boolean} [options.respectGitignore]
  * @returns {Promise<{ tree: ExplorerTreeNode, stats: ScanFolderStats, readers: Map<string, FileSystemFileHandle> }>}
  */
 export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {}) {
@@ -171,8 +173,11 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
     maxFolders = 500,
     signal,
     currentFileUrl,
-    onProgress
+    onProgress,
+    respectGitignore = true
   } = options
+
+  const gitignore = respectGitignore ? createGitignoreMatcher() : null
 
   /** @type {ScanFolderStats} */
   const stats = {
@@ -250,6 +255,20 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
     const dirPrefix = relParts.length ? `${rootName}/${relParts.join('/')}/` : `${rootName}/`
     emitProgress(workspaceVirtualDirHref(dirPrefix))
 
+    if (gitignore) {
+      try {
+        const giHandle = await /** @type {FileSystemDirectoryHandle} */ (dir).getFileHandle('.gitignore')
+        const giFile = await giHandle.getFile()
+        const text = await giFile.text()
+        if (text.trim()) {
+          const dirRel = relParts.length ? `${rootName}/${relParts.join('/')}` : rootName
+          gitignore.addSection(dirRel, text)
+        }
+      } catch {
+        /* no .gitignore */
+      }
+    }
+
     /** @type {Array<[string, FileSystemDirectoryHandle | FileSystemFileHandle]>} */
     const entries = []
     for await (const pair of iterateDirectoryEntries(/** @type {FileSystemDirectoryHandle} */ (dir), signal)) {
@@ -273,7 +292,12 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
         (handle.kind !== 'file' &&
           typeof /** @type {{ getDirectoryHandle?: unknown }} */ (handle).getDirectoryHandle === 'function')
 
+      const entryRel =
+        relParts.length > 0 ? `${rootName}/${relParts.join('/')}/${name}` : `${rootName}/${name}`
+
       if (treatAsDirectory) {
+        if (gitignore?.shouldIgnore(entryRel, true)) continue
+
         const nextDepth = depthFromRoot + 1
         if (nextDepth > maxScanDepth) {
           stats.skippedByDepth++
@@ -283,7 +307,9 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
 
         const sub = await walk(/** @type {FileSystemDirectoryHandle} */ (handle), [...relParts, name], nextDepth)
         sub.name = name
-        children.push(sub)
+        if (pruneExplorerFoldersWithoutMarkdown(sub, false)) {
+          children.push(sub)
+        }
         if (stats.hitFolderLimit) break
         continue
       }
@@ -295,6 +321,8 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
         continue
       }
       if (!/\.(md|markdown|mdown)$/i.test(name)) continue
+
+      if (gitignore?.shouldIgnore(entryRel, false)) continue
 
       if (stats.scannedFiles >= maxFiles) {
         stats.hitFileLimit = true
@@ -308,7 +336,7 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
 
       children.push({
         type: 'file',
-        name: name.replace(/\.(md|markdown|mdown)$/i, ''),
+        name,
         href,
         depth: depthFromRoot + 1,
         isActive: false
@@ -327,6 +355,7 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
 
   const tree = await walk(rootHandle, [], 0)
   tree.name = rootName
+  pruneExplorerFoldersWithoutMarkdown(tree, true)
   emitProgress(workspaceVirtualDirHref(`${rootName}/`))
   return { tree, stats, readers }
 }
@@ -339,6 +368,7 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
  * @param {number} [options.maxFolders]
  * @param {AbortSignal} [options.signal]
  * @param {(p: ScanFolderStats & { currentFolder?: string }) => void} [options.onProgress]
+ * @param {boolean} [options.respectGitignore]
  * @returns {Promise<{ tree: ExplorerTreeNode, stats: ScanFolderStats, readers: Map<string, File> }>}
  */
 export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
@@ -347,8 +377,11 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
     maxFiles = 2000,
     maxFolders = 500,
     signal,
-    onProgress
+    onProgress,
+    respectGitignore = true
   } = options
+
+  const gitignore = respectGitignore ? createGitignoreMatcher() : null
 
   /** @type {ScanFolderStats} */
   const stats = {
@@ -375,6 +408,22 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
       const err = new Error('Scan cancelled')
       err.name = 'AbortError'
       throw err
+    }
+  }
+
+  if (gitignore) {
+    for (const f of files) {
+      if (!f || f.name !== '.gitignore') continue
+      const rel = String(f.webkitRelativePath || '').replace(/\\/g, '/')
+      const parts = rel.split('/').filter(Boolean)
+      if (parts.length < 2) continue
+      try {
+        const dirRel = parts.slice(0, -1).join('/')
+        const text = await f.text()
+        if (text.trim()) gitignore.addSection(dirRel, text)
+      } catch {
+        /* ignore */
+      }
     }
   }
 
@@ -452,6 +501,8 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
     const parts = rel.split('/').filter(Boolean)
     if (parts.length < 2 || parts[0] !== rootName) continue
 
+    if (gitignore?.shouldIgnore(rel, false)) continue
+
     const folderDepthBelowRoot = parts.length - 2
     if (folderDepthBelowRoot > maxScanDepth) {
       stats.skippedByDepth++
@@ -476,7 +527,7 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
     const fname = parts[parts.length - 1] || ''
     parent.children.push({
       type: 'file',
-      name: fname.replace(/\.(md|markdown|mdown)$/i, ''),
+      name: fname,
       href,
       depth: parts.length - 1,
       isActive: false
@@ -497,6 +548,7 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
 
   sortTree(root)
   stats.scannedFolders = Math.max(0, folders.size - 1)
+  pruneExplorerFoldersWithoutMarkdown(root, true)
   emitProgress(workspaceVirtualDirHref(`${rootName}/`))
   return { tree: root, stats, readers }
 }

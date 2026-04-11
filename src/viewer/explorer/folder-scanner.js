@@ -2,12 +2,13 @@ import { logger } from '../../shared/logger.js'
 import {
   collectEntriesFromChromeAddRow,
   fetchDirectoryListingHtml,
+  fetchFileAsText,
   isMarkdownFileHref,
   normalizeDirectoryUrl,
-  normalizeFileUrlForCompare
+  normalizeFileUrlForCompare,
+  posixPathRelativeToFileRoot
 } from './sibling-scanner.js'
-
-const MARKDOWN_EXT = /\.(md|markdown|mdown)$/i
+import { createGitignoreMatcher, pruneExplorerFoldersWithoutMarkdown } from './gitignore-matcher.js'
 
 /**
  * @typedef {object} ExplorerTreeNode
@@ -56,9 +57,9 @@ function fileDisplayNameFromHref(fileHref) {
     const p = new URL(fileHref).pathname
     const base = p.split('/').filter(Boolean).pop() || ''
     try {
-      return decodeURIComponent(base.replace(MARKDOWN_EXT, ''))
+      return decodeURIComponent(base)
     } catch {
-      return base.replace(MARKDOWN_EXT, '')
+      return base
     }
   } catch {
     return 'File'
@@ -106,6 +107,7 @@ function sortListingEntries(entries) {
  * @param {AbortSignal} [options.signal]
  * @param {string} [options.currentFileUrl] - marks active file in tree
  * @param {boolean} [options.siblingsFirstAtRoot] - at depth 0, list markdown files before recursing into subfolders
+ * @param {boolean} [options.respectGitignore] - load nested `.gitignore` and skip ignored paths (default true)
  * @returns {Promise<{ tree: ExplorerTreeNode, stats: ScanFolderStats, currentFileInTree: boolean }>}
  */
 export async function scanFolderRecursive(rootDirUrl, options = {}) {
@@ -116,10 +118,28 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
     onProgress,
     signal,
     currentFileUrl,
-    siblingsFirstAtRoot = false
+    siblingsFirstAtRoot = false,
+    respectGitignore = true
   } = options
 
   const normalizedRoot = normalizeDirectoryUrl(rootDirUrl)
+  const gitignore = respectGitignore ? createGitignoreMatcher() : null
+
+  /**
+   * @param {string} dirUrl
+   */
+  async function loadGitignoreForDirectory(dirUrl) {
+    if (!gitignore) return
+    try {
+      const giHref = new URL('.gitignore', dirUrl).href
+      const text = await fetchFileAsText(giHref)
+      if (!text.trim()) return
+      const dirRel = posixPathRelativeToFileRoot(normalizedRoot, dirUrl)
+      gitignore.addSection(dirRel, text)
+    } catch (e) {
+      logger.debug('loadGitignoreForDirectory skipped', e)
+    }
+  }
 
   /** @type {ScanFolderStats} */
   const stats = {
@@ -173,6 +193,8 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
     stats.scannedFolders++
     emitProgress(dirUrl)
 
+    await loadGitignoreForDirectory(dirUrl)
+
     const html = await fetchDirectoryListingHtml(dirUrl)
     const rawEntries = collectEntriesFromChromeAddRow(html, dirUrl)
     const sorted = sortListingEntries(rawEntries)
@@ -200,15 +222,23 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
       }
       if (stats.hitFolderLimit) return
 
+      const rel = posixPathRelativeToFileRoot(normalizedRoot, entry.href)
+      if (gitignore?.shouldIgnore(rel, true)) return
+
       const subTree = await buildTree(entry.href, nextDepth)
       subTree.name = folderNameFromEntry(entry.name, entry.href)
-      children.push(subTree)
+      if (pruneExplorerFoldersWithoutMarkdown(subTree)) {
+        children.push(subTree)
+      }
     }
 
     /**
      * @param {typeof sorted[0]} entry
      */
     function pushMarkdownFile(entry) {
+      const rel = posixPathRelativeToFileRoot(normalizedRoot, entry.href)
+      if (gitignore?.shouldIgnore(rel, false)) return true
+
       if (stats.scannedFiles >= maxFiles) {
         stats.hitFileLimit = true
         emitProgress(dirUrl)
@@ -258,6 +288,7 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
 
   const tree = await buildTree(normalizedRoot, 0)
   tree.name = folderDisplayNameFromUrl(normalizedRoot)
+  pruneExplorerFoldersWithoutMarkdown(tree, true)
   emitProgress(normalizedRoot)
 
   const currentFileInTree = Boolean(

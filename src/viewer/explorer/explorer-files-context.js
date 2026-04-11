@@ -87,9 +87,9 @@ export function injectCurrentMarkdownAtRootIfMissing(tree, currentFileUrl, stats
     const p = new URL(currentFileUrl).pathname
     const base = p.split('/').filter(Boolean).pop() || ''
     try {
-      displayName = decodeURIComponent(base.replace(/\.(md|markdown|mdown)$/i, '')) || displayName
+      displayName = decodeURIComponent(base) || displayName
     } catch {
-      displayName = base.replace(/\.(md|markdown|mdown)$/i, '') || displayName
+      displayName = base || displayName
     }
   } catch {
     /* keep */

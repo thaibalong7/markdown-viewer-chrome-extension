@@ -209,6 +209,67 @@ export async function fetchDirectoryListingHtml(dirUrl) {
 }
 
 /**
+ * Read a `file:` document (file, not directory listing) via background fetch.
+ * @param {string} fileUrl
+ * @returns {Promise<string>}
+ */
+export async function fetchFileAsText(fileUrl) {
+  try {
+    const response = await sendMessage({
+      type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT,
+      payload: { url: fileUrl }
+    })
+    if (!response?.ok) {
+      logger.debug('File text fetch failed.', response?.error, fileUrl)
+      return ''
+    }
+    return response.data?.text ?? ''
+  } catch (error) {
+    logger.debug('File text fetch error.', error, fileUrl)
+    return ''
+  }
+}
+
+/**
+ * Path from `rootDirUrl` to `targetUrl` (both `file:`), posix, decoded segments, no leading slash.
+ * @param {string} rootDirUrl - normalized directory URL (trailing slash ok)
+ * @param {string} targetUrl - file or directory URL under root
+ * @returns {string}
+ */
+export function posixPathRelativeToFileRoot(rootDirUrl, targetUrl) {
+  try {
+    const r = new URL(normalizeDirectoryUrl(rootDirUrl))
+    const t = new URL(targetUrl)
+    if (r.protocol !== 'file:' || t.protocol !== 'file:') return ''
+
+    const splitDecoded = (pathname) => {
+      const norm = pathname.replace(/\/+$/, '')
+      return norm
+        .split('/')
+        .filter(Boolean)
+        .map((s) => {
+          try {
+            return decodeURIComponent(s)
+          } catch {
+            return s
+          }
+        })
+    }
+
+    const rs = splitDecoded(r.pathname)
+    const ts = splitDecoded(t.pathname)
+    if (!ts.length) return ''
+    if (ts.length < rs.length) return ''
+    for (let i = 0; i < rs.length; i++) {
+      if (ts[i] !== rs[i]) return ''
+    }
+    return ts.slice(rs.length).join('/')
+  } catch {
+    return ''
+  }
+}
+
+/**
  * Scan the parent directory listing for sibling markdown files (same folder as current file).
  * @param {string} currentFileUrl - e.g. window.location.href
  * @returns {Promise<Array<{ displayName: string, href: string, isActive: boolean }>>}
@@ -240,9 +301,9 @@ export async function scanSiblingFiles(currentFileUrl) {
 
     let displayName = base
     try {
-      displayName = decodeURIComponent(base.replace(MARKDOWN_EXT, ''))
+      displayName = decodeURIComponent(base)
     } catch {
-      displayName = base.replace(MARKDOWN_EXT, '')
+      displayName = base
     }
 
     const normalizedCurrent = normalizeFileUrlForCompare(currentFileUrl)

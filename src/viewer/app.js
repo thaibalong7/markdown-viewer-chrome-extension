@@ -4,6 +4,7 @@ import { rebuildToc } from './actions/rebuild-toc.js'
 import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
 import { copyTextToClipboard } from '../shared/clipboard.js'
+import { dismissViewerToast, showViewerToast } from './toast.js'
 import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from './toolbar-metrics.js'
 import { scanFolderRecursive } from './explorer/folder-scanner.js'
@@ -66,7 +67,6 @@ export class MarkdownViewerApp {
     this.hashChangeHandler = null
     this.articleHashLinkClickHandler = null
     this._smoothInitialHashScroll = false
-    this._toastTimer = null
     this._renderToken = 0
     /** @type {ReturnType<typeof createExplorerPanel> | null} */
     this._explorerPanel = null
@@ -240,7 +240,8 @@ export class MarkdownViewerApp {
     if (renderToken !== this._renderToken) return null
     await result.pluginManager?.afterRender({
       articleEl: this.parts.article,
-      settings: this.settings
+      settings: this.settings,
+      copyCodeWithToast: this.copyCodeWithToast.bind(this)
     })
     if (renderToken !== this._renderToken) return null
     this.syncTocVisibility()
@@ -256,25 +257,7 @@ export class MarkdownViewerApp {
   }
 
   showToast(message) {
-    const root = this.parts?.root
-    if (!root) return
-
-    let toast = root.querySelector('.mdp-toast')
-    if (!toast) {
-      toast = document.createElement('div')
-      toast.className = 'mdp-toast'
-      toast.setAttribute('role', 'status')
-      toast.setAttribute('aria-live', 'polite')
-      root.appendChild(toast)
-    }
-    toast.textContent = message
-    toast.classList.add('is-visible')
-
-    if (this._toastTimer) clearTimeout(this._toastTimer)
-    this._toastTimer = setTimeout(() => {
-      toast.classList.remove('is-visible')
-      this._toastTimer = null
-    }, 2200)
+    showViewerToast(this.parts?.root, message)
   }
 
   /**
@@ -1361,8 +1344,7 @@ export class MarkdownViewerApp {
   }
 
   destroy() {
-    if (this._toastTimer) clearTimeout(this._toastTimer)
-    this._toastTimer = null
+    dismissViewerToast(this.parts?.root)
     if (this.shellController?.destroy) this.shellController.destroy()
     this.shellController = null
     if (this.hashChangeHandler) {

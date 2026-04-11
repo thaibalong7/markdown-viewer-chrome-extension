@@ -86,17 +86,55 @@
       }
     }
 
+    &:hover .mdp-mermaid-toolbar__copy,
     &:hover .mdp-mermaid-actions__trigger,
+    .mdp-mermaid-toolbar__copy:focus-visible,
+    .mdp-mermaid-actions__trigger:focus-visible,
     .mdp-mermaid-actions__trigger[aria-expanded='true'] {
       opacity: 1;
     }
   }
 
-  .mdp-mermaid-actions {
+  .mdp-mermaid-toolbar {
     position: absolute;
     top: 8px;
     right: 8px;
     z-index: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mdp-mermaid-toolbar__copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--mdp-border) 80%, transparent);
+    border-radius: 7px;
+    color: var(--mdp-muted);
+    background: color-mix(in srgb, var(--mdp-panel-bg) 85%, transparent);
+    opacity: 0.45;
+    cursor: pointer;
+    transition:
+      opacity 140ms ease,
+      color 140ms ease,
+      border-color 140ms ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--mdp-text);
+      border-color: var(--mdp-border);
+    }
+  }
+
+  .mdp-mermaid-actions {
+    position: relative;
+    flex: 0 0 auto;
   }
 
   .mdp-mermaid-actions__trigger {

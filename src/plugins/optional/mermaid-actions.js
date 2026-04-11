@@ -3,6 +3,77 @@ import { logger } from '../../shared/logger.js'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
+function createIconCopy() {
+  const icon = document.createElementNS(SVG_NS, 'svg')
+  icon.setAttribute('viewBox', '0 0 24 24')
+  icon.setAttribute('width', '14')
+  icon.setAttribute('height', '14')
+  icon.setAttribute('aria-hidden', 'true')
+  icon.setAttribute('focusable', 'false')
+
+  const back = document.createElementNS(SVG_NS, 'rect')
+  back.setAttribute('x', '9')
+  back.setAttribute('y', '9')
+  back.setAttribute('width', '11')
+  back.setAttribute('height', '11')
+  back.setAttribute('rx', '2')
+  back.setAttribute('fill', 'none')
+  back.setAttribute('stroke', 'currentColor')
+  back.setAttribute('stroke-width', '1.8')
+
+  const front = document.createElementNS(SVG_NS, 'rect')
+  front.setAttribute('x', '4')
+  front.setAttribute('y', '4')
+  front.setAttribute('width', '11')
+  front.setAttribute('height', '11')
+  front.setAttribute('rx', '2')
+  front.setAttribute('fill', 'none')
+  front.setAttribute('stroke', 'currentColor')
+  front.setAttribute('stroke-width', '1.8')
+
+  icon.append(back, front)
+  return icon
+}
+
+function ensureMermaidToolbar(containerEl) {
+  let toolbar = containerEl.querySelector(':scope > .mdp-mermaid-toolbar')
+  if (!toolbar) {
+    toolbar = document.createElement('div')
+    toolbar.className = 'mdp-mermaid-toolbar'
+    containerEl.appendChild(toolbar)
+  }
+  return toolbar
+}
+
+/**
+ * Copy Mermaid source text; always shown (separate from the export menu).
+ * Call after the block DOM is final (`innerHTML` / error UI), because those replace children.
+ * @param {{ source?: string, copyCodeWithToast?: (text: string) => Promise<void> }} [options] — `copyCodeWithToast` from `MarkdownViewerApp` (same as code-block copy + toast).
+ */
+export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast } = {}) {
+  if (!containerEl || containerEl.dataset.mermaidCopyAttached === 'true') return
+
+  const text = source == null ? '' : String(source)
+  containerEl.dataset.mermaidCopyAttached = 'true'
+
+  const toolbar = ensureMermaidToolbar(containerEl)
+  const copyBtn = document.createElement('button')
+  copyBtn.type = 'button'
+  copyBtn.className = 'mdp-mermaid-toolbar__copy'
+  copyBtn.setAttribute('aria-label', 'Copy Mermaid source')
+  copyBtn.setAttribute('title', 'Copy Mermaid source')
+  copyBtn.appendChild(createIconCopy())
+
+  copyBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (typeof copyCodeWithToast !== 'function') return
+    void copyCodeWithToast(text)
+  })
+
+  toolbar.insertBefore(copyBtn, toolbar.firstChild)
+}
+
 function createIconDots() {
   const icon = document.createElementNS(SVG_NS, 'svg')
   icon.setAttribute('viewBox', '0 0 24 24')
@@ -72,7 +143,6 @@ function getScrollableAncestors(fromEl) {
 
 export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   if (!containerEl || containerEl.dataset.mermaidActionsAttached === 'true') return
-  if (containerEl.classList.contains('mdp-mermaid--error')) return
   if (!containerEl.querySelector(':scope > svg')) return
 
   containerEl.dataset.mermaidActionsAttached = 'true'
@@ -245,5 +315,5 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   })
 
   root.appendChild(trigger)
-  containerEl.appendChild(root)
+  ensureMermaidToolbar(containerEl).appendChild(root)
 }

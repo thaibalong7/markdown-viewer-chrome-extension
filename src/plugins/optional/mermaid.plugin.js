@@ -1,6 +1,6 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { logger } from '../../shared/logger.js'
-import { attachMermaidActionsMenu } from './mermaid-actions.js'
+import { attachMermaidActionsMenu, attachMermaidCopyButton } from './mermaid-actions.js'
 
 let mermaidImportPromise = null
 let mermaidInitializePromise = null
@@ -132,7 +132,7 @@ export const mermaidPlugin = {
       return defaultFence(tokens, idx, options, env, self)
     }
   },
-  async afterRender({ articleEl, settings }) {
+  async afterRender({ articleEl, settings, copyCodeWithToast }) {
     if (!articleEl) return
 
     hoistMermaidPresToDivs(articleEl)
@@ -165,10 +165,12 @@ export const mermaidPlugin = {
         const out = await mermaidApi.render(id, code)
         node.innerHTML = out.svg
         const chartIndex = Math.max(1, allCharts.indexOf(node) + 1)
+        attachMermaidCopyButton(node, { source: code, copyCodeWithToast })
         attachMermaidActionsMenu(node, { chartIndex })
       } catch (error) {
         logger.warn('Mermaid block rendering failed.', error)
         setMermaidRenderError(node, code, error)
+        attachMermaidCopyButton(node, { source: code, copyCodeWithToast })
       }
       node.setAttribute('data-mermaid-processed', 'true')
     }

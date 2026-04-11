@@ -49,7 +49,7 @@ function ensureMermaidToolbar(containerEl) {
 /**
  * Copy Mermaid source text; always shown (separate from the export menu).
  * Call after the block DOM is final (`innerHTML` / error UI), because those replace children.
- * @param {{ source?: string, copyCodeWithToast?: (text: string) => Promise<void> }} [options] — `copyCodeWithToast` from `MarkdownViewerApp` (same as code-block copy + toast).
+ * @param {{ source?: string, copyCodeWithToast?: (text: string, triggerButton?: HTMLButtonElement | null) => Promise<void> }} [options] — `copyCodeWithToast` from `MarkdownViewerApp` (code-block / Mermaid copy; success uses inline button state when `triggerButton` is passed).
  */
 export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast } = {}) {
   if (!containerEl || containerEl.dataset.mermaidCopyAttached === 'true') return
@@ -72,7 +72,7 @@ export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast
     event.preventDefault()
     event.stopPropagation()
     if (typeof copyCodeWithToast !== 'function') return
-    void copyCodeWithToast(text)
+    void copyCodeWithToast(text, copyBtn)
   })
 
   toolbar.insertBefore(copyBtn, toolbar.firstChild)

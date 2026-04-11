@@ -89,6 +89,25 @@
     outline: 2px solid var(--mdp-link);
     outline-offset: 1px;
   }
+
+  &.is-copied {
+    color: var(--mdp-link);
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
+    background: color-mix(in srgb, var(--mdp-link) 12%, transparent);
+    pointer-events: none;
+
+    .mdp-code-block__copy-icon {
+      display: none;
+    }
+
+    &::after {
+      content: '✓';
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+  }
 }
 
 .mdp-code-block__copy-icon {

@@ -49,6 +49,9 @@ import {
 const SIDEBAR_MIN_WIDTH_PX = 220
 const SIDEBAR_MAX_WIDTH_PX = 520
 
+/** How long code / Mermaid copy buttons stay in the "copied" visual state (ms). */
+const COPY_BUTTON_FEEDBACK_MS = 2500
+
 export class MarkdownViewerApp {
   /**
    * @param {object} options
@@ -97,6 +100,8 @@ export class MarkdownViewerApp {
     this._workspaceVirtualReaders = null
     /** Human label for workspace root (tree title / folder name) for Files context strip */
     this._workspaceDisplayLabel = ''
+    /** @type {WeakMap<HTMLButtonElement, number>} */
+    this._copyButtonFeedbackTimers = new WeakMap()
   }
 
   init() {
@@ -278,7 +283,7 @@ export class MarkdownViewerApp {
     const pre = block?.querySelector('pre')
     if (pre) {
       const text = pre.innerText ?? ''
-      void this.copyCodeWithToast(text)
+      void this.copyCodeWithToast(text, codeCopyBtn)
     }
     return true
   }
@@ -352,14 +357,52 @@ export class MarkdownViewerApp {
     }
   }
 
-  async copyCodeWithToast(text) {
+  /**
+   * @param {string} text
+   * @param {HTMLButtonElement | null} [triggerButton] — when set, shows inline "copied" state instead of a success toast.
+   */
+  async copyCodeWithToast(text, triggerButton = null) {
     try {
       await copyTextToClipboard(text)
-      this.showToast('Copied')
+      if (triggerButton instanceof HTMLButtonElement) {
+        this._flashCopyButtonCopied(triggerButton)
+      } else {
+        this.showToast('Copied')
+      }
     } catch (error) {
       logger.debug('Copy code failed.', error)
       this.showToast('Could not copy')
     }
+  }
+
+  /**
+   * @param {HTMLButtonElement} button
+   */
+  _flashCopyButtonCopied(button) {
+    const prevTimer = this._copyButtonFeedbackTimers.get(button)
+    if (typeof prevTimer === 'number') {
+      window.clearTimeout(prevTimer)
+    }
+
+    if (!button.dataset.mdpCopyOrigAria) {
+      button.dataset.mdpCopyOrigAria = button.getAttribute('aria-label') || ''
+    }
+    button.classList.add('is-copied')
+    button.setAttribute('aria-label', 'Copied')
+
+    const timerId = window.setTimeout(() => {
+      this._copyButtonFeedbackTimers.delete(button)
+      const orig = button.dataset.mdpCopyOrigAria
+      delete button.dataset.mdpCopyOrigAria
+      if (!button.isConnected) return
+      button.classList.remove('is-copied')
+      if (orig != null) {
+        if (orig === '') button.removeAttribute('aria-label')
+        else button.setAttribute('aria-label', orig)
+      }
+    }, COPY_BUTTON_FEEDBACK_MS)
+
+    this._copyButtonFeedbackTimers.set(button, timerId)
   }
 
   scrollToHash({ behavior = 'auto' } = {}) {

@@ -130,6 +130,25 @@
       color: var(--mdp-text);
       border-color: var(--mdp-border);
     }
+
+    &.is-copied {
+      opacity: 1;
+      color: var(--mdp-link);
+      border-color: color-mix(in srgb, var(--mdp-link) 40%, var(--mdp-border));
+      background: color-mix(in srgb, var(--mdp-link) 14%, var(--mdp-panel-bg));
+      pointer-events: none;
+
+      > svg {
+        display: none;
+      }
+
+      &::after {
+        content: '✓';
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1;
+      }
+    }
   }
 
   .mdp-mermaid-actions {

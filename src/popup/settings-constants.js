@@ -17,7 +17,7 @@ export const PLUGIN_LABELS = {
   mermaid: 'Mermaid diagrams'
 }
 
-/** Short English hints for plugin toggles (popup tooltips). */
+/** Short English hints shown under each plugin toggle in the popup. */
 export const PLUGIN_HINTS = {
   codeHighlight:
     'Colors fenced code with Shiki. When off, code blocks use plain monospace styling (faster, fewer bytes).',

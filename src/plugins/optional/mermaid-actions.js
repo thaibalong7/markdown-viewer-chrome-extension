@@ -54,6 +54,22 @@ function isEventInsideRoot(event, root) {
   return root.contains(event.target)
 }
 
+/** Scrollable ancestors between `fromEl` and `document`; used to keep fixed menus aligned while nested areas scroll. */
+function getScrollableAncestors(fromEl) {
+  const out = []
+  const doc = fromEl?.ownerDocument
+  if (!doc?.defaultView) return out
+  const win = doc.defaultView
+  let el = fromEl instanceof Element ? fromEl : null
+  while (el) {
+    const st = win.getComputedStyle(el)
+    const overflow = `${st.overflow}${st.overflowX}${st.overflowY}`
+    if (/(auto|scroll|overlay)/.test(overflow)) out.push(el)
+    el = el.parentElement
+  }
+  return out
+}
+
 export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   if (!containerEl || containerEl.dataset.mermaidActionsAttached === 'true') return
   if (containerEl.classList.contains('mdp-mermaid--error')) return
@@ -95,13 +111,84 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   menu.appendChild(createMenuButton({ label: 'PNG 3x', action: 'export-png', scale: 3 }))
   menu.appendChild(createMenuButton({ label: 'PNG 4x', action: 'export-png', scale: 4 }))
 
+  const portalParent = containerEl.closest('.mdp-markdown-body')
+  if (portalParent) {
+    portalParent.appendChild(menu)
+  } else {
+    root.appendChild(menu)
+  }
+
   let isOpen = false
+  let repositionRaf = 0
+  const scrollTargets = new Set()
+
+  const onReposition = () => {
+    if (repositionRaf) return
+    repositionRaf = requestAnimationFrame(() => {
+      repositionRaf = 0
+      positionMenu()
+    })
+  }
+
   const onWindowPointerDown = (event) => {
-    if (isEventInsideRoot(event, root)) return
+    if (isEventInsideRoot(event, root) || isEventInsideRoot(event, menu)) return
     closeMenu()
   }
   const onWindowKeyDown = (event) => {
     if (event.key === 'Escape') closeMenu()
+  }
+
+  function positionMenu() {
+    if (!isOpen || menu.hidden || !trigger.isConnected) return
+    const rect = trigger.getBoundingClientRect()
+    const margin = 6
+    const pad = 8
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+
+    menu.style.right = 'auto'
+
+    const mw = menu.offsetWidth
+    const mh = menu.offsetHeight
+    let top = rect.bottom + margin
+    let left = rect.right - mw
+
+    if (left < pad) left = pad
+    if (left + mw > vw - pad) left = Math.max(pad, vw - pad - mw)
+
+    if (top + mh > vh - pad && rect.top - margin - mh >= pad) {
+      top = rect.top - margin - mh
+    }
+    if (top + mh > vh - pad) {
+      top = Math.max(pad, vh - pad - mh)
+    }
+
+    menu.style.top = `${Math.round(top)}px`
+    menu.style.left = `${Math.round(left)}px`
+  }
+
+  function bindRepositionListeners() {
+    const win = containerEl.ownerDocument?.defaultView || window
+    win.addEventListener('resize', onReposition)
+    win.addEventListener('scroll', onReposition, true)
+    for (const el of getScrollableAncestors(containerEl)) {
+      el.addEventListener('scroll', onReposition, { passive: true })
+      scrollTargets.add(el)
+    }
+  }
+
+  function unbindRepositionListeners() {
+    const win = containerEl.ownerDocument?.defaultView || window
+    win.removeEventListener('resize', onReposition)
+    win.removeEventListener('scroll', onReposition, true)
+    for (const el of scrollTargets) {
+      el.removeEventListener('scroll', onReposition)
+    }
+    scrollTargets.clear()
+    if (repositionRaf) {
+      cancelAnimationFrame(repositionRaf)
+      repositionRaf = 0
+    }
   }
 
   function openMenu() {
@@ -111,6 +198,11 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
     trigger.setAttribute('aria-expanded', 'true')
     window.addEventListener('pointerdown', onWindowPointerDown)
     window.addEventListener('keydown', onWindowKeyDown)
+    bindRepositionListeners()
+    requestAnimationFrame(() => {
+      positionMenu()
+      requestAnimationFrame(() => positionMenu())
+    })
   }
 
   function closeMenu() {
@@ -118,6 +210,7 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
     isOpen = false
     menu.hidden = true
     trigger.setAttribute('aria-expanded', 'false')
+    unbindRepositionListeners()
     window.removeEventListener('pointerdown', onWindowPointerDown)
     window.removeEventListener('keydown', onWindowKeyDown)
   }
@@ -152,6 +245,5 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   })
 
   root.appendChild(trigger)
-  root.appendChild(menu)
   containerEl.appendChild(root)
 }

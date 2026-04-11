@@ -67,9 +67,9 @@
   }
 
   .mdp-mermaid-actions__menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    /* `position` + placement set in JS (`fixed` + top/left) so the menu escapes `.mdp-mermaid` overflow clipping */
+    position: fixed;
+    z-index: 30;
     min-width: 150px;
     padding: 6px;
     border: 1px solid var(--mdp-border);
@@ -91,10 +91,23 @@
     background: transparent;
     text-align: left;
     cursor: pointer;
+    transition:
+      background-color 140ms ease,
+      color 140ms ease;
 
-    &:hover,
+    &:hover {
+      /* Stronger than `--mdp-code-bg` so hover reads clearly on `--mdp-panel-bg` menus */
+      background: color-mix(in srgb, var(--mdp-text) 10%, var(--mdp-panel-bg));
+    }
+
     &:focus-visible {
-      background: var(--mdp-code-bg);
+      background: color-mix(in srgb, var(--mdp-text) 10%, var(--mdp-panel-bg));
+      outline: 2px solid color-mix(in srgb, var(--mdp-text) 42%, transparent);
+      outline-offset: 1px;
+    }
+
+    &:active {
+      background: color-mix(in srgb, var(--mdp-text) 16%, var(--mdp-panel-bg));
     }
   }
 

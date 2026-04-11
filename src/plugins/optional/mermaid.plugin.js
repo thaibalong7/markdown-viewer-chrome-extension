@@ -44,6 +44,52 @@ function isMermaidFenceClass(className) {
   return /\blanguage-mermaid\b/i.test(String(className || ''))
 }
 
+/** Human-readable text from Mermaid/render failures (safe for `textContent`). */
+function formatMermaidRenderError(error) {
+  if (error == null) return 'Unknown error.'
+  const msg = typeof error.message === 'string' ? error.message.trim() : ''
+  const str = typeof error.str === 'string' ? error.str.trim() : ''
+  if (msg && str && str !== msg) return `${msg}\n\n${str}`
+  if (msg) return msg
+  if (str) return str
+  try {
+    return String(error)
+  } catch {
+    return 'Unknown error.'
+  }
+}
+
+/** Replace node contents with parse/render error (copy-friendly) + original source. */
+function setMermaidRenderError(node, code, error) {
+  if (!node) return
+  node.classList.add('mdp-mermaid--error')
+  node.replaceChildren()
+
+  const banner = document.createElement('div')
+  banner.className = 'mdp-mermaid__error-banner'
+
+  const title = document.createElement('div')
+  title.className = 'mdp-mermaid__error-title'
+  title.textContent = 'Mermaid render error'
+
+  const message = document.createElement('pre')
+  message.className = 'mdp-mermaid__error-message'
+  message.setAttribute('role', 'alert')
+  message.textContent = formatMermaidRenderError(error)
+
+  banner.append(title, message)
+
+  const sourceTitle = document.createElement('div')
+  sourceTitle.className = 'mdp-mermaid__source-title'
+  sourceTitle.textContent = 'Diagram source'
+
+  const source = document.createElement('pre')
+  source.className = 'mdp-mermaid__source'
+  source.textContent = code
+
+  node.append(banner, sourceTitle, source)
+}
+
 /** ```mermaid``` still as `<pre>` (incl. inside `.mdp-code-block`) → `.mdp-mermaid` text container. */
 function hoistMermaidPresToDivs(articleEl) {
   for (const block of [...articleEl.querySelectorAll('.mdp-markdown-body .mdp-code-block')]) {
@@ -122,8 +168,7 @@ export const mermaidPlugin = {
         attachMermaidActionsMenu(node, { chartIndex })
       } catch (error) {
         logger.warn('Mermaid block rendering failed.', error)
-        node.classList.add('mdp-mermaid--error')
-        node.textContent = code
+        setMermaidRenderError(node, code, error)
       }
       node.setAttribute('data-mermaid-processed', 'true')
     }

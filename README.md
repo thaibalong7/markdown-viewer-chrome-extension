@@ -16,6 +16,7 @@ A Chrome Extension that detects Markdown pages and turns raw text into a clean r
 - Auto-detects Markdown-like pages.
 - Renders content in a readable viewer layout.
 - Left sidebar Table of Contents with heading navigation.
+- **Files explorer** (sidebar Files tab): browse Markdown siblings in the same folder; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
 - GitHub-inspired Light/Dark themes and typography controls.
 - Built-in plugin system with core and optional plugins.
 - Optional Mermaid support with diagram rendering.
@@ -79,7 +80,7 @@ Development notes:
 ## Project Structure
 
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
-- `src/viewer` - Viewer UI, rendering flow, TOC, and settings drawer.
+- `src/viewer` - Viewer UI, rendering flow, TOC, and Files explorer (sidebar).
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
 - `src/background` - Runtime messaging and settings handlers.

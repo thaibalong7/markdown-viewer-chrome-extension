@@ -14,6 +14,7 @@ Current implemented core:
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Left sidebar TOC with click-to-scroll + active heading tracking
+- **Files explorer** (sidebar **Files** tab): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list
 - Settings storage and runtime messaging
 - **Extension popup (React)** for reader/plugins/general settings; minimal **options** page (JSON-oriented); no in-viewer settings drawer yet
 
@@ -77,6 +78,7 @@ Message types (current):
 - `SAVE_SETTINGS`
 - `RESET_SETTINGS`
 - `SETTINGS_UPDATED` (broadcast from background after save; content script applies patches)
+- `FETCH_FILE_AS_TEXT` (background + offscreen: read `file:` file or directory listing HTML for explorer and in-viewer navigation)
 
 ## 4) Actual folder map (current repository)
 
@@ -120,6 +122,12 @@ src/
   viewer/
     app.js
     toolbar-metrics.js
+    explorer/
+      sibling-scanner.js
+      folder-scanner.js
+      explorer-panel.js
+      explorer-files-context.js
+      explorer-state.js
     actions/
       rebuild-toc.js
     core/
@@ -137,6 +145,7 @@ src/
       layout.scss
       content.scss
       toc.scss
+      explorer.scss
       content/
         _typography.scss
         _code-blocks.scss
@@ -203,6 +212,25 @@ src/
 - `src/viewer/app.js`
   - Orchestrates shell mount, theme vars, **`updateSettings()` → full `render()`** (no style-only fast path yet). Changing theme still requires re-render because Shiki bakes colors into fenced-code HTML.
   - Hash navigation, heading-anchor copy, code-block copy (`shared/clipboard.js`), toast UI, TOC rebuild.
+  - **Explorer:** sibling vs **workspace** mode (`sessionStorage` via `explorer-state.js`); `_openWorkspaceFolder` / directory-picker workspaces / `_exitWorkspace`, `scanFolderRecursive`, in-viewer file navigation with tree active state.
+
+- `src/viewer/explorer/sibling-scanner.js`
+  - `getParentDirectoryUrl`, `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (parses Chrome `addRow()` listing HTML), `scanSiblingFiles`, `pathInputToFileDirectoryUrl` (path / `file:` → directory URL), virtual workspace URL prefixes + `isWorkspaceVirtualHref` / `normalizeFileUrlForCompare`.
+
+- `src/viewer/explorer/workspace-picker.js`
+  - `showDirectoryPicker` scan (`scanWorkspaceFromDirectoryHandle`), `webkitdirectory` + optional `File.path` → `file:` root (`tryFileDirectoryUrlFromWebkitFiles`), else `scanWorkspaceFromWebkitFileList` (virtual `mdp-ws-*` hrefs + `File` readers in `MarkdownViewerApp`).
+
+- `src/viewer/explorer/folder-scanner.js`
+  - `scanFolderRecursive` — BFS-style recursive directory fetch, `maxScanDepth` / `maxFiles` / `maxFolders`, `AbortSignal`, progress callback; builds tree of folders + markdown files only.
+
+- `src/viewer/explorer/explorer-panel.js`
+  - Imperative Files tab UI: **context strip** (mode badge, current file line, workspace status, optional “not in tree” warning), flat list, tree, loading/progress with cancel + headline, actions; `setFilesContext()` for post-navigation refresh.
+
+- `src/viewer/explorer/explorer-files-context.js`
+  - Pure helpers: `buildExplorerFilesContext`, `explorerTreeContainsFileHref` (plus internal label helpers) — used by `MarkdownViewerApp` to drive Files orientation UI.
+
+- `src/viewer/explorer/explorer-state.js`
+  - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`.
 
 - `src/viewer/styles/content.scss` (+ partials under `content/`) → compiled and inlined via the content script bundle
   - **`pre.shiki`**: `white-space: pre`, `tab-size: 4`, `.line` as `display: block`.
@@ -239,6 +267,11 @@ Default shape in `src/settings/index.js` (plugins come from `getDefaultPluginSet
     math: { enabled: false },
     mermaid: { enabled: false }
   },
+  explorer: {
+    maxScanDepth: 3,
+    maxFiles: 2000,
+    maxFolders: 500
+  },
   version: 1
 }
 ```
@@ -259,6 +292,7 @@ Implemented strongly:
 - **Plugin hooks + core plugins** (task list, anchor heading, table enhance, code-highlight gating for Shiki) — aligns with **parts of Phases 6–7** in planning docs
 - **Optional plugins completed** (Mermaid, Math, Footnote, Emoji), including Mermaid export actions (SVG + PNG with scale options)
 - Basic popup/options wiring (partial Phase 9)
+- **UI Files Explorer** (see `docs/technical-spec-phases/ui-files-explorer-feature-spec.md`): Phase 1 (siblings + back) and **Phase 2** (open-folder workspace, recursive scan, limits, progress UI, tree). Phase 3+ (bookmarks/popup) not done.
 
 Not implemented yet (from planning docs):
 - Full “plugin packs” marketplace or remote packs as described in older phase docs
@@ -302,6 +336,9 @@ Use this audit as the baseline for optimization tasks.
 
 - **Plugin behavior**:
   - `src/plugins/plugin-manager.js`, individual plugins under `src/plugins/core/`, and `renderer.js` / `app.js` for `afterRender` DOM passes.
+
+- **Files explorer / workspace**:
+  - `src/viewer/explorer/*`, `FETCH_FILE_AS_TEXT` in `message-router.js` + offscreen fetch; requires **Allow access to file URLs** for `file:` reads.
 
 ## 10) Operational notes for contributors and AI agents
 

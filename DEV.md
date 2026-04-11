@@ -29,6 +29,8 @@ Trong quá trình dev, CRXJS sẽ rebuild thư mục `dist/` khi bạn sửa cod
 4. Chọn thư mục `dist/` trong project:
    - `.../markdown-plus/dist`
 
+Để **Files explorer** (đọc thư mục `file://` và điều hướng file) hoạt động, trong chi tiết extension bật **Allow access to file URLs**.
+
 Mỗi lần sửa code, bạn quay lại extension và bấm reload nếu cần (đôi khi HMR không áp dụng cho một số thay đổi, tùy loại entry).
 
 ## Build để export (production-like)

@@ -22,6 +22,11 @@ export const DEFAULT_SETTINGS = {
     lineHeight: 1.7
   },
   plugins: getDefaultPluginSettings(),
+  explorer: {
+    maxScanDepth: 4,
+    maxFiles: 2000,
+    maxFolders: 500
+  },
   version: 1
 }
 

@@ -6,24 +6,56 @@ import { logger } from '../shared/logger.js'
 import { copyTextToClipboard } from '../shared/clipboard.js'
 import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from './toolbar-metrics.js'
-import { scanSiblingFiles } from './explorer/sibling-scanner.js'
+import { scanFolderRecursive } from './explorer/folder-scanner.js'
+import {
+  fileUrlIsUnderDirectoryUrl,
+  getParentDirectoryPathLabel,
+  getParentDirectoryUrl,
+  isWorkspaceVirtualHref,
+  MDP_WS_FILE,
+  normalizeDirectoryUrl,
+  normalizeFileUrlForCompare,
+  scanSiblingFiles
+} from './explorer/sibling-scanner.js'
+import {
+  pickFilesWithWebkitDirectory,
+  scanWorkspaceFromDirectoryHandle,
+  scanWorkspaceFromWebkitFileList,
+  tryFileDirectoryUrlFromWebkitFiles
+} from './explorer/workspace-picker.js'
+import {
+  buildExplorerFilesContext,
+  explorerTreeContainsFileHref,
+  injectCurrentMarkdownAtRootIfMissing
+} from './explorer/explorer-files-context.js'
 import { createExplorerPanel } from './explorer/explorer-panel.js'
 import {
-  clearOriginalFileUrl,
+  clearWorkspaceRootUrl,
   getActiveSidebarTab,
+  getExplorerMode,
   getOriginalFileUrl,
   getSidebarWidthPx,
+  getWorkspaceRootUrl,
   isOnOriginalFile,
   setActiveSidebarTab,
+  setExplorerMode,
   setOriginalFileUrlIfUnset,
-  setSidebarWidthPx
+  setSidebarWidthPx,
+  setWorkspaceRootUrl
 } from './explorer/explorer-state.js'
 
 const SIDEBAR_MIN_WIDTH_PX = 220
 const SIDEBAR_MAX_WIDTH_PX = 520
 
 export class MarkdownViewerApp {
-  constructor({ markdown, settings, container, styles = [] }) {
+  /**
+   * @param {object} options
+   * @param {string} options.markdown
+   * @param {object} options.settings
+   * @param {HTMLElement | ShadowRoot} options.container
+   * @param {string[]} [options.styles]
+   */
+  constructor({ markdown, settings, container, styles = [] } = {}) {
     this.markdown = markdown
     this.settings = settings
     this.container = container
@@ -45,6 +77,23 @@ export class MarkdownViewerApp {
     this._sidebarResizePointerMove = null
     this._sidebarResizePointerUp = null
     this._sidebarResizeKeyDown = null
+    /** @type {'sibling' | 'workspace'} */
+    this._explorerMode = 'sibling'
+    /** @type {import('./explorer/folder-scanner.js').ExplorerTreeNode | null} */
+    this._workspaceTree = null
+    /** Deep folder tree when explorerMode is sibling (parent of current file) */
+    /** @type {import('./explorer/folder-scanner.js').ExplorerTreeNode | null} */
+    this._siblingTree = null
+    /** Decoded parent directory path label for Files context strip in sibling mode */
+    this._siblingFolderLabel = ''
+    /** Normalized file: directory URL for the root of the current sibling deep tree (null if flat list) */
+    this._siblingScanRootUrl = null
+    /** @type {AbortController | null} */
+    this._scanAbortController = null
+    /** @type {Map<string, File | FileSystemFileHandle> | null} */
+    this._workspaceVirtualReaders = null
+    /** Human label for workspace root (tree title / folder name) for Files context strip */
+    this._workspaceDisplayLabel = ''
   }
 
   init() {
@@ -386,9 +435,43 @@ export class MarkdownViewerApp {
     this.setSidebarTab(getActiveSidebarTab())
   }
 
+  /**
+   * @param {object} [opts]
+   * @param {'idle' | 'scanning'} [opts.scanPhase]
+   * @param {string} [opts.workspaceDisplayLabel] - override label while scanning or before tree is ready
+   * @returns {import('./explorer/explorer-files-context.js').ExplorerFilesContext}
+   */
+  _buildExplorerFilesContext(opts = {}) {
+    const scanPhase = opts.scanPhase === 'scanning' ? 'scanning' : 'idle'
+    const label =
+      opts.workspaceDisplayLabel != null && String(opts.workspaceDisplayLabel).trim() !== ''
+        ? String(opts.workspaceDisplayLabel).trim()
+        : this._workspaceDisplayLabel || getWorkspaceRootUrl() || undefined
+
+    const siblingFolderLabel =
+      opts.siblingFolderLabel != null && String(opts.siblingFolderLabel).trim() !== ''
+        ? String(opts.siblingFolderLabel).trim()
+        : this._siblingFolderLabel || undefined
+
+    return buildExplorerFilesContext({
+      explorerMode: this._explorerMode,
+      currentFileUrl: this._currentFileUrl,
+      workspaceTree: this._workspaceTree,
+      siblingTree: this._siblingTree,
+      workspaceRootUrl: getWorkspaceRootUrl(),
+      workspaceDisplayLabel: label,
+      siblingFolderLabel,
+      scanPhase
+    })
+  }
+
   _initExplorer() {
     const { explorerContainer, tabFiles, tabOutline } = this.parts || {}
     if (!explorerContainer || !tabFiles || !tabOutline) return
+
+    if (getExplorerMode() === 'workspace' && !getWorkspaceRootUrl()) {
+      setExplorerMode('sibling')
+    }
 
     setOriginalFileUrlIfUnset(window.location.href)
     this._applySidebarTabFromStorage()
@@ -397,16 +480,485 @@ export class MarkdownViewerApp {
       container: explorerContainer,
       onNavigate: (href) => {
         void this._navigateToSiblingFile(href)
+      },
+      onOpenAnotherFolder: () => {
+        this._openAnotherFolderDialog()
+      },
+      onExitWorkspace: () => {
+        this._exitWorkspace()
       }
     })
-    this._explorerPanel.showLoading()
 
     this._tabFilesClick = () => this.setSidebarTab('files')
     this._tabOutlineClick = () => this.setSidebarTab('outline')
     tabFiles.addEventListener('click', this._tabFilesClick)
     tabOutline.addEventListener('click', this._tabOutlineClick)
 
+    const storedMode = getExplorerMode()
+    const storedRoot = getWorkspaceRootUrl()
+    if (storedMode === 'workspace' && storedRoot) {
+      this._explorerMode = 'workspace'
+      this._explorerPanel.showLoading({ filesContext: this._buildExplorerFilesContext() })
+      void this._openWorkspaceFolder(storedRoot, { restore: true })
+      return
+    }
+
+    this._explorerPanel.showLoading({ filesContext: this._buildExplorerFilesContext() })
     void this._runSiblingScan(this._currentFileUrl)
+  }
+
+  _abortWorkspaceScan() {
+    if (this._scanAbortController) {
+      try {
+        this._scanAbortController.abort()
+      } catch {
+        /* ignore */
+      }
+      this._scanAbortController = null
+    }
+  }
+
+  _openAnotherFolderDialog() {
+    void this._pickAndOpenAnotherWorkspaceFolder()
+  }
+
+  _clearWorkspaceVirtualReaders() {
+    this._workspaceVirtualReaders = null
+  }
+
+  async _pickAndOpenAnotherWorkspaceFolder() {
+    if (!this._explorerPanel) return
+
+    if (typeof window.showDirectoryPicker === 'function') {
+      let handle
+      try {
+        handle = await window.showDirectoryPicker({ mode: 'read' })
+      } catch (error) {
+        if (error?.name === 'AbortError') return
+        logger.debug('showDirectoryPicker failed; trying webkitdirectory.', error)
+      }
+      if (handle) {
+        // FileSystemDirectoryHandle cannot survive chrome.runtime.sendMessage
+        // (degrades to a plain Object). Scan in the current tab instead.
+        await this._openWorkspaceFromDirectoryHandle(handle)
+        return
+      }
+    }
+
+    const files = await pickFilesWithWebkitDirectory()
+    if (!files?.length) return
+
+    try {
+      const dirUrl = tryFileDirectoryUrlFromWebkitFiles(files)
+      if (dirUrl) {
+        await this._openWorkspaceFolder(dirUrl)
+      } else {
+        await this._openWorkspaceFromVirtualWebkitFiles(files)
+      }
+    } catch (error) {
+      logger.warn('Open workspace folder failed.', error)
+      this.showToast(error?.message || 'Could not open folder')
+    }
+  }
+
+  /**
+   * @param {FileSystemDirectoryHandle} dirHandle
+   */
+  async _openWorkspaceFromDirectoryHandle(dirHandle) {
+    if (!this._explorerPanel || !dirHandle) return
+
+    this._siblingTree = null
+    this._siblingFolderLabel = ''
+    this._siblingScanRootUrl = null
+    this._clearWorkspaceVirtualReaders()
+    clearWorkspaceRootUrl()
+    this._abortWorkspaceScan()
+    this._scanAbortController = new AbortController()
+    const { signal } = this._scanAbortController
+
+    const ex = this.settings?.explorer || {}
+    const maxScanDepth = Number.isFinite(Number(ex.maxScanDepth)) ? Number(ex.maxScanDepth) : 3
+    const maxFiles = Number.isFinite(Number(ex.maxFiles)) ? Number(ex.maxFiles) : 2000
+    const maxFolders = Number.isFinite(Number(ex.maxFolders)) ? Number(ex.maxFolders) : 500
+
+    setExplorerMode('workspace')
+    this._explorerMode = 'workspace'
+
+    this._explorerPanel.showProgressLoading({
+      scannedFiles: 0,
+      scannedFolders: 0,
+      currentFolder: dirHandle.name || '…',
+      onCancel: () => this._scanAbortController?.abort(),
+      progressHeadline: 'Scanning picked folder…',
+      filesContext: this._buildExplorerFilesContext({
+        scanPhase: 'scanning',
+        workspaceDisplayLabel: dirHandle.name || 'Folder'
+      })
+    })
+
+    const failToSibling = async (message) => {
+      this._explorerPanel?.clearExplorerBody()
+      if (message) this.showToast(message)
+      this._clearWorkspaceVirtualReaders()
+      clearWorkspaceRootUrl()
+      setExplorerMode('sibling')
+      this._explorerMode = 'sibling'
+      this._workspaceTree = null
+      this._workspaceDisplayLabel = ''
+      await this._runSiblingScan(this._currentFileUrl)
+    }
+
+    try {
+      const { tree, stats, readers } = await scanWorkspaceFromDirectoryHandle(dirHandle, {
+        maxScanDepth,
+        maxFiles,
+        maxFolders,
+        signal,
+        currentFileUrl: this._currentFileUrl,
+        onProgress: (p) => {
+          this._explorerPanel?.updateProgressLoading({
+            scannedFiles: p.scannedFiles,
+            scannedFolders: p.scannedFolders,
+            currentFolder: p.currentFolder
+          })
+        }
+      })
+      this._workspaceVirtualReaders = readers
+      await this._finalizeWorkspaceTreePresent(tree, stats, {
+        maxScanDepth,
+        workspaceLabelOverride: dirHandle.name || 'Workspace'
+      })
+    } catch (error) {
+      const aborted = error?.name === 'AbortError' || signal.aborted
+      logger.warn('Workspace directory-handle scan failed.', error)
+      if (aborted) {
+        await failToSibling('')
+      } else {
+        await failToSibling('Could not scan folder')
+      }
+    } finally {
+      this._scanAbortController = null
+    }
+  }
+
+  /**
+   * @param {File[]} files
+   */
+  async _openWorkspaceFromVirtualWebkitFiles(files) {
+    if (!this._explorerPanel || !files?.length) return
+
+    this._siblingTree = null
+    this._siblingFolderLabel = ''
+    this._siblingScanRootUrl = null
+    this._clearWorkspaceVirtualReaders()
+    clearWorkspaceRootUrl()
+    this._abortWorkspaceScan()
+    this._scanAbortController = new AbortController()
+    const { signal } = this._scanAbortController
+
+    const ex = this.settings?.explorer || {}
+    const maxScanDepth = Number.isFinite(Number(ex.maxScanDepth)) ? Number(ex.maxScanDepth) : 3
+    const maxFiles = Number.isFinite(Number(ex.maxFiles)) ? Number(ex.maxFiles) : 2000
+    const maxFolders = Number.isFinite(Number(ex.maxFolders)) ? Number(ex.maxFolders) : 500
+
+    setExplorerMode('workspace')
+    this._explorerMode = 'workspace'
+
+    this._explorerPanel.showProgressLoading({
+      scannedFiles: 0,
+      scannedFolders: 0,
+      currentFolder: '…',
+      onCancel: () => this._scanAbortController?.abort(),
+      progressHeadline: 'Scanning imported folder…',
+      filesContext: this._buildExplorerFilesContext({
+        scanPhase: 'scanning',
+        workspaceDisplayLabel: 'Imported folder'
+      })
+    })
+
+    const failToSibling = async (message) => {
+      this._explorerPanel?.clearExplorerBody()
+      if (message) this.showToast(message)
+      this._clearWorkspaceVirtualReaders()
+      clearWorkspaceRootUrl()
+      setExplorerMode('sibling')
+      this._explorerMode = 'sibling'
+      this._workspaceTree = null
+      this._workspaceDisplayLabel = ''
+      await this._runSiblingScan(this._currentFileUrl)
+    }
+
+    try {
+      const { tree, stats, readers } = await scanWorkspaceFromWebkitFileList(files, {
+        maxScanDepth,
+        maxFiles,
+        maxFolders,
+        signal,
+        onProgress: (p) => {
+          this._explorerPanel?.updateProgressLoading({
+            scannedFiles: p.scannedFiles,
+            scannedFolders: p.scannedFolders,
+            currentFolder: p.currentFolder
+          })
+        }
+      })
+      this._workspaceVirtualReaders = readers
+      await this._finalizeWorkspaceTreePresent(tree, stats, {
+        maxScanDepth,
+        workspaceLabelOverride: tree.name || 'Workspace'
+      })
+    } catch (error) {
+      const aborted = error?.name === 'AbortError' || signal.aborted
+      logger.warn('Workspace webkitdirectory scan failed.', error)
+      if (aborted) {
+        await failToSibling('')
+      } else {
+        await failToSibling('Could not scan folder')
+      }
+    } finally {
+      this._scanAbortController = null
+    }
+  }
+
+  async _resetViewerToPickWorkspaceFile() {
+    this.markdown = '# Select a file\n\nPick a Markdown file from the sidebar list.'
+    this._currentFileUrl = ''
+    this._smoothInitialHashScroll = false
+    await this.render({ preserveScroll: false, honorHash: false })
+    this.getScrollRoot()?.scrollTo({ top: 0, behavior: 'auto' })
+    document.title = 'Markdown Plus'
+  }
+
+  /**
+   * @param {import('./explorer/folder-scanner.js').ExplorerTreeNode} tree
+   * @param {import('./explorer/folder-scanner.js').ScanFolderStats} stats
+   * @param {{ maxScanDepth: number, folderLabel?: string }} opts
+   */
+  _finalizeSiblingTreePresent(tree, stats, opts) {
+    if (!this._explorerPanel) return
+    const { maxScanDepth, folderLabel } = opts
+
+    this._siblingTree = tree
+    try {
+      this._siblingScanRootUrl = normalizeDirectoryUrl(tree.href)
+    } catch {
+      this._siblingScanRootUrl = null
+    }
+    if (folderLabel && String(folderLabel).trim()) {
+      this._siblingFolderLabel = String(folderLabel).trim()
+    }
+
+    const { showBack, backLabel, onBack } = this._siblingBackNavigationForUrl(this._currentFileUrl)
+
+    const listLabel = this._siblingFolderLabel || tree.name || 'Folder'
+
+    this._explorerPanel.showTree(tree, {
+      workspaceLabel: listLabel,
+      stats,
+      maxScanDepth,
+      showBack,
+      backLabel,
+      onBack,
+      actionsMode: 'sibling',
+      listAriaLabel: 'Markdown files in folder tree',
+      filesContext: this._buildExplorerFilesContext()
+    })
+    if (!this._currentFileUrl) {
+      this._explorerPanel.markActiveFile('')
+    } else {
+      this._explorerPanel.markActiveFile(this._currentFileUrl)
+    }
+  }
+
+  /**
+   * @param {import('./explorer/folder-scanner.js').ExplorerTreeNode} tree
+   * @param {import('./explorer/folder-scanner.js').ScanFolderStats} stats
+   * @param {{ maxScanDepth: number, normalizedDirUrl?: string, workspaceLabelOverride?: string }} opts
+   */
+  async _finalizeWorkspaceTreePresent(tree, stats, opts) {
+    if (!this._explorerPanel) return
+    const { maxScanDepth, normalizedDirUrl, workspaceLabelOverride } = opts
+
+    const rootForInject =
+      (normalizedDirUrl && String(normalizedDirUrl)) || getWorkspaceRootUrl() || ''
+    injectCurrentMarkdownAtRootIfMissing(
+      tree,
+      this._currentFileUrl,
+      stats,
+      rootForInject.startsWith('file:') ? rootForInject : undefined
+    )
+
+    this._workspaceTree = tree
+
+    const rootNorm = rootForInject
+    const cur = this._currentFileUrl
+    let documentStillValid = false
+    if (cur) {
+      if (isWorkspaceVirtualHref(cur)) {
+        documentStillValid = explorerTreeContainsFileHref(tree, cur)
+      } else if (cur.startsWith('file:') && rootNorm.startsWith('file:')) {
+        documentStillValid = fileUrlIsUnderDirectoryUrl(cur, rootNorm)
+      }
+    }
+    if (cur && !documentStillValid) {
+      await this._resetViewerToPickWorkspaceFile()
+    }
+
+    // Workspace mode: no “Back to …” — the tree is the picked folder, not a sibling escape hatch.
+    const showBack = false
+
+    let workspaceLabel = workspaceLabelOverride || tree.name || 'Workspace'
+    if (normalizedDirUrl) {
+      try {
+        let p = new URL(normalizedDirUrl).pathname.replace(/\/+$/, '')
+        try {
+          workspaceLabel = decodeURIComponent(p) || workspaceLabel
+        } catch {
+          workspaceLabel = p || workspaceLabel
+        }
+      } catch {
+        /* keep */
+      }
+    }
+
+    this._workspaceDisplayLabel = workspaceLabel
+
+    this._explorerPanel.showTree(tree, {
+      workspaceLabel,
+      stats,
+      maxScanDepth,
+      showBack,
+      actionsMode: 'workspace',
+      filesContext: this._buildExplorerFilesContext()
+    })
+    if (!this._currentFileUrl) {
+      this._explorerPanel.markActiveFile('')
+    } else {
+      this._explorerPanel.markActiveFile(this._currentFileUrl)
+    }
+  }
+
+  /**
+   * @param {string} dirUrl
+   * @param {{ restore?: boolean }} [opts]
+   */
+  async _openWorkspaceFolder(dirUrl, opts = {}) {
+    const { restore = false } = opts
+    if (!this._explorerPanel || !dirUrl) return
+
+    const normalized = normalizeDirectoryUrl(dirUrl)
+    this._siblingTree = null
+    this._siblingFolderLabel = ''
+    this._siblingScanRootUrl = null
+    this._clearWorkspaceVirtualReaders()
+    this._abortWorkspaceScan()
+    this._scanAbortController = new AbortController()
+    const { signal } = this._scanAbortController
+
+    const ex = this.settings?.explorer || {}
+    const maxScanDepth = Number.isFinite(Number(ex.maxScanDepth)) ? Number(ex.maxScanDepth) : 3
+    const maxFiles = Number.isFinite(Number(ex.maxFiles)) ? Number(ex.maxFiles) : 2000
+    const maxFolders = Number.isFinite(Number(ex.maxFolders)) ? Number(ex.maxFolders) : 500
+
+    setExplorerMode('workspace')
+    setWorkspaceRootUrl(normalized)
+    this._explorerMode = 'workspace'
+
+    let scanContextLabel = normalized
+    try {
+      const p = new URL(normalized).pathname.replace(/\/+$/, '')
+      scanContextLabel = decodeURIComponent(p) || scanContextLabel
+    } catch {
+      /* keep */
+    }
+
+    this._explorerPanel.showProgressLoading({
+      scannedFiles: 0,
+      scannedFolders: 0,
+      currentFolder: normalized,
+      onCancel: () => this._scanAbortController?.abort(),
+      progressHeadline: 'Scanning workspace (file listing)…',
+      filesContext: this._buildExplorerFilesContext({
+        scanPhase: 'scanning',
+        workspaceDisplayLabel: scanContextLabel
+      })
+    })
+
+    const failToSibling = async (message) => {
+      this._explorerPanel?.clearExplorerBody()
+      if (message) this.showToast(message)
+      this._clearWorkspaceVirtualReaders()
+      clearWorkspaceRootUrl()
+      setExplorerMode('sibling')
+      this._explorerMode = 'sibling'
+      this._workspaceTree = null
+      this._workspaceDisplayLabel = ''
+      await this._runSiblingScan(this._currentFileUrl)
+    }
+
+    try {
+      const { tree, stats } = await scanFolderRecursive(normalized, {
+        maxScanDepth,
+        maxFiles,
+        maxFolders,
+        signal,
+        currentFileUrl: this._currentFileUrl,
+        siblingsFirstAtRoot: true,
+        onProgress: (p) => {
+          this._explorerPanel?.updateProgressLoading({
+            scannedFiles: p.scannedFiles,
+            scannedFolders: p.scannedFolders,
+            currentFolder: p.currentFolder
+          })
+        }
+      })
+
+      await this._finalizeWorkspaceTreePresent(tree, stats, {
+        maxScanDepth,
+        normalizedDirUrl: normalized
+      })
+    } catch (error) {
+      const aborted = error?.name === 'AbortError' || signal.aborted
+      logger.warn('Workspace folder scan failed.', error)
+      if (aborted) {
+        await failToSibling('')
+      } else {
+        await failToSibling(restore ? 'Could not restore workspace' : 'Could not scan folder')
+      }
+    } finally {
+      this._scanAbortController = null
+    }
+  }
+
+  async _exitWorkspace() {
+    this._abortWorkspaceScan()
+    this._clearWorkspaceVirtualReaders()
+    clearWorkspaceRootUrl()
+    setExplorerMode('sibling')
+    this._explorerMode = 'sibling'
+    this._workspaceTree = null
+    this._workspaceDisplayLabel = ''
+    const wasWorkspaceVirtualDoc = isWorkspaceVirtualHref(this._currentFileUrl)
+    if (wasWorkspaceVirtualDoc) {
+      this._currentFileUrl = window.location.href
+    }
+
+    const original = getOriginalFileUrl()
+    // Virtual workspace docs use mdp-ws-* URLs but the viewer URL still matches session
+    // `original`, so `isOnOriginalFile` is true after the assignment above — we must still
+    // reload markdown from `original`. Real file:// picks in workspace use `!isOnOriginalFile`.
+    const restoreOriginalDoc =
+      Boolean(original) && (wasWorkspaceVirtualDoc || !isOnOriginalFile(this._currentFileUrl))
+
+    this._explorerPanel?.showLoading({ filesContext: this._buildExplorerFilesContext() })
+    if (restoreOriginalDoc) {
+      await this._navigateToSiblingFile(original, {
+        replaceHistory: true,
+        forceReload: wasWorkspaceVirtualDoc
+      })
+      return
+    }
+    await this._runSiblingScan(this._currentFileUrl)
   }
 
   _initSidebarResize() {
@@ -483,6 +1035,16 @@ export class MarkdownViewerApp {
    * @returns {string}
    */
   static _markdownFileTitleFromUrl(fileUrl) {
+    if (typeof fileUrl === 'string' && fileUrl.startsWith(MDP_WS_FILE)) {
+      try {
+        const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
+        const base = rel.split('/').pop() || ''
+        const name = base.replace(/\.(md|markdown|mdown)$/i, '')
+        return name || 'document'
+      } catch {
+        return 'document'
+      }
+    }
     try {
       const p = new URL(fileUrl).pathname
       const base = p.split('/').filter(Boolean).pop() || ''
@@ -494,23 +1056,28 @@ export class MarkdownViewerApp {
   }
 
   /**
-   * @param {string} fileUrl
-   * @returns {string}
+   * “Back to session original” controls for sibling mode.
+   * @param {string} openUrl - URL compared to session original (e.g. current file).
+   * @returns {{ showBack: boolean, backLabel?: string, onBack?: () => void }}
    */
-  static _normalizeFileUrlForCompare(fileUrl) {
-    try {
-      const u = new URL(fileUrl)
-      u.hash = ''
-      if (u.protocol !== 'file:') return fileUrl
-      let p = u.pathname
-      if (p.endsWith('/')) p = p.slice(0, -1)
-      return `${u.protocol}//${u.host}${p}`
-    } catch {
-      return fileUrl
+  _siblingBackNavigationForUrl(openUrl) {
+    const original = getOriginalFileUrl()
+    const showBack = Boolean(original && !isOnOriginalFile(openUrl))
+    if (!showBack) {
+      return { showBack: false }
+    }
+    return {
+      showBack: true,
+      backLabel: `Back to ${MarkdownViewerApp._markdownFileTitleFromUrl(original)}`,
+      onBack: () => {
+        if (!original) return
+        void this._navigateToSiblingFile(original, { replaceHistory: true })
+      }
     }
   }
 
   _updateUrlWithoutReload(fileUrl, { replace = false } = {}) {
+    if (typeof fileUrl !== 'string' || !fileUrl.startsWith('file:')) return
     try {
       if (replace) {
         window.history.replaceState(null, '', fileUrl)
@@ -522,12 +1089,82 @@ export class MarkdownViewerApp {
     }
   }
 
-  async _navigateToSiblingFile(fileUrl, { replaceHistory = false } = {}) {
+  /** Keeps “Back to …” in sync when the file tree is not rebuilt (same sibling root / workspace tree). */
+  _syncExplorerBackButton() {
+    if (!this._explorerPanel) return
+    if (this._explorerMode === 'workspace') {
+      this._explorerPanel.setExplorerBackNavigation({ showBack: false })
+      return
+    }
+    const { showBack, backLabel, onBack } = this._siblingBackNavigationForUrl(this._currentFileUrl)
+    this._explorerPanel.setExplorerBackNavigation({ showBack, backLabel, onBack })
+  }
+
+  /**
+   * @param {string} fileUrl
+   */
+  async _navigateWorkspaceVirtualFile(fileUrl) {
     if (!fileUrl || !this._explorerPanel) return
 
-    const current = MarkdownViewerApp._normalizeFileUrlForCompare(this._currentFileUrl)
-    const target = MarkdownViewerApp._normalizeFileUrlForCompare(fileUrl)
+    const current = normalizeFileUrlForCompare(this._currentFileUrl)
+    const target = normalizeFileUrlForCompare(fileUrl)
     if (current === target) return
+
+    const entry = this._workspaceVirtualReaders?.get(fileUrl)
+    if (!entry) {
+      this.showToast('Could not open file')
+      return
+    }
+
+    this.parts?.article?.setAttribute('aria-busy', 'true')
+
+    try {
+      let nextMarkdown = ''
+      if (entry instanceof File) {
+        nextMarkdown = await entry.text()
+      } else {
+        const f = await entry.getFile()
+        nextMarkdown = await f.text()
+      }
+      if (!nextMarkdown.trim()) {
+        throw new Error('File is empty or not readable.')
+      }
+
+      this.markdown = nextMarkdown
+      this._smoothInitialHashScroll = false
+      this._currentFileUrl = fileUrl
+      await this.render({ preserveScroll: false, honorHash: false })
+      this.getScrollRoot()?.scrollTo({ top: 0, behavior: 'auto' })
+      document.title = `${MarkdownViewerApp._markdownFileTitleFromUrl(fileUrl)} - Markdown Plus`
+    } catch (error) {
+      logger.warn('Failed to navigate to workspace virtual file.', error)
+      this.showToast('Could not open file')
+    } finally {
+      this.parts?.article?.removeAttribute('aria-busy')
+    }
+
+    if (this._explorerMode === 'workspace') {
+      if (this._workspaceTree) {
+        this._explorerPanel?.markActiveFile(this._currentFileUrl)
+      }
+      this._explorerPanel?.setFilesContext(this._buildExplorerFilesContext())
+      this._syncExplorerBackButton()
+      return
+    }
+    await this._runSiblingScan(this._currentFileUrl)
+  }
+
+  async _navigateToSiblingFile(fileUrl, { replaceHistory = false, forceReload = false } = {}) {
+    if (!fileUrl || !this._explorerPanel) return
+
+    if (isWorkspaceVirtualHref(fileUrl)) {
+      await this._navigateWorkspaceVirtualFile(fileUrl)
+      return
+    }
+
+    const current = normalizeFileUrlForCompare(this._currentFileUrl)
+    const target = normalizeFileUrlForCompare(fileUrl)
+    if (!forceReload && current === target) return
 
     this.parts?.article?.setAttribute('aria-busy', 'true')
 
@@ -559,45 +1196,144 @@ export class MarkdownViewerApp {
       this.parts?.article?.removeAttribute('aria-busy')
     }
 
+    if (this._explorerMode === 'workspace') {
+      if (this._workspaceTree) {
+        this._explorerPanel?.markActiveFile(this._currentFileUrl)
+      }
+      this._explorerPanel?.setFilesContext(this._buildExplorerFilesContext())
+      this._syncExplorerBackButton()
+      return
+    }
+    if (
+      this._siblingTree &&
+      this._siblingScanRootUrl &&
+      this._currentFileUrl &&
+      fileUrlIsUnderDirectoryUrl(this._currentFileUrl, this._siblingScanRootUrl)
+    ) {
+      this._explorerPanel?.markActiveFile(this._currentFileUrl)
+      this._explorerPanel?.setFilesContext(this._buildExplorerFilesContext())
+      this._syncExplorerBackButton()
+      return
+    }
     await this._runSiblingScan(this._currentFileUrl)
   }
 
   async _runSiblingScan(currentFileUrl) {
     if (!this._explorerPanel) return
 
-    let files = []
-    try {
-      files = await scanSiblingFiles(currentFileUrl)
-    } catch (error) {
-      logger.warn('Sibling scan failed.', error)
-    }
-
     const original = getOriginalFileUrl()
-    const showBack = Boolean(original && !isOnOriginalFile(currentFileUrl))
-    const backLabel = showBack
-      ? `Back to ${MarkdownViewerApp._markdownFileTitleFromUrl(original)}`
-      : undefined
-    const onBack = () => {
-      if (!original) return
-      clearOriginalFileUrl()
-      void this._navigateToSiblingFile(original, { replaceHistory: true })
+    const { showBack, backLabel, onBack } = this._siblingBackNavigationForUrl(currentFileUrl)
+
+    const ctxBase = {
+      showBack,
+      backLabel,
+      onBack,
+      currentFileUrl,
+      filesContext: this._buildExplorerFilesContext()
     }
 
-    const ctx = { showBack, backLabel, onBack, currentFileUrl }
-
-    if (!files.length) {
-      this._explorerPanel.showEmpty(ctx)
+    const parentDir = getParentDirectoryUrl(currentFileUrl)
+    if (!parentDir) {
+      let files = []
+      try {
+        files = await scanSiblingFiles(currentFileUrl)
+      } catch (error) {
+        logger.warn('Sibling scan failed.', error)
+      }
+      this._siblingTree = null
+      this._siblingFolderLabel = ''
+      this._siblingScanRootUrl = null
+      if (!files.length) {
+        this._explorerPanel.showEmpty(ctxBase)
+        return
+      }
+      this._explorerPanel.showFiles(files, {
+        ...ctxBase,
+        currentFileUrl,
+        originalFileUrl: original
+      })
       return
     }
 
-    this._explorerPanel.showFiles(files, {
-      ...ctx,
-      currentFileUrl,
-      originalFileUrl: original
-    })
+    const ex = this.settings?.explorer || {}
+    const maxScanDepth = Number.isFinite(Number(ex.maxScanDepth)) ? Number(ex.maxScanDepth) : 3
+    const maxFiles = Number.isFinite(Number(ex.maxFiles)) ? Number(ex.maxFiles) : 2000
+    const maxFolders = Number.isFinite(Number(ex.maxFolders)) ? Number(ex.maxFolders) : 500
+
+    const folderLabel = getParentDirectoryPathLabel(currentFileUrl)
+    this._siblingTree = null
+    this._siblingFolderLabel = folderLabel
+    this._siblingScanRootUrl = null
+
+    try {
+      this._explorerPanel.showProgressLoading({
+        scannedFiles: 0,
+        scannedFolders: 0,
+        currentFolder: parentDir,
+        progressHeadline: 'Scanning folder tree…',
+        filesContext: this._buildExplorerFilesContext({
+          scanPhase: 'scanning',
+          siblingFolderLabel: folderLabel
+        })
+      })
+
+      const { tree, stats } = await scanFolderRecursive(parentDir, {
+        maxScanDepth,
+        maxFiles,
+        maxFolders,
+        currentFileUrl,
+        siblingsFirstAtRoot: true,
+        onProgress: (p) => {
+          this._explorerPanel?.updateProgressLoading({
+            scannedFiles: p.scannedFiles,
+            scannedFolders: p.scannedFolders,
+            currentFolder: p.currentFolder
+          })
+        }
+      })
+
+      injectCurrentMarkdownAtRootIfMissing(
+        tree,
+        currentFileUrl,
+        stats,
+        normalizeDirectoryUrl(parentDir)
+      )
+      this._finalizeSiblingTreePresent(tree, stats, {
+        maxScanDepth,
+        folderLabel
+      })
+    } catch (error) {
+      logger.warn('Deep sibling scan failed.', error)
+      this._siblingTree = null
+      this._siblingFolderLabel = ''
+      this._siblingScanRootUrl = null
+
+      let files = []
+      try {
+        files = await scanSiblingFiles(currentFileUrl)
+      } catch (e2) {
+        logger.warn('Flat sibling fallback failed.', e2)
+      }
+
+      if (!files.length) {
+        this._explorerPanel.showEmpty(ctxBase)
+        return
+      }
+
+      this._explorerPanel.showFiles(files, {
+        ...ctxBase,
+        currentFileUrl,
+        originalFileUrl: original
+      })
+    }
   }
 
   _destroyExplorer() {
+    this._abortWorkspaceScan()
+    this._clearWorkspaceVirtualReaders()
+    this._siblingTree = null
+    this._siblingFolderLabel = ''
+    this._siblingScanRootUrl = null
     const { tabFiles, tabOutline } = this.parts || {}
     if (this._tabFilesClick && tabFiles) {
       tabFiles.removeEventListener('click', this._tabFilesClick)

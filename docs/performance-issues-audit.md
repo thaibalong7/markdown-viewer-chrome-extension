@@ -20,15 +20,15 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
-## Issue #1 [CRITICAL] Scroll spy O(N) headings với forced layout mỗi scroll tick
+## Issue #1 [RESOLVED] Scroll spy O(N) headings với forced layout mỗi scroll tick
 
-- **Vị trí:** `src/viewer/core/scroll-spy.js` (dòng 20–32)
-- **Hiện trạng:** Mỗi lần scroll, hàm `computeActiveId()` chạy trong `requestAnimationFrame` duyệt **toàn bộ heading** và gọi `getBoundingClientRect()` trên mỗi heading. Với 200+ headings, mỗi scroll frame gây O(N) forced layout reads.
-- **Tác động:** Drop frame rõ rệt, CPU spike liên tục khi scroll tài liệu lớn. Đây là bottleneck scaling rõ ràng nhất cho "many headings".
-- **Khuyến nghị fix:**
-  - **Ưu tiên:** Chuyển sang `IntersectionObserver` với root margin phù hợp.
-  - **Thay thế:** Precompute offset map + binary search, chỉ cập nhật map khi resize/content thay đổi.
-  - Debounce resize handler (~100ms) thay vì chạy full scan mỗi resize event.
+- **Vị trí:** `src/viewer/core/scroll-spy.js`
+- **Đã xử lý:** Thay loop O(N) theo từng scroll tick bằng precomputed heading offsets + binary search để tìm active heading theo `scrollTop`.
+- **Chi tiết triển khai:**
+  - Precompute measurement map `id -> top` (sort theo top) một lần.
+  - Scroll handler chỉ chạy binary search O(log N), không còn `getBoundingClientRect()` cho toàn bộ heading mỗi frame.
+  - Resize handler dùng debounce (~100ms) để refresh measurement map khi layout thay đổi.
+- **Kết quả kiểm tra:** Số lần gọi `getBoundingClientRect()` giảm từ hơn 700 xuống khoảng 150 trong kịch bản scroll benchmark.
 
 ---
 

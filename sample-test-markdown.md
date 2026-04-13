@@ -1,86 +1,108 @@
-# Markdown Plus - Full Viewer Test Document
+# Markdown Plus - Comprehensive Test Document
 
-Tai lieu nay duoc viet de test toan bo Phase 6, Phase 7 va Phase 8.
-Muc tieu: test TOC, plugin settings, code highlight, task list, anchor heading, table enhance, mermaid, math, footnote, emoji.
-Ban co the bat tat plugin trong tab Plugins de quan sat thay doi.
-Neu plugin hoat dong dung, cac khoi ben duoi se render ro rang.
-
----
-
-## 1. TOC Sanity Check
-
-### 1.1 Heading Level 3
-Noi dung ngat dong de kiem tra khoang cach.
-
-#### 1.1.1 Heading Level 4
-Noi dung tiep theo.
-
-##### 1.1.1.1 Heading Level 5
-Noi dung tiep theo.
-
-###### 1.1.1.1.1 Heading Level 6
-Noi dung tiep theo.
-
-### 1.2 Anchor Link Targets
-Di chuyen TOC ben trai, click vao section bat ky de test scroll.
-Khi bat plugin anchor heading, moi heading se co dau `#` o cuoi.
+Muc tieu file:
+1. Test day du cac chuc nang chinh cua extension tren 1 markdown file.
+2. Cover ca case thanh cong va case loi/fallback.
+3. Phan test performance duoc dat o cuoi file (uu tien sau).
 
 ---
 
-## 2. Basic Typography and Inline Elements
+## 1. Smoke Checklist (run first)
 
-Doan van ban thuong de test line-height, font-size, font-family.
-**Chu dam** de test strong.
-*Chu nghieng* de test em.
-***Dam va nghieng*** de test ket hop.
-`inline code` de test mau code inline.
-[External link to example](https://example.com) de test target blank.
-[Another link to MDN](https://developer.mozilla.org) de test rel noopener.
-
-> Blockquote line 1.
-> Blockquote line 2.
-> Blockquote line 3.
+- Viewer mount dung, khong vo layout.
+- TOC render du heading va click jump dung.
+- Active TOC update dung khi scroll len/xuong.
+- Settings toggle plugin lam noi dung thay doi dung.
+- Code copy button va language label hoat dong.
+- Optional plugins (emoji/footnote/math/mermaid) co ON/OFF behavior dung.
+- Invalid syntax khong lam vo toan document.
+- Sanitize xu ly dung HTML khong an toan.
 
 ---
 
-## 3. Ordered and Unordered Lists
+## 2. TOC and Scroll Spy Core
+
+### 2.1 Top heading target
+
+Scroll qua section 2, 3, 4 de theo doi TOC active item.
+
+### 2.2 Child heading target
+
+Noi dung ngan de tao moc TOC.
+
+#### 2.2.1 Nested child
+
+Noi dung ngan.
+
+##### 2.2.1.1 Deep nested child
+
+Noi dung ngan.
+
+### 2.3 Click-to-scroll target
+
+Khi click TOC vao heading nay:
+- Vi tri scroll phai dung duoi toolbar sticky
+- URL hash phai doi theo heading id
+- Link TOC active dung
+
+---
+
+## 3. Typography and Inline Elements
+
+Doan text thuong de test font-size, line-height, font-family.
+**Bold text** de test strong.
+*Italic text* de test em.
+***Bold italic*** de test ket hop.
+`inline code` de test mau inline code.
+
+[External link to example](https://example.com)
+[MDN link](https://developer.mozilla.org)
+
+> Blockquote line 1
+> Blockquote line 2
+> Blockquote line 3
+
+Escaped syntax:
+- \*not italic\*
+- \[not a link]
+- \`not code\`
+- \# not a heading
+
+---
+
+## 4. Lists and Task List Plugin
+
+### 4.1 Normal lists
 
 - Item A
 - Item B
+  - Item B.1
+  - Item B.2
 - Item C
-  - Item C.1
-  - Item C.2
-    - Item C.2.a
-    - Item C.2.b
-- Item D
 
 1. Step one
 2. Step two
 3. Step three
-4. Step four
-5. Step five
 
----
+### 4.2 Task list plugin
 
-## 4. Task List Plugin Scenarios
-
-- [ ] Task 01: verify checkbox render
-- [x] Task 02: verify checked state
-- [ ] Task 03: verify spacing
-- [x] Task 04: verify disabled checkbox
-- [ ] Task 05: verify nested task list parent
-  - [ ] Task 05.1 nested unchecked
+- [ ] Task 01 unchecked
+- [x] Task 02 checked
+- [ ] Task 03 long text lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor
+- [x] Task 04 checked
+- [ ] Task 05 parent
+  - [ ] Task 05.1 nested
   - [x] Task 05.2 nested checked
-  - [ ] Task 05.3 nested unchecked
-- [ ] Task 06: verify after toggle plugin OFF, marker text remains plain
-- [x] Task 07: verify after toggle plugin ON, marker turns into checkbox
-- [ ] Task 08: verify very long task title lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor
-- [x] Task 09: verify multiple checked items in sequence
-- [x] Task 10: verify all done line
+
+Expected:
+- Plugin ON -> render checkbox UI.
+- Plugin OFF -> giu nguyen markdown text `- [ ]`.
 
 ---
 
-## 5. Code Highlight - JavaScript
+## 5. Code Blocks and Copy UX
+
+### 5.1 JavaScript
 
 ```js
 function fibonacci(n) {
@@ -100,20 +122,7 @@ for (let i = 0; i < 10; i += 1) {
 }
 ```
 
-```js
-const settingsPatch = {
-  plugins: {
-    codeHighlight: { enabled: true },
-    taskList: { enabled: true }
-  }
-};
-
-console.log("patch", settingsPatch);
-```
-
----
-
-## 6. Code Highlight - JSON and Bash
+### 5.2 JSON
 
 ```json
 {
@@ -123,21 +132,24 @@ console.log("patch", settingsPatch);
     "codeHighlight": { "enabled": true },
     "taskList": { "enabled": true },
     "anchorHeading": { "enabled": true },
-    "tableEnhance": { "enabled": true }
+    "tableEnhance": { "enabled": true },
+    "emoji": { "enabled": true },
+    "footnote": { "enabled": true },
+    "math": { "enabled": false },
+    "mermaid": { "enabled": false }
   }
 }
 ```
+
+### 5.3 Bash
 
 ```bash
 echo "Testing markdown viewer"
 node -v
 npm -v
-npm run dev
 ```
 
----
-
-## 7. Code Highlight - HTML and CSS
+### 5.4 HTML/CSS
 
 ```html
 <article class="doc">
@@ -152,19 +164,15 @@ npm run dev
   margin: 0 auto;
   line-height: 1.7;
 }
-
-.doc h1 {
-  color: #0969da;
-}
 ```
+
+Expected:
+- Plugin ON -> syntax highlight + copy button.
+- Plugin OFF -> plain fenced code.
 
 ---
 
-## 8. Tables for Table Enhance Plugin
-
-Huong dan test nhanh:
-1. Tat plugin `tableEnhance` -> table se render binh thuong, de bi tran ngang khi cot qua rong.
-2. Bat plugin `tableEnhance` -> moi table duoc boc trong khung scroll ngang (`mdp-table-wrap`), UI ro rang hon.
+## 6. Tables and Table Enhance Plugin
 
 | Name | Role | Status | Score |
 | --- | --- | --- | ---: |
@@ -173,161 +181,69 @@ Huong dan test nhanh:
 | Gamma | Editor | Paused | 79 |
 | Delta | Reviewer | Active | 91 |
 
-| Col A | Col B | Col C | Col D | Col E |
-| --- | --- | --- | --- | --- |
-| A1 | B1 | C1 | D1 | E1 |
-| A2 | B2 | C2 | D2 | E2 |
-| A3 | B3 | C3 | D3 | E3 |
-| A4 | B4 | C4 | D4 | E4 |
-| A5 | B5 | C5 | D5 | E5 |
-
-### 8.1 Wide Table Demo (de thay doi UI ro nhat)
+### 6.1 Wide table stress
 
 | Col-01 | Col-02 | Col-03 | Col-04 | Col-05 | Col-06 | Col-07 | Col-08 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `very_long_token_without_spaces_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` | `very_long_token_without_spaces_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb` | `very_long_token_without_spaces_cccccccccccccccccccccccccccccccccccc` | `very_long_token_without_spaces_dddddddddddddddddddddddddddddddddddd` | `very_long_token_without_spaces_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee` | `very_long_token_without_spaces_ffffffffffffffffffffffffffffffffffff` | `very_long_token_without_spaces_gggggggggggggggggggggggggggggggggggg` | `very_long_token_without_spaces_hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh` |
-| 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 |
+| `very_long_token_without_spaces_aaaaaaaaaaaaaaaaaaaaaaaaaaaa` | `very_long_token_without_spaces_bbbbbbbbbbbbbbbbbbbbbbbbbbbb` | `very_long_token_without_spaces_cccccccccccccccccccccccccccc` | `very_long_token_without_spaces_dddddddddddddddddddddddddddd` | `very_long_token_without_spaces_eeeeeeeeeeeeeeeeeeeeeeeeeeee` | `very_long_token_without_spaces_ffffffffffffffffffffffffffff` | `very_long_token_without_spaces_gggggggggggggggggggggggggggg` | `very_long_token_without_spaces_hhhhhhhhhhhhhhhhhhhhhhhhhhhh` |
+
+Expected:
+- Plugin ON -> table boc trong wrapper scroll ngang.
+- Plugin OFF -> table plain, de tran ngang.
 
 ---
 
-## 9. Long Table Stress Test
+## 7. Anchor Heading Plugin
 
-| ID | Description | Priority | Owner | ETA |
-| ---: | --- | --- | --- | --- |
-| 001 | Validate TOC click behavior | High | Team A | 1d |
-| 002 | Validate scroll spy active heading | High | Team A | 1d |
-| 003 | Validate settings drawer open close | Medium | Team B | 2d |
-| 004 | Validate reader panel controls | Medium | Team B | 2d |
-| 005 | Validate plugins tab toggles | High | Team C | 1d |
-| 006 | Validate code block highlight | High | Team C | 1d |
-| 007 | Validate task list plugin | High | Team C | 1d |
-| 008 | Validate anchor heading plugin | High | Team C | 1d |
-| 009 | Validate table enhance wrapper | Medium | Team C | 1d |
-| 010 | Validate build output sanity | Low | Team D | 2d |
-| 011 | Validate link target attributes | Medium | Team D | 1d |
-| 012 | Validate sanitize pipeline | High | Team D | 2d |
+### 7.1 Anchor one
+
+Neu plugin ON, heading hien icon/hash anchor de copy link.
+
+### 7.2 Anchor two
+
+Test click vao icon/hash de doi URL hash.
+
+#### 7.2.1 Deep anchor
+
+Test heading cap sau.
 
 ---
 
-## 10. Mixed Content Block A
+## 8. Emoji Plugin (optional)
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-Nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.
-Eu fugiat nulla pariatur.
-Excepteur sint occaecat cupidatat non proident.
-Sunt in culpa qui officia deserunt mollit anim id est laborum.
+Expected:
+- ON -> shortcode render thanh emoji.
+- OFF -> shortcode giu nguyen text.
 
-### 10.1 Quick bullets
-- one
-- two
-- three
+Emoji samples:
+- :smile: :rocket: :tada:
+- :bug: :wrench: :white_check_mark:
+- Deploy complete :rocket: and tests passed :white_check_mark:
 
 ---
 
-## 11. Mixed Content Block B
+## 9. Footnote Plugin (optional)
 
-Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi.
-Morbi auctor lorem non justo.
-Nam lacus libero, pretium at, lobortis vitae, ultricies et, tellus.
-Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna.
-Vitae ornare odio metus a mi.
-Morbi ac orci et nisl hendrerit mollis.
-Suspendisse ut massa.
-Curabitur vitae diam non enim vestibulum interdum.
+Doan nay co footnote thu nhat.[^fn-a]
+Doan nay co footnote thu hai voi link.[^fn-b]
+Doan nay co 2 footnotes lien tiep.[^fn-c][^fn-d]
 
-### 11.1 Quote
-> Testing quote format with punctuation.
-> Testing second line.
+[^fn-a]: Footnote 1 with **bold** and `inline code`.
+[^fn-b]: Footnote 2 see [MDN](https://developer.mozilla.org).
+[^fn-c]: Footnote 3 test multiple refs.
+[^fn-d]: Footnote 4 test backref.
 
----
-
-## 12. Mixed Content Block C
-
-Phasellus ultrices nulla quis nibh.
-Quisque a lectus.
-Donec consectetuer ligula vulputate sem tristique cursus.
-Nam nulla quam, gravida non, commodo a, sodales sit amet, nisi.
-Pellentesque fermentum dolor.
-Aliquam quam lectus, facilisis auctor, ultrices ut, elementum vulputate, nunc.
-Sed adipiscing ornare risus.
-Morbi est est, blandit sit amet, sagittis vel, euismod vel, velit.
-
-### 12.1 Inline marks
-Use `code`, **bold**, *italic*, and [links](https://www.wikipedia.org).
+Expected:
+- ON -> superscript refs + footnote list cuoi.
+- OFF -> syntax giu nguyen text markdown.
 
 ---
 
-## 13. Anchor Heading Visual Test
+## 10. Math Plugin (optional)
 
-### 13.1 Section One
-Neu plugin anchor heading bat, heading nay phai co dau `#`.
-
-### 13.2 Section Two
-Click vao dau `#` de thay doi URL hash.
-
-### 13.3 Section Three
-Sau do copy URL va mo tab moi de test.
-
-### 13.4 Section Four
-Kiem tra heading cap 3, 4, 5.
-
-#### 13.4.1 Subsection
-Noi dung con.
-
-##### 13.4.1.1 Deep subsection
-Noi dung con sau.
-
----
-
-## 14. Plugin Toggle Checklist
-
-1. Bat tat `codeHighlight` va so sanh code block.
-2. Bat tat `taskList` va so sanh checkbox.
-3. Bat tat `anchorHeading` va so sanh dau hash.
-4. Bat tat `tableEnhance` va so sanh table horizontal scroll.
-5. Doi theme light dark de xem mau.
-6. Doi font size de xem text update.
-7. Doi content width de xem layout update.
-8. Tat TOC de xem sidebar bien mat.
-9. Bat TOC lai va click heading.
-10. Refresh page de test persisted settings.
-
----
-
-## 15. Optional Plugins - Emoji and Footnote
-
-Huong dan test nhanh:
-1. Bat plugin `emoji` -> shortcode render thanh emoji.
-2. Tat plugin `emoji` -> shortcode giu nguyen dang text.
-3. Bat plugin `footnote` -> [^label] co superscript va khu vuc footnotes cuoi doan.
-4. Tat plugin `footnote` -> cu phap footnote giu dang text.
-
-Emoji demo:
-- Basic: :smile: :rocket: :tada:
-- Dev style: :bug: :wrench: :white_check_mark:
-- Mix in sentence: Deploy complete :rocket: and tests passed :white_check_mark:
-
-Footnote demo:
-Doan nay co footnote thu nhat.[^phase8-a]
-Doan nay co footnote thu hai voi link.[^phase8-b]
-Doan nay co 2 footnotes lien tiep de test spacing.[^phase8-c][^phase8-d]
-
-[^phase8-a]: Footnote 1 - noi dung co chu dam **bold** va `inline code`.
-[^phase8-b]: Footnote 2 - xem them tai [MDN](https://developer.mozilla.org).
-[^phase8-c]: Footnote 3 - test multiple refs.
-[^phase8-d]: Footnote 4 - test backref.
-
----
-
-## 16. Optional Plugins - Math (KaTeX)
-
-Huong dan test nhanh:
-1. Bat plugin `math` -> cong thuc render KaTeX.
-2. Tat plugin `math` -> ky tu `$...$` va `$$...$$` giu nguyen.
-3. Thu scroll ngang voi cong thuc dai.
+Expected:
+- ON -> KaTeX render.
+- OFF -> giu nguyen `$...$` va `$$...$$`.
 
 Inline math:
 - Pythagoras: $a^2 + b^2 = c^2$
@@ -343,22 +259,21 @@ $$
 \mathrm{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}
 $$
 
-$$
-\nabla \cdot \vec{E} = \frac{\rho}{\varepsilon_0}
-$$
+Invalid math (fallback test):
+- Inline invalid: $ \frac{1}{ $
 
-```math
-f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{- \frac{(x-\mu)^2}{2\sigma^2}}
-```
+$$
+\frac{1}{\left(
+$$
 
 ---
 
-## 17. Optional Plugins - Mermaid
+## 11. Mermaid Plugin (optional)
 
-Huong dan test nhanh:
-1. Bat plugin `mermaid` -> khoi `mermaid` render thanh SVG diagram.
-2. Tat plugin `mermaid` -> hien thi nhu code block thuong.
-3. Thu diagram khong hop le de test graceful fallback.
+Expected:
+- ON -> mermaid block render thanh SVG.
+- OFF -> hien nhu code fence thuong.
+- Invalid syntax -> fail gracefully, khong vo toan bo render.
 
 Flowchart:
 ```mermaid
@@ -382,165 +297,62 @@ sequenceDiagram
   V-->>U: Show final document
 ```
 
-Invalid Mermaid (de test fallback):
+Invalid mermaid:
 ```mermaid
 this is not a valid mermaid diagram
 ```
 
 ---
 
-## 18. Repeated Paragraph Set 01
+## 12. Sanitization and Raw HTML Cases
 
-Line 01: This line exists to increase document size.
-Line 02: This line exists to increase document size.
-Line 03: This line exists to increase document size.
-Line 04: This line exists to increase document size.
-Line 05: This line exists to increase document size.
-Line 06: This line exists to increase document size.
-Line 07: This line exists to increase document size.
-Line 08: This line exists to increase document size.
-Line 09: This line exists to increase document size.
-Line 10: This line exists to increase document size.
-Line 11: This line exists to increase document size.
-Line 12: This line exists to increase document size.
-Line 13: This line exists to increase document size.
-Line 14: This line exists to increase document size.
-Line 15: This line exists to increase document size.
-Line 16: This line exists to increase document size.
-Line 17: This line exists to increase document size.
-Line 18: This line exists to increase document size.
-Line 19: This line exists to increase document size.
-Line 20: This line exists to increase document size.
+<details>
+  <summary>Native details/summary block</summary>
+  <p>Should still work and stay readable.</p>
+</details>
+
+Inline HTML mark: <mark>highlight me</mark> and <kbd>Ctrl</kbd> + <kbd>S</kbd>.
+
+Potentially unsafe HTML snippets (khong duoc execute):
+
+```html
+<script>alert('xss')</script>
+<iframe src="https://example.com"></iframe>
+<img src="x" onerror="alert('xss')" />
+```
+
+Expected:
+- Renderer sanitize dung, khong execute script event handlers.
+- Viewer van render on dinh.
 
 ---
 
-## 19. Repeated Paragraph Set 02
+## 13. Mixed Edge Cases Matrix
 
-Line 21: This line exists to increase document size.
-Line 22: This line exists to increase document size.
-Line 23: This line exists to increase document size.
-Line 24: This line exists to increase document size.
-Line 25: This line exists to increase document size.
-Line 26: This line exists to increase document size.
-Line 27: This line exists to increase document size.
-Line 28: This line exists to increase document size.
-Line 29: This line exists to increase document size.
-Line 30: This line exists to increase document size.
-Line 31: This line exists to increase document size.
-Line 32: This line exists to increase document size.
-Line 33: This line exists to increase document size.
-Line 34: This line exists to increase document size.
-Line 35: This line exists to increase document size.
-Line 36: This line exists to increase document size.
-Line 37: This line exists to increase document size.
-Line 38: This line exists to increase document size.
-Line 39: This line exists to increase document size.
-Line 40: This line exists to increase document size.
+### 13.1 Mermaid inside non-mermaid code fence
 
----
+````txt
+```mermaid
+flowchart LR
+  A --> B
+```
+````
 
-## 20. Repeated Paragraph Set 03
+### 13.2 Math inside code fence
 
-Line 41: This line exists to increase document size.
-Line 42: This line exists to increase document size.
-Line 43: This line exists to increase document size.
-Line 44: This line exists to increase document size.
-Line 45: This line exists to increase document size.
-Line 46: This line exists to increase document size.
-Line 47: This line exists to increase document size.
-Line 48: This line exists to increase document size.
-Line 49: This line exists to increase document size.
-Line 50: This line exists to increase document size.
-Line 51: This line exists to increase document size.
-Line 52: This line exists to increase document size.
-Line 53: This line exists to increase document size.
-Line 54: This line exists to increase document size.
-Line 55: This line exists to increase document size.
-Line 56: This line exists to increase document size.
-Line 57: This line exists to increase document size.
-Line 58: This line exists to increase document size.
-Line 59: This line exists to increase document size.
-Line 60: This line exists to increase document size.
+```txt
+Inline $a+b$ and display $$x^2$$ should stay plain in this fence.
+```
 
----
+### 13.3 Reference links
 
-## 21. Repeated Paragraph Set 04
-
-Line 61: This line exists to increase document size.
-Line 62: This line exists to increase document size.
-Line 63: This line exists to increase document size.
-Line 64: This line exists to increase document size.
-Line 65: This line exists to increase document size.
-Line 66: This line exists to increase document size.
-Line 67: This line exists to increase document size.
-Line 68: This line exists to increase document size.
-Line 69: This line exists to increase document size.
-Line 70: This line exists to increase document size.
-Line 71: This line exists to increase document size.
-Line 72: This line exists to increase document size.
-Line 73: This line exists to increase document size.
-Line 74: This line exists to increase document size.
-Line 75: This line exists to increase document size.
-Line 76: This line exists to increase document size.
-Line 77: This line exists to increase document size.
-Line 78: This line exists to increase document size.
-Line 79: This line exists to increase document size.
-Line 80: This line exists to increase document size.
-
----
-
-## 22. Repeated Paragraph Set 05
-
-Line 81: This line exists to increase document size.
-Line 82: This line exists to increase document size.
-Line 83: This line exists to increase document size.
-Line 84: This line exists to increase document size.
-Line 85: This line exists to increase document size.
-Line 86: This line exists to increase document size.
-Line 87: This line exists to increase document size.
-Line 88: This line exists to increase document size.
-Line 89: This line exists to increase document size.
-Line 90: This line exists to increase document size.
-Line 91: This line exists to increase document size.
-Line 92: This line exists to increase document size.
-Line 93: This line exists to increase document size.
-Line 94: This line exists to increase document size.
-Line 95: This line exists to increase document size.
-
-Line 96: This line exists to increase document size.
-Line 97: This line exists to increase document size.
-Line 98: This line exists to increase document size.
-Line 99: This line exists to increase document size.
-Line 100: This line exists to increase document size.
-
----
-
-## 23. Edge Cases - Markdown Syntax
-
-### 23.1 Tight vs loose list
-- tight item 1
-- tight item 2
-- tight item 3
-
-- loose item 1
-
-- loose item 2
-
-- loose item 3
-
-### 23.2 Reference links
-Reference link style: [OpenAI Docs][openai-docs], [MDN][mdn], and missing ref [BrokenRef][not-found].
+Reference style: [OpenAI Docs][openai-docs], [MDN][mdn], [BrokenRef][not-found].
 
 [openai-docs]: https://platform.openai.com/docs
 [mdn]: https://developer.mozilla.org
 
-### 23.3 Escaping and literals
-- Escaped stars: \*not italic\*
-- Escaped bracket: \[not a link]
-- Escaped backtick: \`not code\`
-- Mixed literal: \# heading text but not heading
+### 13.4 Nested blockquote + list + code
 
-### 23.4 Nested blockquote + list + code
 > Quote level 1
 > > Quote level 2
 > > - item A
@@ -550,82 +362,573 @@ Reference link style: [OpenAI Docs][openai-docs], [MDN][mdn], and missing ref [B
 > > ```
 > Back to level 1
 
-### 23.5 Horizontal rule variants
----
-***
-___
-
 ---
 
-## 24. Edge Cases - Raw HTML and Sanitization
+## 14. Final Functional Validation
 
-<details>
-  <summary>Native details/summary block</summary>
-  <p>Should expand/collapse and keep typography readable.</p>
-</details>
+Neu ban test het toi day:
+- TOC
+- Scroll spy
+- code highlight + copy
+- task list
+- table enhance
+- anchor heading
+- emoji
+- footnote
+- math
+- mermaid
+- sanitize
+- edge/fallback cases
 
-Inline HTML mark: <mark>highlight me</mark> and <kbd>Ctrl</kbd> + <kbd>S</kbd>.
-
----
-
-## 25. Edge Cases - Plugin Interaction Matrix
-
-### 25.1 Mermaid inside normal code fence (must stay plain code)
-````txt
-```mermaid
-flowchart LR
-  A --> B
-```
-````
-
-### 25.2 Math in code fence (must stay plain code)
-```txt
-Inline $a+b$ and display $$x^2$$ should not render in text/code fences.
-```
-
-### 25.3 Invalid math syntax (should fail gracefully)
-Inline invalid: $ \frac{1}{ $
-
-Display invalid:
-$$
-\frac{1}{\left(
-$$
-
-### 25.4 Footnote with multiline definition
-Footnote with multiline body.[^multi-line-note]
-
-[^multi-line-note]: First line in note.
-    Second indented line in same note block.
-    Third line with `inline code` and **bold**.
-
-### 25.5 Emoji shortcode coverage
-Expected render when emoji plugin ON:
-:warning: :construction: :memo: :sparkles: :fire:
-
-Expected plain text when emoji plugin OFF:
-`:warning: :construction: :memo: :sparkles: :fire:`
+thi co the danh gia extension cover feature chinh va case loi co ban.
 
 ---
 
-## 26. Final Sanity Section
+# Performance Section (run after functional pass)
 
-Neu ban doc den day, file da du dai de test.
-Kiem tra:
-- scroll performance tren file dai
-- TOC rendering voi nhieu heading
-- toc active item khi scroll nhanh
-- plugin toggle va rerender
-- table horizontal wrapper
-- code highlight readability
-- task checkbox transform
-- heading anchor visibility
-- emoji shortcode render
-- footnote refs and backrefs
-- math inline and display render
-- mermaid diagram render and fallback
-- reference links and escaped chars
-- sanitize raw HTML/script/iframe
-- plugin interactions in code fences
-- invalid math graceful behavior
+Muc tieu phan nay: tao tai lieu dai, nhieu headings, nhieu khoang scroll de benchmark.
 
-Ket thuc file test.
+## P1. Performance Check Instructions
+
+1. Bat DevTools Performance, record 5-10s khi scroll lien tuc.
+2. Theo doi fps, main thread, va behavior TOC active.
+3. So sanh khi plugin nang (mermaid/math) ON va OFF.
+
+---
+
+## P2. Heading Density Stress
+
+### P2.1 H3
+#### P2.1.1 H4
+##### P2.1.1.1 H5
+###### P2.1.1.1.1 H6
+
+### P2.2 H3
+#### P2.2.1 H4
+##### P2.2.1.1 H5
+###### P2.2.1.1.1 H6
+
+### P2.3 H3
+#### P2.3.1 H4
+##### P2.3.1.1 H5
+###### P2.3.1.1.1 H6
+
+### P2.4 H3
+#### P2.4.1 H4
+##### P2.4.1.1 H5
+###### P2.4.1.1.1 H6
+
+### P2.5 H3
+#### P2.5.1 H4
+##### P2.5.1.1 H5
+###### P2.5.1.1.1 H6
+
+---
+
+## P3. Long Paragraph Dummy Blocks
+
+Block 01: This line exists to increase document size and scroll distance.
+Block 02: This line exists to increase document size and scroll distance.
+Block 03: This line exists to increase document size and scroll distance.
+Block 04: This line exists to increase document size and scroll distance.
+Block 05: This line exists to increase document size and scroll distance.
+Block 06: This line exists to increase document size and scroll distance.
+Block 07: This line exists to increase document size and scroll distance.
+Block 08: This line exists to increase document size and scroll distance.
+Block 09: This line exists to increase document size and scroll distance.
+Block 10: This line exists to increase document size and scroll distance.
+Block 11: This line exists to increase document size and scroll distance.
+Block 12: This line exists to increase document size and scroll distance.
+Block 13: This line exists to increase document size and scroll distance.
+Block 14: This line exists to increase document size and scroll distance.
+Block 15: This line exists to increase document size and scroll distance.
+Block 16: This line exists to increase document size and scroll distance.
+Block 17: This line exists to increase document size and scroll distance.
+Block 18: This line exists to increase document size and scroll distance.
+Block 19: This line exists to increase document size and scroll distance.
+Block 20: This line exists to increase document size and scroll distance.
+Block 21: This line exists to increase document size and scroll distance.
+Block 22: This line exists to increase document size and scroll distance.
+Block 23: This line exists to increase document size and scroll distance.
+Block 24: This line exists to increase document size and scroll distance.
+Block 25: This line exists to increase document size and scroll distance.
+Block 26: This line exists to increase document size and scroll distance.
+Block 27: This line exists to increase document size and scroll distance.
+Block 28: This line exists to increase document size and scroll distance.
+Block 29: This line exists to increase document size and scroll distance.
+Block 30: This line exists to increase document size and scroll distance.
+Block 31: This line exists to increase document size and scroll distance.
+Block 32: This line exists to increase document size and scroll distance.
+Block 33: This line exists to increase document size and scroll distance.
+Block 34: This line exists to increase document size and scroll distance.
+Block 35: This line exists to increase document size and scroll distance.
+Block 36: This line exists to increase document size and scroll distance.
+Block 37: This line exists to increase document size and scroll distance.
+Block 38: This line exists to increase document size and scroll distance.
+Block 39: This line exists to increase document size and scroll distance.
+Block 40: This line exists to increase document size and scroll distance.
+Block 41: This line exists to increase document size and scroll distance.
+Block 42: This line exists to increase document size and scroll distance.
+Block 43: This line exists to increase document size and scroll distance.
+Block 44: This line exists to increase document size and scroll distance.
+Block 45: This line exists to increase document size and scroll distance.
+Block 46: This line exists to increase document size and scroll distance.
+Block 47: This line exists to increase document size and scroll distance.
+Block 48: This line exists to increase document size and scroll distance.
+Block 49: This line exists to increase document size and scroll distance.
+Block 50: This line exists to increase document size and scroll distance.
+
+---
+
+## P4. Many Short Headings for TOC Stress
+
+### P4.01
+### P4.02
+### P4.03
+### P4.04
+### P4.05
+### P4.06
+### P4.07
+### P4.08
+### P4.09
+### P4.10
+### P4.11
+### P4.12
+### P4.13
+### P4.14
+### P4.15
+### P4.16
+### P4.17
+### P4.18
+### P4.19
+### P4.20
+### P4.21
+### P4.22
+### P4.23
+### P4.24
+### P4.25
+### P4.26
+### P4.27
+### P4.28
+### P4.29
+### P4.30
+
+---
+
+## P5. 500+ Heading Stress Pack
+
+### P5.001
+### P5.002
+### P5.003
+### P5.004
+### P5.005
+### P5.006
+### P5.007
+### P5.008
+### P5.009
+### P5.010
+### P5.011
+### P5.012
+### P5.013
+### P5.014
+### P5.015
+### P5.016
+### P5.017
+### P5.018
+### P5.019
+### P5.020
+### P5.021
+### P5.022
+### P5.023
+### P5.024
+### P5.025
+### P5.026
+### P5.027
+### P5.028
+### P5.029
+### P5.030
+### P5.031
+### P5.032
+### P5.033
+### P5.034
+### P5.035
+### P5.036
+### P5.037
+### P5.038
+### P5.039
+### P5.040
+### P5.041
+### P5.042
+### P5.043
+### P5.044
+### P5.045
+### P5.046
+### P5.047
+### P5.048
+### P5.049
+### P5.050
+### P5.051
+### P5.052
+### P5.053
+### P5.054
+### P5.055
+### P5.056
+### P5.057
+### P5.058
+### P5.059
+### P5.060
+### P5.061
+### P5.062
+### P5.063
+### P5.064
+### P5.065
+### P5.066
+### P5.067
+### P5.068
+### P5.069
+### P5.070
+### P5.071
+### P5.072
+### P5.073
+### P5.074
+### P5.075
+### P5.076
+### P5.077
+### P5.078
+### P5.079
+### P5.080
+### P5.081
+### P5.082
+### P5.083
+### P5.084
+### P5.085
+### P5.086
+### P5.087
+### P5.088
+### P5.089
+### P5.090
+### P5.091
+### P5.092
+### P5.093
+### P5.094
+### P5.095
+### P5.096
+### P5.097
+### P5.098
+### P5.099
+### P5.100
+### P5.101
+### P5.102
+### P5.103
+### P5.104
+### P5.105
+### P5.106
+### P5.107
+### P5.108
+### P5.109
+### P5.110
+### P5.111
+### P5.112
+### P5.113
+### P5.114
+### P5.115
+### P5.116
+### P5.117
+### P5.118
+### P5.119
+### P5.120
+### P5.121
+### P5.122
+### P5.123
+### P5.124
+### P5.125
+### P5.126
+### P5.127
+### P5.128
+### P5.129
+### P5.130
+### P5.131
+### P5.132
+### P5.133
+### P5.134
+### P5.135
+### P5.136
+### P5.137
+### P5.138
+### P5.139
+### P5.140
+### P5.141
+### P5.142
+### P5.143
+### P5.144
+### P5.145
+### P5.146
+### P5.147
+### P5.148
+### P5.149
+### P5.150
+### P5.151
+### P5.152
+### P5.153
+### P5.154
+### P5.155
+### P5.156
+### P5.157
+### P5.158
+### P5.159
+### P5.160
+### P5.161
+### P5.162
+### P5.163
+### P5.164
+### P5.165
+### P5.166
+### P5.167
+### P5.168
+### P5.169
+### P5.170
+### P5.171
+### P5.172
+### P5.173
+### P5.174
+### P5.175
+### P5.176
+### P5.177
+### P5.178
+### P5.179
+### P5.180
+### P5.181
+### P5.182
+### P5.183
+### P5.184
+### P5.185
+### P5.186
+### P5.187
+### P5.188
+### P5.189
+### P5.190
+### P5.191
+### P5.192
+### P5.193
+### P5.194
+### P5.195
+### P5.196
+### P5.197
+### P5.198
+### P5.199
+### P5.200
+### P5.201
+### P5.202
+### P5.203
+### P5.204
+### P5.205
+### P5.206
+### P5.207
+### P5.208
+### P5.209
+### P5.210
+### P5.211
+### P5.212
+### P5.213
+### P5.214
+### P5.215
+### P5.216
+### P5.217
+### P5.218
+### P5.219
+### P5.220
+### P5.221
+### P5.222
+### P5.223
+### P5.224
+### P5.225
+### P5.226
+### P5.227
+### P5.228
+### P5.229
+### P5.230
+### P5.231
+### P5.232
+### P5.233
+### P5.234
+### P5.235
+### P5.236
+### P5.237
+### P5.238
+### P5.239
+### P5.240
+### P5.241
+### P5.242
+### P5.243
+### P5.244
+### P5.245
+### P5.246
+### P5.247
+### P5.248
+### P5.249
+### P5.250
+### P5.251
+### P5.252
+### P5.253
+### P5.254
+### P5.255
+### P5.256
+### P5.257
+### P5.258
+### P5.259
+### P5.260
+### P5.261
+### P5.262
+### P5.263
+### P5.264
+### P5.265
+### P5.266
+### P5.267
+### P5.268
+### P5.269
+### P5.270
+### P5.271
+### P5.272
+### P5.273
+### P5.274
+### P5.275
+### P5.276
+### P5.277
+### P5.278
+### P5.279
+### P5.280
+### P5.281
+### P5.282
+### P5.283
+### P5.284
+### P5.285
+### P5.286
+### P5.287
+### P5.288
+### P5.289
+### P5.290
+### P5.291
+### P5.292
+### P5.293
+### P5.294
+### P5.295
+### P5.296
+### P5.297
+### P5.298
+### P5.299
+### P5.300
+### P5.301
+### P5.302
+### P5.303
+### P5.304
+### P5.305
+### P5.306
+### P5.307
+### P5.308
+### P5.309
+### P5.310
+### P5.311
+### P5.312
+### P5.313
+### P5.314
+### P5.315
+### P5.316
+### P5.317
+### P5.318
+### P5.319
+### P5.320
+### P5.321
+### P5.322
+### P5.323
+### P5.324
+### P5.325
+### P5.326
+### P5.327
+### P5.328
+### P5.329
+### P5.330
+### P5.331
+### P5.332
+### P5.333
+### P5.334
+### P5.335
+### P5.336
+### P5.337
+### P5.338
+### P5.339
+### P5.340
+### P5.341
+### P5.342
+### P5.343
+### P5.344
+### P5.345
+### P5.346
+### P5.347
+### P5.348
+### P5.349
+### P5.350
+### P5.351
+### P5.352
+### P5.353
+### P5.354
+### P5.355
+### P5.356
+### P5.357
+### P5.358
+### P5.359
+### P5.360
+### P5.361
+### P5.362
+### P5.363
+### P5.364
+### P5.365
+### P5.366
+### P5.367
+### P5.368
+### P5.369
+### P5.370
+### P5.371
+### P5.372
+### P5.373
+### P5.374
+### P5.375
+### P5.376
+### P5.377
+### P5.378
+### P5.379
+### P5.380
+### P5.381
+### P5.382
+### P5.383
+### P5.384
+### P5.385
+### P5.386
+### P5.387
+### P5.388
+### P5.389
+### P5.390
+### P5.391
+### P5.392
+### P5.393
+### P5.394
+### P5.395
+### P5.396
+### P5.397
+### P5.398
+### P5.399
+### P5.400
+### P5.401
+### P5.402
+### P5.403
+### P5.404
+### P5.405
+### P5.406
+### P5.407
+### P5.408
+### P5.409
+### P5.410
+### P5.411
+
+---
+
+Ket thuc file comprehensive test.

@@ -1,4 +1,7 @@
+import hostPrintCss from './host-print.scss?inline'
+
 const ROOT_ID = 'mdp-viewer-root'
+const HOST_PRINT_STYLE_ID = 'mdp-viewer-host-print-style'
 const PREV_HTML_OVERFLOW_ATTR = 'data-mdp-prev-html-overflow'
 const PREV_BODY_OVERFLOW_ATTR = 'data-mdp-prev-body-overflow'
 const PREV_HTML_OVERSCROLL_ATTR = 'data-mdp-prev-html-overscroll'
@@ -55,9 +58,18 @@ function restoreOriginalPageInteractivity(host) {
   body.inert = prevInert === '1'
 }
 
+function ensureHostPrintStyles() {
+  if (document.getElementById(HOST_PRINT_STYLE_ID)) return
+  const style = document.createElement('style')
+  style.id = HOST_PRINT_STYLE_ID
+  style.textContent = hostPrintCss
+  document.documentElement.appendChild(style)
+}
+
 export function createViewerRoot() {
   const existing = document.getElementById(ROOT_ID)
   if (existing) {
+    ensureHostPrintStyles()
     lockBackgroundScroll(existing)
     restoreOriginalPageVisibility(existing)
     return {
@@ -74,6 +86,7 @@ export function createViewerRoot() {
   host.style.background = '#ffffff'
 
   document.documentElement.appendChild(host)
+  ensureHostPrintStyles()
   lockBackgroundScroll(host)
   restoreOriginalPageVisibility(host)
 
@@ -95,4 +108,7 @@ export function teardownViewerRoot() {
   restoreBackgroundScroll(host)
   restoreOriginalPageInteractivity(host)
   host.remove()
+
+  const hostPrintStyle = document.getElementById(HOST_PRINT_STYLE_ID)
+  hostPrintStyle?.remove()
 }

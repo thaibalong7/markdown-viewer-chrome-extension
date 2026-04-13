@@ -1,0 +1,80 @@
+@use 'variables' as v;
+
+/* Toolbar print / export controls (see `viewer/actions/toolbar-actions.js`). */
+.mdp-toolbar-doc-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mdp-toolbar-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--mdp-border);
+  border-radius: v.$radius-small;
+  background: var(--mdp-panel-bg);
+  color: var(--mdp-text);
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--mdp-panel-bg) 70%, var(--mdp-border) 30%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: 2px;
+  }
+}
+
+.mdp-toolbar-icon-btn__icon {
+  flex-shrink: 0;
+}
+
+.mdp-toolbar-export {
+  position: relative;
+}
+
+.mdp-toolbar-export__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 30;
+  min-width: 160px;
+  padding: 4px;
+  border-radius: v.$radius-small;
+  border: 1px solid var(--mdp-border);
+  background: var(--mdp-bg);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+}
+
+.mdp-toolbar-export__menu-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: v.$radius-tiny;
+  background: transparent;
+  color: var(--mdp-text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: color-mix(in srgb, var(--mdp-panel-bg) 85%, var(--mdp-border) 15%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: -1px;
+  }
+}

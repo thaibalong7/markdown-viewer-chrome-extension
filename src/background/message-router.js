@@ -2,6 +2,7 @@ import { MESSAGE_TYPES } from '../messaging/index.js'
 import { settingsService } from '../settings/index.js'
 import { logger } from '../shared/logger.js'
 import { fetchFileTextViaOffscreen } from './offscreen-fetch.js'
+import { sanitizeDownloadFilename } from '../shared/download.js'
 
 async function notifySettingsUpdated(settings) {
   const tabs = await chrome.tabs.query({})
@@ -73,6 +74,25 @@ export async function routeMessage(message, sender) {
       }
 
       return fetchFileTextViaOffscreen(url)
+    }
+
+    case MESSAGE_TYPES.DOWNLOAD_DATA_URL:
+    {
+      const dataUrl = message.payload?.dataUrl
+      const filename = message.payload?.filename
+      if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) {
+        throw new Error('Invalid or missing dataUrl')
+      }
+      if (!filename || typeof filename !== 'string') {
+        throw new Error('Missing filename')
+      }
+      const safeName = sanitizeDownloadFilename(filename)
+      await chrome.downloads.download({
+        url: dataUrl,
+        filename: safeName,
+        saveAs: false
+      })
+      return { filename: safeName }
     }
 
     default:

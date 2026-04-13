@@ -1,4 +1,6 @@
 @use 'variables' as v;
+@use 'toolbar-actions';
+@use 'print';
 
 .mdp-root {
   --mdp-toolbar-stack: #{v.$mdp-toolbar-stack};
@@ -27,6 +29,10 @@
 
   &__actions {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 36px;
   }
 }
 

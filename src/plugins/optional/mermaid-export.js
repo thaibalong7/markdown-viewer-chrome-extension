@@ -1,3 +1,5 @@
+import { triggerDownload } from '../../shared/download.js'
+import { logger } from '../../shared/logger.js'
 import { SVG_NS } from '../../viewer/icons.js'
 
 function formatExportTimestamp(date = new Date()) {
@@ -73,20 +75,6 @@ function serializeSvgForExport(containerEl) {
   return { svgText, width, height }
 }
 
-export function triggerDownload({ blob, filename }) {
-  const url = URL.createObjectURL(blob)
-  const anchor = document.createElement('a')
-  anchor.href = url
-  anchor.download = filename
-  anchor.rel = 'noopener'
-  anchor.style.display = 'none'
-  const mountTarget = document.body || document.documentElement
-  mountTarget.appendChild(anchor)
-  anchor.click()
-  anchor.remove()
-  window.setTimeout(() => URL.revokeObjectURL(url), 2000)
-}
-
 function loadImageFromSvgText(svgText) {
   const encoded = encodeURIComponent(svgText)
   const url = `data:image/svg+xml;charset=utf-8,${encoded}`
@@ -106,7 +94,9 @@ export function exportMermaidSvg(containerEl, { chartIndex } = {}) {
   const { svgText } = serializeSvgForExport(containerEl)
   const blob = new Blob([svgText], { type: 'image/svg+xml;charset=utf-8' })
   const filename = buildExportFileName({ chartIndex, extension: 'svg' })
-  triggerDownload({ blob, filename })
+  void triggerDownload({ blob, filename }).catch((err) => {
+    logger.warn('Mermaid SVG download failed.', err)
+  })
 }
 
 export async function exportMermaidPng(containerEl, { chartIndex, scale = 2 } = {}) {
@@ -134,5 +124,5 @@ export async function exportMermaidPng(containerEl, { chartIndex, scale = 2 } = 
   })
 
   const filename = buildExportFileName({ chartIndex, extension: 'png' })
-  triggerDownload({ blob: pngBlob, filename })
+  await triggerDownload({ blob: pngBlob, filename })
 }

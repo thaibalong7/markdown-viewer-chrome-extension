@@ -8,6 +8,7 @@ import { needsFullRender } from '../shared/settings-diff.js'
 import { createExplorerController } from './explorer/explorer-controller.js'
 import { createArticleInteractions } from './article-interactions.js'
 import { createSidebarResize } from './sidebar-resize.js'
+import { createToolbarDocumentActions } from './actions/toolbar-actions.js'
 
 export class MarkdownViewerApp {
   /**
@@ -33,6 +34,8 @@ export class MarkdownViewerApp {
     this._articleInteractions = null
     /** @type {ReturnType<typeof createExplorerController> | null} */
     this._explorer = null
+    /** @type {ReturnType<typeof createToolbarDocumentActions> | null} */
+    this._toolbarDocActions = null
   }
 
   init() {
@@ -71,6 +74,17 @@ export class MarkdownViewerApp {
       getScrollRoot: () => this.getScrollRoot(),
       getArticleEl: () => this.parts?.article
     })
+
+    const toolbarActionsEl = this.parts?.toolbarActions
+    if (toolbarActionsEl) {
+      this._toolbarDocActions = createToolbarDocumentActions({
+        mountEl: toolbarActionsEl,
+        getArticleEl: () => this.parts?.article,
+        getSettings: () => this.settings,
+        getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? '',
+        showToast: (message) => this.showToast(message)
+      })
+    }
 
     this._smoothInitialHashScroll = Boolean(window.location.hash)
     this.applyReaderStyles()
@@ -130,30 +144,34 @@ export class MarkdownViewerApp {
     const scrollSnapshot = preserveScroll ? this.captureScrollPosition() : null
     let result
     try {
-      result = await renderDocument(this.markdown, this.settings)
-    } catch (error) {
-      logger.error('Failed to render markdown document.', error)
-      return null
+      try {
+        result = await renderDocument(this.markdown, this.settings)
+      } catch (error) {
+        logger.error('Failed to render markdown document.', error)
+        return null
+      }
+      if (renderToken !== this._renderToken) return null
+      renderIntoElement(this.parts.article, result.html)
+      if (renderToken !== this._renderToken) return null
+      await result.pluginManager?.afterRender({
+        articleEl: this.parts.article,
+        settings: this.settings,
+        copyCodeWithToast: this._articleInteractions?.copyCodeWithToast.bind(this._articleInteractions)
+      })
+      if (renderToken !== this._renderToken) return null
+      this.syncTocVisibility()
+      if (scrollSnapshot) {
+        this.restoreScrollPosition(scrollSnapshot)
+      } else if (honorHash) {
+        const behavior =
+          this._smoothInitialHashScroll && window.location.hash ? 'smooth' : 'auto'
+        this._articleInteractions?.scrollToHash({ behavior })
+        if (this._smoothInitialHashScroll) this._smoothInitialHashScroll = false
+      }
+      return result
+    } finally {
+      this._toolbarDocActions?.syncVisibility()
     }
-    if (renderToken !== this._renderToken) return null
-    renderIntoElement(this.parts.article, result.html)
-    if (renderToken !== this._renderToken) return null
-    await result.pluginManager?.afterRender({
-      articleEl: this.parts.article,
-      settings: this.settings,
-      copyCodeWithToast: this._articleInteractions?.copyCodeWithToast.bind(this._articleInteractions)
-    })
-    if (renderToken !== this._renderToken) return null
-    this.syncTocVisibility()
-    if (scrollSnapshot) {
-      this.restoreScrollPosition(scrollSnapshot)
-    } else if (honorHash) {
-      const behavior =
-        this._smoothInitialHashScroll && window.location.hash ? 'smooth' : 'auto'
-      this._articleInteractions?.scrollToHash({ behavior })
-      if (this._smoothInitialHashScroll) this._smoothInitialHashScroll = false
-    }
-    return result
   }
 
   showToast(message) {
@@ -197,6 +215,8 @@ export class MarkdownViewerApp {
     this.tocController = null
     this._sidebarResize?.destroy()
     this._sidebarResize = null
+    this._toolbarDocActions?.destroy()
+    this._toolbarDocActions = null
     this._explorer?.destroy()
     this._explorer = null
     this.container.innerHTML = ''

@@ -910,8 +910,13 @@ export function createExplorerController(deps) {
     }
   }
 
+  function getCurrentFileUrl() {
+    return currentFileUrl
+  }
+
   return {
     init,
-    destroy
+    destroy,
+    getCurrentFileUrl
   }
 }

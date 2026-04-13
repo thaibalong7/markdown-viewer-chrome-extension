@@ -19,7 +19,8 @@ function createHeaderToolbar() {
   toolbar.appendChild(actions)
 
   return {
-    element: toolbar
+    element: toolbar,
+    toolbarActions: actions
   }
 }
 
@@ -128,7 +129,8 @@ export function createShell({ styles = [] } = {}) {
   const root = document.createElement('div')
   root.className = 'mdp-root'
 
-  const toolbar = createHeaderToolbar()
+  const header = createHeaderToolbar()
+  const toolbar = header.element
   const contentPane = createContentPane()
   const body = document.createElement('div')
   body.className = 'mdp-body'
@@ -148,7 +150,7 @@ export function createShell({ styles = [] } = {}) {
   body.appendChild(sidebar)
   body.appendChild(contentPane.element)
 
-  root.appendChild(toolbar.element)
+  root.appendChild(toolbar)
   root.appendChild(body)
 
   return {
@@ -156,7 +158,8 @@ export function createShell({ styles = [] } = {}) {
     styleElements: styles.map(createStyleElement),
     parts: {
       root,
-      toolbar: toolbar.element,
+      toolbar,
+      toolbarActions: header.toolbarActions,
       sidebar,
       tocContainer,
       explorerContainer,

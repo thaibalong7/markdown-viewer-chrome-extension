@@ -6,7 +6,7 @@ import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from './scroll-
 /**
  * Hash navigation, in-article link handling, and clipboard UX for the markdown body.
  * @param {object} options
- * @param {() => import('./shell/viewer-shell.js').ShellParts | null | undefined} options.getParts
+ * @param {() => ({ article?: HTMLElement | null } | null | undefined)} options.getParts
  * @param {(message: string) => void} options.showToast
  * @param {() => HTMLElement | null} options.getScrollRoot
  */

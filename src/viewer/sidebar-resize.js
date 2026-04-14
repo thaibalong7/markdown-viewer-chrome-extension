@@ -5,7 +5,11 @@ import { SIDEBAR_MAX_WIDTH_PX, SIDEBAR_MIN_WIDTH_PX } from '../shared/constants/
 /**
  * Sidebar drag + keyboard resize for the viewer shell.
  * @param {object} options
- * @param {() => import('./shell/viewer-shell.js').ShellParts | null | undefined} options.getParts
+ * @param {() => ({
+ *   root?: HTMLElement | null,
+ *   resizeHandle?: HTMLElement | null,
+ *   sidebar?: HTMLElement | null
+ * } | null | undefined)} options.getParts
  * @param {() => object} options.getSettings
  */
 export function createSidebarResize({ getParts, getSettings } = {}) {

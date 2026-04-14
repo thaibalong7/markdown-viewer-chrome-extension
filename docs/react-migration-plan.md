@@ -162,6 +162,13 @@ content/index.js → bootstrap.js → mountViewerReact()
 
 ## 4. Phase 1-R: React Shell + Toolbar
 
+### Status
+- **Done** (2026-04-14)
+- Completed scope:
+  - Replaced imperative shell mount with React shell mount (`ViewerShell` + `partsPromise` bridge)
+  - Migrated toolbar print/export actions to React (`ToolbarActions` + React icon components)
+  - Removed legacy shell/toolbar modules (`viewer-shell.js`, `toolbar-actions.js`) after integration validation
+
 ### Goals
 - Replace `createShell()` with a React component tree that produces the **same DOM structure and class names**
 - Migrate toolbar (title + actions area) to React

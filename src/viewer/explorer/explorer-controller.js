@@ -69,7 +69,13 @@ export function markdownFileTitleFromUrl(fileUrl) {
 /**
  * Files / workspace sidebar orchestration (separate from core markdown render).
  * @param {object} deps
- * @param {() => import('../shell/viewer-shell.js').ShellParts | null | undefined} deps.getParts
+ * @param {() => ({
+ *   explorerContainer?: HTMLElement | null,
+ *   tabFiles?: HTMLElement | null,
+ *   tabOutline?: HTMLElement | null,
+ *   filesPanel?: HTMLElement | null,
+ *   outlinePanel?: HTMLElement | null
+ * } | null | undefined)} deps.getParts
  * @param {() => object} deps.getSettings
  * @param {(markdown: string) => void} deps.setMarkdown
  * @param {(value: boolean) => void} deps.setSmoothInitialHashScroll

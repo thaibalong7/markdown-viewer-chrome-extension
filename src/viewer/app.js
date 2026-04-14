@@ -1,4 +1,3 @@
-import { createShell } from './shell/viewer-shell.js'
 import { renderDocument, renderIntoElement } from './core/renderer.js'
 import { rebuildToc } from './actions/rebuild-toc.js'
 import { applyThemeSettings } from '../theme/index.js'
@@ -8,7 +7,13 @@ import { needsFullRender } from '../shared/settings-diff.js'
 import { createExplorerController } from './explorer/explorer-controller.js'
 import { createArticleInteractions } from './article-interactions.js'
 import { createSidebarResize } from './sidebar-resize.js'
-import { createToolbarDocumentActions } from './actions/toolbar-actions.js'
+import { mountViewerReact } from './react/mount.js'
+
+function createStyleElement(cssText) {
+  const style = document.createElement('style')
+  style.textContent = cssText
+  return style
+}
 
 export class MarkdownViewerApp {
   /**
@@ -25,29 +30,41 @@ export class MarkdownViewerApp {
     this.styles = styles
     this.parts = null
     this.tocController = null
-    this.shellController = null
     this._smoothInitialHashScroll = false
     this._renderToken = 0
+    this._styleElements = []
+    this._reactHandle = null
     /** @type {ReturnType<typeof createSidebarResize> | null} */
     this._sidebarResize = null
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
     /** @type {ReturnType<typeof createExplorerController> | null} */
     this._explorer = null
-    /** @type {ReturnType<typeof createToolbarDocumentActions> | null} */
-    this._toolbarDocActions = null
   }
 
-  init() {
-    const shell = createShell({ styles: this.styles })
-
-    this.parts = shell.parts
-    this.shellController = shell
-
-    for (const styleElement of shell.styleElements) {
+  async init() {
+    this._styleElements = this.styles.map(createStyleElement)
+    for (const styleElement of this._styleElements) {
       this.container.appendChild(styleElement)
     }
-    this.container.appendChild(shell.element)
+
+    this._reactHandle = mountViewerReact(this.container, {
+      settings: this.settings,
+      markdown: this.markdown,
+      currentFileUrl: '',
+      getArticleEl: () => this.parts?.article,
+      getSettings: () => this.settings,
+      getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? '',
+      showToast: (message) => this.showToast(message)
+    })
+
+    try {
+      this.parts = await this._reactHandle.partsPromise
+    } catch (error) {
+      logger.error('Failed to mount viewer React shell.', error)
+      this.destroy()
+      return
+    }
 
     this._sidebarResize = createSidebarResize({
       getParts: () => this.parts,
@@ -75,23 +92,13 @@ export class MarkdownViewerApp {
       getArticleEl: () => this.parts?.article
     })
 
-    const toolbarActionsEl = this.parts?.toolbarActions
-    if (toolbarActionsEl) {
-      this._toolbarDocActions = createToolbarDocumentActions({
-        mountEl: toolbarActionsEl,
-        getArticleEl: () => this.parts?.article,
-        getSettings: () => this.settings,
-        getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? '',
-        showToast: (message) => this.showToast(message)
-      })
-    }
-
     this._smoothInitialHashScroll = Boolean(window.location.hash)
     this.applyReaderStyles()
     void this.render()
     this._articleInteractions.bind()
     this._explorer.init()
     this._sidebarResize.init()
+    this._reactHandle.updateCurrentFileUrl(this._explorer?.getCurrentFileUrl?.() ?? '')
   }
 
   applyReaderStyles() {
@@ -170,7 +177,7 @@ export class MarkdownViewerApp {
       }
       return result
     } finally {
-      this._toolbarDocActions?.syncVisibility()
+      this._reactHandle?.updateCurrentFileUrl(this._explorer?.getCurrentFileUrl?.() ?? '')
     }
   }
 
@@ -197,6 +204,7 @@ export class MarkdownViewerApp {
   async updateSettings(nextSettings) {
     const prevSettings = this.settings
     this.settings = nextSettings
+    this._reactHandle?.updateSettings(nextSettings)
     this.applyReaderStyles()
     if (!needsFullRender(prevSettings, nextSettings)) {
       this.syncTocVisibility()
@@ -207,18 +215,17 @@ export class MarkdownViewerApp {
 
   destroy() {
     dismissViewerToast(this.parts?.root)
-    if (this.shellController?.destroy) this.shellController.destroy()
-    this.shellController = null
     this._articleInteractions?.destroy()
     this._articleInteractions = null
     if (this.tocController) this.tocController.destroy()
     this.tocController = null
     this._sidebarResize?.destroy()
     this._sidebarResize = null
-    this._toolbarDocActions?.destroy()
-    this._toolbarDocActions = null
     this._explorer?.destroy()
     this._explorer = null
+    this._reactHandle?.unmount()
+    this._reactHandle = null
+    this._styleElements = []
     this.container.innerHTML = ''
     this.parts = null
   }

@@ -2,12 +2,39 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { ViewerApp } from './ViewerApp.jsx'
 
-export function mountViewerReact(container, { settings, markdown, currentFileUrl } = {}) {
+export function mountViewerReact(container, options = {}) {
+  const {
+    settings,
+    markdown,
+    currentFileUrl,
+    onShellReady,
+    getArticleEl,
+    getSettings,
+    getCurrentFileUrl,
+    showToast
+  } = options
   const root = createRoot(container)
+  let shellReadyResolve = () => {}
+  const partsPromise = new Promise((resolve) => {
+    shellReadyResolve = resolve
+  })
+  let shellReadySignaled = false
+
   let nextProps = {
     settings: settings || {},
     markdown: markdown || '',
-    currentFileUrl: currentFileUrl || ''
+    currentFileUrl: currentFileUrl || '',
+    getArticleEl,
+    getSettings,
+    getCurrentFileUrl,
+    showToast,
+    onShellReady: (parts) => {
+      if (!shellReadySignaled) {
+        shellReadySignaled = true
+        shellReadyResolve(parts)
+      }
+      onShellReady?.(parts)
+    }
   }
 
   const render = () => {
@@ -17,6 +44,7 @@ export function mountViewerReact(container, { settings, markdown, currentFileUrl
   render()
 
   return {
+    partsPromise,
     updateSettings(nextSettings) {
       nextProps = { ...nextProps, settings: nextSettings || {} }
       render()
@@ -27,6 +55,10 @@ export function mountViewerReact(container, { settings, markdown, currentFileUrl
     },
     updateCurrentFileUrl(nextFileUrl) {
       nextProps = { ...nextProps, currentFileUrl: nextFileUrl || '' }
+      render()
+    },
+    updateBridge(nextBridge = {}) {
+      nextProps = { ...nextProps, ...nextBridge }
       render()
     },
     unmount() {

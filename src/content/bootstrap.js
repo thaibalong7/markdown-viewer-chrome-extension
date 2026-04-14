@@ -6,8 +6,6 @@ import { looksLikeMarkdownText } from './text-sampling.js'
 import { createViewerRoot } from './page-overrider.js'
 import { MarkdownViewerApp } from '../viewer/app.js'
 
-const REACT_SMOKE_TEST = true
-
 export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explorerCss, getViewerStyles }) {
   logger.info('Content bootstrap started.')
   const protocol = window.location?.protocol || ''
@@ -106,31 +104,7 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
     styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss, styles.explorerCss]
   })
 
-  app.init()
-
-  if (REACT_SMOKE_TEST) {
-    try {
-      const { mountViewerReact } = await import('../viewer/react/mount.js')
-      const reactContainer = document.createElement('div')
-      reactContainer.style.display = 'none'
-      reactContainer.setAttribute('data-mdp-react-smoke-test', 'true')
-      mountTarget.appendChild(reactContainer)
-
-      const reactSmoke = mountViewerReact(reactContainer, {
-        settings,
-        markdown: extraction.markdown,
-        currentFileUrl: window.location.href
-      })
-
-      const originalDestroy = app.destroy.bind(app)
-      app.destroy = () => {
-        reactSmoke.unmount()
-        originalDestroy()
-      }
-    } catch (error) {
-      logger.warn('React smoke test mount failed.', error)
-    }
-  }
+  await app.init()
 
   logger.info('Markdown viewer mounted successfully.')
   return app

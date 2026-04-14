@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo, useReducer } from 'react'
+import { getActiveSidebarTab } from '../../explorer/explorer-state.js'
 
 const ViewerStateContext = createContext(null)
 const ViewerDispatchContext = createContext(null)
@@ -6,7 +7,7 @@ const ViewerDispatchContext = createContext(null)
 function buildInitialState({
   markdown = '',
   currentFileUrl = '',
-  activeSidebarTab = 'outline',
+  activeSidebarTab = getActiveSidebarTab(),
   tocVisible = true
 } = {}) {
   return {

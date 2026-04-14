@@ -205,6 +205,15 @@ content/index.js → bootstrap.js → mountViewerReact()
 
 ## 5. Phase 2-R: Sidebar Tabs + TOC Panel
 
+### Status
+- **Done** (2026-04-14)
+- Completed scope:
+  - Migrated sidebar tabs, outline panel TOC rendering, and resize handle to React components/hooks
+  - Switched TOC updates to `buildTocItems()` -> React bridge (`updateTocItems`) and removed imperative TOC controller
+  - Removed imperative tab switching in `explorer-controller.js`, keeping Files panel as an imperative mount slot
+  - Deleted `sidebar-resize.js` and `actions/rebuild-toc.js` after integration
+  - Restored reload persistence behavior for sidebar width by reapplying stored width after `applyThemeSettings()`
+
 ### Goals
 - Migrate sidebar tab switching to React state
 - Migrate TOC rendering to a React component

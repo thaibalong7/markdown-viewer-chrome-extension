@@ -30,12 +30,10 @@ import {
 import { createExplorerPanel } from './explorer-panel.js'
 import {
   clearWorkspaceRootUrl,
-  getActiveSidebarTab,
   getExplorerMode,
   getOriginalFileUrl,
   getWorkspaceRootUrl,
   isOnOriginalFile,
-  setActiveSidebarTab,
   setExplorerMode,
   setOriginalFileUrlIfUnset,
   setWorkspaceRootUrl
@@ -71,10 +69,6 @@ export function markdownFileTitleFromUrl(fileUrl) {
  * @param {object} deps
  * @param {() => ({
  *   explorerContainer?: HTMLElement | null,
- *   tabFiles?: HTMLElement | null,
- *   tabOutline?: HTMLElement | null,
- *   filesPanel?: HTMLElement | null,
- *   outlinePanel?: HTMLElement | null
  * } | null | undefined)} deps.getParts
  * @param {() => object} deps.getSettings
  * @param {(markdown: string) => void} deps.setMarkdown
@@ -98,8 +92,6 @@ export function createExplorerController(deps) {
 
   /** @type {ReturnType<typeof createExplorerPanel> | null} */
   let explorerPanel = null
-  let tabFilesClick = null
-  let tabOutlineClick = null
   let currentFileUrl = window.location.href
   /** @type {'sibling' | 'workspace'} */
   let explorerMode = 'sibling'
@@ -125,27 +117,6 @@ export function createExplorerController(deps) {
       ? Number(ex.maxFolders)
       : DEFAULT_EXPLORER_MAX_FOLDERS
     return { maxScanDepth, maxFiles, maxFolders }
-  }
-
-  /**
-   * @param {'files' | 'outline'} tabId
-   */
-  function setSidebarTab(tabId) {
-    const { tabFiles, tabOutline, filesPanel, outlinePanel } = getParts() || {}
-    if (!tabFiles || !tabOutline || !filesPanel || !outlinePanel) return
-
-    setActiveSidebarTab(tabId)
-    const isFiles = tabId === 'files'
-    filesPanel.hidden = !isFiles
-    outlinePanel.hidden = isFiles
-    tabFiles.classList.toggle('is-active', isFiles)
-    tabOutline.classList.toggle('is-active', !isFiles)
-    tabFiles.setAttribute('aria-selected', String(isFiles))
-    tabOutline.setAttribute('aria-selected', String(!isFiles))
-  }
-
-  function applySidebarTabFromStorage() {
-    setSidebarTab(getActiveSidebarTab())
   }
 
   /**
@@ -854,15 +825,14 @@ export function createExplorerController(deps) {
   }
 
   function init() {
-    const { explorerContainer, tabFiles, tabOutline } = getParts() || {}
-    if (!explorerContainer || !tabFiles || !tabOutline) return
+    const { explorerContainer } = getParts() || {}
+    if (!explorerContainer) return
 
     if (getExplorerMode() === 'workspace' && !getWorkspaceRootUrl()) {
       setExplorerMode('sibling')
     }
 
     setOriginalFileUrlIfUnset(window.location.href)
-    applySidebarTabFromStorage()
 
     explorerPanel = createExplorerPanel({
       container: explorerContainer,
@@ -876,11 +846,6 @@ export function createExplorerController(deps) {
         void exitWorkspace()
       }
     })
-
-    tabFilesClick = () => setSidebarTab('files')
-    tabOutlineClick = () => setSidebarTab('outline')
-    tabFiles.addEventListener('click', tabFilesClick)
-    tabOutline.addEventListener('click', tabOutlineClick)
 
     const storedMode = getExplorerMode()
     const storedRoot = getWorkspaceRootUrl()
@@ -901,15 +866,6 @@ export function createExplorerController(deps) {
     siblingTree = null
     siblingFolderLabel = ''
     siblingScanRootUrl = null
-    const { tabFiles, tabOutline } = getParts() || {}
-    if (tabFilesClick && tabFiles) {
-      tabFiles.removeEventListener('click', tabFilesClick)
-    }
-    if (tabOutlineClick && tabOutline) {
-      tabOutline.removeEventListener('click', tabOutlineClick)
-    }
-    tabFilesClick = null
-    tabOutlineClick = null
     if (explorerPanel) {
       explorerPanel.destroy()
       explorerPanel = null

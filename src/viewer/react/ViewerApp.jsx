@@ -8,6 +8,7 @@ export function ViewerApp({
   settings,
   markdown,
   currentFileUrl,
+  tocItems,
   onShellReady,
   getArticleEl,
   getSettings,
@@ -17,7 +18,7 @@ export function ViewerApp({
   return (
     <SettingsProvider initialSettings={settings}>
       <ViewerStateProvider markdown={markdown} currentFileUrl={currentFileUrl}>
-        <ViewerShell onShellReady={onShellReady}>
+        <ViewerShell onShellReady={onShellReady} settings={settings} tocItems={tocItems}>
           <ToolbarActions
             getArticleEl={getArticleEl}
             getSettings={getSettings}

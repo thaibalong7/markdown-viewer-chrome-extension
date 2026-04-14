@@ -7,6 +7,7 @@ export function mountViewerReact(container, options = {}) {
     settings,
     markdown,
     currentFileUrl,
+    tocItems,
     onShellReady,
     getArticleEl,
     getSettings,
@@ -24,6 +25,7 @@ export function mountViewerReact(container, options = {}) {
     settings: settings || {},
     markdown: markdown || '',
     currentFileUrl: currentFileUrl || '',
+    tocItems: Array.isArray(tocItems) ? tocItems : [],
     getArticleEl,
     getSettings,
     getCurrentFileUrl,
@@ -55,6 +57,10 @@ export function mountViewerReact(container, options = {}) {
     },
     updateCurrentFileUrl(nextFileUrl) {
       nextProps = { ...nextProps, currentFileUrl: nextFileUrl || '' }
+      render()
+    },
+    updateTocItems(nextTocItems) {
+      nextProps = { ...nextProps, tocItems: Array.isArray(nextTocItems) ? nextTocItems : [] }
       render()
     },
     updateBridge(nextBridge = {}) {

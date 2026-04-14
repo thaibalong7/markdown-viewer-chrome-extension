@@ -1,18 +1,25 @@
 import { renderDocument, renderIntoElement } from './core/renderer.js'
-import { rebuildToc } from './actions/rebuild-toc.js'
+import { buildTocItems } from './core/toc-builder.js'
 import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
 import { dismissViewerToast, showViewerToast } from './toast.js'
 import { needsFullRender } from '../shared/settings-diff.js'
 import { createExplorerController } from './explorer/explorer-controller.js'
 import { createArticleInteractions } from './article-interactions.js'
-import { createSidebarResize } from './sidebar-resize.js'
 import { mountViewerReact } from './react/mount.js'
+import { getSidebarWidthPx } from './explorer/explorer-state.js'
+import { SIDEBAR_MAX_WIDTH_PX, SIDEBAR_MIN_WIDTH_PX } from '../shared/constants/viewer.js'
 
 function createStyleElement(cssText) {
   const style = document.createElement('style')
   style.textContent = cssText
   return style
+}
+
+function clampSidebarWidth(widthPx) {
+  const width = Number(widthPx)
+  if (!Number.isFinite(width)) return SIDEBAR_MIN_WIDTH_PX
+  return Math.max(SIDEBAR_MIN_WIDTH_PX, Math.min(SIDEBAR_MAX_WIDTH_PX, Math.round(width)))
 }
 
 export class MarkdownViewerApp {
@@ -29,13 +36,10 @@ export class MarkdownViewerApp {
     this.container = container
     this.styles = styles
     this.parts = null
-    this.tocController = null
     this._smoothInitialHashScroll = false
     this._renderToken = 0
     this._styleElements = []
     this._reactHandle = null
-    /** @type {ReturnType<typeof createSidebarResize> | null} */
-    this._sidebarResize = null
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
     /** @type {ReturnType<typeof createExplorerController> | null} */
@@ -52,6 +56,7 @@ export class MarkdownViewerApp {
       settings: this.settings,
       markdown: this.markdown,
       currentFileUrl: '',
+      tocItems: [],
       getArticleEl: () => this.parts?.article,
       getSettings: () => this.settings,
       getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? '',
@@ -65,11 +70,6 @@ export class MarkdownViewerApp {
       this.destroy()
       return
     }
-
-    this._sidebarResize = createSidebarResize({
-      getParts: () => this.parts,
-      getSettings: () => this.settings
-    })
 
     this._articleInteractions = createArticleInteractions({
       getParts: () => this.parts,
@@ -97,7 +97,6 @@ export class MarkdownViewerApp {
     void this.render()
     this._articleInteractions.bind()
     this._explorer.init()
-    this._sidebarResize.init()
     this._reactHandle.updateCurrentFileUrl(this._explorer?.getCurrentFileUrl?.() ?? '')
   }
 
@@ -107,25 +106,26 @@ export class MarkdownViewerApp {
 
     const typo = this.settings?.typography || {}
     const layout = this.settings?.layout || {}
-    const sidebar = this.parts?.sidebar
     const themeTarget = this.parts?.root || this.container?.host || this.container
 
     applyThemeSettings(themeTarget, this.settings)
+    this.applySidebarWidthPreference()
 
     if (typo.fontFamily) article.style.fontFamily = 'var(--mdp-font-family)'
     if (typo.fontSize != null) article.style.fontSize = 'var(--mdp-font-size)'
     if (typo.lineHeight != null) article.style.lineHeight = 'var(--mdp-line-height)'
     if (layout.contentMaxWidth != null) article.style.maxWidth = 'var(--mdp-content-max-width)'
+  }
 
-    if (sidebar) {
-      const showToc = layout.showToc !== false
-      sidebar.style.display = showToc ? '' : 'none'
-      this._sidebarResize?.applySidebarWidth()
-      const body = sidebar.parentElement
-      if (body?.classList?.contains('mdp-body')) {
-        body.classList.toggle('mdp-body--no-toc', !showToc)
-      }
-    }
+  applySidebarWidthPreference() {
+    const root = this.parts?.root
+    if (!root) return
+    const layoutWidth = Number(this.settings?.layout?.tocWidth)
+    const storedWidth = getSidebarWidthPx()
+    const baseWidth = Number.isFinite(storedWidth) ? storedWidth : layoutWidth
+    const width = clampSidebarWidth(Number.isFinite(baseWidth) ? baseWidth : 280)
+    root.style.setProperty('--mdp-toc-width', `${width}px`)
+    this.parts?.resizeHandle?.setAttribute('aria-valuenow', String(width))
   }
 
   getScrollRoot() {
@@ -166,7 +166,7 @@ export class MarkdownViewerApp {
         copyCodeWithToast: this._articleInteractions?.copyCodeWithToast.bind(this._articleInteractions)
       })
       if (renderToken !== this._renderToken) return null
-      this.syncTocVisibility()
+      this.syncTocItems()
       if (scrollSnapshot) {
         this.restoreScrollPosition(scrollSnapshot)
       } else if (honorHash) {
@@ -185,20 +185,15 @@ export class MarkdownViewerApp {
     showViewerToast(this.parts?.root, message)
   }
 
-  syncTocVisibility() {
+  syncTocItems() {
     const showToc = this.settings?.layout?.showToc !== false
     if (!showToc) {
-      if (this.tocController) this.tocController.destroy()
-      this.tocController = null
-      if (this.parts?.tocContainer) this.parts.tocContainer.innerHTML = ''
+      this._reactHandle?.updateTocItems([])
       return
     }
 
-    if (this.tocController) this.tocController.destroy()
-    this.tocController = rebuildToc({
-      articleEl: this.parts.article,
-      tocContainerEl: this.parts.tocContainer
-    })
+    const items = buildTocItems(this.parts?.article)
+    this._reactHandle?.updateTocItems(items)
   }
 
   async updateSettings(nextSettings) {
@@ -207,7 +202,7 @@ export class MarkdownViewerApp {
     this._reactHandle?.updateSettings(nextSettings)
     this.applyReaderStyles()
     if (!needsFullRender(prevSettings, nextSettings)) {
-      this.syncTocVisibility()
+      this.syncTocItems()
       return null
     }
     return this.render({ preserveScroll: true, honorHash: false })
@@ -217,10 +212,6 @@ export class MarkdownViewerApp {
     dismissViewerToast(this.parts?.root)
     this._articleInteractions?.destroy()
     this._articleInteractions = null
-    if (this.tocController) this.tocController.destroy()
-    this.tocController = null
-    this._sidebarResize?.destroy()
-    this._sidebarResize = null
     this._explorer?.destroy()
     this._explorer = null
     this._reactHandle?.unmount()

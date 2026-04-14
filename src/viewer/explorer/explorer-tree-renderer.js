@@ -107,6 +107,7 @@ export function buildInitialExpandedMap(nodes) {
  * @typedef {object} TreeRenderContext
  * @property {(href: string) => void} onPickFile
  * @property {Map<string, boolean>} expandedMap
+ * @property {(href: string) => void} hydrateFolderChildren
  * @property {() => void} syncExpanded
  * @property {(destroy: () => void) => void} registerRowTooltip
  */
@@ -182,7 +183,9 @@ export function appendTreeNode(parent, node, treeCtx) {
   const row = document.createElement('button')
   row.type = 'button'
   row.className = 'mdp-explorer__tree-folder-row'
-  row.setAttribute('aria-expanded', 'true')
+  const isExpanded = treeCtx.expandedMap.get(node.href) === true
+  row.setAttribute('aria-expanded', isExpanded ? 'true' : 'false')
+  row.classList.toggle('is-expanded', isExpanded)
 
   const chev = document.createElement('span')
   chev.className = 'mdp-explorer__tree-chevron'
@@ -201,7 +204,9 @@ export function appendTreeNode(parent, node, treeCtx) {
   row.addEventListener('click', () => {
     const href = node.href
     const cur = treeCtx.expandedMap.get(href) === true
-    treeCtx.expandedMap.set(href, !cur)
+    const next = !cur
+    treeCtx.expandedMap.set(href, next)
+    if (next) treeCtx.hydrateFolderChildren(href)
     treeCtx.syncExpanded()
   })
 
@@ -218,10 +223,7 @@ export function appendTreeNode(parent, node, treeCtx) {
   const childUl = document.createElement('ul')
   childUl.className = 'mdp-explorer__tree-children'
   childUl.setAttribute('role', 'group')
-
-  for (const child of node.children || []) {
-    appendTreeNode(childUl, child, treeCtx)
-  }
+  childUl.hidden = !isExpanded
 
   li.appendChild(row)
   li.appendChild(childUl)

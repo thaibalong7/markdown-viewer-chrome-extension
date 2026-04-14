@@ -165,6 +165,14 @@ export function createExplorerPanel({
   /** Folder expand/collapse by href */
   /** @type {Map<string, boolean>} */
   let folderExpandedState = new Map()
+  /** @type {Map<string, import('./folder-scanner.js').ExplorerTreeNode>} */
+  let folderNodeByHref = new Map()
+  /** @type {Map<string, string[]>} */
+  let fileAncestorFoldersByHref = new Map()
+  /** @type {Set<string>} */
+  let materializedFolderHrefs = new Set()
+  /** @type {import('./explorer-tree-renderer.js').TreeRenderContext | null} */
+  let treeRenderCtx = null
 
   /** @type {(() => void) | null} */
   let backHandler = null
@@ -236,12 +244,109 @@ export function createExplorerPanel({
     for (const d of treeRowTooltipDestroys) d()
     treeRowTooltipDestroys = []
     listEl.replaceChildren()
+    folderExpandedState = new Map()
+    folderNodeByHref = new Map()
+    fileAncestorFoldersByHref = new Map()
+    materializedFolderHrefs = new Set()
+    treeRenderCtx = null
+  }
+
+  /**
+   * @param {Array<import('./folder-scanner.js').ExplorerTreeNode>} nodes
+   */
+  function indexTreeNodes(nodes) {
+    /** @type {string[]} */
+    const ancestors = []
+    /**
+     * @param {Array<import('./folder-scanner.js').ExplorerTreeNode>} list
+     */
+    function walk(list) {
+      for (const node of list) {
+        if (node.type === 'folder') {
+          folderNodeByHref.set(node.href, node)
+          ancestors.push(node.href)
+          if (node.children?.length) walk(node.children)
+          ancestors.pop()
+          continue
+        }
+        const fileKey = normalizeFileUrlForCompare(node.href)
+        if (!fileAncestorFoldersByHref.has(fileKey)) {
+          fileAncestorFoldersByHref.set(fileKey, [...ancestors])
+        }
+      }
+    }
+    walk(nodes)
+  }
+
+  /**
+   * @param {string} folderHref
+   * @returns {HTMLLIElement | null}
+   */
+  function getFolderListItem(folderHref) {
+    const rows = listEl.querySelectorAll('li[data-folder-href]')
+    for (const row of rows) {
+      if ((row.getAttribute('data-folder-href') || '') === folderHref && row instanceof HTMLLIElement) {
+        return row
+      }
+    }
+    return null
+  }
+
+  /**
+   * @param {string} folderHref
+   * @returns {boolean}
+   */
+  function hydrateFolderChildren(folderHref) {
+    if (!folderHref || materializedFolderHrefs.has(folderHref) || !treeRenderCtx) return false
+    const folderNode = folderNodeByHref.get(folderHref)
+    if (!folderNode) return false
+
+    const folderLi = getFolderListItem(folderHref)
+    if (!folderLi) return false
+
+    const childUl = folderLi.querySelector(':scope > .mdp-explorer__tree-children')
+    if (!(childUl instanceof HTMLUListElement)) return false
+
+    const children = folderNode.children || []
+    if (!children.length) {
+      materializedFolderHrefs.add(folderHref)
+      return false
+    }
+
+    const fragment = document.createDocumentFragment()
+    for (const child of children) {
+      appendTreeNode(fragment, child, treeRenderCtx)
+    }
+    childUl.appendChild(fragment)
+    materializedFolderHrefs.add(folderHref)
+    return true
+  }
+
+  /**
+   * @param {string} href
+   */
+  function ensureFilePathExpanded(href) {
+    if (!href) return
+    const fileKey = normalizeFileUrlForCompare(href)
+    const ancestorFolders = fileAncestorFoldersByHref.get(fileKey)
+    if (!ancestorFolders?.length) return
+
+    let changed = false
+    for (const folderHref of ancestorFolders) {
+      if (folderExpandedState.get(folderHref) !== true) {
+        folderExpandedState.set(folderHref, true)
+        changed = true
+      }
+      if (hydrateFolderChildren(folderHref)) changed = true
+    }
+    if (changed) syncFolderDomExpandedState()
   }
 
   /**
    * @param {string} href
    */
   function markActiveFile(href) {
+    ensureFilePathExpanded(href)
     const fileButtons = listEl.querySelectorAll('button[data-file-href]')
     if (!href) {
       for (const btn of fileButtons) {
@@ -475,6 +580,7 @@ export function createExplorerPanel({
     )
 
     folderExpandedState = buildInitialExpandedMap(children)
+    indexTreeNodes(children)
 
     const treeCtx = {
       onPickFile: (href) => {
@@ -482,11 +588,15 @@ export function createExplorerPanel({
         onNavigate?.(href)
       },
       expandedMap: folderExpandedState,
+      hydrateFolderChildren: (href) => {
+        hydrateFolderChildren(href)
+      },
       syncExpanded: () => syncFolderDomExpandedState(),
       registerRowTooltip: (destroy) => {
         treeRowTooltipDestroys.push(destroy)
       }
     }
+    treeRenderCtx = treeCtx
 
     const fragment = document.createDocumentFragment()
     for (const node of children) {
@@ -503,6 +613,7 @@ export function createExplorerPanel({
     for (const li of folders) {
       const href = li.getAttribute('data-folder-href') || ''
       const expanded = folderExpandedState.get(href) === true
+      if (expanded) hydrateFolderChildren(href)
       const childUl = li.querySelector(':scope > .mdp-explorer__tree-children')
       const row = li.querySelector(':scope > .mdp-explorer__tree-folder-row')
       if (childUl) childUl.hidden = !expanded

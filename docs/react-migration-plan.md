@@ -120,6 +120,14 @@ content/index.js → bootstrap.js → mountViewerReact()
 
 ## 3. Prerequisites (Phase 0-R: React Infrastructure)
 
+### Status
+- **Done** (2026-04-14)
+- Completed scope:
+  - Added `@vitejs/plugin-react` and wired `react()` in `vite.config.mjs`
+  - Added React viewer foundation under `src/viewer/react/` (`ViewerApp`, `mount`, contexts, `useImperativeBridge`)
+  - Added Shadow DOM smoke-test wiring in `src/content/bootstrap.js`
+  - Verified build with `nvm use 20 && npm run build`
+
 ### Goals
 - Add `@vitejs/plugin-react` to Vite config (required for JSX in content script)
 - Verify React renders inside Shadow DOM correctly
@@ -454,7 +462,7 @@ src/content/text-sampling.js
 ## 11. Phase Execution Order & Dependencies
 
 ```
-Phase 0-R: React Infrastructure
+Phase 0-R: React Infrastructure (Done)
     ↓
 Phase 1-R: Shell + Toolbar
     ↓

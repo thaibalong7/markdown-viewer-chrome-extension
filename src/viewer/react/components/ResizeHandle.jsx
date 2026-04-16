@@ -6,7 +6,10 @@ export function ResizeHandle({ rootEl, sidebarEl, handleEl, setHandleEl, setting
   useSidebarResize({ rootEl, sidebarEl, handleEl, settings })
 
   return (
-    <Tooltip content="Drag to resize the sidebar. When focused, use Left/Right Arrow keys (16px per step).">
+    <Tooltip
+      pointerPlacement
+      content="Drag to resize the sidebar. When focused, use Left/Right Arrow keys (16px per step)."
+    >
       <div
         className="mdp-sidebar__resize-handle"
         role="separator"

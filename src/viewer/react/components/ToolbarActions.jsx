@@ -1,46 +1,24 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { attachTooltip, VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../tooltip.js'
+import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../tooltip.js'
 import {
   buildExportFilename,
   exportAsHtml,
   exportAsWord,
   printDocument
 } from '../../actions/document-actions.js'
+import { useToast } from '../contexts/ToastContext.jsx'
+import { Tooltip } from './Tooltip.jsx'
 import { ExportIcon } from './icons/ExportIcon.jsx'
 import { PrintIcon } from './icons/PrintIcon.jsx'
 
-export function ToolbarActions({
-  getArticleEl,
-  getSettings,
-  getCurrentFileUrl,
-  showToast
-}) {
+export function ToolbarActions({ getArticleEl, getSettings, getCurrentFileUrl }) {
   const printBtnRef = useRef(null)
   const exportBtnRef = useRef(null)
   const exportWrapRef = useRef(null)
+  const { showToast } = useToast()
   const [menuOpen, setMenuOpen] = useState(false)
   const currentFileUrl = getCurrentFileUrl?.() || ''
   const visible = Boolean(String(currentFileUrl).trim())
-
-  useEffect(() => {
-    const printBtn = printBtnRef.current
-    const exportBtn = exportBtnRef.current
-    if (!printBtn || !exportBtn) return undefined
-
-    const printTooltip = attachTooltip(printBtn, {
-      text: 'Print — Save as PDF in the dialog to export PDF.',
-      showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
-    })
-    const exportTooltip = attachTooltip(exportBtn, {
-      text: 'Download — HTML or Word (.doc).',
-      showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
-    })
-
-    return () => {
-      printTooltip.destroy()
-      exportTooltip.destroy()
-    }
-  }, [])
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -117,28 +95,38 @@ export function ToolbarActions({
 
   return (
     <div className="mdp-toolbar-doc-actions" hidden={!visible} aria-hidden={visible ? 'false' : 'true'}>
-      <button
-        type="button"
-        className="mdp-toolbar-icon-btn"
-        aria-label="Print — use Save as PDF in the print dialog."
-        onClick={onPrintClick}
-        ref={printBtnRef}
+      <Tooltip
+        content="Print — Save as PDF in the dialog to export PDF."
+        showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
       >
-        <PrintIcon className="mdp-toolbar-icon-btn__icon" />
-      </button>
-
-      <div className="mdp-toolbar-export" ref={exportWrapRef}>
         <button
           type="button"
-          className="mdp-toolbar-icon-btn mdp-toolbar-export__trigger"
-          aria-label="Download — HTML or Word (.doc)."
-          aria-expanded={menuOpen ? 'true' : 'false'}
-          aria-haspopup="true"
-          onClick={onExportToggleClick}
-          ref={exportBtnRef}
+          className="mdp-toolbar-icon-btn"
+          aria-label="Print — use Save as PDF in the print dialog."
+          onClick={onPrintClick}
+          ref={printBtnRef}
         >
-          <ExportIcon className="mdp-toolbar-icon-btn__icon" />
+          <PrintIcon className="mdp-toolbar-icon-btn__icon" />
         </button>
+      </Tooltip>
+
+      <div className="mdp-toolbar-export" ref={exportWrapRef}>
+        <Tooltip
+          content="Download — HTML or Word (.doc)."
+          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+        >
+          <button
+            type="button"
+            className="mdp-toolbar-icon-btn mdp-toolbar-export__trigger"
+            aria-label="Download — HTML or Word (.doc)."
+            aria-expanded={menuOpen ? 'true' : 'false'}
+            aria-haspopup="true"
+            onClick={onExportToggleClick}
+            ref={exportBtnRef}
+          >
+            <ExportIcon className="mdp-toolbar-icon-btn__icon" />
+          </button>
+        </Tooltip>
 
         <div
           className="mdp-toolbar-export__menu"

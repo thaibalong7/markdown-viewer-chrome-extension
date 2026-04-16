@@ -11,8 +11,7 @@ export function mountViewerReact(container, options = {}) {
     onShellReady,
     getArticleEl,
     getSettings,
-    getCurrentFileUrl,
-    showToast
+    getCurrentFileUrl
   } = options
   const root = createRoot(container)
   let shellReadyResolve = () => {}
@@ -20,6 +19,8 @@ export function mountViewerReact(container, options = {}) {
     shellReadyResolve = resolve
   })
   let shellReadySignaled = false
+  /** @type {((message: string, durationMs?: number) => void) | null} */
+  let showToastBridge = null
 
   let nextProps = {
     settings: settings || {},
@@ -29,7 +30,9 @@ export function mountViewerReact(container, options = {}) {
     getArticleEl,
     getSettings,
     getCurrentFileUrl,
-    showToast,
+    onShowToastReady: (showToastFn) => {
+      showToastBridge = typeof showToastFn === 'function' ? showToastFn : null
+    },
     onShellReady: (parts) => {
       if (!shellReadySignaled) {
         shellReadySignaled = true
@@ -66,6 +69,10 @@ export function mountViewerReact(container, options = {}) {
     updateBridge(nextBridge = {}) {
       nextProps = { ...nextProps, ...nextBridge }
       render()
+    },
+    showToast(message, options = {}) {
+      if (typeof message !== 'string') return
+      showToastBridge?.(message, options?.durationMs)
     },
     unmount() {
       root.unmount()

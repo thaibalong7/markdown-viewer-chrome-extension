@@ -2,7 +2,6 @@ import { renderDocument, renderIntoElement } from './core/renderer.js'
 import { buildTocItems } from './core/toc-builder.js'
 import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
-import { dismissViewerToast, showViewerToast } from './toast.js'
 import { needsFullRender } from '../shared/settings-diff.js'
 import { createExplorerController } from './explorer/explorer-controller.js'
 import { createArticleInteractions } from './article-interactions.js'
@@ -59,8 +58,7 @@ export class MarkdownViewerApp {
       tocItems: [],
       getArticleEl: () => this.parts?.article,
       getSettings: () => this.settings,
-      getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? '',
-      showToast: (message) => this.showToast(message)
+      getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? ''
     })
 
     try {
@@ -182,7 +180,7 @@ export class MarkdownViewerApp {
   }
 
   showToast(message) {
-    showViewerToast(this.parts?.root, message)
+    this._reactHandle?.showToast(message)
   }
 
   syncTocItems() {
@@ -209,7 +207,6 @@ export class MarkdownViewerApp {
   }
 
   destroy() {
-    dismissViewerToast(this.parts?.root)
     this._articleInteractions?.destroy()
     this._articleInteractions = null
     this._explorer?.destroy()

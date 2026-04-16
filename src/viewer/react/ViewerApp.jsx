@@ -1,5 +1,6 @@
 import React from 'react'
 import { SettingsProvider } from './contexts/SettingsContext.jsx'
+import { ToastProvider } from './contexts/ToastContext.jsx'
 import { ViewerStateProvider } from './contexts/ViewerStateContext.jsx'
 import { ViewerShell } from './components/ViewerShell.jsx'
 import { ToolbarActions } from './components/ToolbarActions.jsx'
@@ -13,20 +14,21 @@ export function ViewerApp({
   getArticleEl,
   getSettings,
   getCurrentFileUrl,
-  showToast
+  onShowToastReady
 }) {
   return (
     <SettingsProvider initialSettings={settings}>
-      <ViewerStateProvider markdown={markdown} currentFileUrl={currentFileUrl}>
-        <ViewerShell onShellReady={onShellReady} settings={settings} tocItems={tocItems}>
-          <ToolbarActions
-            getArticleEl={getArticleEl}
-            getSettings={getSettings}
-            getCurrentFileUrl={getCurrentFileUrl}
-            showToast={showToast}
-          />
-        </ViewerShell>
-      </ViewerStateProvider>
+      <ToastProvider onShowToastReady={onShowToastReady}>
+        <ViewerStateProvider markdown={markdown} currentFileUrl={currentFileUrl}>
+          <ViewerShell onShellReady={onShellReady} settings={settings} tocItems={tocItems}>
+            <ToolbarActions
+              getArticleEl={getArticleEl}
+              getSettings={getSettings}
+              getCurrentFileUrl={getCurrentFileUrl}
+            />
+          </ViewerShell>
+        </ViewerStateProvider>
+      </ToastProvider>
     </SettingsProvider>
   )
 }

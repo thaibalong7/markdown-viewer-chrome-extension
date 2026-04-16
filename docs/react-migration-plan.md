@@ -250,6 +250,13 @@ content/index.js → bootstrap.js → mountViewerReact()
 
 ## 6. Phase 3-R: Toast + Tooltip → React
 
+### Status
+- **Done** (2026-04-16)
+- Completed scope:
+  - Toast is React-managed (`ToastContext`, `Toast.jsx` in shell); imperative `toast.js` removed; `MarkdownViewerApp.showToast` bridges via `mountViewerReact` handle
+  - React chrome tooltips: `ToolbarActions` and `ResizeHandle` use `Tooltip.jsx` with `createPortal` into the ShadowRoot (`.mdp-tooltip` styles unchanged)
+  - Imperative `tooltip.js` kept for plugins (`afterRender` DOM) and Files explorer until Phase 5-R / cleanup
+
 ### Goals
 - Replace imperative toast/tooltip with React components
 - Establish portal pattern inside Shadow DOM
@@ -275,9 +282,9 @@ return createPortal(<Toast />, portalRoot)
 ```
 
 ### Deliverable
-- Toast and Tooltip are React components
-- All tooltip/toast consumers updated
-- No imperative toast/tooltip code remains
+- Toast is a React component; imperative toast code removed
+- Toolbar and resize-handle tooltips are React components with Shadow DOM portals
+- Plugin and explorer tooltips still use `tooltip.js` until those areas migrate
 
 ---
 
@@ -428,7 +435,7 @@ src/viewer/actions/toolbar-actions.js   → Phase 1-R
 src/viewer/sidebar-resize.js            → Phase 2-R
 src/viewer/actions/rebuild-toc.js       → Phase 2-R
 src/viewer/toast.js                     → Phase 3-R
-src/viewer/tooltip.js                   → Phase 3-R
+src/viewer/tooltip.js                   → Phase 5-R / 6-R (or when plugins/explorer no longer need imperative attach)
 src/viewer/explorer/explorer-panel.js   → Phase 5-R
 src/viewer/explorer/explorer-tree-renderer.js → Phase 5-R
 ```

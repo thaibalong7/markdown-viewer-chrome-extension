@@ -1,6 +1,7 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { Toolbar } from './Toolbar.jsx'
 import { Sidebar } from './Sidebar.jsx'
+import { Toast } from './Toast.jsx'
 
 export function ViewerShell({ children, onShellReady, settings, tocItems }) {
   const rootRef = useRef(null)
@@ -107,6 +108,7 @@ export function ViewerShell({ children, onShellReady, settings, tocItems }) {
           <article className="mdp-markdown-body" ref={articleRef} />
         </main>
       </div>
+      <Toast />
     </div>
   )
 }

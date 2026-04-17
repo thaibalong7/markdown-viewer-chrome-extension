@@ -3,7 +3,6 @@ import { buildTocItems } from './core/toc-builder.js'
 import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
 import { needsFullRender } from '../shared/settings-diff.js'
-import { createExplorerController } from './explorer/explorer-controller.js'
 import { createArticleInteractions } from './article-interactions.js'
 import { mountViewerReact } from './react/mount.js'
 import { getSidebarWidthPx } from './explorer/explorer-state.js'
@@ -39,10 +38,9 @@ export class MarkdownViewerApp {
     this._renderToken = 0
     this._styleElements = []
     this._reactHandle = null
+    this._currentFileUrl = window.location.href
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
-    /** @type {ReturnType<typeof createExplorerController> | null} */
-    this._explorer = null
   }
 
   async init() {
@@ -54,11 +52,29 @@ export class MarkdownViewerApp {
     this._reactHandle = mountViewerReact(this.container, {
       settings: this.settings,
       markdown: this.markdown,
-      currentFileUrl: '',
+      currentFileUrl: this._currentFileUrl,
       tocItems: [],
+      explorerBridge: {
+        getSettings: () => this.settings,
+        setMarkdown: (md) => {
+          this.markdown = md
+          this._reactHandle?.updateMarkdown(md)
+        },
+        setSmoothInitialHashScroll: (value) => {
+          this._smoothInitialHashScroll = Boolean(value)
+        },
+        render: (opts) => this.render(opts),
+        showToast: (message) => this.showToast(message),
+        getScrollRoot: () => this.getScrollRoot(),
+        getArticleEl: () => this.parts?.article,
+        updateCurrentFileUrl: (nextUrl) => {
+          this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
+          this._reactHandle?.updateCurrentFileUrl(this._currentFileUrl)
+        }
+      },
       getArticleEl: () => this.parts?.article,
       getSettings: () => this.settings,
-      getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? ''
+      getCurrentFileUrl: () => this._currentFileUrl
     })
 
     try {
@@ -75,27 +91,10 @@ export class MarkdownViewerApp {
       getScrollRoot: () => this.getScrollRoot()
     })
 
-    this._explorer = createExplorerController({
-      getParts: () => this.parts,
-      getSettings: () => this.settings,
-      setMarkdown: (md) => {
-        this.markdown = md
-      },
-      setSmoothInitialHashScroll: (v) => {
-        this._smoothInitialHashScroll = v
-      },
-      render: (opts) => this.render(opts),
-      showToast: (message) => this.showToast(message),
-      getScrollRoot: () => this.getScrollRoot(),
-      getArticleEl: () => this.parts?.article
-    })
-
     this._smoothInitialHashScroll = Boolean(window.location.hash)
     this.applyReaderStyles()
     void this.render()
     this._articleInteractions.bind()
-    this._explorer.init()
-    this._reactHandle.updateCurrentFileUrl(this._explorer?.getCurrentFileUrl?.() ?? '')
   }
 
   applyReaderStyles() {
@@ -175,7 +174,7 @@ export class MarkdownViewerApp {
       }
       return result
     } finally {
-      this._reactHandle?.updateCurrentFileUrl(this._explorer?.getCurrentFileUrl?.() ?? '')
+      this._reactHandle?.updateCurrentFileUrl(this._currentFileUrl)
     }
   }
 
@@ -209,8 +208,6 @@ export class MarkdownViewerApp {
   destroy() {
     this._articleInteractions?.destroy()
     this._articleInteractions = null
-    this._explorer?.destroy()
-    this._explorer = null
     this._reactHandle?.unmount()
     this._reactHandle = null
     this._styleElements = []

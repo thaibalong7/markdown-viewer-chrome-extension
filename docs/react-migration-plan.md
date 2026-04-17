@@ -316,6 +316,13 @@ return createPortal(<Toast />, portalRoot)
 
 ## 8. Phase 5-R: Explorer Panel → React
 
+### Status
+- **Done** (2026-04-17)
+- Completed scope:
+  - Migrated Files explorer UI from imperative DOM to React components/hooks (`useExplorer`, explorer component tree)
+  - Rewired viewer integration so explorer lifecycle/navigation is React-managed via bridge callbacks from `app.js`
+  - Removed legacy imperative explorer/tooltip modules (`explorer-controller.js`, `explorer-panel.js`, `explorer-tree-renderer.js`, `tooltip.js`) and moved reusable pieces to shared utilities/constants
+
 ### Goals
 - Migrate the Files explorer from imperative DOM to React components
 - This is the largest and most complex phase

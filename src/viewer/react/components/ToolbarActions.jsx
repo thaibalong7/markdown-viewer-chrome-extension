@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../tooltip.js'
+import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
 import {
   buildExportFilename,
   exportAsHtml,

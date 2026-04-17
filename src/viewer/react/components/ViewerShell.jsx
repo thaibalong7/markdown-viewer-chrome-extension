@@ -3,13 +3,12 @@ import { Toolbar } from './Toolbar.jsx'
 import { Sidebar } from './Sidebar.jsx'
 import { Toast } from './Toast.jsx'
 
-export function ViewerShell({ children, onShellReady, settings, tocItems }) {
+export function ViewerShell({ children, onShellReady, settings, tocItems, explorerBridge }) {
   const rootRef = useRef(null)
   const toolbarRef = useRef(null)
   const toolbarActionsRef = useRef(null)
   const sidebarRef = useRef(null)
   const tocContainerRef = useRef(null)
-  const explorerContainerRef = useRef(null)
   const tabBarRef = useRef(null)
   const tabFilesRef = useRef(null)
   const tabOutlineRef = useRef(null)
@@ -33,7 +32,6 @@ export function ViewerShell({ children, onShellReady, settings, tocItems }) {
       !toolbarActionsRef.current ||
       !sidebarRef.current ||
       !tocContainerRef.current ||
-      !explorerContainerRef.current ||
       !tabBarRef.current ||
       !tabFilesRef.current ||
       !tabOutlineRef.current ||
@@ -53,7 +51,6 @@ export function ViewerShell({ children, onShellReady, settings, tocItems }) {
       toolbarActions: toolbarActionsRef.current,
       sidebar: sidebarRef.current,
       tocContainer: tocContainerRef.current,
-      explorerContainer: explorerContainerRef.current,
       tabBar: tabBarRef.current,
       tabFiles: tabFilesRef.current,
       tabOutline: tabOutlineRef.current,
@@ -74,6 +71,7 @@ export function ViewerShell({ children, onShellReady, settings, tocItems }) {
         <Sidebar
           settings={settings}
           tocItems={tocItems}
+          explorerBridge={explorerBridge}
           scrollRoot={rootEl}
           onSidebarRef={(node) => {
             sidebarRef.current = node
@@ -95,9 +93,6 @@ export function ViewerShell({ children, onShellReady, settings, tocItems }) {
           }}
           onTocContainerRef={(node) => {
             tocContainerRef.current = node
-          }}
-          onExplorerContainerRef={(node) => {
-            explorerContainerRef.current = node
           }}
           onResizeHandleRef={(node) => {
             resizeHandleRef.current = node

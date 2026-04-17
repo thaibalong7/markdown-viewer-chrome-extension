@@ -10,6 +10,7 @@ export function ViewerApp({
   markdown,
   currentFileUrl,
   tocItems,
+  explorerBridge,
   onShellReady,
   getArticleEl,
   getSettings,
@@ -20,7 +21,12 @@ export function ViewerApp({
     <SettingsProvider initialSettings={settings}>
       <ToastProvider onShowToastReady={onShowToastReady}>
         <ViewerStateProvider markdown={markdown} currentFileUrl={currentFileUrl}>
-          <ViewerShell onShellReady={onShellReady} settings={settings} tocItems={tocItems}>
+          <ViewerShell
+            onShellReady={onShellReady}
+            settings={settings}
+            tocItems={tocItems}
+            explorerBridge={explorerBridge}
+          >
             <ToolbarActions
               getArticleEl={getArticleEl}
               getSettings={getSettings}

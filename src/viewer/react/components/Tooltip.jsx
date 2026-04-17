@@ -8,7 +8,7 @@ import React, {
   useState
 } from 'react'
 import { createPortal } from 'react-dom'
-import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../../tooltip.js'
+import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../../../shared/constants/tooltip.js'
 
 const TIP_MARGIN_PX = 8
 const VIEWPORT_PAD_PX = 6

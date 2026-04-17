@@ -116,7 +116,7 @@
   padding: 24px;
 }
 
-/* Floating tooltips (appended to ShadowRoot or body by `tooltip.js`) */
+/* Floating tooltips (ported via React or imperative bridge) */
 .mdp-tooltip {
   box-sizing: border-box;
   max-width: min(280px, calc(100vw - 16px));

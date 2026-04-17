@@ -1,15 +1,7 @@
-/**
- * Lightweight hover/focus tooltips for viewer chrome (Shadow DOM or document).
- * Prefer short English copy; use only where labels are insufficient.
- */
-
-/** Sidebar, explorer rows, longer hints — avoid instant flicker. */
-export const VIEWER_TOOLTIP_DELAY_DEFAULT_MS = 280
-
-/** Copy / icon-only controls — native `title` feels very slow; keep this short. */
-export const VIEWER_TOOLTIP_DELAY_QUICK_MS = 150
+import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../shared/constants/tooltip.js'
 
 /**
+ * Lightweight hover/focus tooltips for imperative viewer DOM (plugins).
  * @param {HTMLElement} anchor
  * @param {object} [options]
  * @param {string} options.text
@@ -23,7 +15,6 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
 
   const doc = anchor.ownerDocument
   const win = doc.defaultView || window
-  /** @type {HTMLElement | null} */
   let tipEl = null
   let showTimer = 0
 
@@ -38,23 +29,23 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
     const rect = anchor.getBoundingClientRect()
     const margin = 8
     const pad = 6
-    const vw = win.innerWidth
-    const vh = win.innerHeight
+    const viewportWidth = win.innerWidth
+    const viewportHeight = win.innerHeight
 
     tipEl.style.position = 'fixed'
     tipEl.style.zIndex = '2147483646'
 
-    const tw = tipEl.offsetWidth
-    const th = tipEl.offsetHeight
+    const tipWidth = tipEl.offsetWidth
+    const tipHeight = tipEl.offsetHeight
     let top = rect.bottom + margin
-    let left = rect.left + rect.width / 2 - tw / 2
+    let left = rect.left + rect.width / 2 - tipWidth / 2
 
     if (left < pad) left = pad
-    if (left + tw > vw - pad) left = Math.max(pad, vw - pad - tw)
-    if (top + th > vh - pad && rect.top - margin - th >= pad) {
-      top = rect.top - margin - th
+    if (left + tipWidth > viewportWidth - pad) left = Math.max(pad, viewportWidth - pad - tipWidth)
+    if (top + tipHeight > viewportHeight - pad && rect.top - margin - tipHeight >= pad) {
+      top = rect.top - margin - tipHeight
     }
-    if (top + th > vh - pad) top = Math.max(pad, vh - pad - th)
+    if (top + tipHeight > viewportHeight - pad) top = Math.max(pad, viewportHeight - pad - tipHeight)
 
     tipEl.style.top = `${Math.round(top)}px`
     tipEl.style.left = `${Math.round(left)}px`

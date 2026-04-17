@@ -1,7 +1,8 @@
 import React from 'react'
 import { useViewerState } from '../contexts/ViewerStateContext.jsx'
+import { ExplorerPanel } from './explorer/ExplorerPanel.jsx'
 
-export function FilesPanel({ onPanelRef, onExplorerContainerRef }) {
+export function FilesPanel({ onPanelRef, explorerBridge }) {
   const { activeSidebarTab } = useViewerState()
   const isFiles = activeSidebarTab === 'files'
 
@@ -14,7 +15,9 @@ export function FilesPanel({ onPanelRef, onExplorerContainerRef }) {
       hidden={!isFiles}
       ref={onPanelRef}
     >
-      <div className="mdp-explorer-container" ref={onExplorerContainerRef} />
+      <div className="mdp-explorer-container">
+        <ExplorerPanel bridge={explorerBridge} />
+      </div>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { ResizeHandle } from './ResizeHandle.jsx'
 export function Sidebar({
   settings,
   tocItems,
+  explorerBridge,
   scrollRoot,
   onSidebarRef,
   onTabBarRef,
@@ -15,7 +16,6 @@ export function Sidebar({
   onFilesPanelRef,
   onOutlinePanelRef,
   onTocContainerRef,
-  onExplorerContainerRef,
   onResizeHandleRef
 }) {
   const showToc = settings?.layout?.showToc !== false
@@ -64,7 +64,7 @@ export function Sidebar({
         tocItems={tocItems}
         scrollRoot={scrollRoot}
       />
-      <FilesPanel onPanelRef={onFilesPanelRef} onExplorerContainerRef={onExplorerContainerRef} />
+      <FilesPanel onPanelRef={onFilesPanelRef} explorerBridge={explorerBridge} />
       <ResizeHandle
         rootEl={scrollRoot}
         sidebarEl={sidebarEl}

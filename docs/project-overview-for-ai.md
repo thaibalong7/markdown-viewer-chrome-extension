@@ -22,7 +22,7 @@ Current implemented core:
 
 - Runtime: Chrome Extension MV3
 - Build tool: Vite + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/index.js` (bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`)
-- Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer/plugins; **React** for `src/popup/` (`PopupApp.jsx` + tab panels)
+- Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer core/plugins; **React** for `src/popup/` and **viewer chrome** under `src/viewer/react/` (`ViewerApp.jsx`, shell/sidebar/explorer/toast)
 - Markdown: `markdown-it` + `markdown-it-anchor`
 - Fenced code highlighting: **Shiki** (`shiki/bundle/web`)
 - Sanitization: `dompurify`
@@ -42,7 +42,7 @@ Generated output:
 
 - `background`: central runtime message handling and settings operations
 - `content`: detect/extract/mount flow on web pages
-- `viewer`: UI shell + **async** render pipeline + TOC (no settings UI in-page)
+- `viewer`: **React** shell (toolbar, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet)
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
 - `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
 - `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
@@ -59,7 +59,7 @@ Generated output:
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
 7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
-8. `MarkdownViewerApp` builds shell, applies theme CSS variables, runs **`await renderDocument()`** (async), injects HTML, runs **`pluginManager.afterRender({ articleEl, settings, copyCodeWithToast })`**, builds TOC; Files/workspace UI is owned by **`createExplorerController()`** in `explorer/explorer-controller.js`.
+8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge), runs **`await renderDocument()`** (async), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree.
 9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
@@ -127,25 +127,53 @@ src/
   viewer/
     app.js
     article-interactions.js
+    dom-tooltip.js
     icons.js
     scroll-utils.js
-    sidebar-resize.js
-    toast.js
-    tooltip.js
-    toolbar-metrics.js
+    react/
+      ViewerApp.jsx
+      mount.js
+      contexts/
+        SettingsContext.jsx
+        ToastContext.jsx
+        ViewerStateContext.jsx
+      hooks/
+        useExplorer.js
+        useImperativeBridge.js
+        useScrollSpy.js
+        useSidebarResize.js
+      components/
+        FilesPanel.jsx
+        OutlinePanel.jsx
+        ResizeHandle.jsx
+        Sidebar.jsx
+        SidebarTabs.jsx
+        Toast.jsx
+        Toolbar.jsx
+        ToolbarActions.jsx
+        Tooltip.jsx
+        ViewerShell.jsx
+        icons/
+          ExportIcon.jsx
+          PrintIcon.jsx
+        explorer/
+          ExplorerHeader.jsx
+          ExplorerPanel.jsx
+          ExplorerProgress.jsx
+          FileRow.jsx
+          FileTree.jsx
+          FolderRow.jsx
     explorer/
-      explorer-controller.js
-      explorer-panel.js
-      explorer-tree-renderer.js
       explorer-files-context.js
       explorer-state.js
+      explorer-tree-utils.js
       folder-scanner.js
       gitignore-matcher.js
       sibling-scanner.js
       url-utils.js
       workspace-picker.js
     actions/
-      rebuild-toc.js
+      document-actions.js
     core/
       markdown-engine.js
       renderer.js
@@ -153,8 +181,6 @@ src/
       scroll-spy.js
       shiki-config.js
       shiki-highlighter.js
-    shell/
-      viewer-shell.js
     styles/
       _variables.scss
       base.scss
@@ -226,18 +252,22 @@ src/
   - Builds CSS custom properties from settings preset + typography + layout; applied to viewer root via `applyThemeSettings()`.
 
 - `src/viewer/app.js`
-  - **`MarkdownViewerApp`**: shell mount, theme vars, async **`render()`** pipeline, **`updateSettings()`** (uses `needsFullRender()` from `shared/settings-diff.js` — no style-only fast path yet; theme still forces full re-render for Shiki).
-  - Composes **`createArticleInteractions()`** (hash navigation, heading-anchor copy, code-block copy via `shared/clipboard.js`, toast wiring) and **`createSidebarResize()`** (TOC width drag + keyboard).
-  - Delegates Files/workspace flows to **`createExplorerController()`** in `explorer/explorer-controller.js`.
+  - **`MarkdownViewerApp`**: **`mountViewerReact(container)`** → awaits shell `{ root, article }`; **`applyReaderStyles()`** applies `applyThemeSettings()` + typography/layout inline styles on `article`; async **`render()`** / **`updateSettings()`** (uses `needsFullRender()` — no style-only fast path yet; theme still forces full re-render for Shiki).
+  - Composes **`createArticleInteractions({ getArticle, showToast, getScrollRoot })`** — imperative listeners on the article element (React does not own `innerHTML`); toast goes through **`_reactHandle.showToast`** (React `ToastContext`).
+  - Passes **`explorerBridge`** callbacks into React for navigation, re-render, and file I/O; explorer UI state lives in **`useExplorer`**.
 
-- `src/viewer/explorer/explorer-controller.js`
-  - Sibling vs **workspace** mode, directory-picker / webkit scans, `scanFolderRecursive`, `FETCH_FILE_AS_TEXT` navigation, virtual `mdp-ws-*` file reads, back button sync; uses `explorer-state.js` for `sessionStorage`.
+- **React viewer layer** (`src/viewer/react/`)
+  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })` (imperative code must not hold refs to other chrome nodes).
+  - **`ViewerApp.jsx`**: `SettingsProvider`, `ToastProvider`, `ViewerStateProvider`, **`ViewerShell`** + toolbar actions slot.
+  - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present.
+  - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`**), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
+  - **Files**: `ExplorerPanel.jsx` + **`useExplorer`**; pure scanners/pickers remain under `viewer/explorer/*.js`.
 
 - `src/shared/constants/viewer.js`
-  - Viewer-wide numeric constants: toolbar height fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `sidebar-resize.js`, `article-interactions.js`; `toolbar-metrics.js` re-exports scroll metrics for compatibility).
+  - Viewer-wide numeric constants: toolbar height fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `useSidebarResize.js`, `article-interactions.js`).
 
 - `src/shared/constants/explorer.js`
-  - `MDP_WS_FILE` / `MDP_WS_DIR` prefixes and default scan limits when persisted `settings.explorer` fields are missing; used by `explorer-controller.js`, `workspace-picker.js`, `folder-scanner.js`. **`url-utils.js` re-exports** the `MDP_WS_*` symbols for older import paths.
+  - `MDP_WS_FILE` / `MDP_WS_DIR` prefixes and default scan limits when persisted `settings.explorer` fields are missing; used by **`useExplorer.js`**, `workspace-picker.js`, `folder-scanner.js`. **`url-utils.js` re-exports** the `MDP_WS_*` symbols for older import paths.
 
 - `src/viewer/explorer/url-utils.js`
   - Pure `file:` / virtual URL helpers: `isWorkspaceVirtualHref`, `getParentDirectoryUrl`, `normalizeDirectoryUrl`, `normalizeFileUrlForCompare`, `pathInputToFileDirectoryUrl`, `isMarkdownFileHref`, `MARKDOWN_EXT`; re-exports `MDP_WS_FILE` / `MDP_WS_DIR` from `shared/constants/explorer.js`.
@@ -246,25 +276,25 @@ src/
   - Directory listing fetch + parsing: `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (Chrome `addRow()` HTML), `scanSiblingFiles`, `resolveListingHrefToFileUrl`, `posixPathRelativeToFileRoot`.
 
 - `src/viewer/explorer/workspace-picker.js`
-  - `showDirectoryPicker` scan (`scanWorkspaceFromDirectoryHandle`), `webkitdirectory` + optional `File.path` → `file:` root (`tryFileDirectoryUrlFromWebkitFiles`), else `scanWorkspaceFromWebkitFileList` (virtual `mdp-ws-*` hrefs + in-tab `File` / handle readers wired from `explorer-controller.js`).
+  - `showDirectoryPicker` scan (`scanWorkspaceFromDirectoryHandle`), `webkitdirectory` + optional `File.path` → `file:` root (`tryFileDirectoryUrlFromWebkitFiles`), else `scanWorkspaceFromWebkitFileList` (virtual `mdp-ws-*` hrefs + in-tab `File` / handle readers wired from **`useExplorer`**).
 
 - `src/viewer/explorer/folder-scanner.js`
   - `scanFolderRecursive` — BFS-style recursive directory fetch, `maxScanDepth` / `maxFiles` / `maxFolders`, `AbortSignal`, progress callback; builds tree of folders + markdown files only.
 
-- `src/viewer/explorer/explorer-panel.js`
-  - Imperative Files tab shell: **context strip**, actions, loading/progress, orchestrates list/tree bodies built via **`explorer-tree-renderer.js`** (`createFileRow`, `appendTreeNode`, depth notices, summaries).
-
-- `src/viewer/explorer/explorer-tree-renderer.js`
-  - DOM builders for flat rows and folder tree nodes (`createFileRow`, `appendTreeNode`), `shortenPath`, `buildDepthNotice`, `countMarkdownFilesInTree`, `createSetSummary`, `getDirectoryLabelFromUrl`.
+- `src/viewer/explorer/explorer-tree-utils.js`
+  - Path labels, depth notices, folder expand state helpers, tree counts — used by **`useExplorer`** and explorer UI components.
 
 - `src/viewer/explorer/explorer-files-context.js`
-  - Pure helpers: `buildExplorerFilesContext`, `explorerTreeContainsFileHref` — consumed by **`explorer-controller.js`** for the Files context strip.
+  - Pure helpers: `buildExplorerFilesContext`, `explorerTreeContainsFileHref` — consumed by **`useExplorer`** for the Files context strip.
 
 - `src/viewer/scroll-utils.js`
-  - Shared scroll math for in-viewer headings (`scrollToElementInViewer`, `getToolbarHeightInScrollRoot`) — used by **`article-interactions.js`** and **`rebuild-toc.js`**.
+  - Shared scroll math for in-viewer headings (`scrollToElementInViewer`, `getToolbarHeightInScrollRoot`) — used by **`article-interactions.js`** and **`OutlinePanel.jsx`** / **`useScrollSpy`**.
 
 - `src/viewer/icons.js`
-  - `SVG_NS`, `createCopyIconSvg()` — shared by code-highlight and Mermaid toolbar (`mermaid-export.js` uses `SVG_NS`).
+  - Imperative **plugin** SVG helpers only: `SVG_NS`, `createCopyIconSvg()` (code-highlight + Mermaid toolbar); `mermaid-export.js` uses `SVG_NS`. Viewer chrome icons are React components under `react/components/icons/`.
+
+- `src/viewer/dom-tooltip.js`
+  - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = ShadowRoot or `document.body`. Distinct from React **`Tooltip.jsx`** used on toolbar/resize handle.
 
 - `src/viewer/explorer/explorer-state.js`
   - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`.
@@ -276,8 +306,8 @@ src/
 - `src/plugins/plugin-manager.js`
   - Resolves active plugins from `settings.plugins`; runs `preprocessMarkdown`, `postprocessHtml`, `afterRender`, optional `extendMarkdown`.
 
-- `src/viewer/actions/rebuild-toc.js`
-  - Rebuilds TOC from heading IDs, wires click-to-scroll, registers/destroys scroll spy listeners.
+- `src/viewer/actions/document-actions.js`
+  - Print / export HTML / export Word helpers used by **`ToolbarActions.jsx`**.
 
 - `src/settings/index.js`
   - Single source of settings persistence logic
@@ -357,7 +387,7 @@ Use this audit as the baseline for optimization tasks.
   - Confirm markdown output always goes through `sanitizeHtml()` before DOM insertion. Shiki adds inline `style`; DOMPurify config must keep allowing safe styling only.
 
 - TOC behavior bugs:
-  - Inspect `src/viewer/core/toc-builder.js`, `src/viewer/actions/rebuild-toc.js`, `src/viewer/core/scroll-spy.js`.
+  - Inspect `src/viewer/core/toc-builder.js`, `src/viewer/react/components/OutlinePanel.jsx`, `src/viewer/react/hooks/useScrollSpy.js`, `src/viewer/core/scroll-spy.js`.
 
 - Settings persistence issues:
   - Inspect `src/background/message-router.js` + `src/settings/index.js`.
@@ -375,7 +405,7 @@ Use this audit as the baseline for optimization tasks.
   - `src/plugins/plugin-manager.js`, individual plugins under `src/plugins/core/`, and `renderer.js` / `app.js` (`copyCodeWithToast` from `article-interactions.js`) for `afterRender` DOM passes.
 
 - **Files explorer / workspace**:
-  - `src/viewer/explorer/explorer-controller.js` + `explorer-panel.js` / `folder-scanner.js` / `sibling-scanner.js` / `url-utils.js` / `workspace-picker.js`, `FETCH_FILE_AS_TEXT` in `message-router.js` + offscreen fetch; requires **Allow access to file URLs** for `file:` reads.
+  - `src/viewer/react/hooks/useExplorer.js` + `react/components/explorer/*` + `folder-scanner.js` / `sibling-scanner.js` / `url-utils.js` / `workspace-picker.js` / `explorer-state.js`, `FETCH_FILE_AS_TEXT` in `message-router.js` + offscreen fetch; requires **Allow access to file URLs** for `file:` reads.
 
 ## 10) Operational notes for contributors and AI agents
 

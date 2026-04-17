@@ -1,12 +1,35 @@
 ---
-description: Viewer UI lifecycle and TOC behavior
-globs: src/viewer/**/*.js
+description: Viewer UI lifecycle and React shell boundaries
+globs: src/viewer/**/*.{js,jsx}
 alwaysApply: false
 ---
 
 # Viewer UI Lifecycle
-- Keep `MarkdownViewerApp` lifecycle clean: `init()` mounts once, `updateSettings()` re-renders, and `destroy()` tears down DOM/listeners. Sub-controllers created in `init()` — `createArticleInteractions`, `createSidebarResize`, `createExplorerController` — must each receive `destroy()` (or equivalent) from `MarkdownViewerApp.destroy()`.
-- TOC rebuilds must dispose old listeners/controllers before creating new ones (`rebuild-toc.js` + `scroll-spy.js`).
-- Preserve stable shell structure and class names (`mdp-root`, `mdp-toolbar`, `mdp-sidebar`, `mdp-markdown-body`) because styles and behaviors depend on them.
-- Keep all markdown HTML insertion funneled through `renderIntoElement()` after sanitization in the renderer pipeline.
-- Theme preset changes that affect Shiki require a full document re-render; today `updateSettings()` always re-renders (see `35-reader-theme-and-shiki.mdc` if adding style-only updates).
+
+## MarkdownViewerApp (imperative orchestrator)
+
+- **`init()`** once: inject `<style>` tags into the mount container, then **`mountViewerReact(container, options)`**, **`await partsPromise`** (resolves to **`{ root, article }`** only). Then **`createArticleInteractions({ getArticle, showToast, getScrollRoot }).bind()`**, **`applyReaderStyles()`**, **`render()`**.
+- **`updateSettings()`** updates settings, **`_reactHandle.updateSettings()`**, **`applyReaderStyles()`**, and either **`syncTocItems()`** or full **`render()`** per **`needsFullRender()`**.
+- **`destroy()`** is **idempotent** (`_destroyed` guard): **`_articleInteractions.destroy()`** → **`_reactHandle.unmount()`** → **`container.innerHTML = ''`**; clears **`_rootEl` / `_articleEl`**. Logs via **`logger.debug('Markdown viewer destroyed.')`**.
+
+## React shell boundary
+
+- **`ViewerShell`** calls **`onShellReady({ root, article })`** when both nodes exist. Imperative code (**`MarkdownViewerApp`**, **`article-interactions.js`**) must **not** retain references to toolbar, sidebar panels, TOC nav, resize handle, etc. — those are React-owned.
+- **`article`**: React renders the empty **`<article class="mdp-markdown-body">`**; **`renderIntoElement(article, html)`** and plugins **`afterRender`** mutate **`innerHTML`** and injected nodes. React must not reconcile that subtree.
+- **Toast (chrome)**: **`ToastProvider`** / **`_reactHandle.showToast`**. **Plugin** hovers use **`dom-tooltip.js`** on nodes created in **`afterRender`**.
+
+## Hooks and teardown
+
+- Listeners and timers on chrome elements live in hooks (**`useSidebarResize`**, **`useScrollSpy`**, **`useExplorer`**, **`Tooltip`**, **`ToastContext`**) and must clean up in **`useEffect`** return functions. **`MarkdownViewerApp.destroy()`** does not call into React beyond **`root.unmount()`**.
+
+## Rendering security
+
+- All markdown HTML goes through **`renderDocument()`** → **`sanitizeHtml()`** → **`renderIntoElement()`** (see **`40-rendering-security.mdc`**).
+
+## Themes and Shiki
+
+- Reader preset changes that affect fenced code still require a **full** **`render()`** (see **`35-reader-theme-and-shiki.mdc`**).
+
+## Stable DOM contract
+
+- Preserve shell class names and hierarchy (**`mdp-root`**, **`mdp-toolbar`**, **`mdp-sidebar`**, **`mdp-markdown-body`**) so SCSS and scroll math stay valid.

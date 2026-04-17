@@ -393,8 +393,8 @@ Not implemented yet (from planning docs):
 From `docs/performance-issues-audit.md`, notable risks:
 - Viewer CSS bundled in the content script (no runtime fetch; still parse cost on every page)
 - Large-page text sampling / extraction cost
-- Scroll spy does O(N headings) work on updates
-- Repeated regex scans and full re-render on some settings updates
+- Scroll spy uses cached heading offsets + binary search on scroll (see `scroll-spy.js` / `useScrollSpy.js`); watch unstable React deps that force spy teardown
+- Repeated regex scans; full re-render on theme/plugin changes (typography/layout-only updates can skip full render via `needsFullRender()`)
 
 Use this audit as the baseline for optimization tasks.
 

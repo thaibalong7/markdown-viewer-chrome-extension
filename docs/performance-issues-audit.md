@@ -1,7 +1,10 @@
 # Đánh giá vấn đề hiệu năng - Markdown Plus Extension
 
-Ngày kiểm tra: 2026-04-13  
+Ngày kiểm tra gốc: 2026-04-13  
+**Cập nhật rà soát codebase:** 2026-04-17  
 Phạm vi: `src/**` (kèm `manifest.json`, `vite.config.mjs` để lấy bối cảnh runtime)
+
+**Ghi chú migration:** Một số module imperative cũ đã chuyển sang React (`src/viewer/react/**`). Các issue dưới đây đã cập nhật **vị trí file**; issue không còn trong code được đánh dấu **[RESOLVED]** và có thể bỏ khỏi backlog fix.
 
 ## Tổng quan
 
@@ -10,9 +13,36 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 1. Content script load nặng trên mọi trang (eager CSS + KaTeX + optional plugins trong bundle).
 2. Render pipeline cho tài liệu lớn chạy tuần tự trên main thread (markdown-it → Shiki → DOMPurify → innerHTML).
 3. Shiki highlighter khởi tạo toàn bộ ngôn ngữ + highlight song song không giới hạn.
-4. Explorer tree tạo toàn bộ DOM cho mọi node (kể cả folder đang collapsed), không có virtualization.
-5. Scroll spy O(N) getBoundingClientRect mỗi scroll tick.
-6. Folder scan tuần tự + progress UI không throttle → jank.
+4. Explorer tree / React subtree cho mọi node (kể cả folder collapsed), không có virtualization.
+5. Folder scan tuần tự + progress UI không throttle → jank.
+6. React viewer: callback không ổn định làm teardown scroll spy; hai lần `root.render()` sau mỗi lần render tài liệu.
+
+**Đã giảm rủi ro:** scroll spy (offsets + binary search); một số đường bootstrap/settings/TOC/explorer active state (xem issue #1, #10, #14, #17, #20, #23).
+
+---
+
+## Bảng xếp hạng theo mức độ ảnh hưởng (cập nhật 2026-04-17)
+
+Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → HIGH → …
+
+| Mức | # | Tóm tắt | Vị trí chính |
+|-----|---|---------|--------------|
+| CRITICAL | 3 | Content script nặng trên mọi tab | `src/content/index.js` |
+| HIGH | 4 | Static import Math/KaTeX | `plugin-manager.js`, `math.plugin.js` |
+| HIGH | 5 | Shiki: mọi ngôn ngữ + `Promise.all` không giới hạn | `shiki-highlighter.js`, `shiki-config.js` |
+| HIGH | 6 | Shiki DOM round-trip | `shiki-highlighter.js` |
+| HIGH | 7 | DOMPurify toàn bộ HTML | `renderer.js` |
+| HIGH | 8 | Pipeline tuần tự, không loading state, tạo engine mới mỗi lần | `app.js`, `renderer.js` |
+| HIGH | **43** | **`getToolbarHeight` inline → useScrollSpy teardown mỗi render** | `OutlinePanel.jsx`, `useScrollSpy.js` |
+| HIGH | **44** | **Hai lần `root.render()` sau mỗi document render** | `app.js`, `mount.js` |
+| HIGH | 2 | Explorer: full subtree khi folder collapsed | `FileTree.jsx`, `FolderRow.jsx` |
+| HIGH | 9 | Explorer không virtualization | `ExplorerPanel.jsx`, `FileTree.jsx` |
+| HIGH | 11 | Folder scan tuần tự + `.gitignore` | `folder-scanner.js` |
+| MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `message-router.js` |
+| MEDIUM-HIGH | 18 | Workspace picker multi-pass | `workspace-picker.js` |
+| MEDIUM-HIGH | 19 | Mermaid render tuần tự | `mermaid.plugin.js` |
+| MEDIUM | 45–48 | Toast context; explorer mount sớm; `expandedMap` clone; timers copy | `ToastContext.jsx`, `FilesPanel.jsx` / `useExplorer.js`, `explorerReducer.js`, `article-interactions.js` |
+| MEDIUM | 13–42 | (xem chi tiết từng issue bên dưới) | — |
 
 ---
 
@@ -32,15 +62,16 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
-## Issue #2 [CRITICAL] Explorer tree tạo toàn bộ DOM cho collapsed folders
+## Issue #2 [CRITICAL] Explorer tree tạo toàn bộ DOM / React subtree cho collapsed folders
 
-- **Vị trí:** `src/viewer/explorer/explorer-tree-renderer.js` (dòng 164–228, `appendTreeNode`)
-- **Hiện trạng:** `appendTreeNode` luôn tạo **toàn bộ subtree** cho mỗi folder, kể cả khi folder collapsed (chỉ set `childUl.hidden = true`). Với workspace 2000 files + nhiều folder lồng nhau, hàng ngàn DOM node được tạo và mount ngay lập tức dù user chỉ thấy root.
+- **Vị trí (cập nhật):** `src/viewer/react/components/explorer/FileTree.jsx`, `src/viewer/react/components/explorer/FolderRow.jsx`  
+  *(File cũ `src/viewer/explorer/explorer-tree-renderer.js` đã bỏ.)*
+- **Hiện trạng:** `FileTree` render đệ quy **mọi** node; `FolderRow` bọc children trong `<ul … hidden={!expanded}>`. Folder collapsed vẫn **mount** toàn bộ subtree (chỉ ẩn), không lazy unmount.
 - **Tác động:** Initial mount rất chậm cho large workspace, memory cao, layout/paint cost lớn.
 - **Khuyến nghị fix:**
-  - **Ưu tiên:** Lazy render — chỉ tạo direct children khi folder được expand lần đầu.
-  - **Thay thế:** Virtual list (chỉ render visible rows) hoặc flatten tree thành list với indentation.
-  - Kết hợp: collapse tất cả folder mặc định + lazy children.
+  - **Ưu tiên:** Lazy render — chỉ mount direct children khi expand lần đầu.
+  - **Thay thế:** Virtual list hoặc flatten tree + indent.
+  - Kết hợp: collapse mặc định + lazy children.
 
 ---
 
@@ -126,24 +157,22 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Issue #9 [HIGH] Explorer panel không có virtualization cho file list
 
-- **Vị trí:** `src/viewer/explorer/explorer-panel.js` (dòng 394–495)
-- **Hiện trạng:** `showFiles()` và `showTree()` tạo **một DOM node cho mỗi file/folder** mà không có virtualization. Sidebar scroll height = full list.
+- **Vị trí (cập nhật):** `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `FileTree.jsx`, `FileRow.jsx`  
+  *(File cũ `explorer-panel.js` đã bỏ.)*
+- **Hiện trạng:** Danh sách phẳng và cây thư mục đều `.map()` / render đệ quy **một node cho mỗi file/folder**, không dùng virtual list. Sidebar scroll height = full list.
 - **Tác động:** Với workspace 2000 files, mount và scroll sidebar chậm, memory tăng, layout/style cost O(N).
 - **Khuyến nghị fix:**
   - Virtual list: chỉ render visible rows + buffer.
   - **Hoặc:** Lazy render folder children on expand (kết hợp Issue #2).
-  - `showTree()` gọi `countMarkdownFilesInTree()` (full tree walk) rồi build DOM (second walk) → single-pass: count while building.
+  - Nếu còn chỗ đếm + build tách hai lần walk — gom single-pass khi refactor.
 
 ---
 
-## Issue #10 [HIGH] Full markdown extraction trước khi check settings
+## Issue #10 [RESOLVED] Full markdown extraction trước khi check settings
 
-- **Vị trí:** `src/content/bootstrap.js` (dòng 45–49)
-- **Hiện trạng:** Trên low-confidence `file:` pages, nếu sample "looks like markdown", `extractRawMarkdown(document)` chạy **full mode** (up to 500k chars) **trước** khi gọi `GET_SETTINGS`. Nếu viewer disabled → toàn bộ extraction bị lãng phí.
-- **Tác động:** Tốn CPU + memory trên trang `file:` có nội dung dài mà user đã disable extension.
-- **Khuyến nghị fix:**
-  - Gọi `GET_SETTINGS` (hoặc lightweight "enabled" check) **trước** extraction.
-  - Chỉ chạy full extraction nếu `enabled === true`.
+- **Vị trí:** `src/content/bootstrap.js`
+- **Đã xử lý:** Early exit nếu không phải `file:` + pathname markdown (dòng ~16–20). `GET_SETTINGS` + kiểm tra `enabled` chạy **trước** extraction đầy đủ chính (dòng ~56–72). Đường fallback low-confidence vẫn có thể sample/full extract trước settings **chỉ trên** `file:` đã có hint — không còn pattern “mọi trang tốn extract rồi mới biết disabled” như mô tả cũ.
+- **Ghi chú:** Tối ưu thêm: gọi settings trước cả nhánh fallback nếu muốn tránh mọi extract khi disabled.
 
 ---
 
@@ -161,7 +190,7 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
-## Issue #12 [HIGH] Background `notifySettingsUpdated` broadcast tới mọi tab
+## Issue #12 [MEDIUM-HIGH] Background `notifySettingsUpdated` broadcast tới mọi tab
 
 - **Vị trí:** `src/background/message-router.js` (dòng 7–21)
 - **Hiện trạng:** Mỗi khi save/reset settings, `chrome.tabs.query({})` rồi `sendMessage` **tới mọi tab** đang mở.
@@ -175,23 +204,20 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Issue #13 [HIGH] Sibling scan không có AbortController
 
-- **Vị trí:** `src/viewer/explorer/explorer-controller.js` (dòng 799–812)
-- **Hiện trạng:** `runSiblingScan` gọi `scanFolderRecursive` **không truyền `signal`**. Workspace flow có `AbortController`, nhưng sibling scan thì không → scan không thể cancel nếu user navigate đi hoặc switch tab.
-- **Tác động:** Wasted CPU/network nếu user navigate trước khi scan xong.
+- **Vị trí (cập nhật):** `src/viewer/react/hooks/useExplorer.js` (deep sibling / `scanFolderRecursive` ~719–744)  
+  *(File cũ `explorer-controller.js` đã bỏ.)*
+- **Hiện trạng:** Workspace scan có `AbortController`; **sibling deep folder scan** vẫn gọi `scanFolderRecursive` **không** truyền `signal` → khó cancel khi navigate / đổi mode.
+- **Tác động:** Wasted CPU/network nếu user rời trước khi scan xong.
 - **Khuyến nghị fix:**
-  - Pass `AbortController` vào `scanFolderRecursive` cho sibling scan.
-  - Abort trong `destroy()` hoặc mode switches.
+  - Truyền `AbortController.signal` vào `scanFolderRecursive` cho sibling scan.
+  - Abort trong teardown / chuyển mode.
 
 ---
 
-## Issue #14 [HIGH] `markActiveFile` O(N) querySelectorAll trên mọi file row
+## Issue #14 [RESOLVED] `markActiveFile` O(N) querySelectorAll trên mọi file row
 
-- **Vị trí:** `src/viewer/explorer/explorer-panel.js` (dòng 245–262)
-- **Hiện trạng:** `markActiveFile` dùng `querySelectorAll('button[data-file-href]')` rồi loop **tất cả** file row để toggle class active.
-- **Tác động:** Với 1000+ files, mỗi lần navigate sang file mới → costly DOM query + class toggle trên tất cả buttons.
-- **Khuyến nghị fix:**
-  - Lưu reference tới active button hiện tại.
-  - Khi navigate: chỉ remove class từ button cũ + add class cho button mới (O(1) thay vì O(N)).
+- **Vị trí:** Đã migration sang React — `ExplorerPanel.jsx` / `FileTree.jsx` dùng prop `isActive` + so sánh URL chuẩn hóa, **không** `querySelectorAll` trên mọi row.
+- **Kết quả:** Pattern O(N) DOM query + toggle class trên toàn bộ button đã hết.
 
 ---
 
@@ -218,15 +244,14 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
-## Issue #17 [MEDIUM-HIGH] Full rerender khi thay đổi settings (kể cả style-only khi theme khác)
+## Issue #17 [RESOLVED] Full rerender khi thay đổi settings chỉ typography/layout
 
-- **Vị trí:** `src/viewer/app.js` (dòng 197–206), `src/shared/settings-diff.js`
-- **Hiện trạng:** `updateSettings()` dùng `needsFullRender()` để phân biệt style-only vs full render. Tuy nhiên, **theme changes vẫn force full render** (vì Shiki cần re-highlight với theme mới). Mỗi full render = parse markdown + sanitize + gán innerHTML.
-- **Tác động:** Đổi theme trên tài liệu lớn → vài giây freeze.
-- **Khuyến nghị fix:**
+- **Vị trí:** `src/viewer/app.js` (`updateSettings`), `src/shared/settings-diff.js` (`needsFullRender`)
+- **Đã xử lý:** `needsFullRender()` có `styleOnlyPrefixes` (typography, `layout.contentMaxWidth`, `layout.showToc`, `layout.tocWidth`). Chỉ đổi các path đó → **không** gọi `render()` đầy đủ; vẫn `applyReaderStyles` + `syncTocItems`.
+- **Còn mở (tối ưu thêm, không còn “bug” style-only):** Đổi **theme** / plugin vẫn cần full pipeline (Shiki re-highlight). Có thể cache HTML trước Shiki và chỉ re-run Shiki + sanitize (xem khuyến nghị cũ dưới).
+- **Khuyến nghị stretch:**
   - Cache rendered HTML keyed by `(markdown + parser options hash)`.
-  - Với theme change: chỉ re-run Shiki (không cần re-parse markdown-it).
-  - Tách pipeline: markdown parse → cache → Shiki → sanitize → DOM.
+  - Theme change: chỉ re-run Shiki, không re-parse markdown-it.
 
 ---
 
@@ -254,23 +279,17 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
-## Issue #20 [MEDIUM] TOC rebuild mỗi lần render + N click listeners
+## Issue #20 [RESOLVED] TOC rebuild mỗi lần render + N click listeners imperative
 
-- **Vị trí:** `src/viewer/actions/rebuild-toc.js` (dòng 16–24, 44–64)
-- **Hiện trạng:**
-  - Full rebuild (`buildTocItems` + `renderToc`) mỗi khi `rebuildToc` chạy (paired với mỗi document render trong `app.js`).
-  - Mỗi TOC link được gắn **click listener riêng** → N listeners cho N headings.
-- **Tác động:** 200+ headings → 200+ closures + listeners + DOM nodes mỗi lần render.
-- **Khuyến nghị fix:**
-  - Skip rebuild nếu heading structure không thay đổi (diff heading IDs).
-  - **Event delegation:** Một delegated listener trên `tocContainer` dùng `closest('a')`.
+- **Vị trí:** `rebuild-toc.js` đã bỏ. TOC trong React: `src/viewer/react/components/OutlinePanel.jsx` — `onClick` qua React, không còn N `addEventListener` thủ công trên từng link.
+- **Tối ưu thêm (tùy chọn):** delegation một handler trên `<ul>`; `React.memo` cho từng item nếu re-render chrome thường xuyên.
 
 ---
 
-## Issue #21 [MEDIUM] TOC renderToc tạo 200+ DOM nodes không virtualization
+## Issue #21 [MEDIUM] TOC: O(N) DOM nodes, không virtualization
 
-- **Vị trí:** `src/viewer/core/toc-builder.js` (dòng 37–69)
-- **Hiện trạng:** `renderToc` tạo `<li>` + `<a>` cho **mỗi heading** — 200+ nodes, long reflow/paint cho sidebar.
+- **Vị trí:** Outline thực tế: `src/viewer/react/components/OutlinePanel.jsx`. `src/viewer/core/toc-builder.js` (`renderToc`) vẫn tồn tại nhưng **không** còn là đường render chính của viewer.
+- **Hiện trạng:** Mỗi heading → một `<li>` + `<a>` trong React; tài liệu lớn vẫn O(N) node sidebar.
 - **Tác động:** TOC sidebar chậm khi scroll/layout trên tài liệu lớn.
 - **Khuyến nghị fix:**
   - Virtual list cho TOC outline.
@@ -281,34 +300,30 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Issue #22 [MEDIUM] Progress UI không throttle trong explorer scan
 
-- **Vị trí:** `src/viewer/explorer/explorer-controller.js` (dòng 805–810, 571–576), `src/viewer/explorer/explorer-panel.js` (dòng 356–361)
-- **Hiện trạng:** `onProgress` callback invokes `explorerPanel.updateProgressLoading` **mỗi khi scanner emit progress** (per file / per folder). `folder-scanner.js` emit rất thường xuyên (`emitProgress` spread `{...stats}` mỗi lần).
-- **Tác động:** Frequent DOM `textContent` updates + object spread → main thread pressure, có thể gây jank trong scan.
+- **Vị trí (cập nhật):** `src/viewer/react/hooks/explorer/createExplorerViewActions.js` (`updateProgressLoading` ~58–66); scanner vẫn `src/viewer/explorer/folder-scanner.js` (`emitProgress`).
+- **Hiện trạng:** Mỗi lần scanner gọi `onProgress` → patch React state (`safePatch`) **không** throttle (rAF / giới hạn Hz).
+- **Tác động:** Scan lớn → nhiều re-render, có thể jank.
 - **Khuyến nghị fix:**
-  - Throttle progress UI updates (rAF hoặc max 4–10 Hz).
-  - Scanner: emit progress mỗi K files thay vì mỗi file.
-  - Tránh spread `{...stats}` mỗi lần — pass mutable reference.
+  - Throttle progress UI (rAF hoặc 4–10 Hz).
+  - Scanner: emit mỗi K files / folder.
+  - Tránh copy object không cần thiết mỗi tick.
 
 ---
 
-## Issue #23 [MEDIUM] `syncFolderDomExpandedState` querySelectorAll toàn bộ folder LIs
+## Issue #23 [RESOLVED] `syncFolderDomExpandedState` querySelectorAll toàn bộ folder LIs
 
-- **Vị trí:** `src/viewer/explorer/explorer-panel.js` (dòng 501–513)
-- **Hiện trạng:** Mỗi lần expand/collapse folder, `querySelectorAll('li[data-folder-href]')` chạy trên **tất cả** folder LIs + nested query per row.
-- **Tác động:** Large trees → expensive toggle operation.
-- **Khuyến nghị fix:**
-  - Toggle chỉ clicked folder's subtree.
-  - Store refs khi tạo DOM, tránh global querySelectorAll.
+- **Vị trí:** `explorer-panel.js` đã bỏ. Trạng thái expand: `expandedMap` trong `src/viewer/react/hooks/explorer/explorerReducer.js` (`TOGGLE_FOLDER`).
+- **Kết quả:** Không còn sync expanded state bằng `querySelectorAll` trên toàn cây DOM.
 
 ---
 
 ## Issue #24 [MEDIUM] Sidebar resize `pointermove` không dùng rAF
 
-- **Vị trí:** `src/viewer/sidebar-resize.js` (dòng 64–66)
-- **Hiện trạng:** `pointermove` handler update CSS variable `--mdp-toc-width` **mỗi event** không qua `requestAnimationFrame`.
-- **Tác động:** Có thể cause multiple style recalculations per frame khi drag nhanh.
-- **Khuyến nghị fix:**
-  - Throttle update bằng `requestAnimationFrame` — chỉ một update per frame.
+- **Vị trí (cập nhật):** `src/viewer/react/hooks/useSidebarResize.js` (`pointermove` ~55–58)  
+  *(File cũ `sidebar-resize.js` đã bỏ.)*
+- **Hiện trạng:** Mỗi sự kiện `pointermove` gọi `setSidebarWidth` trực tiếp, không batch qua `requestAnimationFrame`.
+- **Tác động:** Drag nhanh → nhiều lần tính style / layout trong một frame.
+- **Khuyến nghị fix:** Chỉ một cập nhật width mỗi frame (rAF).
 
 ---
 
@@ -385,12 +400,11 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Issue #31 [MEDIUM] Tooltip forced layout khi show
 
-- **Vị trí:** `src/viewer/tooltip.js` (dòng 47–48)
-- **Hiện trạng:** `offsetWidth` / `offsetHeight` sau append → forced layout flush.
-- **Tác động:** Minor jank khi show tooltip, nhưng tích lũy nếu nhiều tooltips xuất hiện liên tiếp.
-- **Khuyến nghị fix:**
-  - Defer với `requestAnimationFrame`.
-  - Hoặc dùng `ResizeObserver` cho positioning.
+- **Vị trí (cập nhật):** `src/viewer/dom-tooltip.js` (plugin/copy controls); `src/viewer/react/components/Tooltip.jsx` (chrome explorer/toolbar)  
+  *(File cũ `src/viewer/tooltip.js` đã bỏ.)*
+- **Hiện trạng:** Đo `offsetWidth` / `offsetHeight` sau khi gắn tip → có thể forced layout.
+- **Tác động:** Minor jank; tích lũy khi nhiều tooltip hoặc cây lớn.
+- **Khuyến nghị fix:** Defer `requestAnimationFrame`; hoặc `ResizeObserver`.
 
 ---
 
@@ -416,13 +430,13 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
-## Issue #34 [LOW-MEDIUM] Explorer `sortListingEntries` nhiều filter pass
+## Issue #34 [LOW-MEDIUM] Explorer `sortListingEntries` hai lần filter + spread
 
 - **Vị trí:** `src/viewer/explorer/folder-scanner.js` (dòng 92–99)
-- **Hiện trạng:** 4 `filter` passes trên `sorted` array, tạo new arrays mỗi lần.
-- **Tác động:** Large directories → extra allocations.
+- **Hiện trạng:** `filter` dirs + `filter` files (hai mảng mới), sort riêng, rồi `[...dirs, ...files]`.
+- **Tác động:** Large directories → thêm allocation so với single-pass partition.
 - **Khuyến nghị fix:**
-  - Single-pass partition (dirs vs files vs md) hoặc sort với typed comparator.
+  - Single-pass partition (dirs vs files) hoặc một lần sort với comparator `isDir`-aware.
 
 ---
 
@@ -439,11 +453,11 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ## Issue #36 [LOW-MEDIUM] Export double-click có thể trigger parallel exports
 
-- **Vị trí:** `src/viewer/actions/toolbar-actions.js` (dòng 67–81)
-- **Hiện trạng:** `runExport` không có in-flight guard → double-click start parallel exports.
-- **Tác động:** UX issue + wasted resources.
-- **Khuyến nghị fix:**
-  - Disable button hoặc guard với promise flag trong khi export đang chạy.
+- **Vị trí (cập nhật):** `src/viewer/react/components/ToolbarActions.jsx` (`runExport` ~69–84)  
+  *(File cũ `toolbar-actions.js` đã bỏ.)*
+- **Hiện trạng:** `runExport` không có in-flight guard → double-click có thể chạy song song nhiều export.
+- **Tác động:** UX + lãng phí tài nguyên.
+- **Khuyến nghị fix:** Disable control hoặc promise flag trong lúc export.
 
 ---
 
@@ -463,27 +477,28 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
-## Issue #39 [LOW] Per-row click listeners trong tree + tooltip per folder
+## Issue #39 [LOW] Per-row handlers trong tree + tooltip per folder (React)
 
-- **Vị trí:** `src/viewer/explorer/explorer-tree-renderer.js` (dòng 120–156, 212–216)
-- **Hiện trạng:** Mỗi file row + folder row đều register click listener riêng + tooltip riêng.
-- **Khuyến nghị fix:** Event delegation trên `listEl`. Tooltip delegate hoặc show on first hover only.
+- **Vị trí (cập nhật):** `src/viewer/react/components/explorer/FolderRow.jsx`, `FileRow.jsx`  
+  *(File cũ `explorer-tree-renderer.js` đã bỏ.)*
+- **Hiện trạng:** Mỗi row có `onClick` React; folder thường bọc `<Tooltip>`. Không còn `addEventListener` thủ công nhưng vẫn **O(rows)** handler/tooltip instances.
+- **Khuyến nghị fix:** Event delegation trên container; một tooltip dùng chung hoặc lazy hover.
 
 ---
 
 ## Issue #40 [LOW] `normalizeFileUrlForCompare` parse URL mỗi lần gọi
 
-- **Vị trí:** `src/viewer/explorer/url-utils.js` (dòng 117–128)
-- **Hiện trạng:** Parse URL every time, hot trong tree walks và `markActiveFile`.
-- **Khuyến nghị fix:** Cache normalized strings trên tree nodes lúc scan.
+- **Vị trí:** `src/viewer/explorer/url-utils.js` (dòng ~118–129)
+- **Hiện trạng:** `new URL(...)` mỗi lần gọi — hot khi render tree / so sánh active file.
+- **Khuyến nghị fix:** Cache normalized string trên node lúc scan.
 
 ---
 
 ## Issue #41 [LOW] `buildInitialExpandedMap` walk toàn bộ tree
 
-- **Vị trí:** `src/viewer/explorer/explorer-tree-renderer.js` (dòng 92–103)
-- **Hiện trạng:** Walk mọi folder node để seed `expandedMap` — redundant nếu stats đã có từ scanning.
-- **Khuyến nghị fix:** Derive lazily on first expand hoặc dùng scan-time data.
+- **Vị trí (cập nhật):** `src/viewer/explorer/explorer-tree-utils.js` (dòng ~75–85); gọi từ `createExplorerViewActions.js`.
+- **Hiện trạng:** Walk mọi folder để seed `expandedMap` — có thể redundant nếu đã có metadata từ scan.
+- **Khuyến nghị fix:** Lazy derive lần expand đầu hoặc dữ liệu scan-time.
 
 ---
 
@@ -495,19 +510,68 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 ---
 
+## Issue #43 [HIGH] `getToolbarHeight` không ổn định → `useScrollSpy` teardown mỗi lần render
+
+- **Vị trí:** `src/viewer/react/components/OutlinePanel.jsx` (~25–29), `src/viewer/react/hooks/useScrollSpy.js` (effect phụ thuộc `getToolbarHeight`)
+- **Hiện trạng:** Truyền `getToolbarHeight` dạng arrow inline `() => getToolbarHeightInScrollRoot(scrollRoot)` → reference mới **mỗi** render → `useEffect` trong `useScrollSpy` hủy và tạo lại scroll spy (kể cả `refreshMeasurements`).
+- **Tác động:** Lãng phí CPU khi sidebar/chrome re-render; đo heading lặp lại không cần thiết.
+- **Khuyến nghị fix:** `useCallback` ổn định hoặc chỉ truyền `scrollRoot` và gọi `getToolbarHeightInScrollRoot` bên trong spy.
+
+---
+
+## Issue #44 [HIGH] Hai lần `root.render()` sau mỗi lần render tài liệu
+
+- **Vị trí:** `src/viewer/app.js` (`syncTocItems` + `bumpChrome` sau `render()`), `src/viewer/react/mount.js` (`updateTocItems`, `bumpChrome`)
+- **Hiện trạng:** Sau `renderDocument`, `syncTocItems` → `root.render` với `tocItems` mới; `finally` gọi `bumpChrome` → **`root.render` lần hai** trong cùng chu kỳ (hai lần reconcile shell cho một lần render doc).
+- **Tác động:** Toàn bộ shell React reconcile hai lần mỗi lần mở/refresh doc.
+- **Khuyến nghị fix:** Gộp một lần cập nhật chrome; hoặc chỉ `bumpChrome` khi đổi URL file / state thực sự, không sau mọi `syncTocItems`.
+
+---
+
+## Issue #45 [MEDIUM] `ToastContext` khiến cả cây re-render mỗi toast
+
+- **Vị trí:** `src/viewer/react/contexts/ToastContext.jsx`, `src/viewer/react/ViewerApp.jsx` (provider bọc toàn app)
+- **Hiện trạng:** `toastMessage` / `isVisible` đổi → mọi consumer / descendant reconcile (sidebar, outline, explorer, toolbar).
+- **Khuyến nghị fix:** Tách state vs dispatch context; hoặc ref + subscriber hẹp chỉ cho `<Toast />`.
+
+---
+
+## Issue #46 [MEDIUM] Explorer bootstrap dù user chưa mở tab Files
+
+- **Vị trí:** `src/viewer/react/components/FilesPanel.jsx` (`ExplorerPanel` luôn mount, chỉ `hidden`), `src/viewer/react/hooks/useExplorer.js` (effect mount ~769–805)
+- **Hiện trạng:** `useExplorer` chạy restore workspace / sibling scan ngay khi mount, kể cả khi user chỉ xem Outline.
+- **Khuyến nghị fix:** Lazy-mount `ExplorerPanel` / defer bootstrap khi `activeSidebarTab === 'files'` lần đầu.
+
+---
+
+## Issue #47 [MEDIUM] `TOGGLE_FOLDER` clone toàn bộ `expandedMap`
+
+- **Vị trí:** `src/viewer/react/hooks/explorer/explorerReducer.js` (~36–40)
+- **Hiện trạng:** `new Map(state.expandedMap)` copy **mọi** key mỗi lần toggle → O(k) với k = số folder từng expand.
+- **Khuyến nghị fix:** Structural sharing, `Set` + version, hoặc ref map + bump revision.
+
+---
+
+## Issue #48 [MEDIUM] `article-interactions`: timer feedback copy không clear khi `destroy()`
+
+- **Vị trí:** `src/viewer/article-interactions.js` (WeakMap timer ~18–45; `destroy` ~171–181)
+- **Hiện trạng:** `destroy()` gỡ listener nhưng không `clearTimeout` các timer trong `copyButtonFeedbackTimers`.
+- **Khuyến nghị fix:** Set id timer đang chờ; clear hết trong `destroy()`.
+
 ---
 
 ## Quick wins nên làm trước
 
-1. **Fix Issue #1:** Chuyển scroll spy sang `IntersectionObserver` (hoặc cached offsets + binary search).
-2. **Fix Issue #2:** Lazy render cho collapsed folders trong explorer tree.
-3. **Fix Issue #4:** Dynamic `import()` cho optional plugins (Math/KaTeX đặc biệt).
-4. **Fix Issue #5:** Giới hạn Shiki langs ban đầu + concurrency limit cho code highlighting.
-5. **Fix Issue #8:** Thêm loading state (skeleton/spinner) cho render pipeline.
-6. **Fix Issue #14:** O(1) `markActiveFile` bằng cách lưu reference tới active button.
-7. **Fix Issue #20:** Event delegation cho TOC click handlers.
-8. **Fix Issue #22:** Throttle progress UI updates trong explorer scan.
-9. **Fix Issue #24:** rAF throttle cho sidebar resize.
+1. ~~**Issue #1:** Scroll spy — đã dùng offsets + binary search.~~ *(RESOLVED)*
+2. **Fix Issue #43:** Ổn định `getToolbarHeight` / deps `useScrollSpy`.
+3. **Fix Issue #44:** Tránh double `root.render` sau mỗi document render.
+4. **Fix Issue #2:** Lazy render children khi expand folder (React tree).
+5. **Fix Issue #4:** Dynamic `import()` cho optional plugins (Math/KaTeX đặc biệt).
+6. **Fix Issue #5:** Giới hạn Shiki langs ban đầu + concurrency limit cho code highlighting.
+7. **Fix Issue #8:** Thêm loading state (skeleton/spinner) cho render pipeline.
+8. ~~**Issue #14 / #20:** Explorer active + TOC imperative — đã chuyển React.~~ *(RESOLVED)*
+9. **Fix Issue #22:** Throttle progress UI updates trong explorer scan.
+10. **Fix Issue #24:** rAF throttle cho sidebar resize.
 
 ## Deeper refactors để đạt hiệu quả bền vững
 
@@ -515,7 +579,7 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 2. String-based Shiki approach thay vì DOM round-trip (Issue #6).
 3. Virtual list cho explorer tree + TOC sidebar (Issue #2, #9, #21).
 4. Reuse markdown engine + plugin manager across renders (Issue #26).
-5. Cache rendered HTML, chỉ re-run phần thay đổi khi settings update (Issue #17).
+5. Cache rendered HTML; theme/plugin change chỉ re-run Shiki (Issue #17 đã có fast path typography/layout; stretch: cache pre-Shiki HTML).
 6. Bounded concurrency cho folder scanning (Issue #11).
 7. Progressive/chunked render cho tài liệu 1MB+ (Issue #8).
 

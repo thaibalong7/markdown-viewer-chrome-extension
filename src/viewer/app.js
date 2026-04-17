@@ -5,19 +5,11 @@ import { logger } from '../shared/logger.js'
 import { needsFullRender } from '../shared/settings-diff.js'
 import { createArticleInteractions } from './article-interactions.js'
 import { mountViewerReact } from './react/mount.js'
-import { getSidebarWidthPx } from './explorer/explorer-state.js'
-import { SIDEBAR_MAX_WIDTH_PX, SIDEBAR_MIN_WIDTH_PX } from '../shared/constants/viewer.js'
 
 function createStyleElement(cssText) {
   const style = document.createElement('style')
   style.textContent = cssText
   return style
-}
-
-function clampSidebarWidth(widthPx) {
-  const width = Number(widthPx)
-  if (!Number.isFinite(width)) return SIDEBAR_MIN_WIDTH_PX
-  return Math.max(SIDEBAR_MIN_WIDTH_PX, Math.min(SIDEBAR_MAX_WIDTH_PX, Math.round(width)))
 }
 
 export class MarkdownViewerApp {
@@ -33,7 +25,10 @@ export class MarkdownViewerApp {
     this.settings = settings
     this.container = container
     this.styles = styles
-    this.parts = null
+    /** @type {HTMLElement | null} */
+    this._rootEl = null
+    /** @type {HTMLElement | null} */
+    this._articleEl = null
     this._smoothInitialHashScroll = false
     this._renderToken = 0
     this._styleElements = []
@@ -41,6 +36,7 @@ export class MarkdownViewerApp {
     this._currentFileUrl = window.location.href
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
+    this._destroyed = false
   }
 
   async init() {
@@ -66,19 +62,21 @@ export class MarkdownViewerApp {
         render: (opts) => this.render(opts),
         showToast: (message) => this.showToast(message),
         getScrollRoot: () => this.getScrollRoot(),
-        getArticleEl: () => this.parts?.article,
+        getArticleEl: () => this._articleEl,
         updateCurrentFileUrl: (nextUrl) => {
           this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
           this._reactHandle?.updateCurrentFileUrl(this._currentFileUrl)
         }
       },
-      getArticleEl: () => this.parts?.article,
+      getArticleEl: () => this._articleEl,
       getSettings: () => this.settings,
       getCurrentFileUrl: () => this._currentFileUrl
     })
 
     try {
-      this.parts = await this._reactHandle.partsPromise
+      const shell = await this._reactHandle.partsPromise
+      this._rootEl = shell?.root ?? null
+      this._articleEl = shell?.article ?? null
     } catch (error) {
       logger.error('Failed to mount viewer React shell.', error)
       this.destroy()
@@ -86,7 +84,7 @@ export class MarkdownViewerApp {
     }
 
     this._articleInteractions = createArticleInteractions({
-      getParts: () => this.parts,
+      getArticle: () => this._articleEl,
       showToast: (message) => this.showToast(message),
       getScrollRoot: () => this.getScrollRoot()
     })
@@ -98,15 +96,14 @@ export class MarkdownViewerApp {
   }
 
   applyReaderStyles() {
-    const article = this.parts?.article
+    const article = this._articleEl
     if (!article) return
 
     const typo = this.settings?.typography || {}
     const layout = this.settings?.layout || {}
-    const themeTarget = this.parts?.root || this.container?.host || this.container
+    const themeTarget = this._rootEl || this.container?.host || this.container
 
     applyThemeSettings(themeTarget, this.settings)
-    this.applySidebarWidthPreference()
 
     if (typo.fontFamily) article.style.fontFamily = 'var(--mdp-font-family)'
     if (typo.fontSize != null) article.style.fontSize = 'var(--mdp-font-size)'
@@ -114,19 +111,8 @@ export class MarkdownViewerApp {
     if (layout.contentMaxWidth != null) article.style.maxWidth = 'var(--mdp-content-max-width)'
   }
 
-  applySidebarWidthPreference() {
-    const root = this.parts?.root
-    if (!root) return
-    const layoutWidth = Number(this.settings?.layout?.tocWidth)
-    const storedWidth = getSidebarWidthPx()
-    const baseWidth = Number.isFinite(storedWidth) ? storedWidth : layoutWidth
-    const width = clampSidebarWidth(Number.isFinite(baseWidth) ? baseWidth : 280)
-    root.style.setProperty('--mdp-toc-width', `${width}px`)
-    this.parts?.resizeHandle?.setAttribute('aria-valuenow', String(width))
-  }
-
   getScrollRoot() {
-    return this.parts?.root || this.parts?.article?.closest?.('.mdp-root') || null
+    return this._rootEl || this._articleEl?.closest?.('.mdp-root') || null
   }
 
   captureScrollPosition() {
@@ -155,10 +141,12 @@ export class MarkdownViewerApp {
         return null
       }
       if (renderToken !== this._renderToken) return null
-      renderIntoElement(this.parts.article, result.html)
+      const article = this._articleEl
+      if (!article) return null
+      renderIntoElement(article, result.html)
       if (renderToken !== this._renderToken) return null
       await result.pluginManager?.afterRender({
-        articleEl: this.parts.article,
+        articleEl: article,
         settings: this.settings,
         copyCodeWithToast: this._articleInteractions?.copyCodeWithToast.bind(this._articleInteractions)
       })
@@ -189,7 +177,7 @@ export class MarkdownViewerApp {
       return
     }
 
-    const items = buildTocItems(this.parts?.article)
+    const items = buildTocItems(this._articleEl)
     this._reactHandle?.updateTocItems(items)
   }
 
@@ -206,12 +194,16 @@ export class MarkdownViewerApp {
   }
 
   destroy() {
+    if (this._destroyed) return
+    this._destroyed = true
     this._articleInteractions?.destroy()
     this._articleInteractions = null
     this._reactHandle?.unmount()
     this._reactHandle = null
     this._styleElements = []
     this.container.innerHTML = ''
-    this.parts = null
+    this._rootEl = null
+    this._articleEl = null
+    logger.debug('Markdown viewer destroyed.')
   }
 }

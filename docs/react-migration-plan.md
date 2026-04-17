@@ -284,11 +284,14 @@ return createPortal(<Toast />, portalRoot)
 ### Deliverable
 - Toast is a React component; imperative toast code removed
 - Toolbar and resize-handle tooltips are React components with Shadow DOM portals
-- Plugin and explorer tooltips still use `tooltip.js` until those areas migrate
+- Plugin tooltips use **`dom-tooltip.js`** (`attachTooltip`); imperative **`tooltip.js`** removed after explorer React migration
 
 ---
 
 ## 7. Phase 4-R: Settings Drawer (In-Viewer)
+
+### Status
+- **Pending (deferred)** — new product work, not part of the React migration of existing chrome. Popup/options remain the settings entrypoints until this phase is picked up.
 
 ### Goals
 - Add an in-viewer settings drawer (slide-from-right panel)
@@ -366,6 +369,16 @@ return createPortal(<Toast />, portalRoot)
 
 ## 9. Phase 6-R: Article Interactions Bridge + Cleanup
 
+### Status
+- **Done** (2026-04-17)
+- Completed scope:
+  - **`onShellReady` / `partsPromise`** now resolves to **`{ root, article }` only**; `MarkdownViewerApp` uses **`_rootEl` / `_articleEl`** (removed `parts` bag and duplicate `applySidebarWidthPreference` — sidebar width stays in **`useSidebarResize`**)
+  - **`createArticleInteractions({ getArticle, ... })`** — narrowed API from `getParts`
+  - **`destroy()`** idempotent via **`_destroyed`** + **`logger.debug('Markdown viewer destroyed.')`**
+  - Removed dead code: **`src/viewer/toolbar-metrics.js`**, **`createPrintIconSvg` / `createExportIconSvg`** from **`icons.js`** (plugin helpers only: **`SVG_NS`**, **`createCopyIconSvg`**)
+  - **`dom-tooltip.js`** kept for plugin-injected DOM; React **`Tooltip.jsx`** remains for chrome
+  - Updated **`docs/project-overview-for-ai.md`**, **`docs/react-migration-plan.md`**, **`.cursor/rules/80-viewer-ui-lifecycle.mdc`**
+
 ### Goals
 - Clean integration between React components and imperative article interactions
 - Final cleanup of legacy imperative code
@@ -391,24 +404,20 @@ return createPortal(<Toast />, portalRoot)
 
 ## 10. Tổng kết File Changes
 
-### New files (across all phases)
+### New files (across all phases — snapshot)
 ```
 src/viewer/react/
 ├── mount.js
 ├── ViewerApp.jsx
 ├── contexts/
 │   ├── SettingsContext.jsx
+│   ├── ToastContext.jsx
 │   └── ViewerStateContext.jsx
 ├── hooks/
 │   ├── useImperativeBridge.js
-│   ├── useToc.js
 │   ├── useScrollSpy.js
 │   ├── useSidebarResize.js
-│   ├── useToast.js
-│   ├── useViewerSettings.js
-│   ├── useExplorer.js
-│   ├── useFolderScanner.js
-│   └── useWorkspacePicker.js
+│   └── useExplorer.js
 ├── components/
 │   ├── ViewerShell.jsx
 │   ├── Toolbar.jsx
@@ -420,54 +429,53 @@ src/viewer/react/
 │   ├── ResizeHandle.jsx
 │   ├── Toast.jsx
 │   ├── Tooltip.jsx
-│   ├── SettingsDrawer.jsx
 │   ├── icons/
-│   │   ├── CopyIcon.jsx
 │   │   ├── PrintIcon.jsx
 │   │   └── ExportIcon.jsx
 │   └── explorer/
 │       ├── ExplorerPanel.jsx
 │       ├── ExplorerHeader.jsx
 │       ├── ExplorerProgress.jsx
-│       ├── FileList.jsx
 │       ├── FileTree.jsx
 │       ├── FileRow.jsx
 │       └── FolderRow.jsx
 ```
+*(Phase 4-R: `SettingsDrawer.jsx`, `useViewerSettings.js` — not added yet.)*
 
-### Deleted files (after all phases complete)
+### Deleted files (migration complete)
 ```
-src/viewer/shell/viewer-shell.js        → Phase 1-R
-src/viewer/actions/toolbar-actions.js   → Phase 1-R
-src/viewer/sidebar-resize.js            → Phase 2-R
-src/viewer/actions/rebuild-toc.js       → Phase 2-R
-src/viewer/toast.js                     → Phase 3-R
-src/viewer/tooltip.js                   → Phase 5-R / 6-R (or when plugins/explorer no longer need imperative attach)
-src/viewer/explorer/explorer-panel.js   → Phase 5-R
+src/viewer/shell/viewer-shell.js              → Phase 1-R
+src/viewer/actions/toolbar-actions.js        → Phase 1-R (print/export → document-actions.js + ToolbarActions.jsx)
+src/viewer/sidebar-resize.js                 → Phase 2-R
+src/viewer/actions/rebuild-toc.js            → Phase 2-R
+src/viewer/toast.js                          → Phase 3-R
+src/viewer/tooltip.js                        → Phase 5-R (chrome); plugins use dom-tooltip.js
+src/viewer/explorer/explorer-panel.js        → Phase 5-R
 src/viewer/explorer/explorer-tree-renderer.js → Phase 5-R
+src/viewer/explorer/explorer-controller.js   → Phase 5-R (logic in useExplorer.js)
+src/viewer/toolbar-metrics.js                → Phase 6-R (dead re-export)
 ```
 
 ### Refactored files (kept but modified)
 ```
-src/viewer/app.js                       → Major refactor (React orchestration)
-src/viewer/explorer/explorer-controller.js → Becomes headless service
-src/viewer/article-interactions.js      → Bridge to React toast/state
-src/viewer/icons.js                     → May keep for non-React SVG needs or delete
+src/viewer/app.js                       → React orchestration; _rootEl/_articleEl; no parts bag
+src/viewer/article-interactions.js      → getArticle API; toast via React bridge
+src/viewer/icons.js                     → Plugin SVG only (copy icon + SVG_NS)
 src/content/bootstrap.js                → Wire React mount
-vite.config.mjs                         → Add @vitejs/plugin-react
-package.json                            → Add @vitejs/plugin-react devDep
+vite.config.mjs                         → @vitejs/plugin-react
+package.json                            → @vitejs/plugin-react devDep
 ```
 
 ### Unchanged files (pure logic, no DOM)
 ```
 src/viewer/core/renderer.js
 src/viewer/core/markdown-engine.js
-src/viewer/core/toc-builder.js          (data extraction reused by useToc hook)
+src/viewer/core/toc-builder.js          (data extraction for OutlinePanel / buildTocItems)
 src/viewer/core/scroll-spy.js           (logic reused by useScrollSpy hook)
 src/viewer/core/shiki-config.js
 src/viewer/core/shiki-highlighter.js
 src/viewer/scroll-utils.js
-src/viewer/toolbar-metrics.js
+src/viewer/dom-tooltip.js               (plugin tooltips on post-render DOM)
 src/viewer/explorer/url-utils.js
 src/viewer/explorer/sibling-scanner.js
 src/viewer/explorer/folder-scanner.js

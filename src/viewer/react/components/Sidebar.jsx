@@ -4,39 +4,18 @@ import { OutlinePanel } from './OutlinePanel.jsx'
 import { FilesPanel } from './FilesPanel.jsx'
 import { ResizeHandle } from './ResizeHandle.jsx'
 
-export function Sidebar({
-  settings,
-  tocItems,
-  explorerBridge,
-  scrollRoot,
-  onSidebarRef,
-  onTabBarRef,
-  onTabFilesRef,
-  onTabOutlineRef,
-  onFilesPanelRef,
-  onOutlinePanelRef,
-  onTocContainerRef,
-  onResizeHandleRef
-}) {
+export function Sidebar({ settings, tocItems, explorerBridge, scrollRoot }) {
   const showToc = settings?.layout?.showToc !== false
   const [sidebarEl, setSidebarEl] = useState(null)
   const [handleEl, setHandleEl] = useState(null)
 
-  const handleSidebarRef = useCallback(
-    (node) => {
-      setSidebarEl(node)
-      onSidebarRef?.(node)
-    },
-    [onSidebarRef]
-  )
+  const handleSidebarRef = useCallback((node) => {
+    setSidebarEl(node)
+  }, [])
 
-  const handleResizeRef = useCallback(
-    (node) => {
-      setHandleEl(node)
-      onResizeHandleRef?.(node)
-    },
-    [onResizeHandleRef]
-  )
+  const handleResizeRef = useCallback((node) => {
+    setHandleEl(node)
+  }, [])
 
   useEffect(() => {
     if (!sidebarEl) return undefined
@@ -53,18 +32,9 @@ export function Sidebar({
 
   return (
     <aside className="mdp-sidebar" style={{ display: showToc ? '' : 'none' }} ref={handleSidebarRef}>
-      <SidebarTabs
-        onTabBarRef={onTabBarRef}
-        onTabFilesRef={onTabFilesRef}
-        onTabOutlineRef={onTabOutlineRef}
-      />
-      <OutlinePanel
-        onPanelRef={onOutlinePanelRef}
-        onTocContainerRef={onTocContainerRef}
-        tocItems={tocItems}
-        scrollRoot={scrollRoot}
-      />
-      <FilesPanel onPanelRef={onFilesPanelRef} explorerBridge={explorerBridge} />
+      <SidebarTabs />
+      <OutlinePanel tocItems={tocItems} scrollRoot={scrollRoot} />
+      <FilesPanel explorerBridge={explorerBridge} />
       <ResizeHandle
         rootEl={scrollRoot}
         sidebarEl={sidebarEl}

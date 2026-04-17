@@ -10,7 +10,7 @@ function updateHash(id) {
   window.history.replaceState(null, '', encoded)
 }
 
-export function OutlinePanel({ onPanelRef, onTocContainerRef, tocItems, scrollRoot }) {
+export function OutlinePanel({ tocItems, scrollRoot }) {
   const { activeSidebarTab } = useViewerState()
   const isFiles = activeSidebarTab === 'files'
 
@@ -38,10 +38,9 @@ export function OutlinePanel({ onPanelRef, onTocContainerRef, tocItems, scrollRo
       id="mdp-panel-outline"
       aria-labelledby="mdp-tab-outline"
       hidden={isFiles}
-      ref={onPanelRef}
     >
       <div className="mdp-sidebar__title">Outline</div>
-      <nav className="mdp-toc" aria-label="Table of contents" ref={onTocContainerRef}>
+      <nav className="mdp-toc" aria-label="Table of contents">
         {headings.length ? (
           <ul className="mdp-toc__list">
             {tocItems.map((item) => {

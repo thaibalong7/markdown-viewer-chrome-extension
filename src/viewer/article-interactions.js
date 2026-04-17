@@ -6,11 +6,11 @@ import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from './scroll-
 /**
  * Hash navigation, in-article link handling, and clipboard UX for the markdown body.
  * @param {object} options
- * @param {() => ({ article?: HTMLElement | null } | null | undefined)} options.getParts
+ * @param {() => (HTMLElement | null | undefined)} options.getArticle
  * @param {(message: string) => void} options.showToast
  * @param {() => HTMLElement | null} options.getScrollRoot
  */
-export function createArticleInteractions({ getParts, showToast, getScrollRoot } = {}) {
+export function createArticleInteractions({ getArticle, showToast, getScrollRoot } = {}) {
   /** @type {(() => void) | null} */
   let hashChangeHandler = null
   /** @type {((e: MouseEvent) => void) | null} */
@@ -141,8 +141,8 @@ export function createArticleInteractions({ getParts, showToast, getScrollRoot }
     const id = decodeURIComponent(hash.slice(1))
     if (!id) return
 
-    const parts = getParts()
-    const headingEl = parts?.article?.querySelector?.(`#${CSS.escape(id)}`)
+    const article = getArticle?.()
+    const headingEl = article?.querySelector?.(`#${CSS.escape(id)}`)
     if (!headingEl) return
 
     const scrollRoot = getScrollRoot()
@@ -152,8 +152,8 @@ export function createArticleInteractions({ getParts, showToast, getScrollRoot }
   }
 
   function bind() {
-    const article = getParts()?.article
-    if (!article) return
+    const article = getArticle?.()
+    if (!(article instanceof HTMLElement)) return
 
     hashChangeHandler = () => {
       scrollToHash({ behavior: 'auto' })
@@ -173,8 +173,8 @@ export function createArticleInteractions({ getParts, showToast, getScrollRoot }
       window.removeEventListener('hashchange', hashChangeHandler)
     }
     hashChangeHandler = null
-    const article = getParts()?.article
-    if (articleClickHandler && article) {
+    const article = getArticle?.()
+    if (articleClickHandler && article instanceof HTMLElement) {
       article.removeEventListener('click', articleClickHandler)
     }
     articleClickHandler = null

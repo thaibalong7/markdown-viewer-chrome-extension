@@ -1,4 +1,9 @@
-/** SVG namespace URI (shared by viewer chrome + plugins). */
+/**
+ * Imperative SVG helpers for plugin-injected DOM (code blocks, Mermaid toolbar).
+ * Viewer chrome icons live under `src/viewer/react/components/icons/`.
+ */
+
+/** SVG namespace URI (shared by plugins). */
 export const SVG_NS = 'http://www.w3.org/2000/svg'
 
 /**
@@ -45,51 +50,5 @@ export function createCopyIconSvg(options = {}) {
   front.setAttribute('stroke-width', '1.8')
 
   icon.append(back, front)
-  return icon
-}
-
-/**
- * Printer icon for toolbar print / save as PDF.
- * @param {{ className?: string }} [options]
- * @returns {SVGSVGElement}
- */
-export function createPrintIconSvg(options = {}) {
-  const icon = createBaseSvg({ className: options.className })
-
-  const path = document.createElementNS(SVG_NS, 'path')
-  path.setAttribute(
-    'd',
-    'M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z'
-  )
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke', 'currentColor')
-  path.setAttribute('stroke-width', '1.75')
-  path.setAttribute('stroke-linecap', 'round')
-  path.setAttribute('stroke-linejoin', 'round')
-
-  icon.append(path)
-  return icon
-}
-
-/**
- * Download / export icon with chevron for export menu trigger.
- * @param {{ className?: string }} [options]
- * @returns {SVGSVGElement}
- */
-export function createExportIconSvg(options = {}) {
-  const icon = createBaseSvg({ className: options.className })
-
-  const path = document.createElementNS(SVG_NS, 'path')
-  path.setAttribute(
-    'd',
-    'M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2'
-  )
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke', 'currentColor')
-  path.setAttribute('stroke-width', '1.75')
-  path.setAttribute('stroke-linecap', 'round')
-  path.setAttribute('stroke-linejoin', 'round')
-
-  icon.append(path)
   return icon
 }

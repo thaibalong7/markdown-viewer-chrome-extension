@@ -16,6 +16,7 @@ export function mountViewerReact(container, options = {}) {
   } = options
   const root = createRoot(container)
   let shellReadyResolve = () => {}
+  /** Resolves to `{ root, article }` once the React shell has mounted. */
   const partsPromise = new Promise((resolve) => {
     shellReadyResolve = resolve
   })
@@ -35,12 +36,12 @@ export function mountViewerReact(container, options = {}) {
     onShowToastReady: (showToastFn) => {
       showToastBridge = typeof showToastFn === 'function' ? showToastFn : null
     },
-    onShellReady: (parts) => {
+    onShellReady: (shellElements) => {
       if (!shellReadySignaled) {
         shellReadySignaled = true
-        shellReadyResolve(parts)
+        shellReadyResolve(shellElements)
       }
-      onShellReady?.(parts)
+      onShellReady?.(shellElements)
     }
   }
 

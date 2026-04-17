@@ -1,7 +1,8 @@
 import { exportMermaidPng, exportMermaidSvg } from './mermaid-export.js'
 import { logger } from '../../shared/logger.js'
+import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../shared/constants/tooltip.js'
 import { createCopyIconSvg, SVG_NS } from '../../viewer/icons.js'
-import { attachTooltip, VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../viewer/tooltip.js'
+import { attachTooltip } from '../../viewer/dom-tooltip.js'
 
 function ensureMermaidToolbar(containerEl) {
   let toolbar = containerEl.querySelector(':scope > .mdp-mermaid-toolbar')

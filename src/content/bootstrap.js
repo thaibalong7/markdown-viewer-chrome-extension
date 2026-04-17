@@ -104,7 +104,8 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
     styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss, styles.explorerCss]
   })
 
-  app.init()
+  await app.init()
+
   logger.info('Markdown viewer mounted successfully.')
   return app
 }

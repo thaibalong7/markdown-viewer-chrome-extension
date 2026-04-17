@@ -129,6 +129,32 @@ export function normalizeFileUrlForCompare(url) {
 }
 
 /**
+ * Build readable document title from file or virtual workspace URL.
+ * @param {string} fileUrl
+ * @returns {string}
+ */
+export function markdownFileTitleFromUrl(fileUrl) {
+  if (typeof fileUrl === 'string' && fileUrl.startsWith(MDP_WS_FILE)) {
+    try {
+      const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
+      const base = rel.split('/').pop() || ''
+      const name = base.replace(/\.(md|markdown|mdown)$/i, '')
+      return name || 'document'
+    } catch {
+      return 'document'
+    }
+  }
+  try {
+    const pathname = new URL(fileUrl).pathname
+    const base = pathname.split('/').filter(Boolean).pop() || ''
+    const name = base.replace(/\.(md|markdown|mdown)$/i, '')
+    return decodeURIComponent(name) || 'original file'
+  } catch {
+    return 'original file'
+  }
+}
+
+/**
  * Convert user-entered filesystem path or file: URL to a normalized file: directory URL.
  * @param {string} input
  * @returns {string | null}

@@ -1,6 +1,6 @@
 @use 'variables' as v;
 
-/* Toolbar print / export controls (see `viewer/actions/toolbar-actions.js`). */
+/* Toolbar print / export controls (see `viewer/react/components/ToolbarActions.jsx` + `viewer/actions/document-actions.js`). */
 .mdp-toolbar-doc-actions {
   display: flex;
   align-items: center;

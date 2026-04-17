@@ -1,6 +1,7 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { createCopyIconSvg } from '../../viewer/icons.js'
-import { attachTooltip, VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../viewer/tooltip.js'
+import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../shared/constants/tooltip.js'
+import { attachTooltip } from '../../viewer/dom-tooltip.js'
 
 const PRE_SELECTOR = '.mdp-markdown-body pre'
 

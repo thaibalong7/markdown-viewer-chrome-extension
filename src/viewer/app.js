@@ -1,14 +1,16 @@
-import { createShell } from './shell/viewer-shell.js'
 import { renderDocument, renderIntoElement } from './core/renderer.js'
-import { rebuildToc } from './actions/rebuild-toc.js'
+import { buildTocItems } from './core/toc-builder.js'
 import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
-import { dismissViewerToast, showViewerToast } from './toast.js'
 import { needsFullRender } from '../shared/settings-diff.js'
-import { createExplorerController } from './explorer/explorer-controller.js'
 import { createArticleInteractions } from './article-interactions.js'
-import { createSidebarResize } from './sidebar-resize.js'
-import { createToolbarDocumentActions } from './actions/toolbar-actions.js'
+import { mountViewerReact } from './react/mount.js'
+
+function createStyleElement(cssText) {
+  const style = document.createElement('style')
+  style.textContent = cssText
+  return style
+}
 
 export class MarkdownViewerApp {
   /**
@@ -23,85 +25,83 @@ export class MarkdownViewerApp {
     this.settings = settings
     this.container = container
     this.styles = styles
-    this.parts = null
-    this.tocController = null
-    this.shellController = null
+    /** @type {HTMLElement | null} */
+    this._rootEl = null
+    /** @type {HTMLElement | null} */
+    this._articleEl = null
     this._smoothInitialHashScroll = false
     this._renderToken = 0
-    /** @type {ReturnType<typeof createSidebarResize> | null} */
-    this._sidebarResize = null
+    this._styleElements = []
+    this._reactHandle = null
+    this._currentFileUrl = window.location.href
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
-    /** @type {ReturnType<typeof createExplorerController> | null} */
-    this._explorer = null
-    /** @type {ReturnType<typeof createToolbarDocumentActions> | null} */
-    this._toolbarDocActions = null
+    this._destroyed = false
   }
 
-  init() {
-    const shell = createShell({ styles: this.styles })
-
-    this.parts = shell.parts
-    this.shellController = shell
-
-    for (const styleElement of shell.styleElements) {
+  async init() {
+    this._styleElements = this.styles.map(createStyleElement)
+    for (const styleElement of this._styleElements) {
       this.container.appendChild(styleElement)
     }
-    this.container.appendChild(shell.element)
 
-    this._sidebarResize = createSidebarResize({
-      getParts: () => this.parts,
-      getSettings: () => this.settings
+    this._reactHandle = mountViewerReact(this.container, {
+      settings: this.settings,
+      markdown: this.markdown,
+      currentFileUrl: this._currentFileUrl,
+      tocItems: [],
+      explorerBridge: {
+        getSettings: () => this.settings,
+        setMarkdown: (md) => {
+          this.markdown = md
+          this._reactHandle?.updateMarkdown(md)
+        },
+        setSmoothInitialHashScroll: (value) => {
+          this._smoothInitialHashScroll = Boolean(value)
+        },
+        render: (opts) => this.render(opts),
+        showToast: (message) => this.showToast(message),
+        getScrollRoot: () => this.getScrollRoot(),
+        getArticleEl: () => this._articleEl,
+        updateCurrentFileUrl: (nextUrl) => {
+          this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
+          this._reactHandle?.updateCurrentFileUrl(this._currentFileUrl)
+        }
+      },
+      getArticleEl: () => this._articleEl,
+      getSettings: () => this.settings,
+      getCurrentFileUrl: () => this._currentFileUrl
     })
 
+    try {
+      const shell = await this._reactHandle.partsPromise
+      this._rootEl = shell?.root ?? null
+      this._articleEl = shell?.article ?? null
+    } catch (error) {
+      logger.error('Failed to mount viewer React shell.', error)
+      this.destroy()
+      return
+    }
+
     this._articleInteractions = createArticleInteractions({
-      getParts: () => this.parts,
+      getArticle: () => this._articleEl,
       showToast: (message) => this.showToast(message),
       getScrollRoot: () => this.getScrollRoot()
     })
-
-    this._explorer = createExplorerController({
-      getParts: () => this.parts,
-      getSettings: () => this.settings,
-      setMarkdown: (md) => {
-        this.markdown = md
-      },
-      setSmoothInitialHashScroll: (v) => {
-        this._smoothInitialHashScroll = v
-      },
-      render: (opts) => this.render(opts),
-      showToast: (message) => this.showToast(message),
-      getScrollRoot: () => this.getScrollRoot(),
-      getArticleEl: () => this.parts?.article
-    })
-
-    const toolbarActionsEl = this.parts?.toolbarActions
-    if (toolbarActionsEl) {
-      this._toolbarDocActions = createToolbarDocumentActions({
-        mountEl: toolbarActionsEl,
-        getArticleEl: () => this.parts?.article,
-        getSettings: () => this.settings,
-        getCurrentFileUrl: () => this._explorer?.getCurrentFileUrl?.() ?? '',
-        showToast: (message) => this.showToast(message)
-      })
-    }
 
     this._smoothInitialHashScroll = Boolean(window.location.hash)
     this.applyReaderStyles()
     void this.render()
     this._articleInteractions.bind()
-    this._explorer.init()
-    this._sidebarResize.init()
   }
 
   applyReaderStyles() {
-    const article = this.parts?.article
+    const article = this._articleEl
     if (!article) return
 
     const typo = this.settings?.typography || {}
     const layout = this.settings?.layout || {}
-    const sidebar = this.parts?.sidebar
-    const themeTarget = this.parts?.root || this.container?.host || this.container
+    const themeTarget = this._rootEl || this.container?.host || this.container
 
     applyThemeSettings(themeTarget, this.settings)
 
@@ -109,20 +109,10 @@ export class MarkdownViewerApp {
     if (typo.fontSize != null) article.style.fontSize = 'var(--mdp-font-size)'
     if (typo.lineHeight != null) article.style.lineHeight = 'var(--mdp-line-height)'
     if (layout.contentMaxWidth != null) article.style.maxWidth = 'var(--mdp-content-max-width)'
-
-    if (sidebar) {
-      const showToc = layout.showToc !== false
-      sidebar.style.display = showToc ? '' : 'none'
-      this._sidebarResize?.applySidebarWidth()
-      const body = sidebar.parentElement
-      if (body?.classList?.contains('mdp-body')) {
-        body.classList.toggle('mdp-body--no-toc', !showToc)
-      }
-    }
   }
 
   getScrollRoot() {
-    return this.parts?.root || this.parts?.article?.closest?.('.mdp-root') || null
+    return this._rootEl || this._articleEl?.closest?.('.mdp-root') || null
   }
 
   captureScrollPosition() {
@@ -151,15 +141,17 @@ export class MarkdownViewerApp {
         return null
       }
       if (renderToken !== this._renderToken) return null
-      renderIntoElement(this.parts.article, result.html)
+      const article = this._articleEl
+      if (!article) return null
+      renderIntoElement(article, result.html)
       if (renderToken !== this._renderToken) return null
       await result.pluginManager?.afterRender({
-        articleEl: this.parts.article,
+        articleEl: article,
         settings: this.settings,
         copyCodeWithToast: this._articleInteractions?.copyCodeWithToast.bind(this._articleInteractions)
       })
       if (renderToken !== this._renderToken) return null
-      this.syncTocVisibility()
+      this.syncTocItems()
       if (scrollSnapshot) {
         this.restoreScrollPosition(scrollSnapshot)
       } else if (honorHash) {
@@ -170,56 +162,48 @@ export class MarkdownViewerApp {
       }
       return result
     } finally {
-      this._toolbarDocActions?.syncVisibility()
+      this._reactHandle?.updateCurrentFileUrl(this._currentFileUrl)
     }
   }
 
   showToast(message) {
-    showViewerToast(this.parts?.root, message)
+    this._reactHandle?.showToast(message)
   }
 
-  syncTocVisibility() {
+  syncTocItems() {
     const showToc = this.settings?.layout?.showToc !== false
     if (!showToc) {
-      if (this.tocController) this.tocController.destroy()
-      this.tocController = null
-      if (this.parts?.tocContainer) this.parts.tocContainer.innerHTML = ''
+      this._reactHandle?.updateTocItems([])
       return
     }
 
-    if (this.tocController) this.tocController.destroy()
-    this.tocController = rebuildToc({
-      articleEl: this.parts.article,
-      tocContainerEl: this.parts.tocContainer
-    })
+    const items = buildTocItems(this._articleEl)
+    this._reactHandle?.updateTocItems(items)
   }
 
   async updateSettings(nextSettings) {
     const prevSettings = this.settings
     this.settings = nextSettings
+    this._reactHandle?.updateSettings(nextSettings)
     this.applyReaderStyles()
     if (!needsFullRender(prevSettings, nextSettings)) {
-      this.syncTocVisibility()
+      this.syncTocItems()
       return null
     }
     return this.render({ preserveScroll: true, honorHash: false })
   }
 
   destroy() {
-    dismissViewerToast(this.parts?.root)
-    if (this.shellController?.destroy) this.shellController.destroy()
-    this.shellController = null
+    if (this._destroyed) return
+    this._destroyed = true
     this._articleInteractions?.destroy()
     this._articleInteractions = null
-    if (this.tocController) this.tocController.destroy()
-    this.tocController = null
-    this._sidebarResize?.destroy()
-    this._sidebarResize = null
-    this._toolbarDocActions?.destroy()
-    this._toolbarDocActions = null
-    this._explorer?.destroy()
-    this._explorer = null
+    this._reactHandle?.unmount()
+    this._reactHandle = null
+    this._styleElements = []
     this.container.innerHTML = ''
-    this.parts = null
+    this._rootEl = null
+    this._articleEl = null
+    logger.debug('Markdown viewer destroyed.')
   }
 }

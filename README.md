@@ -80,7 +80,7 @@ Development notes:
 ## Project Structure
 
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
-- `src/viewer` - Viewer shell, async render + TOC (`app.js`), article clicks/hash scroll (`article-interactions.js`), sidebar resize (`sidebar-resize.js`), shared scroll/icon helpers (`scroll-utils.js`, `icons.js`), Files tab (`explorer/*` including `explorer-controller.js` for workspace/sibling orchestration).
+- `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + React chrome (`react/*`: shell, sidebar, TOC, explorer, toast), async render pipeline (`core/*`), article clicks/hash scroll (`article-interactions.js`), plugin SVG helpers (`icons.js`), plugin tooltips (`dom-tooltip.js`), shared scroll math (`scroll-utils.js`), Files I/O helpers (`explorer/*` consumed by `useExplorer.js`).
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
 - `src/shared` - Cross-cutting utilities (`logger`, `deep-merge`, `clipboard`, `settings-diff`) and **shared constants** (`constants/viewer.js` for toolbar/scroll/sidebar/copy UX; `constants/explorer.js` for workspace virtual URL prefixes and explorer scan defaults).

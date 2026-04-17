@@ -27,13 +27,15 @@ export function FileTree({ nodes, expandedMap, activeFileUrl, onToggleFolder, on
             expandedMap={expandedMap}
             onToggleFolder={onToggleFolder}
           >
-            <FileTree
-              nodes={node.children || []}
-              expandedMap={expandedMap}
-              activeFileUrl={activeFileUrl}
-              onToggleFolder={onToggleFolder}
-              onPickFile={onPickFile}
-            />
+            {expandedMap.get(node.href) === true ? (
+              <FileTree
+                nodes={node.children || []}
+                expandedMap={expandedMap}
+                activeFileUrl={activeFileUrl}
+                onToggleFolder={onToggleFolder}
+                onPickFile={onPickFile}
+              />
+            ) : null}
           </FolderRow>
         )
       })}

@@ -27,9 +27,11 @@ export function FolderRow({ node, expandedMap, onToggleFolder, children }) {
         </button>
       </Tooltip>
 
-      <ul className="mdp-explorer__tree-children" role="group" hidden={!expanded}>
-        {children}
-      </ul>
+      {expanded ? (
+        <ul className="mdp-explorer__tree-children" role="group">
+          {children}
+        </ul>
+      ) : null}
     </li>
   )
 }

@@ -1,5 +1,11 @@
 # Chrome Extension Markdown Plus - Project Specification & Phased Implementation Plan
 
+> **Trạng thái hiện tại (code 2026):**
+> - Viewer shell đã migrate sang React (`src/viewer/react/*`), có TOC + Files tab + toolbar actions (print/export).
+> - Cấu hình runtime hiện tại đi qua **popup React** (`src/popup/PopupApp.jsx`) + messaging `SAVE_SETTINGS`/`SETTINGS_UPDATED`.
+> - **Không có settings drawer trong viewer** ở bản hiện tại; phần này là spec lịch sử/định hướng tương lai.
+> - `updateSettings()` đã có fast path theo `needsFullRender()` (không còn luôn full re-render).
+
 ## 1) Mục tiêu dự án
 
 Xây dựng một Chrome Extension có khả năng tự động nhận biết khi người dùng mở một file Markdown trên trình duyệt và hiển thị lại nội dung dưới dạng HTML dễ đọc, có thể tùy biến giao diện và mở rộng bằng plugin.
@@ -9,7 +15,7 @@ Dự án hướng tới các mục tiêu chính sau:
 - Tự động detect trang đang hiển thị Markdown/raw Markdown
 - Render Markdown thành giao diện đẹp, dễ đọc
 - Có **Table of Contents ở bên trái**
-- Có **nút Settings ở góc trên bên phải**, bấm vào để mở panel cấu hình
+- Có bề mặt chỉnh settings runtime (hiện tại: **extension popup**; settings drawer trong viewer là hướng mở rộng tương lai)
 - Hỗ trợ hệ thống plugin để mở rộng khả năng render
 - Cho phép bật/tắt plugin
 - Cho phép điều chỉnh typography và màu sắc các thành phần chính
@@ -26,7 +32,7 @@ Khi người dùng mở một URL/file Markdown:
 3. Bố cục chính:
    - **Sidebar trái:** Table of Contents
    - **Main content:** nội dung Markdown đã render
-   - **Góc trên bên phải:** nút mở Settings/Options
+   - **Toolbar góc trên:** action document (print/export); settings truy cập qua popup extension
 4. Người dùng có thể:
    - xem mục lục và click để nhảy đến section
    - bật/tắt plugin như Mermaid, Math, code highlight
@@ -60,8 +66,7 @@ Khi người dùng mở một URL/file Markdown:
 - Sidebar trái cho TOC
 - Nội dung chính ở giữa/phải
 - Header nổi hoặc top toolbar đơn giản
-- Nút Settings ở góc trên bên phải
-- Settings panel trượt ra hoặc popover
+- Settings runtime hiện tại qua popup extension (drawer trong viewer: deferred/future)
 - Responsive ở mức đủ dùng cho nhiều kích thước màn hình
 
 ## 3.3 Table of Contents
@@ -147,17 +152,11 @@ Plugin nên hỗ trợ theo giai đoạn:
 - **Main content**
   - nội dung Markdown đã render
   - layout centered, readable width
-- **Top-right Settings button**
-  - luôn dễ thấy
-  - click mở Settings panel
-- **Settings panel**
-  - có thể là drawer từ phải sang
-  - nhóm setting theo section:
-    - General
-    - Theme
-    - Typography
-    - Plugins
-    - Advanced
+- **Settings entrypoint (current)**
+  - truy cập qua popup extension (General / Reader / Plugins)
+  - thay đổi settings broadcast về viewer qua `SETTINGS_UPDATED`
+- **In-viewer settings panel (future spec)**
+  - có thể là drawer từ phải sang khi triển khai Phase 4-R
 
 ---
 
@@ -227,8 +226,8 @@ Vai trò:
    - re-render khi cần
 
 ## 6.2 Flow update settings
-1. User bấm nút Settings góc trên bên phải
-2. Settings panel mở ra
+1. User mở popup extension
+2. Chọn tab cài đặt (General / Reader / Plugins)
 3. User thay đổi config
 4. Settings service validate + save
 5. Viewer state update
@@ -436,7 +435,7 @@ Render sidebar trái:
 Chứa:
 - title/logo nhỏ
 - nút toggle TOC nếu cần
-- nút Settings ở góc trên bên phải
+- (spec gốc) nút Settings ở góc trên bên phải — hiện tại chưa có trong runtime
 
 ## 8.8 `viewer/shell/settings-drawer.js`
 Panel settings gồm:
@@ -637,7 +636,7 @@ Render Markdown cơ bản thành HTML dễ đọc.
 
 ### Deliverable
 - User mở Markdown và thấy nội dung render sạch, dễ đọc
-- Có nút Settings ở góc trên bên phải, chưa cần đầy đủ tính năng
+- Runtime hiện tại dùng popup extension để chỉnh settings (không có nút settings trong viewer)
 
 ### Vì sao tách riêng phase này
 Đây là phase đầu tiên tạo ra giá trị thực tế cho user.
@@ -1036,7 +1035,7 @@ Cách xử lý:
 - Detect được markdown
 - Render cơ bản đẹp
 - TOC bên trái hoạt động
-- Có nút Settings góc trên bên phải
+- Có bề mặt settings runtime hoạt động (hiện tại: popup extension)
 - Đổi được theme/font size/show-hide TOC
 - Settings lưu được
 

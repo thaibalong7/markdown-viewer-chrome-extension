@@ -20,7 +20,10 @@ alwaysApply: false
 
 ## Full document re-render when theme changes
 
-- Shiki bakes colors into HTML; updating CSS variables alone does not refresh fenced blocks. Today `MarkdownViewerApp.updateSettings()` always runs a full `render()`; if you add a style-only fast path later, theme preset changes must still force full re-render for fenced code.
+- Shiki bakes colors into HTML; updating CSS variables alone does not refresh fenced blocks.
+- `MarkdownViewerApp.updateSettings()` now gates re-render via `needsFullRender()` in `src/shared/settings-diff.js`:
+  - style-only changes (`typography.*`, `layout.contentMaxWidth`, `layout.showToc`, `layout.tocWidth`) skip full markdown render and only refresh reader styles/TOC state
+  - theme preset and plugin/structure-affecting changes still require full `render()`
 
 ## Styles (`content.scss` via content script `?inline`)
 

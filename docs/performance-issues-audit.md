@@ -480,12 +480,11 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #44 [HIGH] Hai lần `root.render()` sau mỗi lần render tài liệu
+## Issue #44 [RESOLVED] Hai lần `root.render()` sau mỗi lần render tài liệu
 
-- **Vị trí:** `src/viewer/app.js` (`syncTocItems` + `bumpChrome` sau `render()`), `src/viewer/react/mount.js` (`updateTocItems`, `bumpChrome`)
-- **Hiện trạng:** Sau `renderDocument`, `syncTocItems` → `root.render` với `tocItems` mới; `finally` gọi `bumpChrome` → **`root.render` lần hai** trong cùng chu kỳ (hai lần reconcile shell cho một lần render doc).
-- **Tác động:** Toàn bộ shell React reconcile hai lần mỗi lần mở/refresh doc.
-- **Khuyến nghị fix:** Gộp một lần cập nhật chrome; hoặc chỉ `bumpChrome` khi đổi URL file / state thực sự, không sau mọi `syncTocItems`.
+- **Vị trí cũ:** `src/viewer/app.js` (`syncTocItems` + `bumpChrome` sau `render()`), `src/viewer/react/mount.js` (`updateTocItems`, `bumpChrome`)
+- **Đã xử lý:** `render()` không còn gọi `bumpChrome()` theo chu kỳ render. `bumpChrome()` chỉ được trigger khi URL file hiện tại đổi qua `explorerBridge.updateCurrentFileUrl()`.
+- **Kết quả:** Tránh `root.render` dư thừa sau mỗi lần render tài liệu, giảm reconcile shell không cần thiết.
 
 ---
 

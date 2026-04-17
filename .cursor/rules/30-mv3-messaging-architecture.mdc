@@ -6,7 +6,8 @@ alwaysApply: false
 
 # MV3 Architecture and Messaging
 - `src/background/service-worker.js` is the MV3 service worker entrypoint and must keep async message handling (`return true` + `sendResponse`). (Do not name it `index.js`: `@crxjs/vite-plugin` chunks by basename and would merge it with `src/content/index.js`.)
-- Route all runtime messages through `src/background/message-router.js` and keep the response envelope stable: `{ ok: true, data }` / `{ ok: false, error }`.
+- Route runtime application messages through `src/background/message-router.js` and keep the response envelope stable: `{ ok: true, data }` / `{ ok: false, error }`.
+- Exception: offscreen bridge wire messages (`OFFSCREEN_FETCH`, `OFFSCREEN_FETCH_DONE`) intentionally bypass `routeMessage()` in `src/background/service-worker.js` and should keep that behavior.
 - Message names must come from `MESSAGE_TYPES` in `src/messaging/index.js`; do not introduce ad-hoc string literals.
 - UI callers (content/popup/options/viewer) should use `sendMessage()` from `src/messaging/index.js` instead of direct `chrome.runtime.sendMessage`.
 - Background/service modules may use direct `chrome.*` APIs when they are the ownership layer (for example `chrome.storage` in `src/settings/index.js` via `settingsService`).

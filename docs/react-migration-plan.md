@@ -4,7 +4,7 @@
 
 **Migration đã hoàn tất** cho shell viewer: React 19 + `@vitejs/plugin-react`, `ViewerShell` / sidebar / TOC / Files explorer / toast / toolbar actions. Article vẫn do pipeline imperative (`renderDocument` → `innerHTML`). **Phase 4-R** (settings drawer trong viewer) **chưa làm** — cấu hình chính qua popup. Context đang dùng: `ToastContext`, **`SidebarTabContext`** (chỉ tab Outline/Files; không còn `SettingsContext` / `ViewerStateContext` đầy đủ). Cleanup: `mount.js` expose `bumpChrome()` thay vì đồng bộ props `markdown`/`currentFileUrl` không dùng trong React.
 
-> **Scope:** Migrate toolbar, sidebar (tabs, TOC, Files explorer), settings drawer, and toast/tooltip to React components.
+> **Scope (updated):** Migrate toolbar, sidebar (tabs, TOC, Files explorer), and toast/tooltip to React components. In-viewer settings drawer remains deferred as optional future work (Phase 4-R).
 > **Out of scope:** Article HTML render pipeline (`renderDocument` → `sanitizeHtml` → `renderIntoElement`) stays as-is — vanilla markdown-it → DOMPurify → innerHTML.
 
 ---

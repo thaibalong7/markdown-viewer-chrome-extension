@@ -10,7 +10,7 @@ alwaysApply: false
 
 - **`init()`** once: inject `<style>` tags into the mount container, then **`mountViewerReact(container, options)`**, **`await partsPromise`** (resolves to **`{ root, article }`** only). Then **`createArticleInteractions({ getArticle, showToast, getScrollRoot }).bind()`**, **`applyReaderStyles()`**, **`render()`**.
 - **`updateSettings()`** updates settings, **`_reactHandle.updateSettings()`**, **`applyReaderStyles()`**, and either **`syncTocItems()`** or full **`render()`** per **`needsFullRender()`**.
-- **`render()`** `finally`: **`_reactHandle.bumpChrome()`** so toolbar export/print visibility (reads live **`getCurrentFileUrl`**) stays in sync after navigation.
+- **`bumpChrome()` trigger:** not tied to `render()` anymore. Chrome refresh is triggered when explorer/navigation updates current file URL via `explorerBridge.updateCurrentFileUrl()` in `src/viewer/app.js`.
 - **`destroy()`** is **idempotent** (`_destroyed` guard): **`_articleInteractions.destroy()`** → **`_reactHandle.unmount()`** → **`container.innerHTML = ''`**; clears **`_rootEl` / `_articleEl`**. Logs via **`logger.debug('Markdown viewer destroyed.')`**.
 
 ## React shell boundary

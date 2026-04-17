@@ -274,7 +274,7 @@ public/
   - Builds CSS custom properties from settings preset + typography + layout; applied to viewer root via `applyThemeSettings()`.
 
 - `src/viewer/app.js`
-  - **`MarkdownViewerApp`**: **`mountViewerReact(container)`** → awaits shell `{ root, article }`; **`applyReaderStyles()`** applies `applyThemeSettings()` + typography/layout inline styles on `article`; async **`render()`** / **`updateSettings()`** (uses `needsFullRender()` — no style-only fast path yet; theme still forces full re-render for Shiki).
+  - **`MarkdownViewerApp`**: **`mountViewerReact(container)`** → awaits shell `{ root, article }`; **`applyReaderStyles()`** applies `applyThemeSettings()` + typography/layout inline styles on `article`; async **`render()`** / **`updateSettings()`** (uses `needsFullRender()` for a style-only fast path; theme/plugin/structure changes still force full re-render for Shiki/runtime pipeline consistency).
   - Composes **`createArticleInteractions({ getArticle, showToast, getScrollRoot })`** — imperative listeners on the article element (React does not own `innerHTML`); toast goes through **`_reactHandle.showToast`** (React `ToastContext`).
   - Passes **`explorerBridge`** callbacks into React for navigation, re-render, and file I/O; explorer UI state lives in **`useExplorer`**.
 
@@ -419,7 +419,7 @@ Use this audit as the baseline for optimization tasks.
   - Inspect `src/popup/index.jsx`, `src/popup/PopupApp.jsx`, `src/popup/hooks/useSettingsPersistence.js`, `src/options/index.js`, and message type usage (`SETTINGS_UPDATED` on the content script).
 
 - **Theme vs fenced code colors**:
-  - Reader theme uses CSS vars; Shiki colors are inline in HTML. Today **`updateSettings` always full re-renders**; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/35-reader-theme-and-shiki.mdc`.
+  - Reader theme uses CSS vars; Shiki colors are inline in HTML. `updateSettings()` skips full render for style-only diffs (`typography.*`, `layout.contentMaxWidth`, `layout.showToc`, `layout.tocWidth`) but still re-renders for theme/plugin/other structural diffs; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/35-reader-theme-and-shiki.mdc`.
 
 - **Fenced code layout (lines, tabs)**:
   - `normalizeShikiPreWhitespace`, bundled viewer styles from `content/_code-blocks.scss` (`pre.shiki`), and sanitize `ADD_ATTR` for Shiki output.
@@ -434,7 +434,7 @@ Use this audit as the baseline for optimization tasks.
 
 - Keep message names centralized in `src/messaging/index.js`.
 - Prefer `sendMessage()` wrapper instead of direct ad-hoc messaging in UI/content code.
-- Preserve viewer lifecycle: `init()` -> `updateSettings()` -> `destroy()`; document render is **async** (`await render()`). Method name on the class is `updateSettings` (not `patchNeedsFullRender` — that optimization is not implemented).
+- Preserve viewer lifecycle: `init()` -> `updateSettings()` -> `destroy()`; document render is **async** (`await render()`). Method name on the class is `updateSettings`; full-render gating is implemented via `needsFullRender()` in `src/shared/settings-diff.js`.
 - Keep all source edits in `src/**` and rebuild for extension output (`npm run build`).
 - When adding runtime-fetched extension assets (`fetch(chrome.runtime.getURL(...))`), sync `manifest.json` `web_accessible_resources`. Viewer chrome styles are not separate WAR entries (inlined in the content script).
 - For architecture detail on Shiki and presets, see `.cursor/rules/35-reader-theme-and-shiki.mdc` and this doc’s section 5.

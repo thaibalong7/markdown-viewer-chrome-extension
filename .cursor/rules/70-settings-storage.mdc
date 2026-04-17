@@ -42,7 +42,8 @@ Cross-cut with `30-mv3-messaging-architecture.mdc`. End-to-end flow: **defaults 
 
 ### Applying in the viewer
 
-- Live updates: content script listens for `SETTINGS_UPDATED` and calls **`MarkdownViewerApp.updateSettings()`** (full re-render today).
+- Live updates: content script listens for `SETTINGS_UPDATED` and calls **`MarkdownViewerApp.updateSettings()`**.
+- `updateSettings()` applies reader styles immediately and only triggers full markdown `render()` when `needsFullRender(previous, next)` returns `true` (`src/shared/settings-diff.js`).
 - Reader chrome: `applyThemeSettings()` / CSS vars from `src/theme/index.js`.
 
 ### Build

@@ -6,10 +6,11 @@
 ✅ **Customization hoàn thành** qua **extension popup (React)** + `SETTINGS_UPDATED`. **Không** có settings drawer trong viewer như spec gốc; xem Phase 4-R trong [`react-migration-plan.md`](../react-migration-plan.md).
 
 ## Mục tiêu
-Biến nút Settings ở góc trên bên phải thành điểm truy cập cấu hình thực sự, cho phép thay đổi runtime settings ngay trong viewer.
+*(Spec gốc / deferred)*: Biến nút Settings trong viewer thành điểm truy cập cấu hình trực tiếp.  
+**Triển khai hiện tại**: runtime settings đi qua popup extension, đồng bộ về viewer bằng `SETTINGS_UPDATED`.
 
 ## Deliverable
-- Nút Settings mở được drawer/panel
+- (Spec gốc) Nút Settings mở được drawer/panel trong viewer
 - User chỉnh được các config nền tảng
 - Settings được lưu vào storage
 - Viewer tự update sau khi đổi setting

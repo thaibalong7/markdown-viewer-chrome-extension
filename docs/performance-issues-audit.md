@@ -10,14 +10,12 @@ Phạm vi: `src/**` (kèm `manifest.json`, `vite.config.mjs` để lấy bối c
 
 Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
-1. Content script load nặng trên mọi trang (eager CSS + KaTeX + optional plugins trong bundle).
-2. Render pipeline cho tài liệu lớn chạy tuần tự trên main thread (markdown-it → Shiki → DOMPurify → innerHTML).
-3. Shiki highlighter khởi tạo toàn bộ ngôn ngữ + highlight song song không giới hạn.
-4. Explorer tree / React subtree cho mọi node (kể cả folder collapsed), không có virtualization.
-5. Folder scan tuần tự + progress UI không throttle → jank.
-6. React viewer: callback không ổn định làm teardown scroll spy; hai lần `root.render()` sau mỗi lần render tài liệu.
+1. Render pipeline cho tài liệu lớn chạy tuần tự trên main thread (markdown-it → Shiki → DOMPurify → innerHTML).
+2. Shiki highlighter khởi tạo toàn bộ ngôn ngữ + highlight song song không giới hạn.
+3. Folder scan tuần tự + progress UI không throttle → jank.
+4. React viewer: callback không ổn định làm teardown scroll spy; hai lần `root.render()` sau mỗi lần render tài liệu.
 
-**Đã giảm rủi ro:** scroll spy (offsets + binary search); một số đường bootstrap/settings/TOC/explorer active state (xem issue #1, #10, #14, #17, #20, #23).
+**Đã giảm rủi ro:** scroll spy (offsets + binary search); content script thin loader + dynamic import; lazy explorer subtree cho collapsed folders; một số đường bootstrap/settings/TOC/explorer active state (xem issue #1, #2, #3, #10, #14, #17, #20, #23).
 
 ---
 
@@ -27,15 +25,12 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 | Mức | # | Tóm tắt | Vị trí chính |
 |-----|---|---------|--------------|
-| CRITICAL | 3 | Content script nặng trên mọi tab | `src/content/index.js` |
 | HIGH | 4 | Static import Math/KaTeX | `plugin-manager.js`, `math.plugin.js` |
 | HIGH | 5 | Shiki: mọi ngôn ngữ + `Promise.all` không giới hạn | `shiki-highlighter.js`, `shiki-config.js` |
 | HIGH | 6 | Shiki DOM round-trip | `shiki-highlighter.js` |
 | HIGH | 7 | DOMPurify toàn bộ HTML | `renderer.js` |
 | HIGH | 8 | Pipeline tuần tự, không loading state, tạo engine mới mỗi lần | `app.js`, `renderer.js` |
-| HIGH | **43** | **`getToolbarHeight` inline → useScrollSpy teardown mỗi render** | `OutlinePanel.jsx`, `useScrollSpy.js` |
 | HIGH | **44** | **Hai lần `root.render()` sau mỗi document render** | `app.js`, `mount.js` |
-| HIGH | 2 | Explorer: full subtree khi folder collapsed | `FileTree.jsx`, `FolderRow.jsx` |
 | HIGH | 9 | Explorer không virtualization | `ExplorerPanel.jsx`, `FileTree.jsx` |
 | HIGH | 11 | Folder scan tuần tự + `.gitignore` | `folder-scanner.js` |
 | MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `message-router.js` |
@@ -62,28 +57,22 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #2 [CRITICAL] Explorer tree tạo toàn bộ DOM / React subtree cho collapsed folders
+## Issue #2 [RESOLVED] Explorer tree tạo toàn bộ DOM / React subtree cho collapsed folders
 
 - **Vị trí (cập nhật):** `src/viewer/react/components/explorer/FileTree.jsx`, `src/viewer/react/components/explorer/FolderRow.jsx`  
   *(File cũ `src/viewer/explorer/explorer-tree-renderer.js` đã bỏ.)*
-- **Hiện trạng:** `FileTree` render đệ quy **mọi** node; `FolderRow` bọc children trong `<ul … hidden={!expanded}>`. Folder collapsed vẫn **mount** toàn bộ subtree (chỉ ẩn), không lazy unmount.
-- **Tác động:** Initial mount rất chậm cho large workspace, memory cao, layout/paint cost lớn.
-- **Khuyến nghị fix:**
-  - **Ưu tiên:** Lazy render — chỉ mount direct children khi expand lần đầu.
-  - **Thay thế:** Virtual list hoặc flatten tree + indent.
-  - Kết hợp: collapse mặc định + lazy children.
+- **Đã xử lý:** Explorer tree đã chuyển sang lazy subtree mount theo trạng thái expand, không còn mount toàn bộ descendants khi folder đang collapsed.
+- **Kết quả:** Giảm chi phí initial mount và memory footprint trên workspace lớn.
+- **Ghi chú còn mở:** Virtualization tổng thể cho danh sách lớn vẫn theo dõi ở Issue #9 / #21.
 
 ---
 
-## Issue #3 [CRITICAL] Content script load nặng trên mọi trang
+## Issue #3 [RESOLVED] Content script load nặng trên mọi trang
 
-- **Vị trí:** `src/content/index.js` (dòng 5–10, 29–37)
-- **Hiện trạng:** Static imports kéo toàn bộ **5 SCSS bundles** (`?inline`), **KaTeX CSS**, và chuỗi style vào bundle. Content script được đăng ký cho broad URL patterns → engine parse/eval bundle lớn trên **mọi tab** trước khi biết có phải markdown hay không.
-- **Trạng thái:** Cải thiện so với trước (không còn fetch CSS), nhưng vẫn tốn parse + eval + memory.
-- **Tác động:** Tăng thời gian load và memory usage trên tất cả trang, kể cả trang không phải markdown.
-- **Khuyến nghị fix:**
-  - **Ưu tiên:** Tách "thin loader" (chỉ URL/protocol check) → `import()` động viewer + styles chỉ khi cần mount.
-  - `extensionizeKatexFontUrls()` chạy regex trên full KaTeX CSS mỗi lần mount → preprocess lúc build hoặc cache kết quả.
+- **Vị trí:** `src/content/index.js`, `src/content/viewer-loader.js`
+- **Đã xử lý:** `index.js` hiện là thin loader (URL/protocol check + `import()` động). Viewer bootstrap, SCSS `?inline`, KaTeX CSS và `SETTINGS_UPDATED` listener đã chuyển sang `viewer-loader.js`, chỉ load khi cần mount markdown viewer.
+- **Tối ưu bổ sung:** Đã memoize phần rewrite `extensionizeKatexFontUrls()` để không chạy regex full KaTeX CSS ở mỗi lần remount.
+- **Kết quả:** Giảm parse/eval/memory cost trên tab không phải markdown; giữ nguyên flow mount trên tab markdown.
 
 ---
 
@@ -510,12 +499,11 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #43 [HIGH] `getToolbarHeight` không ổn định → `useScrollSpy` teardown mỗi lần render
+## Issue #43 [RESOLVED] `getToolbarHeight` không ổn định → `useScrollSpy` teardown mỗi lần render
 
 - **Vị trí:** `src/viewer/react/components/OutlinePanel.jsx` (~25–29), `src/viewer/react/hooks/useScrollSpy.js` (effect phụ thuộc `getToolbarHeight`)
-- **Hiện trạng:** Truyền `getToolbarHeight` dạng arrow inline `() => getToolbarHeightInScrollRoot(scrollRoot)` → reference mới **mỗi** render → `useEffect` trong `useScrollSpy` hủy và tạo lại scroll spy (kể cả `refreshMeasurements`).
-- **Tác động:** Lãng phí CPU khi sidebar/chrome re-render; đo heading lặp lại không cần thiết.
-- **Khuyến nghị fix:** `useCallback` ổn định hoặc chỉ truyền `scrollRoot` và gọi `getToolbarHeightInScrollRoot` bên trong spy.
+- **Đã xử lý:** `useScrollSpy` đã giữ `getToolbarHeight` qua `useRef` và chỉ recreate spy khi `scrollRoot`/`headings` đổi; callback toolbar-height vẫn đọc giá trị mới nhất qua ref.
+- **Kết quả:** Tránh teardown/recreate scroll spy ở các re-render không liên quan của sidebar/chrome, giảm đo lại heading và churn event listener.
 
 ---
 
@@ -563,9 +551,9 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 ## Quick wins nên làm trước
 
 1. ~~**Issue #1:** Scroll spy — đã dùng offsets + binary search.~~ *(RESOLVED)*
-2. **Fix Issue #43:** Ổn định `getToolbarHeight` / deps `useScrollSpy`.
+2. ~~**Fix Issue #43:** Ổn định `getToolbarHeight` / deps `useScrollSpy`.~~ *(RESOLVED)*
 3. **Fix Issue #44:** Tránh double `root.render` sau mỗi document render.
-4. **Fix Issue #2:** Lazy render children khi expand folder (React tree).
+4. ~~**Fix Issue #2:** Lazy render children khi expand folder (React tree).~~ *(RESOLVED)*
 5. **Fix Issue #4:** Dynamic `import()` cho optional plugins (Math/KaTeX đặc biệt).
 6. **Fix Issue #5:** Giới hạn Shiki langs ban đầu + concurrency limit cho code highlighting.
 7. **Fix Issue #8:** Thêm loading state (skeleton/spinner) cho render pipeline.
@@ -575,9 +563,9 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ## Deeper refactors để đạt hiệu quả bền vững
 
-1. Tách content script thành "thin loader" + dynamic import viewer (Issue #3).
+1. ~~Tách content script thành "thin loader" + dynamic import viewer (Issue #3).~~ *(RESOLVED)*
 2. String-based Shiki approach thay vì DOM round-trip (Issue #6).
-3. Virtual list cho explorer tree + TOC sidebar (Issue #2, #9, #21).
+3. Virtual list cho explorer tree + TOC sidebar (Issue #9, #21).
 4. Reuse markdown engine + plugin manager across renders (Issue #26).
 5. Cache rendered HTML; theme/plugin change chỉ re-run Shiki (Issue #17 đã có fast path typography/layout; stretch: cache pre-Shiki HTML).
 6. Bounded concurrency cho folder scanning (Issue #11).

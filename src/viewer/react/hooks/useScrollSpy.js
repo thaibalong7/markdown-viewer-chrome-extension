@@ -1,8 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createScrollSpy } from '../../core/scroll-spy.js'
 
 export function useScrollSpy({ scrollRoot, headings, getToolbarHeight }) {
   const [activeHeadingId, setActiveHeadingId] = useState(null)
+  const getToolbarHeightRef = useRef(getToolbarHeight)
+
+  useEffect(() => {
+    getToolbarHeightRef.current = getToolbarHeight
+  }, [getToolbarHeight])
 
   useEffect(() => {
     if (!scrollRoot || !headings?.length) {
@@ -13,7 +18,10 @@ export function useScrollSpy({ scrollRoot, headings, getToolbarHeight }) {
     const spy = createScrollSpy({
       scrollRoot,
       headings,
-      getToolbarHeight,
+      getToolbarHeight: () => {
+        const callback = getToolbarHeightRef.current
+        return typeof callback === 'function' ? callback() : undefined
+      },
       onActiveIdChange: (id) => {
         setActiveHeadingId(id || null)
       }
@@ -22,7 +30,7 @@ export function useScrollSpy({ scrollRoot, headings, getToolbarHeight }) {
     return () => {
       spy?.destroy?.()
     }
-  }, [scrollRoot, headings, getToolbarHeight])
+  }, [scrollRoot, headings])
 
   return activeHeadingId
 }

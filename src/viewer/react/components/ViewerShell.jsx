@@ -4,8 +4,6 @@ import { Sidebar } from './Sidebar.jsx'
 import { Toast } from './Toast.jsx'
 
 export function ViewerShell({ children, onShellReady, settings, tocItems, explorerBridge }) {
-  const toolbarRef = useRef(null)
-  const toolbarActionsRef = useRef(null)
   const rootNodeRef = useRef(null)
   const articleRef = useRef(null)
   const hasSignaledReadyRef = useRef(false)
@@ -30,9 +28,7 @@ export function ViewerShell({ children, onShellReady, settings, tocItems, explor
 
   return (
     <div className="mdp-root" ref={handleRootRef}>
-      <Toolbar ref={toolbarRef} actionsRef={toolbarActionsRef}>
-        {children}
-      </Toolbar>
+      <Toolbar>{children}</Toolbar>
       <div className="mdp-body">
         <Sidebar settings={settings} tocItems={tocItems} explorerBridge={explorerBridge} scrollRoot={rootEl} />
 

@@ -1,5 +1,7 @@
 # Phase 2 - Core Markdown Rendering MVP
 
+**Trạng thái implement:** Hoàn thành — shell là React (`src/viewer/react/`); sanitize trong `src/viewer/core/renderer.js` (không có file `sanitize-html.js` / `dom-renderer.js` tách riêng như spec).
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Mục tiêu

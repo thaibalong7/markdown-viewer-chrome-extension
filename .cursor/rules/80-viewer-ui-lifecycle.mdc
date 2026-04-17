@@ -10,13 +10,14 @@ alwaysApply: false
 
 - **`init()`** once: inject `<style>` tags into the mount container, then **`mountViewerReact(container, options)`**, **`await partsPromise`** (resolves to **`{ root, article }`** only). Then **`createArticleInteractions({ getArticle, showToast, getScrollRoot }).bind()`**, **`applyReaderStyles()`**, **`render()`**.
 - **`updateSettings()`** updates settings, **`_reactHandle.updateSettings()`**, **`applyReaderStyles()`**, and either **`syncTocItems()`** or full **`render()`** per **`needsFullRender()`**.
+- **`render()`** `finally`: **`_reactHandle.bumpChrome()`** so toolbar export/print visibility (reads live **`getCurrentFileUrl`**) stays in sync after navigation.
 - **`destroy()`** is **idempotent** (`_destroyed` guard): **`_articleInteractions.destroy()`** → **`_reactHandle.unmount()`** → **`container.innerHTML = ''`**; clears **`_rootEl` / `_articleEl`**. Logs via **`logger.debug('Markdown viewer destroyed.')`**.
 
 ## React shell boundary
 
 - **`ViewerShell`** calls **`onShellReady({ root, article })`** when both nodes exist. Imperative code (**`MarkdownViewerApp`**, **`article-interactions.js`**) must **not** retain references to toolbar, sidebar panels, TOC nav, resize handle, etc. — those are React-owned.
 - **`article`**: React renders the empty **`<article class="mdp-markdown-body">`**; **`renderIntoElement(article, html)`** and plugins **`afterRender`** mutate **`innerHTML`** and injected nodes. React must not reconcile that subtree.
-- **Toast (chrome)**: **`ToastProvider`** / **`_reactHandle.showToast`**. **Plugin** hovers use **`dom-tooltip.js`** on nodes created in **`afterRender`**.
+- **Toast (chrome)**: **`ToastProvider`** / **`_reactHandle.showToast`**. **Sidebar tab** (Outline vs Files): **`SidebarTabProvider`** / **`SidebarTabContext`** — settings for the shell are **props from `mount.js`**, not a separate settings context. **Plugin** hovers use **`dom-tooltip.js`** on nodes created in **`afterRender`**.
 
 ## Hooks and teardown
 

@@ -1,5 +1,7 @@
 # Phase 5 - Theme & Color Customization
 
+**Trạng thái implement:** Hoàn thành — preset + CSS variables trong `src/theme/index.js` (không có `theme/themes/*.js` hay `style-generator.js` riêng như spec).
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Trạng thái

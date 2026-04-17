@@ -1,7 +1,8 @@
 import { MDP_WS_DIR, MDP_WS_FILE } from '../../shared/constants/explorer.js'
+import { MARKDOWN_PATHNAME_EXT_RE } from '../../shared/markdown-detect.js'
 
-/** Markdown file extensions for URL pathname checks. */
-export const MARKDOWN_EXT = /\.(md|markdown|mdown)$/i
+/** Markdown file extensions for URL pathname checks (alias of `MARKDOWN_PATHNAME_EXT_RE`). */
+export const MARKDOWN_EXT = MARKDOWN_PATHNAME_EXT_RE
 
 /** Re-export workspace virtual URL prefixes (source: `shared/constants/explorer.js`). */
 export { MDP_WS_DIR, MDP_WS_FILE }
@@ -138,7 +139,7 @@ export function markdownFileTitleFromUrl(fileUrl) {
     try {
       const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
       const base = rel.split('/').pop() || ''
-      const name = base.replace(/\.(md|markdown|mdown)$/i, '')
+      const name = base.replace(MARKDOWN_PATHNAME_EXT_RE, '')
       return name || 'document'
     } catch {
       return 'document'
@@ -147,7 +148,7 @@ export function markdownFileTitleFromUrl(fileUrl) {
   try {
     const pathname = new URL(fileUrl).pathname
     const base = pathname.split('/').filter(Boolean).pop() || ''
-    const name = base.replace(/\.(md|markdown|mdown)$/i, '')
+    const name = base.replace(MARKDOWN_PATHNAME_EXT_RE, '')
     return decodeURIComponent(name) || 'original file'
   } catch {
     return 'original file'

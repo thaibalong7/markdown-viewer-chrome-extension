@@ -1,4 +1,5 @@
-import { getTextSample, looksLikeMarkdownText } from './text-sampling.js'
+import { looksLikeMarkdownText, pathnameHasMarkdownExtension } from '../shared/markdown-detect.js'
+import { getTextSample } from './text-sampling.js'
 
 export function detectMarkdownPage({ location, document }) {
   const reasons = []
@@ -7,7 +8,7 @@ export function detectMarkdownPage({ location, document }) {
   const contentType = document?.contentType || ''
   const body = document?.body || null
 
-  if (/\.(md|markdown|mdown)$/i.test(pathname)) {
+  if (pathnameHasMarkdownExtension(pathname)) {
     score += 5
     reasons.push('URL path ends with .md/.markdown/.mdown')
   }
@@ -66,7 +67,7 @@ export function detectMarkdownPage({ location, document }) {
   else if (score >= 3) confidence = 'medium'
 
   let sourceType = 'unknown'
-  if (/\.(md|markdown|mdown)$/i.test(pathname)) sourceType = 'url-extension'
+  if (pathnameHasMarkdownExtension(pathname)) sourceType = 'url-extension'
   else if (preTags.length === 1) sourceType = 'raw-pre'
   else if (contentType.includes('text/plain')) sourceType = 'raw-text'
 

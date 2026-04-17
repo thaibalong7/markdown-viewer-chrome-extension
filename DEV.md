@@ -1,8 +1,10 @@
-# Dev Guide (Vite + @crxjs/vite-plugin)
+# Dev Guide (Vite + @crxjs/vite-plugin + React)
 
 ## Yêu cầu
 - Node.js >= 20 (khuyến nghị dùng `nvm`)
 - `npm`
+
+Stack chính: **Vite 8**, **`@crxjs/vite-plugin`**, **`@vitejs/plugin-react`** (JSX cho content script viewer + popup), **React 19**, **Sass**.
 
 ## Bước 1: Chọn đúng Node 20
 ```bash
@@ -21,6 +23,11 @@ npm run dev
 ```
 
 Trong quá trình dev, CRXJS sẽ rebuild thư mục `dist/` khi bạn sửa code.
+
+### Gợi ý workflow
+- **Viewer (content script):** `src/content/index.js` → `bootstrap.js` → `src/viewer/app.js`; UI React trong `src/viewer/react/` (shell, sidebar, explorer). Styles: `src/viewer/styles/**/*.scss` + `src/content/host-print.scss`, import `?inline` từ content script.
+- **Popup:** `src/popup/index.jsx` → `PopupApp.jsx` và các panel.
+- **Background:** `src/background/service-worker.js` (import `message-router.js`). Message types: `src/messaging/index.js` (gồm `OFFSCREEN_FETCH` / `OFFSCREEN_FETCH_DONE` cho offscreen document).
 
 ## Bước 4: Load unpacked để test
 1. Mở Chrome: `chrome://extensions`

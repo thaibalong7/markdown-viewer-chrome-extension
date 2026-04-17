@@ -1,5 +1,9 @@
 # React Migration Plan — Viewer Chrome UI
 
+## Tóm tắt trạng thái (2026-04-17)
+
+**Migration đã hoàn tất** cho shell viewer: React 19 + `@vitejs/plugin-react`, `ViewerShell` / sidebar / TOC / Files explorer / toast / toolbar actions. Article vẫn do pipeline imperative (`renderDocument` → `innerHTML`). **Phase 4-R** (settings drawer trong viewer) **chưa làm** — cấu hình chính qua popup. Context đang dùng: `ToastContext`, **`SidebarTabContext`** (chỉ tab Outline/Files; không còn `SettingsContext` / `ViewerStateContext` đầy đủ). Cleanup: `mount.js` expose `bumpChrome()` thay vì đồng bộ props `markdown`/`currentFileUrl` không dùng trong React.
+
 > **Scope:** Migrate toolbar, sidebar (tabs, TOC, Files explorer), settings drawer, and toast/tooltip to React components.
 > **Out of scope:** Article HTML render pipeline (`renderDocument` → `sanitizeHtml` → `renderIntoElement`) stays as-is — vanilla markdown-it → DOMPurify → innerHTML.
 
@@ -124,7 +128,7 @@ content/index.js → bootstrap.js → mountViewerReact()
 - **Done** (2026-04-14)
 - Completed scope:
   - Added `@vitejs/plugin-react` and wired `react()` in `vite.config.mjs`
-  - Added React viewer foundation under `src/viewer/react/` (`ViewerApp`, `mount`, contexts, `useImperativeBridge`)
+  - Added React viewer foundation under `src/viewer/react/` (`ViewerApp`, `mount`, contexts)
   - Added Shadow DOM smoke-test wiring in `src/content/bootstrap.js`
   - Verified build with `nvm use 20 && npm run build`
 
@@ -410,14 +414,15 @@ src/viewer/react/
 ├── mount.js
 ├── ViewerApp.jsx
 ├── contexts/
-│   ├── SettingsContext.jsx
-│   ├── ToastContext.jsx
-│   └── ViewerStateContext.jsx
+│   ├── SidebarTabContext.jsx
+│   └── ToastContext.jsx
 ├── hooks/
-│   ├── useImperativeBridge.js
 │   ├── useScrollSpy.js
 │   ├── useSidebarResize.js
-│   └── useExplorer.js
+│   ├── useExplorer.js
+│   └── explorer/
+│       ├── explorerReducer.js
+│       └── createExplorerViewActions.js
 ├── components/
 │   ├── ViewerShell.jsx
 │   ├── Toolbar.jsx
@@ -499,20 +504,22 @@ src/content/text-sampling.js
 
 ## 11. Phase Execution Order & Dependencies
 
+**Đã thực tế:** Phase 5-R (Explorer) được làm **trước** Phase 4-R (drawer). Phase 4-R vẫn **pending / deferred**.
+
 ```
 Phase 0-R: React Infrastructure (Done)
     ↓
-Phase 1-R: Shell + Toolbar
+Phase 1-R: Shell + Toolbar (Done)
     ↓
-Phase 2-R: Sidebar Tabs + TOC + Resize
+Phase 2-R: Sidebar Tabs + TOC + Resize (Done)
     ↓
-Phase 3-R: Toast + Tooltip
+Phase 3-R: Toast + Tooltip (Done)
     ↓
-Phase 4-R: Settings Drawer (in-viewer)
+Phase 5-R: Explorer Panel (Done)
     ↓
-Phase 5-R: Explorer Panel
+Phase 6-R: Cleanup + Docs (Done)
     ↓
-Phase 6-R: Cleanup + Docs
+Phase 4-R: Settings Drawer (in-viewer) — optional / future
 ```
 
 **Mỗi phase phải pass toàn bộ manual test trước khi bắt đầu phase tiếp theo:**

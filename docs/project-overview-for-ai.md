@@ -21,8 +21,8 @@ Current implemented core:
 ## 2) Tech stack and runtime
 
 - Runtime: Chrome Extension MV3
-- Build tool: Vite + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/index.js` (bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`)
-- Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer core/plugins; **React** for `src/popup/` and **viewer chrome** under `src/viewer/react/` (`ViewerApp.jsx`, shell/sidebar/explorer/toast)
+- Build tool: Vite + `@vitejs/plugin-react` + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/index.js` (bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`)
+- Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer core/plugins; **React 19** for `src/popup/` and **viewer chrome** under `src/viewer/react/` (`ViewerApp.jsx`, shell/sidebar/explorer/toast)
 - Markdown: `markdown-it` + `markdown-it-anchor`
 - Fenced code highlighting: **Shiki** (`shiki/bundle/web`)
 - Sanitization: `dompurify`
@@ -48,14 +48,14 @@ Generated output:
 - `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
 - `popup` / `options`: UI entrypoints for reading/updating settings (popup is primary)
 - `messaging`: message constants and shared `sendMessage()` in `src/messaging/index.js`
-- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `settings-diff.js` (settings path diff / full-render gate), `constants/viewer.js` (toolbar/scroll/sidebar/copy timing), `constants/explorer.js` (virtual workspace URL prefixes + scan fallbacks when settings fields are missing)
+- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `markdown-detect.js` (pathname extension + `looksLikeMarkdownText`), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/tooltip.js` (hover delays for chrome tooltips)
 
 ### 3.2 Core flow (implemented)
 
 1. Content script entry `src/content/index.js` bundles compiled viewer SCSS (`?inline`) and injects those strings into the Shadow DOM (no `fetch` of per-sheet CSS assets).
 2. **Product gate:** `bootstrap.js` only mounts the viewer for **local `file:`** URLs whose path ends in `.md` / `.markdown` / `.mdown` (not remote pages).
-3. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()` (shared text sampling / heuristics in `text-sampling.js`).
-4. If needed, fallback sampling checks whether page text resembles Markdown (`looksLikeMarkdownText`).
+3. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()` (uses `getTextSample` from `text-sampling.js` and `looksLikeMarkdownText` / pathname helpers from `shared/markdown-detect.js`).
+4. If needed, fallback sampling checks whether page text resembles Markdown (`looksLikeMarkdownText` in `shared/markdown-detect.js`).
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
 7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
@@ -72,13 +72,15 @@ Generated output:
   - success: `{ ok: true, data }`
   - failure: `{ ok: false, error }`
 
-Message types (current):
-- `PING`
+Message types (current; see `src/messaging/index.js`):
+- `PING` (optional health-check; handled in router)
 - `GET_SETTINGS`
 - `SAVE_SETTINGS`
 - `RESET_SETTINGS`
 - `SETTINGS_UPDATED` (broadcast from background after save; content script applies patches)
 - `FETCH_FILE_AS_TEXT` (background + offscreen: read `file:` file or directory listing HTML for explorer and in-viewer navigation)
+- `DOWNLOAD_DATA_URL` (`chrome.downloads` for `data:` URLs — used on `file:` pages)
+- `OFFSCREEN_FETCH` / `OFFSCREEN_FETCH_DONE` (wire protocol to `public/offscreen.js`; bypass `routeMessage` envelope in the service worker listener)
 
 ## 4) Actual folder map (current repository)
 
@@ -95,6 +97,7 @@ src/
     raw-content-extractor.js
     page-overrider.js
     text-sampling.js
+    host-print.scss
   messaging/
     index.js
   settings/
@@ -105,10 +108,14 @@ src/
     logger.js
     deep-merge.js
     clipboard.js
+    download.js
     settings-diff.js
+    markdown-detect.js
+    fs-handle-debug.js
     constants/
       viewer.js
       explorer.js
+      tooltip.js
   plugins/
     plugin-types.js
     plugin-manager.js
@@ -134,14 +141,15 @@ src/
       ViewerApp.jsx
       mount.js
       contexts/
-        SettingsContext.jsx
+        SidebarTabContext.jsx
         ToastContext.jsx
-        ViewerStateContext.jsx
       hooks/
         useExplorer.js
-        useImperativeBridge.js
         useScrollSpy.js
         useSidebarResize.js
+        explorer/
+          explorerReducer.js
+          createExplorerViewActions.js
       components/
         FilesPanel.jsx
         OutlinePanel.jsx
@@ -183,6 +191,8 @@ src/
       shiki-highlighter.js
     styles/
       _variables.scss
+      _chrome-print.scss
+      _toolbar-actions.scss
       base.scss
       layout.scss
       content.scss
@@ -195,12 +205,18 @@ src/
         _tables.scss
         _plugins.scss
         _mermaid.scss
+        _article-print.scss
   popup/
     index.html
     index.jsx
     PopupApp.jsx
     popup.scss
     settings-constants.js
+    icon-placeholder-16.png
+    icon-placeholder-48.png
+    icon-placeholder-128.png
+    components/
+      Tooltip.jsx
     hooks/
       useSettingsPersistence.js
     panels/
@@ -210,17 +226,23 @@ src/
   options/
     index.html
     index.js
+public/
+  offscreen.js
+  offscreen.html
 ```
 
 ## 5) Key modules and responsibilities
 
 - `src/content/text-sampling.js`
   - `getTextSample(root, maxChars)` — TreeWalker sampling (used by detector + extractor).
-  - `looksLikeMarkdownText(text)` — shared markdown-like heuristic for detector + bootstrap fallback.
+
+- `src/shared/markdown-detect.js`
+  - `MARKDOWN_PATHNAME_EXT_RE`, `pathnameHasMarkdownExtension(pathname)` — single source for `.md`/`.markdown`/`.mdown` pathname checks (used by `bootstrap`, `page-detector`, re-exported as `MARKDOWN_EXT` from `url-utils.js`).
+  - `looksLikeMarkdownText(text)` — markdown-like heuristic for detector + bootstrap fallback.
 
 - `src/content/page-detector.js`
   - Scoring heuristic for Markdown probability.
-  - Uses URL extension, MIME type, `<pre>` patterns, and sampled text markers.
+  - Uses URL extension, MIME type, `<pre>` patterns, and sampled text markers (pathname extension via `markdown-detect.js`).
 
 - `src/content/raw-content-extractor.js`
   - Extracts markdown from:
@@ -257,11 +279,11 @@ src/
   - Passes **`explorerBridge`** callbacks into React for navigation, re-render, and file I/O; explorer UI state lives in **`useExplorer`**.
 
 - **React viewer layer** (`src/viewer/react/`)
-  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })` (imperative code must not hold refs to other chrome nodes).
-  - **`ViewerApp.jsx`**: `SettingsProvider`, `ToastProvider`, `ViewerStateProvider`, **`ViewerShell`** + toolbar actions slot.
-  - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present.
+  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, **`bumpChrome()`** (refresh toolbar/export visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
+  - **`ViewerApp.jsx`**: `ToastProvider`, **`SidebarTabProvider`** (active Outline/Files tab only), **`ViewerShell`** + toolbar actions slot.
+  - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present (`shared/constants/tooltip.js` for delays).
   - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`**), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
-  - **Files**: `ExplorerPanel.jsx` + **`useExplorer`**; pure scanners/pickers remain under `viewer/explorer/*.js`.
+  - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (orchestrates view state; **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers); pure scanners/pickers remain under `viewer/explorer/*.js`.
 
 - `src/shared/constants/viewer.js`
   - Viewer-wide numeric constants: toolbar height fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `useSidebarResize.js`, `article-interactions.js`).
@@ -270,7 +292,7 @@ src/
   - `MDP_WS_FILE` / `MDP_WS_DIR` prefixes and default scan limits when persisted `settings.explorer` fields are missing; used by **`useExplorer.js`**, `workspace-picker.js`, `folder-scanner.js`. **`url-utils.js` re-exports** the `MDP_WS_*` symbols for older import paths.
 
 - `src/viewer/explorer/url-utils.js`
-  - Pure `file:` / virtual URL helpers: `isWorkspaceVirtualHref`, `getParentDirectoryUrl`, `normalizeDirectoryUrl`, `normalizeFileUrlForCompare`, `pathInputToFileDirectoryUrl`, `isMarkdownFileHref`, `MARKDOWN_EXT`; re-exports `MDP_WS_FILE` / `MDP_WS_DIR` from `shared/constants/explorer.js`.
+  - Pure `file:` / virtual URL helpers: `isWorkspaceVirtualHref`, `getParentDirectoryUrl`, `normalizeDirectoryUrl`, `normalizeFileUrlForCompare`, `pathInputToFileDirectoryUrl`, `isMarkdownFileHref`, `MARKDOWN_EXT` (alias of `MARKDOWN_PATHNAME_EXT_RE` from `shared/markdown-detect.js`); re-exports `MDP_WS_FILE` / `MDP_WS_DIR` from `shared/constants/explorer.js`.
 
 - `src/viewer/explorer/sibling-scanner.js`
   - Directory listing fetch + parsing: `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (Chrome `addRow()` HTML), `scanSiblingFiles`, `resolveListingHrefToFileUrl`, `posixPathRelativeToFileRoot`.
@@ -299,6 +321,7 @@ src/
 - `src/viewer/explorer/explorer-state.js`
   - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`.
 
+- `src/content/host-print.scss` — host/light-DOM print rules (injected with viewer root); pairs with `viewer/styles/_chrome-print.scss` (toolbar/sidebar hidden) and `viewer/styles/content/_article-print.scss` (article typography for print).
 - `src/viewer/styles/content.scss` (+ partials under `content/`) → compiled and inlined via the content script bundle
   - **`pre.shiki`**: `white-space: pre`, `tab-size: 4`, `.line` as `display: block`.
   - **`pre:not(.shiki)`**: theme vars for plain fenced blocks when Shiki off/unavailable.
@@ -358,7 +381,7 @@ Implemented strongly:
 - Theme presets + CSS-variable based theming (Phase 5)
 - **Plugin hooks + core plugins** (task list, anchor heading, table enhance, code-highlight gating for Shiki) — aligns with **parts of Phases 6–7** in planning docs
 - **Optional plugins completed** (Mermaid, Math, Footnote, Emoji), including Mermaid export actions (SVG + PNG with scale options)
-- Basic popup/options wiring (partial Phase 9)
+- **Popup (React)** + **minimal options** page (Phase 9): full settings UX lives in the popup; options remain JSON-oriented reset/export-style surface
 - **UI Files Explorer** (see `docs/technical-spec-phases/ui-files-explorer-feature-spec.md`): Phase 1 (siblings + back) and **Phase 2** (open-folder workspace, recursive scan, limits, progress UI, tree). Phase 3+ (bookmarks/popup) not done.
 
 Not implemented yet (from planning docs):

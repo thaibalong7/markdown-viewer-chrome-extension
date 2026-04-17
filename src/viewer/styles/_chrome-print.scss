@@ -1,6 +1,6 @@
 /* Viewer chrome print rules (Shadow DOM bundle via content script `?inline`).
  * Also see: `src/content/host-print.scss` (light DOM: hide host `body`, reset `#mdp-viewer-root`),
- *   `src/viewer/styles/content/_print.scss` (`.mdp-markdown-body` typography for print). */
+ *   `src/viewer/styles/content/_article-print.scss` (`.mdp-markdown-body` typography for print). */
 @media print {
   .mdp-toolbar,
   .mdp-sidebar,

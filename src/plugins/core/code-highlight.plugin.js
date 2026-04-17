@@ -17,8 +17,7 @@ function inferLangFromPre(pre) {
 /** After Shiki: wrap `<pre>` in `.mdp-code-block` (language label + Copy). Skips `mermaid`. */
 export const codeHighlightPlugin = {
   id: PLUGIN_IDS.CODE_HIGHLIGHT,
-  afterRender({ articleEl, pluginSettings }) {
-    if (pluginSettings?.[PLUGIN_IDS.CODE_HIGHLIGHT]?.enabled === false) return
+  afterRender({ articleEl }) {
     if (!articleEl) return
 
     for (const pre of articleEl.querySelectorAll(PRE_SELECTOR)) {

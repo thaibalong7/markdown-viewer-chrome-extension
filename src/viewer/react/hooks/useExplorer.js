@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
+import { createExplorerViewActions } from './explorer/createExplorerViewActions.js'
+import { createInitialState, explorerReducer } from './explorer/explorerReducer.js'
 import { logger } from '../../../shared/logger.js'
 import {
   DEFAULT_EXPLORER_MAX_FILES,
@@ -38,53 +40,6 @@ import {
   normalizeDirectoryUrl,
   normalizeFileUrlForCompare
 } from '../../explorer/url-utils.js'
-import {
-  buildDepthNotice,
-  buildInitialExpandedMap,
-  countMarkdownFilesInTree,
-  getDirectoryLabelFromUrl,
-  shortenPath
-} from '../../explorer/explorer-tree-utils.js'
-
-function createInitialState() {
-  const initialUrl = typeof window !== 'undefined' ? window.location.href : ''
-  return {
-    explorerMode: 'sibling',
-    currentFileUrl: initialUrl,
-    activeFileUrl: initialUrl,
-    view: 'loading',
-    actionsMode: 'hidden',
-    files: [],
-    tree: null,
-    listAriaLabel: 'Workspace files',
-    summaryDirectoryLabel: 'Current folder',
-    summaryFileCount: 0,
-    depthNotice: '',
-    progressHeadline: 'Scanning workspace…',
-    progressText: '',
-    showProgressCancel: false,
-    showBack: false,
-    backLabel: 'Back to original file',
-    expandedMap: new Map(),
-    filesContext: null
-  }
-}
-
-function explorerReducer(state, action) {
-  switch (action.type) {
-    case 'PATCH':
-      return { ...state, ...action.payload }
-    case 'TOGGLE_FOLDER': {
-      const nextMap = new Map(state.expandedMap)
-      const href = action.href || ''
-      nextMap.set(href, !(nextMap.get(href) === true))
-      return { ...state, expandedMap: nextMap }
-    }
-    default:
-      return state
-  }
-}
-
 /**
  * @param {object} options
  * @param {object} options.bridge
@@ -184,138 +139,22 @@ export function useExplorer({ bridge }) {
     [safePatch]
   )
 
-  const showLoading = useCallback(
-    ({ filesContext, actionsMode = 'hidden' } = {}) => {
-      safePatch({
-        view: 'loading',
-        actionsMode,
-        depthNotice: '',
-        files: [],
-        tree: null,
-        listAriaLabel: 'Workspace files',
-        summaryFileCount: 0,
-        filesContext: filesContext || stateRef.current.filesContext
-      })
-    },
-    [safePatch]
-  )
-
-  const clearExplorerBody = useCallback(() => {
-    safePatch({
-      view: 'loading',
-      files: [],
-      tree: null,
-      depthNotice: '',
-      progressHeadline: '',
-      progressText: '',
-      showProgressCancel: false
-    })
-  }, [safePatch])
-
-  const showProgressLoading = useCallback(
-    (payload) => {
-      const cur = payload.currentFolder ? `\n${shortenPath(payload.currentFolder)}` : ''
-      safePatch({
-        view: 'progress',
-        actionsMode: 'hidden',
-        depthNotice: '',
-        files: [],
-        tree: null,
-        filesContext: payload.filesContext || stateRef.current.filesContext,
-        progressHeadline: payload.progressHeadline || 'Scanning workspace…',
-        progressText: `Scanning… ${payload.scannedFiles} files, ${payload.scannedFolders} folders${cur}`,
-        showProgressCancel: Boolean(payload.onCancel)
-      })
-    },
-    [safePatch]
-  )
-
-  const updateProgressLoading = useCallback(
-    (payload) => {
-      if (stateRef.current.view !== 'progress') return
-      const cur = payload.currentFolder ? `\n${shortenPath(payload.currentFolder)}` : ''
-      safePatch({
-        progressHeadline:
-          payload.progressHeadline != null ? payload.progressHeadline : stateRef.current.progressHeadline,
-        progressText: `Scanning… ${payload.scannedFiles} files, ${payload.scannedFolders} folders${cur}`
-      })
-    },
-    [safePatch]
-  )
-
-  const showEmpty = useCallback(
-    (ctx = {}) => {
-      safePatch({
-        view: 'empty',
-        actionsMode: ctx.actionsMode || 'sibling',
-        filesContext: ctx.filesContext || stateRef.current.filesContext,
-        summaryDirectoryLabel: getDirectoryLabelFromUrl(ctx.currentFileUrl),
-        summaryFileCount: 0,
-        depthNotice: ''
-      })
-      setBackNavigation({
-        showBack: Boolean(ctx.showBack),
-        backLabel: ctx.backLabel,
-        onBack: ctx.onBack
-      })
-    },
-    [safePatch, setBackNavigation]
-  )
-
-  const showFiles = useCallback(
-    (files, ctx) => {
-      const list = Array.isArray(files) ? files : []
-      safePatch({
-        view: list.length ? 'files' : 'empty',
-        actionsMode: ctx.actionsMode || 'sibling',
-        files: list,
-        tree: null,
-        listAriaLabel: 'Files in current folder',
-        filesContext: ctx.filesContext || stateRef.current.filesContext,
-        summaryDirectoryLabel: getDirectoryLabelFromUrl(ctx.currentFileUrl),
-        summaryFileCount: list.length,
-        depthNotice: '',
-        activeFileUrl: ctx.currentFileUrl || ''
-      })
-      setBackNavigation({
-        showBack: Boolean(ctx.showBack),
-        backLabel: ctx.backLabel,
-        onBack: ctx.onBack
-      })
-    },
-    [safePatch, setBackNavigation]
-  )
-
-  const showTree = useCallback(
-    (tree, ctx = {}) => {
-      const count = countMarkdownFilesInTree(tree)
-      const children = Array.isArray(tree?.children) ? tree.children : []
-      const stats = ctx.stats
-      const depthNotice =
-        stats && (stats.skippedByDepth > 0 || stats.hitFileLimit || stats.hitFolderLimit)
-          ? buildDepthNotice(stats, ctx.maxScanDepth)
-          : ''
-
-      safePatch({
-        view: children.length ? 'tree' : 'empty',
-        actionsMode: ctx.actionsMode ?? 'workspace',
-        tree,
-        files: [],
-        listAriaLabel:
-          ctx.listAriaLabel || (ctx.actionsMode === 'sibling' ? 'Markdown files in folder tree' : 'Workspace files'),
-        expandedMap: buildInitialExpandedMap(children),
-        filesContext: ctx.filesContext || stateRef.current.filesContext,
-        summaryDirectoryLabel: ctx.workspaceLabel || tree?.name || 'Workspace',
-        summaryFileCount: count,
-        depthNotice,
-        activeFileUrl: currentFileUrlRef.current
-      })
-      setBackNavigation({
-        showBack: Boolean(ctx.showBack),
-        backLabel: ctx.backLabel,
-        onBack: ctx.onBack
-      })
-    },
+  const {
+    showLoading,
+    clearExplorerBody,
+    showProgressLoading,
+    updateProgressLoading,
+    showEmpty,
+    showFiles,
+    showTree
+  } = useMemo(
+    () =>
+      createExplorerViewActions({
+        stateRef,
+        safePatch,
+        setBackNavigation,
+        currentFileUrlRef
+      }),
     [safePatch, setBackNavigation]
   )
 

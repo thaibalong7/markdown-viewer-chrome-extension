@@ -1,5 +1,7 @@
 # Phase 8 - Optional Advanced Plugins
 
+**Trạng thái implement:** Hoàn thành — `src/plugins/optional/` (Mermaid + `mermaid-actions.js` / `mermaid-export.js`).
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Status

@@ -1,6 +1,6 @@
 # markdown-plus
 
-A Chrome Extension that detects Markdown pages and turns raw text into a clean reading experience with TOC, themes, and customizable settings.
+A Chrome Extension (MV3) that detects local Markdown files and turns raw text into a clean reading experience with a **React**-based viewer shell (toolbar, sidebar, TOC, Files explorer), themes, plugins, and customizable settings via a **React popup**.
 
 ## Table of Contents
 
@@ -13,8 +13,8 @@ A Chrome Extension that detects Markdown pages and turns raw text into a clean r
 
 ## Features
 
-- Auto-detects Markdown-like pages.
-- Renders content in a readable viewer layout.
+- Auto-detects Markdown-like pages (product gate: local `file:` `.md` / `.markdown` / `.mdown` plus detector heuristics).
+- Renders content in a readable viewer layout (markdown-it → optional Shiki → DOMPurify → article `innerHTML`; React owns chrome only).
 - Left sidebar Table of Contents with heading navigation.
 - **Files explorer** (sidebar Files tab): browse Markdown siblings in the same folder; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
 - GitHub-inspired Light/Dark themes and typography controls.
@@ -23,7 +23,9 @@ A Chrome Extension that detects Markdown pages and turns raw text into a clean r
 - Mermaid export actions:
   - Download `SVG`
   - Download `PNG` with resolution options (`1x`, `2x`, `3x`, `4x`)
-- User settings persisted through browser storage.
+- **Print** and **export** (HTML / Word) from the toolbar when a real `file:` URL is active.
+- User settings persisted through browser storage (`chrome.storage.sync` with local fallback).
+- **Tech:** Vite, `@crxjs/vite-plugin`, `@vitejs/plugin-react`, React 19, SCSS inlined in the content script.
 
 ## Quick Start
 
@@ -65,7 +67,7 @@ npm run build
 
 Available scripts:
 
-- `npm run dev` - Start Vite (viewer SCSS is compiled when the content script is built).
+- `npm run dev` - Start Vite + CRXJS (content script, popup JSX, and viewer SCSS rebuild into `dist/`).
 - `npm run build` - Production extension output to `dist/`.
 - `npm run watch` - Vite build in watch mode.
 - `npm run preview` - Preview built output.
@@ -83,7 +85,8 @@ Development notes:
 - `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + React chrome (`react/*`: shell, sidebar, TOC, explorer, toast), async render pipeline (`core/*`), article clicks/hash scroll (`article-interactions.js`), plugin SVG helpers (`icons.js`), plugin tooltips (`dom-tooltip.js`), shared scroll math (`scroll-utils.js`), Files I/O helpers (`explorer/*` consumed by `useExplorer.js`).
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
-- `src/shared` - Cross-cutting utilities (`logger`, `deep-merge`, `clipboard`, `settings-diff`) and **shared constants** (`constants/viewer.js` for toolbar/scroll/sidebar/copy UX; `constants/explorer.js` for workspace virtual URL prefixes and explorer scan defaults).
+- `src/popup` - React settings UI (`PopupApp.jsx`, panels, `useSettingsPersistence`).
+- `src/shared` - Utilities (`logger`, `deep-merge`, `clipboard`, `download`, `settings-diff`, `markdown-detect`) and **constants** (`viewer.js`, `explorer.js`, `tooltip.js`).
 - `src/background` - Runtime messaging and settings handlers.
 
 For an up-to-date file tree and module notes, see [`docs/project-overview-for-ai.md`](docs/project-overview-for-ai.md).

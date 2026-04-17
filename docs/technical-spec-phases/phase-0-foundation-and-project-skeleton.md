@@ -1,5 +1,7 @@
 # Phase 0 - Foundation & Project Skeleton
 
+**Trạng thái implement:** Hoàn thành (entry thực tế: `src/background/service-worker.js`, `src/messaging/index.js`, `src/settings/index.js`, …).
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Mục tiêu

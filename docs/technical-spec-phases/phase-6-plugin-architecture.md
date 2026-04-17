@@ -1,5 +1,7 @@
 # Phase 6 - Plugin Architecture
 
+**Trạng thái implement:** Hoàn thành — `src/plugins/plugin-manager.js` + `plugin-types.js` (flat `plugins/core` / `plugins/optional`, không có `plugins/registry/`).
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Mục tiêu

@@ -3,11 +3,11 @@ import {
   getActiveSidebarTab,
   setActiveSidebarTab as persistActiveSidebarTab
 } from '../../explorer/explorer-state.js'
-import { useViewerDispatch, useViewerState } from '../contexts/ViewerStateContext.jsx'
+import { useSidebarTabDispatch, useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 
 export function SidebarTabs() {
-  const { activeSidebarTab } = useViewerState()
-  const dispatch = useViewerDispatch()
+  const { activeSidebarTab } = useSidebarTabState()
+  const dispatch = useSidebarTabDispatch()
   const isFiles = activeSidebarTab === 'files'
 
   useEffect(() => {

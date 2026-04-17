@@ -74,13 +74,8 @@ async function resetSettings() {
   return fresh
 }
 
-function mergeWithDefaults(value) {
-  return deepMerge(DEFAULT_SETTINGS, value || {})
-}
-
 export const settingsService = {
   getSettings,
   saveSettings,
-  resetSettings,
-  mergeWithDefaults
+  resetSettings
 }

@@ -1,5 +1,5 @@
 /* Markdown article print overrides (Shadow DOM bundle).
- * Also see: `src/viewer/styles/_print.scss` (viewer chrome print),
+ * Also see: `src/viewer/styles/_chrome-print.scss` (viewer chrome print),
  *   `src/content/host-print.scss` (light DOM host page + mount root for print). */
 @media print {
   /* Inline reader styles on `article` win over normal print rules — use !important for print scale. */

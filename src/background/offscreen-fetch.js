@@ -1,3 +1,4 @@
+import { MESSAGE_TYPES } from '../messaging/index.js'
 import { logger } from '../shared/logger.js'
 
 const OFFSCREEN_PATH = 'offscreen.html'
@@ -73,7 +74,7 @@ export function fetchFileTextViaOffscreen(url) {
       }, timeoutMs)
 
       function onDone(message) {
-        if (message?.type !== 'MDP_OFFSCREEN_FETCH_DONE' || message.id !== id) return
+        if (message?.type !== MESSAGE_TYPES.OFFSCREEN_FETCH_DONE || message.id !== id) return
         chrome.runtime.onMessage.removeListener(onDone)
         clearTimeout(timeout)
         if (message.ok) {
@@ -87,7 +88,7 @@ export function fetchFileTextViaOffscreen(url) {
 
       try {
         await chrome.runtime.sendMessage({
-          type: 'MDP_OFFSCREEN_FETCH',
+          type: MESSAGE_TYPES.OFFSCREEN_FETCH,
           id,
           url
         })

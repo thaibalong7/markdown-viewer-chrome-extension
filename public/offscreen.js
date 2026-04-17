@@ -2,7 +2,12 @@
  * Extension offscreen context (chrome-extension:// origin).
  * Chrome often reports fetch(file://…) as !ok with status 0 even when a body exists;
  * XMLHttpRequest is more reliable for local file and directory index HTML.
+ *
+ * Message `type` strings must match `MESSAGE_TYPES.OFFSCREEN_FETCH` /
+ * `MESSAGE_TYPES.OFFSCREEN_FETCH_DONE` in `src/messaging/index.js` (this file is not bundled).
  */
+const OFFSCREEN_FETCH = 'MDP_OFFSCREEN_FETCH'
+const OFFSCREEN_FETCH_DONE = 'MDP_OFFSCREEN_FETCH_DONE'
 
 /**
  * @param {string} url
@@ -63,12 +68,12 @@ async function loadFileUrlAsTextBestEffort(url) {
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message?.type !== 'MDP_OFFSCREEN_FETCH') return
+  if (message?.type !== OFFSCREEN_FETCH) return
 
   const { id, url } = message
   if (!id || !url) {
     void chrome.runtime.sendMessage({
-      type: 'MDP_OFFSCREEN_FETCH_DONE',
+      type: OFFSCREEN_FETCH_DONE,
       id: id || '',
       ok: false,
       error: 'Missing id or url'
@@ -80,14 +85,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     try {
       const text = await loadFileUrlAsTextBestEffort(url)
       await chrome.runtime.sendMessage({
-        type: 'MDP_OFFSCREEN_FETCH_DONE',
+        type: OFFSCREEN_FETCH_DONE,
         id,
         ok: true,
         text
       })
     } catch (e) {
       await chrome.runtime.sendMessage({
-        type: 'MDP_OFFSCREEN_FETCH_DONE',
+        type: OFFSCREEN_FETCH_DONE,
         id,
         ok: false,
         error: e instanceof Error ? e.message : String(e)

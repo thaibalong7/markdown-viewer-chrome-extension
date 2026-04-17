@@ -1,5 +1,7 @@
 # Phase 9 - Popup & Options Page
 
+**Trạng thái implement:** Popup React đầy đủ (`src/popup/*.jsx`). Options: trang tối giản `src/options/index.js` — **không** có các module `options/sections/*` như spec.
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Mục tiêu

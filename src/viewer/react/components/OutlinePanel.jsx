@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../../scroll-utils.js'
-import { useViewerState } from '../contexts/ViewerStateContext.jsx'
+import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
 
 function updateHash(id) {
@@ -11,7 +11,7 @@ function updateHash(id) {
 }
 
 export function OutlinePanel({ tocItems, scrollRoot }) {
-  const { activeSidebarTab } = useViewerState()
+  const { activeSidebarTab } = useSidebarTabState()
   const isFiles = activeSidebarTab === 'files'
 
   const headings = useMemo(

@@ -1,5 +1,7 @@
 # Phase 10 - Hardening, Performance & Polish
 
+**Trạng thái implement:** Chưa hoàn thành — baseline rủi ro hiệu năng: [`performance-issues-audit.md`](../performance-issues-audit.md). Một số file trong spec (vd. `debounce.js`, `settings.migrations.js`) **chưa** tồn tại.
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Mục tiêu

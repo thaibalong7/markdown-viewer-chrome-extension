@@ -24,6 +24,7 @@ async function notifySettingsUpdated(settings) {
 export async function routeMessage(message, sender) {
   switch (message?.type) {
     case MESSAGE_TYPES.PING:
+      // Health-check for manual/debug use; no in-repo callers today.
       return {
         pong: true,
         timestamp: Date.now()

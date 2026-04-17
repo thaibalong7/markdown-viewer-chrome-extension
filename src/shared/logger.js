@@ -5,7 +5,8 @@ function formatArgs(level, args) {
 }
 
 export const logger = {
-  debugEnabled: true,
+  /** `true` in Vite dev; `false` in production builds. */
+  debugEnabled: Boolean(typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV),
 
   info(...args) {
     console.info(...formatArgs('INFO', args))

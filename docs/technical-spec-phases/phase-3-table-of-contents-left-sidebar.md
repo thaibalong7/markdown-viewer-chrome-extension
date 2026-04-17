@@ -1,5 +1,7 @@
 # Phase 3 - Table of Contents Left Sidebar
 
+**Trạng thái implement:** Hoàn thành — `OutlinePanel.jsx`, `useScrollSpy.js`, `toc-builder.js` (không còn `toc-sidebar.js` / `rebuild-toc.js` imperative).
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Mục tiêu

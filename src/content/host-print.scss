@@ -6,8 +6,8 @@
    underlying `file:` markdown page (often a single `<pre>`), so output would show raw
    source first, then the rendered viewer — hide the host page body for print.
 
-   Also see (Shadow DOM bundle): `src/viewer/styles/_print.scss` (viewer chrome print),
-   `src/viewer/styles/content/_print.scss` (article typography for print). */
+   Also see (Shadow DOM bundle): `src/viewer/styles/_chrome-print.scss` (viewer chrome print),
+   `src/viewer/styles/content/_article-print.scss` (article typography for print). */
 @media print {
   body {
     display: none !important;

@@ -1,5 +1,7 @@
 # Phase 1 - Markdown Detection & Raw Content Takeover
 
+**Trạng thái implement:** Hoàn thành — thêm `src/shared/markdown-detect.js` (pathname + `looksLikeMarkdownText`); `text-sampling.js` chỉ còn `getTextSample`.
+
 > **Note:** Phase design doc — implementation may differ from listed paths. For **current** architecture and file layout, see [`docs/project-overview-for-ai.md`](../project-overview-for-ai.md) and `src/`.
 
 ## Mục tiêu

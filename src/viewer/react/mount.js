@@ -5,8 +5,6 @@ import { ViewerApp } from './ViewerApp.jsx'
 export function mountViewerReact(container, options = {}) {
   const {
     settings,
-    markdown,
-    currentFileUrl,
     tocItems,
     explorerBridge,
     onShellReady,
@@ -26,8 +24,6 @@ export function mountViewerReact(container, options = {}) {
 
   let nextProps = {
     settings: settings || {},
-    markdown: markdown || '',
-    currentFileUrl: currentFileUrl || '',
     tocItems: Array.isArray(tocItems) ? tocItems : [],
     explorerBridge: explorerBridge || null,
     getArticleEl,
@@ -57,20 +53,12 @@ export function mountViewerReact(container, options = {}) {
       nextProps = { ...nextProps, settings: nextSettings || {} }
       render()
     },
-    updateMarkdown(nextMarkdown) {
-      nextProps = { ...nextProps, markdown: nextMarkdown || '' }
-      render()
-    },
-    updateCurrentFileUrl(nextFileUrl) {
-      nextProps = { ...nextProps, currentFileUrl: nextFileUrl || '' }
+    /** Re-render chrome so components that read live URLs (e.g. toolbar actions) stay in sync. */
+    bumpChrome() {
       render()
     },
     updateTocItems(nextTocItems) {
       nextProps = { ...nextProps, tocItems: Array.isArray(nextTocItems) ? nextTocItems : [] }
-      render()
-    },
-    updateBridge(nextBridge = {}) {
-      nextProps = { ...nextProps, ...nextBridge }
       render()
     },
     showToast(message, options = {}) {

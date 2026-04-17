@@ -1,9 +1,9 @@
 import React from 'react'
-import { useViewerState } from '../contexts/ViewerStateContext.jsx'
+import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 import { ExplorerPanel } from './explorer/ExplorerPanel.jsx'
 
 export function FilesPanel({ explorerBridge }) {
-  const { activeSidebarTab } = useViewerState()
+  const { activeSidebarTab } = useSidebarTabState()
   const isFiles = activeSidebarTab === 'files'
 
   return (

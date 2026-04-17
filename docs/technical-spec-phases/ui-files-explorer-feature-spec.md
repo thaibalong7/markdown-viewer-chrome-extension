@@ -1,5 +1,9 @@
 # UI Files Explorer - Detailed Feature Specification
 
+**Trạng thái implement:** Phase **1–2** (siblings + workspace scan/tree/picker) hoàn thành trong React — `src/viewer/react/hooks/useExplorer.js`, `react/components/explorer/*`, scanners trong `src/viewer/explorer/`. Phase **3+** (bookmark folder từ popup, v.v.) **chưa** làm.
+
+> **Note:** Cây file và message types hiện tại: [`project-overview-for-ai.md`](../project-overview-for-ai.md).
+
 ## 1. Mục tiêu
 
 Bổ sung tính năng **UI Files Explorer** để mở rộng trải nghiệm từ việc chỉ xem một file Markdown đơn lẻ sang việc làm việc với một **workspace folder** chứa nhiều file Markdown liên quan.

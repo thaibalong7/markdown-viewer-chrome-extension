@@ -1,6 +1,6 @@
 @use 'variables' as v;
 @use 'toolbar-actions';
-@use 'print';
+@use 'chrome-print';
 
 .mdp-root {
   --mdp-toolbar-stack: #{v.$mdp-toolbar-stack};

@@ -1,12 +1,10 @@
-import React, { forwardRef } from 'react'
+import React from 'react'
 
-export const Toolbar = forwardRef(function Toolbar({ children, actionsRef }, ref) {
+export function Toolbar({ children }) {
   return (
-    <div className="mdp-toolbar" ref={ref}>
+    <div className="mdp-toolbar">
       <div className="mdp-toolbar__title">Markdown Plus</div>
-      <div className="mdp-toolbar__actions" ref={actionsRef}>
-        {children}
-      </div>
+      <div className="mdp-toolbar__actions">{children}</div>
     </div>
   )
-})
+}

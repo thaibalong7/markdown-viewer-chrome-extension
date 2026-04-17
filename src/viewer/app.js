@@ -5,6 +5,14 @@ import { logger } from '../shared/logger.js'
 import { needsFullRender } from '../shared/settings-diff.js'
 import { createArticleInteractions } from './article-interactions.js'
 import { mountViewerReact } from './react/mount.js'
+import { getSidebarWidthPx } from './explorer/explorer-state.js'
+import { SIDEBAR_MAX_WIDTH_PX, SIDEBAR_MIN_WIDTH_PX } from '../shared/constants/viewer.js'
+
+function clampSidebarWidth(widthPx) {
+  const width = Number(widthPx)
+  if (!Number.isFinite(width)) return SIDEBAR_MIN_WIDTH_PX
+  return Math.max(SIDEBAR_MIN_WIDTH_PX, Math.min(SIDEBAR_MAX_WIDTH_PX, Math.round(width)))
+}
 
 function createStyleElement(cssText) {
   const style = document.createElement('style')
@@ -47,14 +55,11 @@ export class MarkdownViewerApp {
 
     this._reactHandle = mountViewerReact(this.container, {
       settings: this.settings,
-      markdown: this.markdown,
-      currentFileUrl: this._currentFileUrl,
       tocItems: [],
       explorerBridge: {
         getSettings: () => this.settings,
         setMarkdown: (md) => {
           this.markdown = md
-          this._reactHandle?.updateMarkdown(md)
         },
         setSmoothInitialHashScroll: (value) => {
           this._smoothInitialHashScroll = Boolean(value)
@@ -65,7 +70,7 @@ export class MarkdownViewerApp {
         getArticleEl: () => this._articleEl,
         updateCurrentFileUrl: (nextUrl) => {
           this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
-          this._reactHandle?.updateCurrentFileUrl(this._currentFileUrl)
+          this._reactHandle?.bumpChrome()
         }
       },
       getArticleEl: () => this._articleEl,
@@ -104,11 +109,27 @@ export class MarkdownViewerApp {
     const themeTarget = this._rootEl || this.container?.host || this.container
 
     applyThemeSettings(themeTarget, this.settings)
+    this.applySidebarWidthPreference(themeTarget)
 
     if (typo.fontFamily) article.style.fontFamily = 'var(--mdp-font-family)'
     if (typo.fontSize != null) article.style.fontSize = 'var(--mdp-font-size)'
     if (typo.lineHeight != null) article.style.lineHeight = 'var(--mdp-line-height)'
     if (layout.contentMaxWidth != null) article.style.maxWidth = 'var(--mdp-content-max-width)'
+  }
+
+  /**
+   * Re-apply sidebar width after theme (which sets `--mdp-toc-width` from settings) so session
+   * drag width wins — same resolution as `useSidebarResize`.
+   * @param {HTMLElement | ShadowRoot} themeTarget
+   */
+  applySidebarWidthPreference(themeTarget) {
+    if (!themeTarget?.style) return
+    const layout = this.settings?.layout || {}
+    const storedWidth = getSidebarWidthPx()
+    const layoutWidth = Number(layout.tocWidth)
+    const baseWidth = Number.isFinite(storedWidth) ? storedWidth : layoutWidth
+    const width = clampSidebarWidth(Number.isFinite(baseWidth) ? baseWidth : 280)
+    themeTarget.style.setProperty('--mdp-toc-width', `${width}px`)
   }
 
   getScrollRoot() {
@@ -162,7 +183,7 @@ export class MarkdownViewerApp {
       }
       return result
     } finally {
-      this._reactHandle?.updateCurrentFileUrl(this._currentFileUrl)
+      this._reactHandle?.bumpChrome()
     }
   }
 

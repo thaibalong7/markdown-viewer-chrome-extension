@@ -196,6 +196,20 @@
   gap: 2px;
 }
 
+.mdp-explorer__list--virtual {
+  position: relative;
+  min-height: 0;
+  gap: 0;
+}
+
+.mdp-explorer__list--virtual > .mdp-explorer__node,
+.mdp-explorer__list--virtual > .mdp-explorer__tree-folder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
 .mdp-explorer__node {
   margin: 0;
   padding: 0;

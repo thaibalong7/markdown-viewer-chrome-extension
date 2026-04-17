@@ -2,22 +2,23 @@ import { codeHighlightPlugin } from './core/code-highlight.plugin.js'
 import { taskListPlugin } from './core/task-list.plugin.js'
 import { anchorHeadingPlugin } from './core/anchor-heading.plugin.js'
 import { tableEnhancePlugin } from './core/table-enhance.plugin.js'
-import { emojiPlugin } from './optional/emoji.plugin.js'
-import { footnotePlugin } from './optional/footnote.plugin.js'
-import { mathPlugin } from './optional/math.plugin.js'
-import { mermaidPlugin } from './optional/mermaid.plugin.js'
-import { PLUGIN_HOOKS, getDefaultPluginSettings } from './plugin-types.js'
+import { PLUGIN_HOOKS, PLUGIN_IDS, getDefaultPluginSettings } from './plugin-types.js'
 
-const REGISTERED_PLUGINS = [
+const CORE_PLUGINS = [
   codeHighlightPlugin,
   taskListPlugin,
   anchorHeadingPlugin,
-  tableEnhancePlugin,
-  emojiPlugin,
-  footnotePlugin,
-  mathPlugin,
-  mermaidPlugin
+  tableEnhancePlugin
 ]
+
+const OPTIONAL_PLUGIN_LOADERS = {
+  [PLUGIN_IDS.EMOJI]: () => import('./optional/emoji.plugin.js').then((module) => module.emojiPlugin),
+  [PLUGIN_IDS.FOOTNOTE]: () =>
+    import('./optional/footnote.plugin.js').then((module) => module.footnotePlugin),
+  [PLUGIN_IDS.MATH]: () => import('./optional/math.plugin.js').then((module) => module.mathPlugin),
+  [PLUGIN_IDS.MERMAID]: () =>
+    import('./optional/mermaid.plugin.js').then((module) => module.mermaidPlugin)
+}
 
 function normalizeValue(nextValue, fallbackValue) {
   return typeof nextValue === 'undefined' ? fallbackValue : nextValue
@@ -45,29 +46,47 @@ function isEnabledPlugin(plugin, pluginSettings) {
   return state.enabled !== false
 }
 
-export function createPluginManager({ settings } = {}) {
+export async function createPluginManager({ settings } = {}) {
   const mergedPluginSettings = {
     ...getDefaultPluginSettings(),
     ...(settings?.plugins || {})
   }
 
-  const activePlugins = REGISTERED_PLUGINS.filter((plugin) => isEnabledPlugin(plugin, mergedPluginSettings))
+  const activePlugins = CORE_PLUGINS.filter((plugin) => isEnabledPlugin(plugin, mergedPluginSettings))
+  const optionalPluginIds = Object.keys(OPTIONAL_PLUGIN_LOADERS).filter((pluginId) => {
+    const state = mergedPluginSettings?.[pluginId]
+    return state?.enabled === true
+  })
+
+  if (optionalPluginIds.length) {
+    const optionalPlugins = await Promise.all(
+      optionalPluginIds.map((pluginId) => OPTIONAL_PLUGIN_LOADERS[pluginId]())
+    )
+    for (const plugin of optionalPlugins) {
+      if (plugin) activePlugins.push(plugin)
+    }
+  }
 
   return {
     getActivePlugins() {
       return [...activePlugins]
     },
-    extendMarkdown(markdownEngine, context = {}) {
-      runPluginHook({
-        plugins: activePlugins,
-        hook: PLUGIN_HOOKS.EXTEND_MARKDOWN,
-        initialValue: null,
-        context: {
-          ...context,
-          markdownEngine,
-          pluginSettings: mergedPluginSettings
-        }
-      })
+    async extendMarkdown(markdownEngine, context = {}) {
+      const baseContext = {
+        ...context,
+        markdownEngine,
+        pluginSettings: mergedPluginSettings
+      }
+      for (const plugin of activePlugins) {
+        const handler = plugin?.[PLUGIN_HOOKS.EXTEND_MARKDOWN]
+        if (typeof handler !== 'function') continue
+        await Promise.resolve(
+          handler({
+            ...baseContext,
+            value: null
+          })
+        )
+      }
     },
     preprocessMarkdown(markdown, context = {}) {
       return runPluginHook({

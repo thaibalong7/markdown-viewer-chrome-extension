@@ -155,36 +155,36 @@ export class MarkdownViewerApp {
     const scrollSnapshot = preserveScroll ? this.captureScrollPosition() : null
     let result
     try {
-      try {
-        result = await renderDocument(this.markdown, this.settings)
-      } catch (error) {
-        logger.error('Failed to render markdown document.', error)
-        return null
-      }
-      if (renderToken !== this._renderToken) return null
-      const article = this._articleEl
-      if (!article) return null
-      renderIntoElement(article, result.html)
-      if (renderToken !== this._renderToken) return null
-      await result.pluginManager?.afterRender({
-        articleEl: article,
-        settings: this.settings,
-        copyCodeWithToast: this._articleInteractions?.copyCodeWithToast.bind(this._articleInteractions)
-      })
-      if (renderToken !== this._renderToken) return null
-      this.syncTocItems()
-      if (scrollSnapshot) {
-        this.restoreScrollPosition(scrollSnapshot)
-      } else if (honorHash) {
-        const behavior =
-          this._smoothInitialHashScroll && window.location.hash ? 'smooth' : 'auto'
-        this._articleInteractions?.scrollToHash({ behavior })
-        if (this._smoothInitialHashScroll) this._smoothInitialHashScroll = false
-      }
-      return result
-    } finally {
-      this._reactHandle?.bumpChrome()
+      result = await renderDocument(this.markdown, this.settings)
+    } catch (error) {
+      logger.error('Failed to render markdown document.', error)
+      return null
     }
+
+    if (renderToken !== this._renderToken) return null
+    const article = this._articleEl
+    if (!article) return null
+
+    renderIntoElement(article, result.html)
+    if (renderToken !== this._renderToken) return null
+
+    await result.pluginManager?.afterRender({
+      articleEl: article,
+      settings: this.settings,
+      copyCodeWithToast: this._articleInteractions?.copyCodeWithToast.bind(this._articleInteractions)
+    })
+    if (renderToken !== this._renderToken) return null
+
+    this.syncTocItems()
+    if (scrollSnapshot) {
+      this.restoreScrollPosition(scrollSnapshot)
+    } else if (honorHash) {
+      const behavior = this._smoothInitialHashScroll && window.location.hash ? 'smooth' : 'auto'
+      this._articleInteractions?.scrollToHash({ behavior })
+      if (this._smoothInitialHashScroll) this._smoothInitialHashScroll = false
+    }
+
+    return result
   }
 
   showToast(message) {
@@ -194,12 +194,12 @@ export class MarkdownViewerApp {
   syncTocItems() {
     const showToc = this.settings?.layout?.showToc !== false
     if (!showToc) {
-      this._reactHandle?.updateTocItems([])
+      this._reactHandle?.updateChromeState?.({ tocItems: [] })
       return
     }
 
     const items = buildTocItems(this._articleEl)
-    this._reactHandle?.updateTocItems(items)
+    this._reactHandle?.updateChromeState?.({ tocItems: items })
   }
 
   async updateSettings(nextSettings) {

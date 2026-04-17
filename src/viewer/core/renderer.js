@@ -31,10 +31,10 @@ export function renderIntoElement(element, html) {
 }
 
 export async function renderDocument(markdown, settings = {}) {
-  const pluginManager = createPluginManager({ settings })
+  const pluginManager = await createPluginManager({ settings })
   const markdownEngine = createMarkdownEngine()
 
-  pluginManager.extendMarkdown(markdownEngine, { settings })
+  await pluginManager.extendMarkdown(markdownEngine, { settings })
   const nextMarkdown = pluginManager.preprocessMarkdown(markdown, { settings })
 
   const result = renderMarkdown(nextMarkdown, { markdownEngine })

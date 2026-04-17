@@ -1,9 +1,18 @@
-import { full as emojiFull } from 'markdown-it-emoji'
 import { PLUGIN_IDS } from '../plugin-types.js'
+
+let emojiPluginPromise = null
+
+function getEmojiPlugin() {
+  if (!emojiPluginPromise) {
+    emojiPluginPromise = import('markdown-it-emoji').then((module) => module.full)
+  }
+  return emojiPluginPromise
+}
 
 export const emojiPlugin = {
   id: PLUGIN_IDS.EMOJI,
-  extendMarkdown({ markdownEngine }) {
+  async extendMarkdown({ markdownEngine }) {
+    const emojiFull = await getEmojiPlugin()
     markdownEngine.instance.use(emojiFull)
   }
 }

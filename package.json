@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@mdit/plugin-katex": "^0.25.2",
+    "@tanstack/react-virtual": "^3.13.23",
     "dompurify": "^3.3.3",
     "markdown-it": "^14.1.1",
     "markdown-it-anchor": "^9.2.0",

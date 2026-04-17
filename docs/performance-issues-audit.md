@@ -25,19 +25,14 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 | Mức | # | Tóm tắt | Vị trí chính |
 |-----|---|---------|--------------|
-| HIGH | 4 | Static import Math/KaTeX | `plugin-manager.js`, `math.plugin.js` |
-| HIGH | 5 | Shiki: mọi ngôn ngữ + `Promise.all` không giới hạn | `shiki-highlighter.js`, `shiki-config.js` |
-| HIGH | 6 | Shiki DOM round-trip | `shiki-highlighter.js` |
 | HIGH | 7 | DOMPurify toàn bộ HTML | `renderer.js` |
 | HIGH | 8 | Pipeline tuần tự, không loading state, tạo engine mới mỗi lần | `app.js`, `renderer.js` |
-| HIGH | **44** | **Hai lần `root.render()` sau mỗi document render** | `app.js`, `mount.js` |
-| HIGH | 9 | Explorer không virtualization | `ExplorerPanel.jsx`, `FileTree.jsx` |
 | HIGH | 11 | Folder scan tuần tự + `.gitignore` | `folder-scanner.js` |
 | MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `message-router.js` |
 | MEDIUM-HIGH | 18 | Workspace picker multi-pass | `workspace-picker.js` |
 | MEDIUM-HIGH | 19 | Mermaid render tuần tự | `mermaid.plugin.js` |
 | MEDIUM | 45–48 | Toast context; explorer mount sớm; `expandedMap` clone; timers copy | `ToastContext.jsx`, `FilesPanel.jsx` / `useExplorer.js`, `explorerReducer.js`, `article-interactions.js` |
-| MEDIUM | 13–42 | (xem chi tiết từng issue bên dưới) | — |
+| MEDIUM | 13–42 *(trừ #21)* | (xem chi tiết từng issue bên dưới) | — |
 
 ---
 
@@ -63,7 +58,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
   *(File cũ `src/viewer/explorer/explorer-tree-renderer.js` đã bỏ.)*
 - **Đã xử lý:** Explorer tree đã chuyển sang lazy subtree mount theo trạng thái expand, không còn mount toàn bộ descendants khi folder đang collapsed.
 - **Kết quả:** Giảm chi phí initial mount và memory footprint trên workspace lớn.
-- **Ghi chú còn mở:** Virtualization tổng thể cho danh sách lớn vẫn theo dõi ở Issue #9 / #21.
+- **Ghi chú cập nhật:** Virtualization tổng thể cho danh sách lớn đã triển khai theo Issue #9 / #21.
 
 ---
 
@@ -76,44 +71,29 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #4 [HIGH] Static import optional plugins (KaTeX, Math) vào plugin-manager
+## Issue #4 [RESOLVED] Static import optional plugins (KaTeX, Math) vào plugin-manager
 
-- **Vị trí:** `src/plugins/plugin-manager.js` (dòng 1–20), `src/plugins/optional/math.plugin.js` (dòng 1–3)
-- **Hiện trạng:** `plugin-manager.js` static import **tất cả** plugins bao gồm `math.plugin.js`. Module `math.plugin.js` lại static import `@mdit/plugin-katex` → KaTeX library nằm trong dependency graph **ngay cả khi Math disabled** (default off). Mermaid thì đã lazy import đúng cách.
-- **Tác động:** Bundle lớn hơn, parse/eval cost cao hơn, memory usage tăng cho mọi viewer mount.
-- **Khuyến nghị fix:**
-  - `import()` động optional plugins bên trong `plugin-manager.js` (tương tự pattern Mermaid đang dùng).
-  - `math.plugin.js`: chuyển `import { katex }` vào bên trong `extendMarkdown` khi `enabled === true`.
-  - Áp dụng cho `emoji.plugin.js` và `footnote.plugin.js` nếu dependency nặng.
+- **Vị trí cập nhật:** `src/plugins/plugin-manager.js`, `src/plugins/optional/math.plugin.js`, `emoji.plugin.js`, `footnote.plugin.js`.
+- **Đã xử lý:** Plugin manager chuyển sang lazy loader cho optional plugins (`math`, `emoji`, `footnote`, `mermaid`) bằng `import()`, chỉ resolve khi plugin được bật.
+- **Đã xử lý bổ sung:** `math/emoji/footnote` chuyển dependency import nặng vào trong `extendMarkdown` (dynamic import + promise cache), tránh kéo dependency graph ngay khi viewer mount.
 
 ---
 
-## Issue #5 [HIGH] Shiki khởi tạo toàn bộ ngôn ngữ + highlight không giới hạn concurrency
+## Issue #5 [RESOLVED] Shiki khởi tạo toàn bộ ngôn ngữ + highlight không giới hạn concurrency
 
-- **Vị trí:** `src/viewer/core/shiki-highlighter.js` (dòng 31–40, 69–86), `src/viewer/core/shiki-config.js` (dòng 27)
-- **Hiện trạng:**
-  - `getShikiHighlighter()` khởi tạo Shiki với **tất cả** bundled grammars (`SHIKI_LANG_IDS = bundledLanguagesInfo.map(...)`) → chi phí upfront lớn (memory + CPU).
-  - `Promise.all(fencedBlocks.map(...))` highlight **tất cả code blocks song song** không giới hạn → CPU/memory spike cho tài liệu nhiều code blocks.
-- **Tác động:** Thời gian khởi tạo Shiki lần đầu rất lâu. Tài liệu có 50+ code blocks gây memory spike và jank.
-- **Khuyến nghị fix:**
-  - Khởi tạo Shiki với danh sách ngôn ngữ phổ biến (10–15), load thêm on-demand bằng `loadLanguage`.
-  - Giới hạn concurrency (queue 2–4 blocks cùng lúc), ưu tiên visible blocks bằng `IntersectionObserver`.
-  - Skip highlight cho code blocks quá lớn (>N KB) — hiển thị plain text.
+- **Vị trí cập nhật:** `src/viewer/core/shiki-highlighter.js`, `src/viewer/core/shiki-config.js`.
+- **Đã xử lý:** Shiki chỉ khởi tạo với `SHIKI_CORE_LANG_IDS`; các ngôn ngữ khác được resolve qua alias map và load on-demand bằng `highlighter.loadLanguage(...)`.
+- **Đã xử lý:** Áp dụng queue giới hạn concurrency (4 blocks/lần) thay cho `Promise.all` không giới hạn.
+- **Kết quả kỳ vọng:** Giảm upfront init cost và hạn chế CPU/memory spike khi tài liệu có nhiều fenced code blocks.
 
 ---
 
-## Issue #6 [HIGH] Shiki DOM round-trip: parse → mutate → serialize toàn bộ HTML
+## Issue #6 [RESOLVED] Shiki DOM round-trip: parse → mutate → serialize toàn bộ HTML
 
-- **Vị trí:** `src/viewer/core/shiki-highlighter.js` (dòng 55–88)
-- **Hiện trạng:** `applyShikiToFencedCode()`:
-  1. `wrapper.innerHTML = html` — parse **toàn bộ** HTML document vào DOM tạm.
-  2. `querySelectorAll('pre > code')` — tìm code blocks.
-  3. Per block: `template.innerHTML` + `replaceWith` — multiple small HTML parses.
-  4. `return wrapper.innerHTML` — serialize **toàn bộ** DOM ngược lại thành string.
-- **Tác động:** Với tài liệu 1MB+, bước 1 và 4 tạo **2 bản copy lớn** của HTML trong memory, plus full DOM tree tạm.
-- **Khuyến nghị fix:**
-  - String-only approach: regex/string replace chỉ phần `<pre><code>` mà không cần DOM round-trip.
-  - Nếu giữ DOM: dùng `DocumentFragment`, batch replacements, tránh serialize lại toàn bộ.
+- **Vị trí cập nhật:** `src/viewer/core/shiki-highlighter.js`.
+- **Đã xử lý:** `applyShikiToFencedCode()` chuyển sang string-first pipeline: regex tìm fenced blocks, highlight theo block, rồi ghép lại HTML theo index.
+- **Đã xử lý:** Bỏ parse/serialize toàn bộ document bằng `wrapper.innerHTML`; chỉ normalize snippet Shiki `<pre>` theo từng block.
+- **Kết quả kỳ vọng:** Giảm peak memory và giảm chi phí parse/serialize trên tài liệu lớn.
 
 ---
 
@@ -144,16 +124,12 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #9 [HIGH] Explorer panel không có virtualization cho file list
+## Issue #9 [RESOLVED] Explorer panel không có virtualization cho file list
 
-- **Vị trí (cập nhật):** `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `FileTree.jsx`, `FileRow.jsx`  
-  *(File cũ `explorer-panel.js` đã bỏ.)*
-- **Hiện trạng:** Danh sách phẳng và cây thư mục đều `.map()` / render đệ quy **một node cho mỗi file/folder**, không dùng virtual list. Sidebar scroll height = full list.
-- **Tác động:** Với workspace 2000 files, mount và scroll sidebar chậm, memory tăng, layout/style cost O(N).
-- **Khuyến nghị fix:**
-  - Virtual list: chỉ render visible rows + buffer.
-  - **Hoặc:** Lazy render folder children on expand (kết hợp Issue #2).
-  - Nếu còn chỗ đếm + build tách hai lần walk — gom single-pass khi refactor.
+- **Vị trí cập nhật:** `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `FileTree.jsx`, `FileRow.jsx`, `FolderRow.jsx`.
+- **Đã xử lý:** Explorer chuyển sang virtual list (`@tanstack/react-virtual`) cho cả flat files view và tree view.
+- **Đã xử lý:** Thêm `flattenVisibleTree(...)` để flatten các node visible theo `expandedMap`, chỉ render rows trong viewport + overscan.
+- **Đã xử lý:** Active file sync bằng `scrollToIndex(...)` để giữ UX điều hướng trong danh sách ảo.
 
 ---
 
@@ -275,15 +251,12 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #21 [MEDIUM] TOC: O(N) DOM nodes, không virtualization
+## Issue #21 [RESOLVED] TOC: O(N) DOM nodes, không virtualization
 
-- **Vị trí:** Outline thực tế: `src/viewer/react/components/OutlinePanel.jsx`. `src/viewer/core/toc-builder.js` (`renderToc`) vẫn tồn tại nhưng **không** còn là đường render chính của viewer.
-- **Hiện trạng:** Mỗi heading → một `<li>` + `<a>` trong React; tài liệu lớn vẫn O(N) node sidebar.
-- **Tác động:** TOC sidebar chậm khi scroll/layout trên tài liệu lớn.
-- **Khuyến nghị fix:**
-  - Virtual list cho TOC outline.
-  - Collapse deeper levels mặc định + "show more" button.
-  - `CSS contain: strict` trên sidebar container.
+- **Vị trí cập nhật:** `src/viewer/react/components/OutlinePanel.jsx`, `src/viewer/styles/toc.scss`.
+- **Đã xử lý:** TOC outline chuyển sang virtual list (`@tanstack/react-virtual`), render theo viewport + overscan.
+- **Đã xử lý:** Active heading tự động sync vị trí trong list ảo bằng `scrollToIndex(...)`.
+- **Đã xử lý:** Thêm `contain` cho vùng scroll TOC để giới hạn layout recalculation.
 
 ---
 
@@ -552,10 +525,10 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 1. ~~**Issue #1:** Scroll spy — đã dùng offsets + binary search.~~ *(RESOLVED)*
 2. ~~**Fix Issue #43:** Ổn định `getToolbarHeight` / deps `useScrollSpy`.~~ *(RESOLVED)*
-3. **Fix Issue #44:** Tránh double `root.render` sau mỗi document render.
+3. ~~**Fix Issue #44:** Tránh double `root.render` sau mỗi document render.~~ *(RESOLVED)*
 4. ~~**Fix Issue #2:** Lazy render children khi expand folder (React tree).~~ *(RESOLVED)*
-5. **Fix Issue #4:** Dynamic `import()` cho optional plugins (Math/KaTeX đặc biệt).
-6. **Fix Issue #5:** Giới hạn Shiki langs ban đầu + concurrency limit cho code highlighting.
+5. ~~**Fix Issue #4:** Dynamic `import()` cho optional plugins (Math/KaTeX đặc biệt).~~ *(RESOLVED)*
+6. ~~**Fix Issue #5:** Giới hạn Shiki langs ban đầu + concurrency limit cho code highlighting.~~ *(RESOLVED)*
 7. **Fix Issue #8:** Thêm loading state (skeleton/spinner) cho render pipeline.
 8. ~~**Issue #14 / #20:** Explorer active + TOC imperative — đã chuyển React.~~ *(RESOLVED)*
 9. **Fix Issue #22:** Throttle progress UI updates trong explorer scan.
@@ -564,8 +537,8 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 ## Deeper refactors để đạt hiệu quả bền vững
 
 1. ~~Tách content script thành "thin loader" + dynamic import viewer (Issue #3).~~ *(RESOLVED)*
-2. String-based Shiki approach thay vì DOM round-trip (Issue #6).
-3. Virtual list cho explorer tree + TOC sidebar (Issue #9, #21).
+2. ~~String-based Shiki approach thay vì DOM round-trip (Issue #6).~~ *(RESOLVED)*
+3. ~~Virtual list cho explorer tree + TOC sidebar (Issue #9, #21).~~ *(RESOLVED)*
 4. Reuse markdown engine + plugin manager across renders (Issue #26).
 5. Cache rendered HTML; theme/plugin change chỉ re-run Shiki (Issue #17 đã có fast path typography/layout; stretch: cache pre-Shiki HTML).
 6. Bounded concurrency cho folder scanning (Issue #11).

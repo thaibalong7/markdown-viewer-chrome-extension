@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../../scroll-utils.js'
 import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
@@ -13,13 +14,15 @@ function updateHash(id) {
 export function OutlinePanel({ tocItems, scrollRoot }) {
   const { activeSidebarTab } = useSidebarTabState()
   const isFiles = activeSidebarTab === 'files'
+  const tocScrollRef = useRef(null)
+  const outlineItems = useMemo(
+    () => (tocItems || []).filter((item) => item?.id && item?.el),
+    [tocItems]
+  )
 
   const headings = useMemo(
-    () =>
-      (tocItems || [])
-        .filter((item) => item?.id && item?.el)
-        .map((item) => ({ id: item.id, el: item.el })),
-    [tocItems]
+    () => outlineItems.map((item) => ({ id: item.id, el: item.el })),
+    [outlineItems]
   )
 
   const activeHeadingId = useScrollSpy({
@@ -30,6 +33,24 @@ export function OutlinePanel({ tocItems, scrollRoot }) {
 
   const fallbackActiveId = headings[0]?.id || null
   const resolvedActiveId = activeHeadingId || fallbackActiveId
+  const activeIndex = useMemo(
+    () => outlineItems.findIndex((item) => item.id === resolvedActiveId),
+    [outlineItems, resolvedActiveId]
+  )
+
+  const outlineVirtualizer = useVirtualizer({
+    count: outlineItems.length,
+    getScrollElement: () => tocScrollRef.current,
+    estimateSize: () => 32,
+    overscan: 8
+  })
+
+  useEffect(() => {
+    if (activeIndex < 0) return
+    outlineVirtualizer.scrollToIndex(activeIndex, { align: 'nearest' })
+  }, [activeIndex, outlineVirtualizer])
+
+  const virtualRows = outlineVirtualizer.getVirtualItems()
 
   return (
     <div
@@ -40,13 +61,19 @@ export function OutlinePanel({ tocItems, scrollRoot }) {
       hidden={isFiles}
     >
       <div className="mdp-sidebar__title">Outline</div>
-      <nav className="mdp-toc" aria-label="Table of contents">
+      <nav className="mdp-toc" aria-label="Table of contents" ref={tocScrollRef}>
         {headings.length ? (
-          <ul className="mdp-toc__list">
-            {tocItems.map((item) => {
+          <ul className="mdp-toc__list mdp-toc__list--virtual" style={{ height: `${outlineVirtualizer.getTotalSize()}px` }}>
+            {virtualRows.map((virtualRow) => {
+              const item = outlineItems[virtualRow.index]
+              if (!item) return null
               const isActive = item.id === resolvedActiveId
               return (
-                <li className="mdp-toc__item" key={item.id}>
+                <li
+                  className="mdp-toc__item mdp-toc__item--virtual"
+                  key={virtualRow.key}
+                  style={{ transform: `translateY(${virtualRow.start}px)` }}
+                >
                   <a
                     href={`#${item.id}`}
                     className={`mdp-toc__link mdp-toc__link--h${item.level}${

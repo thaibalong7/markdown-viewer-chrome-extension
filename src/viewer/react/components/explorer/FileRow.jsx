@@ -1,19 +1,25 @@
 import React, { useEffect, useRef } from 'react'
 
-export function FileRow({ file, depth, isActive, onPick }) {
+export function FileRow({ file, depth, isActive, onPick, autoScrollActive = true, rowStyle }) {
   const buttonRef = useRef(null)
 
   useEffect(() => {
+    if (!autoScrollActive) return
     if (!isActive) return
     try {
       buttonRef.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
     } catch {
       /* ignore scroll errors */
     }
-  }, [isActive])
+  }, [autoScrollActive, isActive])
 
   return (
-    <li className="mdp-explorer__node mdp-explorer__tree-file" role="treeitem" aria-level={String(Math.max(1, depth))}>
+    <li
+      className="mdp-explorer__node mdp-explorer__tree-file"
+      role="treeitem"
+      aria-level={String(Math.max(1, depth))}
+      style={rowStyle}
+    >
       <button
         ref={buttonRef}
         type="button"

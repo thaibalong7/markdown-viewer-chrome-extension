@@ -13,7 +13,7 @@ export function mountViewerReact(container, options = {}) {
     getCurrentFileUrl
   } = options
   const root = createRoot(container)
-  let shellReadyResolve = () => {}
+  let shellReadyResolve = () => { }
   /** Resolves to `{ root, article }` once the React shell has mounted. */
   const partsPromise = new Promise((resolve) => {
     shellReadyResolve = resolve
@@ -53,20 +53,21 @@ export function mountViewerReact(container, options = {}) {
       nextProps = { ...nextProps, settings: nextSettings || {} }
       render()
     },
-    /** Re-render chrome so components that read live URLs (e.g. toolbar actions) stay in sync. */
-    bumpChrome() {
+    updateChromeState({ tocItems } = {}) {
+      if (tocItems !== undefined) {
+        nextProps = { ...nextProps, tocItems: Array.isArray(tocItems) ? tocItems : [] }
+      }
       render()
     },
+    /** Re-render chrome so components that read live URLs (e.g. toolbar actions) stay in sync. */
+    bumpChrome() { render() },
     updateTocItems(nextTocItems) {
-      nextProps = { ...nextProps, tocItems: Array.isArray(nextTocItems) ? nextTocItems : [] }
-      render()
+      this.updateChromeState({ tocItems: nextTocItems })
     },
     showToast(message, options = {}) {
       if (typeof message !== 'string') return
       showToastBridge?.(message, options?.durationMs)
     },
-    unmount() {
-      root.unmount()
-    }
+    unmount() { root.unmount(); }
   }
 }

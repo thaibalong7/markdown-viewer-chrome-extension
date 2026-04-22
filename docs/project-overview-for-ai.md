@@ -21,10 +21,10 @@ Current implemented core:
 ## 2) Tech stack and runtime
 
 - Runtime: Chrome Extension MV3
-- Build tool: Vite + `@vitejs/plugin-react` + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/index.js` (bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`)
+- Build tool: Vite + `@vitejs/plugin-react` + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/viewer-loader.js` (after the thin gate in `src/content/index.js`), bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`
 - Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer core/plugins; **React 19** for `src/popup/` and **viewer chrome** under `src/viewer/react/` (`ViewerApp.jsx`, shell/sidebar/explorer/toast)
 - Markdown: `markdown-it` + `markdown-it-anchor`
-- Fenced code highlighting: **Shiki** (`shiki/bundle/web`)
+- Fenced code highlighting: **Shiki** — `createHighlighterCore` from `shiki/core` with Oniguruma WASM (`shiki/engine/oniguruma`), explicit grammars from `@shikijs/langs` and themes from `@shikijs/themes` (see `src/viewer/core/shiki-config.js`; avoids shipping the full `shiki/bundle/web` language/theme set)
 - Sanitization: `dompurify`
 - Minimum Node engine: `>=20`
 
@@ -52,7 +52,7 @@ Generated output:
 
 ### 3.2 Core flow (implemented)
 
-1. Content script entry `src/content/index.js` bundles compiled viewer SCSS (`?inline`) and injects those strings into the Shadow DOM (no `fetch` of per-sheet CSS assets).
+1. Content script: `src/content/index.js` is a thin gate (local `file:` + `.md` only) and dynamically imports `src/content/viewer-loader.js`, which bundles compiled viewer SCSS (`?inline`) and injects those strings into the Shadow DOM (no `fetch` of per-sheet CSS assets). KaTeX CSS is not part of this path by default; it loads when the Math plugin runs (see `math.plugin.js` + `MarkdownViewerApp.injectViewerStyles`).
 2. **Product gate:** `bootstrap.js` only mounts the viewer for **local `file:`** URLs whose path ends in `.md` / `.markdown` / `.mdown` (not remote pages).
 3. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()` (uses `getTextSample` from `text-sampling.js` and `looksLikeMarkdownText` / pathname helpers from `shared/markdown-detect.js`).
 4. If needed, fallback sampling checks whether page text resembles Markdown (`looksLikeMarkdownText` in `shared/markdown-detect.js`).
@@ -256,9 +256,9 @@ public/
   - Forces external links to `target="_blank"` with safe `rel`.
 
 - `src/viewer/core/renderer.js`
-  - **Async** `renderDocument()` orchestration:
+  - **Async** `renderDocument(markdown, settings, runtimeContext)` orchestration:
     1. `createPluginManager({ settings })`, `createMarkdownEngine()`
-    2. `extendMarkdown` / `preprocessMarkdown` (plugins)
+    2. `extendMarkdown` / `preprocessMarkdown` (plugins; `runtimeContext` can pass `injectViewerStyles` for optional CSS like KaTeX)
     3. `renderMarkdown()` → HTML string
     4. `postprocessHtml` (plugins)
     5. If `plugins.codeHighlight.enabled !== false`: **`applyShikiToFencedCode(html, settings)`**
@@ -266,15 +266,15 @@ public/
   - Returns `{ html, pluginManager, metadata, warnings }`.
 
 - `src/viewer/core/shiki-config.js` / `shiki-highlighter.js`
-  - **`shiki-config`**: bundled Shiki theme ids + language list; maps reader `settings.theme.preset` to Shiki theme; must stay aligned with `src/theme/index.js` `BUILT_IN_THEMES` keys.
-  - **`shiki-highlighter`** also contains `normalizeShikiPreWhitespace(pre)` to remove whitespace-only text nodes Shiki inserts between `.line` spans so `white-space: pre` does not create blank lines while preserving tabs/indent.
-  - **`shiki-highlighter`**: replaces `pre > code.language-*` blocks with Shiki HTML in the DOM, then serializes back for sanitize.
+  - **`shiki-config`**: explicit `SHIKI_LANG_IDS` allowlist with per-id loaders (static `import()` entries so the bundler does not include every Shiki grammar); `SHIKI_BUNDLED_THEME_IDS` / `github-light` + `github-dark`; maps reader `settings.theme.preset` to Shiki theme; must stay aligned with `src/theme/index.js` `BUILT_IN_THEMES` keys.
+  - **`shiki-highlighter`** also contains `normalizeShikiPreWhitespace` (HTML string path) to remove whitespace-only text nodes Shiki inserts between `.line` spans so `white-space: pre` does not create blank lines while preserving tabs/indent.
+  - **`shiki-highlighter`**: string-first `applyShikiToFencedCode` replaces fenced `<pre><code class="language-…">` blocks in the HTML string with Shiki output before sanitize.
 
 - `src/theme/index.js`
   - Builds CSS custom properties from settings preset + typography + layout; applied to viewer root via `applyThemeSettings()`.
 
 - `src/viewer/app.js`
-  - **`MarkdownViewerApp`**: **`mountViewerReact(container)`** → awaits shell `{ root, article }`; **`applyReaderStyles()`** applies `applyThemeSettings()` + typography/layout inline styles on `article`; async **`render()`** / **`updateSettings()`** (uses `needsFullRender()` for a style-only fast path; theme/plugin/structure changes still force full re-render for Shiki/runtime pipeline consistency).
+  - **`MarkdownViewerApp`**: **`mountViewerReact(container)`** → awaits shell `{ root, article }`; **`applyReaderStyles()`** applies `applyThemeSettings()` + typography/layout inline styles on `article`; **`injectViewerStyles({ id, cssText })`** for one-off runtime styles (e.g. KaTeX) keyed by `id`; async **`render()`** / **`updateSettings()`** (uses `needsFullRender()` for a style-only fast path; theme/plugin/structure changes still force full re-render for Shiki/runtime pipeline consistency).
   - Composes **`createArticleInteractions({ getArticle, showToast, getScrollRoot })`** — imperative listeners on the article element (React does not own `innerHTML`); toast goes through **`_reactHandle.showToast`** (React `ToastContext`).
   - Passes **`explorerBridge`** callbacks into React for navigation, re-render, and file I/O; explorer UI state lives in **`useExplorer`**.
 
@@ -392,6 +392,7 @@ Not implemented yet (from planning docs):
 
 From `docs/performance-issues-audit.md`, notable risks:
 - Viewer CSS bundled in the content script (no runtime fetch; still parse cost on every page)
+- Shiki/Mermaid/KaTeX heavy assets: mitigated by explicit Shiki language list, lazy optional plugins, lazy KaTeX CSS when Math is on, and Mermaid `IntersectionObserver` batching; see `docs/performance-issues-audit.md` and `DEV.md` (bundle size section)
 - Large-page text sampling / extraction cost
 - Scroll spy uses cached heading offsets + binary search on scroll (see `scroll-spy.js` / `useScrollSpy.js`); watch unstable React deps that force spy teardown
 - Repeated regex scans; full re-render on theme/plugin changes (typography/layout-only updates can skip full render via `needsFullRender()`)

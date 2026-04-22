@@ -1,7 +1,7 @@
 # Đánh giá vấn đề hiệu năng - Markdown Plus Extension
 
 Ngày kiểm tra gốc: 2026-04-13  
-**Cập nhật rà soát codebase:** 2026-04-17  
+**Cập nhật rà soát codebase:** 2026-04-22  
 Phạm vi: `src/**` (kèm `manifest.json`, `vite.config.mjs` để lấy bối cảnh runtime)
 
 **Ghi chú migration:** Một số module imperative cũ đã chuyển sang React (`src/viewer/react/**`). Các issue dưới đây đã cập nhật **vị trí file**; issue không còn trong code được đánh dấu **[RESOLVED]** và có thể bỏ khỏi backlog fix.
@@ -30,7 +30,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 | HIGH | 11 | Folder scan tuần tự + `.gitignore` | `folder-scanner.js` |
 | MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `message-router.js` |
 | MEDIUM-HIGH | 18 | Workspace picker multi-pass | `workspace-picker.js` |
-| MEDIUM-HIGH | 19 | Mermaid render tuần tự | `mermaid.plugin.js` |
+| MEDIUM-HIGH | 19 | Mermaid: còn render tuần tự từng block khi vào viewport | `mermaid.plugin.js` |
 | MEDIUM | 45–48 | Toast context; explorer mount sớm; `expandedMap` clone; timers copy | `ToastContext.jsx`, `FilesPanel.jsx` / `useExplorer.js`, `explorerReducer.js`, `article-interactions.js` |
 | MEDIUM | 13–42 *(trừ #21)* | (xem chi tiết từng issue bên dưới) | — |
 
@@ -64,10 +64,10 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ## Issue #3 [RESOLVED] Content script load nặng trên mọi trang
 
-- **Vị trí:** `src/content/index.js`, `src/content/viewer-loader.js`
-- **Đã xử lý:** `index.js` hiện là thin loader (URL/protocol check + `import()` động). Viewer bootstrap, SCSS `?inline`, KaTeX CSS và `SETTINGS_UPDATED` listener đã chuyển sang `viewer-loader.js`, chỉ load khi cần mount markdown viewer.
-- **Tối ưu bổ sung:** Đã memoize phần rewrite `extensionizeKatexFontUrls()` để không chạy regex full KaTeX CSS ở mỗi lần remount.
-- **Kết quả:** Giảm parse/eval/memory cost trên tab không phải markdown; giữ nguyên flow mount trên tab markdown.
+- **Vị trí:** `src/content/index.js`, `src/content/viewer-loader.js`, `src/plugins/optional/math.plugin.js`, `src/viewer/app.js`
+- **Đã xử lý:** `index.js` hiện là thin loader (URL/protocol check + `import()` động). Viewer bootstrap, SCSS `?inline` và `SETTINGS_UPDATED` listener ở `viewer-loader.js`, chỉ load khi cần mount markdown viewer.
+- **Cập nhật 2026-04-22 (bundle):** KaTeX CSS không còn nằm trong `viewer-loader`; khi plugin Math bật, `math.plugin.js` lazy-import CSS `?inline` và `MarkdownViewerApp.injectViewerStyles({ id: 'katex-runtime-css', ... })` gắn `<style>` vào container/Shadow root một lần. Fonts KaTeX vẫn emit vào `dist/assets/` theo Vite, nhưng không còn kéo theo content script mặc định khi math tắt.
+- **Kết quả:** Giảm parse/eval/memory cost trên tab không phải markdown; giảm payload content script mặc định; giữ flow mount trên tab markdown.
 
 ---
 
@@ -82,9 +82,10 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 ## Issue #5 [RESOLVED] Shiki khởi tạo toàn bộ ngôn ngữ + highlight không giới hạn concurrency
 
 - **Vị trí cập nhật:** `src/viewer/core/shiki-highlighter.js`, `src/viewer/core/shiki-config.js`.
-- **Đã xử lý:** Shiki chỉ khởi tạo với `SHIKI_CORE_LANG_IDS`; các ngôn ngữ khác được resolve qua alias map và load on-demand bằng `highlighter.loadLanguage(...)`.
+- **Đã xử lý:** Shiki chỉ khởi tạo với `SHIKI_CORE_LANG_IDS`; các ngôn ngữ khác trong allowlist `SHIKI_LANG_IDS` được resolve qua alias map và load on-demand bằng `highlighter.loadLanguage(...)` với module grammar từ `@shikijs/langs/...`.
 - **Đã xử lý:** Áp dụng queue giới hạn concurrency (4 blocks/lần) thay cho `Promise.all` không giới hạn.
-- **Kết quả kỳ vọng:** Giảm upfront init cost và hạn chế CPU/memory spike khi tài liệu có nhiều fenced code blocks.
+- **Cập nhật 2026-04-22 (kích thước gói):** Không còn dùng `shiki/bundle/web` (tránh ship hàng trăm grammar + hàng chục theme trong `dist/assets`). Build dùng `shiki/core` + WASM Oniguruma; chỉ các file `langs` / `themes` được import tường minh trong `shiki-config.js` mới nằm trong extension.
+- **Kết quả kỳ vọng:** Giảm upfront init cost, hạn chế CPU/memory spike khi tài liệu có nhiều fenced code blocks, và giảm kích thước tổng `dist/`.
 
 ---
 
@@ -233,14 +234,15 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #19 [MEDIUM-HIGH] Mermaid render tuần tự cho nhiều diagrams
+## Issue #19 [PARTIALLY-ADDRESSED] Mermaid render nặng khi nhiều diagrams
 
-- **Vị trí:** `src/plugins/optional/mermaid.plugin.js` (dòng 140–176)
-- **Hiện trạng:** `await mermaidApi.render` chạy trong `for` loop → diagrams render **strictly sequentially**.
-- **Tác động:** Tài liệu có 10+ Mermaid blocks → render chậm rõ rệt.
-- **Khuyến nghị fix:**
-  - Limited parallelism (2–3 concurrent renders) nếu Mermaid API cho phép.
-  - Hoặc: lazy render — chỉ render Mermaid blocks khi chúng scroll vào viewport (`IntersectionObserver`).
+- **Vị trí:** `src/plugins/optional/mermaid.plugin.js`
+- **Hiện trạng còn lại:** Mỗi block vẫn gọi `await mermaidApi.render` **tuần tự** khi block đó được kích hoạt (không render song song nhiều block).
+- **Tác động:** Tài liệu có 10+ Mermaid blocks ở cùng lúc trong viewport vẫn có thể chậm; many diagrams below the fold tốn ít hơn trước.
+- **Đã cải thiện (2026-04-22):** Dùng `IntersectionObserver` + `rootMargin` để **chỉ bắt đầu render** khi `.mdp-mermaid` gần vào viewport; disconnect observer sau mỗi lần re-render tài liệu.
+- **Khuyến nghị tiếp (mở):**
+  - Limited parallelism (2–3 concurrent `render`) nếu Mermaid API cho phép, cho các block cùng lúc visible.
+  - Hoặc: queue + cancel khi user scroll nhanh.
 
 ---
 
@@ -556,7 +558,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ### Responsive behavior
 
-5. **Lazy Mermaid/Math render**: chỉ render diagrams khi scroll vào viewport (IntersectionObserver).
+5. **Lazy Mermaid render:** đã dùng `IntersectionObserver` trong `mermaid.plugin.js`. **Math (KaTeX):** vẫn xử lý theo full pipeline khi plugin bật; KaTeX CSS lazy khi bật Math (không còn inline trong content script mặc định).
 6. **Collapsed TOC levels**: mặc định chỉ hiển thị heading level 1–2, expand on click cho deep levels.
 7. **Explorer tree pagination**: cho workspace > 500 files, load thêm khi scroll.
 

@@ -1,6 +1,7 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
 
 let katexPluginPromise = null
+let katexCssPromise = null
 
 function getKatexPlugin() {
   if (!katexPluginPromise) {
@@ -9,11 +10,26 @@ function getKatexPlugin() {
   return katexPluginPromise
 }
 
+function getKatexCss() {
+  if (!katexCssPromise) {
+    katexCssPromise = import('katex/dist/katex.min.css?inline').then(
+      (module) => module.default || ''
+    )
+  }
+  return katexCssPromise
+}
+
 export const mathPlugin = {
   id: PLUGIN_IDS.MATH,
-  async extendMarkdown({ markdownEngine }) {
+  async extendMarkdown({ markdownEngine, injectViewerStyles }) {
     const md = markdownEngine.instance
-    const katex = await getKatexPlugin()
+    const [katex, katexCss] = await Promise.all([getKatexPlugin(), getKatexCss()])
+    if (typeof injectViewerStyles === 'function' && katexCss) {
+      injectViewerStyles({
+        id: 'katex-runtime-css',
+        cssText: katexCss
+      })
+    }
     katex(md, {
       throwOnError: false,
       mathFence: true

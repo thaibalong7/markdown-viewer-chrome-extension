@@ -40,6 +40,7 @@ export class MarkdownViewerApp {
     this._smoothInitialHashScroll = false
     this._renderToken = 0
     this._styleElements = []
+    this._runtimeStyleElements = new Map()
     this._reactHandle = null
     this._currentFileUrl = window.location.href
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
@@ -136,6 +137,21 @@ export class MarkdownViewerApp {
     return this._rootEl || this._articleEl?.closest?.('.mdp-root') || null
   }
 
+  /**
+   * Allows optional plugins to inject runtime CSS once (e.g. KaTeX).
+   * @param {{ id?: string, cssText?: string }} payload
+   */
+  injectViewerStyles(payload = {}) {
+    const styleId = String(payload.id || '').trim()
+    const cssText = String(payload.cssText || '')
+    if (!styleId || !cssText) return
+    if (this._runtimeStyleElements.has(styleId)) return
+    const styleEl = createStyleElement(cssText)
+    styleEl.setAttribute('data-mdp-runtime-style', styleId)
+    this.container.appendChild(styleEl)
+    this._runtimeStyleElements.set(styleId, styleEl)
+  }
+
   captureScrollPosition() {
     const scrollRoot = this.getScrollRoot()
     if (!scrollRoot) return null
@@ -155,7 +171,9 @@ export class MarkdownViewerApp {
     const scrollSnapshot = preserveScroll ? this.captureScrollPosition() : null
     let result
     try {
-      result = await renderDocument(this.markdown, this.settings)
+      result = await renderDocument(this.markdown, this.settings, {
+        injectViewerStyles: (payload) => this.injectViewerStyles(payload)
+      })
     } catch (error) {
       logger.error('Failed to render markdown document.', error)
       return null
@@ -222,6 +240,7 @@ export class MarkdownViewerApp {
     this._reactHandle?.unmount()
     this._reactHandle = null
     this._styleElements = []
+    this._runtimeStyleElements.clear()
     this.container.innerHTML = ''
     this._rootEl = null
     this._articleEl = null

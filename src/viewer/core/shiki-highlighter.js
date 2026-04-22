@@ -1,7 +1,10 @@
-import { createHighlighter } from 'shiki/bundle/web'
+import { createHighlighterCore } from 'shiki/core'
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma'
 import { logger } from '../../shared/logger.js'
 import {
   getShikiThemeIdForSettings,
+  loadShikiLanguageModule,
+  loadShikiThemeModule,
   SHIKI_BUNDLED_THEME_IDS,
   SHIKI_CORE_LANG_IDS,
   resolveShikiLangId
@@ -24,7 +27,8 @@ const HTML_NAMED_ENTITIES = {
 
 function stripWhitespaceOnlyDirectChildTextNodes(parent) {
   if (!parent) return
-  for (const node of [...parent.childNodes]) {
+  for (let idx = parent.childNodes.length - 1; idx >= 0; idx -= 1) {
+    const node = parent.childNodes[idx]
     if (node.nodeType === Node.TEXT_NODE && WHITESPACE_ONLY.test(node.textContent ?? '')) {
       node.remove()
     }
@@ -41,6 +45,11 @@ function normalizeShikiPreWhitespace(preEl) {
 let highlighterPromise = null
 let loadedLangIds = new Set(SHIKI_CORE_LANG_IDS)
 const langLoadPromises = new Map()
+
+function resolveModuleDefault(moduleValue) {
+  if (!moduleValue || typeof moduleValue !== 'object') return moduleValue
+  return moduleValue.default || moduleValue
+}
 
 function decodeHtmlEntities(value) {
   const toCodePoint = (num, fallback) => {
@@ -101,9 +110,17 @@ async function ensureShikiLanguage(highlighter, rawLang) {
   if (loadedLangIds.has(resolvedLangId)) return resolvedLangId
 
   if (!langLoadPromises.has(resolvedLangId)) {
+    const languageModulePromise = Promise.resolve(loadShikiLanguageModule(resolvedLangId)).then(
+      (moduleValue) => {
+        const language = resolveModuleDefault(moduleValue)
+        if (!language) throw new Error(`Missing Shiki language module for "${resolvedLangId}".`)
+        return language
+      }
+    )
     langLoadPromises.set(
       resolvedLangId,
-      Promise.resolve(highlighter.loadLanguage(resolvedLangId))
+      languageModulePromise
+        .then((language) => highlighter.loadLanguage(language))
         .then(() => {
           loadedLangIds.add(resolvedLangId)
           langLoadPromises.delete(resolvedLangId)
@@ -126,16 +143,40 @@ async function ensureShikiLanguage(highlighter, rawLang) {
 
 export function getShikiHighlighter() {
   if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
-      themes: SHIKI_BUNDLED_THEME_IDS,
-      langs: SHIKI_CORE_LANG_IDS
-    }).catch((error) => {
-      highlighterPromise = null
-      loadedLangIds = new Set(SHIKI_CORE_LANG_IDS)
-      langLoadPromises.clear()
-      logger.error('Shiki highlighter failed to initialize.', error)
-      throw error
-    })
+    highlighterPromise = Promise.all([
+      Promise.all(
+        SHIKI_BUNDLED_THEME_IDS.map((themeId) =>
+          Promise.resolve(loadShikiThemeModule(themeId)).then((moduleValue) =>
+            resolveModuleDefault(moduleValue)
+          )
+        )
+      ),
+      Promise.all(
+        SHIKI_CORE_LANG_IDS.map((langId) =>
+          Promise.resolve(loadShikiLanguageModule(langId)).then((moduleValue) =>
+            resolveModuleDefault(moduleValue)
+          )
+        )
+      )
+    ])
+      .then(([themes, languages]) =>
+        createHighlighterCore({
+          themes: themes.filter(Boolean),
+          langs: languages.filter(Boolean),
+          engine: createOnigurumaEngine(import('shiki/wasm'))
+        })
+      )
+      .then((highlighter) => {
+        loadedLangIds = new Set(SHIKI_CORE_LANG_IDS)
+        return highlighter
+      })
+      .catch((error) => {
+        highlighterPromise = null
+        loadedLangIds = new Set(SHIKI_CORE_LANG_IDS)
+        langLoadPromises.clear()
+        logger.error('Shiki highlighter failed to initialize.', error)
+        throw error
+      })
   }
   return highlighterPromise
 }

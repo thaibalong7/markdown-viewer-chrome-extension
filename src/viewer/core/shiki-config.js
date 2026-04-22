@@ -1,66 +1,116 @@
 /**
- * Shiki bundle configuration for the reader. Keep preset keys aligned with
+ * Shiki configuration for the reader. Keep preset keys aligned with
  * `BUILT_IN_THEMES` in `src/theme/index.js`.
  */
 
-import { bundledLanguagesInfo } from 'shiki/bundle/web'
-
-/** Bundled Shiki theme ids — must include one entry per reader preset in the map below (and match `BUILT_IN_THEMES` keys in `src/theme/index.js`). */
-export const SHIKI_BUNDLED_THEME_IDS = ['github-light', 'github-dark']
-
-/** Reader `settings.theme.preset` → Shiki `codeToHtml` theme id. */
+/** Reader `settings.theme.preset` -> Shiki theme id. */
 const PRESET_TO_SHIKI_THEME_ID = {
   light: 'github-light',
   dark: 'github-dark'
 }
 
-const SHIKI_BUNDLED_LANG_INFOS = bundledLanguagesInfo.map((info) => ({
-  id: String(info?.id || '').toLowerCase(),
-  aliases: Array.isArray(info?.aliases)
-    ? info.aliases.map((alias) => String(alias || '').toLowerCase()).filter(Boolean)
-    : []
-}))
+/**
+ * Explicit language module loaders to keep bundle size bounded.
+ * Avoid variable dynamic-import paths here, otherwise Vite may include the full language set.
+ */
+const SHIKI_LANGUAGE_LOADERS = {
+  javascript: () => import('@shikijs/langs/javascript'),
+  typescript: () => import('@shikijs/langs/typescript'),
+  jsx: () => import('@shikijs/langs/jsx'),
+  tsx: () => import('@shikijs/langs/tsx'),
+  html: () => import('@shikijs/langs/html'),
+  css: () => import('@shikijs/langs/css'),
+  scss: () => import('@shikijs/langs/scss'),
+  json: () => import('@shikijs/langs/json'),
+  jsonc: () => import('@shikijs/langs/jsonc'),
+  markdown: () => import('@shikijs/langs/markdown'),
+  mdx: () => import('@shikijs/langs/mdx'),
+  yaml: () => import('@shikijs/langs/yaml'),
+  toml: () => import('@shikijs/langs/toml'),
+  bash: () => import('@shikijs/langs/bash'),
+  shellscript: () => import('@shikijs/langs/shellscript'),
+  powershell: () => import('@shikijs/langs/powershell'),
+  python: () => import('@shikijs/langs/python'),
+  ruby: () => import('@shikijs/langs/ruby'),
+  rust: () => import('@shikijs/langs/rust'),
+  go: () => import('@shikijs/langs/go'),
+  java: () => import('@shikijs/langs/java'),
+  kotlin: () => import('@shikijs/langs/kotlin'),
+  swift: () => import('@shikijs/langs/swift'),
+  c: () => import('@shikijs/langs/c'),
+  cpp: () => import('@shikijs/langs/cpp'),
+  csharp: () => import('@shikijs/langs/csharp'),
+  php: () => import('@shikijs/langs/php'),
+  sql: () => import('@shikijs/langs/sql'),
+  graphql: () => import('@shikijs/langs/graphql'),
+  dockerfile: () => import('@shikijs/langs/dockerfile'),
+  nginx: () => import('@shikijs/langs/nginx'),
+  diff: () => import('@shikijs/langs/diff'),
+  ini: () => import('@shikijs/langs/ini'),
+  xml: () => import('@shikijs/langs/xml'),
+  vue: () => import('@shikijs/langs/vue'),
+  svelte: () => import('@shikijs/langs/svelte'),
+  lua: () => import('@shikijs/langs/lua'),
+  r: () => import('@shikijs/langs/r'),
+  dart: () => import('@shikijs/langs/dart')
+}
 
-/** Full list of grammar ids shipped by `shiki/bundle/web`. */
-export const SHIKI_ALL_LANG_IDS = SHIKI_BUNDLED_LANG_INFOS.map(({ id }) => id)
+const SHIKI_THEME_LOADERS = {
+  'github-light': () => import('@shikijs/themes/github-light'),
+  'github-dark': () => import('@shikijs/themes/github-dark')
+}
 
-const ALL_LANG_ID_SET = new Set(SHIKI_ALL_LANG_IDS)
-const CORE_LANG_CANDIDATES = [
-  'javascript',
-  'typescript',
-  'jsx',
-  'tsx',
-  'html',
-  'css',
-  'json',
-  'markdown',
-  'python',
-  'bash',
-  'shellscript',
-  'yaml',
-  'sql',
-  'java',
-  'c',
-  'cpp'
-]
+/** Explicit allowlist of shipped Shiki language ids. */
+export const SHIKI_LANG_IDS = Object.keys(SHIKI_LANGUAGE_LOADERS)
 
-/** Smaller startup language set; remaining grammars are loaded on demand. */
-export const SHIKI_CORE_LANG_IDS = CORE_LANG_CANDIDATES.filter((id) => ALL_LANG_ID_SET.has(id))
+/** Theme ids shipped in the reader. */
+export const SHIKI_BUNDLED_THEME_IDS = Object.keys(SHIKI_THEME_LOADERS)
 
-const SHIKI_LANG_ID_BY_TOKEN = new Map()
-for (const { id, aliases } of SHIKI_BUNDLED_LANG_INFOS) {
-  SHIKI_LANG_ID_BY_TOKEN.set(id, id)
-  for (const alias of aliases) {
-    if (!SHIKI_LANG_ID_BY_TOKEN.has(alias)) {
-      SHIKI_LANG_ID_BY_TOKEN.set(alias, id)
-    }
-  }
+/** Smaller startup set; remaining grammars are loaded on demand. */
+export const SHIKI_CORE_LANG_IDS = ['javascript', 'typescript', 'json', 'markdown', 'html', 'css', 'bash', 'python']
+
+const SHIKI_LANG_ALIAS_TO_ID = new Map([
+  ['js', 'javascript'],
+  ['mjs', 'javascript'],
+  ['cjs', 'javascript'],
+  ['ts', 'typescript'],
+  ['mts', 'typescript'],
+  ['cts', 'typescript'],
+  ['py', 'python'],
+  ['sh', 'bash'],
+  ['shell', 'bash'],
+  ['zsh', 'bash'],
+  ['yml', 'yaml'],
+  ['kt', 'kotlin'],
+  ['cs', 'csharp'],
+  ['c#', 'csharp'],
+  ['rb', 'ruby'],
+  ['md', 'markdown'],
+  ['mdwn', 'markdown'],
+  ['ps1', 'powershell'],
+  ['docker', 'dockerfile']
+])
+
+for (const id of SHIKI_LANG_IDS) {
+  SHIKI_LANG_ALIAS_TO_ID.set(id, id)
 }
 
 export function resolveShikiLangId(lang) {
   const token = String(lang || '').trim().toLowerCase()
   if (!token) return null
-  return SHIKI_LANG_ID_BY_TOKEN.get(token) || null
+  return SHIKI_LANG_ALIAS_TO_ID.get(token) || null
+}
+
+export function loadShikiLanguageModule(langId) {
+  const loader = SHIKI_LANGUAGE_LOADERS[langId]
+  if (!loader) return null
+  return loader()
+}
+
+export function loadShikiThemeModule(themeId) {
+  const loader = SHIKI_THEME_LOADERS[themeId]
+  if (!loader) return null
+  return loader()
 }
 
 export function getShikiThemeIdForSettings(settings = {}) {

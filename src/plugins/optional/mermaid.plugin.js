@@ -6,6 +6,7 @@ let mermaidImportPromise = null
 let mermaidInitializePromise = null
 let mermaidRenderCounter = 0
 let mermaidThemeKey = null
+let activeRenderObserver = null
 
 function getMermaidThemeByPreset(preset) {
   const key = String(preset || '').toLowerCase()
@@ -114,6 +115,35 @@ function hoistMermaidPresToDivs(articleEl) {
   }
 }
 
+function disconnectMermaidObserver() {
+  if (!activeRenderObserver) return
+  activeRenderObserver.disconnect()
+  activeRenderObserver = null
+}
+
+async function renderMermaidNode({ node, mermaidApi, chartIndex, copyCodeWithToast }) {
+  const source = node.textContent || ''
+  const code = String(source).trim()
+  if (!code) {
+    node.setAttribute('data-mermaid-processed', 'true')
+    return
+  }
+
+  try {
+    mermaidRenderCounter += 1
+    const id = `mdp-mermaid-${mermaidRenderCounter}`
+    const out = await mermaidApi.render(id, code)
+    node.innerHTML = out.svg
+    attachMermaidCopyButton(node, { source: code, copyCodeWithToast })
+    attachMermaidActionsMenu(node, { chartIndex })
+  } catch (error) {
+    logger.warn('Mermaid block rendering failed.', error)
+    setMermaidRenderError(node, code, error)
+    attachMermaidCopyButton(node, { source: code, copyCodeWithToast })
+  }
+  node.setAttribute('data-mermaid-processed', 'true')
+}
+
 export const mermaidPlugin = {
   id: PLUGIN_IDS.MERMAID,
   extendMarkdown({ markdownEngine }) {
@@ -134,6 +164,7 @@ export const mermaidPlugin = {
   },
   async afterRender({ articleEl, settings, copyCodeWithToast }) {
     if (!articleEl) return
+    disconnectMermaidObserver()
 
     hoistMermaidPresToDivs(articleEl)
 
@@ -150,29 +181,44 @@ export const mermaidPlugin = {
     }
 
     const allCharts = [...articleEl.querySelectorAll('.mdp-markdown-body .mdp-mermaid')]
+    const chartIndexByNode = new Map(allCharts.map((node, idx) => [node, idx + 1]))
+
+    if (typeof IntersectionObserver !== 'function') {
+      for (const node of nodes) {
+        await renderMermaidNode({
+          node,
+          mermaidApi,
+          chartIndex: Math.max(1, chartIndexByNode.get(node) || 1),
+          copyCodeWithToast
+        })
+      }
+      return
+    }
+
+    const observerRoot = articleEl.closest('.mdp-root') || null
+    activeRenderObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+          const node = entry.target
+          activeRenderObserver?.unobserve(node)
+          void renderMermaidNode({
+            node,
+            mermaidApi,
+            chartIndex: Math.max(1, chartIndexByNode.get(node) || 1),
+            copyCodeWithToast
+          })
+        }
+      },
+      {
+        root: observerRoot,
+        rootMargin: '200px 0px',
+        threshold: 0.01
+      }
+    )
 
     for (const node of nodes) {
-      const source = node.textContent || ''
-      const code = String(source).trim()
-      if (!code) {
-        node.setAttribute('data-mermaid-processed', 'true')
-        continue
-      }
-
-      try {
-        mermaidRenderCounter += 1
-        const id = `mdp-mermaid-${mermaidRenderCounter}`
-        const out = await mermaidApi.render(id, code)
-        node.innerHTML = out.svg
-        const chartIndex = Math.max(1, allCharts.indexOf(node) + 1)
-        attachMermaidCopyButton(node, { source: code, copyCodeWithToast })
-        attachMermaidActionsMenu(node, { chartIndex })
-      } catch (error) {
-        logger.warn('Mermaid block rendering failed.', error)
-        setMermaidRenderError(node, code, error)
-        attachMermaidCopyButton(node, { source: code, copyCodeWithToast })
-      }
-      node.setAttribute('data-mermaid-processed', 'true')
+      activeRenderObserver.observe(node)
     }
   }
 }

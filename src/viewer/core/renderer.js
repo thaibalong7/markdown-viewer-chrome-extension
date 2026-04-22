@@ -30,16 +30,16 @@ export function renderIntoElement(element, html) {
   element.innerHTML = html || ''
 }
 
-export async function renderDocument(markdown, settings = {}) {
+export async function renderDocument(markdown, settings = {}, runtimeContext = {}) {
   const pluginManager = await createPluginManager({ settings })
   const markdownEngine = createMarkdownEngine()
 
-  await pluginManager.extendMarkdown(markdownEngine, { settings })
-  const nextMarkdown = pluginManager.preprocessMarkdown(markdown, { settings })
+  await pluginManager.extendMarkdown(markdownEngine, { settings, ...runtimeContext })
+  const nextMarkdown = pluginManager.preprocessMarkdown(markdown, { settings, ...runtimeContext })
 
   const result = renderMarkdown(nextMarkdown, { markdownEngine })
   let html = result.html
-  html = pluginManager.postprocessHtml(html, { settings, markdown: nextMarkdown })
+  html = pluginManager.postprocessHtml(html, { settings, markdown: nextMarkdown, ...runtimeContext })
 
   const codeOn = settings?.plugins?.codeHighlight?.enabled !== false
   if (codeOn) {

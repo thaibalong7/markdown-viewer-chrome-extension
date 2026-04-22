@@ -14,18 +14,18 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 ## Features
 
 - Auto-detects Markdown-like pages (product gate: local `file:` `.md` / `.markdown` / `.mdown` plus detector heuristics).
-- Renders content in a readable viewer layout (markdown-it → optional Shiki → DOMPurify → article `innerHTML`; React owns chrome only).
+- Renders content in a readable viewer layout (markdown-it → optional Shiki syntax highlighting → DOMPurify → article `innerHTML`; React owns chrome only). Shiki uses an explicit language allowlist (`@shikijs/langs` + `github-light` / `github-dark` themes) to keep the extension package smaller than the full `shiki/bundle/web` set.
 - Left sidebar Table of Contents with heading navigation.
 - **Files explorer** (sidebar Files tab): browse Markdown siblings in the same folder; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
 - GitHub-inspired Light/Dark themes and typography controls.
 - Built-in plugin system with core and optional plugins.
-- Optional Mermaid support with diagram rendering.
+- Optional Mermaid support with diagram rendering (diagrams render when they enter the viewport).
 - Mermaid export actions:
   - Download `SVG`
   - Download `PNG` with resolution options (`1x`, `2x`, `3x`, `4x`)
 - **Print** and **export** (HTML / Word) from the toolbar when a real `file:` URL is active.
 - User settings persisted through browser storage (`chrome.storage.sync` with local fallback).
-- **Tech:** Vite, `@crxjs/vite-plugin`, `@vitejs/plugin-react`, React 19, SCSS inlined in the content script.
+- **Tech:** Vite, `@crxjs/vite-plugin`, `@vitejs/plugin-react`, React 19, Shiki (`shiki` core + `@shikijs/langs` / `@shikijs/themes`), SCSS inlined in the content script. KaTeX CSS for Math is loaded only when the Math plugin is enabled.
 
 ## Quick Start
 
@@ -71,11 +71,13 @@ Available scripts:
 - `npm run build` - Production extension output to `dist/`.
 - `npm run watch` - Vite build in watch mode.
 - `npm run preview` - Preview built output.
+- `npm run analyze` - Production build with `rollup-plugin-visualizer` (writes `dist/stats.html`).
+- `npm run size:report` - Quick `du` summary of `dist/` and total size of `dist/assets/*.js`.
 
 Development notes:
 
 - Use Node 20 (`nvm use 20`) before running npm scripts.
-- Viewer styles live in `src/viewer/styles/**/*.scss` and are imported with `?inline` from `src/content/index.js`, so Vite bundles them into the content script (no generated `.css` next to sources).
+- Viewer styles live in `src/viewer/styles/**/*.scss` and are imported with `?inline` from `src/content/viewer-loader.js` (loaded after the thin `src/content/index.js` gate), so Vite bundles them into the viewer content script (no generated `.css` next to sources).
 - Treat `src/**`, `manifest.json`, and `vite.config.mjs` as source of truth.
 - Do not edit `dist/**` manually; regenerate it with `npm run build`.
 

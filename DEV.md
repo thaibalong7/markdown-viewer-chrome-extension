@@ -24,8 +24,10 @@ npm run dev
 
 Trong quá trình dev, CRXJS sẽ rebuild thư mục `dist/` khi bạn sửa code.
 
+**Ghi chú Vite 8:** build production có thể in cảnh báo kiểu `Both rollupOptions and rolldownOptions were specified` từ plugin CRX — đó là tương tác plugin; `npm run build` vẫn tạo `dist/` bình thường nếu không lỗi.
+
 ### Gợi ý workflow
-- **Viewer (content script):** `src/content/index.js` → `bootstrap.js` → `src/viewer/app.js`; UI React trong `src/viewer/react/` (shell, sidebar, explorer). Styles: `src/viewer/styles/**/*.scss` + `src/content/host-print.scss`, import `?inline` từ content script.
+- **Viewer (content script):** `src/content/index.js` (chỉ gate `file:` + dynamic import) → `src/content/viewer-loader.js` → `bootstrap.js` → `src/viewer/app.js`; UI React trong `src/viewer/react/` (shell, sidebar, explorer). Styles: `src/viewer/styles/**/*.scss` + `src/content/host-print.scss`, import `?inline` từ `viewer-loader.js` (và các import liên quan).
 - **Popup:** `src/popup/index.jsx` → `PopupApp.jsx` và các panel.
 - **Background:** `src/background/service-worker.js` (import `message-router.js`). Message types: `src/messaging/index.js` (gồm `OFFSCREEN_FETCH` / `OFFSCREEN_FETCH_DONE` cho offscreen document).
 
@@ -45,6 +47,22 @@ Mỗi lần sửa code, bạn quay lại extension và bấm reload nếu cần 
 npm run build
 ```
 Sau đó cũng **Load unpacked** bằng `dist/`.
+
+## Kích thước bundle và phân tích
+
+- **Mục tiêu chung:** Shiki không dùng `shiki/bundle/web` (tránh ship toàn bộ grammars/themes). Danh sách ngôn ngữ nằm trong `src/viewer/core/shiki-config.js` (`SHIKI_LANG_IDS`, loader map). Themes: `github-light` / `github-dark` qua `@shikijs/themes`.
+- **KaTeX (Math):** CSS/fonts chỉ được kéo khi plugin Math bật (inject runtime trong `src/plugins/optional/math.plugin.js`), không còn inline sẵn trong `viewer-loader` khi math tắt.
+- **Đo nhanh sau build:**
+  ```bash
+  npm run size:report
+  ```
+- **Treemap / breakdown:** sau build có `dist/stats.html` nếu chạy:
+  ```bash
+  npm run analyze
+  ```
+  (Bật `ANALYZE=1` trong script; cần Node 20 như các lệnh khác.)
+
+`vite.config.mjs` có `build.rollupOptions.output.manualChunks` cho vài vendor lớn (`markdown-core`, `sanitizer`, `react-vendor`); output CRX vẫn ổn định trong `dist/assets/`.
 
 ## Troubleshooting: lỗi native binding / optional deps
 Nếu bạn gặp lỗi kiểu `Cannot find native binding` (thường do cài deps dưới Node version khác):

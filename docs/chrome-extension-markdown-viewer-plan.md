@@ -1,7 +1,7 @@
 # Chrome Extension Markdown Plus - Project Specification & Phased Implementation Plan
 
 > **Trạng thái hiện tại (code 2026):**
-> - Viewer shell đã migrate sang React (`src/viewer/react/*`), có TOC + Files tab + toolbar actions (print/export).
+> - Viewer shell đã migrate sang React (`src/viewer/react/*`), có TOC + Files tab + floating actions (print/export).
 > - Cấu hình runtime hiện tại đi qua **popup React** (`src/popup/PopupApp.jsx`) + messaging `SAVE_SETTINGS`/`SETTINGS_UPDATED`.
 > - **Không có settings drawer trong viewer** ở bản hiện tại; phần này là spec lịch sử/định hướng tương lai.
 > - `updateSettings()` đã có fast path theo `needsFullRender()` (không còn luôn full re-render).
@@ -32,7 +32,7 @@ Khi người dùng mở một URL/file Markdown:
 3. Bố cục chính:
    - **Sidebar trái:** Table of Contents
    - **Main content:** nội dung Markdown đã render
-   - **Toolbar góc trên:** action document (print/export); settings truy cập qua popup extension
+   - **Floating actions góc trên bên phải:** action document (print/export); settings truy cập qua popup extension
 4. Người dùng có thể:
    - xem mục lục và click để nhảy đến section
    - bật/tắt plugin như Mermaid, Math, code highlight
@@ -65,7 +65,7 @@ Khi người dùng mở một URL/file Markdown:
 ## 3.2 Layout & UI
 - Sidebar trái cho TOC
 - Nội dung chính ở giữa/phải
-- Header nổi hoặc top toolbar đơn giản
+- Floating action controls gọn nhẹ (thay cho top toolbar)
 - Settings runtime hiện tại qua popup extension (drawer trong viewer: deferred/future)
 - Responsive ở mức đủ dùng cho nhiều kích thước màn hình
 

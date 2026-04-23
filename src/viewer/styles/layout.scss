@@ -1,40 +1,11 @@
-@use 'variables' as v;
-@use 'toolbar-actions';
+@use 'floating-actions';
 @use 'chrome-print';
 @use '../../shared/styles/skeleton';
 
 .mdp-root {
-  --mdp-toolbar-stack: #{v.$mdp-toolbar-stack};
   background: var(--mdp-bg);
   color: var(--mdp-text);
   min-height: 100vh;
-}
-
-.mdp-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  box-sizing: border-box;
-  min-height: var(--mdp-toolbar-stack);
-  padding: 6px 12px;
-  border-bottom: 1px solid var(--mdp-border);
-  background: var(--mdp-bg);
-
-  &__title {
-    font-weight: 700;
-  }
-
-  &__actions {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    min-height: 36px;
-  }
 }
 
 .mdp-button {
@@ -49,7 +20,7 @@
 .mdp-body {
   display: grid;
   grid-template-columns: var(--mdp-toc-width) minmax(0, 1fr);
-  min-height: calc(100vh - var(--mdp-toolbar-stack));
+  min-height: 100vh;
 
   /* Sidebar `display:none` removes it from grid; single visible child must not land on the 0px TOC track. */
   &--no-toc {

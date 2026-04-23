@@ -16,7 +16,7 @@ alwaysApply: false
 
 ## React shell boundary
 
-- **`ViewerShell`** calls **`onShellReady({ root, article })`** when both nodes exist. Imperative code (**`MarkdownViewerApp`**, **`article-interactions.js`**) must **not** retain references to toolbar, sidebar panels, TOC nav, resize handle, etc. — those are React-owned.
+- **`ViewerShell`** calls **`onShellReady({ root, article })`** when both nodes exist. Imperative code (**`MarkdownViewerApp`**, **`article-interactions.js`**) must **not** retain references to floating action controls, sidebar panels, TOC nav, resize handle, etc. — those are React-owned.
 - **`article`**: React renders the empty **`<article class="mdp-markdown-body">`**; **`renderIntoElement(article, html)`** and plugins **`afterRender`** mutate **`innerHTML`** and injected nodes. React must not reconcile that subtree.
 - **Toast (chrome)**: **`ToastProvider`** / **`_reactHandle.showToast`**. **Sidebar tab** (Outline vs Files): **`SidebarTabProvider`** / **`SidebarTabContext`** — settings for the shell are **props from `mount.js`**, not a separate settings context. **Plugin** hovers use **`dom-tooltip.js`** on nodes created in **`afterRender`**.
 - **Loading UI primitives:** prefer shared **`src/shared/react/Skeleton.jsx`** (`SkeletonLine`, `SkeletonBlock`) and **`src/shared/styles/_skeleton.scss`** for chrome/popup loading placeholders instead of ad-hoc spinners or plain loading text.
@@ -35,4 +35,4 @@ alwaysApply: false
 
 ## Stable DOM contract
 
-- Preserve shell class names and hierarchy (**`mdp-root`**, **`mdp-toolbar`**, **`mdp-sidebar`**, **`mdp-markdown-body`**) so SCSS and scroll math stay valid.
+- Preserve shell class names and hierarchy (**`mdp-root`**, **`mdp-sidebar`**, **`mdp-markdown-body`**) so SCSS and scroll math stay valid.

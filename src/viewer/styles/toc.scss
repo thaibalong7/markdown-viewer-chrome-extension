@@ -1,8 +1,8 @@
 .mdp-sidebar {
   position: sticky;
-  top: var(--mdp-toolbar-stack, 49px);
+  top: 0;
   align-self: start;
-  height: calc(100vh - var(--mdp-toolbar-stack, 49px));
+  height: 100vh;
   overflow: hidden;
 }
 

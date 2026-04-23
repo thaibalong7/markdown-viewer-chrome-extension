@@ -1,6 +1,6 @@
 # markdown-plus
 
-A Chrome Extension (MV3) that detects local Markdown files and turns raw text into a clean reading experience with a **React**-based viewer shell (toolbar, sidebar, TOC, Files explorer), themes, plugins, and customizable settings via a **React popup**.
+A Chrome Extension (MV3) that detects local Markdown files and turns raw text into a clean reading experience with a **React**-based viewer shell (floating document actions, sidebar, TOC, Files explorer), themes, plugins, and customizable settings via a **React popup**.
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 - Mermaid export actions:
   - Download `SVG`
   - Download `PNG` with resolution options (`1x`, `2x`, `3x`, `4x`)
-- **Print** and **export** (HTML / Word) from the toolbar when a real `file:` URL is active.
+- **Print** and **export** (HTML / Word) from the floating action bar when a real `file:` URL is active.
 - User settings persisted through browser storage (`chrome.storage.sync` with local fallback).
 - **Tech:** Vite, `@crxjs/vite-plugin`, `@vitejs/plugin-react`, React 19, Shiki (`shiki` core + `@shikijs/langs` / `@shikijs/themes`), SCSS inlined in the content script. KaTeX CSS for Math is loaded only when the Math plugin is enabled.
 

@@ -2,11 +2,10 @@
  * Also see: `src/content/host-print.scss` (light DOM: hide host `body`, reset `#mdp-viewer-root`),
  *   `src/viewer/styles/content/_article-print.scss` (`.mdp-markdown-body` typography for print). */
 @media print {
-  .mdp-toolbar,
+  .mdp-floating-actions,
   .mdp-sidebar,
   .mdp-sidebar__resize-handle,
-  .mdp-toast,
-  .mdp-toolbar-doc-actions {
+  .mdp-toast {
     display: none !important;
   }
 

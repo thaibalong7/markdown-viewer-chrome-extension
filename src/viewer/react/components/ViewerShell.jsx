@@ -1,5 +1,4 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { Toolbar } from './Toolbar.jsx'
 import { Sidebar } from './Sidebar.jsx'
 import { Toast } from './Toast.jsx'
 
@@ -28,7 +27,7 @@ export function ViewerShell({ children, onShellReady, settings, tocItems, tocRea
 
   return (
     <div className="mdp-root" ref={handleRootRef}>
-      <Toolbar>{children}</Toolbar>
+      {children}
       <div className="mdp-body">
         <Sidebar
           settings={settings}

@@ -1,10 +1,9 @@
 /**
- * Cross-cutting viewer chrome constants (toolbar, scroll padding, sidebar bounds, copy UX).
- * SCSS alignment: `$mdp-toolbar-stack` in `src/viewer/styles/_variables.scss` ↔ toolbar fallback height.
+ * Cross-cutting viewer chrome constants (top offset, scroll padding, sidebar bounds, copy UX).
  */
 
-/** Fallback when `.mdp-toolbar` height cannot be measured (px). */
-export const MDP_TOOLBAR_HEIGHT_FALLBACK_PX = 49
+/** Top offset fallback when no sticky top chrome is present (px). */
+export const MDP_TOOLBAR_HEIGHT_FALLBACK_PX = 0
 
 /** Extra scroll offset below the toolbar for hash jumps and TOC scroll (px). */
 export const SCROLL_PADDING_PX = 8

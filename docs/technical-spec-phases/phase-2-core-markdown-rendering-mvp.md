@@ -11,7 +11,7 @@ Biến raw markdown thành HTML dễ đọc, có layout viewer cơ bản, có n�
 - Markdown cơ bản render được thành HTML đẹp
 - Có shell layout ban đầu
 - Có content pane
-- Có header toolbar
+- Có floating document actions (thay cho header toolbar)
 - Có settings button placeholder
 - Có sanitize output
 
@@ -23,7 +23,7 @@ src/viewer/core/renderer.js
 src/viewer/core/sanitize-html.js
 src/viewer/core/dom-renderer.js
 src/viewer/shell/viewer-shell.js
-src/viewer/shell/header-toolbar.js
+src/viewer/react/components/FloatingActions.jsx
 src/viewer/shell/content-pane.js
 src/viewer/styles/base.scss
 src/viewer/styles/layout.scss

@@ -1,8 +1,5 @@
 // Shared SCSS tokens (runtime theming stays on CSS custom properties)
 
-// Toolbar block height (padding + border + tallest row: e.g. .mdp-button). Keep in sync with .mdp-toolbar in layout.scss.
-$mdp-toolbar-stack: 49px;
-
 $mono-font: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 $code-font-size: 0.875em;
 $code-line-height: 1.42;

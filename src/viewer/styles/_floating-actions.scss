@@ -1,13 +1,30 @@
 @use 'variables' as v;
 
-/* Toolbar print / export controls (see `viewer/react/components/ToolbarActions.jsx` + `viewer/actions/document-actions.js`). */
-.mdp-toolbar-doc-actions {
+/* Floating document controls (print/export). */
+.mdp-floating-actions {
+  position: fixed;
+  top: 12px;
+  right: 24px;
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 6px;
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 88%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--mdp-panel-bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--mdp-text) 12%, transparent);
+  opacity: 0.4;
+  transition: opacity 200ms ease;
+
+  &:hover,
+  &:focus-within {
+    opacity: 1;
+  }
 }
 
-.mdp-toolbar-icon-btn {
+.mdp-fab-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,15 +50,15 @@
   }
 }
 
-.mdp-toolbar-icon-btn__icon {
+.mdp-fab-btn__icon {
   flex-shrink: 0;
 }
 
-.mdp-toolbar-export {
+.mdp-fab-export {
   position: relative;
 }
 
-.mdp-toolbar-export__menu {
+.mdp-fab-export__menu {
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
@@ -54,7 +71,7 @@
   box-shadow: 0 8px 24px color-mix(in srgb, var(--mdp-text) 14%, transparent);
 }
 
-.mdp-toolbar-export__menu-item {
+.mdp-fab-export__menu-item {
   display: block;
   width: 100%;
   margin: 0;

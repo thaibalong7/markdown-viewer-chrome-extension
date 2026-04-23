@@ -1,12 +1,12 @@
 import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from '../shared/constants/viewer.js'
 
 /**
- * Scroll so `element` aligns under the sticky toolbar inside `scrollRoot`, or fall back to window scroll.
+ * Scroll so `element` aligns near the top of the viewer scroll root, or fall back to window scroll.
  *
  * @param {object} options
  * @param {Element} options.element
  * @param {Element | null} [options.scrollRoot] - `.mdp-root` when present
- * @param {number} [options.toolbarHeight] - measured toolbar height (px)
+ * @param {number} [options.toolbarHeight] - top offset in px (0 when no top chrome)
  * @param {ScrollBehavior} [options.behavior]
  */
 export function scrollToElementInViewer({
@@ -32,11 +32,11 @@ export function scrollToElementInViewer({
 }
 
 /**
- * Toolbar height inside a viewer scroll root (sticky `.mdp-toolbar`).
+ * Top chrome offset inside a viewer scroll root.
  * @param {Element | null | undefined} scrollRoot
  * @returns {number}
  */
 export function getToolbarHeightInScrollRoot(scrollRoot) {
-  const toolbarEl = scrollRoot?.querySelector?.('.mdp-toolbar')
-  return toolbarEl?.getBoundingClientRect?.().height || MDP_TOOLBAR_HEIGHT_FALLBACK_PX
+  void scrollRoot
+  return MDP_TOOLBAR_HEIGHT_FALLBACK_PX
 }

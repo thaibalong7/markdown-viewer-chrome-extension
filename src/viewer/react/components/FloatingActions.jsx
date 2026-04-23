@@ -11,7 +11,7 @@ import { Tooltip } from './Tooltip.jsx'
 import { ExportIcon } from './icons/ExportIcon.jsx'
 import { PrintIcon } from './icons/PrintIcon.jsx'
 
-export function ToolbarActions({ getArticleEl, getSettings, getCurrentFileUrl }) {
+export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl }) {
   const printBtnRef = useRef(null)
   const exportBtnRef = useRef(null)
   const exportWrapRef = useRef(null)
@@ -94,51 +94,43 @@ export function ToolbarActions({ getArticleEl, getSettings, getCurrentFileUrl })
   }
 
   return (
-    <div className="mdp-toolbar-doc-actions" hidden={!visible} aria-hidden={visible ? 'false' : 'true'}>
+    <div className="mdp-floating-actions" hidden={!visible} aria-hidden={visible ? 'false' : 'true'}>
       <Tooltip
         content="Print — Save as PDF in the dialog to export PDF."
         showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
       >
         <button
           type="button"
-          className="mdp-toolbar-icon-btn"
+          className="mdp-fab-btn"
           aria-label="Print — use Save as PDF in the print dialog."
           onClick={onPrintClick}
           ref={printBtnRef}
         >
-          <PrintIcon className="mdp-toolbar-icon-btn__icon" />
+          <PrintIcon className="mdp-fab-btn__icon" />
         </button>
       </Tooltip>
 
-      <div className="mdp-toolbar-export" ref={exportWrapRef}>
-        <Tooltip
-          content="Download — HTML or Word (.doc)."
-          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-        >
+      <div className="mdp-fab-export" ref={exportWrapRef}>
+        <Tooltip content="Download — HTML or Word (.doc)." showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}>
           <button
             type="button"
-            className="mdp-toolbar-icon-btn mdp-toolbar-export__trigger"
+            className="mdp-fab-btn mdp-fab-export__trigger"
             aria-label="Download — HTML or Word (.doc)."
             aria-expanded={menuOpen ? 'true' : 'false'}
             aria-haspopup="true"
             onClick={onExportToggleClick}
             ref={exportBtnRef}
           >
-            <ExportIcon className="mdp-toolbar-icon-btn__icon" />
+            <ExportIcon className="mdp-fab-btn__icon" />
           </button>
         </Tooltip>
 
-        <div
-          className="mdp-toolbar-export__menu"
-          hidden={!menuOpen}
-          role="menu"
-          aria-label="Export format"
-        >
+        <div className="mdp-fab-export__menu" hidden={!menuOpen} role="menu" aria-label="Export format">
           {menuItems.map((item) => (
             <button
               key={item.ext}
               type="button"
-              className="mdp-toolbar-export__menu-item"
+              className="mdp-fab-export__menu-item"
               role="menuitem"
               onClick={() => {
                 setMenuOpen(false)

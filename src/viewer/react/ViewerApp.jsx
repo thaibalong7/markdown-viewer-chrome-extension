@@ -2,7 +2,7 @@ import React from 'react'
 import { ToastProvider } from './contexts/ToastContext.jsx'
 import { SidebarTabProvider } from './contexts/SidebarTabContext.jsx'
 import { ViewerShell } from './components/ViewerShell.jsx'
-import { ToolbarActions } from './components/ToolbarActions.jsx'
+import { FloatingActions } from './components/FloatingActions.jsx'
 
 export function ViewerApp({
   settings,
@@ -25,7 +25,7 @@ export function ViewerApp({
           tocReady={tocReady}
           explorerBridge={explorerBridge}
         >
-          <ToolbarActions
+          <FloatingActions
             getArticleEl={getArticleEl}
             getSettings={getSettings}
             getCurrentFileUrl={getCurrentFileUrl}

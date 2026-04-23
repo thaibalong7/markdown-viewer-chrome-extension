@@ -137,7 +137,7 @@ Lý do:
 - không làm mất TOC hiện có
 - giữ Explorer và TOC cùng tồn tại trong một vị trí quen thuộc
 
-### 5.2 Header / Toolbar
+### 5.2 Floating Actions / Viewer Controls
 Nên có thêm các action sau:
 - **Back to original file**
 - **Open Folder**

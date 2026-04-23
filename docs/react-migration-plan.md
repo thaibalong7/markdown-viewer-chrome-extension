@@ -2,9 +2,10 @@
 
 ## Tóm tắt trạng thái (2026-04-23)
 
-**Migration đã hoàn tất** cho shell viewer: React 19 + `@vitejs/plugin-react`, `ViewerShell` / sidebar / TOC / Files explorer / toast / toolbar actions. Article vẫn do pipeline imperative (`renderDocument` → `innerHTML`). **Phase 4-R** (settings drawer trong viewer) **chưa làm** — cấu hình chính qua popup. Context đang dùng: `ToastContext`, **`SidebarTabContext`** (chỉ tab Outline/Files; không còn `SettingsContext` / `ViewerStateContext` đầy đủ). Cleanup: `mount.js` expose `bumpChrome()` thay vì đồng bộ props `markdown`/`currentFileUrl` không dùng trong React. UX update sau migration: thêm skeleton loading dùng chung (`src/shared/react/Skeleton.jsx`) cho Outline/Files/popup và bridge `tocReady` để tránh flash “No headings found”.
+**Migration đã hoàn tất** cho shell viewer: React 19 + `@vitejs/plugin-react`, `ViewerShell` / sidebar / TOC / Files explorer / toast / **floating document actions** (print/export). Article vẫn do pipeline imperative (`renderDocument` → `innerHTML`). **Phase 4-R** (settings drawer trong viewer) **chưa làm** — cấu hình chính qua popup. Context đang dùng: `ToastContext`, **`SidebarTabContext`** (chỉ tab Outline/Files; không còn `SettingsContext` / `ViewerStateContext` đầy đủ). Cleanup: `mount.js` expose `bumpChrome()` thay vì đồng bộ props `markdown`/`currentFileUrl` không dùng trong React. UX update sau migration: thêm skeleton loading dùng chung (`src/shared/react/Skeleton.jsx`) cho Outline/Files/popup và bridge `tocReady` để tránh flash “No headings found”.
 
-> **Scope (updated):** Migrate toolbar, sidebar (tabs, TOC, Files explorer), and toast/tooltip to React components. In-viewer settings drawer remains deferred as optional future work (Phase 4-R).
+> **Scope (updated):** Migrate floating actions, sidebar (tabs, TOC, Files explorer), and toast/tooltip to React components. In-viewer settings drawer remains deferred as optional future work (Phase 4-R).
+> **Lưu ý:** Các section mô tả `Toolbar.jsx` / `mdp-toolbar` phía dưới là bối cảnh lịch sử trong giai đoạn migration; hiện tại production dùng `FloatingActions.jsx` / `mdp-floating-actions`.
 > **Out of scope:** Article HTML render pipeline (`renderDocument` → `sanitizeHtml` → `renderIntoElement`) stays as-is — vanilla markdown-it → DOMPurify → innerHTML.
 
 ---
@@ -30,7 +31,7 @@ Lý do:
 **Chiến lược cốt lõi: "React Shell wrapping Imperative Islands"**
 
 - Bắt đầu bằng việc mount React root vào Shadow DOM
-- React quản lý shell layout (toolbar, sidebar frame, tabs)
+- React quản lý shell layout (floating actions, sidebar frame, tabs)
 - Các vùng imperative (article render, explorer panel) được mount vào React refs
 - Dần dần chuyển từng "island" sang React component thuần
 
@@ -111,7 +112,7 @@ content/index.js → bootstrap.js → mountViewerReact()
 ```
 
 ### Key boundaries
-- **React manages:** Shell layout, toolbar actions, sidebar tabs, TOC rendering, toast, tooltip, settings drawer (future), explorer (later phases)
+- **React manages:** Shell layout, floating document actions, sidebar tabs, TOC rendering, toast, tooltip, settings drawer (future), explorer (later phases)
 - **Imperative stays:** `renderDocument()`, `sanitizeHtml()`, `renderIntoElement()`, plugin `afterRender` passes, `article-interactions.js` (event delegation on article), Mermaid export actions, Shiki highlighting
 
 ### React in Shadow DOM

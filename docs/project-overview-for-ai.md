@@ -43,7 +43,7 @@ Generated output:
 
 - `background`: central runtime message handling and settings operations
 - `content`: detect/extract/mount flow on web pages
-- `viewer`: **React** shell (toolbar, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet)
+- `viewer`: **React** shell (floating document actions, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet)
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
 - `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
 - `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
@@ -162,8 +162,7 @@ src/
         Sidebar.jsx
         SidebarTabs.jsx
         Toast.jsx
-        Toolbar.jsx
-        ToolbarActions.jsx
+        FloatingActions.jsx
         Tooltip.jsx
         ViewerShell.jsx
         icons/
@@ -197,7 +196,7 @@ src/
     styles/
       _variables.scss
       _chrome-print.scss
-      _toolbar-actions.scss
+      _floating-actions.scss
       base.scss
       layout.scss
       content.scss
@@ -284,8 +283,8 @@ public/
   - Passes **`explorerBridge`** callbacks into React for navigation, re-render, and file I/O; explorer UI state lives in **`useExplorer`**.
 
 - **React viewer layer** (`src/viewer/react/`)
-  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, `setTocReady`, **`bumpChrome()`** (refresh toolbar/export visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
-  - **`ViewerApp.jsx`**: `ToastProvider`, **`SidebarTabProvider`** (active Outline/Files tab only), **`ViewerShell`** + toolbar actions slot.
+  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, `setTocReady`, **`bumpChrome()`** (refresh floating-actions visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
+  - **`ViewerApp.jsx`**: `ToastProvider`, **`SidebarTabProvider`** (active Outline/Files tab only), **`ViewerShell`** + floating actions slot.
   - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present (`shared/constants/tooltip.js` for delays).
   - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`** and `tocReady` gating with skeleton state), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
   - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (orchestrates view state; **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers); pure scanners/pickers remain under `viewer/explorer/*.js`.
@@ -297,7 +296,7 @@ public/
   - Shared shimmer animation and skeleton base styles (`.mdp-skeleton*`) plus popup variant class (`.popup-skeleton`).
 
 - `src/shared/constants/viewer.js`
-  - Viewer-wide numeric constants: toolbar height fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `useSidebarResize.js`, `article-interactions.js`).
+  - Viewer-wide numeric constants: top-offset fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `useSidebarResize.js`, `article-interactions.js`).
 
 - `src/shared/constants/explorer.js`
   - `MDP_WS_FILE` / `MDP_WS_DIR` prefixes and default scan limits when persisted `settings.explorer` fields are missing; used by **`useExplorer.js`**, `workspace-picker.js`, `folder-scanner.js`. **`url-utils.js` re-exports** the `MDP_WS_*` symbols for older import paths.
@@ -321,18 +320,18 @@ public/
   - Pure helpers: `buildExplorerFilesContext`, `explorerTreeContainsFileHref` — consumed by **`useExplorer`** for the Files context strip.
 
 - `src/viewer/scroll-utils.js`
-  - Shared scroll math for in-viewer headings (`scrollToElementInViewer`, `getToolbarHeightInScrollRoot`) — used by **`article-interactions.js`** and **`OutlinePanel.jsx`** / **`useScrollSpy`**.
+  - Shared scroll math for in-viewer headings (`scrollToElementInViewer`, `getToolbarHeightInScrollRoot`) — used by **`article-interactions.js`** and **`OutlinePanel.jsx`** / **`useScrollSpy`**. Current top offset fallback is `0` because there is no sticky top toolbar.
 
 - `src/viewer/icons.js`
   - Imperative **plugin** SVG helpers only: `SVG_NS`, `createCopyIconSvg()` (code-highlight + Mermaid toolbar); `mermaid-export.js` uses `SVG_NS`. Viewer chrome icons are React components under `react/components/icons/`.
 
 - `src/viewer/dom-tooltip.js`
-  - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = ShadowRoot or `document.body`. Distinct from React **`Tooltip.jsx`** used on toolbar/resize handle.
+  - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = ShadowRoot or `document.body`. Distinct from React **`Tooltip.jsx`** used on floating actions/resize handle.
 
 - `src/viewer/explorer/explorer-state.js`
   - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`.
 
-- `src/content/host-print.scss` — host/light-DOM print rules (injected with viewer root); pairs with `viewer/styles/_chrome-print.scss` (toolbar/sidebar hidden) and `viewer/styles/content/_article-print.scss` (article typography for print).
+- `src/content/host-print.scss` — host/light-DOM print rules (injected with viewer root); pairs with `viewer/styles/_chrome-print.scss` (floating actions/sidebar hidden) and `viewer/styles/content/_article-print.scss` (article typography for print).
 - `src/viewer/styles/content.scss` (+ partials under `content/`) → compiled and inlined via the content script bundle
   - **`pre.shiki`**: `white-space: pre`, `tab-size: 4`, `.line` as `display: block`.
   - **`pre:not(.shiki)`**: theme vars for plain fenced blocks when Shiki off/unavailable.
@@ -341,7 +340,7 @@ public/
   - Resolves active plugins from `settings.plugins`; runs `preprocessMarkdown`, `postprocessHtml`, `afterRender`, optional `extendMarkdown`.
 
 - `src/viewer/actions/document-actions.js`
-  - Print / export HTML / export Word helpers used by **`ToolbarActions.jsx`**.
+  - Print / export HTML / export Word helpers used by **`FloatingActions.jsx`**.
 
 - `src/settings/index.js`
   - Single source of settings persistence logic

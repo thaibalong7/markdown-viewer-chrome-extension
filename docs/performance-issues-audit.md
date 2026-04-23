@@ -364,7 +364,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ## Issue #31 [MEDIUM] Tooltip forced layout khi show
 
-- **Vị trí (cập nhật):** `src/viewer/dom-tooltip.js` (plugin/copy controls); `src/viewer/react/components/Tooltip.jsx` (chrome explorer/toolbar)  
+- **Vị trí (cập nhật):** `src/viewer/dom-tooltip.js` (plugin/copy controls); `src/viewer/react/components/Tooltip.jsx` (chrome explorer/floating actions)  
   *(File cũ `src/viewer/tooltip.js` đã bỏ.)*
 - **Hiện trạng:** Đo `offsetWidth` / `offsetHeight` sau khi gắn tip → có thể forced layout.
 - **Tác động:** Minor jank; tích lũy khi nhiều tooltip hoặc cây lớn.
@@ -417,7 +417,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ## Issue #36 [LOW-MEDIUM] Export double-click có thể trigger parallel exports
 
-- **Vị trí (cập nhật):** `src/viewer/react/components/ToolbarActions.jsx` (`runExport` ~69–84)  
+- **Vị trí (cập nhật):** `src/viewer/react/components/FloatingActions.jsx` (`runExport` ~69–84)  
   *(File cũ `toolbar-actions.js` đã bỏ.)*
 - **Hiện trạng:** `runExport` không có in-flight guard → double-click có thể chạy song song nhiều export.
 - **Tác động:** UX + lãng phí tài nguyên.
@@ -493,7 +493,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 ## Issue #45 [MEDIUM] `ToastContext` khiến cả cây re-render mỗi toast
 
 - **Vị trí:** `src/viewer/react/contexts/ToastContext.jsx`, `src/viewer/react/ViewerApp.jsx` (provider bọc toàn app)
-- **Hiện trạng:** `toastMessage` / `isVisible` đổi → mọi consumer / descendant reconcile (sidebar, outline, explorer, toolbar).
+- **Hiện trạng:** `toastMessage` / `isVisible` đổi → mọi consumer / descendant reconcile (sidebar, outline, explorer, floating actions).
 - **Khuyến nghị fix:** Tách state vs dispatch context; hoặc ref + subscriber hẹp chỉ cho `<Toast />`.
 
 ---

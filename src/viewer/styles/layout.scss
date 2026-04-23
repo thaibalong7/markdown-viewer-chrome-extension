@@ -1,6 +1,7 @@
 @use 'variables' as v;
 @use 'toolbar-actions';
 @use 'chrome-print';
+@use '../../shared/styles/skeleton';
 
 .mdp-root {
   --mdp-toolbar-stack: #{v.$mdp-toolbar-stack};

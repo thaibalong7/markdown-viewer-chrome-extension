@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../../scroll-utils.js'
+import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
 import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
 
@@ -11,7 +12,9 @@ function updateHash(id) {
   window.history.replaceState(null, '', encoded)
 }
 
-export function OutlinePanel({ tocItems, scrollRoot }) {
+const OUTLINE_SKELETON_WIDTHS = ['86%', '72%', '78%', '60%', '82%', '68%', '94%', '76%', '62%', '48%']
+
+export function OutlinePanel({ tocItems, tocReady, scrollRoot }) {
   const { activeSidebarTab } = useSidebarTabState()
   const isFiles = activeSidebarTab === 'files'
   const tocScrollRef = useRef(null)
@@ -61,8 +64,21 @@ export function OutlinePanel({ tocItems, scrollRoot }) {
       hidden={isFiles}
     >
       <div className="mdp-sidebar__title">Outline</div>
-      <nav className="mdp-toc" aria-label="Table of contents" ref={tocScrollRef}>
-        {headings.length ? (
+      <nav
+        className="mdp-toc"
+        aria-label="Table of contents"
+        aria-busy={!tocReady}
+        ref={tocScrollRef}
+      >
+        {!tocReady ? (
+          <SkeletonBlock
+            className="mdp-toc__skeleton"
+            lines={OUTLINE_SKELETON_WIDTHS.length}
+            widths={OUTLINE_SKELETON_WIDTHS}
+            lineHeight={12}
+            gap={10}
+          />
+        ) : headings.length ? (
           <ul className="mdp-toc__list mdp-toc__list--virtual" style={{ height: `${outlineVirtualizer.getTotalSize()}px` }}>
             {virtualRows.map((virtualRow) => {
               const item = outlineItems[virtualRow.index]

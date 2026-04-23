@@ -32,6 +32,10 @@
 .mdp-toc {
   width: 100%;
 
+  &__skeleton {
+    padding: 6px 2px 4px;
+  }
+
   &__empty {
     color: var(--mdp-muted);
     font-size: 14px;

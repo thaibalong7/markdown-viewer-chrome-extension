@@ -1,8 +1,8 @@
 # React Migration Plan — Viewer Chrome UI
 
-## Tóm tắt trạng thái (2026-04-17)
+## Tóm tắt trạng thái (2026-04-23)
 
-**Migration đã hoàn tất** cho shell viewer: React 19 + `@vitejs/plugin-react`, `ViewerShell` / sidebar / TOC / Files explorer / toast / toolbar actions. Article vẫn do pipeline imperative (`renderDocument` → `innerHTML`). **Phase 4-R** (settings drawer trong viewer) **chưa làm** — cấu hình chính qua popup. Context đang dùng: `ToastContext`, **`SidebarTabContext`** (chỉ tab Outline/Files; không còn `SettingsContext` / `ViewerStateContext` đầy đủ). Cleanup: `mount.js` expose `bumpChrome()` thay vì đồng bộ props `markdown`/`currentFileUrl` không dùng trong React.
+**Migration đã hoàn tất** cho shell viewer: React 19 + `@vitejs/plugin-react`, `ViewerShell` / sidebar / TOC / Files explorer / toast / toolbar actions. Article vẫn do pipeline imperative (`renderDocument` → `innerHTML`). **Phase 4-R** (settings drawer trong viewer) **chưa làm** — cấu hình chính qua popup. Context đang dùng: `ToastContext`, **`SidebarTabContext`** (chỉ tab Outline/Files; không còn `SettingsContext` / `ViewerStateContext` đầy đủ). Cleanup: `mount.js` expose `bumpChrome()` thay vì đồng bộ props `markdown`/`currentFileUrl` không dùng trong React. UX update sau migration: thêm skeleton loading dùng chung (`src/shared/react/Skeleton.jsx`) cho Outline/Files/popup và bridge `tocReady` để tránh flash “No headings found”.
 
 > **Scope (updated):** Migrate toolbar, sidebar (tabs, TOC, Files explorer), and toast/tooltip to React components. In-viewer settings drawer remains deferred as optional future work (Phase 4-R).
 > **Out of scope:** Article HTML render pipeline (`renderDocument` → `sanitizeHtml` → `renderIntoElement`) stays as-is — vanilla markdown-it → DOMPurify → innerHTML.
@@ -381,6 +381,7 @@ return createPortal(<Toast />, portalRoot)
   - **`destroy()`** idempotent via **`_destroyed`** + **`logger.debug('Markdown viewer destroyed.')`**
   - Removed dead code: **`src/viewer/toolbar-metrics.js`**, **`createPrintIconSvg` / `createExportIconSvg`** from **`icons.js`** (plugin helpers only: **`SVG_NS`**, **`createCopyIconSvg`**)
   - **`dom-tooltip.js`** kept for plugin-injected DOM; React **`Tooltip.jsx`** remains for chrome
+  - Post-cleanup UX: **`tocReady`** bridge signal in `mount.js`/`app.js` + reusable skeleton primitives (`src/shared/react/Skeleton.jsx`, `src/shared/styles/_skeleton.scss`) adopted by `OutlinePanel.jsx`, `ExplorerPanel.jsx`, and `PopupApp.jsx`
   - Updated **`docs/project-overview-for-ai.md`**, **`docs/react-migration-plan.md`**, **`.cursor/rules/80-viewer-ui-lifecycle.mdc`**
 
 ### Goals

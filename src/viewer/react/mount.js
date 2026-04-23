@@ -6,6 +6,7 @@ export function mountViewerReact(container, options = {}) {
   const {
     settings,
     tocItems,
+    tocReady = false,
     explorerBridge,
     onShellReady,
     getArticleEl,
@@ -25,6 +26,7 @@ export function mountViewerReact(container, options = {}) {
   let nextProps = {
     settings: settings || {},
     tocItems: Array.isArray(tocItems) ? tocItems : [],
+    tocReady: Boolean(tocReady),
     explorerBridge: explorerBridge || null,
     getArticleEl,
     getSettings,
@@ -57,6 +59,10 @@ export function mountViewerReact(container, options = {}) {
       if (tocItems !== undefined) {
         nextProps = { ...nextProps, tocItems: Array.isArray(tocItems) ? tocItems : [] }
       }
+      render()
+    },
+    setTocReady(nextReady) {
+      nextProps = { ...nextProps, tocReady: Boolean(nextReady) }
       render()
     },
     /** Re-render chrome so components that read live URLs (e.g. toolbar actions) stay in sync. */

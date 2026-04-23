@@ -1,0 +1,45 @@
+@keyframes mdp-skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.mdp-skeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+.mdp-skeleton-line {
+  position: relative;
+  display: block;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--mdp-border) 70%, transparent);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--mdp-muted) 18%, transparent) 45%,
+      transparent 100%
+    );
+    animation: mdp-skeleton-shimmer 1.25s ease-in-out infinite;
+  }
+}
+
+.popup-skeleton {
+  .mdp-skeleton-line {
+    background: #e6ebf1;
+
+    &::after {
+      background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 70%) 45%, transparent 100%);
+    }
+  }
+}

@@ -9,6 +9,7 @@ alwaysApply: false
 ## MarkdownViewerApp (imperative orchestrator)
 
 - **`init()`** once: inject `<style>` tags into the mount container, then **`mountViewerReact(container, options)`**, **`await partsPromise`** (resolves to **`{ root, article }`** only). Then **`createArticleInteractions({ getArticle, showToast, getScrollRoot }).bind()`**, **`applyReaderStyles()`**, **`render()`**.
+- **TOC loading gate:** before async markdown render begins, set **`_reactHandle.setTocReady(false)`**; after **`syncTocItems()`**, set **`setTocReady(true)`** so Outline can render skeleton while hydration is pending and only show empty text when TOC is truly ready.
 - **`updateSettings()`** updates settings, **`_reactHandle.updateSettings()`**, **`applyReaderStyles()`**, and either **`syncTocItems()`** or full **`render()`** per **`needsFullRender()`**.
 - **`bumpChrome()` trigger:** not tied to `render()` anymore. Chrome refresh is triggered when explorer/navigation updates current file URL via `explorerBridge.updateCurrentFileUrl()` in `src/viewer/app.js`.
 - **`destroy()`** is **idempotent** (`_destroyed` guard): **`_articleInteractions.destroy()`** → **`_reactHandle.unmount()`** → **`container.innerHTML = ''`**; clears **`_rootEl` / `_articleEl`**. Logs via **`logger.debug('Markdown viewer destroyed.')`**.
@@ -18,6 +19,7 @@ alwaysApply: false
 - **`ViewerShell`** calls **`onShellReady({ root, article })`** when both nodes exist. Imperative code (**`MarkdownViewerApp`**, **`article-interactions.js`**) must **not** retain references to toolbar, sidebar panels, TOC nav, resize handle, etc. — those are React-owned.
 - **`article`**: React renders the empty **`<article class="mdp-markdown-body">`**; **`renderIntoElement(article, html)`** and plugins **`afterRender`** mutate **`innerHTML`** and injected nodes. React must not reconcile that subtree.
 - **Toast (chrome)**: **`ToastProvider`** / **`_reactHandle.showToast`**. **Sidebar tab** (Outline vs Files): **`SidebarTabProvider`** / **`SidebarTabContext`** — settings for the shell are **props from `mount.js`**, not a separate settings context. **Plugin** hovers use **`dom-tooltip.js`** on nodes created in **`afterRender`**.
+- **Loading UI primitives:** prefer shared **`src/shared/react/Skeleton.jsx`** (`SkeletonLine`, `SkeletonBlock`) and **`src/shared/styles/_skeleton.scss`** for chrome/popup loading placeholders instead of ad-hoc spinners or plain loading text.
 
 ## Hooks and teardown
 

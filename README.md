@@ -16,6 +16,7 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 - Auto-detects Markdown-like pages (product gate: local `file:` `.md` / `.markdown` / `.mdown` plus detector heuristics).
 - Renders content in a readable viewer layout (markdown-it → optional Shiki syntax highlighting → DOMPurify → article `innerHTML`; React owns chrome only). Shiki uses an explicit language allowlist (`@shikijs/langs` + `github-light` / `github-dark` themes) to keep the extension package smaller than the full `shiki/bundle/web` set.
 - Left sidebar Table of Contents with heading navigation.
+- Loading UX improvements: reusable skeleton placeholders for Outline TOC hydration, Files explorer loading state, and popup settings boot.
 - **Files explorer** (sidebar Files tab): browse Markdown siblings in the same folder; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
 - GitHub-inspired Light/Dark themes and typography controls.
 - Built-in plugin system with core and optional plugins.
@@ -88,7 +89,7 @@ Development notes:
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
 - `src/popup` - React settings UI (`PopupApp.jsx`, panels, `useSettingsPersistence`).
-- `src/shared` - Utilities (`logger`, `deep-merge`, `clipboard`, `download`, `settings-diff`, `markdown-detect`) and **constants** (`viewer.js`, `explorer.js`, `tooltip.js`).
+- `src/shared` - Utilities (`logger`, `deep-merge`, `clipboard`, `download`, `settings-diff`, `markdown-detect`), reusable React primitives (`shared/react/Skeleton.jsx`), shared style partials (`shared/styles/_skeleton.scss`), and **constants** (`viewer.js`, `explorer.js`, `tooltip.js`).
 - `src/background` - Runtime messaging and settings handlers.
 
 For an up-to-date file tree and module notes, see [`docs/project-overview-for-ai.md`](docs/project-overview-for-ai.md).

@@ -7,6 +7,7 @@ import { ToolbarActions } from './components/ToolbarActions.jsx'
 export function ViewerApp({
   settings,
   tocItems,
+  tocReady,
   explorerBridge,
   onShellReady,
   getArticleEl,
@@ -21,6 +22,7 @@ export function ViewerApp({
           onShellReady={onShellReady}
           settings={settings}
           tocItems={tocItems}
+          tocReady={tocReady}
           explorerBridge={explorerBridge}
         >
           <ToolbarActions

@@ -15,6 +15,7 @@ Current implemented core:
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Left sidebar TOC with click-to-scroll + active heading tracking
 - **Files explorer** (sidebar **Files** tab): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list
+- Loading skeleton UX: reusable `SkeletonLine` / `SkeletonBlock` primitives used by viewer sidebar (Outline + Files) and popup settings loading state
 - Settings storage and runtime messaging
 - **Extension popup (React)** for reader/plugins/general settings; minimal **options** page (JSON-oriented); no in-viewer settings drawer yet
 
@@ -48,7 +49,7 @@ Generated output:
 - `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
 - `popup` / `options`: UI entrypoints for reading/updating settings (popup is primary)
 - `messaging`: message constants and shared `sendMessage()` in `src/messaging/index.js`
-- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `markdown-detect.js` (pathname extension + `looksLikeMarkdownText`), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/tooltip.js` (hover delays for chrome tooltips)
+- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `markdown-detect.js` (pathname extension + `looksLikeMarkdownText`), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/tooltip.js` (hover delays for chrome tooltips), reusable React UI primitives in `shared/react/` and shared style partials in `shared/styles/`
 
 ### 3.2 Core flow (implemented)
 
@@ -59,7 +60,7 @@ Generated output:
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
 7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
-8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge), runs **`await renderDocument()`** (async), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree.
+8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge), runs **`await renderDocument()`** (async), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree.
 9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
@@ -116,6 +117,10 @@ src/
       viewer.js
       explorer.js
       tooltip.js
+    react/
+      Skeleton.jsx
+    styles/
+      _skeleton.scss
   plugins/
     plugin-types.js
     plugin-manager.js
@@ -279,11 +284,17 @@ public/
   - Passes **`explorerBridge`** callbacks into React for navigation, re-render, and file I/O; explorer UI state lives in **`useExplorer`**.
 
 - **React viewer layer** (`src/viewer/react/`)
-  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, **`bumpChrome()`** (refresh toolbar/export visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
+  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, `setTocReady`, **`bumpChrome()`** (refresh toolbar/export visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
   - **`ViewerApp.jsx`**: `ToastProvider`, **`SidebarTabProvider`** (active Outline/Files tab only), **`ViewerShell`** + toolbar actions slot.
   - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present (`shared/constants/tooltip.js` for delays).
-  - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`**), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
+  - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`** and `tocReady` gating with skeleton state), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
   - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (orchestrates view state; **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers); pure scanners/pickers remain under `viewer/explorer/*.js`.
+
+- `src/shared/react/Skeleton.jsx`
+  - Shared loading primitives (`SkeletonLine`, `SkeletonBlock`) used by viewer and popup.
+
+- `src/shared/styles/_skeleton.scss`
+  - Shared shimmer animation and skeleton base styles (`.mdp-skeleton*`) plus popup variant class (`.popup-skeleton`).
 
 - `src/shared/constants/viewer.js`
   - Viewer-wide numeric constants: toolbar height fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `useSidebarResize.js`, `article-interactions.js`).
@@ -418,6 +429,9 @@ Use this audit as the baseline for optimization tasks.
 
 - Popup/options not syncing:
   - Inspect `src/popup/index.jsx`, `src/popup/PopupApp.jsx`, `src/popup/hooks/useSettingsPersistence.js`, `src/options/index.js`, and message type usage (`SETTINGS_UPDATED` on the content script).
+
+- Loading-state UX in chrome/popup:
+  - Inspect `src/shared/react/Skeleton.jsx`, `src/shared/styles/_skeleton.scss`, `src/viewer/react/components/OutlinePanel.jsx`, `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `src/popup/PopupApp.jsx`, and `tocReady` updates in `src/viewer/app.js` / `src/viewer/react/mount.js`.
 
 - **Theme vs fenced code colors**:
   - Reader theme uses CSS vars; Shiki colors are inline in HTML. `updateSettings()` skips full render for style-only diffs (`typography.*`, `layout.contentMaxWidth`, `layout.showToc`, `layout.tocWidth`) but still re-renders for theme/plugin/other structural diffs; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/35-reader-theme-and-shiki.mdc`.

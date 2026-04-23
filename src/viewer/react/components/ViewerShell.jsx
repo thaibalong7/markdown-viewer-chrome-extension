@@ -3,7 +3,7 @@ import { Toolbar } from './Toolbar.jsx'
 import { Sidebar } from './Sidebar.jsx'
 import { Toast } from './Toast.jsx'
 
-export function ViewerShell({ children, onShellReady, settings, tocItems, explorerBridge }) {
+export function ViewerShell({ children, onShellReady, settings, tocItems, tocReady, explorerBridge }) {
   const rootNodeRef = useRef(null)
   const articleRef = useRef(null)
   const hasSignaledReadyRef = useRef(false)
@@ -30,7 +30,13 @@ export function ViewerShell({ children, onShellReady, settings, tocItems, explor
     <div className="mdp-root" ref={handleRootRef}>
       <Toolbar>{children}</Toolbar>
       <div className="mdp-body">
-        <Sidebar settings={settings} tocItems={tocItems} explorerBridge={explorerBridge} scrollRoot={rootEl} />
+        <Sidebar
+          settings={settings}
+          tocItems={tocItems}
+          tocReady={tocReady}
+          explorerBridge={explorerBridge}
+          scrollRoot={rootEl}
+        />
 
         <main className="mdp-content-pane">
           <article className="mdp-markdown-body" ref={articleRef} />

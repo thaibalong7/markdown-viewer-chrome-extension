@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { getDefaultPluginSettings } from '../plugins/plugin-types.js'
+import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
 import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
 import { Tooltip } from './components/Tooltip.jsx'
@@ -24,7 +25,16 @@ export function PopupApp() {
   if (loading) {
     return (
       <div className="popup-root">
-        <div className="popup-loading">Loading settings...</div>
+        <div className="popup-loading popup-skeleton">
+          <SkeletonBlock lines={1} widths={['58%']} lineHeight={18} gap={0} />
+          <SkeletonBlock
+            lines={4}
+            widths={['100%', '94%', '88%', '82%']}
+            lineHeight={12}
+            gap={12}
+            className="popup-loading__fields"
+          />
+        </div>
       </div>
     )
   }

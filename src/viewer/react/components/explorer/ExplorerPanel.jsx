@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
+import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
 import { useExplorer } from '../../hooks/useExplorer.js'
 import { ExplorerHeader } from './ExplorerHeader.jsx'
 import { ExplorerProgress } from './ExplorerProgress.jsx'
@@ -9,6 +10,7 @@ import { flattenVisibleTree } from './FileTree.jsx'
 import { FolderRow } from './FolderRow.jsx'
 
 export function ExplorerPanel({ bridge }) {
+  const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
   const panelRef = useRef(null)
   const [scrollElement, setScrollElement] = useState(null)
@@ -81,7 +83,7 @@ export function ExplorerPanel({ bridge }) {
       />
 
       <div className="mdp-explorer__loading" hidden={state.view !== 'loading'}>
-        Loading…
+        <SkeletonBlock lines={loadingWidths.length} widths={loadingWidths} lineHeight={14} gap={10} />
       </div>
 
       <div className="mdp-explorer__empty" hidden={state.view !== 'empty'}>

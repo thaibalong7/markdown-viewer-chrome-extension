@@ -57,6 +57,7 @@ export class MarkdownViewerApp {
     this._reactHandle = mountViewerReact(this.container, {
       settings: this.settings,
       tocItems: [],
+      tocReady: false,
       explorerBridge: {
         getSettings: () => this.settings,
         setMarkdown: (md) => {
@@ -167,6 +168,7 @@ export class MarkdownViewerApp {
   }
 
   async render({ preserveScroll = false, honorHash = true } = {}) {
+    this._reactHandle?.setTocReady?.(false)
     const renderToken = ++this._renderToken
     const scrollSnapshot = preserveScroll ? this.captureScrollPosition() : null
     let result
@@ -176,6 +178,7 @@ export class MarkdownViewerApp {
       })
     } catch (error) {
       logger.error('Failed to render markdown document.', error)
+      this._reactHandle?.setTocReady?.(true)
       return null
     }
 
@@ -213,11 +216,13 @@ export class MarkdownViewerApp {
     const showToc = this.settings?.layout?.showToc !== false
     if (!showToc) {
       this._reactHandle?.updateChromeState?.({ tocItems: [] })
+      this._reactHandle?.setTocReady?.(true)
       return
     }
 
     const items = buildTocItems(this._articleEl)
     this._reactHandle?.updateChromeState?.({ tocItems: items })
+    this._reactHandle?.setTocReady?.(true)
   }
 
   async updateSettings(nextSettings) {

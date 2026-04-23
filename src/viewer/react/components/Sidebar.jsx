@@ -4,7 +4,7 @@ import { OutlinePanel } from './OutlinePanel.jsx'
 import { FilesPanel } from './FilesPanel.jsx'
 import { ResizeHandle } from './ResizeHandle.jsx'
 
-export function Sidebar({ settings, tocItems, explorerBridge, scrollRoot }) {
+export function Sidebar({ settings, tocItems, tocReady, explorerBridge, scrollRoot }) {
   const showToc = settings?.layout?.showToc !== false
   const [sidebarEl, setSidebarEl] = useState(null)
   const [handleEl, setHandleEl] = useState(null)
@@ -33,7 +33,7 @@ export function Sidebar({ settings, tocItems, explorerBridge, scrollRoot }) {
   return (
     <aside className="mdp-sidebar" style={{ display: showToc ? '' : 'none' }} ref={handleSidebarRef}>
       <SidebarTabs />
-      <OutlinePanel tocItems={tocItems} scrollRoot={scrollRoot} />
+      <OutlinePanel tocItems={tocItems} tocReady={tocReady} scrollRoot={scrollRoot} />
       <FilesPanel explorerBridge={explorerBridge} />
       <ResizeHandle
         rootEl={scrollRoot}

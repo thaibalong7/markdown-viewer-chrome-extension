@@ -1,6 +1,11 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { logger } from '../../shared/logger.js'
-import { attachMermaidActionsMenu, attachMermaidCopyButton } from './mermaid-actions.js'
+import {
+  attachMermaidActionsMenu,
+  attachMermaidCopyButton,
+  attachMermaidLightboxButton
+} from './mermaid-actions.js'
+import { attachMermaidLightbox } from './mermaid-lightbox.js'
 
 let mermaidImportPromise = null
 let mermaidInitializePromise = null
@@ -136,6 +141,8 @@ async function renderMermaidNode({ node, mermaidApi, chartIndex, copyCodeWithToa
     node.innerHTML = out.svg
     attachMermaidCopyButton(node, { source: code, copyCodeWithToast })
     attachMermaidActionsMenu(node, { chartIndex })
+    attachMermaidLightboxButton(node)
+    attachMermaidLightbox(node)
   } catch (error) {
     logger.warn('Mermaid block rendering failed.', error)
     setMermaidRenderError(node, code, error)

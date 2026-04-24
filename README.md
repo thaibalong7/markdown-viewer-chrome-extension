@@ -22,6 +22,12 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 - GitHub-inspired Light/Dark themes and typography controls.
 - Built-in plugin system with core and optional plugins.
 - Optional Mermaid support with diagram rendering (diagrams render when they enter the viewport).
+- Mermaid lightbox viewer:
+  - Open from the chart itself or the toolbar expand button
+  - Full-screen pan/zoom with theme-aware overlay UI
+  - Controls for zoom in, zoom out, re-center, and close
+  - Keyboard shortcuts: `Esc` to close, `+` / `-` to zoom, `0` to re-center
+  - Higher-density `2x` lightbox rendering for sharper zoomed diagrams
 - Mermaid export actions:
   - Download `SVG`
   - Download `PNG` with resolution options (`1x`, `2x`, `3x`, `4x`)

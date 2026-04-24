@@ -1,4 +1,5 @@
 import { exportMermaidPng, exportMermaidSvg } from './mermaid-export.js'
+import { createMermaidLightboxButton, openMermaidLightbox } from './mermaid-lightbox.js'
 import { logger } from '../../shared/logger.js'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../shared/constants/tooltip.js'
 import { createCopyIconSvg, SVG_NS } from '../../viewer/icons.js'
@@ -44,6 +45,33 @@ export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast
   })
 
   toolbar.insertBefore(copyBtn, toolbar.firstChild)
+}
+
+export function attachMermaidLightboxButton(containerEl) {
+  if (!containerEl || containerEl.dataset.mermaidExpandAttached === 'true') return
+  if (!containerEl.querySelector(':scope > svg')) return
+
+  containerEl.dataset.mermaidExpandAttached = 'true'
+
+  const toolbar = ensureMermaidToolbar(containerEl)
+  const expandBtn = createMermaidLightboxButton()
+  attachTooltip(expandBtn, {
+    text: 'Open chart in full-screen zoom view.',
+    showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
+  })
+
+  expandBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    openMermaidLightbox(containerEl)
+  })
+
+  const actionsRoot = toolbar.querySelector(':scope > .mdp-mermaid-actions')
+  if (actionsRoot) {
+    toolbar.insertBefore(expandBtn, actionsRoot)
+  } else {
+    toolbar.appendChild(expandBtn)
+  }
 }
 
 function createIconDots() {

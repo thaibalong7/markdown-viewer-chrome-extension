@@ -136,6 +136,7 @@ src/
       math.plugin.js
       mermaid.plugin.js
       mermaid-actions.js
+      mermaid-lightbox.js
       mermaid-export.js
   viewer/
     app.js
@@ -334,7 +335,13 @@ public/
   - Shared scroll math for in-viewer headings (`scrollToElementInViewer`, `getToolbarHeightInScrollRoot`) — used by **`article-interactions.js`** and **`OutlinePanel.jsx`** / **`useScrollSpy`**. Current top offset fallback is `0` because there is no sticky top toolbar.
 
 - `src/viewer/icons.js`
-  - Imperative **plugin** SVG helpers only: `SVG_NS`, `createCopyIconSvg()` (code-highlight + Mermaid toolbar); `mermaid-export.js` uses `SVG_NS`. Viewer chrome icons are React components under `react/components/icons/`.
+  - Imperative **plugin** SVG helpers only: `SVG_NS`, `createCopyIconSvg()`, Mermaid toolbar/lightbox icons (`createExpandIconSvg()`, `createZoomInIconSvg()`, `createZoomOutIconSvg()`, `createRecenterIconSvg()`, `createCloseIconSvg()`). Viewer chrome icons are React components under `react/components/icons/`.
+
+- `src/plugins/optional/mermaid.plugin.js` / `mermaid-actions.js` / `mermaid-lightbox.js` / `mermaid-export.js`
+  - Mermaid fence override renders placeholder `.mdp-mermaid` blocks, then lazy-renders SVGs on viewport entry.
+  - `mermaid-actions.js` attaches copy, expand/lightbox, and export actions for rendered Mermaid blocks.
+  - `mermaid-lightbox.js` owns the full-screen diagram viewer: theme-aware overlay UI, higher-density `2x` SVG clone for sharper zoom, full-screen drag-to-pan, wheel/pinch zoom, `re-center`, and keyboard shortcuts (`Esc`, `+`, `-`, `0`).
+  - `_mermaid.scss` includes both inline block chrome and lightbox styling.
 
 - `src/viewer/dom-tooltip.js`
   - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = ShadowRoot or `document.body`. Distinct from React **`Tooltip.jsx`** used on floating actions/resize handle.

@@ -8,6 +8,10 @@ export default defineConfig({
   // Relative base so Vite preloads resolve with `new URL(dep, importerUrl)` against the
   // content-script module (chrome-extension://…/assets/…), not the host document (file:// or https).
   base: './',
+  test: {
+    include: ['src/**/__tests__/**/*.test.{js,mjs}'],
+    environment: 'node'
+  },
   plugins: [
     react(),
     crx({ manifest }),

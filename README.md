@@ -18,6 +18,7 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 - Left sidebar Table of Contents with heading navigation.
 - Loading UX improvements: reusable skeleton placeholders for Outline TOC hydration, Files explorer loading state, and popup settings boot.
 - **Files explorer** (sidebar Files tab): browse Markdown siblings in the same folder; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
+- **Internal Markdown link navigation**: click a relative or absolute link to another `.md` file (e.g. `./other.md`, `../README.md#install`, `guides/spec.md`) and it opens in the same viewer without a full page reload. Supports self-link scroll, hash fragment navigation, browser Back/Forward history, sidebar active-file sync, spaces/Unicode in filenames, and virtual workspace files. Modifier keys (Ctrl/Cmd+click, middle-click) and external/non-Markdown links keep their default browser behaviour.
 - GitHub-inspired Light/Dark themes and typography controls.
 - Built-in plugin system with core and optional plugins.
 - Optional Mermaid support with diagram rendering (diagrams render when they enter the viewport).
@@ -85,7 +86,7 @@ Development notes:
 ## Project Structure
 
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
-- `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + React chrome (`react/*`: shell, sidebar, TOC, explorer, toast), async render pipeline (`core/*`), article clicks/hash scroll (`article-interactions.js`), plugin SVG helpers (`icons.js`), plugin tooltips (`dom-tooltip.js`), shared scroll math (`scroll-utils.js`), Files I/O helpers (`explorer/*` consumed by `useExplorer.js`).
+- `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + React chrome (`react/*`: shell, sidebar, TOC, explorer, toast), async render pipeline (`core/*`), article clicks/hash scroll/internal link interception (`article-interactions.js`), link resolver for internal Markdown navigation (`navigation/link-resolver.js`), plugin SVG helpers (`icons.js`), plugin tooltips (`dom-tooltip.js`), shared scroll math (`scroll-utils.js`), Files I/O helpers (`explorer/*` consumed by `useExplorer.js`).
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
 - `src/popup` - React settings UI (`PopupApp.jsx`, panels, `useSettingsPersistence`).

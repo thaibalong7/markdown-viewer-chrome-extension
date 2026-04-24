@@ -10,7 +10,9 @@
     "watch": "vite build --watch",
     "preview": "vite preview",
     "analyze": "ANALYZE=1 vite build",
-    "size:report": "du -sh dist && du -ch dist/assets/*.js | tail -1"
+    "size:report": "du -sh dist && du -ch dist/assets/*.js | tail -1",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "engines": {
     "node": ">=20"
@@ -20,7 +22,8 @@
     "@vitejs/plugin-react": "^6.0.1",
     "rollup-plugin-visualizer": "^6.0.11",
     "sass": "^1.99.0",
-    "vite": "^8.0.3"
+    "vite": "^8.0.3",
+    "vitest": "^4.1.5"
   },
   "dependencies": {
     "@mdit/plugin-katex": "^0.25.2",

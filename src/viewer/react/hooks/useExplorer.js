@@ -21,6 +21,7 @@ import {
   explorerTreeContainsFileHref,
   injectCurrentMarkdownAtRootIfMissing
 } from '../../explorer/explorer-files-context.js'
+import { expandAncestorsForFile } from '../../explorer/explorer-tree-utils.js'
 import {
   clearWorkspaceRootUrl,
   getExplorerMode,
@@ -40,6 +41,39 @@ import {
   normalizeDirectoryUrl,
   normalizeFileUrlForCompare
 } from '../../explorer/url-utils.js'
+import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../../scroll-utils.js'
+
+const DEFERRED_SCROLL_DELAY_MS = 200
+
+function focusAfterNavigation(bridge, hash) {
+  const article = bridge?.getArticleEl?.()
+  if (!(article instanceof HTMLElement)) return
+  if (hash) {
+    const id = String(hash).replace(/^#/, '')
+    if (id) {
+      try {
+        const heading = article.querySelector(`#${CSS.escape(id)}`)
+        if (heading instanceof HTMLElement) {
+          heading.setAttribute('tabindex', '-1')
+          heading.focus({ preventScroll: true })
+          return
+        }
+      } catch { /* fall through to article focus */ }
+    }
+  }
+  article.setAttribute('tabindex', '-1')
+  article.focus({ preventScroll: true })
+}
+
+function deferredScrollRetry(bridge, hash, scrollToHeadingHash) {
+  if (!hash) return
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      scrollToHeadingHash(hash, { behavior: 'auto' })
+    }, DEFERRED_SCROLL_DELAY_MS)
+  })
+}
+
 /**
  * @param {object} options
  * @param {object} options.bridge
@@ -184,6 +218,62 @@ export function useExplorer({ bridge }) {
   const runSiblingScan = useRef(null)
   const navigateToFile = useRef(null)
 
+  const normalizeHashTarget = useCallback((hash) => {
+    const value = String(hash || '').replace(/^#/, '')
+    if (!value) return ''
+    try {
+      return decodeURIComponent(value)
+    } catch {
+      return value
+    }
+  }, [])
+
+  const scrollToHeadingHash = useCallback(
+    (hash, { behavior = 'auto' } = {}) => {
+      const id = normalizeHashTarget(hash)
+      if (!id) return false
+
+      const article = bridge?.getArticleEl?.()
+      if (!(article instanceof HTMLElement)) return false
+      const headingEl = article.querySelector(`#${CSS.escape(id)}`)
+      if (!headingEl) return false
+
+      const scrollRoot = bridge?.getScrollRoot?.()
+      if (!scrollRoot) return false
+
+      const toolbarHeight = getToolbarHeightInScrollRoot(scrollRoot)
+      scrollToElementInViewer({ element: headingEl, scrollRoot, toolbarHeight, behavior })
+      return true
+    },
+    [bridge, normalizeHashTarget]
+  )
+
+  const bridgeNavigateToFile = useCallback((fileUrl, opts = {}) => navigateToFile.current?.(fileUrl, opts), [])
+  const bridgeVirtualFileExists = useCallback(
+    (href) => workspaceVirtualReadersRef.current?.has(href) ?? false,
+    []
+  )
+
+  useEffect(() => {
+    if (!bridge) return undefined
+    bridge.navigateToFile = bridgeNavigateToFile
+    return () => {
+      if (bridge.navigateToFile === bridgeNavigateToFile) {
+        bridge.navigateToFile = null
+      }
+    }
+  }, [bridge, bridgeNavigateToFile])
+
+  useEffect(() => {
+    if (!bridge) return undefined
+    bridge.virtualFileExists = bridgeVirtualFileExists
+    return () => {
+      if (bridge.virtualFileExists === bridgeVirtualFileExists) {
+        bridge.virtualFileExists = null
+      }
+    }
+  }, [bridge, bridgeVirtualFileExists])
+
   const syncExplorerBackButton = useCallback(() => {
     if (explorerModeRef.current === 'workspace') {
       setBackNavigation({ showBack: false })
@@ -192,6 +282,24 @@ export function useExplorer({ bridge }) {
     const nav = siblingBackNavigationForUrl(currentFileUrlRef.current, navigateToFile.current)
     setBackNavigation(nav)
   }, [setBackNavigation, siblingBackNavigationForUrl])
+
+  const revealFileInTree = useCallback(
+    (fileUrl) => {
+      const tree =
+        explorerModeRef.current === 'workspace' ? workspaceTreeRef.current : siblingTreeRef.current
+      if (!tree?.children?.length) return
+      const nextMap = expandAncestorsForFile(
+        tree.children,
+        fileUrl,
+        stateRef.current.expandedMap,
+        normalizeFileUrlForCompare
+      )
+      if (nextMap !== stateRef.current.expandedMap) {
+        safePatch({ expandedMap: nextMap })
+      }
+    },
+    [safePatch]
+  )
 
   const finalizeSiblingTreePresent = useCallback(
     (tree, stats, opts) => {
@@ -290,18 +398,20 @@ export function useExplorer({ bridge }) {
     [bridge, clearExplorerBody, clearWorkspaceVirtualReaders, safePatch]
   )
 
-  const updateUrlWithoutReload = useCallback((fileUrl, { replace = false } = {}) => {
+  const updateUrlWithoutReload = useCallback((fileUrl, { replace = false, hash = null } = {}) => {
     if (typeof fileUrl !== 'string' || !fileUrl.startsWith('file:')) return
     try {
-      if (replace) window.history.replaceState(null, '', fileUrl)
-      else window.history.pushState(null, '', fileUrl)
+      const nextUrl = new URL(fileUrl)
+      nextUrl.hash = hash ? encodeURIComponent(normalizeHashTarget(hash)) : ''
+      if (replace) window.history.replaceState(null, '', nextUrl.href)
+      else window.history.pushState(null, '', nextUrl.href)
     } catch {
       /* file protocol may reject history updates */
     }
-  }, [])
+  }, [normalizeHashTarget])
 
   const navigateWorkspaceVirtualFile = useCallback(
-    async (fileUrl) => {
+    async (fileUrl, { hash = null } = {}) => {
       if (!fileUrl) return
       const current = normalizeFileUrlForCompare(currentFileUrlRef.current)
       const target = normalizeFileUrlForCompare(fileUrl)
@@ -309,7 +419,7 @@ export function useExplorer({ bridge }) {
 
       const entry = workspaceVirtualReadersRef.current?.get(fileUrl)
       if (!entry) {
-        bridge?.showToast?.('Could not open file')
+        bridge?.showToast?.('Linked file is no longer available')
         return
       }
 
@@ -322,35 +432,47 @@ export function useExplorer({ bridge }) {
           const file = await entry.getFile()
           nextMarkdown = await file.text()
         }
-        if (!nextMarkdown.trim()) throw new Error('File is empty or not readable.')
+        if (!nextMarkdown.trim()) {
+          bridge?.showToast?.('Linked file is empty')
+          return
+        }
 
         bridge?.setMarkdown?.(nextMarkdown)
         bridge?.setSmoothInitialHashScroll?.(false)
         setCurrentFileUrl(fileUrl)
         await bridge?.render?.({ preserveScroll: false, honorHash: false })
-        bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
+        const scrolledToHash = hash && scrollToHeadingHash(hash)
+        if (!scrolledToHash) {
+          bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
+        }
+        focusAfterNavigation(bridge, hash)
+        if (scrolledToHash) deferredScrollRetry(bridge, hash, scrollToHeadingHash)
         document.title = `${markdownFileTitleFromUrl(fileUrl)} - Markdown Plus`
       } catch (error) {
         logger.warn('Failed to navigate to workspace virtual file.', error)
-        bridge?.showToast?.('Could not open file')
+        bridge?.showToast?.('Could not read linked file')
       } finally {
         bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
       }
 
-      if (explorerModeRef.current === 'workspace') {
-        safePatch({ activeFileUrl: currentFileUrlRef.current, filesContext: buildFilesContext() })
-        syncExplorerBackButton()
-        return
-      }
-      await runSiblingScan.current?.(currentFileUrlRef.current)
-    },
-    [bridge, buildFilesContext, safePatch, setCurrentFileUrl, syncExplorerBackButton]
+    if (explorerModeRef.current === 'workspace') {
+      safePatch({ activeFileUrl: currentFileUrlRef.current, filesContext: buildFilesContext() })
+      revealFileInTree(currentFileUrlRef.current)
+      syncExplorerBackButton()
+      return
+    }
+    await runSiblingScan.current?.(currentFileUrlRef.current)
+  },
+    [bridge, buildFilesContext, revealFileInTree, safePatch, scrollToHeadingHash, setCurrentFileUrl, syncExplorerBackButton]
   )
 
-  navigateToFile.current = async (fileUrl, { replaceHistory = false, forceReload = false } = {}) => {
+  navigateToFile.current = async (
+    fileUrl,
+    { replaceHistory = false, forceReload = false, hash = null } = {}
+  ) => {
     if (!fileUrl) return
     if (isWorkspaceVirtualHref(fileUrl)) {
-      await navigateWorkspaceVirtualFile(fileUrl)
+      await navigateWorkspaceVirtualFile(fileUrl, { hash })
       return
     }
 
@@ -364,26 +486,41 @@ export function useExplorer({ bridge }) {
         type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT,
         payload: { url: fileUrl }
       })
-      if (!response?.ok) throw new Error(response?.error || 'Could not load file.')
+      if (!response?.ok) {
+        const msg = /permission|denied|access/i.test(response?.error || '')
+          ? 'Could not read linked file'
+          : 'Could not open linked file'
+        bridge?.showToast?.(msg)
+        return
+      }
       const nextMarkdown = String(response.data?.text || '')
-      if (!nextMarkdown.trim()) throw new Error('File is empty or not readable.')
+      if (!nextMarkdown.trim()) {
+        bridge?.showToast?.('Linked file is empty')
+        return
+      }
 
       bridge?.setMarkdown?.(nextMarkdown)
       bridge?.setSmoothInitialHashScroll?.(false)
       setCurrentFileUrl(fileUrl)
       await bridge?.render?.({ preserveScroll: false, honorHash: false })
-      bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
-      updateUrlWithoutReload(fileUrl, { replace: replaceHistory })
+      updateUrlWithoutReload(fileUrl, { replace: replaceHistory, hash })
+      const scrolledToHash = hash && scrollToHeadingHash(hash)
+      if (!scrolledToHash) {
+        bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
+      }
+      focusAfterNavigation(bridge, hash)
+      if (scrolledToHash) deferredScrollRetry(bridge, hash, scrollToHeadingHash)
       document.title = `${markdownFileTitleFromUrl(fileUrl)} - Markdown Plus`
     } catch (error) {
       logger.warn('Failed to navigate to sibling markdown file.', error)
-      bridge?.showToast?.('Could not open file')
+      bridge?.showToast?.('Could not open linked file')
     } finally {
       bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
     }
 
     if (explorerModeRef.current === 'workspace') {
       safePatch({ activeFileUrl: currentFileUrlRef.current, filesContext: buildFilesContext() })
+      revealFileInTree(currentFileUrlRef.current)
       syncExplorerBackButton()
       return
     }
@@ -394,6 +531,7 @@ export function useExplorer({ bridge }) {
       fileUrlIsUnderDirectoryUrl(currentFileUrlRef.current, siblingScanRootUrlRef.current)
     ) {
       safePatch({ activeFileUrl: currentFileUrlRef.current, filesContext: buildFilesContext() })
+      revealFileInTree(currentFileUrlRef.current)
       syncExplorerBackButton()
       return
     }

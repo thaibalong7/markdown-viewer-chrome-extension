@@ -84,3 +84,40 @@ export function buildInitialExpandedMap(nodes) {
   walk(Array.isArray(nodes) ? nodes : [])
   return expandedMap
 }
+
+/**
+ * Returns a new expandedMap with all ancestor folders of `fileUrl` set to expanded.
+ * If the file is not found in the tree, returns the original map unchanged.
+ * @param {Array<import('./folder-scanner.js').ExplorerTreeNode>} nodes
+ * @param {string} fileUrl
+ * @param {Map<string, boolean>} currentExpandedMap
+ * @param {(url: string) => string} normalizeUrl
+ * @returns {Map<string, boolean>}
+ */
+export function expandAncestorsForFile(nodes, fileUrl, currentExpandedMap, normalizeUrl) {
+  if (!fileUrl || !nodes?.length) return currentExpandedMap
+  const targetNormalized = normalizeUrl(fileUrl)
+  if (!targetNormalized) return currentExpandedMap
+
+  const ancestors = []
+  const found = (function walk(list) {
+    for (const node of list) {
+      if (node.type === 'file') {
+        if (normalizeUrl(node.href || '') === targetNormalized) return true
+        continue
+      }
+      if (node.type === 'folder' && node.children?.length) {
+        ancestors.push(node.href)
+        if (walk(node.children)) return true
+        ancestors.pop()
+      }
+    }
+    return false
+  })(nodes)
+
+  if (!found || ancestors.length === 0) return currentExpandedMap
+
+  const nextMap = new Map(currentExpandedMap)
+  for (const href of ancestors) nextMap.set(href, true)
+  return nextMap
+}

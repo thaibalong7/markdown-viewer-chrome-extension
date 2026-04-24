@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120" viewBox="0 0 240 120">
+  <rect width="240" height="120" fill="#f4f4f5" />
+  <rect x="16" y="16" width="208" height="88" rx="8" fill="#dbeafe" stroke="#2563eb" />
+  <text x="120" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#1e3a8a">
+    Markdown Plus
+  </text>
+  <text x="120" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1e40af">
+    Asset navigation fallback test
+  </text>
+</svg>

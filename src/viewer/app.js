@@ -4,6 +4,7 @@ import { applyThemeSettings } from '../theme/index.js'
 import { logger } from '../shared/logger.js'
 import { needsFullRender } from '../shared/settings-diff.js'
 import { createArticleInteractions } from './article-interactions.js'
+import { resolveMarkdownLink } from './navigation/link-resolver.js'
 import { mountViewerReact } from './react/mount.js'
 import { getSidebarWidthPx } from './explorer/explorer-state.js'
 import { SIDEBAR_MAX_WIDTH_PX, SIDEBAR_MIN_WIDTH_PX } from '../shared/constants/viewer.js'
@@ -54,27 +55,31 @@ export class MarkdownViewerApp {
       this.container.appendChild(styleElement)
     }
 
+    const explorerBridge = {
+      getSettings: () => this.settings,
+      setMarkdown: (md) => {
+        this.markdown = md
+      },
+      setSmoothInitialHashScroll: (value) => {
+        this._smoothInitialHashScroll = Boolean(value)
+      },
+      render: (opts) => this.render(opts),
+      showToast: (message) => this.showToast(message),
+      getScrollRoot: () => this.getScrollRoot(),
+      getArticleEl: () => this._articleEl,
+      updateCurrentFileUrl: (nextUrl) => {
+        this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
+        this._reactHandle?.bumpChrome()
+      },
+      navigateToFile: null,
+      virtualFileExists: null
+    }
+
     this._reactHandle = mountViewerReact(this.container, {
       settings: this.settings,
       tocItems: [],
       tocReady: false,
-      explorerBridge: {
-        getSettings: () => this.settings,
-        setMarkdown: (md) => {
-          this.markdown = md
-        },
-        setSmoothInitialHashScroll: (value) => {
-          this._smoothInitialHashScroll = Boolean(value)
-        },
-        render: (opts) => this.render(opts),
-        showToast: (message) => this.showToast(message),
-        getScrollRoot: () => this.getScrollRoot(),
-        getArticleEl: () => this._articleEl,
-        updateCurrentFileUrl: (nextUrl) => {
-          this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
-          this._reactHandle?.bumpChrome()
-        }
-      },
+      explorerBridge,
       getArticleEl: () => this._articleEl,
       getSettings: () => this.settings,
       getCurrentFileUrl: () => this._currentFileUrl
@@ -93,7 +98,14 @@ export class MarkdownViewerApp {
     this._articleInteractions = createArticleInteractions({
       getArticle: () => this._articleEl,
       showToast: (message) => this.showToast(message),
-      getScrollRoot: () => this.getScrollRoot()
+      getScrollRoot: () => this.getScrollRoot(),
+      getCurrentFileUrl: () => this._currentFileUrl,
+      navigateToFile: (fileUrl, opts) => explorerBridge.navigateToFile?.(fileUrl, opts),
+      resolveLink: (rawHref) =>
+        resolveMarkdownLink(rawHref, {
+          currentFileUrl: this._currentFileUrl,
+          virtualFileExists: (href) => explorerBridge.virtualFileExists?.(href) ?? false
+        })
     })
 
     this._smoothInitialHashScroll = Boolean(window.location.hash)

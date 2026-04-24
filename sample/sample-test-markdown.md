@@ -58,6 +58,81 @@ Doan text thuong de test font-size, line-height, font-family.
 [External link to example](https://example.com)
 [MDN link](https://developer.mozilla.org)
 
+### 3.1 Internal vs External Link Rendering (Phase 0)
+
+Muc tieu:
+- Internal links khong bi gan `target="_blank"`.
+- External links van giu `target="_blank"` + `rel="noopener noreferrer"`.
+
+Internal link samples (expected: no target):
+- [Relative markdown sibling](./other.md)
+- [Relative markdown parent](../README.md#install)
+- [Hash-only same document](#71-anchor-one)
+- [Absolute file markdown](file:///tmp/sample.md)
+- [Relative non-markdown asset](./image.png)
+
+External link samples (expected: target="_blank"):
+- [External HTTPS](https://example.com/docs)
+- [Mailto link](mailto:test@example.com)
+- [Tel link](tel:+84901234567)
+
+Manual verification checklist:
+1. Inspect the rendered `<a>` tags in viewer.
+2. Confirm internal links above do not include `target="_blank"`.
+3. Confirm HTTPS/mailto/tel links include both `target="_blank"` and `rel="noopener noreferrer"`.
+
+### 3.2 Phase 1 Internal Link Navigation Test Pack
+
+Muc tieu:
+- Test click interception cho internal markdown links.
+- Xac nhan self-link khong re-fetch.
+- Xac nhan markdown file co hash scroll dung sau khi render.
+- Xac nhan external va asset link van giu hanh vi mac dinh cua browser.
+
+Use this section as the main manual QA area for internal hyperlink navigation.
+
+Same document:
+- [Hash-only same document target](#phase-1-target-section)
+
+Self links:
+- [Self link no hash](./sample-test-markdown.md)
+- [Self link with hash](./sample-test-markdown.md#phase-1-target-section)
+
+Sibling and nested markdown files:
+- [Sibling file](./other.md)
+- [Sibling file with hash](./other.md#intro)
+- [Nested file](./guides/install.md)
+- [Nested file with hash](./guides/install.md#step-2)
+
+Parent file:
+- [Project README parent link](../README.md)
+
+File names with spaces, Unicode, and encoded href:
+- [File with space in name](./My Notes.md)
+- [Encoded href to file with space](./My%20Notes.md#encoded-heading)
+- [Unicode file name](./ghi%20chu.md#unicode-target)
+
+Expected fallback cases:
+- [Broken markdown link](./missing-file.md)
+- [Non-markdown asset](./assets/diagram.svg)
+- [External HTTPS link](https://example.com/internal-nav-test)
+- [Mailto link](mailto:test@example.com)
+
+Modifier-key checks:
+- Cmd/Ctrl + click on any markdown link above should open in browser default behavior.
+- Middle click should also keep browser default behavior.
+
+Expected results:
+1. Internal markdown links open inside the viewer without full-page reload.
+2. Self-link no hash scrolls to top only.
+3. Self-link with hash scrolls to the heading only.
+4. Broken link keeps current document visible and shows an error toast.
+5. Asset/external links are not intercepted.
+
+## Phase 1 Target Section
+
+This heading exists so hash-only and self-link-with-hash checks have a stable target.
+
 > Blockquote line 1
 > Blockquote line 2
 > Blockquote line 3

@@ -11,10 +11,14 @@ const purifier = createPurifier && windowRef ? createPurifier(windowRef) : null
  * @param {string} html
  * @param {{ allowKatex?: boolean }} [options]
  */
+const ALLOWED_URI_RE =
+  /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp|file):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+
 export function sanitizeHtml(html, options = {}) {
   if (!purifier) return String(html || '')
   const cfg = {
-    ADD_ATTR: ['style', 'tabindex']
+    ADD_ATTR: ['style', 'tabindex'],
+    ALLOWED_URI_REGEXP: ALLOWED_URI_RE
   }
   if (options.allowKatex) {
     // Keep normal HTML tags and extend with MathML/SVG required by KaTeX output.

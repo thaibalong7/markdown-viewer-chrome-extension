@@ -9,8 +9,18 @@ import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from './scroll-
  * @param {() => (HTMLElement | null | undefined)} options.getArticle
  * @param {(message: string) => void} options.showToast
  * @param {() => HTMLElement | null} options.getScrollRoot
+ * @param {() => string} [options.getCurrentFileUrl]
+ * @param {(fileUrl: string, opts?: object) => Promise<void>} [options.navigateToFile]
+ * @param {(rawHref: string) => { kind: string, resolvedUrl: string | null, hash: string | null, shouldIntercept: boolean }} [options.resolveLink]
  */
-export function createArticleInteractions({ getArticle, showToast, getScrollRoot } = {}) {
+export function createArticleInteractions({
+  getArticle,
+  showToast,
+  getScrollRoot,
+  getCurrentFileUrl,
+  navigateToFile,
+  resolveLink
+} = {}) {
   /** @type {(() => void) | null} */
   let hashChangeHandler = null
   /** @type {((e: MouseEvent) => void) | null} */
@@ -107,6 +117,69 @@ export function createArticleInteractions({ getArticle, showToast, getScrollRoot
     return true
   }
 
+  function updateCurrentDocumentHash(hash) {
+    const currentFileUrl = getCurrentFileUrl?.() || window.location.href
+    try {
+      const nextUrl = new URL(currentFileUrl || window.location.href)
+      nextUrl.hash = hash ? encodeURIComponent(hash) : ''
+      window.history.replaceState(null, '', nextUrl.href)
+    } catch {
+      if (hash) window.history.replaceState(null, '', `#${encodeURIComponent(hash)}`)
+      else window.history.replaceState(null, '', window.location.href.replace(/#.*$/, ''))
+    }
+  }
+
+  function scrollToTop() {
+    const scrollRoot = getScrollRoot()
+    scrollRoot?.scrollTo?.({ top: 0, behavior: 'auto' })
+  }
+
+  /**
+   * @param {MouseEvent} event
+   * @param {HTMLElement} article
+   * @returns {boolean}
+   */
+  function handleInternalLinkClick(event, article) {
+    const target = event.target
+    if (!(target instanceof Element)) return false
+    const link = target.closest('a[href]')
+    if (!(link instanceof HTMLAnchorElement) || !article.contains(link)) return false
+    if (event.button !== 0) return false
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false
+    if (link.hasAttribute('download')) return false
+
+    const targetAttr = (link.getAttribute('target') || '').toLowerCase()
+    if (targetAttr === '_blank' || targetAttr === '_parent' || targetAttr === '_top') return false
+
+    const href = link.getAttribute('href') || ''
+    const resolved = resolveLink?.(href)
+    if (!resolved?.shouldIntercept) return false
+    if (resolved.kind === 'same-document-hash') return false
+
+    event.preventDefault()
+
+    if (resolved.kind === 'self-link') {
+      if (resolved.hash) {
+        updateCurrentDocumentHash(resolved.hash)
+        scrollToHash({ behavior: 'smooth' })
+      } else {
+        updateCurrentDocumentHash('')
+        scrollToTop()
+      }
+      return true
+    }
+
+    if (
+      (resolved.kind === 'markdown-file' || resolved.kind === 'workspace-virtual-file') &&
+      resolved.resolvedUrl
+    ) {
+      void navigateToFile?.(resolved.resolvedUrl, { hash: resolved.hash || null })
+      return true
+    }
+
+    return false
+  }
+
   async function copySectionLinkWithToast(url) {
     try {
       await copyTextToClipboard(url)
@@ -163,6 +236,7 @@ export function createArticleInteractions({ getArticle, showToast, getScrollRoot
     articleClickHandler = (event) => {
       if (handleCodeCopyClick(event, article)) return
       if (handleAnchorLinkClick(event, article)) return
+      if (handleInternalLinkClick(event, article)) return
       handleHashLinkClick(event, article)
     }
     article.addEventListener('click', articleClickHandler)

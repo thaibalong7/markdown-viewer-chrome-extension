@@ -31,6 +31,16 @@ export const PLUGIN_HINTS = {
     'Renders Mermaid diagrams from ```mermaid``` fences. When on, charts can be exported from the viewer.'
 }
 
+/** Parser/syntax package versions shown only when a plugin has a concrete versioned dependency. */
+export const PLUGIN_VERSION_NOTES = {
+  codeHighlight: 'Syntax support: Shiki 4.0.2.',
+  anchorHeading: 'Heading slug support: markdown-it-anchor 9.2.0.',
+  emoji: 'Syntax support: markdown-it-emoji 3.0.0.',
+  footnote: 'Syntax support: markdown-it-footnote 4.0.0.',
+  math: 'Syntax support: @mdit/plugin-katex 0.25.2, KaTeX 0.16.44.',
+  mermaid: 'Syntax support: Mermaid 11.13.0.'
+}
+
 export function createReaderUiDefaultsPatch() {
   return {
     theme: { ...DEFAULT_SETTINGS.theme },

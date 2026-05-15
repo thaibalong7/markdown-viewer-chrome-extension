@@ -7,6 +7,16 @@ import {
   THEME_LABELS
 } from '../settings-constants.js'
 
+function InfoTooltip({ label, content }) {
+  return (
+    <Tooltip content={content}>
+      <button type="button" className="popup-info-button" aria-label={label}>
+        i
+      </button>
+    </Tooltip>
+  )
+}
+
 /**
  * @param {{ settings: object, onPatch: (partial: object) => void }} props
  */
@@ -32,30 +42,35 @@ export function ReaderPanel({ settings, onPatch }) {
         </select>
       </label>
 
-      <label className="popup-field">
-        <span className="popup-label">Font family</span>
-        <Tooltip
-          content="Uses fonts installed on your system. Presets list several fallbacks if the first choice is missing."
+      <div className="popup-field">
+        <div className="popup-label-row">
+          <label className="popup-label" htmlFor="reader-font-family">
+            Font family
+          </label>
+          <InfoTooltip
+            label="About font family"
+            content="Uses fonts installed on your system. Presets list several fallbacks if the first choice is missing."
+          />
+        </div>
+        <select
+          id="reader-font-family"
+          className="popup-input"
+          value={settings.typography?.fontFamily || FONT_FAMILY_PRESETS[0].value}
+          onChange={(event) =>
+            onPatch({
+              typography: {
+                fontFamily: event.target.value
+              }
+            })
+          }
         >
-          <select
-            className="popup-input"
-            value={settings.typography?.fontFamily || FONT_FAMILY_PRESETS[0].value}
-            onChange={(event) =>
-              onPatch({
-                typography: {
-                  fontFamily: event.target.value
-                }
-              })
-            }
-          >
-            {FONT_FAMILY_PRESETS.map((preset) => (
-              <option key={preset.value} value={preset.value}>
-                {preset.label}
-              </option>
-            ))}
-          </select>
-        </Tooltip>
-      </label>
+          {FONT_FAMILY_PRESETS.map((preset) => (
+            <option key={preset.value} value={preset.value}>
+              {preset.label}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <label className="popup-field">
         <span className="popup-label">Font size (px)</span>
@@ -76,26 +91,33 @@ export function ReaderPanel({ settings, onPatch }) {
         />
       </label>
 
-      <label className="popup-field">
-        <span className="popup-label">Line height</span>
-        <Tooltip content="Unitless line-spacing multiplier (e.g. 1.7 ≈ 170% of font size). Not pixels.">
-          <input
-            className="popup-input"
-            type="number"
-            min="1.2"
-            max="2.2"
-            step="0.1"
-            value={Number(settings.typography?.lineHeight || 1.7)}
-            onChange={(event) =>
-              onPatch({
-                typography: {
-                  lineHeight: Number(event.target.value) || 1.7
-                }
-              })
-            }
+      <div className="popup-field">
+        <div className="popup-label-row">
+          <label className="popup-label" htmlFor="reader-line-height">
+            Line height
+          </label>
+          <InfoTooltip
+            label="About line height"
+            content="Unitless line-spacing multiplier (e.g. 1.7 ≈ 170% of font size). Not pixels."
           />
-        </Tooltip>
-      </label>
+        </div>
+        <input
+          id="reader-line-height"
+          className="popup-input"
+          type="number"
+          min="1.2"
+          max="2.2"
+          step="0.1"
+          value={Number(settings.typography?.lineHeight || 1.7)}
+          onChange={(event) =>
+            onPatch({
+              typography: {
+                lineHeight: Number(event.target.value) || 1.7
+              }
+            })
+          }
+        />
+      </div>
 
       <label className="popup-field">
         <span className="popup-label">Content width (px)</span>

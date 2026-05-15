@@ -109,6 +109,37 @@ body {
   color: #656d76;
 }
 
+.popup-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.popup-info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #8c959f;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #656d76;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: help;
+
+  &:hover,
+  &:focus-visible {
+    color: #1f2328;
+    border-color: #2f81f7;
+    outline: none;
+  }
+}
+
 .popup-plugin-item {
   gap: 4px;
 }
@@ -119,6 +150,10 @@ body {
   font-size: 11px;
   line-height: 1.45;
   color: #656d76;
+}
+
+.popup-plugin-version-note {
+  color: #8c959f;
 }
 
 .popup-input {

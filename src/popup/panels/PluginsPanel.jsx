@@ -1,5 +1,5 @@
 import React from 'react'
-import { PLUGIN_HINTS, PLUGIN_LABELS } from '../settings-constants.js'
+import { PLUGIN_HINTS, PLUGIN_LABELS, PLUGIN_VERSION_NOTES } from '../settings-constants.js'
 
 /**
  * @param {{ pluginsSnapshot: Record<string, { enabled?: boolean }>, onPatch: (partial: object) => void }} props
@@ -9,6 +9,7 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
     <>
       {Object.keys(pluginsSnapshot).map((pluginId) => {
         const hint = PLUGIN_HINTS[pluginId]
+        const versionNote = PLUGIN_VERSION_NOTES[pluginId]
         return (
           <div key={pluginId} className="popup-field popup-plugin-item">
             <label className="popup-field-inline">
@@ -28,6 +29,9 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
               <span className="popup-label">{PLUGIN_LABELS[pluginId] || pluginId}</span>
             </label>
             {hint ? <p className="popup-plugin-note">{hint}</p> : null}
+            {versionNote ? (
+              <p className="popup-plugin-note popup-plugin-version-note">{versionNote}</p>
+            ) : null}
           </div>
         )
       })}

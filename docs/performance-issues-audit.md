@@ -130,7 +130,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 - **Vị trí cập nhật:** `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `FileTree.jsx`, `FileRow.jsx`, `FolderRow.jsx`.
 - **Đã xử lý:** Explorer chuyển sang virtual list (`@tanstack/react-virtual`) cho cả flat files view và tree view.
 - **Đã xử lý:** Thêm `flattenVisibleTree(...)` để flatten các node visible theo `expandedMap`, chỉ render rows trong viewport + overscan.
-- **Đã xử lý:** Active file sync bằng `scrollToIndex(...)` để giữ UX điều hướng trong danh sách ảo.
+- **Đã xử lý:** Active file sync bằng `scrollToIndex(...)` cho điều hướng không xuất phát từ row click (load ban đầu, link nội bộ, Back to original, workspace restore) để giữ UX danh sách ảo mà không làm sidebar nhảy khi user vừa chọn file đang thấy.
 
 ---
 

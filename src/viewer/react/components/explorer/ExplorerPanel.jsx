@@ -13,6 +13,7 @@ export function ExplorerPanel({ bridge }) {
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
   const panelRef = useRef(null)
+  const suppressNextAutoRevealRef = useRef('')
   const [scrollElement, setScrollElement] = useState(null)
   const activeNormalized = normalizeFileUrlForCompare(state.activeFileUrl || '')
   const treeRows = useMemo(
@@ -55,14 +56,29 @@ export function ExplorerPanel({ bridge }) {
   useEffect(() => {
     if (state.view !== 'files') return
     if (activeFileIndex < 0) return
+    if (suppressNextAutoRevealRef.current === activeNormalized) {
+      suppressNextAutoRevealRef.current = ''
+      return
+    }
     fileVirtualizer.scrollToIndex(activeFileIndex, { align: 'nearest' })
-  }, [activeFileIndex, fileVirtualizer, state.view])
+  }, [activeFileIndex, activeNormalized, fileVirtualizer, state.view])
 
   useEffect(() => {
     if (state.view !== 'tree') return
     if (activeTreeIndex < 0) return
+    if (suppressNextAutoRevealRef.current === activeNormalized) {
+      suppressNextAutoRevealRef.current = ''
+      return
+    }
     treeVirtualizer.scrollToIndex(activeTreeIndex, { align: 'nearest' })
-  }, [activeTreeIndex, state.view, treeVirtualizer])
+  }, [activeNormalized, activeTreeIndex, state.view, treeVirtualizer])
+
+  const onPickFileFromExplorer = (href) => {
+    const pickedNormalized = normalizeFileUrlForCompare(href || '')
+    suppressNextAutoRevealRef.current =
+      pickedNormalized && pickedNormalized !== activeNormalized ? pickedNormalized : ''
+    actions.onNavigate(href)
+  }
 
   const fileVirtualItems = fileVirtualizer.getVirtualItems()
   const treeVirtualItems = treeVirtualizer.getVirtualItems()
@@ -117,7 +133,7 @@ export function ExplorerPanel({ bridge }) {
               autoScrollActive={false}
               rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
               isActive={normalizeFileUrlForCompare(file.href || '') === activeNormalized}
-              onPick={actions.onNavigate}
+              onPick={onPickFileFromExplorer}
             />
           )
         })}
@@ -153,7 +169,7 @@ export function ExplorerPanel({ bridge }) {
               autoScrollActive={false}
               rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
               isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
-              onPick={actions.onNavigate}
+              onPick={onPickFileFromExplorer}
             />
           )
         })}

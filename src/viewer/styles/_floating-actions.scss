@@ -54,6 +54,24 @@
     opacity: 0.45;
     pointer-events: none;
   }
+
+  &.is-copied {
+    color: var(--mdp-link);
+    border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
+    background: color-mix(in srgb, var(--mdp-link) 12%, transparent);
+    pointer-events: none;
+
+    .mdp-fab-btn__icon {
+      display: none;
+    }
+
+    &::after {
+      content: '✓';
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+    }
+  }
 }
 
 .mdp-fab-btn__icon {

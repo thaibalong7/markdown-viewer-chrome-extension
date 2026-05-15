@@ -12,6 +12,7 @@ import {
 /**
  * @typedef {object} ExplorerFilesContext
  * @property {ExplorerModeBadgeId} modeBadge
+ * @property {string} currentFileUrl
  * @property {string} currentLine - e.g. "Reading: README.md" or "No file selected"
  * @property {string} statusLine - workspace / folder status (short)
  * @property {string} [warningLine] - e.g. current file not listed in workspace tree
@@ -205,6 +206,7 @@ export function buildExplorerFilesContext({
 
   return {
     modeBadge,
+    currentFileUrl: currentFileUrl || '',
     currentLine,
     statusLine,
     ...(warningLine ? { warningLine } : {})

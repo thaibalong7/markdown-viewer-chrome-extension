@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
+import { COPY_BUTTON_FEEDBACK_MS } from '../../../shared/constants/viewer.js'
 import {
   buildExportFilename,
   exportAsHtml,
   exportAsWord,
   printDocument
 } from '../../actions/document-actions.js'
+import { copyCurrentFileLink } from '../../actions/file-link-actions.js'
 import { useToast } from '../contexts/ToastContext.jsx'
 import { useEditorState, useEditorDispatch } from '../contexts/EditorContext.jsx'
 import { Tooltip } from './Tooltip.jsx'
@@ -15,18 +17,33 @@ import { EditIcon } from './icons/EditIcon.jsx'
 import { SidebarToggleIcon } from './icons/SidebarToggleIcon.jsx'
 import { SaveIcon } from './icons/SaveIcon.jsx'
 import { FocusIcon } from './icons/FocusIcon.jsx'
+import { CopyLinkIcon } from './icons/CopyLinkIcon.jsx'
 
 export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, onSave }) {
   const printBtnRef = useRef(null)
   const exportBtnRef = useRef(null)
   const exportWrapRef = useRef(null)
+  const copyFeedbackTimerRef = useRef(0)
   const { showToast } = useToast()
   const editorState = useEditorState()
   const editorDispatch = useEditorDispatch()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [copyLinkCopied, setCopyLinkCopied] = useState(false)
   const currentFileUrl = getCurrentFileUrl?.() || ''
   const visible = Boolean(String(currentFileUrl).trim())
   const isLocalFile = currentFileUrl.startsWith('file:')
+
+  const flashCopyLinkCopied = () => {
+    if (copyFeedbackTimerRef.current) {
+      window.clearTimeout(copyFeedbackTimerRef.current)
+      copyFeedbackTimerRef.current = 0
+    }
+    setCopyLinkCopied(true)
+    copyFeedbackTimerRef.current = window.setTimeout(() => {
+      copyFeedbackTimerRef.current = 0
+      setCopyLinkCopied(false)
+    }, COPY_BUTTON_FEEDBACK_MS)
+  }
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -60,6 +77,15 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   useEffect(() => {
     if (!visible) setMenuOpen(false)
   }, [visible])
+
+  useEffect(
+    () => () => {
+      if (copyFeedbackTimerRef.current) {
+        window.clearTimeout(copyFeedbackTimerRef.current)
+      }
+    },
+    []
+  )
 
   const menuItems = useMemo(
     () => [
@@ -119,6 +145,19 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
     editorDispatch({ type: 'TOGGLE_SIDEBAR' })
   }
 
+  const onCopyLinkClick = () => {
+    setMenuOpen(false)
+    void (async () => {
+      try {
+        await copyCurrentFileLink(getCurrentFileUrl?.())
+        flashCopyLinkCopied()
+        showToast?.('Copied file link')
+      } catch {
+        showToast?.('Could not copy file link')
+      }
+    })()
+  }
+
   const onFocusToggleClick = () => {
     setMenuOpen(false)
     editorDispatch({ type: 'TOGGLE_FOCUS' })
@@ -145,6 +184,20 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
           onClick={onSidebarToggleClick}
         >
           <SidebarToggleIcon className="mdp-fab-btn__icon" />
+        </button>
+      </Tooltip>
+
+      <Tooltip
+        content={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+        showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+      >
+        <button
+          type="button"
+          className={`mdp-fab-btn mdp-fab-btn--copy-link${copyLinkCopied ? ' is-copied' : ''}`}
+          aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+          onClick={onCopyLinkClick}
+        >
+          <CopyLinkIcon className="mdp-fab-btn__icon" />
         </button>
       </Tooltip>
 

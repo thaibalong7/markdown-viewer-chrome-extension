@@ -143,6 +143,64 @@
   word-break: break-word;
 }
 
+.mdp-explorer__copy-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--mdp-border);
+  border-radius: 6px;
+  background: var(--mdp-panel-bg);
+  color: var(--mdp-muted);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease;
+
+  &:hover {
+    color: var(--mdp-text);
+    background: color-mix(in srgb, var(--mdp-panel-bg) 70%, var(--mdp-border) 30%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  &.is-copied {
+    color: var(--mdp-link);
+    border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
+    background: color-mix(in srgb, var(--mdp-link) 12%, transparent);
+    pointer-events: none;
+
+    .mdp-explorer__copy-link-icon {
+      display: none;
+    }
+
+    &::after {
+      content: '✓';
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+  }
+}
+
+.mdp-explorer__copy-link-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
 .mdp-explorer__context-status {
   font-size: 11px;
   line-height: 1.35;

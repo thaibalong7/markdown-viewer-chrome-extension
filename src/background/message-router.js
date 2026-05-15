@@ -3,6 +3,7 @@ import { settingsService } from '../settings/index.js'
 import { logger } from '../shared/logger.js'
 import { fetchFileTextViaOffscreen } from './offscreen-fetch.js'
 import { sanitizeDownloadFilename } from '../shared/download.js'
+import { fileHistoryService } from './file-history-service.js'
 
 async function notifySettingsUpdated(settings) {
   const tabs = await chrome.tabs.query({})
@@ -46,6 +47,18 @@ export async function routeMessage(message, sender) {
       await notifySettingsUpdated(nextSettings)
       return nextSettings
     }
+
+    case MESSAGE_TYPES.GET_FILE_HISTORY:
+      return fileHistoryService.getFileHistory()
+
+    case MESSAGE_TYPES.RECORD_FILE_OPENED:
+      return fileHistoryService.recordFileOpened(message.payload || {})
+
+    case MESSAGE_TYPES.CLEAR_FILE_HISTORY:
+      return fileHistoryService.clearFileHistory()
+
+    case MESSAGE_TYPES.OPEN_FILE_FROM_HISTORY:
+      return fileHistoryService.openFileFromHistory(message.payload || {})
 
     case MESSAGE_TYPES.FETCH_FILE_AS_TEXT:
     {

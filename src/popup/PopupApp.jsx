@@ -3,14 +3,17 @@ import { getDefaultPluginSettings } from '../plugins/plugin-types.js'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
 import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
+import { useFileHistory } from './hooks/useFileHistory.js'
 import { Tooltip } from './components/Tooltip.jsx'
 import { GeneralPanel } from './panels/GeneralPanel.jsx'
 import { ReaderPanel } from './panels/ReaderPanel.jsx'
 import { EditorSettingsPanel } from './panels/EditorSettingsPanel.jsx'
 import { PluginsPanel } from './panels/PluginsPanel.jsx'
+import { FileHistoryPanel } from './panels/FileHistoryPanel.jsx'
 
 export function PopupApp() {
   const { settings, loading, saving, errorMessage, persistPatch } = useSettingsPersistence()
+  const fileHistory = useFileHistory()
   const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.SETTINGS)
 
   const pluginsSnapshot = useMemo(() => {
@@ -77,6 +80,17 @@ export function PopupApp() {
           <div className="popup-settings-content">
             {activeTab === SETTINGS_TAB_IDS.SETTINGS && (
               <GeneralPanel settings={settings} onPatch={persistPatch} />
+            )}
+
+            {activeTab === SETTINGS_TAB_IDS.HISTORY && (
+              <FileHistoryPanel
+                history={fileHistory.history}
+                loading={fileHistory.loading}
+                busyUrl={fileHistory.busyUrl}
+                errorMessage={fileHistory.errorMessage}
+                onOpen={fileHistory.openHistoryEntry}
+                onClear={fileHistory.clearHistory}
+              />
             )}
 
             {activeTab === SETTINGS_TAB_IDS.READER && (

@@ -16,6 +16,8 @@ import {
 } from './editor/scroll-sync.js'
 import { EDITOR_LINE_HEIGHT, normalizeEditorSettings } from '../shared/constants/editor.js'
 import { saveFile, getSuggestedFilenameFromUrl, FileMismatchError } from './editor/file-io.js'
+import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
+import { fileHistoryTitleFromUrl, normalizeFileHistoryUrl } from '../shared/file-history.js'
 
 function clampSidebarWidth(widthPx) {
   const width = Number(widthPx)
@@ -121,6 +123,7 @@ export class MarkdownViewerApp {
       getArticleEl: () => this._articleEl,
       updateCurrentFileUrl: (nextUrl) => {
         this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
+        this._recordCurrentFileInHistory()
         this._reactHandle?.bumpChrome()
       },
       navigateToFile: null,
@@ -186,9 +189,24 @@ export class MarkdownViewerApp {
 
     this._smoothInitialHashScroll = Boolean(window.location.hash)
     this.applyReaderStyles()
+    this._recordCurrentFileInHistory()
     void this.render()
     this._articleInteractions.bind()
     this._bindGlobalListeners()
+  }
+
+  _recordCurrentFileInHistory() {
+    const url = normalizeFileHistoryUrl(this._currentFileUrl)
+    if (!url) return
+    void sendMessage({
+      type: MESSAGE_TYPES.RECORD_FILE_OPENED,
+      payload: {
+        url,
+        title: fileHistoryTitleFromUrl(url)
+      }
+    }).catch((error) => {
+      logger.debug('Could not record file history.', error)
+    })
   }
 
   _bindGlobalListeners() {

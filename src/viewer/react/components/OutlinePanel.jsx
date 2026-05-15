@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../../scroll-utils.js'
+import {
+  getToolbarHeightInScrollRoot,
+  hashTargetToUrlFragment,
+  scrollToElementInViewer
+} from '../../scroll-utils.js'
 import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
 import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
@@ -8,7 +12,7 @@ import { useEditorState } from '../contexts/EditorContext.jsx'
 
 function updateHash(id) {
   if (!id) return
-  const encoded = `#${encodeURIComponent(id)}`
+  const encoded = hashTargetToUrlFragment(id)
   if (window.location.hash === encoded) return
   window.history.replaceState(null, '', encoded)
 }

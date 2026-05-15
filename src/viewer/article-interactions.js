@@ -1,7 +1,12 @@
 import { logger } from '../shared/logger.js'
 import { copyTextToClipboard } from '../shared/clipboard.js'
 import { COPY_BUTTON_FEEDBACK_MS } from '../shared/constants/viewer.js'
-import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from './scroll-utils.js'
+import {
+  findHeadingByHash,
+  getToolbarHeightInScrollRoot,
+  hashTargetToUrlFragment,
+  scrollToElementInViewer
+} from './scroll-utils.js'
 
 /**
  * Hash navigation, in-article link handling, and clipboard UX for the markdown body.
@@ -90,7 +95,7 @@ export function createArticleInteractions({
     if (!id) return false
     if (!link.classList.contains('mdp-heading-anchor')) return false
     event.preventDefault()
-    const hash = `#${encodeURIComponent(id)}`
+    const hash = hashTargetToUrlFragment(id)
     const baseUrl = window.location.href.replace(/#.*$/, '')
     const url = `${baseUrl}${hash}`
     window.history.replaceState(null, '', hash)
@@ -112,7 +117,7 @@ export function createArticleInteractions({
     const id = decodeURIComponent(href.slice(1))
     if (!id) return false
     event.preventDefault()
-    window.history.replaceState(null, '', `#${encodeURIComponent(id)}`)
+    window.history.replaceState(null, '', hashTargetToUrlFragment(id))
     scrollToHash({ behavior: 'smooth' })
     return true
   }
@@ -121,10 +126,10 @@ export function createArticleInteractions({
     const currentFileUrl = getCurrentFileUrl?.() || window.location.href
     try {
       const nextUrl = new URL(currentFileUrl || window.location.href)
-      nextUrl.hash = hash ? encodeURIComponent(hash) : ''
+      nextUrl.hash = hash ? hashTargetToUrlFragment(hash) : ''
       window.history.replaceState(null, '', nextUrl.href)
     } catch {
-      if (hash) window.history.replaceState(null, '', `#${encodeURIComponent(hash)}`)
+      if (hash) window.history.replaceState(null, '', hashTargetToUrlFragment(hash))
       else window.history.replaceState(null, '', window.location.href.replace(/#.*$/, ''))
     }
   }
@@ -211,11 +216,9 @@ export function createArticleInteractions({
   function scrollToHash({ behavior = 'auto' } = {}) {
     const hash = window.location.hash || ''
     if (!hash.startsWith('#')) return
-    const id = decodeURIComponent(hash.slice(1))
-    if (!id) return
 
     const article = getArticle?.()
-    const headingEl = article?.querySelector?.(`#${CSS.escape(id)}`)
+    const headingEl = findHeadingByHash(article, hash)
     if (!headingEl) return
 
     const scrollRoot = getScrollRoot()

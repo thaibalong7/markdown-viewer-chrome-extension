@@ -41,7 +41,12 @@ import {
   normalizeDirectoryUrl,
   normalizeFileUrlForCompare
 } from '../../explorer/url-utils.js'
-import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../../scroll-utils.js'
+import {
+  findHeadingByHash,
+  getToolbarHeightInScrollRoot,
+  hashTargetToUrlFragment,
+  scrollToElementInViewer
+} from '../../scroll-utils.js'
 
 const DEFERRED_SCROLL_DELAY_MS = 200
 
@@ -49,16 +54,11 @@ function focusAfterNavigation(bridge, hash) {
   const article = bridge?.getArticleEl?.()
   if (!(article instanceof HTMLElement)) return
   if (hash) {
-    const id = String(hash).replace(/^#/, '')
-    if (id) {
-      try {
-        const heading = article.querySelector(`#${CSS.escape(id)}`)
-        if (heading instanceof HTMLElement) {
-          heading.setAttribute('tabindex', '-1')
-          heading.focus({ preventScroll: true })
-          return
-        }
-      } catch { /* fall through to article focus */ }
+    const heading = findHeadingByHash(article, hash)
+    if (heading instanceof HTMLElement) {
+      heading.setAttribute('tabindex', '-1')
+      heading.focus({ preventScroll: true })
+      return
     }
   }
   article.setAttribute('tabindex', '-1')
@@ -218,24 +218,11 @@ export function useExplorer({ bridge }) {
   const runSiblingScan = useRef(null)
   const navigateToFile = useRef(null)
 
-  const normalizeHashTarget = useCallback((hash) => {
-    const value = String(hash || '').replace(/^#/, '')
-    if (!value) return ''
-    try {
-      return decodeURIComponent(value)
-    } catch {
-      return value
-    }
-  }, [])
-
   const scrollToHeadingHash = useCallback(
     (hash, { behavior = 'auto' } = {}) => {
-      const id = normalizeHashTarget(hash)
-      if (!id) return false
-
       const article = bridge?.getArticleEl?.()
       if (!(article instanceof HTMLElement)) return false
-      const headingEl = article.querySelector(`#${CSS.escape(id)}`)
+      const headingEl = findHeadingByHash(article, hash)
       if (!headingEl) return false
 
       const scrollRoot = bridge?.getScrollRoot?.()
@@ -245,7 +232,7 @@ export function useExplorer({ bridge }) {
       scrollToElementInViewer({ element: headingEl, scrollRoot, toolbarHeight, behavior })
       return true
     },
-    [bridge, normalizeHashTarget]
+    [bridge]
   )
 
   const bridgeNavigateToFile = useCallback((fileUrl, opts = {}) => navigateToFile.current?.(fileUrl, opts), [])
@@ -402,13 +389,13 @@ export function useExplorer({ bridge }) {
     if (typeof fileUrl !== 'string' || !fileUrl.startsWith('file:')) return
     try {
       const nextUrl = new URL(fileUrl)
-      nextUrl.hash = hash ? encodeURIComponent(normalizeHashTarget(hash)) : ''
+      nextUrl.hash = hash ? hashTargetToUrlFragment(hash) : ''
       if (replace) window.history.replaceState(null, '', nextUrl.href)
       else window.history.pushState(null, '', nextUrl.href)
     } catch {
       /* file protocol may reject history updates */
     }
-  }, [normalizeHashTarget])
+  }, [])
 
   const navigateWorkspaceVirtualFile = useCallback(
     async (fileUrl, { hash = null } = {}) => {

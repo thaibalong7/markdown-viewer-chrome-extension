@@ -1,4 +1,5 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
+import { hashTargetToUrlFragment } from '../../viewer/scroll-utils.js'
 
 const HEADING_SELECTOR = 'h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]'
 
@@ -15,7 +16,7 @@ export const anchorHeadingPlugin = {
 
       const anchor = document.createElement('a')
       anchor.className = 'mdp-heading-anchor'
-      anchor.href = `#${id}`
+      anchor.href = hashTargetToUrlFragment(id)
       anchor.setAttribute('aria-label', 'Copy section link (click)')
       anchor.title = 'Copy link to this section'
       anchor.textContent = '#'

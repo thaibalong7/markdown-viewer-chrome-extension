@@ -6,6 +6,7 @@ import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
 import { Tooltip } from './components/Tooltip.jsx'
 import { GeneralPanel } from './panels/GeneralPanel.jsx'
 import { ReaderPanel } from './panels/ReaderPanel.jsx'
+import { EditorSettingsPanel } from './panels/EditorSettingsPanel.jsx'
 import { PluginsPanel } from './panels/PluginsPanel.jsx'
 
 export function PopupApp() {
@@ -80,6 +81,10 @@ export function PopupApp() {
 
             {activeTab === SETTINGS_TAB_IDS.READER && (
               <ReaderPanel settings={settings} onPatch={persistPatch} />
+            )}
+
+            {activeTab === SETTINGS_TAB_IDS.EDITOR && (
+              <EditorSettingsPanel settings={settings} onPatch={persistPatch} />
             )}
 
             {activeTab === SETTINGS_TAB_IDS.PLUGINS && (

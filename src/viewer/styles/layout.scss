@@ -1,4 +1,5 @@
 @use 'floating-actions';
+@use 'editor';
 @use 'chrome-print';
 @use '../../shared/styles/skeleton';
 
@@ -86,6 +87,7 @@
 
 .mdp-content-pane {
   padding: 24px;
+  min-width: 0;
 }
 
 /* Floating tooltips (ported via React or imperative bridge) */

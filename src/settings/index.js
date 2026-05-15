@@ -4,6 +4,7 @@ import {
   DEFAULT_EXPLORER_MAX_FOLDERS,
   DEFAULT_EXPLORER_MAX_SCAN_DEPTH
 } from '../shared/constants/explorer.js'
+import { DEFAULT_EDITOR_SETTINGS } from '../shared/constants/editor.js'
 import { deepMerge } from '../shared/deep-merge.js'
 import { logger } from '../shared/logger.js'
 
@@ -32,6 +33,7 @@ export const DEFAULT_SETTINGS = {
     maxFiles: DEFAULT_EXPLORER_MAX_FILES,
     maxFolders: DEFAULT_EXPLORER_MAX_FOLDERS
   },
+  editor: { ...DEFAULT_EDITOR_SETTINGS },
   version: 1
 }
 

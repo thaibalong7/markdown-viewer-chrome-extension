@@ -41,7 +41,8 @@ export function needsFullRender(previousSettings, nextSettings) {
     'typography.',
     'layout.contentMaxWidth',
     'layout.showToc',
-    'layout.tocWidth'
+    'layout.tocWidth',
+    'editor.'
   ]
 
   for (const path of changedPaths) {

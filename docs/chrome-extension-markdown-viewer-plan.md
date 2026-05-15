@@ -992,6 +992,38 @@ Tối ưu sản phẩm để sẵn sàng dùng thực tế.
 
 ---
 
+## Phase 11 - Inline Markdown Editor
+
+### Trạng thái
+✅ Implemented through Phase 11.3 — xem [`inline-markdown-editor-feature-spec.md`](./inline-markdown-editor-feature-spec.md) cho trạng thái chi tiết. Phase 11.4 vẫn là optional/future work.
+
+### Mục tiêu
+Cho phép edit Markdown trực tiếp trên Chrome với live preview, scroll sync, save file, và full editor UX (CodeMirror 6).
+
+### Kết quả cần đạt
+- Toggle edit mode (mặc định tắt)
+- Split view: CodeMirror editor + live rendered viewer
+- Scroll sync editor → viewer
+- TOC rebuild khi editor thay đổi
+- Sidebar toggle (ẩn/hiện)
+- Focus mode (chỉ editor)
+- File save (File System Access API + download fallback)
+- Undo/Redo, syntax highlighting, search & replace
+- Theme-aware editor
+- Unsaved changes indicator + confirm on exit
+
+### Sub-phases
+- **11.0** — Editor foundation & sidebar toggle ✅
+- **11.1** — Live preview & scroll sync ✅
+- **11.2** — File I/O & save ✅
+- **11.3** — Editor polish (status bar, resize, search, settings) ✅
+- **11.4** — Advanced features (auto-save, toolbar, image paste, diff view…)
+
+### Deliverable
+- Trải nghiệm edit Markdown hoàn chỉnh ngay trong browser, không cần rời khỏi Markdown Plus.
+
+---
+
 ## 12) Thứ tự ưu tiên nếu cần rút gọn
 
 Nếu muốn ra bản usable nhanh nhất, nên ưu tiên theo thứ tự:

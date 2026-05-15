@@ -3,6 +3,7 @@ import { normalizeFileUrlForCompare } from './url-utils.js'
 const KEY_ORIGINAL = 'mdp:explorer:originalFile'
 const KEY_ACTIVE_TAB = 'mdp:explorer:activeTab'
 const KEY_SIDEBAR_WIDTH = 'mdp:sidebar:width'
+const KEY_EDITOR_SPLIT_WIDTH = 'mdp:editor:splitWidth'
 const KEY_WORKSPACE_ROOT = 'mdp:explorer:workspaceRoot'
 const KEY_EXPLORER_MODE = 'mdp:explorer:mode'
 
@@ -88,6 +89,32 @@ export function setSidebarWidthPx(widthPx) {
     const n = Number(widthPx)
     if (!Number.isFinite(n) || n <= 0) return
     sessionStorage.setItem(KEY_SIDEBAR_WIDTH, String(Math.round(n)))
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * @returns {number | null}
+ */
+export function getEditorSplitWidthPx() {
+  try {
+    const raw = Number(sessionStorage.getItem(KEY_EDITOR_SPLIT_WIDTH))
+    if (!Number.isFinite(raw) || raw <= 0) return null
+    return raw
+  } catch {
+    return null
+  }
+}
+
+/**
+ * @param {number} widthPx
+ */
+export function setEditorSplitWidthPx(widthPx) {
+  try {
+    const n = Number(widthPx)
+    if (!Number.isFinite(n) || n <= 0) return
+    sessionStorage.setItem(KEY_EDITOR_SPLIT_WIDTH, String(Math.round(n)))
   } catch {
     /* ignore */
   }

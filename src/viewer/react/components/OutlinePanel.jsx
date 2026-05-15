@@ -4,6 +4,7 @@ import { getToolbarHeightInScrollRoot, scrollToElementInViewer } from '../../scr
 import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
 import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
+import { useEditorState } from '../contexts/EditorContext.jsx'
 
 function updateHash(id) {
   if (!id) return
@@ -14,8 +15,10 @@ function updateHash(id) {
 
 const OUTLINE_SKELETON_WIDTHS = ['86%', '72%', '78%', '60%', '82%', '68%', '94%', '76%', '62%', '48%']
 
-export function OutlinePanel({ tocItems, tocReady, scrollRoot }) {
+export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEditor }) {
   const { activeSidebarTab } = useSidebarTabState()
+  const editorState = useEditorState()
+  const editorEditActive = Boolean(editorState?.enabled)
   const isFiles = activeSidebarTab === 'files'
   const tocScrollRef = useRef(null)
   const outlineItems = useMemo(
@@ -106,6 +109,9 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot }) {
                         toolbarHeight,
                         behavior: 'smooth'
                       })
+                      if (editorEditActive && typeof onTocClickInEditor === 'function') {
+                        onTocClickInEditor(item.text)
+                      }
                     }}
                   >
                     {item.text}

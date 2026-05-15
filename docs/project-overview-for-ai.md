@@ -16,9 +16,10 @@ Current implemented core:
 - Left sidebar TOC with click-to-scroll + active heading tracking
 - **Files explorer** (sidebar **Files** tab): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list
 - **Internal Markdown link navigation**: clicking a relative/absolute link to another `.md` file opens it in the same viewer without full page reload. Link resolver (`src/viewer/navigation/link-resolver.js`) classifies links into kinds (same-document-hash, self-link, markdown-file, workspace-virtual-file, external, asset, unsupported). Click interception in `article-interactions.js` respects modifier keys, `target`, `download` attrs. Browser Back/Forward via `popstate`/`hashchange` coordination. Sidebar active-file sync on cross-folder navigation. Supports spaces, Unicode, encoded hrefs, parent folder traversal, and virtual workspace files. See `docs/internal-hyperlink-navigation-solution.md`.
+- **Inline Markdown editor** (Phase 11.0–11.3): local `file:` Markdown pages can enter edit mode from floating actions. The React shell mounts a lazy-loaded CodeMirror 6 editor with split preview/focus modes, independent sidebar toggle, debounced live preview through the existing sanitized render pipeline, editor → preview scroll sync, TOC click → editor source line navigation, dirty state, Ctrl/Cmd+S, before-unload/exit confirmation, status bar, split resize, search/replace, and File System Access API save with download fallback. Editor preferences live in popup settings and persist through `chrome.storage`.
 - Loading skeleton UX: reusable `SkeletonLine` / `SkeletonBlock` primitives used by viewer sidebar (Outline + Files) and popup settings loading state
 - Settings storage and runtime messaging
-- **Extension popup (React)** for reader/plugins/general settings; minimal **options** page (JSON-oriented); no in-viewer settings drawer yet
+- **Extension popup (React)** for reader/plugins/general/editor settings; minimal **options** page (JSON-oriented); no in-viewer settings drawer yet
 
 ## 2) Tech stack and runtime
 
@@ -26,6 +27,7 @@ Current implemented core:
 - Build tool: Vite + `@vitejs/plugin-react` + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/viewer-loader.js` (after the thin gate in `src/content/index.js`), bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`
 - Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer core/plugins; **React 19** for `src/popup/` and **viewer chrome** under `src/viewer/react/` (`ViewerApp.jsx`, shell/sidebar/explorer/toast)
 - Markdown: `markdown-it` + `markdown-it-anchor`
+- Editor: **CodeMirror 6** packages lazy-loaded only when edit mode is used
 - Fenced code highlighting: **Shiki** — `createHighlighterCore` from `shiki/core` with Oniguruma WASM (`shiki/engine/oniguruma`), explicit grammars from `@shikijs/langs` and themes from `@shikijs/themes` (see `src/viewer/core/shiki-config.js`; avoids shipping the full `shiki/bundle/web` language/theme set)
 - Sanitization: `dompurify`
 - Minimum Node engine: `>=20`
@@ -115,6 +117,7 @@ src/
     markdown-detect.js
     fs-handle-debug.js
     constants/
+      editor.js
       viewer.js
       explorer.js
       tooltip.js
@@ -144,32 +147,53 @@ src/
     dom-tooltip.js
     icons.js
     scroll-utils.js
+    editor/
+      codemirror-bundle.js
+      editor-stats.js
+      editor-theme.js
+      file-io.js
+      scroll-sync.js
+      __tests__/
+        file-io.test.js
+        scroll-sync.test.js
     react/
       ViewerApp.jsx
       mount.js
       contexts/
+        EditorContext.jsx
         SidebarTabContext.jsx
         ToastContext.jsx
       hooks/
         useExplorer.js
+        useEditorSplitResize.js
         useScrollSpy.js
         useSidebarResize.js
+        __tests__/
+          useEditorSplitResize.test.js
         explorer/
           explorerReducer.js
           createExplorerViewActions.js
       components/
+        DirtySync.jsx
+        EditorPanel.jsx
+        EditorSplitResizeHandle.jsx
         FilesPanel.jsx
         OutlinePanel.jsx
         ResizeHandle.jsx
         Sidebar.jsx
         SidebarTabs.jsx
+        StatusBar.jsx
         Toast.jsx
         FloatingActions.jsx
         Tooltip.jsx
         ViewerShell.jsx
         icons/
+          EditIcon.jsx
           ExportIcon.jsx
+          FocusIcon.jsx
           PrintIcon.jsx
+          SaveIcon.jsx
+          SidebarToggleIcon.jsx
         explorer/
           ExplorerHeader.jsx
           ExplorerPanel.jsx
@@ -230,6 +254,7 @@ src/
     hooks/
       useSettingsPersistence.js
     panels/
+      EditorSettingsPanel.jsx
       GeneralPanel.jsx
       ReaderPanel.jsx
       PluginsPanel.jsx
@@ -412,10 +437,12 @@ Implemented strongly:
 - **Popup (React)** + **minimal options** page (Phase 9): full settings UX lives in the popup; options remain JSON-oriented reset/export-style surface
 - **UI Files Explorer** (see `docs/technical-spec-phases/ui-files-explorer-feature-spec.md`): Phase 1 (siblings + back) and **Phase 2** (open-folder workspace, recursive scan, limits, progress UI, tree). Phase 3+ (bookmarks/popup) not done.
 - **Internal Markdown link navigation** (see `docs/internal-hyperlink-navigation-solution.md`): all phases (0–5) completed. Link resolver, article click interception, browser history Back/Forward, sidebar integration, virtual workspace links, and polish/tests.
+- **Inline Markdown Editor** (see `docs/inline-markdown-editor-feature-spec.md`): Phase 11.0–11.3 completed. CodeMirror 6 editor, split/focus layout, sidebar toggle, live preview, scroll sync, TOC → editor navigation, File System Access save with fallback, dirty/confirm flow, status bar, split resize, search/replace, and popup editor settings are implemented.
 
 Not implemented yet (from planning docs):
 - Full “plugin packs” marketplace or remote packs as described in older phase docs
 - Hardening/performance polish and migrations (Phase 10)
+- Inline editor advanced extras (Phase 11.4): auto-save, formatting toolbar, image paste, diff view, minimap, linting, and bidirectional viewer → editor sync.
 
 ## 8) Performance hotspots already identified
 

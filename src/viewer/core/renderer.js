@@ -1,4 +1,4 @@
-import { createMarkdownEngine, renderMarkdown } from './markdown-engine.js'
+import { createMarkdownEngine, renderMarkdown, injectSourceLineMapping } from './markdown-engine.js'
 import { createPluginManager } from '../../plugins/plugin-manager.js'
 import { applyShikiToFencedCode } from './shiki-highlighter.js'
 import DOMPurify from 'dompurify'
@@ -17,7 +17,8 @@ const ALLOWED_URI_RE =
 export function sanitizeHtml(html, options = {}) {
   if (!purifier) return String(html || '')
   const cfg = {
-    ADD_ATTR: ['style', 'tabindex'],
+    // Keep source-line markers used by editor ↔ preview scroll sync.
+    ADD_ATTR: ['style', 'tabindex', 'data-line'],
     ALLOWED_URI_REGEXP: ALLOWED_URI_RE
   }
   if (options.allowKatex) {
@@ -39,6 +40,7 @@ export async function renderDocument(markdown, settings = {}, runtimeContext = {
   const markdownEngine = createMarkdownEngine()
 
   await pluginManager.extendMarkdown(markdownEngine, { settings, ...runtimeContext })
+  injectSourceLineMapping(markdownEngine.instance)
   const nextMarkdown = pluginManager.preprocessMarkdown(markdown, { settings, ...runtimeContext })
 
   const result = renderMarkdown(nextMarkdown, { markdownEngine })

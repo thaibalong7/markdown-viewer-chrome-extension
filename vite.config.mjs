@@ -25,23 +25,7 @@ export default defineConfig({
       : null
   ].filter(Boolean),
   build: {
-    chunkSizeWarningLimit: 500,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
-            return 'react-vendor'
-          }
-          if (id.includes('node_modules/markdown-it') || id.includes('node_modules/markdown-it-anchor')) {
-            return 'markdown-core'
-          }
-          if (id.includes('node_modules/dompurify')) {
-            return 'sanitizer'
-          }
-          return null
-        }
-      }
-    }
+    chunkSizeWarningLimit: 500
   }
 })
 

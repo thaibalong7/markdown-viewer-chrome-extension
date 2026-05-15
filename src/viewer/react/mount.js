@@ -8,10 +8,18 @@ export function mountViewerReact(container, options = {}) {
     tocItems,
     tocReady = false,
     explorerBridge,
+    markdown = '',
     onShellReady,
     getArticleEl,
     getSettings,
-    getCurrentFileUrl
+    getCurrentFileUrl,
+    onContentChange,
+    onEditorReady,
+    onEditorDestroy,
+    onEditorScroll,
+    onTocClickInEditor,
+    onEditModeChange,
+    onSave
   } = options
   const root = createRoot(container)
   let shellReadyResolve = () => { }
@@ -28,9 +36,19 @@ export function mountViewerReact(container, options = {}) {
     tocItems: Array.isArray(tocItems) ? tocItems : [],
     tocReady: Boolean(tocReady),
     explorerBridge: explorerBridge || null,
+    markdown: markdown || '',
     getArticleEl,
     getSettings,
     getCurrentFileUrl,
+    onContentChange,
+    onEditorReady,
+    onEditorDestroy,
+    onEditorScroll,
+    onTocClickInEditor,
+    onEditModeChange,
+    onSave,
+    dirty: false,
+    saveStatus: 'saved',
     onShowToastReady: (showToastFn) => {
       showToastBridge = typeof showToastFn === 'function' ? showToastFn : null
     },
@@ -55,6 +73,10 @@ export function mountViewerReact(container, options = {}) {
       nextProps = { ...nextProps, settings: nextSettings || {} }
       render()
     },
+    updateMarkdown(nextMarkdown) {
+      nextProps = { ...nextProps, markdown: typeof nextMarkdown === 'string' ? nextMarkdown : '' }
+      render()
+    },
     updateChromeState({ tocItems } = {}) {
       if (tocItems !== undefined) {
         nextProps = { ...nextProps, tocItems: Array.isArray(tocItems) ? tocItems : [] }
@@ -67,6 +89,15 @@ export function mountViewerReact(container, options = {}) {
     },
     /** Re-render chrome so components that read live URLs (e.g. toolbar actions) stay in sync. */
     bumpChrome() { render() },
+    setDirty(nextDirty) {
+      nextProps = { ...nextProps, dirty: Boolean(nextDirty) }
+      render()
+    },
+    /** @param {'saved' | 'modified' | 'saving'} status */
+    setSaveStatus(status) {
+      nextProps = { ...nextProps, saveStatus: status || 'saved' }
+      render()
+    },
     updateTocItems(nextTocItems) {
       this.updateChromeState({ tocItems: nextTocItems })
     },

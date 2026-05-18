@@ -1,10 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
 import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
 import { useExplorer } from '../../hooks/useExplorer.js'
 import { ExplorerHeader } from './ExplorerHeader.jsx'
 import { ExplorerProgress } from './ExplorerProgress.jsx'
+import {
+  getActiveExplorerRowRevealState,
+  revealActiveExplorerRow
+} from './explorer-reveal.js'
 import { FileRow } from './FileRow.jsx'
 import { flattenVisibleTree } from './FileTree.jsx'
 import { FolderRow } from './FolderRow.jsx'
@@ -14,6 +18,7 @@ export function ExplorerPanel({ bridge }) {
   const { state, actions } = useExplorer({ bridge })
   const panelRef = useRef(null)
   const suppressNextAutoRevealRef = useRef('')
+  const revealTimersRef = useRef({ afterScrollRaf: 0, raf: 0, timeouts: [] })
   const [scrollElement, setScrollElement] = useState(null)
   const activeNormalized = normalizeFileUrlForCompare(state.activeFileUrl || '')
   const treeRows = useMemo(
@@ -35,10 +40,37 @@ export function ExplorerPanel({ bridge }) {
       ),
     [activeNormalized, treeRows]
   )
+  const headerLayoutKey = [
+    state.actionsMode,
+    state.backLabel,
+    state.depthNotice,
+    state.filesContext?.currentLine,
+    state.filesContext?.statusLine,
+    state.filesContext?.warningLine,
+    state.showBack ? 'back' : 'no-back',
+    state.summaryDirectoryLabel,
+    state.summaryFileCount
+  ].join('|')
 
   useEffect(() => {
     setScrollElement(panelRef.current?.closest('.mdp-explorer-container') || null)
   }, [])
+
+  const clearRevealTimers = useCallback(() => {
+    const timers = revealTimersRef.current
+    if (timers.raf) cancelAnimationFrame(timers.raf)
+    if (timers.afterScrollRaf) cancelAnimationFrame(timers.afterScrollRaf)
+    for (const timeoutId of timers.timeouts) {
+      clearTimeout(timeoutId)
+    }
+    timers.afterScrollRaf = 0
+    timers.raf = 0
+    timers.timeouts = []
+  }, [])
+
+  useEffect(() => () => {
+    clearRevealTimers()
+  }, [clearRevealTimers])
 
   const fileVirtualizer = useVirtualizer({
     count: state.files.length,
@@ -53,6 +85,35 @@ export function ExplorerPanel({ bridge }) {
     overscan: 12
   })
 
+  const revealActiveRow = useCallback((virtualizer, activeIndex) => {
+    const timers = revealTimersRef.current
+    clearRevealTimers()
+
+    const reveal = () => {
+      const revealState = getActiveExplorerRowRevealState({
+        panelEl: panelRef.current,
+        scrollEl: scrollElement
+      })
+      if (revealState === 'visible') return
+
+      if (revealState === 'missing') {
+        virtualizer.scrollToIndex(activeIndex, { align: 'start' })
+        timers.afterScrollRaf = requestAnimationFrame(() => {
+          timers.afterScrollRaf = 0
+          revealActiveExplorerRow({ panelEl: panelRef.current, scrollEl: scrollElement })
+        })
+        return
+      }
+
+      revealActiveExplorerRow({ panelEl: panelRef.current, scrollEl: scrollElement })
+    }
+    timers.raf = requestAnimationFrame(() => {
+      timers.raf = 0
+      reveal()
+      timers.timeouts = [50, 150].map((delay) => setTimeout(reveal, delay))
+    })
+  }, [clearRevealTimers, scrollElement])
+
   useEffect(() => {
     if (state.view !== 'files') return
     if (activeFileIndex < 0) return
@@ -60,8 +121,15 @@ export function ExplorerPanel({ bridge }) {
       suppressNextAutoRevealRef.current = ''
       return
     }
-    fileVirtualizer.scrollToIndex(activeFileIndex, { align: 'nearest' })
-  }, [activeFileIndex, activeNormalized, fileVirtualizer, state.view])
+    revealActiveRow(fileVirtualizer, activeFileIndex)
+  }, [
+    activeFileIndex,
+    activeNormalized,
+    fileVirtualizer,
+    headerLayoutKey,
+    revealActiveRow,
+    state.view
+  ])
 
   useEffect(() => {
     if (state.view !== 'tree') return
@@ -70,8 +138,15 @@ export function ExplorerPanel({ bridge }) {
       suppressNextAutoRevealRef.current = ''
       return
     }
-    treeVirtualizer.scrollToIndex(activeTreeIndex, { align: 'nearest' })
-  }, [activeNormalized, activeTreeIndex, state.view, treeVirtualizer])
+    revealActiveRow(treeVirtualizer, activeTreeIndex)
+  }, [
+    activeNormalized,
+    activeTreeIndex,
+    headerLayoutKey,
+    revealActiveRow,
+    state.view,
+    treeVirtualizer
+  ])
 
   const onPickFileFromExplorer = (href) => {
     const pickedNormalized = normalizeFileUrlForCompare(href || '')
@@ -130,7 +205,6 @@ export function ExplorerPanel({ bridge }) {
               key={virtualItem.key}
               file={{ displayName: file.displayName, href: file.href }}
               depth={1}
-              autoScrollActive={false}
               rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
               isActive={normalizeFileUrlForCompare(file.href || '') === activeNormalized}
               onPick={onPickFileFromExplorer}
@@ -166,7 +240,6 @@ export function ExplorerPanel({ bridge }) {
               key={virtualItem.key}
               file={{ displayName: row.node.name, href: row.node.href }}
               depth={row.depth}
-              autoScrollActive={false}
               rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
               isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
               onPick={onPickFileFromExplorer}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import {
   copyFileRowLink,
   isBrowserOpenableFileHref,
@@ -12,23 +12,13 @@ import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
 import { MoreIcon } from '../icons/MoreIcon.jsx'
 import { OpenNewTabIcon } from '../icons/OpenNewTabIcon.jsx'
 
-export function FileRow({ file, depth, isActive, onPick, autoScrollActive = true, rowStyle }) {
+export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
   const linkRef = useRef(null)
   const menuRef = useRef(null)
   const { showToast } = useToast()
   const [menuOpen, setMenuOpen] = useState(false)
   const href = String(file?.href || '')
   const canOpenInNewTab = isBrowserOpenableFileHref(href)
-
-  useEffect(() => {
-    if (!autoScrollActive) return
-    if (!isActive) return
-    try {
-      linkRef.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-    } catch {
-      /* ignore scroll errors */
-    }
-  }, [autoScrollActive, isActive])
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)

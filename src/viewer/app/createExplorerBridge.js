@@ -7,6 +7,7 @@
  * @param {(message: string) => void} options.showToast
  * @param {() => (HTMLElement | null)} options.getScrollRoot
  * @param {() => (HTMLElement | null)} options.getArticleEl
+ * @param {() => string} options.getCurrentFileUrl
  * @param {(nextUrl: string) => void} options.updateCurrentFileUrl
  */
 export function createExplorerBridge({
@@ -17,6 +18,7 @@ export function createExplorerBridge({
   showToast,
   getScrollRoot,
   getArticleEl,
+  getCurrentFileUrl,
   updateCurrentFileUrl
 }) {
   return {
@@ -27,6 +29,7 @@ export function createExplorerBridge({
     showToast,
     getScrollRoot,
     getArticleEl,
+    getCurrentFileUrl,
     updateCurrentFileUrl,
     navigateToFile: null,
     virtualFileExists: null

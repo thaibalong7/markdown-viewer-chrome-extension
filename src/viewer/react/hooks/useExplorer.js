@@ -30,6 +30,14 @@ import {
 import { createExplorerWorkspaceSession } from '../../explorer/explorer-workspace-session.js'
 import { normalizeDirectoryUrl } from '../../explorer/url-utils.js'
 
+export function getInitialExplorerFileUrl(bridge) {
+  const bridgedUrl = bridge?.getCurrentFileUrl?.()
+  if (typeof bridgedUrl === 'string' && bridgedUrl.trim()) {
+    return bridgedUrl
+  }
+  return typeof window !== 'undefined' ? window.location.href : ''
+}
+
 /** React composition hook for the Files explorer. */
 export function useExplorer({ bridge }) {
   const [state, dispatch] = useReducer(explorerReducer, undefined, createInitialState)
@@ -44,7 +52,7 @@ export function useExplorer({ bridge }) {
   const runSiblingScanRef = useRef(null)
 
   const explorerModeRef = useRef('sibling')
-  const currentFileUrlRef = useRef(typeof window !== 'undefined' ? window.location.href : '')
+  const currentFileUrlRef = useRef(getInitialExplorerFileUrl(bridge))
   const workspaceTreeRef = useRef(null)
   const siblingTreeRef = useRef(null)
   const siblingFolderLabelRef = useRef('')
@@ -286,7 +294,7 @@ export function useExplorer({ bridge }) {
 
   useEffect(() => {
     mountedRef.current = true
-    const initialUrl = typeof window !== 'undefined' ? window.location.href : ''
+    const initialUrl = getInitialExplorerFileUrl(bridge)
     setCurrentFileUrl(initialUrl)
     setOriginalFileUrlIfUnset(initialUrl)
 
@@ -315,6 +323,7 @@ export function useExplorer({ bridge }) {
       clearWorkspaceVirtualReaders()
     }
   }, [
+    bridge,
     buildFilesContext,
     clearWorkspaceVirtualReaders,
     runSiblingScan,

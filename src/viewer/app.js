@@ -91,6 +91,7 @@ export class MarkdownViewerApp {
       showToast: (message) => this.showToast(message),
       getScrollRoot: () => this.getScrollRoot(),
       getArticleEl: () => this._articleEl,
+      getCurrentFileUrl: () => this._currentFileUrl,
       updateCurrentFileUrl: (nextUrl) => {
         this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
         this._recordCurrentFileInHistory()

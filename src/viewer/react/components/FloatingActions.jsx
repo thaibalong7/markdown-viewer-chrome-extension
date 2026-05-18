@@ -167,8 +167,8 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
     <div className="mdp-floating-actions" hidden={!visible} aria-hidden={visible ? 'false' : 'true'}>
       <Tooltip
         content={
-          editorState.enabled && editorState.mode === 'focus'
-            ? 'Sidebar hidden in focus mode'
+          editorState.enabled
+            ? 'Sidebar hidden in edit mode'
             : editorState.sidebarVisible
               ? 'Hide sidebar'
               : 'Show sidebar'
@@ -180,7 +180,7 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
           className={`mdp-fab-btn${editorState.sidebarVisible ? ' mdp-fab-btn--active' : ''}`}
           aria-label="Toggle sidebar"
           aria-pressed={editorState.sidebarVisible ? 'true' : 'false'}
-          disabled={editorState.enabled && editorState.mode === 'focus'}
+          disabled={editorState.enabled}
           onClick={onSidebarToggleClick}
         >
           <SidebarToggleIcon className="mdp-fab-btn__icon" />

@@ -314,10 +314,15 @@ public/
   - Uses `new URL(rawHref, currentFileUrl)` for resolution; `MARKDOWN_PATHNAME_EXT_RE` for extension matching; `normalizeFileUrlForCompare` for self-link detection.
   - Unit tested in `src/viewer/navigation/__tests__/link-resolver.test.js`.
 
-- `src/viewer/app.js`
-  - **`MarkdownViewerApp`**: **`mountViewerReact(container)`** → awaits shell `{ root, article }`; **`applyReaderStyles()`** applies `applyThemeSettings()` + typography/layout inline styles on `article`; **`injectViewerStyles({ id, cssText })`** for one-off runtime styles (e.g. KaTeX) keyed by `id`; async **`render()`** / **`updateSettings()`** (uses `needsFullRender()` for a style-only fast path; theme/plugin/structure changes still force full re-render for Shiki/runtime pipeline consistency).
-  - Composes **`createArticleInteractions({ getArticle, showToast, getScrollRoot, getCurrentFileUrl, navigateToFile, resolveLink })`** — imperative listeners on the article element (React does not own `innerHTML`); toast goes through **`_reactHandle.showToast`** (React `ToastContext`); internal Markdown link clicks are intercepted via `resolveLink` (wrapping `resolveMarkdownLink`) and delegated to `navigateToFile` (from `explorerBridge`).
-  - Passes **`explorerBridge`** callbacks into React for navigation, re-render, and file I/O; explorer UI state lives in **`useExplorer`**.
+- `src/viewer/app.js` and `src/viewer/app/*`
+  - **`MarkdownViewerApp`** remains the public imperative orchestrator and stable import path for `content/bootstrap.js`. It mounts React, awaits shell `{ root, article }`, composes article interactions, and coordinates settings/render/editor/explorer controllers.
+  - **`viewerStyles.js`** owns reader theme/style application, sidebar width preference, runtime `<style>` creation, and edit-mode article font overrides.
+  - **`renderController.js`** owns async `renderDocument()` orchestration, runtime CSS injection (`injectViewerStyles({ id, cssText })` for KaTeX/optional plugins), `renderIntoElement()`, plugin `afterRender`, scroll preservation, hash scroll, and TOC hydration.
+  - **`editorSessionController.js`** owns edit-mode active state, dirty/save status, debounced live preview render, save flow, and user-facing save errors.
+  - **`splitScrollSync.js`** owns editor-to-preview scroll sync listeners, RAF scheduling, smooth preview scroll cancellation, and teardown.
+  - **`globalViewerListeners.js`** owns `beforeunload` and Ctrl/Cmd+S global key handling.
+  - **`createExplorerBridge.js`** builds the bridge callbacks passed into React for explorer navigation, re-render, and current-file URL sync.
+  - **`createArticleInteractions({ getArticle, showToast, getScrollRoot, getCurrentFileUrl, navigateToFile, resolveLink })`** remains the imperative listener layer on the rendered article; internal Markdown link clicks are intercepted via `resolveLink` (wrapping `resolveMarkdownLink`) and delegated to `navigateToFile` (from `explorerBridge`).
 
 - **React viewer layer** (`src/viewer/react/`)
   - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, `setTocReady`, **`bumpChrome()`** (refresh floating-actions visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).

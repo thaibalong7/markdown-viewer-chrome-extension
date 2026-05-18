@@ -6,13 +6,20 @@ alwaysApply: false
 
 # Viewer UI Lifecycle
 
-## MarkdownViewerApp (imperative orchestrator)
+## MarkdownViewerApp and app controllers
 
 - **`init()`** once: inject `<style>` tags into the mount container, then **`mountViewerReact(container, options)`**, **`await partsPromise`** (resolves to **`{ root, article }`** only). Then **`createArticleInteractions({ getArticle, showToast, getScrollRoot }).bind()`**, **`applyReaderStyles()`**, **`render()`**.
-- **TOC loading gate:** before async markdown render begins, set **`_reactHandle.setTocReady(false)`**; after **`syncTocItems()`**, set **`setTocReady(true)`** so Outline can render skeleton while hydration is pending and only show empty text when TOC is truly ready.
+- **App controller ownership:** keep `src/viewer/app.js` as the public orchestrator and put focused implementation in `src/viewer/app/*`:
+  - `renderController.js`: render token, async render pipeline, runtime CSS injection, scroll preservation, hash scroll, TOC hydration.
+  - `editorSessionController.js`: edit mode, dirty/save status, debounced live preview, save flow.
+  - `splitScrollSync.js`: editor-to-preview scroll sync listeners/RAF/cleanup.
+  - `viewerStyles.js`: theme/style application, sidebar width preference, edit-mode article style overrides.
+  - `globalViewerListeners.js`: `beforeunload` and Ctrl/Cmd+S handling.
+  - `createExplorerBridge.js`: bridge object passed into React explorer.
+- **TOC loading gate:** before async markdown render begins, `renderController` sets **`_reactHandle.setTocReady(false)`**; after **`syncTocItems()`**, it sets **`setTocReady(true)`** so Outline can render skeleton while hydration is pending and only show empty text when TOC is truly ready.
 - **`updateSettings()`** updates settings, **`_reactHandle.updateSettings()`**, **`applyReaderStyles()`**, and either **`syncTocItems()`** or full **`render()`** per **`needsFullRender()`**.
 - **`bumpChrome()` trigger:** not tied to `render()` anymore. Chrome refresh is triggered when explorer/navigation updates current file URL via `explorerBridge.updateCurrentFileUrl()` in `src/viewer/app.js`.
-- **`destroy()`** is **idempotent** (`_destroyed` guard): **`_articleInteractions.destroy()`** → **`_reactHandle.unmount()`** → **`container.innerHTML = ''`**; clears **`_rootEl` / `_articleEl`**. Logs via **`logger.debug('Markdown viewer destroyed.')`**.
+- **`destroy()`** is **idempotent** (`_destroyed` guard): unbind app controllers/listeners, **`_articleInteractions.destroy()`** → **`_reactHandle.unmount()`** → **`container.innerHTML = ''`**; clears **`_rootEl` / `_articleEl`**. Logs via **`logger.debug('Markdown viewer destroyed.')`**.
 
 ## React shell boundary
 

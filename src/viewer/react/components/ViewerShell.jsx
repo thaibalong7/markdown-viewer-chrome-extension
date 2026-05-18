@@ -44,7 +44,7 @@ export function ViewerShell({
 
   const isFocusMode = editorState.enabled && editorState.mode === 'focus'
   const isSplitMode = editorState.enabled && editorState.mode === 'split'
-  const sidebarVisible = editorState.sidebarVisible && !isFocusMode
+  const sidebarVisible = editorState.sidebarVisible && !editorState.enabled
   const sidebarHidden = !sidebarVisible
 
   const setContentPaneRef = useCallback((node) => {

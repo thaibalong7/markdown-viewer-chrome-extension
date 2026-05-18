@@ -8,7 +8,7 @@ const DEFAULT_INITIAL_STATE = {
   dirty: false
 }
 
-function editorReducer(state, action) {
+export function editorReducer(state, action) {
   switch (action.type) {
     case 'TOGGLE_EDIT':
       if (state.enabled) {
@@ -29,6 +29,7 @@ function editorReducer(state, action) {
       }
 
     case 'TOGGLE_SIDEBAR':
+      if (state.enabled) return state
       return { ...state, sidebarVisible: !state.sidebarVisible }
 
     case 'SET_MODE':
@@ -55,7 +56,7 @@ function editorReducer(state, action) {
 const EditorStateContext = createContext(DEFAULT_INITIAL_STATE)
 const EditorDispatchContext = createContext(() => {})
 
-function createInitialState(initialSidebarVisible) {
+export function createInitialState(initialSidebarVisible) {
   const sidebarVisible = initialSidebarVisible !== false
   return { ...DEFAULT_INITIAL_STATE, sidebarVisible }
 }

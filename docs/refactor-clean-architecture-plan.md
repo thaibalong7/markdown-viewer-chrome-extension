@@ -16,6 +16,8 @@ Primary outcomes:
 
 ## Current architecture snapshot
 
+Implementation status update (2026-05-18): Phase 1-5 have been completed. This plan keeps the original risk snapshot for historical context; use `docs/refactor-progress-log.md` and `docs/project-overview-for-ai.md` for the current source truth. Current line-count results after Phase 1-5: `src/viewer/app.js` 250, `useExplorer.js` 344, `FloatingActions.jsx` 236, `FileRow.jsx` 135, `markdown-engine.js` 139, `message-router.js` 126.
+
 The codebase already has useful top-level ownership:
 
 - `src/content`: cheap page gate, bootstrap, raw markdown extraction, viewer loader.
@@ -240,8 +242,10 @@ Update docs after each implemented phase:
 
 Rules to keep/update:
 
-- Keep `.cursor/rules/15-docs-context-first.mdc`.
-- Keep `.cursor/rules/80-viewer-ui-lifecycle.mdc`, but update references after `app.js` split.
+- Keep long-lived Cursor rules focused on current architecture rather than phase history:
+  - `.cursor/rules/00-project-context.mdc`
+  - `.cursor/rules/20-architecture-boundaries.mdc`
+  - `.cursor/rules/30-rendering-pipeline-security.mdc`
 - Add a clean architecture/refactor rule so future agents extract pure logic first and keep React/browser/markdown boundaries clear.
 
 ## Phase 7: tests and verification matrix

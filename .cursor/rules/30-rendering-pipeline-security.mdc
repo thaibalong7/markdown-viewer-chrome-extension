@@ -1,0 +1,37 @@
+---
+description: Markdown render pipeline, DOM safety, themes, and Shiki constraints
+globs:
+  - src/viewer/**/*.js
+  - src/plugins/**/*.js
+  - src/theme/**/*.js
+  - src/settings/default-settings.js
+  - src/viewer/styles/**/*.scss
+alwaysApply: false
+---
+
+# Rendering Pipeline and Security
+
+- Keep the normal Markdown HTML path intact: `renderDocument()` -> `sanitizeHtml()` -> `renderIntoElement()`.
+- Do not add rendered HTML paths that bypass `sanitizeHtml()` in `src/viewer/core/renderer.js`.
+- `renderDocument()` is the main Markdown -> safe HTML boundary. Callers should receive sanitized HTML before DOM insertion.
+- Restrict `innerHTML` usage to approved render/mount boundaries. Use `textContent` and DOM APIs for dynamic UI text.
+- Keep `DOMPurify` configured from the runtime `window` purifier instance unless intentionally extracting the sanitizer with equivalent behavior.
+- Preserve heading `id` generation when changing MarkdownIt or `markdown-it-anchor`; TOC and link navigation rely on it.
+- External Markdown links should keep `target="_blank"` and `rel="noopener noreferrer"`.
+- Plugin-generated or postprocessed HTML must still pass through the sanitizer before insertion.
+- Event listeners added to generated article nodes need teardown paths through `destroy()` or plugin cleanup.
+
+## Render Context and Performance
+
+- Extract pure parsing/normalization logic before changing render orchestration.
+- Cache or reuse render context only when invalidation by plugin/parser/theme-affecting settings is explicit and tested.
+- Do not cache unsafe pre-sanitize HTML across the sanitize boundary unless the cache key and sanitize step remain obvious and tested.
+- Reader style-only changes should stay on the fast path through `needsFullRender()` where possible.
+
+## Theme and Shiki
+
+- Reader presets are defined in `src/theme/index.js`; the default preset lives in `DEFAULT_SETTINGS.theme.preset`.
+- `src/viewer/core/shiki-config.js` must map every reader preset key to a bundled Shiki theme id and keep the explicit grammar/theme allowlists in sync.
+- Shiki emits inline styles that must remain allowed by sanitizer config when code highlighting is enabled.
+- Shiki/reader theme changes that affect fenced code require a full render because code colors are baked into HTML.
+- Keep `.mdp-markdown-body pre.shiki code` specificity higher than generic inline-code styles so Shiki block whitespace remains stable.

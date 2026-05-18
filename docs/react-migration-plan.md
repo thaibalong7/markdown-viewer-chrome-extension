@@ -7,6 +7,7 @@
 > **Scope (updated):** Migrate floating actions, sidebar (tabs, TOC, Files explorer), and toast/tooltip to React components. In-viewer settings drawer remains deferred as optional future work (Phase 4-R).
 > **Lưu ý:** Các section mô tả `Toolbar.jsx` / `mdp-toolbar` phía dưới là bối cảnh lịch sử trong giai đoạn migration; hiện tại production dùng `FloatingActions.jsx` / `mdp-floating-actions`.
 > **Out of scope:** Article HTML render pipeline (`renderDocument` → `sanitizeHtml` → `renderIntoElement`) stays as-is — vanilla markdown-it → DOMPurify → innerHTML.
+> **Archive note (2026-05-18):** Tài liệu này là migration history. Các phần "As-Is", "Target", danh sách action/file bên dưới dùng để hiểu quyết định cũ, không phải runtime truth. Khi cần ownership hiện tại, dùng `docs/project-overview-for-ai.md` và source trong `src/**`.
 
 ---
 
@@ -40,6 +41,8 @@ Lý do:
 ## 1. Hiện trạng kiến trúc (As-Is)
 
 ### Viewer entry flow
+Flow lịch sử trước migration:
+
 ```
 content/index.js → bootstrap.js → MarkdownViewerApp.init()
   → createShell() → imperative DOM tree
@@ -52,6 +55,8 @@ content/index.js → bootstrap.js → MarkdownViewerApp.init()
 ```
 
 ### DOM tree (viewer-shell.js)
+DOM tree imperative lịch sử trước React shell; production hiện dùng `ViewerShell.jsx` với floating actions thay vì `mdp-toolbar`.
+
 ```
 div.mdp-root
 ├── div.mdp-toolbar
@@ -75,6 +80,8 @@ div.mdp-root
 ```
 
 ### Modules that own DOM
+Bảng ownership lịch sử trước React migration; xem `docs/project-overview-for-ai.md` để biết split hiện tại.
+
 | Module | What it creates/mutates |
 |--------|------------------------|
 | `viewer-shell.js` | Entire shell structure |
@@ -383,7 +390,7 @@ return createPortal(<Toast />, portalRoot)
   - Removed dead code: **`src/viewer/toolbar-metrics.js`**, **`createPrintIconSvg` / `createExportIconSvg`** from **`icons.js`** (plugin helpers only: **`SVG_NS`**, **`createCopyIconSvg`**)
   - **`dom-tooltip.js`** kept for plugin-injected DOM; React **`Tooltip.jsx`** remains for chrome
   - Post-cleanup UX: **`tocReady`** bridge signal in `mount.js`/`app.js` + reusable skeleton primitives (`src/shared/react/Skeleton.jsx`, `src/shared/styles/_skeleton.scss`) adopted by `OutlinePanel.jsx`, `ExplorerPanel.jsx`, and `PopupApp.jsx`
-  - Updated **`docs/project-overview-for-ai.md`**, **`docs/react-migration-plan.md`**, **`.cursor/rules/80-viewer-ui-lifecycle.mdc`**
+  - Updated **`docs/project-overview-for-ai.md`**, **`docs/react-migration-plan.md`**, and the viewer lifecycle rules now consolidated into **`.cursor/rules/20-architecture-boundaries.mdc`**
 
 ### Goals
 - Clean integration between React components and imperative article interactions
@@ -399,7 +406,7 @@ return createPortal(<Toast />, portalRoot)
 | 6.4 | Remove `parts` object pattern from `app.js` — React refs replace all DOM element references | `app.js` refactor |
 | 6.5 | Final audit: no orphan event listeners, no DOM leaks, all `destroy()` paths validated | audit |
 | 6.6 | Update `project-overview-for-ai.md` to reflect new React architecture | `docs/project-overview-for-ai.md` |
-| 6.7 | Update cursor rules (`80-viewer-ui-lifecycle.mdc`) for React lifecycle patterns | `.cursor/rules/` |
+| 6.7 | Update cursor rules for React lifecycle patterns | `.cursor/rules/20-architecture-boundaries.mdc` |
 
 ### Deliverable
 - Clean boundary: React owns UI shell, imperative owns article render + interactions

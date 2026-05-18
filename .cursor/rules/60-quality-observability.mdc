@@ -1,0 +1,16 @@
+---
+description: Testing, error handling, logging, and change discipline
+globs: src/**/*.{js,jsx}
+alwaysApply: false
+---
+
+# Quality and Observability
+
+- Do not swallow async errors. Either rethrow, surface a user-safe fallback, or return a structured runtime error response.
+- Normalize unknown errors before logging/responding from background message handlers.
+- Use `logger` instead of raw `console.*` so logs stay searchable and consistent.
+- Log intent plus lightweight context, not full Markdown document content or sensitive data.
+- Prefer explicit failure paths in bootstrap/render flows: fail fast on missing critical data and exit early on unsupported states.
+- Add or update focused tests for URL/path logic, render settings invalidation, explorer state transitions, editor dirty/save flow, and message routing when touching those areas.
+- For behavior changes, run `npm test`. For packaged/runtime changes, also run `npm run build`.
+- For bundle-sensitive changes, especially plugins, Shiki, editor, Mermaid, Math, or content script entrypoints, run `npm run size:report` and compare against the prior result.

@@ -1,0 +1,53 @@
+---
+description: Long-term module ownership and refactor boundaries
+globs: src/**/*.{js,jsx}
+alwaysApply: false
+---
+
+# Architecture Boundaries
+
+- Prefer small, focused modules over large orchestration files. Around 300 lines is a review signal: check for independent responsibilities before adding more logic.
+- Refactor one boundary at a time. Avoid combining UI redesign, behavior change, and file movement unless the behavior change is required.
+- Extract pure helpers first, then side-effect orchestration, then UI composition. Add focused tests before moving behavior-heavy code.
+- Keep React components declarative. Browser APIs, runtime messaging, clipboard, printing, downloads, file operations, and navigation side effects belong in action/service modules or focused hooks.
+- Keep MV3 browser APIs in ownership layers: background services for background work, `src/messaging/index.js` for UI/content callers, and viewer action modules for document commands.
+
+## Entry and Mount Flow
+
+- Preserve the traceable viewer path: `src/content/index.js` -> `src/content/viewer-loader.js` / `src/content/bootstrap.js` -> `src/viewer/app.js`.
+- `src/content/index.js` should stay a cheap gate for local `file:` Markdown files before loading the heavier viewer bundle.
+- Keep bootstrap idempotent for reinjection/HMR and avoid repeated full-page scans in content scripts.
+- Keep viewer isolation inside the dedicated root (`mdp-viewer-root`) with Shadow DOM when available.
+
+## Viewer App
+
+- Keep `src/viewer/app.js` as the public orchestrator; focused implementation belongs under `src/viewer/app/`.
+- Current app controller ownership:
+  - `renderController.js`: async render orchestration, render token, scroll preservation, TOC hydration, render context cache lifecycle.
+  - `editorSessionController.js`: edit mode, dirty/save status, debounced live preview, save flow.
+  - `splitScrollSync.js`: editor-to-preview scroll sync listeners/RAF/cleanup.
+  - `viewerStyles.js`: reader/theme variables, sidebar width preference, edit-mode article style overrides.
+  - `globalViewerListeners.js`: `beforeunload` and Ctrl/Cmd+S handling.
+  - `createExplorerBridge.js`: bridge object passed into React explorer.
+- `MarkdownViewerApp.destroy()` must stay idempotent and clean up app controllers, article interactions, React root, listeners, and DOM references.
+
+## React Shell
+
+- React owns viewer chrome only: shell, floating actions, sidebar, outline, files explorer, editor shell, toast.
+- React must not reconcile rendered Markdown under `.mdp-markdown-body`; that subtree is owned by the render pipeline and plugin `afterRender` hooks.
+- Preserve stable shell class names and hierarchy (`mdp-root`, `mdp-sidebar`, `mdp-markdown-body`) unless migrating SCSS and scroll math in the same change.
+- Prefer shared chrome primitives for repeated controls:
+  - `src/viewer/react/components/common/IconButton.jsx`
+  - `src/viewer/react/components/common/ActionMenu.jsx`
+  - `src/viewer/react/hooks/useDismissableLayer.js`
+- Dismiss/escape behavior must be Shadow DOM-safe and cleaned up from React effects.
+- Prefer `src/shared/react/Skeleton.jsx` and `src/shared/styles/_skeleton.scss` for loading placeholders.
+
+## Explorer
+
+- Keep `useExplorer.js` as a React composition hook.
+- Non-React explorer workflows belong in `src/viewer/explorer/` and should not import React.
+- React-only explorer adapters belong under `src/viewer/react/hooks/explorer/`.
+- Preserve the explorer bridge contract: `navigateToFile` and `virtualFileExists` are assigned by the hook and cleared on cleanup.
+- Preserve workspace virtual-file behavior and `MDP_WS_FILE`; do not convert virtual workspace files into `file:` URLs.
+- Sibling/workspace scans must support cancellation via `AbortController` on teardown, workspace switch/open, mode changes, and explicit progress cancellation.

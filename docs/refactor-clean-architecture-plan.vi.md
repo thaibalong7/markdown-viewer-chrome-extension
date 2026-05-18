@@ -16,6 +16,8 @@ Kết quả mong muốn:
 
 ## Hiện trạng kiến trúc
 
+Cập nhật trạng thái implement (2026-05-18): Phase 1-5 đã hoàn tất. Phần dưới vẫn giữ snapshot rủi ro ban đầu để làm bối cảnh lịch sử; khi cần source truth hiện tại, dùng `docs/refactor-progress-log.md`, `docs/project-overview-for-ai.md` và `src/**`. Line-count hiện tại sau Phase 1-5: `src/viewer/app.js` 250, `useExplorer.js` 344, `FloatingActions.jsx` 236, `FileRow.jsx` 135, `markdown-engine.js` 139, `message-router.js` 126.
+
 Project hiện đã có phân vùng khá tốt:
 
 - `src/content`: gate rẻ để phát hiện trang Markdown, bootstrap, extract raw markdown, load viewer.
@@ -227,8 +229,9 @@ Cần cập nhật sau từng phase:
 - `docs/project-overview-for-ai.md`: folder map và ownership mới.
 - `docs/performance-issues-audit.md`: mark issue đã xử lý hoặc đổi vị trí file.
 - `docs/react-migration-plan.md`: archive hoặc trim những phần migration đã cũ.
-- `.cursor/rules/80-viewer-ui-lifecycle.mdc`: update nếu `app.js` được tách.
-- `.cursor/rules/95-clean-architecture-refactor.mdc`: giữ làm rule nền cho refactor sau này.
+- `.cursor/rules/00-project-context.mdc`: giữ thứ tự source truth và cách đọc docs lịch sử.
+- `.cursor/rules/20-architecture-boundaries.mdc`: giữ boundary dài hạn cho viewer app, React shell, explorer và refactor.
+- `.cursor/rules/30-rendering-pipeline-security.mdc`: giữ boundary render/sanitize/theme/Shiki.
 
 ## Phase 7: test và verify
 

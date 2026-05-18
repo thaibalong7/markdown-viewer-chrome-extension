@@ -1,0 +1,37 @@
+---
+description: Settings storage, runtime messaging, background routing, and live updates
+globs:
+  - src/settings/**/*.js
+  - src/background/**/*.js
+  - src/messaging/**/*.js
+  - src/content/**/*.js
+  - src/popup/**/*.{js,jsx}
+  - src/options/**/*.js
+  - src/theme/**/*.js
+alwaysApply: false
+---
+
+# Settings and Messaging
+
+- Message type names must come from `MESSAGE_TYPES` in `src/messaging/index.js`; do not introduce ad-hoc runtime message strings.
+- UI/content/popup/options/viewer callers should use `sendMessage()` from `src/messaging/index.js` instead of direct `chrome.runtime.sendMessage`.
+- Preserve the runtime response envelope from `src/background/service-worker.js`: `{ ok: true, data }` or `{ ok: false, error }`.
+- Keep `src/background/message-router.js` readable as a route table over small service calls.
+- Offscreen bridge wire messages (`OFFSCREEN_FETCH`, `OFFSCREEN_FETCH_DONE`) intentionally bypass `routeMessage()` in `service-worker.js`.
+- Background/service ownership modules may use direct `chrome.*` APIs where they own that browser integration.
+- Use `logger` from `src/shared/logger.js` for logs.
+
+## Settings Ownership
+
+- `src/settings/default-settings.js` owns `DEFAULT_SETTINGS`.
+- `src/settings/settings-service.js` owns `chrome.storage`, storage key, default-safe merge, save, and reset.
+- `src/settings/index.js` is the compatibility export surface for existing callers.
+- Preserve default-safe loading with `deepMerge(DEFAULT_SETTINGS, raw)`.
+- If the settings schema changes incompatibly, bump `settings.version` and add an explicit migration in the settings service.
+- Popup/options should persist settings through `SAVE_SETTINGS`; do not read or write `chrome.storage` directly from those pages.
+
+## Live Updates
+
+- After save/reset, background broadcasts `MESSAGE_TYPES.SETTINGS_UPDATED` so content scripts can call `MarkdownViewerApp.updateSettings()` or teardown.
+- If optimizing broadcast targeting, prove existing Markdown viewer tabs still receive runtime updates.
+- `updateSettings()` should apply reader styles immediately and only trigger full Markdown render when `needsFullRender(previous, next)` requires it.

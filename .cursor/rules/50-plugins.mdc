@@ -1,0 +1,24 @@
+---
+description: Plugin classification, registration, settings, and safety
+globs:
+  - src/plugins/**/*.js
+  - src/settings/default-settings.js
+  - src/popup/**/*.{js,jsx}
+  - src/viewer/core/**/*.js
+  - manifest.json
+alwaysApply: false
+---
+
+# Plugins
+
+- Classify every plugin explicitly as core or optional.
+- Use `src/plugins/core/**` for lightweight baseline Markdown behavior that most documents benefit from.
+- Use `src/plugins/optional/**` for specialized or heavier behavior such as diagrams, math, extra syntax, large dependencies, or lazy initialization.
+- Add plugin ids in `src/plugins/plugin-types.js` and defaults in `DEFAULT_SETTINGS.plugins`.
+- Core plugins usually default to enabled. Heavy optional plugins should default to disabled unless there is a deliberate product reason.
+- Register plugins in `src/plugins/plugin-manager.js`.
+- Add popup labels in `src/popup/settings-constants.js`; plugin UI should be driven from merged defaults/settings rather than duplicated shapes.
+- Prefer dynamic import for heavy optional dependencies.
+- Plugin failures must not break the full viewer. Log warnings and keep safe fallback content.
+- If runtime assets are loaded through extension URLs, update `manifest.json` `web_accessible_resources` in the same change.
+- Any plugin output that becomes article HTML must stay inside the render sanitizer path.

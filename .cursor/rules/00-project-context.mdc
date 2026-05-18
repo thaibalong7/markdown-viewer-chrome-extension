@@ -1,0 +1,14 @@
+---
+description: Project context, source-of-truth order, and historical-doc handling
+alwaysApply: true
+---
+
+# Project Context
+
+- This project is a Chrome Extension MV3 Markdown viewer for local `file:` Markdown documents.
+- Current runtime truth is `src/**`, `manifest.json`, `vite.config.mjs`, and `package.json`.
+- Start architecture-sensitive work by reading `docs/project-overview-for-ai.md`. For performance work, also read `docs/performance-issues-audit.md`.
+- Treat `docs/technical-spec-phases/**`, `docs/react-migration-plan.md`, and older phase plans as historical intent when they conflict with current source.
+- `docs/refactor-progress-log.md` records completed refactor phases. Do not preserve phase-specific rule constraints just because they appear in the log.
+- Update `docs/project-overview-for-ai.md` when moving ownership boundaries, changing entry flows, or introducing/removing major modules.
+- Keep generated output in `dist/**` out of manual edits; regenerate it from source.

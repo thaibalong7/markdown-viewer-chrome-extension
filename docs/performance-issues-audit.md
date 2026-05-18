@@ -1,7 +1,9 @@
 # Đánh giá vấn đề hiệu năng - Markdown Plus Extension
 
-Ngày kiểm tra gốc: 2026-04-13  
-**Cập nhật rà soát codebase:** 2026-04-22  
+Ngày kiểm tra gốc: 2026-04-13
+
+**Cập nhật rà soát codebase:** 2026-05-18
+
 Phạm vi: `src/**` (kèm `manifest.json`, `vite.config.mjs` để lấy bối cảnh runtime)
 
 **Ghi chú migration:** Một số module imperative cũ đã chuyển sang React (`src/viewer/react/**`). Các issue dưới đây đã cập nhật **vị trí file**; issue không còn trong code được đánh dấu **[RESOLVED]** và có thể bỏ khỏi backlog fix.
@@ -12,7 +14,7 @@ Rủi ro lớn nhất về hiệu năng hiện tại tập trung ở:
 
 1. Render pipeline cho tài liệu lớn chạy tuần tự trên main thread (markdown-it → Shiki → DOMPurify → innerHTML).
 2. Shiki highlighter khởi tạo toàn bộ ngôn ngữ + highlight song song không giới hạn.
-3. Folder scan tuần tự + progress UI không throttle → jank.
+3. Folder scan tuần tự + progress UI không throttle → jank. Sibling/deep scan đã có abort support, nhưng concurrency và progress throttling vẫn mở.
 4. React viewer: callback không ổn định làm teardown scroll spy; hai lần `root.render()` sau mỗi lần render tài liệu.
 
 **Đã giảm rủi ro:** scroll spy (offsets + binary search); content script thin loader + dynamic import; lazy explorer subtree cho collapsed folders; một số đường bootstrap/settings/TOC/explorer active state (xem issue #1, #2, #3, #10, #14, #17, #20, #23).
@@ -32,7 +34,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 | MEDIUM-HIGH | 18 | Workspace picker multi-pass | `workspace-picker.js` |
 | MEDIUM-HIGH | 19 | Mermaid: còn render tuần tự từng block khi vào viewport | `mermaid.plugin.js` |
 | MEDIUM | 45–48 | Toast context; explorer mount sớm; `expandedMap` clone; timers copy | `ToastContext.jsx`, `FilesPanel.jsx` / `useExplorer.js`, `explorerReducer.js`, `article-interactions.js` |
-| MEDIUM | 13–42 *(trừ #21)* | (xem chi tiết từng issue bên dưới) | — |
+| MEDIUM | 14–42 *(trừ #21, #26)* | (xem chi tiết từng issue bên dưới) | — |
 
 ---
 
@@ -170,15 +172,11 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #13 [HIGH] Sibling scan không có AbortController
+## Issue #13 [RESOLVED] Sibling scan không có AbortController
 
-- **Vị trí (cập nhật):** `src/viewer/react/hooks/useExplorer.js` (deep sibling / `scanFolderRecursive` ~719–744)  
-  *(File cũ `explorer-controller.js` đã bỏ.)*
-- **Hiện trạng:** Workspace scan có `AbortController`; **sibling deep folder scan** vẫn gọi `scanFolderRecursive` **không** truyền `signal` → khó cancel khi navigate / đổi mode.
-- **Tác động:** Wasted CPU/network nếu user rời trước khi scan xong.
-- **Khuyến nghị fix:**
-  - Truyền `AbortController.signal` vào `scanFolderRecursive` cho sibling scan.
-  - Abort trong teardown / chuyển mode.
+- **Vị trí cập nhật:** `src/viewer/explorer/explorer-scan-session.js`, `src/viewer/react/hooks/useExplorer.js`
+- **Đã xử lý:** Phase 2 đã tách `createAbortableScanSession()` và `createSiblingScanRunner()`. Sibling scan hiện tạo `AbortController`, truyền `signal` vào `scanSiblingFiles()` và `scanFolderRecursive()`, abort khi start scan mới/teardown/mode switch, và bỏ qua kết quả nếu signal đã aborted.
+- **Ghi chú:** Issue này chỉ xử lý cancellation/ownership. Các cost còn lại của folder scan tuần tự, `.gitignore`, và progress UI không throttle vẫn mở ở Issue #11 và #22.
 
 ---
 
@@ -307,14 +305,11 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #26 [MEDIUM] Renderer tạo mới engine + plugin manager mỗi lần render
+## Issue #26 [RESOLVED] Renderer tạo mới engine + plugin manager mỗi lần render
 
-- **Vị trí:** `src/viewer/core/renderer.js` (dòng 33–37)
-- **Hiện trạng:** Mỗi `renderDocument()` tạo **mới** `createPluginManager()` và `createMarkdownEngine()` → new markdown-it instance + plugin wiring.
-- **Tác động:** Extra CPU + GC mỗi render, đặc biệt khi user đổi settings liên tục.
-- **Khuyến nghị fix:**
-  - Reuse engine + plugin manager, keyed by plugin settings hash.
-  - Chỉ tạo mới khi enabled plugins thực sự thay đổi.
+- **Vị trí cập nhật:** `src/viewer/app/renderController.js`, `src/viewer/core/create-render-context.js`, `src/viewer/core/renderer.js`
+- **Đã xử lý:** Phase 4 đã thêm render-context cache một-entry trong mỗi render controller, keyed by render-affecting settings hash. Plugin manager và markdown engine được reuse khi plugin settings/reader preset không đổi, invalidate khi hash đổi, clear khi controller destroy.
+- **Ghi chú:** Không cache HTML trước/sau sanitize. Full markdown parse/Shiki/sanitize cost vẫn còn mở trong Issue #8.
 
 ---
 
@@ -437,7 +432,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ## Issue #38 [LOW] Ghi log payload settings đầy đủ
 
-- **Vị trí:** `src/settings/index.js` (`saveSettings`)
+- **Vị trí cập nhật:** `src/settings/settings-service.js` (`saveSettings`)
 - **Hiện trạng:** Có log object settings lớn.
 - **Khuyến nghị fix:** Log metadata gọn (keys changed) thay vì full payload.
 
@@ -532,7 +527,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 4. ~~**Fix Issue #2:** Lazy render children khi expand folder (React tree).~~ *(RESOLVED)*
 5. ~~**Fix Issue #4:** Dynamic `import()` cho optional plugins (Math/KaTeX đặc biệt).~~ *(RESOLVED)*
 6. ~~**Fix Issue #5:** Giới hạn Shiki langs ban đầu + concurrency limit cho code highlighting.~~ *(RESOLVED)*
-7. **Fix Issue #8:** Thêm loading state (skeleton/spinner) cho render pipeline.
+7. **Fix Issue #8:** Loading state/context reuse đã partially addressed; phần còn lại là progressive/chunked render hoặc worker/cache có kiểm soát sanitize boundary.
 8. ~~**Issue #14 / #20:** Explorer active + TOC imperative — đã chuyển React.~~ *(RESOLVED)*
 9. **Fix Issue #22:** Throttle progress UI updates trong explorer scan.
 10. **Fix Issue #24:** rAF throttle cho sidebar resize.
@@ -542,7 +537,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 1. ~~Tách content script thành "thin loader" + dynamic import viewer (Issue #3).~~ *(RESOLVED)*
 2. ~~String-based Shiki approach thay vì DOM round-trip (Issue #6).~~ *(RESOLVED)*
 3. ~~Virtual list cho explorer tree + TOC sidebar (Issue #9, #21).~~ *(RESOLVED)*
-4. Reuse markdown engine + plugin manager across renders (Issue #26).
+4. ~~Reuse markdown engine + plugin manager across renders (Issue #26).~~ *(RESOLVED; full render cost vẫn mở ở Issue #8)*
 5. Cache rendered HTML; theme/plugin change chỉ re-run Shiki (Issue #17 đã có fast path typography/layout; stretch: cache pre-Shiki HTML).
 6. Bounded concurrency cho folder scanning (Issue #11).
 7. Progressive/chunked render cho tài liệu 1MB+ (Issue #8).

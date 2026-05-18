@@ -428,14 +428,18 @@ public/
 - `src/viewer/actions/file-link-actions.js` / `file-row-actions.js`
   - Current-file link building/copying plus explorer file-row click/open/copy helpers. Workspace virtual file hrefs stay copyable but are not browser-openable in a new tab.
 
+- `src/settings/default-settings.js`
+  - Pure `DEFAULT_SETTINGS` shape, including plugin defaults, explorer limits, and editor defaults. Tests and pure modules can import this without pulling `chrome.storage`.
+
+- `src/settings/settings-service.js`
+  - Settings persistence ownership: `STORAGE_KEYS.SETTINGS`, storage area selection, default-safe deep merge, save, and reset. Reads/writes via `chrome.storage.sync` (fallback `local`).
+
 - `src/settings/index.js`
-  - Single source of settings persistence logic
-  - Deep-merges persisted settings with defaults
-  - Reads/writes via `chrome.storage.sync` (fallback `local`)
+  - Compatibility export surface for existing callers: re-exports `DEFAULT_SETTINGS`, `STORAGE_KEYS`, and `settingsService`.
 
 ## 6) Settings model (current)
 
-Default shape in `src/settings/index.js` (plugins come from `getDefaultPluginSettings()`):
+Default shape in `src/settings/default-settings.js` (plugins come from `getDefaultPluginSettings()`):
 
 ```js
 {
@@ -458,11 +462,12 @@ Default shape in `src/settings/index.js` (plugins come from `getDefaultPluginSet
     maxFiles: 2000,
     maxFolders: 500
   },
+  editor: { ...DEFAULT_EDITOR_SETTINGS },
   version: 1
 }
 ```
 
-Defaults for optional plugins come from `getDefaultPluginSettings()` in `src/plugins/plugin-types.js`. **Settings UI:** React popup (`PopupApp` + `panels/*`); labels in `popup/settings-constants.js`.
+Defaults for optional plugins come from `getDefaultPluginSettings()` in `src/plugins/plugin-types.js`; editor defaults come from `DEFAULT_EDITOR_SETTINGS` in `src/shared/constants/editor.js`. **Settings UI:** React popup (`PopupApp` + `panels/*`); labels in `popup/settings-constants.js`.
 
 Preset keys for theme/Shiki must match built-ins: `light`, `dark`.
 
@@ -513,7 +518,7 @@ Use this audit as the baseline for optimization tasks.
   - Inspect `src/viewer/core/toc-builder.js`, `src/viewer/react/components/OutlinePanel.jsx`, `src/viewer/react/hooks/useScrollSpy.js`, `src/viewer/core/scroll-spy.js`.
 
 - Settings persistence issues:
-  - Inspect `src/background/message-router.js` + `src/settings/index.js`.
+  - Inspect `src/settings/default-settings.js`, `src/settings/settings-service.js`, `src/settings/index.js`, and `src/background/message-router.js`.
 
 - Popup/options not syncing:
   - Inspect `src/popup/index.jsx`, `src/popup/PopupApp.jsx`, `src/popup/hooks/useSettingsPersistence.js`, `src/options/index.js`, and message type usage (`SETTINGS_UPDATED` on the content script).
@@ -522,7 +527,7 @@ Use this audit as the baseline for optimization tasks.
   - Inspect `src/shared/react/Skeleton.jsx`, `src/shared/styles/_skeleton.scss`, `src/viewer/react/components/OutlinePanel.jsx`, `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `src/popup/PopupApp.jsx`, and `tocReady` updates in `src/viewer/app.js` / `src/viewer/react/mount.js`.
 
 - **Theme vs fenced code colors**:
-  - Reader theme uses CSS vars; Shiki colors are inline in HTML. `updateSettings()` skips full render for style-only diffs (`typography.*`, `layout.contentMaxWidth`, `layout.showToc`, `layout.tocWidth`) but still re-renders for theme/plugin/other structural diffs; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/35-reader-theme-and-shiki.mdc`.
+  - Reader theme uses CSS vars; Shiki colors are inline in HTML. `updateSettings()` skips full render for style-only diffs (`typography.*`, `layout.contentMaxWidth`, `layout.showToc`, `layout.tocWidth`) but still re-renders for theme/plugin/other structural diffs; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/30-rendering-pipeline-security.mdc`.
 
 - **Fenced code layout (lines, tabs)**:
   - `normalizeShikiPreWhitespace`, bundled viewer styles from `content/_code-blocks.scss` (`pre.shiki`), and sanitize `ADD_ATTR` for Shiki output.
@@ -548,4 +553,4 @@ Use this audit as the baseline for optimization tasks.
 - Preserve viewer lifecycle: `init()` -> `updateSettings()` -> `destroy()`; document render is **async** (`await render()`). Method name on the class is `updateSettings`; full-render gating is implemented via `needsFullRender()` in `src/shared/settings-diff.js`.
 - Keep all source edits in `src/**` and rebuild for extension output (`npm run build`).
 - When adding runtime-fetched extension assets (`fetch(chrome.runtime.getURL(...))`), sync `manifest.json` `web_accessible_resources`. Viewer chrome styles are not separate WAR entries (inlined in the content script).
-- For architecture detail on Shiki and presets, see `.cursor/rules/35-reader-theme-and-shiki.mdc` and this doc’s section 5.
+- For architecture detail on Shiki and presets, see `.cursor/rules/30-rendering-pipeline-security.mdc` and this doc’s section 5.

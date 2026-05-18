@@ -1,5 +1,64 @@
 # Refactor progress log
 
+## 2026-05-18 - Phase 6 docs and rules cleanup
+
+Scope:
+
+- Reviewed requested clean-architecture docs, performance audit, React migration plan, current rules, and current source ownership after Phase 1-5.
+- Updated `docs/project-overview-for-ai.md` to reflect the current settings split:
+  - `src/settings/default-settings.js` owns pure defaults.
+  - `src/settings/settings-service.js` owns `chrome.storage`, storage key, merge/save/reset.
+  - `src/settings/index.js` is now only the compatibility export surface.
+- Updated `docs/performance-issues-audit.md`:
+  - Marked Issue #13 as `RESOLVED` for sibling scan abort support.
+  - Marked Issue #26 as `RESOLVED` for render context/plugin manager/markdown engine reuse.
+  - Kept render main-thread/sanitize cost under Issue #8 as still open / partially addressed.
+  - Updated Issue #38 ownership from `settings/index.js` to `settings-service.js`.
+- Added archive/source-truth notes to `docs/react-migration-plan.md` so historical pre-React architecture sections do not look like current runtime architecture.
+- Added implementation-status notes to both clean architecture plans (`docs/refactor-clean-architecture-plan.md`, `docs/refactor-clean-architecture-plan.vi.md`) with current line-count snapshot after Phase 1-5.
+- Updated rules:
+  - Consolidated the previous phase-specific and narrow rules into the current long-lived set:
+    - `.cursor/rules/00-project-context.mdc`
+    - `.cursor/rules/10-environment-build-and-assets.mdc`
+    - `.cursor/rules/20-architecture-boundaries.mdc`
+    - `.cursor/rules/30-rendering-pipeline-security.mdc`
+    - `.cursor/rules/40-settings-messaging.mdc`
+    - `.cursor/rules/50-plugins.mdc`
+    - `.cursor/rules/60-quality-observability.mdc`
+
+Rules:
+
+- Removed phase-only rule files after folding their durable constraints into the consolidated rules above.
+
+Verification:
+
+- `nvm use`
+  - Direct result: failed in the non-interactive shell because `nvm` was not on PATH.
+  - Follow-up command: `source ~/.nvm/nvm.sh && nvm use`
+  - Result: passed with Node `20.19.5`.
+- `npm test`
+  - Direct result after the standalone `nvm use`: failed because the next shell used an older Node that cannot parse Vitest's `??=`.
+  - Follow-up command: `source ~/.nvm/nvm.sh && nvm use && npm test`
+  - Result: passed.
+  - 21 test files, 127 tests passed.
+- `npm run build`
+  - Command: `source ~/.nvm/nvm.sh && nvm use && npm run build`
+  - Result: passed.
+  - Notable warning: Vite reports some chunks larger than 500 kB after minification.
+- `npm run size:report`
+  - Command: `source ~/.nvm/nvm.sh && nvm use && npm run size:report`
+  - Result: passed.
+  - `dist`: 8.8M
+  - `dist/assets/*.js` total: 7.7M
+- `git diff --check`
+  - Result: passed.
+
+Notes:
+
+- No runtime source refactor, UI change, public behavior change, message type/envelope change, or settings storage key change was made.
+- `docs/technical-spec-phases/**` was intentionally left unchanged. Those files are historical specs; the only needed clarification was added to the docs-context rule and React migration archive note.
+- Performance issues were not marked resolved when only ownership moved. Issue #12 remains open after the Phase 5 broadcast-service split; Issue #8 remains partially addressed because main-thread parse/Shiki/sanitize cost still exists.
+
 ## 2026-05-18 - Phase 5 settings and messaging cleanup
 
 Scope:
@@ -11,7 +70,7 @@ Scope:
 - Moved settings update broadcast from `src/background/message-router.js` to `src/background/settings-broadcast-service.js`.
 - Refactored `message-router.js` into a route table via `createMessageRouter(...)`, preserving message type strings and runtime response envelope handling in `service-worker.js`.
 - Kept settings broadcast behavior conservative: save/reset still sends `MESSAGE_TYPES.SETTINGS_UPDATED` to queried tabs and ignores tabs without content scripts.
-- Added `.cursor/rules/88-settings-messaging-refactor.mdc` and updated the settings storage rule for the new defaults/service split.
+- Added a settings/messaging refactor rule, later consolidated into `.cursor/rules/40-settings-messaging.mdc`, and updated the settings storage rule for the new defaults/service split.
 - Updated architecture and performance docs to reflect new ownership; performance issue #12 remains open because broadcast targeting was not optimized in this phase.
 
 Tests added:
@@ -66,7 +125,7 @@ Scope:
   - Does not cache rendered HTML before or after `sanitizeHtml()`.
 - Updated `renderDocument()` to use the render context while preserving the markdown -> safe HTML boundary: plugin hooks + markdown render + Shiki + `sanitizeHtml()`.
 - Added article busy/progress state in `src/viewer/app/renderController.js` during normal async renders, reusing the existing `aria-busy` article styling without moving rendered article DOM into React.
-- Added `.cursor/rules/87-render-pipeline-refactor.mdc` for render pipeline guardrails.
+- Added render pipeline guardrails, later consolidated into `.cursor/rules/30-rendering-pipeline-security.mdc`.
 - Updated architecture/performance docs for the new core ownership and partially addressed render pipeline performance issue.
 - Added focused tests for render settings hash, context cache reuse/invalidation, internal runtime context isolation, and `renderDocument()` metadata/no-HTML-cache behavior.
 
@@ -115,7 +174,7 @@ Scope:
   - `src/viewer/react/components/icons/MoreIcon.jsx`
   - `src/viewer/react/components/icons/OpenNewTabIcon.jsx`
 - Refactored `FloatingActions.jsx`, `ExplorerHeader.jsx`, and `FileRow.jsx` to declare commands and menu items while preserving existing class names.
-- Added `.cursor/rules/86-viewer-action-menu-refactor.mdc` to document the new action-menu boundary.
+- Added action-menu boundary guidance, later consolidated into `.cursor/rules/20-architecture-boundaries.mdc`.
 - Added focused tests for file-row action helpers and dismissable-layer helper behavior.
 
 Verification:

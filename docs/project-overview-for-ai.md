@@ -8,7 +8,7 @@ Current implemented core:
 - Markdown detection from URL/content heuristics
 - Raw Markdown extraction from page (`<pre>` or body text sampling)
 - Viewer mount in overlay + Shadow DOM (when available)
-- Markdown render pipeline: `markdown-it` → plugin hooks → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
+- Markdown render pipeline: local link normalization → `markdown-it` → plugin hooks/render context → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
 - **Reader themes** (`light` / `dark`, default `light`) aligned with **Shiki themes** for code blocks
 - **Plugin registry** (task lists, heading anchors, table wrapper, code-highlight toggle) via lifecycle hooks
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
@@ -46,7 +46,7 @@ Generated output:
 
 - `background`: central runtime message handling and settings operations
 - `content`: detect/extract/mount flow on web pages
-- `viewer`: **React** shell (floating document actions, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet). Browser-facing viewer commands live under `src/viewer/actions/`, while shared React chrome primitives live under `src/viewer/react/components/common/`.
+- `viewer`: **React** shell (floating document actions, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet). Browser-facing viewer commands live under `src/viewer/actions/`, shared React chrome primitives live under `src/viewer/react/components/common/`, and render pipeline setup lives under `src/viewer/core/`.
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
 - `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
 - `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
@@ -63,7 +63,7 @@ Generated output:
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
 7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
-8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge, **internal Markdown link interception** via `resolveLink` + `navigateToFile` callbacks), runs **`await renderDocument()`** (async), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree, with non-React explorer scan/navigation/workspace workflows owned by `src/viewer/explorer/`.
+8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge, **internal Markdown link interception** via `resolveLink` + `navigateToFile` callbacks), marks the article busy during async render, runs **`await renderDocument()`** (async; creates a render context for plugin manager + markdown engine + render-affecting settings hash), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree, with non-React explorer scan/navigation/workspace workflows owned by `src/viewer/explorer/`.
 9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
@@ -236,7 +236,9 @@ src/
       file-link-actions.js
       file-row-actions.js
     core/
+      create-render-context.js
       markdown-engine.js
+      markdown-link-normalizer.js
       renderer.js
       toc-builder.js
       scroll-spy.js

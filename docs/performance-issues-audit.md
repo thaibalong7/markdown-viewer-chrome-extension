@@ -26,7 +26,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 | Mức | # | Tóm tắt | Vị trí chính |
 |-----|---|---------|--------------|
 | HIGH | 7 | DOMPurify toàn bộ HTML | `renderer.js` |
-| HIGH | 8 | Pipeline tuần tự, không loading state, tạo engine mới mỗi lần | `app.js`, `renderer.js` |
+| HIGH | 8 | Pipeline tuần tự, context structure có nhưng chưa cache/reuse | `renderController.js`, `renderer.js`, `create-render-context.js` |
 | HIGH | 11 | Folder scan tuần tự + `.gitignore` | `folder-scanner.js` |
 | MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `message-router.js` |
 | MEDIUM-HIGH | 18 | Workspace picker multi-pass | `workspace-picker.js` |
@@ -110,16 +110,16 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #8 [HIGH] Render pipeline tuần tự trên main thread, không có loading state
+## Issue #8 [PARTIALLY-ADDRESSED] Render pipeline tuần tự trên main thread, loading state, tạo engine mới mỗi lần
 
-- **Vị trí:** `src/viewer/app.js` (dòng 142–175), `src/viewer/core/renderer.js` (dòng 33–50)
+- **Vị trí cập nhật:** `src/viewer/app/renderController.js`, `src/viewer/core/renderer.js`, `src/viewer/core/create-render-context.js`
 - **Hiện trạng:**
-  - `renderDocument()` chạy toàn bộ pipeline (create engine → markdown parse → plugin postprocess → Shiki → sanitize) **tuần tự trên main thread**.
-  - `render()` trong `app.js` chạy `await renderDocument()` rồi `innerHTML =` rồi `afterRender` + TOC rebuild — **không có loading indicator** nào cho user.
-  - Mỗi `renderDocument()` tạo **mới** `createPluginManager` + `createMarkdownEngine()` → extra CPU + GC.
-- **Tác động:** Với file 1MB+, user thấy blank hoặc frozen screen vài giây. Không có feedback "đang loading".
+  - `renderDocument()` vẫn chạy toàn bộ pipeline (render context → markdown parse → plugin postprocess → Shiki → sanitize) **tuần tự trên main thread**.
+  - `renderController.render()` đã bật/tắt `aria-busy` trên article trong lúc render để dùng progress styling hiện có, rồi mới `renderIntoElement()` với HTML đã sanitize và chạy `afterRender` + TOC rebuild.
+  - `create-render-context.js` đã gom tạo `pluginManager`, `markdownEngine`, source-line mapping và render-affecting settings hash để chuẩn bị reuse/cache sau này.
+  - Chưa bật cache/reuse engine/plugin manager vì cần invalidation rõ theo plugin/parser/theme-affecting settings và test rộng hơn.
+- **Tác động còn lại:** Với file 1MB+, main thread vẫn có thể bị block vài giây dù đã có article busy/progress feedback.
 - **Khuyến nghị fix:**
-  - **UX:** Hiển thị skeleton/spinner trên shell ngay khi `render()` bắt đầu, ẩn khi xong.
   - **Perf:** Reuse engine + plugin manager (keyed by plugin settings hash). Chỉ tạo lại khi enabled plugins thay đổi.
   - **Stretch:** Web Worker cho markdown-it parse (khó với DOM plugins) hoặc progressive/chunked render.
 

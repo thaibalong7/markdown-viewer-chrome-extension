@@ -1,5 +1,5 @@
-import { createMarkdownEngine, renderMarkdown, injectSourceLineMapping } from './markdown-engine.js'
-import { createPluginManager } from '../../plugins/plugin-manager.js'
+import { renderMarkdown } from './markdown-engine.js'
+import { createRenderContext } from './create-render-context.js'
 import { applyShikiToFencedCode } from './shiki-highlighter.js'
 import DOMPurify from 'dompurify'
 
@@ -36,16 +36,16 @@ export function renderIntoElement(element, html) {
 }
 
 export async function renderDocument(markdown, settings = {}, runtimeContext = {}) {
-  const pluginManager = await createPluginManager({ settings })
-  const markdownEngine = createMarkdownEngine()
-
-  await pluginManager.extendMarkdown(markdownEngine, { settings, ...runtimeContext })
-  injectSourceLineMapping(markdownEngine.instance)
-  const nextMarkdown = pluginManager.preprocessMarkdown(markdown, { settings, ...runtimeContext })
+  const renderContext = await createRenderContext(settings, runtimeContext)
+  const { pluginManager, markdownEngine } = renderContext
+  const nextMarkdown = pluginManager.preprocessMarkdown(markdown, renderContext.runtimeContext)
 
   const result = renderMarkdown(nextMarkdown, { markdownEngine })
   let html = result.html
-  html = pluginManager.postprocessHtml(html, { settings, markdown: nextMarkdown, ...runtimeContext })
+  html = pluginManager.postprocessHtml(html, {
+    ...renderContext.runtimeContext,
+    markdown: nextMarkdown
+  })
 
   const codeOn = settings?.plugins?.codeHighlight?.enabled !== false
   if (codeOn) {
@@ -58,7 +58,9 @@ export async function renderDocument(markdown, settings = {}, runtimeContext = {
   return {
     html: safeHtml,
     pluginManager,
-    metadata: {},
+    metadata: {
+      settingsHash: renderContext.settingsHash
+    },
     warnings: []
   }
 }

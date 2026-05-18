@@ -34,4 +34,14 @@ describe('markdown-engine local link normalization', () => {
     expect(html).toContain('href="https://example.com/a%20b"')
     expect(html).toContain('target="_blank"')
   })
+
+  it('preserves nested parentheses in local link destinations', () => {
+    const html = render('[Spec](docs/My Notes (draft).md)')
+    expect(html).toContain('href="docs/My%20Notes%20(draft).md"')
+  })
+
+  it('does not make unsafe links valid during local link normalization', () => {
+    const html = render('[Bad](javascript:alert(1 2))')
+    expect(html).not.toContain('href="javascript:')
+  })
 })

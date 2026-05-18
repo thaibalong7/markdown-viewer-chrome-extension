@@ -1,5 +1,50 @@
 # Refactor progress log
 
+## 2026-05-18 - Phase 4 rendering pipeline cleanup
+
+Scope:
+
+- Moved local markdown link normalization out of `src/viewer/core/markdown-engine.js` into `src/viewer/core/markdown-link-normalizer.js`.
+- Added focused normalizer tests for:
+  - links with spaces.
+  - links with titles.
+  - inline code spans.
+  - fenced code blocks.
+  - nested parentheses.
+  - external and unsafe absolute link behavior.
+- Added `src/viewer/core/create-render-context.js` to centralize plugin manager creation, markdown engine creation, source-line mapping, and render-affecting settings hash.
+- Kept render context cache disabled. The new settings hash prepares a future cache key, but no engine/plugin manager reuse is enabled until invalidation behavior is covered more broadly.
+- Updated `renderDocument()` to use the render context while preserving the markdown -> safe HTML boundary: plugin hooks + markdown render + Shiki + `sanitizeHtml()`.
+- Added article busy/progress state in `src/viewer/app/renderController.js` during normal async renders, reusing the existing `aria-busy` article styling without moving rendered article DOM into React.
+- Added `.cursor/rules/87-render-pipeline-refactor.mdc` for render pipeline guardrails.
+- Updated architecture/performance docs for the new core ownership and partially addressed render pipeline performance issue.
+
+Verification:
+
+- `nvm use`
+  - Result: passed with Node `20.19.5`.
+- `npm test`
+  - Result: passed.
+  - 16 test files, 110 tests passed.
+- `npm run build`
+  - Result: passed.
+  - Notable warning: Vite reports some chunks larger than 500 kB after minification.
+- `npm run size:report`
+  - Result: passed.
+  - `dist`: 8.8M
+  - `dist/assets/*.js` total: 7.7M
+
+Manual smoke focus for this phase:
+
+- File with headings/TOC, including first render skeleton then hydrated outline.
+- Code blocks with Shiki on light/dark reader themes.
+- Relative links with spaces and titles.
+- Inline code and fenced code containing text that looks like markdown links.
+- Mermaid with plugin enabled.
+- Math/KaTeX with plugin enabled.
+- Reader theme change from popup.
+- Plugin setting change from popup.
+
 ## 2026-05-18 - Phase 3 deduplicate action menus and button behavior
 
 Scope:

@@ -66,49 +66,58 @@ export function createRenderController({
     reactHandle?.setTocReady?.(true)
   }
 
+  function setArticleBusy(isBusy) {
+    const article = getArticleEl()
+    if (!article) return
+    if (isBusy) article.setAttribute('aria-busy', 'true')
+    else article.removeAttribute('aria-busy')
+  }
+
   async function render({ preserveScroll = false, honorHash = true } = {}) {
     const reactHandle = getReactHandle()
     reactHandle?.setTocReady?.(false)
     const currentRenderToken = ++renderToken
     const scrollSnapshot = preserveScroll ? captureScrollPosition() : null
-    let result
+    setArticleBusy(true)
     try {
-      result = await renderDocument(getMarkdown(), getSettings(), {
+      const result = await renderDocument(getMarkdown(), getSettings(), {
         injectViewerStyles
       })
+
+      if (currentRenderToken !== renderToken) return null
+      const article = getArticleEl()
+      if (!article) return null
+
+      renderIntoElement(article, result.html)
+      if (currentRenderToken !== renderToken) return null
+
+      const articleInteractions = getArticleInteractions()
+      await result.pluginManager?.afterRender({
+        articleEl: article,
+        settings: getSettings(),
+        copyCodeWithToast: articleInteractions?.copyCodeWithToast.bind(articleInteractions)
+      })
+      if (currentRenderToken !== renderToken) return null
+
+      syncTocItems()
+      if (scrollSnapshot) {
+        restoreScrollPosition(scrollSnapshot)
+      } else if (honorHash) {
+        const behavior = smoothInitialHashScroll && window.location.hash ? 'smooth' : 'auto'
+        articleInteractions?.scrollToHash({ behavior })
+        if (smoothInitialHashScroll) smoothInitialHashScroll = false
+      }
+
+      lastSuccessfulRenderMarkdown = getMarkdown()
+
+      return result
     } catch (error) {
       logger.error('Failed to render markdown document.', error)
       reactHandle?.setTocReady?.(true)
       return null
+    } finally {
+      if (currentRenderToken === renderToken) setArticleBusy(false)
     }
-
-    if (currentRenderToken !== renderToken) return null
-    const article = getArticleEl()
-    if (!article) return null
-
-    renderIntoElement(article, result.html)
-    if (currentRenderToken !== renderToken) return null
-
-    const articleInteractions = getArticleInteractions()
-    await result.pluginManager?.afterRender({
-      articleEl: article,
-      settings: getSettings(),
-      copyCodeWithToast: articleInteractions?.copyCodeWithToast.bind(articleInteractions)
-    })
-    if (currentRenderToken !== renderToken) return null
-
-    syncTocItems()
-    if (scrollSnapshot) {
-      restoreScrollPosition(scrollSnapshot)
-    } else if (honorHash) {
-      const behavior = smoothInitialHashScroll && window.location.hash ? 'smooth' : 'auto'
-      articleInteractions?.scrollToHash({ behavior })
-      if (smoothInitialHashScroll) smoothInitialHashScroll = false
-    }
-
-    lastSuccessfulRenderMarkdown = getMarkdown()
-
-    return result
   }
 
   function destroy() {

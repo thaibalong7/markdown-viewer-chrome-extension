@@ -32,10 +32,15 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   const currentFileUrl = getCurrentFileUrl?.() || ''
   const visible = Boolean(String(currentFileUrl).trim())
   const isLocalFile = currentFileUrl.startsWith('file:')
+  const documentActionsDisabled = editorState.enabled
 
   useEffect(() => {
     if (!visible) setMenuOpen(false)
   }, [visible])
+
+  useEffect(() => {
+    if (documentActionsDisabled) setMenuOpen(false)
+  }, [documentActionsDisabled])
 
   const menuItems = useMemo(
     () => [
@@ -63,6 +68,7 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   })
 
   const runExport = (ext, exportFn, errorMsg) => {
+    if (documentActionsDisabled) return
     void (async () => {
       const article = getArticleEl?.()
       if (!article) {
@@ -81,11 +87,13 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
 
   const onPrintClick = () => {
     setMenuOpen(false)
+    if (documentActionsDisabled) return
     printDocument()
   }
 
   const onExportToggleClick = (ev) => {
     ev.stopPropagation()
+    if (documentActionsDisabled) return
     setMenuOpen((open) => !open)
   }
 
@@ -199,10 +207,15 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
       )}
 
       <IconButton
-        tooltip="Print — Save as PDF in the dialog to export PDF."
+        tooltip={
+          documentActionsDisabled
+            ? 'Print disabled in edit mode'
+            : 'Print — Save as PDF in the dialog to export PDF.'
+        }
         showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
         className="mdp-fab-btn"
         aria-label="Print — use Save as PDF in the print dialog."
+        disabled={documentActionsDisabled}
         onClick={onPrintClick}
       >
         <PrintIcon className="mdp-fab-btn__icon" />
@@ -216,8 +229,13 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
         triggerClassName="mdp-fab-btn mdp-fab-export__trigger"
         triggerIcon={<ExportIcon className="mdp-fab-btn__icon" />}
         triggerLabel="Download — HTML or Word (.doc)."
-        triggerTooltip="Download — HTML or Word (.doc)."
+        triggerTooltip={
+          documentActionsDisabled
+            ? 'Export disabled in edit mode'
+            : 'Download — HTML or Word (.doc).'
+        }
         triggerShowDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+        triggerDisabled={documentActionsDisabled}
         menuClassName="mdp-fab-export__menu"
         menuLabel="Export format"
         itemClassName="mdp-fab-export__menu-item"

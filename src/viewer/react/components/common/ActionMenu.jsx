@@ -12,6 +12,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
     triggerLabel,
     triggerTooltip,
     triggerShowDelayMs,
+    triggerDisabled = false,
     menuClassName,
     menuLabel,
     itemClassName,
@@ -30,6 +31,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
         aria-label={triggerLabel}
         aria-haspopup="menu"
         aria-expanded={open ? 'true' : 'false'}
+        disabled={triggerDisabled}
         onClick={onToggle}
       >
         {triggerIcon}

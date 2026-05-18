@@ -36,6 +36,16 @@ export const IconButton = forwardRef(function IconButton(
   )
 
   if (!tooltip) return button
+  if (disabled) {
+    return (
+      <Tooltip content={tooltip} showDelayMs={showDelayMs} pointerPlacement={pointerPlacement}>
+        <span className="mdp-icon-button-tooltip-anchor">
+          {button}
+        </span>
+      </Tooltip>
+    )
+  }
+
   return (
     <Tooltip content={tooltip} showDelayMs={showDelayMs} pointerPlacement={pointerPlacement}>
       {button}

@@ -90,6 +90,10 @@
   min-width: 0;
 }
 
+.mdp-icon-button-tooltip-anchor {
+  display: inline-flex;
+}
+
 /* Floating tooltips (ported via React or imperative bridge) */
 .mdp-tooltip {
   box-sizing: border-box;

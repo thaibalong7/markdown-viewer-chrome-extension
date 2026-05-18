@@ -7,6 +7,16 @@ import {
   normalizeFileUrlForCompare
 } from './url-utils.js'
 
+function scanCancelledError() {
+  const err = new Error('Scan cancelled')
+  err.name = 'AbortError'
+  return err
+}
+
+function throwIfAborted(signal) {
+  if (signal?.aborted) throw scanCancelledError()
+}
+
 /**
  * Resolve a raw URL from a Chrome directory listing entry to an absolute file: URL.
  * addRow() URLs can be relative ("file.md"), path-absolute ("/Users/.../file.md"),
@@ -88,18 +98,21 @@ export function collectEntriesFromChromeAddRow(html, dirUrl) {
  * @param {string} dirUrl - must be file: directory with trailing slash
  * @returns {Promise<string>}
  */
-export async function fetchDirectoryListingHtml(dirUrl) {
+export async function fetchDirectoryListingHtml(dirUrl, { signal } = {}) {
+  throwIfAborted(signal)
   try {
     const response = await sendMessage({
       type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT,
       payload: { url: dirUrl }
     })
+    throwIfAborted(signal)
     if (!response?.ok) {
       logger.warn('Directory listing fetch failed.', response?.error, dirUrl)
       return ''
     }
     return response.data?.text ?? ''
   } catch (error) {
+    if (error?.name === 'AbortError') throw error
     logger.warn('Directory listing fetch error.', error)
     return ''
   }
@@ -171,14 +184,16 @@ export function posixPathRelativeToFileRoot(rootDirUrl, targetUrl) {
  * @param {string} currentFileUrl - e.g. window.location.href
  * @returns {Promise<Array<{ displayName: string, href: string, isActive: boolean }>>}
  */
-export async function scanSiblingFiles(currentFileUrl) {
+export async function scanSiblingFiles(currentFileUrl, { signal } = {}) {
+  throwIfAborted(signal)
   const dirUrl = getParentDirectoryUrl(currentFileUrl)
   if (!dirUrl) {
     logger.debug('Sibling scan: could not derive parent directory URL.')
     return []
   }
 
-  const html = await fetchDirectoryListingHtml(dirUrl)
+  const html = await fetchDirectoryListingHtml(dirUrl, { signal })
+  throwIfAborted(signal)
   const seen = new Set()
   /** @type {Array<{ displayName: string, href: string, isActive: boolean }>} */
   const out = []
@@ -213,6 +228,7 @@ export async function scanSiblingFiles(currentFileUrl) {
   if (html) {
     const entries = collectEntriesFromChromeAddRow(html, dirUrl)
     for (const e of entries) {
+      throwIfAborted(signal)
       if (e.isDir) continue
       pushIfMarkdown(e.href)
     }

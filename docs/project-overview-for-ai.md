@@ -14,7 +14,7 @@ Current implemented core:
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Left sidebar TOC with click-to-scroll + active heading tracking
-- **Files explorer** (sidebar **Files** tab): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list
+- **Files explorer** (sidebar **Files** tab): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`.
 - **Internal Markdown link navigation**: clicking a relative/absolute link to another `.md` file opens it in the same viewer without full page reload. Link resolver (`src/viewer/navigation/link-resolver.js`) classifies links into kinds (same-document-hash, self-link, markdown-file, workspace-virtual-file, external, asset, unsupported). Click interception in `article-interactions.js` respects modifier keys, `target`, `download` attrs. Browser Back/Forward via `popstate`/`hashchange` coordination. Sidebar active-file sync on cross-folder navigation. Supports spaces, Unicode, encoded hrefs, parent folder traversal, and virtual workspace files. See `docs/internal-hyperlink-navigation-solution.md`.
 - **Inline Markdown editor** (Phase 11.0–11.3): local `file:` Markdown pages can enter edit mode from floating actions. The React shell mounts a lazy-loaded CodeMirror 6 editor with split preview/focus modes, independent sidebar toggle, debounced live preview through the existing sanitized render pipeline, editor → preview scroll sync, TOC click → editor source line navigation, dirty state, Ctrl/Cmd+S, before-unload/exit confirmation, status bar, split resize, search/replace, and File System Access API save with download fallback. Editor preferences live in popup settings and persist through `chrome.storage`.
 - Loading skeleton UX: reusable `SkeletonLine` / `SkeletonBlock` primitives used by viewer sidebar (Outline + Files) and popup settings loading state
@@ -63,7 +63,7 @@ Generated output:
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
 7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
-8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge, **internal Markdown link interception** via `resolveLink` + `navigateToFile` callbacks), runs **`await renderDocument()`** (async), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree.
+8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge, **internal Markdown link interception** via `resolveLink` + `navigateToFile` callbacks), runs **`await renderDocument()`** (async), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree, with non-React explorer scan/navigation/workspace workflows owned by `src/viewer/explorer/`.
 9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
@@ -173,6 +173,8 @@ src/
         explorer/
           explorerReducer.js
           createExplorerViewActions.js
+          useExplorerActions.js
+          useExplorerBridgeRegistration.js
       components/
         DirtySync.jsx
         EditorPanel.jsx
@@ -207,13 +209,20 @@ src/
         link-resolver.test.js
     explorer/
       explorer-files-context.js
+      explorer-navigation.js
+      explorer-scan-session.js
       explorer-state.js
       explorer-tree-utils.js
+      explorer-workspace-session.js
       folder-scanner.js
       gitignore-matcher.js
       sibling-scanner.js
       url-utils.js
       workspace-picker.js
+      __tests__/
+        explorer-navigation.test.js
+        explorer-scan-session.test.js
+        sibling-scanner.test.js
     actions/
       document-actions.js
     core/
@@ -329,7 +338,7 @@ public/
   - **`ViewerApp.jsx`**: `ToastProvider`, **`SidebarTabProvider`** (active Outline/Files tab only), **`ViewerShell`** + floating actions slot.
   - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present (`shared/constants/tooltip.js` for delays).
   - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`** and `tocReady` gating with skeleton state), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
-  - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (orchestrates view state; **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers); pure scanners/pickers remain under `viewer/explorer/*.js`.
+  - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (React composition hook for explorer state/actions); **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers; **`useExplorerActions.js`** and **`useExplorerBridgeRegistration.js`** for React-only adapters. Non-React navigation, scan sessions, workspace open/restore/exit, and scanners live under `viewer/explorer/*.js`.
 
 - `src/shared/react/Skeleton.jsx`
   - Shared loading primitives (`SkeletonLine`, `SkeletonBlock`) used by viewer and popup.
@@ -347,7 +356,16 @@ public/
   - Pure `file:` / virtual URL helpers: `isWorkspaceVirtualHref`, `getParentDirectoryUrl`, `normalizeDirectoryUrl`, `normalizeFileUrlForCompare`, `pathInputToFileDirectoryUrl`, `isMarkdownFileHref`, `MARKDOWN_EXT` (alias of `MARKDOWN_PATHNAME_EXT_RE` from `shared/markdown-detect.js`); re-exports `MDP_WS_FILE` / `MDP_WS_DIR` from `shared/constants/explorer.js`.
 
 - `src/viewer/explorer/sibling-scanner.js`
-  - Directory listing fetch + parsing: `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (Chrome `addRow()` HTML), `scanSiblingFiles`, `resolveListingHrefToFileUrl`, `posixPathRelativeToFileRoot`.
+  - Directory listing fetch + parsing: `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (Chrome `addRow()` HTML), `scanSiblingFiles`, `resolveListingHrefToFileUrl`, `posixPathRelativeToFileRoot`; accepts `AbortSignal` for sibling scan cancellation.
+
+- `src/viewer/explorer/explorer-scan-session.js`
+  - AbortController ownership for explorer scans plus sibling scan runner orchestration and fallback behavior.
+
+- `src/viewer/explorer/explorer-navigation.js`
+  - Internal file navigation workflow helpers: same-file comparison, file fetch/render handoff, history/hash/title/focus updates, tree reveal decisions, and sibling-tree reuse decisions.
+
+- `src/viewer/explorer/explorer-workspace-session.js`
+  - Workspace open/restore/exit workflows for file-listing roots, File System Access directory handles, and `webkitdirectory` virtual files.
 
 - `src/viewer/explorer/workspace-picker.js`
   - `showDirectoryPicker` scan (`scanWorkspaceFromDirectoryHandle`), `webkitdirectory` + optional `File.path` → `file:` root (`tryFileDirectoryUrlFromWebkitFiles`), else `scanWorkspaceFromWebkitFileList` (virtual `mdp-ws-*` hrefs + in-tab `File` / handle readers wired from **`useExplorer`**).
@@ -493,14 +511,14 @@ Use this audit as the baseline for optimization tasks.
   - `src/plugins/plugin-manager.js`, individual plugins under `src/plugins/core/`, and `renderer.js` / `app.js` (`copyCodeWithToast` from `article-interactions.js`) for `afterRender` DOM passes.
 
 - **Files explorer / workspace**:
-  - `src/viewer/react/hooks/useExplorer.js` + `react/components/explorer/*` + `folder-scanner.js` / `sibling-scanner.js` / `url-utils.js` / `workspace-picker.js` / `explorer-state.js`, `FETCH_FILE_AS_TEXT` in `message-router.js` + offscreen fetch; requires **Allow access to file URLs** for `file:` reads.
+  - `src/viewer/react/hooks/useExplorer.js` + `react/hooks/explorer/*` + `react/components/explorer/*` + `viewer/explorer/explorer-navigation.js` / `explorer-scan-session.js` / `explorer-workspace-session.js` / `folder-scanner.js` / `sibling-scanner.js` / `url-utils.js` / `workspace-picker.js` / `explorer-state.js`, `FETCH_FILE_AS_TEXT` in `message-router.js` + offscreen fetch; requires **Allow access to file URLs** for `file:` reads.
 
 - **Internal Markdown link navigation**:
   - Link resolver: `src/viewer/navigation/link-resolver.js` (pure function, unit tested).
   - Click interception: `src/viewer/article-interactions.js` (`handleInternalLinkClick`, `popstate` handler, `hashchange` coordination).
   - Bridge wiring: `src/viewer/app.js` passes `resolveLink` + `navigateToFile` callbacks into `createArticleInteractions`.
   - Markdown engine fix: `src/viewer/core/markdown-engine.js` (`link_open` rule only sets `target="_blank"` on external links).
-  - Sidebar sync: `src/viewer/react/hooks/useExplorer.js` (`navigateToFile` updates active file, triggers sibling re-scan when crossing folder boundaries).
+  - Sidebar sync: `src/viewer/explorer/explorer-navigation.js` (`navigateToFile` updates active file, reuses the current sibling tree inside the scanned root, and triggers sibling re-scan when crossing folder boundaries).
   - Design doc: `docs/internal-hyperlink-navigation-solution.md`.
 
 ## 10) Operational notes for contributors and AI agents

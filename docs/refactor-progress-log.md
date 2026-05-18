@@ -1,5 +1,36 @@
 # Refactor progress log
 
+## 2026-05-18 - Phase 2 split explorer orchestration
+
+Scope:
+
+- Kept `src/viewer/react/hooks/useExplorer.js` as the React composition hook and reduced it to 344 lines.
+- Moved non-React explorer workflows into focused modules:
+  - `src/viewer/explorer/explorer-navigation.js`
+  - `src/viewer/explorer/explorer-scan-session.js`
+  - `src/viewer/explorer/explorer-workspace-session.js`
+- Moved React-only adapters into:
+  - `src/viewer/react/hooks/explorer/useExplorerBridgeRegistration.js`
+  - `src/viewer/react/hooks/explorer/useExplorerActions.js`
+- Added AbortController-backed sibling scan sessions. Sibling scans now abort on teardown, workspace open/mode switch, and explicit progress cancellation.
+- Preserved `explorerBridge.navigateToFile` and `explorerBridge.virtualFileExists` assignment/cleanup contracts.
+- Added focused tests for scan cancellation, sibling cancellation, and navigation/workspace document-validity decisions.
+
+Verification:
+
+- `nvm use`
+  - Result: passed with Node `20.19.5`.
+- `npm test`
+  - Result: passed.
+  - 12 test files, 93 tests passed.
+- `npm run build`
+  - Result: passed.
+  - Notable warning: Vite reports some chunks larger than 500 kB after minification.
+- `npm run size:report`
+  - Result: passed.
+  - `dist`: 8.8M
+  - `dist/assets/*.js` total: 7.6M
+
 ## 2026-05-16 - Phase 1 split `MarkdownViewerApp`
 
 Scope:

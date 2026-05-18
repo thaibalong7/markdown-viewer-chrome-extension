@@ -25,6 +25,7 @@ export function createRenderController({
   let smoothInitialHashScroll = false
   let renderToken = 0
   let lastSuccessfulRenderMarkdown = ''
+  const renderContextCache = new Map()
   const runtimeStyleElements = new Map()
 
   function injectViewerStyles(payload = {}) {
@@ -81,7 +82,8 @@ export function createRenderController({
     setArticleBusy(true)
     try {
       const result = await renderDocument(getMarkdown(), getSettings(), {
-        injectViewerStyles
+        injectViewerStyles,
+        renderContextCache
       })
 
       if (currentRenderToken !== renderToken) return null
@@ -121,6 +123,7 @@ export function createRenderController({
   }
 
   function destroy() {
+    renderContextCache.clear()
     runtimeStyleElements.clear()
   }
 

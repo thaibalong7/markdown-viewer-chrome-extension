@@ -59,11 +59,16 @@ Scope:
   - nested parentheses.
   - external and unsafe absolute link behavior.
 - Added `src/viewer/core/create-render-context.js` to centralize plugin manager creation, markdown engine creation, source-line mapping, and render-affecting settings hash.
-- Kept render context cache disabled. The new settings hash prepares a future cache key, but no engine/plugin manager reuse is enabled until invalidation behavior is covered more broadly.
+- Added render context reuse inside each `renderController` instance:
+  - Reuses plugin manager + markdown engine when effective plugin settings and reader preset are unchanged.
+  - Invalidates the single-entry cache when plugin settings or reader preset changes.
+  - Clears cache on controller destroy.
+  - Does not cache rendered HTML before or after `sanitizeHtml()`.
 - Updated `renderDocument()` to use the render context while preserving the markdown -> safe HTML boundary: plugin hooks + markdown render + Shiki + `sanitizeHtml()`.
 - Added article busy/progress state in `src/viewer/app/renderController.js` during normal async renders, reusing the existing `aria-busy` article styling without moving rendered article DOM into React.
 - Added `.cursor/rules/87-render-pipeline-refactor.mdc` for render pipeline guardrails.
 - Updated architecture/performance docs for the new core ownership and partially addressed render pipeline performance issue.
+- Added focused tests for render settings hash, context cache reuse/invalidation, internal runtime context isolation, and `renderDocument()` metadata/no-HTML-cache behavior.
 
 Verification:
 
@@ -71,7 +76,7 @@ Verification:
   - Result: passed with Node `20.19.5`.
 - `npm test`
   - Result: passed.
-  - 16 test files, 110 tests passed.
+  - After Phase 4 follow-up: 21 test files, 127 tests passed.
 - `npm run build`
   - Result: passed.
   - Notable warning: Vite reports some chunks larger than 500 kB after minification.

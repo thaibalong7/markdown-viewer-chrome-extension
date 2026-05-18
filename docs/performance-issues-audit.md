@@ -26,7 +26,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 | Mức | # | Tóm tắt | Vị trí chính |
 |-----|---|---------|--------------|
 | HIGH | 7 | DOMPurify toàn bộ HTML | `renderer.js` |
-| HIGH | 8 | Pipeline tuần tự, context structure có nhưng chưa cache/reuse | `renderController.js`, `renderer.js`, `create-render-context.js` |
+| HIGH | 8 | Pipeline tuần tự; context reuse added, full parse/sanitize remains | `renderController.js`, `renderer.js`, `create-render-context.js` |
 | HIGH | 11 | Folder scan tuần tự + `.gitignore` | `folder-scanner.js` |
 | MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `settings-broadcast-service.js` |
 | MEDIUM-HIGH | 18 | Workspace picker multi-pass | `workspace-picker.js` |
@@ -110,17 +110,18 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #8 [PARTIALLY-ADDRESSED] Render pipeline tuần tự trên main thread, loading state, tạo engine mới mỗi lần
+## Issue #8 [PARTIALLY-ADDRESSED] Render pipeline tuần tự trên main thread, loading state, context reuse
 
 - **Vị trí cập nhật:** `src/viewer/app/renderController.js`, `src/viewer/core/renderer.js`, `src/viewer/core/create-render-context.js`
 - **Hiện trạng:**
   - `renderDocument()` vẫn chạy toàn bộ pipeline (render context → markdown parse → plugin postprocess → Shiki → sanitize) **tuần tự trên main thread**.
   - `renderController.render()` đã bật/tắt `aria-busy` trên article trong lúc render để dùng progress styling hiện có, rồi mới `renderIntoElement()` với HTML đã sanitize và chạy `afterRender` + TOC rebuild.
-  - `create-render-context.js` đã gom tạo `pluginManager`, `markdownEngine`, source-line mapping và render-affecting settings hash để chuẩn bị reuse/cache sau này.
-  - Chưa bật cache/reuse engine/plugin manager vì cần invalidation rõ theo plugin/parser/theme-affecting settings và test rộng hơn.
+  - `create-render-context.js` đã gom tạo `pluginManager`, `markdownEngine`, source-line mapping và render-affecting settings hash.
+  - `renderController` hiện giữ cache một-entry theo effective plugin settings + reader preset, reuse plugin manager/markdown engine khi hash không đổi, invalidate khi plugin/theme đổi, và clear khi destroy.
+  - Không cache rendered HTML trước hoặc sau `sanitizeHtml()`.
 - **Tác động còn lại:** Với file 1MB+, main thread vẫn có thể bị block vài giây dù đã có article busy/progress feedback.
 - **Khuyến nghị fix:**
-  - **Perf:** Reuse engine + plugin manager (keyed by plugin settings hash). Chỉ tạo lại khi enabled plugins thay đổi.
+  - **Perf:** Cache pre-Shiki or rendered fragments only after clear sanitize-boundary tests and plugin invalidation coverage.
   - **Stretch:** Web Worker cho markdown-it parse (khó với DOM plugins) hoặc progressive/chunked render.
 
 ---

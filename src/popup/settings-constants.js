@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS } from '../settings/index.js'
+import { DEFAULT_SETTINGS } from '../settings/default-settings.js'
 
 export const THEME_LABELS = {
   light: 'Light',

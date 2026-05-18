@@ -28,7 +28,7 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 | HIGH | 7 | DOMPurify toàn bộ HTML | `renderer.js` |
 | HIGH | 8 | Pipeline tuần tự, context structure có nhưng chưa cache/reuse | `renderController.js`, `renderer.js`, `create-render-context.js` |
 | HIGH | 11 | Folder scan tuần tự + `.gitignore` | `folder-scanner.js` |
-| MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `message-router.js` |
+| MEDIUM-HIGH | 12 | Broadcast settings tới mọi tab | `settings-broadcast-service.js` |
 | MEDIUM-HIGH | 18 | Workspace picker multi-pass | `workspace-picker.js` |
 | MEDIUM-HIGH | 19 | Mermaid: còn render tuần tự từng block khi vào viewport | `mermaid.plugin.js` |
 | MEDIUM | 45–48 | Toast context; explorer mount sớm; `expandedMap` clone; timers copy | `ToastContext.jsx`, `FilesPanel.jsx` / `useExplorer.js`, `explorerReducer.js`, `article-interactions.js` |
@@ -156,10 +156,11 @@ Chỉ liệt kê issue **còn mở** (chưa RESOLVED). Thứ tự: CRITICAL → 
 
 ---
 
-## Issue #12 [MEDIUM-HIGH] Background `notifySettingsUpdated` broadcast tới mọi tab
+## Issue #12 [MEDIUM-HIGH] Background settings broadcast tới mọi tab
 
-- **Vị trí:** `src/background/message-router.js` (dòng 7–21)
+- **Vị trí cập nhật 2026-05-18:** `src/background/settings-broadcast-service.js`
 - **Hiện trạng:** Mỗi khi save/reset settings, `chrome.tabs.query({})` rồi `sendMessage` **tới mọi tab** đang mở.
+- **Refactor đã làm:** Broadcast đã được tách khỏi `message-router.js` để router chỉ còn gọi service. Hành vi gửi tới mọi tab được giữ nguyên có chủ đích để không làm mất runtime update cho content script trong Phase 5.
 - **Tác động:** Với nhiều tab (20+), mỗi lần đổi settings gây spike messaging. Các tab không phải markdown nhận message không cần thiết.
 - **Khuyến nghị fix:**
   - Restrict `tabs.query` tới `url` patterns liên quan (e.g. `file://**/*.md`).

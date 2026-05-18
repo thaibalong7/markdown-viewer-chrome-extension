@@ -12,20 +12,20 @@ alwaysApply: false
 
 # Settings (storage + authoring)
 
-Cross-cut with `30-mv3-messaging-architecture.mdc`. End-to-end flow: **defaults → merge in `src/settings/index.js` → `GET_SETTINGS` / `SAVE_SETTINGS` / `RESET_SETTINGS` → popup/options/content via `sendMessage()`**; background broadcasts **`SETTINGS_UPDATED`** after save so the content script can call `app.updateSettings()` or teardown.
+Cross-cut with `30-mv3-messaging-architecture.mdc` and `88-settings-messaging-refactor.mdc`. End-to-end flow: **defaults in `src/settings/default-settings.js` → merge/storage in `src/settings/settings-service.js` → `GET_SETTINGS` / `SAVE_SETTINGS` / `RESET_SETTINGS` → popup/options/content via `sendMessage()`**; background broadcasts **`SETTINGS_UPDATED`** after save so the content script can call `app.updateSettings()` or teardown.
 
 ## Storage and schema
 
-- Keep settings ownership centralized in **`src/settings/index.js`** (`settingsService`: load/merge/save/reset). Storage key is inline (`STORAGE_KEYS.SETTINGS`, currently `mdViewer.settings`).
+- Keep settings storage ownership centralized in **`src/settings/settings-service.js`** (`settingsService`: load/merge/save/reset). Keep `src/settings/index.js` as the compatibility export surface. Storage key is `STORAGE_KEYS.SETTINGS`, currently `mdViewer.settings`.
 - Preserve default-safe loading with `deepMerge(DEFAULT_SETTINGS, raw)` so new keys get sane defaults.
-- If schema changes incompatibly, bump `settings.version` in `DEFAULT_SETTINGS` and add an explicit migration in `settings/index.js` (do not rely on merge alone).
+- If schema changes incompatibly, bump `settings.version` in `DEFAULT_SETTINGS` and add an explicit migration in `settings/settings-service.js` (do not rely on merge alone).
 - `popup` and `options` must use runtime messaging (`MESSAGE_TYPES` + `sendMessage` from `src/messaging/index.js`); **never** read/write `chrome.storage` directly from those pages.
 
 ## Adding or changing a setting
 
 ### Schema and defaults
 
-- Add or extend fields on **`DEFAULT_SETTINGS`** in `src/settings/index.js`. New nested objects should have complete default shapes so merge stays safe.
+- Add or extend fields on **`DEFAULT_SETTINGS`** in `src/settings/default-settings.js`. New nested objects should have complete default shapes so merge stays safe.
 
 ### Messaging
 

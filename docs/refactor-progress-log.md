@@ -1,5 +1,51 @@
 # Refactor progress log
 
+## 2026-05-18 - Phase 5 settings and messaging cleanup
+
+Scope:
+
+- Moved pure settings defaults from `src/settings/index.js` to `src/settings/default-settings.js`.
+- Moved storage ownership, `STORAGE_KEYS.SETTINGS`, default-safe `deepMerge`, save, and reset logic to `src/settings/settings-service.js`.
+- Kept `src/settings/index.js` as a compatibility export surface for existing settings imports.
+- Updated popup constants to import `DEFAULT_SETTINGS` from the pure defaults module.
+- Moved settings update broadcast from `src/background/message-router.js` to `src/background/settings-broadcast-service.js`.
+- Refactored `message-router.js` into a route table via `createMessageRouter(...)`, preserving message type strings and runtime response envelope handling in `service-worker.js`.
+- Kept settings broadcast behavior conservative: save/reset still sends `MESSAGE_TYPES.SETTINGS_UPDATED` to queried tabs and ignores tabs without content scripts.
+- Added `.cursor/rules/88-settings-messaging-refactor.mdc` and updated the settings storage rule for the new defaults/service split.
+- Updated architecture and performance docs to reflect new ownership; performance issue #12 remains open because broadcast targeting was not optimized in this phase.
+
+Tests added:
+
+- `src/settings/__tests__/default-settings.test.js`
+- `src/settings/__tests__/settings-service.test.js`
+- `src/background/__tests__/message-router.test.js`
+- `src/background/__tests__/settings-broadcast-service.test.js`
+
+Verification:
+
+- `nvm use`
+  - Result: passed with Node `20.19.5`.
+- `npm test`
+  - Result: passed.
+  - 20 test files, 119 tests passed.
+- `npm run build`
+  - Result: passed.
+  - Notable warning: Vite reports some chunks larger than 500 kB after minification.
+- `npm run size:report`
+  - Result: passed.
+  - `dist`: 8.8M
+  - `dist/assets/*.js` total: 7.7M
+
+Manual smoke focus for this phase:
+
+- Popup settings: change reader font size, theme, and content width.
+- Existing local `.md` viewer receives runtime `SETTINGS_UPDATED`.
+- Reset settings from popup/options.
+- Enable/disable extension viewer setting if available.
+- Toggle Mermaid/Math/Emoji/Footnote and reload/render a test file.
+- File history: record, open, and clear entries.
+- Background console stays clean when many tabs do not have the content script.
+
 ## 2026-05-18 - Phase 4 rendering pipeline cleanup
 
 Scope:

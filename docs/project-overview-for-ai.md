@@ -44,12 +44,12 @@ Generated output:
 
 ### 3.1 Layers
 
-- `background`: central runtime message handling and settings operations
+- `background`: central runtime message handling plus background-owned services for settings broadcast, file history, downloads, and offscreen file fetches
 - `content`: detect/extract/mount flow on web pages
 - `viewer`: **React** shell (floating document actions, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet). Browser-facing viewer commands live under `src/viewer/actions/`, shared React chrome primitives live under `src/viewer/react/components/common/`, and render pipeline setup lives under `src/viewer/core/`.
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
 - `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
-- `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
+- `settings`: pure defaults in `src/settings/default-settings.js`, storage key + deep-merge persistence in `src/settings/settings-service.js`, compatibility exports in `src/settings/index.js`
 - `popup` / `options`: UI entrypoints for reading/updating settings (popup is primary)
 - `messaging`: message constants and shared `sendMessage()` in `src/messaging/index.js`
 - `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `markdown-detect.js` (pathname extension + `looksLikeMarkdownText`), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/tooltip.js` (hover delays for chrome tooltips), reusable React UI primitives in `shared/react/` and shared style partials in `shared/styles/`
@@ -71,7 +71,8 @@ Generated output:
 - Request path:
   - UI/content -> `sendMessage()` -> background `onMessage` listener
 - Router:
-  - `src/background/message-router.js`
+  - `src/background/message-router.js` reads as a route table over service calls.
+  - `src/background/settings-broadcast-service.js` owns `SETTINGS_UPDATED` tab broadcast after save/reset.
 - Response envelope:
   - success: `{ ok: true, data }`
   - failure: `{ ok: false, error }`
@@ -93,6 +94,7 @@ src/
   background/
     service-worker.js
     message-router.js
+    settings-broadcast-service.js
     offscreen-fetch.js
   content/
     index.js
@@ -106,6 +108,8 @@ src/
     index.js
   settings/
     index.js
+    default-settings.js
+    settings-service.js
   theme/
     index.js
   shared/

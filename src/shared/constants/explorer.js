@@ -1,6 +1,6 @@
 /**
  * Explorer: virtual URL prefixes + **single source of truth** for scan limits.
- * `src/settings/index.js` reuses these for `DEFAULT_SETTINGS.explorer`; scanners use the same
+ * `src/settings/default-settings.js` reuses these for `DEFAULT_SETTINGS.explorer`; scanners use the same
  * values when `settings.explorer.*` is missing or non-finite after merge.
  */
 

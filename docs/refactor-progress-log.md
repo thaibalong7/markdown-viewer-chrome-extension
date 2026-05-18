@@ -1,5 +1,44 @@
 # Refactor progress log
 
+## 2026-05-18 - Phase 3 deduplicate action menus and button behavior
+
+Scope:
+
+- Added shared viewer UI primitives:
+  - `src/viewer/react/components/common/IconButton.jsx`
+  - `src/viewer/react/components/common/ActionMenu.jsx`
+- Added shared React hooks:
+  - `src/viewer/react/hooks/useDismissableLayer.js` for Shadow DOM-aware pointer/Escape dismissal.
+  - `src/viewer/react/hooks/useCopyFeedback.js` for temporary copied-state feedback.
+- Moved explorer file-row behavior into `src/viewer/actions/file-row-actions.js`:
+  - plain primary click detection.
+  - browser-openable file href checks.
+  - new-tab opening.
+  - copy file-row link behavior.
+- Promoted file row local icons into:
+  - `src/viewer/react/components/icons/MoreIcon.jsx`
+  - `src/viewer/react/components/icons/OpenNewTabIcon.jsx`
+- Refactored `FloatingActions.jsx`, `ExplorerHeader.jsx`, and `FileRow.jsx` to declare commands and menu items while preserving existing class names.
+- Added `.cursor/rules/86-viewer-action-menu-refactor.mdc` to document the new action-menu boundary.
+- Added focused tests for file-row action helpers and dismissable-layer helper behavior.
+
+Verification:
+
+- `nvm use`
+  - Direct result: failed in the non-interactive shell because `nvm` was not on PATH.
+  - Follow-up command: `source ~/.nvm/nvm.sh && nvm use`
+  - Result: passed with Node `20.19.5`.
+- `npm test`
+  - Result: passed.
+  - 14 test files, 100 tests passed.
+- `npm run build`
+  - Result: passed.
+  - Notable warning: Vite reports some chunks larger than 500 kB after minification.
+- `npm run size:report`
+  - Result: passed.
+  - `dist`: 8.8M
+  - `dist/assets/*.js` total: 7.7M
+
 ## 2026-05-18 - Phase 2 split explorer orchestration
 
 Scope:

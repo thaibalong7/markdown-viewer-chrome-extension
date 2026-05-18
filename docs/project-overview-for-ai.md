@@ -14,7 +14,7 @@ Current implemented core:
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Left sidebar TOC with click-to-scroll + active heading tracking
-- **Files explorer** (sidebar **Files** tab): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`.
+- **Files explorer** (sidebar **Files** tab): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`; file-row browser/open/copy behavior is owned by `src/viewer/actions/file-row-actions.js`.
 - **Internal Markdown link navigation**: clicking a relative/absolute link to another `.md` file opens it in the same viewer without full page reload. Link resolver (`src/viewer/navigation/link-resolver.js`) classifies links into kinds (same-document-hash, self-link, markdown-file, workspace-virtual-file, external, asset, unsupported). Click interception in `article-interactions.js` respects modifier keys, `target`, `download` attrs. Browser Back/Forward via `popstate`/`hashchange` coordination. Sidebar active-file sync on cross-folder navigation. Supports spaces, Unicode, encoded hrefs, parent folder traversal, and virtual workspace files. See `docs/internal-hyperlink-navigation-solution.md`.
 - **Inline Markdown editor** (Phase 11.0–11.3): local `file:` Markdown pages can enter edit mode from floating actions. The React shell mounts a lazy-loaded CodeMirror 6 editor with split preview/focus modes, independent sidebar toggle, debounced live preview through the existing sanitized render pipeline, editor → preview scroll sync, TOC click → editor source line navigation, dirty state, Ctrl/Cmd+S, before-unload/exit confirmation, status bar, split resize, search/replace, and File System Access API save with download fallback. Editor preferences live in popup settings and persist through `chrome.storage`.
 - Loading skeleton UX: reusable `SkeletonLine` / `SkeletonBlock` primitives used by viewer sidebar (Outline + Files) and popup settings loading state
@@ -46,7 +46,7 @@ Generated output:
 
 - `background`: central runtime message handling and settings operations
 - `content`: detect/extract/mount flow on web pages
-- `viewer`: **React** shell (floating document actions, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet)
+- `viewer`: **React** shell (floating document actions, sidebar, TOC, Files explorer, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet). Browser-facing viewer commands live under `src/viewer/actions/`, while shared React chrome primitives live under `src/viewer/react/components/common/`.
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
 - `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
 - `settings`: defaults, storage key, deep-merge persistence in `src/settings/index.js`
@@ -165,6 +165,8 @@ src/
         ToastContext.jsx
       hooks/
         useExplorer.js
+        useCopyFeedback.js
+        useDismissableLayer.js
         useEditorSplitResize.js
         useScrollSpy.js
         useSidebarResize.js
@@ -176,6 +178,9 @@ src/
           useExplorerActions.js
           useExplorerBridgeRegistration.js
       components/
+        common/
+          ActionMenu.jsx
+          IconButton.jsx
         DirtySync.jsx
         EditorPanel.jsx
         EditorSplitResizeHandle.jsx
@@ -190,9 +195,12 @@ src/
         Tooltip.jsx
         ViewerShell.jsx
         icons/
+          CopyLinkIcon.jsx
           EditIcon.jsx
           ExportIcon.jsx
           FocusIcon.jsx
+          MoreIcon.jsx
+          OpenNewTabIcon.jsx
           PrintIcon.jsx
           SaveIcon.jsx
           SidebarToggleIcon.jsx
@@ -225,6 +233,8 @@ src/
         sibling-scanner.test.js
     actions/
       document-actions.js
+      file-link-actions.js
+      file-row-actions.js
     core/
       markdown-engine.js
       renderer.js
@@ -337,6 +347,7 @@ public/
   - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, `setTocReady`, **`bumpChrome()`** (refresh floating-actions visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
   - **`ViewerApp.jsx`**: `ToastProvider`, **`SidebarTabProvider`** (active Outline/Files tab only), **`ViewerShell`** + floating actions slot.
   - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present (`shared/constants/tooltip.js` for delays).
+  - **Action chrome primitives**: `components/common/IconButton.jsx` and `ActionMenu.jsx` keep floating-action and explorer row button/menu markup consistent; `hooks/useDismissableLayer.js` owns Shadow DOM-safe outside-click/Escape dismissal; `hooks/useCopyFeedback.js` owns transient copied-state feedback.
   - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`** and `tocReady` gating with skeleton state), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
   - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (React composition hook for explorer state/actions); **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers; **`useExplorerActions.js`** and **`useExplorerBridgeRegistration.js`** for React-only adapters. Non-React navigation, scan sessions, workspace open/restore/exit, and scanners live under `viewer/explorer/*.js`.
 
@@ -407,6 +418,9 @@ public/
 
 - `src/viewer/actions/document-actions.js`
   - Print / export HTML / export Word helpers used by **`FloatingActions.jsx`**.
+
+- `src/viewer/actions/file-link-actions.js` / `file-row-actions.js`
+  - Current-file link building/copying plus explorer file-row click/open/copy helpers. Workspace virtual file hrefs stay copyable but are not browser-openable in a new tab.
 
 - `src/settings/index.js`
   - Single source of settings persistence logic

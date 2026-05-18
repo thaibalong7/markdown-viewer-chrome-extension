@@ -1,73 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { copyTextToClipboard } from '../../../../shared/clipboard.js'
-import { MDP_WS_FILE } from '../../../../shared/constants/explorer.js'
-import { buildCurrentFileLink } from '../../../actions/file-link-actions.js'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  copyFileRowLink,
+  isBrowserOpenableFileHref,
+  isPlainPrimaryClick,
+  openFileHrefInNewTab
+} from '../../../actions/file-row-actions.js'
 import { useToast } from '../../contexts/ToastContext.jsx'
+import { useDismissableLayer } from '../../hooks/useDismissableLayer.js'
+import { ActionMenu } from '../common/ActionMenu.jsx'
 import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
-
-function isPlainPrimaryClick(event) {
-  return (
-    event.button === 0 &&
-    !event.altKey &&
-    !event.ctrlKey &&
-    !event.metaKey &&
-    !event.shiftKey
-  )
-}
-
-function isBrowserOpenableFileHref(href) {
-  return Boolean(href && !String(href).startsWith(MDP_WS_FILE))
-}
-
-function openFileHrefInNewTab(href) {
-  if (!isBrowserOpenableFileHref(href)) return false
-  window.open(href, '_blank', 'noopener')
-  return true
-}
-
-function MoreIcon({ className = '' }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-      className={className}
-    >
-      <circle cx="12" cy="12" r="1" />
-      <circle cx="19" cy="12" r="1" />
-      <circle cx="5" cy="12" r="1" />
-    </svg>
-  )
-}
-
-function OpenNewTabIcon({ className = '' }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-      className={className}
-    >
-      <path d="M15 3h6v6" />
-      <path d="M10 14 21 3" />
-      <path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5" />
-    </svg>
-  )
-}
+import { MoreIcon } from '../icons/MoreIcon.jsx'
+import { OpenNewTabIcon } from '../icons/OpenNewTabIcon.jsx'
 
 export function FileRow({ file, depth, isActive, onPick, autoScrollActive = true, rowStyle }) {
   const linkRef = useRef(null)
@@ -87,23 +30,15 @@ export function FileRow({ file, depth, isActive, onPick, autoScrollActive = true
     }
   }, [autoScrollActive, isActive])
 
-  useEffect(() => {
-    if (!menuOpen) return undefined
-    const eventTarget = menuRef.current?.getRootNode?.() || document
-    const onPointerDown = (event) => {
-      if (menuRef.current?.contains(event.target)) return
-      setMenuOpen(false)
-    }
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') setMenuOpen(false)
-    }
-    eventTarget.addEventListener('pointerdown', onPointerDown, true)
-    eventTarget.addEventListener('keydown', onKeyDown, true)
-    return () => {
-      eventTarget.removeEventListener('pointerdown', onPointerDown, true)
-      eventTarget.removeEventListener('keydown', onKeyDown, true)
-    }
-  }, [menuOpen])
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false)
+  }, [])
+
+  useDismissableLayer({
+    open: menuOpen,
+    layerRef: menuRef,
+    onDismiss: closeMenu
+  })
 
   const onFileClick = (event) => {
     if (!isPlainPrimaryClick(event)) {
@@ -135,7 +70,7 @@ export function FileRow({ file, depth, isActive, onPick, autoScrollActive = true
   const onCopyLink = () => {
     void (async () => {
       try {
-        await copyTextToClipboard(buildCurrentFileLink(href))
+        await copyFileRowLink(href)
         setMenuOpen(false)
         showToast?.('Copied file link')
       } catch {
@@ -168,39 +103,33 @@ export function FileRow({ file, depth, isActive, onPick, autoScrollActive = true
         </span>
         <span className="mdp-explorer__node-label">{file.displayName}</span>
       </a>
-      <div className="mdp-explorer__row-actions" ref={menuRef}>
-        <button
-          type="button"
-          className={`mdp-explorer__row-action-btn${menuOpen ? ' is-open' : ''}`}
-          aria-label={`More actions for ${file.displayName}`}
-          aria-haspopup="menu"
-          aria-expanded={menuOpen ? 'true' : 'false'}
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <MoreIcon className="mdp-explorer__row-action-icon" />
-        </button>
-        <div className="mdp-explorer__row-menu" role="menu" hidden={!menuOpen}>
-          <button
-            type="button"
-            className="mdp-explorer__row-menu-item"
-            role="menuitem"
-            disabled={!canOpenInNewTab}
-            onClick={onOpenNewTab}
-          >
-            <OpenNewTabIcon className="mdp-explorer__row-menu-icon" />
-            <span>Open in new tab</span>
-          </button>
-          <button
-            type="button"
-            className="mdp-explorer__row-menu-item"
-            role="menuitem"
-            onClick={onCopyLink}
-          >
-            <CopyLinkIcon className="mdp-explorer__row-menu-icon" />
-            <span>Copy link</span>
-          </button>
-        </div>
-      </div>
+      <ActionMenu
+        ref={menuRef}
+        open={menuOpen}
+        className="mdp-explorer__row-actions"
+        triggerClassName="mdp-explorer__row-action-btn"
+        triggerOpenClassName="is-open"
+        triggerIcon={<MoreIcon className="mdp-explorer__row-action-icon" />}
+        triggerLabel={`More actions for ${file.displayName}`}
+        menuClassName="mdp-explorer__row-menu"
+        itemClassName="mdp-explorer__row-menu-item"
+        onToggle={() => setMenuOpen((open) => !open)}
+        items={[
+          {
+            key: 'open-new-tab',
+            label: 'Open in new tab',
+            disabled: !canOpenInNewTab,
+            icon: <OpenNewTabIcon className="mdp-explorer__row-menu-icon" />,
+            onClick: onOpenNewTab
+          },
+          {
+            key: 'copy-link',
+            label: 'Copy link',
+            icon: <CopyLinkIcon className="mdp-explorer__row-menu-icon" />,
+            onClick: onCopyLink
+          }
+        ]}
+      />
     </li>
   )
 }

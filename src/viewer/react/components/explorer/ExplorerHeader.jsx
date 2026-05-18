@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { COPY_BUTTON_FEEDBACK_MS } from '../../../../shared/constants/viewer.js'
+import React from 'react'
 import { explorerModeBadgeLabel } from '../../../explorer/explorer-files-context.js'
 import { copyCurrentFileLink } from '../../../actions/file-link-actions.js'
 import { useToast } from '../../contexts/ToastContext.jsx'
+import { useCopyFeedback } from '../../hooks/useCopyFeedback.js'
+import { IconButton } from '../common/IconButton.jsx'
 import { Tooltip } from '../Tooltip.jsx'
 import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
 
@@ -19,31 +20,9 @@ export function ExplorerHeader({
   onExitWorkspace
 }) {
   const { showToast } = useToast()
-  const copyFeedbackTimerRef = useRef(0)
-  const [copyLinkCopied, setCopyLinkCopied] = useState(false)
+  const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
   const modeBadge = filesContext?.modeBadge || 'folder'
   const canCopyCurrentFile = Boolean(String(filesContext?.currentFileUrl || '').trim())
-
-  const flashCopyLinkCopied = () => {
-    if (copyFeedbackTimerRef.current) {
-      window.clearTimeout(copyFeedbackTimerRef.current)
-      copyFeedbackTimerRef.current = 0
-    }
-    setCopyLinkCopied(true)
-    copyFeedbackTimerRef.current = window.setTimeout(() => {
-      copyFeedbackTimerRef.current = 0
-      setCopyLinkCopied(false)
-    }, COPY_BUTTON_FEEDBACK_MS)
-  }
-
-  useEffect(
-    () => () => {
-      if (copyFeedbackTimerRef.current) {
-        window.clearTimeout(copyFeedbackTimerRef.current)
-      }
-    },
-    []
-  )
 
   const onCopyCurrentFile = () => {
     void (async () => {
@@ -72,17 +51,17 @@ export function ExplorerHeader({
             {explorerModeBadgeLabel(modeBadge)}
           </span>
           <div className="mdp-explorer__context-current">{filesContext?.currentLine || ''}</div>
-          <Tooltip content={copyLinkCopied ? 'Copied' : 'Copy open file link'}>
-            <button
-              type="button"
-              className={`mdp-explorer__copy-link-btn${copyLinkCopied ? ' is-copied' : ''}`}
-              aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
-              disabled={!canCopyCurrentFile}
-              onClick={onCopyCurrentFile}
-            >
-              <CopyLinkIcon className="mdp-explorer__copy-link-icon" />
-            </button>
-          </Tooltip>
+          <IconButton
+            tooltip={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+            className="mdp-explorer__copy-link-btn"
+            copiedClassName="is-copied"
+            copied={copyLinkCopied}
+            aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+            disabled={!canCopyCurrentFile}
+            onClick={onCopyCurrentFile}
+          >
+            <CopyLinkIcon className="mdp-explorer__copy-link-icon" />
+          </IconButton>
         </div>
         <div className="mdp-explorer__context-status">{filesContext?.statusLine || ''}</div>
         <div className="mdp-explorer__context-warning" hidden={!filesContext?.warningLine} role="note">

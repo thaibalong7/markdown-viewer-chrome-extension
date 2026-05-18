@@ -1,6 +1,7 @@
 import { MDP_TOOLBAR_HEIGHT_FALLBACK_PX, SCROLL_PADDING_PX } from '../../shared/constants/viewer.js'
 
 const RESIZE_DEBOUNCE_MS = 100
+const LAYOUT_REFRESH_DEBOUNCE_MS = 120
 
 export function createScrollSpy({
   scrollRoot,
@@ -17,6 +18,9 @@ export function createScrollSpy({
   let currentActiveId = null
   let rafId = 0
   let resizeTimer = 0
+  let layoutRefreshTimer = 0
+  let resizeObserver = null
+  let mutationObserver = null
   let measurements = []
 
   function computeHeadingTop(headingEl) {
@@ -75,14 +79,43 @@ export function createScrollSpy({
     if (resizeTimer) clearTimeout(resizeTimer)
     resizeTimer = setTimeout(() => {
       resizeTimer = 0
-      refreshMeasurements()
-      scheduleUpdate()
+      refreshMeasurementsAndUpdate()
     }, RESIZE_DEBOUNCE_MS)
   }
+
+  function refreshMeasurementsAndUpdate() {
+    refreshMeasurements()
+    scheduleUpdate()
+  }
+
+  function scheduleLayoutRefresh() {
+    if (layoutRefreshTimer) clearTimeout(layoutRefreshTimer)
+    layoutRefreshTimer = setTimeout(() => {
+      layoutRefreshTimer = 0
+      refreshMeasurementsAndUpdate()
+    }, LAYOUT_REFRESH_DEBOUNCE_MS)
+  }
+
+  const articleEl = headings[0]?.el?.closest?.('.mdp-markdown-body') || headings[0]?.el?.parentElement
 
   refreshMeasurements()
   scrollRoot.addEventListener('scroll', scheduleUpdate, { passive: true })
   window.addEventListener('resize', handleResize, { passive: true })
+
+  if (articleEl && typeof ResizeObserver === 'function') {
+    resizeObserver = new ResizeObserver(scheduleLayoutRefresh)
+    resizeObserver.observe(articleEl)
+  }
+
+  if (articleEl && typeof MutationObserver === 'function') {
+    mutationObserver = new MutationObserver(scheduleLayoutRefresh)
+    mutationObserver.observe(articleEl, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      characterData: true
+    })
+  }
 
   // Initial calculation.
   scheduleUpdate()
@@ -91,9 +124,11 @@ export function createScrollSpy({
     destroy() {
       scrollRoot.removeEventListener('scroll', scheduleUpdate)
       window.removeEventListener('resize', handleResize)
+      resizeObserver?.disconnect?.()
+      mutationObserver?.disconnect?.()
       if (rafId) cancelAnimationFrame(rafId)
       if (resizeTimer) clearTimeout(resizeTimer)
+      if (layoutRefreshTimer) clearTimeout(layoutRefreshTimer)
     }
   }
 }
-

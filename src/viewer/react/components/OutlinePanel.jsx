@@ -9,6 +9,11 @@ import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
 import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
 import { useEditorState } from '../contexts/EditorContext.jsx'
+import {
+  OUTLINE_AUTO_FOLLOW_PAUSE_MS,
+  OUTLINE_CONTENT_SCROLL_SUPPRESS_MS,
+  getOutlineRevealAction
+} from './outline-follow.js'
 
 function updateHash(id) {
   if (!id) return
@@ -25,6 +30,9 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
   const editorEditActive = Boolean(editorState?.enabled)
   const isFiles = activeSidebarTab === 'files'
   const tocScrollRef = useRef(null)
+  const userTocInteractionPausedUntilRef = useRef(0)
+  const contentSmoothScrollSuppressedUntilRef = useRef(0)
+  const pendingClickTargetIdRef = useRef(null)
   const outlineItems = useMemo(
     () => (tocItems || []).filter((item) => item?.id && item?.el),
     [tocItems]
@@ -57,10 +65,43 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
 
   useEffect(() => {
     if (activeIndex < 0) return
-    outlineVirtualizer.scrollToIndex(activeIndex, { align: 'nearest' })
-  }, [activeIndex, outlineVirtualizer])
+    const now = Date.now()
+    const pendingClickTargetId = pendingClickTargetIdRef.current
+
+    if (now < userTocInteractionPausedUntilRef.current) return
+    if (
+      now < contentSmoothScrollSuppressedUntilRef.current &&
+      resolvedActiveId !== pendingClickTargetId
+    ) {
+      return
+    }
+
+    if (resolvedActiveId === pendingClickTargetId) {
+      pendingClickTargetIdRef.current = null
+      contentSmoothScrollSuppressedUntilRef.current = 0
+    }
+
+    const scrollEl = tocScrollRef.current
+    if (!scrollEl) return
+
+    const activeRow = outlineVirtualizer.getVirtualItems()
+      .find((row) => row.index === activeIndex)
+    const action = getOutlineRevealAction({
+      activeIndex,
+      activeRow,
+      scrollTop: scrollEl.scrollTop,
+      viewportHeight: scrollEl.clientHeight
+    })
+
+    if (action === 'center') {
+      outlineVirtualizer.scrollToIndex(activeIndex, { align: 'center' })
+    }
+  }, [activeIndex, outlineVirtualizer, resolvedActiveId])
 
   const virtualRows = outlineVirtualizer.getVirtualItems()
+  const pauseAutoFollowForTocInteraction = () => {
+    userTocInteractionPausedUntilRef.current = Date.now() + OUTLINE_AUTO_FOLLOW_PAUSE_MS
+  }
 
   return (
     <div
@@ -76,6 +117,9 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
         aria-label="Table of contents"
         aria-busy={!tocReady}
         ref={tocScrollRef}
+        onWheel={pauseAutoFollowForTocInteraction}
+        onPointerDown={pauseAutoFollowForTocInteraction}
+        onKeyDown={pauseAutoFollowForTocInteraction}
       >
         {!tocReady ? (
           <SkeletonBlock
@@ -106,7 +150,11 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
                     onClick={(event) => {
                       event.preventDefault()
                       const toolbarHeight = getToolbarHeightInScrollRoot(scrollRoot)
+                      pendingClickTargetIdRef.current = item.id
+                      contentSmoothScrollSuppressedUntilRef.current =
+                        Date.now() + OUTLINE_CONTENT_SCROLL_SUPPRESS_MS
                       updateHash(item.id)
+                      outlineVirtualizer.scrollToIndex(virtualRow.index, { align: 'center' })
                       scrollToElementInViewer({
                         element: item.el,
                         scrollRoot,

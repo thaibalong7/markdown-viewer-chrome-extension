@@ -169,6 +169,11 @@ export function ExplorerPanel({ bridge }) {
     actions.onNavigate(href)
   }
 
+  const onToggleFolderFromExplorer = (href) => {
+    suppressNextAutoRevealRef.current = activeNormalized
+    actions.onToggleFolder(href)
+  }
+
   const fileVirtualItems = fileVirtualizer.getVirtualItems()
   const treeVirtualItems = treeVirtualizer.getVirtualItems()
 
@@ -249,7 +254,7 @@ export function ExplorerPanel({ bridge }) {
                 depth={row.depth}
                 expanded={row.expanded}
                 rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
-                onToggleFolder={actions.onToggleFolder}
+                onToggleFolder={onToggleFolderFromExplorer}
               />
             )
           }

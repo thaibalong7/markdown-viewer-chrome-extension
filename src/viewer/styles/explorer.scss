@@ -78,6 +78,13 @@
   gap: 8px;
 }
 
+.mdp-explorer__heading-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
 .mdp-explorer__heading {
   margin: 0;
   font-size: 13px;
@@ -88,6 +95,57 @@
 .mdp-explorer__meta {
   font-size: 11px;
   color: var(--mdp-muted);
+}
+
+.mdp-explorer__refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--mdp-link) 28%, var(--mdp-border));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--mdp-link) 10%, var(--mdp-panel-bg));
+  color: var(--mdp-text);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease,
+    opacity 120ms ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--mdp-link) 55%, var(--mdp-border));
+    background: color-mix(in srgb, var(--mdp-link) 16%, var(--mdp-panel-bg));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.52;
+  }
+
+  &.is-refreshing .mdp-explorer__refresh-icon {
+    animation: mdp-explorer-refresh-spin 900ms linear infinite;
+  }
+}
+
+.mdp-explorer__refresh-icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+@keyframes mdp-explorer-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .mdp-explorer__context {

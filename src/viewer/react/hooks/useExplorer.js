@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
+import { logger } from '../../../shared/logger.js'
 import { createExplorerViewActions } from './explorer/createExplorerViewActions.js'
 import { createInitialState, explorerReducer } from './explorer/explorerReducer.js'
 import { useExplorerActions } from './explorer/useExplorerActions.js'
@@ -28,7 +29,7 @@ import {
   createSiblingBackNavigationForUrl
 } from '../../explorer/explorer-navigation.js'
 import { createExplorerWorkspaceSession } from '../../explorer/explorer-workspace-session.js'
-import { normalizeDirectoryUrl } from '../../explorer/url-utils.js'
+import { isWorkspaceVirtualHref, normalizeDirectoryUrl } from '../../explorer/url-utils.js'
 
 export function getInitialExplorerFileUrl(bridge) {
   const bridgedUrl = bridge?.getCurrentFileUrl?.()
@@ -335,11 +336,49 @@ export function useExplorer({ bridge }) {
     workspaceSession
   ])
 
+  const refreshCurrentFileAndList = useCallback(async () => {
+    const currentFileUrl = currentFileUrlRef.current || ''
+    if (isWorkspaceVirtualHref(currentFileUrl)) {
+      bridge?.showToast?.('Refresh is unavailable for virtual workspace files')
+      return
+    }
+
+    const mode = explorerModeRef.current
+    const workspaceRootUrl = getWorkspaceRootUrl()
+    if (mode === 'workspace' && !workspaceRootUrl) {
+      bridge?.showToast?.('Refresh is unavailable for virtual workspaces')
+      return
+    }
+
+    safePatch({ isRefreshing: true })
+    try {
+      if (currentFileUrl.startsWith('file:')) {
+        await navigator.navigateToFile(currentFileUrl, {
+          replaceHistory: true,
+          forceReload: true
+        })
+      }
+
+      if (mode === 'workspace') {
+        await workspaceSession.openWorkspaceFolder(workspaceRootUrl, { restore: true })
+      } else {
+        await runSiblingScan(currentFileUrl)
+      }
+      bridge?.showToast?.('Refreshed file and list')
+    } catch (error) {
+      logger.warn('Failed to refresh current file and explorer list.', error)
+      bridge?.showToast?.('Could not refresh file and list')
+    } finally {
+      safePatch({ isRefreshing: false })
+    }
+  }, [bridge, navigator, runSiblingScan, safePatch, workspaceSession])
+
   const actions = useExplorerActions({
     safePatch,
     navigateToFileRef,
     pickAndOpenAnotherWorkspaceFolder: workspaceSession.pickAndOpenAnotherWorkspaceFolder,
     exitWorkspace: workspaceSession.exitWorkspace,
+    refreshCurrentFileAndList,
     backActionRef,
     workspaceScanSession,
     siblingScanSession,

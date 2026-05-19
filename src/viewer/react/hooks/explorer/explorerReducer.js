@@ -19,6 +19,7 @@ export function createInitialState() {
     showProgressCancel: false,
     showBack: false,
     backLabel: 'Back to original file',
+    isRefreshing: false,
     expandedMap: new Map(),
     filesContext: null
   }

@@ -5,6 +5,7 @@ export function useExplorerActions({
   navigateToFileRef,
   pickAndOpenAnotherWorkspaceFolder,
   exitWorkspace,
+  refreshCurrentFileAndList,
   backActionRef,
   workspaceScanSession,
   siblingScanSession,
@@ -21,6 +22,9 @@ export function useExplorerActions({
       },
       onExitWorkspace: () => {
         void exitWorkspace()
+      },
+      onRefresh: () => {
+        void refreshCurrentFileAndList()
       },
       onBack: () => {
         backActionRef.current?.()
@@ -39,6 +43,7 @@ export function useExplorerActions({
       exitWorkspace,
       navigateToFileRef,
       pickAndOpenAnotherWorkspaceFolder,
+      refreshCurrentFileAndList,
       safePatch,
       siblingScanSession,
       workspaceScanSession

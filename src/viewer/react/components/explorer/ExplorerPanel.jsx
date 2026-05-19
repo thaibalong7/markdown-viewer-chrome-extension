@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
+import { isWorkspaceVirtualHref, normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
+import { getWorkspaceRootUrl } from '../../../explorer/explorer-state.js'
 import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
 import { useExplorer } from '../../hooks/useExplorer.js'
 import { ExplorerHeader } from './ExplorerHeader.jsx'
@@ -21,6 +22,19 @@ export function ExplorerPanel({ bridge }) {
   const revealTimersRef = useRef({ afterScrollRaf: 0, raf: 0, timeouts: [] })
   const [scrollElement, setScrollElement] = useState(null)
   const activeNormalized = normalizeFileUrlForCompare(state.activeFileUrl || '')
+  const refreshDisabled =
+    !state.currentFileUrl ||
+    isWorkspaceVirtualHref(state.currentFileUrl) ||
+    (state.explorerMode === 'workspace' && !getWorkspaceRootUrl()) ||
+    state.view === 'loading' ||
+    state.view === 'progress'
+  const refreshTooltip = (() => {
+    if (state.view === 'loading' || state.view === 'progress') return 'Refresh is available after scanning finishes'
+    if (!state.currentFileUrl) return 'Open a Markdown file before refreshing'
+    if (isWorkspaceVirtualHref(state.currentFileUrl)) return 'Refresh is unavailable for virtual workspace files'
+    if (state.explorerMode === 'workspace' && !getWorkspaceRootUrl()) return 'Refresh is unavailable for virtual workspaces'
+    return state.isRefreshing ? 'Refreshing file and list' : 'Refresh open file and file list'
+  })()
   const treeRows = useMemo(
     () => flattenVisibleTree(state.tree?.children || [], state.expandedMap),
     [state.tree, state.expandedMap]
@@ -168,7 +182,11 @@ export function ExplorerPanel({ bridge }) {
         actionsMode={state.actionsMode}
         showBack={state.showBack}
         backLabel={state.backLabel}
+        isRefreshing={state.isRefreshing}
+        refreshDisabled={refreshDisabled}
+        refreshTooltip={refreshTooltip}
         onBack={actions.onBack}
+        onRefresh={actions.onRefresh}
         onOpenAnotherFolder={actions.onOpenAnotherFolder}
         onExitWorkspace={actions.onExitWorkspace}
       />

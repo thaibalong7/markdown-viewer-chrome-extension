@@ -6,6 +6,7 @@ import { useCopyFeedback } from '../../hooks/useCopyFeedback.js'
 import { IconButton } from '../common/IconButton.jsx'
 import { Tooltip } from '../Tooltip.jsx'
 import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
+import { RefreshIcon } from '../icons/RefreshIcon.jsx'
 
 export function ExplorerHeader({
   filesContext,
@@ -15,7 +16,11 @@ export function ExplorerHeader({
   actionsMode,
   showBack,
   backLabel,
+  isRefreshing,
+  refreshDisabled,
+  refreshTooltip,
   onBack,
+  onRefresh,
   onOpenAnotherFolder,
   onExitWorkspace
 }) {
@@ -39,10 +44,21 @@ export function ExplorerHeader({
   return (
     <div className="mdp-explorer__header">
       <div className="mdp-explorer__heading-row">
-        <strong className="mdp-explorer__heading">Files</strong>
-        <span className="mdp-explorer__meta">
-          {summaryFileCount} {summaryFileCount === 1 ? 'file' : 'files'}
-        </span>
+        <div className="mdp-explorer__heading-main">
+          <strong className="mdp-explorer__heading">Files</strong>
+          <span className="mdp-explorer__meta">
+            {summaryFileCount} {summaryFileCount === 1 ? 'file' : 'files'}
+          </span>
+        </div>
+        <IconButton
+          tooltip={refreshTooltip}
+          className={`mdp-explorer__refresh-btn${isRefreshing ? ' is-refreshing' : ''}`}
+          aria-label={isRefreshing ? 'Refreshing open file and file list' : 'Refresh open file and file list'}
+          disabled={refreshDisabled || isRefreshing}
+          onClick={() => onRefresh?.()}
+        >
+          <RefreshIcon className="mdp-explorer__refresh-icon" />
+        </IconButton>
       </div>
 
       <div className="mdp-explorer__context" aria-label="Files location and status">

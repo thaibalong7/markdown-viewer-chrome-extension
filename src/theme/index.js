@@ -10,7 +10,19 @@ const LIGHT_THEME_COLORS = {
   link: '#0969da',
   tableBorder: '#d0d7de',
   tableHeaderBg: '#f6f8fa',
-  tableRowAltBg: '#f6f8fa'
+  tableRowAltBg: '#f6f8fa',
+  toastInfoBg: '#eff6ff',
+  toastInfoText: '#1d4ed8',
+  toastInfoBorder: '#bfdbfe',
+  toastSuccessBg: '#ecfdf5',
+  toastSuccessText: '#047857',
+  toastSuccessBorder: '#a7f3d0',
+  toastWarningBg: '#fffbeb',
+  toastWarningText: '#92400e',
+  toastWarningBorder: '#fde68a',
+  toastErrorBg: '#fef2f2',
+  toastErrorText: '#b91c1c',
+  toastErrorBorder: '#fecaca'
 }
 
 const DARK_THEME_COLORS = {
@@ -25,7 +37,19 @@ const DARK_THEME_COLORS = {
   link: '#2f81f7',
   tableBorder: '#30363d',
   tableHeaderBg: '#161b22',
-  tableRowAltBg: '#161b22'
+  tableRowAltBg: '#161b22',
+  toastInfoBg: '#0c2d6b',
+  toastInfoText: '#bfdbfe',
+  toastInfoBorder: '#1d4ed8',
+  toastSuccessBg: '#063f2c',
+  toastSuccessText: '#bbf7d0',
+  toastSuccessBorder: '#047857',
+  toastWarningBg: '#3b2a05',
+  toastWarningText: '#fde68a',
+  toastWarningBorder: '#b45309',
+  toastErrorBg: '#450a0a',
+  toastErrorText: '#fecaca',
+  toastErrorBorder: '#b91c1c'
 }
 
 export const BUILT_IN_THEMES = {
@@ -76,7 +100,19 @@ export function createStyleVars(settings = {}) {
     '--mdp-link': colors.link,
     '--mdp-table-border': colors.tableBorder || colors.border || '#d0d7de',
     '--mdp-table-header-bg': colors.tableHeaderBg || colors.panelBg || colors.background,
-    '--mdp-table-row-alt-bg': colors.tableRowAltBg || colors.background
+    '--mdp-table-row-alt-bg': colors.tableRowAltBg || colors.background,
+    '--mdp-toast-info-bg': colors.toastInfoBg || colors.panelBg || colors.background,
+    '--mdp-toast-info-text': colors.toastInfoText || colors.text,
+    '--mdp-toast-info-border': colors.toastInfoBorder || colors.border || '#d0d7de',
+    '--mdp-toast-success-bg': colors.toastSuccessBg || colors.panelBg || colors.background,
+    '--mdp-toast-success-text': colors.toastSuccessText || colors.text,
+    '--mdp-toast-success-border': colors.toastSuccessBorder || colors.border || '#d0d7de',
+    '--mdp-toast-warning-bg': colors.toastWarningBg || colors.panelBg || colors.background,
+    '--mdp-toast-warning-text': colors.toastWarningText || colors.text,
+    '--mdp-toast-warning-border': colors.toastWarningBorder || colors.border || '#d0d7de',
+    '--mdp-toast-error-bg': colors.toastErrorBg || colors.panelBg || colors.background,
+    '--mdp-toast-error-text': colors.toastErrorText || colors.text,
+    '--mdp-toast-error-border': colors.toastErrorBorder || colors.border || '#d0d7de'
   }
 }
 

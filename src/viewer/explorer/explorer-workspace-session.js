@@ -247,7 +247,7 @@ export function createExplorerWorkspaceSession(deps) {
       }
     } catch (error) {
       logger.warn('Open workspace folder failed.', error)
-      bridge?.showToast?.(error?.message || 'Could not open folder')
+      bridge?.showToast?.(error?.message || 'Could not open folder', { variant: 'error' })
     }
   }
 

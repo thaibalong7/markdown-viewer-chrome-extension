@@ -34,9 +34,9 @@ export function ExplorerHeader({
       try {
         await copyCurrentFileLink(filesContext?.currentFileUrl)
         flashCopyLinkCopied()
-        showToast?.('Copied file link')
+        showToast?.('Copied file link', { variant: 'success' })
       } catch {
-        showToast?.('Could not copy file link')
+        showToast?.('Could not copy file link', { variant: 'error' })
       }
     })()
   }

@@ -56,7 +56,7 @@ export class MarkdownViewerApp {
       render: (opts) => this.render(opts),
       getReactHandle: () => this._reactHandle,
       getCurrentFileUrl: () => this._currentFileUrl,
-      showToast: (message) => this.showToast(message),
+      showToast: (message, options) => this.showToast(message, options),
       applyReaderStyles: () => this.applyReaderStyles(),
       getArticleEl: () => this._articleEl,
       getSettings: () => this.settings
@@ -88,7 +88,7 @@ export class MarkdownViewerApp {
       setMarkdown: (md) => this._editorSession.setExternalMarkdown(md),
       setSmoothInitialHashScroll: (value) => this._renderController.setSmoothInitialHashScroll(value),
       render: (opts) => this.render(opts),
-      showToast: (message) => this.showToast(message),
+      showToast: (message, options) => this.showToast(message, options),
       getScrollRoot: () => this.getScrollRoot(),
       getArticleEl: () => this._articleEl,
       getCurrentFileUrl: () => this._currentFileUrl,
@@ -145,7 +145,7 @@ export class MarkdownViewerApp {
 
     this._articleInteractions = createArticleInteractions({
       getArticle: () => this._articleEl,
-      showToast: (message) => this.showToast(message),
+      showToast: (message, options) => this.showToast(message, options),
       getScrollRoot: () => this.getScrollRoot(),
       getCurrentFileUrl: () => this._currentFileUrl,
       navigateToFile: (fileUrl, opts) => explorerBridge.navigateToFile?.(fileUrl, opts),
@@ -210,8 +210,8 @@ export class MarkdownViewerApp {
     return this._renderController.render(opts)
   }
 
-  showToast(message) {
-    this._reactHandle?.showToast(message)
+  showToast(message, options) {
+    this._reactHandle?.showToast(message, options)
   }
 
   syncTocItems() {

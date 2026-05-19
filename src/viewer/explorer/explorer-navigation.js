@@ -172,7 +172,7 @@ export function createExplorerNavigator(deps) {
 
     const entry = refs.workspaceVirtualReadersRef.current?.get(fileUrl)
     if (!entry) {
-      bridge?.showToast?.('Linked file is no longer available')
+      bridge?.showToast?.('Linked file is no longer available', { variant: 'error' })
       return
     }
 
@@ -186,14 +186,14 @@ export function createExplorerNavigator(deps) {
         nextMarkdown = await file.text()
       }
       if (!nextMarkdown.trim()) {
-        bridge?.showToast?.('Linked file is empty')
+        bridge?.showToast?.('Linked file is empty', { variant: 'warning' })
         return
       }
 
       await renderNavigatedMarkdown(fileUrl, nextMarkdown, { hash })
     } catch (error) {
       logger.warn('Failed to navigate to workspace virtual file.', error)
-      bridge?.showToast?.('Could not read linked file')
+      bridge?.showToast?.('Could not read linked file', { variant: 'error' })
     } finally {
       bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
     }
@@ -225,19 +225,19 @@ export function createExplorerNavigator(deps) {
         const msg = /permission|denied|access/i.test(response?.error || '')
           ? 'Could not read linked file'
           : 'Could not open linked file'
-        bridge?.showToast?.(msg)
+        bridge?.showToast?.(msg, { variant: 'error' })
         return
       }
       const nextMarkdown = String(response.data?.text || '')
       if (!nextMarkdown.trim()) {
-        bridge?.showToast?.('Linked file is empty')
+        bridge?.showToast?.('Linked file is empty', { variant: 'warning' })
         return
       }
 
       await renderNavigatedMarkdown(fileUrl, nextMarkdown, { hash, replaceHistory })
     } catch (error) {
       logger.warn('Failed to navigate to sibling markdown file.', error)
-      bridge?.showToast?.('Could not open linked file')
+      bridge?.showToast?.('Could not open linked file', { variant: 'error' })
     } finally {
       bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
     }

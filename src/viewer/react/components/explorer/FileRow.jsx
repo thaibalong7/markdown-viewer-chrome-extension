@@ -36,7 +36,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
     if (!isPlainPrimaryClick(event)) {
       if (!canOpenInNewTab) {
         event.preventDefault()
-        showToast?.('This workspace file cannot open in a browser tab')
+        showToast?.('This workspace file cannot open in a browser tab', { variant: 'warning' })
       }
       return
     }
@@ -48,7 +48,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
     if (event.button !== 1) return
     if (canOpenInNewTab) return
     event.preventDefault()
-    showToast?.('This workspace file cannot open in a browser tab')
+    showToast?.('This workspace file cannot open in a browser tab', { variant: 'warning' })
   }
 
   const onOpenNewTab = () => {
@@ -56,7 +56,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
       setMenuOpen(false)
       return
     }
-    showToast?.('This workspace file cannot open in a browser tab')
+    showToast?.('This workspace file cannot open in a browser tab', { variant: 'warning' })
   }
 
   const onCopyLink = () => {
@@ -64,9 +64,9 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
       try {
         await copyFileRowLink(href)
         setMenuOpen(false)
-        showToast?.('Copied file link')
+        showToast?.('Copied file link', { variant: 'success' })
       } catch {
-        showToast?.('Could not copy file link')
+        showToast?.('Could not copy file link', { variant: 'error' })
       }
     })()
   }

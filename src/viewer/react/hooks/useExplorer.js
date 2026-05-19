@@ -233,7 +233,7 @@ export function useExplorer({ bridge }) {
   const failWorkspaceToSibling = useCallback(
     async (message) => {
       viewActions.clearExplorerBody()
-      if (message) bridge?.showToast?.(message)
+      if (message) bridge?.showToast?.(message, { variant: 'error' })
       clearWorkspaceVirtualReaders()
       clearWorkspaceRootUrl()
       setExplorerMode('sibling')
@@ -366,14 +366,14 @@ export function useExplorer({ bridge }) {
   const refreshCurrentFileAndList = useCallback(async () => {
     const currentFileUrl = currentFileUrlRef.current || ''
     if (isWorkspaceVirtualHref(currentFileUrl)) {
-      bridge?.showToast?.('Refresh is unavailable for virtual workspace files')
+      bridge?.showToast?.('Refresh is unavailable for virtual workspace files', { variant: 'warning' })
       return
     }
 
     const mode = explorerModeRef.current
     const workspaceRootUrl = getWorkspaceRootUrl()
     if (mode === 'workspace' && !workspaceRootUrl) {
-      bridge?.showToast?.('Refresh is unavailable for virtual workspaces')
+      bridge?.showToast?.('Refresh is unavailable for virtual workspaces', { variant: 'warning' })
       return
     }
 
@@ -400,10 +400,10 @@ export function useExplorer({ bridge }) {
           })
         )
       }
-      bridge?.showToast?.('Refreshed file and list')
+      bridge?.showToast?.('Refreshed file and list', { variant: 'success' })
     } catch (error) {
       logger.warn('Failed to refresh current file and explorer list.', error)
-      bridge?.showToast?.('Could not refresh file and list')
+      bridge?.showToast?.('Could not refresh file and list', { variant: 'error' })
     } finally {
       safePatch({ isRefreshing: false })
     }

@@ -13,7 +13,7 @@ const EDITOR_RENDER_DEBOUNCE_MS = 300
  * @param {(opts?: object) => Promise<unknown>} options.render
  * @param {() => object | null} options.getReactHandle
  * @param {() => string} options.getCurrentFileUrl
- * @param {(message: string) => void} options.showToast
+ * @param {(message: string, options?: object) => void} options.showToast
  * @param {() => void} options.applyReaderStyles
  * @param {() => (HTMLElement | null)} options.getArticleEl
  * @param {() => object} options.getSettings
@@ -118,18 +118,18 @@ export function createEditorSessionController({
 
       setDirty(false)
       if (result === 'fsa') {
-        showToast('Saved')
+        showToast('Saved', { variant: 'success' })
       } else {
-        showToast('Downloaded copy (save to original file via picker next time)')
+        showToast('Downloaded copy (save to original file via picker next time)', { variant: 'warning' })
       }
     } catch (error) {
       if (error instanceof FileMismatchError) {
-        showToast(error.message)
+        showToast(error.message, { variant: 'error' })
         return
       }
       const message = error instanceof Error ? error.message : String(error)
       logger.error('Failed to save markdown file.', error)
-      showToast(message ? `Save failed: ${message}` : 'Save failed.')
+      showToast(message ? `Save failed: ${message}` : 'Save failed.', { variant: 'error' })
     } finally {
       saveInFlight = false
       syncSaveStatus()

@@ -103,7 +103,7 @@ export function mountViewerReact(container, options = {}) {
     },
     showToast(message, options = {}) {
       if (typeof message !== 'string') return
-      showToastBridge?.(message, options?.durationMs)
+      showToastBridge?.(message, options)
     },
     unmount() { root.unmount(); }
   }

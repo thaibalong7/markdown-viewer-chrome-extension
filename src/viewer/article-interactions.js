@@ -12,7 +12,7 @@ import {
  * Hash navigation, in-article link handling, and clipboard UX for the markdown body.
  * @param {object} options
  * @param {() => (HTMLElement | null | undefined)} options.getArticle
- * @param {(message: string) => void} options.showToast
+ * @param {(message: string, options?: object) => void} options.showToast
  * @param {() => HTMLElement | null} options.getScrollRoot
  * @param {() => string} [options.getCurrentFileUrl]
  * @param {(fileUrl: string, opts?: object) => Promise<void>} [options.navigateToFile]
@@ -188,10 +188,10 @@ export function createArticleInteractions({
   async function copySectionLinkWithToast(url) {
     try {
       await copyTextToClipboard(url)
-      showToast('Copied link')
+      showToast('Copied link', { variant: 'success' })
     } catch (error) {
       logger.debug('Copy section link failed.', error)
-      showToast('Could not copy link')
+      showToast('Could not copy link', { variant: 'error' })
     }
   }
 
@@ -205,11 +205,11 @@ export function createArticleInteractions({
       if (triggerButton instanceof HTMLButtonElement) {
         flashCopyButtonCopied(triggerButton)
       } else {
-        showToast('Copied')
+        showToast('Copied', { variant: 'success' })
       }
     } catch (error) {
       logger.debug('Copy code failed.', error)
-      showToast('Could not copy')
+      showToast('Could not copy', { variant: 'error' })
     }
   }
 

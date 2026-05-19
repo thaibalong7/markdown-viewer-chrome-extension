@@ -73,15 +73,15 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
     void (async () => {
       const article = getArticleEl?.()
       if (!article) {
-        showToast?.('Nothing to export yet.')
+        showToast?.('Nothing to export yet.', { variant: 'warning' })
         return
       }
       const filename = buildExportFilename(getCurrentFileUrl?.(), ext)
       try {
         await exportFn(article, getSettings?.(), filename)
-        showToast?.(`Exported ${filename}`)
+        showToast?.(`Exported ${filename}`, { variant: 'success' })
       } catch {
-        showToast?.(errorMsg)
+        showToast?.(errorMsg, { variant: 'error' })
       }
     })()
   }
@@ -122,9 +122,9 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
       try {
         await copyCurrentFileLink(getCurrentFileUrl?.())
         flashCopyLinkCopied()
-        showToast?.('Copied file link')
+        showToast?.('Copied file link', { variant: 'success' })
       } catch {
-        showToast?.('Could not copy file link')
+        showToast?.('Could not copy file link', { variant: 'error' })
       }
     })()
   }

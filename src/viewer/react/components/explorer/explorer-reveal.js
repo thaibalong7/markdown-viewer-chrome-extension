@@ -1,6 +1,7 @@
 const DEFAULT_REVEAL_TOP_GAP = 32
+const DEFAULT_REVEAL_BOTTOM_GAP = 32
 const DEFAULT_VISIBILITY_TOP_GAP = 4
-const DEFAULT_BOTTOM_GAP = 4
+const DEFAULT_VISIBILITY_BOTTOM_GAP = 4
 
 function rectNumber(rect, key) {
   const value = Number(rect?.[key])
@@ -12,7 +13,7 @@ export function getExplorerRevealScrollDelta({
   scrollRect,
   stickyHeaderRect,
   topGap = DEFAULT_REVEAL_TOP_GAP,
-  bottomGap = DEFAULT_BOTTOM_GAP
+  bottomGap = DEFAULT_REVEAL_BOTTOM_GAP
 }) {
   const rowTop = rectNumber(rowRect, 'top')
   const rowBottom = rectNumber(rowRect, 'bottom')
@@ -48,7 +49,8 @@ export function getActiveExplorerRowRevealState({ panelEl, scrollEl }) {
     rowRect: elements.rowEl.getBoundingClientRect(),
     scrollRect: scrollEl.getBoundingClientRect(),
     stickyHeaderRect: elements.headerEl?.getBoundingClientRect?.(),
-    topGap: DEFAULT_VISIBILITY_TOP_GAP
+    topGap: DEFAULT_VISIBILITY_TOP_GAP,
+    bottomGap: DEFAULT_VISIBILITY_BOTTOM_GAP
   })
 
   return delta === 0 ? 'visible' : 'hidden'

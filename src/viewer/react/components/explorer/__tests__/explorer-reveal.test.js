@@ -31,6 +31,14 @@ describe('getExplorerRevealScrollDelta', () => {
     expect(getExplorerRevealScrollDelta({
       rowRect: { top: 378, bottom: 410 },
       scrollRect: { top: 0, bottom: 400 },
+      stickyHeaderRect: { bottom: 150 }
+    })).toBe(42)
+  })
+
+  it('allows callers to use a smaller bottom visibility gap', () => {
+    expect(getExplorerRevealScrollDelta({
+      rowRect: { top: 378, bottom: 410 },
+      scrollRect: { top: 0, bottom: 400 },
       stickyHeaderRect: { bottom: 150 },
       bottomGap: 4
     })).toBe(14)

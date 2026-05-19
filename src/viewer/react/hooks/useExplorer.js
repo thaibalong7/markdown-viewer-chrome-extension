@@ -410,7 +410,6 @@ export function useExplorer({ bridge }) {
   }, [bridge, navigator, runSiblingScan, safePatch, workspaceSession])
 
   const actions = useExplorerActions({
-    safePatch,
     navigateToFileRef,
     pickAndOpenAnotherWorkspaceFolder: workspaceSession.pickAndOpenAnotherWorkspaceFolder,
     exitWorkspace: workspaceSession.exitWorkspace,

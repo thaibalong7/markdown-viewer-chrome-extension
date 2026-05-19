@@ -17,7 +17,7 @@ export function buildCurrentFileLink(
 ) {
   const fileUrl = String(currentFileUrl || '').trim()
   if (!fileUrl) return ''
-  if (fileUrl.startsWith(MDP_WS_FILE)) return fileUrl
+  if (fileUrl.startsWith(MDP_WS_FILE)) return ''
 
   try {
     const currentBase = normalizeFileUrlForCompare(fileUrl)
@@ -30,6 +30,10 @@ export function buildCurrentFileLink(
   }
 
   return fileUrl
+}
+
+export function canCopyCurrentFileLink(currentFileUrl) {
+  return Boolean(buildCurrentFileLink(currentFileUrl))
 }
 
 /**

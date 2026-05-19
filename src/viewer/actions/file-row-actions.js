@@ -1,7 +1,9 @@
 import { copyTextToClipboard } from '../../shared/clipboard.js'
 import { MDP_WS_FILE } from '../../shared/constants/explorer.js'
 import { logger } from '../../shared/logger.js'
-import { buildCurrentFileLink } from './file-link-actions.js'
+import { buildCurrentFileLink, canCopyCurrentFileLink } from './file-link-actions.js'
+
+export { canCopyCurrentFileLink }
 
 export function isPlainPrimaryClick(event) {
   return (

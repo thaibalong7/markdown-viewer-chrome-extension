@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import {
+  canCopyCurrentFileLink,
   copyFileRowLink,
   isBrowserOpenableFileHref,
   isPlainPrimaryClick,
@@ -19,6 +20,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const href = String(file?.href || '')
   const canOpenInNewTab = isBrowserOpenableFileHref(href)
+  const canCopyLink = canCopyCurrentFileLink(href)
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
@@ -115,6 +117,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
           {
             key: 'copy-link',
             label: 'Copy link',
+            disabled: !canCopyLink,
             icon: <CopyLinkIcon className="mdp-explorer__row-menu-icon" />,
             onClick: onCopyLink
           }

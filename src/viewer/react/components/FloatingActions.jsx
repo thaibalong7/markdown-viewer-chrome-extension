@@ -6,7 +6,7 @@ import {
   exportAsWord,
   printDocument
 } from '../../actions/document-actions.js'
-import { copyCurrentFileLink } from '../../actions/file-link-actions.js'
+import { canCopyCurrentFileLink, copyCurrentFileLink } from '../../actions/file-link-actions.js'
 import { useToast } from '../contexts/ToastContext.jsx'
 import { useEditorState, useEditorDispatch } from '../contexts/EditorContext.jsx'
 import { useCopyFeedback } from '../hooks/useCopyFeedback.js'
@@ -31,6 +31,7 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
   const currentFileUrl = getCurrentFileUrl?.() || ''
   const visible = Boolean(String(currentFileUrl).trim())
+  const canCopyLink = canCopyCurrentFileLink(currentFileUrl)
   const isLocalFile = currentFileUrl.startsWith('file:')
   const documentActionsDisabled = editorState.enabled
 
@@ -155,12 +156,19 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
       </IconButton>
 
       <IconButton
-        tooltip={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+        tooltip={
+          canCopyLink
+            ? copyLinkCopied
+              ? 'Copied'
+              : 'Copy open file link'
+            : 'Copy link unavailable for workspace virtual files'
+        }
         showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
         className="mdp-fab-btn mdp-fab-btn--copy-link"
         copiedClassName="is-copied"
         copied={copyLinkCopied}
         aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+        disabled={!canCopyLink}
         onClick={onCopyLinkClick}
       >
         <CopyLinkIcon className="mdp-fab-btn__icon" />

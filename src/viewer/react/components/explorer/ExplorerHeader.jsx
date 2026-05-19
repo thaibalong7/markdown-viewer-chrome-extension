@@ -1,6 +1,6 @@
 import React from 'react'
 import { explorerModeBadgeLabel } from '../../../explorer/explorer-files-context.js'
-import { copyCurrentFileLink } from '../../../actions/file-link-actions.js'
+import { canCopyCurrentFileLink, copyCurrentFileLink } from '../../../actions/file-link-actions.js'
 import { useToast } from '../../contexts/ToastContext.jsx'
 import { useCopyFeedback } from '../../hooks/useCopyFeedback.js'
 import { IconButton } from '../common/IconButton.jsx'
@@ -22,7 +22,7 @@ export function ExplorerHeader({
   const { showToast } = useToast()
   const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
   const modeBadge = filesContext?.modeBadge || 'folder'
-  const canCopyCurrentFile = Boolean(String(filesContext?.currentFileUrl || '').trim())
+  const canCopyCurrentFile = canCopyCurrentFileLink(filesContext?.currentFileUrl)
 
   const onCopyCurrentFile = () => {
     void (async () => {
@@ -52,7 +52,13 @@ export function ExplorerHeader({
           </span>
           <div className="mdp-explorer__context-current">{filesContext?.currentLine || ''}</div>
           <IconButton
-            tooltip={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+            tooltip={
+              canCopyCurrentFile
+                ? copyLinkCopied
+                  ? 'Copied'
+                  : 'Copy open file link'
+                : 'Copy link unavailable for workspace virtual files'
+            }
             className="mdp-explorer__copy-link-btn"
             copiedClassName="is-copied"
             copied={copyLinkCopied}

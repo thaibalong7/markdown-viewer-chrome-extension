@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildCurrentFileLink } from '../file-link-actions.js'
+import { buildCurrentFileLink, canCopyCurrentFileLink } from '../file-link-actions.js'
 import { MDP_WS_FILE } from '../../../shared/constants/explorer.js'
 
 describe('buildCurrentFileLink', () => {
@@ -8,9 +8,10 @@ describe('buildCurrentFileLink', () => {
     expect(buildCurrentFileLink('   ', 'file:///Users/me/docs/a.md#intro')).toBe('')
   })
 
-  it('keeps workspace virtual hrefs unchanged', () => {
+  it('does not expose workspace virtual hrefs as copyable links', () => {
     const href = `${MDP_WS_FILE}docs%2FREADME.md`
-    expect(buildCurrentFileLink(href, 'file:///Users/me/docs/README.md#intro')).toBe(href)
+    expect(buildCurrentFileLink(href, 'file:///Users/me/docs/README.md#intro')).toBe('')
+    expect(canCopyCurrentFileLink(href)).toBe(false)
   })
 
   it('uses browser href when it points to the same file so hashes are preserved', () => {
@@ -20,6 +21,7 @@ describe('buildCurrentFileLink', () => {
         'file:///Users/me/docs/README.md#usage'
       )
     ).toBe('file:///Users/me/docs/README.md#usage')
+    expect(canCopyCurrentFileLink('file:///Users/me/docs/README.md')).toBe(true)
   })
 
   it('falls back to current file URL when browser href points elsewhere', () => {

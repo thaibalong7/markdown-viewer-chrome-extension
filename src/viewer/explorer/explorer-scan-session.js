@@ -55,6 +55,21 @@ export function createAbortableScanSession() {
   }
 }
 
+function directoryPathLabelFromUrl(dirUrl) {
+  try {
+    const u = new URL(dirUrl)
+    let path = u.pathname
+    if (path.endsWith('/')) path = path.slice(0, -1)
+    try {
+      return decodeURIComponent(path)
+    } catch {
+      return path
+    }
+  } catch {
+    return ''
+  }
+}
+
 export function createSiblingScanRunner(deps) {
   const {
     scanSession,
@@ -66,14 +81,15 @@ export function createSiblingScanRunner(deps) {
     viewActions
   } = deps
 
-  return async function runSiblingScan(urlForScan) {
+  return async function runSiblingScan(urlForScan, opts = {}) {
+    const activeFileUrl = opts.activeFileUrl || urlForScan
     const signal = scanSession.start()
-    const nav = siblingBackNavigationForUrl(urlForScan)
+    const nav = siblingBackNavigationForUrl(activeFileUrl)
     const ctxBase = {
       showBack: nav.showBack,
       backLabel: nav.backLabel,
       onBack: nav.onBack,
-      currentFileUrl: urlForScan,
+      currentFileUrl: activeFileUrl,
       filesContext: buildFilesContext()
     }
 
@@ -84,8 +100,10 @@ export function createSiblingScanRunner(deps) {
     }
 
     try {
-      const parentDir = getParentDirectoryUrl(urlForScan)
-      if (!parentDir) {
+      const scanRootDirUrl = opts.rootDirUrl
+        ? normalizeDirectoryUrl(opts.rootDirUrl)
+        : getParentDirectoryUrl(urlForScan)
+      if (!scanRootDirUrl) {
         let files = []
         try {
           files = await scanSiblingFiles(urlForScan, { signal })
@@ -104,7 +122,9 @@ export function createSiblingScanRunner(deps) {
       }
 
       const { maxScanDepth, maxFiles, maxFolders } = getScanLimits()
-      const folderLabel = getParentDirectoryPathLabel(urlForScan)
+      const folderLabel =
+        opts.folderLabel ||
+        (opts.rootDirUrl ? directoryPathLabelFromUrl(scanRootDirUrl) : getParentDirectoryPathLabel(urlForScan))
       refs.siblingTreeRef.current = null
       refs.siblingFolderLabelRef.current = folderLabel
       refs.siblingScanRootUrlRef.current = null
@@ -113,7 +133,7 @@ export function createSiblingScanRunner(deps) {
         viewActions.showProgressLoading({
           scannedFiles: 0,
           scannedFolders: 0,
-          currentFolder: parentDir,
+          currentFolder: scanRootDirUrl,
           progressHeadline: 'Scanning folder tree…',
           filesContext: buildFilesContext({
             scanPhase: 'scanning',
@@ -121,12 +141,12 @@ export function createSiblingScanRunner(deps) {
           })
         })
 
-        const { tree, stats } = await scanFolderRecursive(parentDir, {
+        const { tree, stats } = await scanFolderRecursive(scanRootDirUrl, {
           maxScanDepth,
           maxFiles,
           maxFolders,
           signal,
-          currentFileUrl: urlForScan,
+          currentFileUrl: activeFileUrl,
           siblingsFirstAtRoot: true,
           onProgress: (progress) => {
             viewActions.updateProgressLoading({
@@ -138,7 +158,7 @@ export function createSiblingScanRunner(deps) {
         })
         throwIfAborted(signal)
 
-        injectCurrentMarkdownAtRootIfMissing(tree, urlForScan, stats, normalizeDirectoryUrl(parentDir))
+        injectCurrentMarkdownAtRootIfMissing(tree, activeFileUrl, stats, normalizeDirectoryUrl(scanRootDirUrl))
         finalizeSiblingTreePresent(tree, stats, { maxScanDepth, folderLabel })
       } catch (error) {
         if (isAbortError(error, signal)) return

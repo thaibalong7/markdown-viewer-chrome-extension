@@ -16,6 +16,7 @@ import {
 import {
   clearWorkspaceRootUrl,
   getExplorerMode,
+  getOriginalFileUrl,
   getWorkspaceRootUrl,
   setExplorerMode,
   setOriginalFileUrlIfUnset
@@ -29,7 +30,12 @@ import {
   createSiblingBackNavigationForUrl
 } from '../../explorer/explorer-navigation.js'
 import { createExplorerWorkspaceSession } from '../../explorer/explorer-workspace-session.js'
-import { isWorkspaceVirtualHref, normalizeDirectoryUrl } from '../../explorer/url-utils.js'
+import {
+  fileUrlIsUnderDirectoryUrl,
+  getParentDirectoryUrl,
+  isWorkspaceVirtualHref,
+  normalizeDirectoryUrl
+} from '../../explorer/url-utils.js'
 
 export function getInitialExplorerFileUrl(bridge) {
   const bridgedUrl = bridge?.getCurrentFileUrl?.()
@@ -37,6 +43,27 @@ export function getInitialExplorerFileUrl(bridge) {
     return bridgedUrl
   }
   return typeof window !== 'undefined' ? window.location.href : ''
+}
+
+function getSiblingRefreshScanOptions({
+  currentFileUrl,
+  originalFileUrl,
+  siblingScanRootUrl,
+  siblingFolderLabel
+}) {
+  const originalRootUrl = getParentDirectoryUrl(originalFileUrl)
+  const rootDirUrl =
+    originalRootUrl && fileUrlIsUnderDirectoryUrl(currentFileUrl, originalRootUrl)
+      ? originalRootUrl
+      : siblingScanRootUrl
+  const normalizedRootDirUrl = rootDirUrl ? normalizeDirectoryUrl(rootDirUrl) : ''
+  const normalizedSiblingRootUrl = siblingScanRootUrl ? normalizeDirectoryUrl(siblingScanRootUrl) : ''
+
+  return {
+    activeFileUrl: currentFileUrl,
+    rootDirUrl,
+    folderLabel: normalizedRootDirUrl === normalizedSiblingRootUrl ? siblingFolderLabel : ''
+  }
 }
 
 /** React composition hook for the Files explorer. */
@@ -201,7 +228,7 @@ export function useExplorer({ bridge }) {
     [buildFilesContext, siblingBackNavigationForUrl, viewActions]
   )
 
-  const runSiblingScan = useCallback((urlForScan) => runSiblingScanRef.current?.(urlForScan), [])
+  const runSiblingScan = useCallback((urlForScan, opts) => runSiblingScanRef.current?.(urlForScan, opts), [])
 
   const failWorkspaceToSibling = useCallback(
     async (message) => {
@@ -355,14 +382,23 @@ export function useExplorer({ bridge }) {
       if (currentFileUrl.startsWith('file:')) {
         await navigator.navigateToFile(currentFileUrl, {
           replaceHistory: true,
-          forceReload: true
+          forceReload: true,
+          syncExplorer: false
         })
       }
 
       if (mode === 'workspace') {
         await workspaceSession.openWorkspaceFolder(workspaceRootUrl, { restore: true })
       } else {
-        await runSiblingScan(currentFileUrl)
+        await runSiblingScan(
+          currentFileUrl,
+          getSiblingRefreshScanOptions({
+            currentFileUrl,
+            originalFileUrl: getOriginalFileUrl(),
+            siblingScanRootUrl: siblingScanRootUrlRef.current,
+            siblingFolderLabel: siblingFolderLabelRef.current
+          })
+        )
       }
       bridge?.showToast?.('Refreshed file and list')
     } catch (error) {

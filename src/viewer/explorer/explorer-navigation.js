@@ -203,7 +203,7 @@ export function createExplorerNavigator(deps) {
 
   const navigateToFile = async (
     fileUrl,
-    { replaceHistory = false, forceReload = false, hash = null } = {}
+    { replaceHistory = false, forceReload = false, hash = null, syncExplorer = true } = {}
   ) => {
     if (!fileUrl) return
     if (isWorkspaceVirtualHref(fileUrl)) {
@@ -242,7 +242,9 @@ export function createExplorerNavigator(deps) {
       bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
     }
 
-    await afterSuccessfulNavigation({ hash })
+    if (syncExplorer) {
+      await afterSuccessfulNavigation({ hash })
+    }
   }
 
   return {

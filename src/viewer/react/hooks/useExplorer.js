@@ -45,7 +45,7 @@ export function getInitialExplorerFileUrl(bridge) {
   return typeof window !== 'undefined' ? window.location.href : ''
 }
 
-function getSiblingRefreshScanOptions({
+export function getSiblingRefreshScanOptions({
   currentFileUrl,
   originalFileUrl,
   siblingScanRootUrl,
@@ -341,7 +341,15 @@ export function useExplorer({ bridge }) {
       explorerModeRef.current = 'sibling'
       safePatch({ explorerMode: 'sibling', filesContext: buildFilesContext() })
       viewActions.showLoading({ filesContext: buildFilesContext() })
-      void runSiblingScan(initialUrl)
+      void runSiblingScan(
+        initialUrl,
+        getSiblingRefreshScanOptions({
+          currentFileUrl: initialUrl,
+          originalFileUrl: getOriginalFileUrl(),
+          siblingScanRootUrl: siblingScanRootUrlRef.current,
+          siblingFolderLabel: siblingFolderLabelRef.current
+        })
+      )
     }
 
     return () => {

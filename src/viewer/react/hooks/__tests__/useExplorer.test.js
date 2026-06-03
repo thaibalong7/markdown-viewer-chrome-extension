@@ -41,7 +41,8 @@ describe('getSiblingRefreshScanOptions', () => {
     ).toEqual({
       activeFileUrl: 'file:///other/readme.md',
       rootDirUrl: 'file:///other/',
-      folderLabel: '/other'
+      folderLabel: '/other',
+      preserveExpandedState: false
     })
   })
 })

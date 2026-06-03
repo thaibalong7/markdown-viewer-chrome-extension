@@ -165,15 +165,15 @@ export function createExplorerNavigator(deps) {
   }
 
   const navigateWorkspaceVirtualFile = async (fileUrl, { hash = null } = {}) => {
-    if (!fileUrl) return
+    if (!fileUrl) return false
     const current = normalizeFileUrlForCompare(refs.currentFileUrlRef.current)
     const target = normalizeFileUrlForCompare(fileUrl)
-    if (current === target) return
+    if (current === target) return true
 
     const entry = refs.workspaceVirtualReadersRef.current?.get(fileUrl)
     if (!entry) {
       bridge?.showToast?.('Linked file is no longer available', { variant: 'error' })
-      return
+      return false
     }
 
     bridge?.getArticleEl?.()?.setAttribute('aria-busy', 'true')
@@ -187,33 +187,34 @@ export function createExplorerNavigator(deps) {
       }
       if (!nextMarkdown.trim()) {
         bridge?.showToast?.('Linked file is empty', { variant: 'warning' })
-        return
+        return false
       }
 
       await renderNavigatedMarkdown(fileUrl, nextMarkdown, { hash })
     } catch (error) {
       logger.warn('Failed to navigate to workspace virtual file.', error)
       bridge?.showToast?.('Could not read linked file', { variant: 'error' })
+      return false
     } finally {
       bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
     }
 
     await afterSuccessfulNavigation({ hash })
+    return true
   }
 
   const navigateToFile = async (
     fileUrl,
     { replaceHistory = false, forceReload = false, hash = null, syncExplorer = true } = {}
   ) => {
-    if (!fileUrl) return
+    if (!fileUrl) return false
     if (isWorkspaceVirtualHref(fileUrl)) {
-      await navigateWorkspaceVirtualFile(fileUrl, { hash })
-      return
+      return navigateWorkspaceVirtualFile(fileUrl, { hash })
     }
 
     const current = normalizeFileUrlForCompare(refs.currentFileUrlRef.current)
     const target = normalizeFileUrlForCompare(fileUrl)
-    if (!forceReload && current === target) return
+    if (!forceReload && current === target) return true
 
     bridge?.getArticleEl?.()?.setAttribute('aria-busy', 'true')
     try {
@@ -226,18 +227,19 @@ export function createExplorerNavigator(deps) {
           ? 'Could not read linked file'
           : 'Could not open linked file'
         bridge?.showToast?.(msg, { variant: 'error' })
-        return
+        return false
       }
       const nextMarkdown = String(response.data?.text || '')
       if (!nextMarkdown.trim()) {
         bridge?.showToast?.('Linked file is empty', { variant: 'warning' })
-        return
+        return false
       }
 
       await renderNavigatedMarkdown(fileUrl, nextMarkdown, { hash, replaceHistory })
     } catch (error) {
       logger.warn('Failed to navigate to sibling markdown file.', error)
       bridge?.showToast?.('Could not open linked file', { variant: 'error' })
+      return false
     } finally {
       bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
     }
@@ -245,6 +247,7 @@ export function createExplorerNavigator(deps) {
     if (syncExplorer) {
       await afterSuccessfulNavigation({ hash })
     }
+    return true
   }
 
   return {

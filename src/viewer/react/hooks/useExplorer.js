@@ -15,9 +15,12 @@ import {
 } from '../../explorer/explorer-files-context.js'
 import {
   clearWorkspaceRootUrl,
+  getExplorerExpandedMap,
+  getExplorerExpandedStateRoot,
   getExplorerMode,
   getOriginalFileUrl,
   getWorkspaceRootUrl,
+  setExplorerExpandedMap,
   setExplorerMode,
   setOriginalFileUrlIfUnset
 } from '../../explorer/explorer-state.js'
@@ -49,7 +52,8 @@ export function getSiblingRefreshScanOptions({
   currentFileUrl,
   originalFileUrl,
   siblingScanRootUrl,
-  siblingFolderLabel
+  siblingFolderLabel,
+  preserveExpandedState = false
 }) {
   const originalRootUrl = getParentDirectoryUrl(originalFileUrl)
   const rootDirUrl =
@@ -62,7 +66,8 @@ export function getSiblingRefreshScanOptions({
   return {
     activeFileUrl: currentFileUrl,
     rootDirUrl,
-    folderLabel: normalizedRootDirUrl === normalizedSiblingRootUrl ? siblingFolderLabel : ''
+    folderLabel: normalizedRootDirUrl === normalizedSiblingRootUrl ? siblingFolderLabel : '',
+    preserveExpandedState
   }
 }
 
@@ -104,6 +109,14 @@ export function useExplorer({ bridge }) {
   useEffect(() => {
     stateRef.current = state
   }, [state])
+
+  useEffect(() => {
+    if (!mountedRef.current || state.view !== 'tree' || !state.tree) return
+    const fallbackRootUrl =
+      state.explorerMode === 'workspace' ? getWorkspaceRootUrl() : siblingScanRootUrlRef.current
+    const expandedStateRoot = getExplorerExpandedStateRoot(state.tree, fallbackRootUrl)
+    setExplorerExpandedMap(state.explorerMode, expandedStateRoot, state.expandedMap)
+  }, [state.expandedMap, state.explorerMode, state.tree, state.view])
 
   const safePatch = useCallback((payload) => {
     if (!mountedRef.current) return
@@ -213,6 +226,9 @@ export function useExplorer({ bridge }) {
       }
 
       const nav = siblingBackNavigationForUrl(currentFileUrlRef.current)
+      const expandedStateRoot = getExplorerExpandedStateRoot(tree, siblingScanRootUrlRef.current)
+      const storedExpandedMap = getExplorerExpandedMap('sibling', expandedStateRoot)
+      const preserveExpandedState = Boolean(opts.preserveExpandedState || storedExpandedMap)
       viewActions.showTree(tree, {
         workspaceLabel: siblingFolderLabelRef.current || tree.name || 'Folder',
         stats,
@@ -222,7 +238,9 @@ export function useExplorer({ bridge }) {
         onBack: nav.onBack,
         actionsMode: 'sibling',
         listAriaLabel: 'Markdown files in folder tree',
-        filesContext: buildFilesContext()
+        filesContext: buildFilesContext(),
+        expandedMap: opts.preserveExpandedState ? stateRef.current.expandedMap : storedExpandedMap,
+        preserveExpandedState
       })
     },
     [buildFilesContext, siblingBackNavigationForUrl, viewActions]
@@ -299,6 +317,7 @@ export function useExplorer({ bridge }) {
         navigateToFileRef,
         runSiblingScan,
         safePatch,
+        stateRef,
         viewActions
       }),
     [
@@ -387,28 +406,52 @@ export function useExplorer({ bridge }) {
 
     safePatch({ isRefreshing: true })
     try {
+      let restoredOriginalAfterMissingCurrent = false
       if (currentFileUrl.startsWith('file:')) {
-        await navigator.navigateToFile(currentFileUrl, {
+        const refreshedCurrentFile = await navigator.navigateToFile(currentFileUrl, {
           replaceHistory: true,
           forceReload: true,
           syncExplorer: false
         })
+        if (refreshedCurrentFile === false) {
+          const originalFileUrl = getOriginalFileUrl()
+          if (originalFileUrl && originalFileUrl !== currentFileUrl) {
+            const restoredOriginal = await navigator.navigateToFile(originalFileUrl, {
+              replaceHistory: true,
+              forceReload: true,
+              syncExplorer: false
+            })
+            if (restoredOriginal !== false) {
+              restoredOriginalAfterMissingCurrent = true
+            }
+          }
+        }
       }
 
+      const refreshedFileUrl = currentFileUrlRef.current || currentFileUrl
       if (mode === 'workspace') {
-        await workspaceSession.openWorkspaceFolder(workspaceRootUrl, { restore: true })
+        await workspaceSession.openWorkspaceFolder(workspaceRootUrl, {
+          restore: true,
+          preserveExpandedState: true
+        })
       } else {
         await runSiblingScan(
-          currentFileUrl,
+          refreshedFileUrl,
           getSiblingRefreshScanOptions({
-            currentFileUrl,
+            currentFileUrl: refreshedFileUrl,
             originalFileUrl: getOriginalFileUrl(),
             siblingScanRootUrl: siblingScanRootUrlRef.current,
-            siblingFolderLabel: siblingFolderLabelRef.current
+            siblingFolderLabel: siblingFolderLabelRef.current,
+            preserveExpandedState: true
           })
         )
       }
-      bridge?.showToast?.('Refreshed file and list', { variant: 'success' })
+      bridge?.showToast?.(
+        restoredOriginalAfterMissingCurrent
+          ? 'Current file was removed; returned to original file'
+          : 'Refreshed file and list',
+        { variant: restoredOriginalAfterMissingCurrent ? 'warning' : 'success' }
+      )
     } catch (error) {
       logger.warn('Failed to refresh current file and explorer list.', error)
       bridge?.showToast?.('Could not refresh file and list', { variant: 'error' })

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { isWorkspaceVirtualHref, normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
 import { getWorkspaceRootUrl } from '../../../explorer/explorer-state.js'
@@ -18,6 +18,8 @@ export function ExplorerPanel({ bridge }) {
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
   const panelRef = useRef(null)
+  const pendingRefreshTreeScrollRef = useRef(null)
+  const restoreScrollRafRef = useRef(0)
   const suppressNextAutoRevealRef = useRef('')
   const revealTimersRef = useRef({ afterScrollRaf: 0, raf: 0, timeouts: [] })
   const [scrollElement, setScrollElement] = useState(null)
@@ -83,8 +85,15 @@ export function ExplorerPanel({ bridge }) {
   }, [])
 
   useEffect(() => () => {
+    if (restoreScrollRafRef.current) cancelAnimationFrame(restoreScrollRafRef.current)
     clearRevealTimers()
   }, [clearRevealTimers])
+
+  useEffect(() => {
+    if (!state.isRefreshing && state.view !== 'tree') {
+      pendingRefreshTreeScrollRef.current = null
+    }
+  }, [state.isRefreshing, state.view])
 
   const fileVirtualizer = useVirtualizer({
     count: state.files.length,
@@ -162,6 +171,24 @@ export function ExplorerPanel({ bridge }) {
     treeVirtualizer
   ])
 
+  useLayoutEffect(() => {
+    const pending = pendingRefreshTreeScrollRef.current
+    if (state.view !== 'tree' || state.isRefreshing || !pending || !scrollElement) return
+
+    const restore = () => {
+      const maxScrollTop = Math.max(0, scrollElement.scrollHeight - scrollElement.clientHeight)
+      scrollElement.scrollTop = Math.min(pending.top, maxScrollTop)
+    }
+
+    restore()
+    if (restoreScrollRafRef.current) cancelAnimationFrame(restoreScrollRafRef.current)
+    restoreScrollRafRef.current = requestAnimationFrame(() => {
+      restoreScrollRafRef.current = 0
+      restore()
+      pendingRefreshTreeScrollRef.current = null
+    })
+  }, [scrollElement, state.isRefreshing, state.tree, state.view, treeRows.length])
+
   const onPickFileFromExplorer = (href) => {
     const pickedNormalized = normalizeFileUrlForCompare(href || '')
     suppressNextAutoRevealRef.current =
@@ -172,6 +199,14 @@ export function ExplorerPanel({ bridge }) {
   const onToggleFolderFromExplorer = (href) => {
     suppressNextAutoRevealRef.current = activeNormalized
     actions.onToggleFolder(href)
+  }
+
+  const onRefreshFromExplorer = () => {
+    if (state.view === 'tree' && scrollElement) {
+      pendingRefreshTreeScrollRef.current = { top: scrollElement.scrollTop }
+      suppressNextAutoRevealRef.current = activeNormalized
+    }
+    actions.onRefresh()
   }
 
   const fileVirtualItems = fileVirtualizer.getVirtualItems()
@@ -191,7 +226,7 @@ export function ExplorerPanel({ bridge }) {
         refreshDisabled={refreshDisabled}
         refreshTooltip={refreshTooltip}
         onBack={actions.onBack}
-        onRefresh={actions.onRefresh}
+        onRefresh={onRefreshFromExplorer}
         onOpenAnotherFolder={actions.onOpenAnotherFolder}
         onExitWorkspace={actions.onExitWorkspace}
       />

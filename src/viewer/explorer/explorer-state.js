@@ -1,4 +1,4 @@
-import { normalizeFileUrlForCompare } from './url-utils.js'
+import { normalizeDirectoryUrl, normalizeFileUrlForCompare } from './url-utils.js'
 
 const KEY_ORIGINAL = 'mdp:explorer:originalFile'
 const KEY_ACTIVE_TAB = 'mdp:explorer:activeTab'
@@ -6,6 +6,7 @@ const KEY_SIDEBAR_WIDTH = 'mdp:sidebar:width'
 const KEY_EDITOR_SPLIT_WIDTH = 'mdp:editor:splitWidth'
 const KEY_WORKSPACE_ROOT = 'mdp:explorer:workspaceRoot'
 const KEY_EXPLORER_MODE = 'mdp:explorer:mode'
+const KEY_EXPANDED_FOLDERS = 'mdp:explorer:expandedFolders'
 
 /** @typedef {'files' | 'outline'} ExplorerTabId */
 /** @typedef {'sibling' | 'workspace'} ExplorerMode */
@@ -170,6 +171,70 @@ export function getExplorerMode() {
 export function setExplorerMode(mode) {
   try {
     sessionStorage.setItem(KEY_EXPLORER_MODE, mode === 'workspace' ? 'workspace' : 'sibling')
+  } catch {
+    /* ignore */
+  }
+}
+
+function expandedFoldersStorageKey(mode, rootUrl) {
+  return `${mode === 'workspace' ? 'workspace' : 'sibling'}:${String(rootUrl || '')}`
+}
+
+/**
+ * @param {{ href?: string } | null | undefined} tree
+ * @param {string | null | undefined} fallbackRootUrl
+ * @returns {string}
+ */
+export function getExplorerExpandedStateRoot(tree, fallbackRootUrl = '') {
+  const href = typeof tree?.href === 'string' ? tree.href : ''
+  try {
+    return href ? normalizeDirectoryUrl(href) : fallbackRootUrl || ''
+  } catch {
+    return href || fallbackRootUrl || ''
+  }
+}
+
+function readExpandedFoldersRecord() {
+  try {
+    const raw = sessionStorage.getItem(KEY_EXPANDED_FOLDERS)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+/**
+ * @param {ExplorerMode} mode
+ * @param {string | null | undefined} rootUrl
+ * @returns {Map<string, boolean> | null}
+ */
+export function getExplorerExpandedMap(mode, rootUrl) {
+  const entries = readExpandedFoldersRecord()[expandedFoldersStorageKey(mode, rootUrl)]
+  if (!Array.isArray(entries)) return null
+
+  const map = new Map()
+  for (const entry of entries) {
+    if (!Array.isArray(entry) || typeof entry[0] !== 'string') continue
+    map.set(entry[0], entry[1] === true)
+  }
+  return map.size ? map : null
+}
+
+/**
+ * @param {ExplorerMode} mode
+ * @param {string | null | undefined} rootUrl
+ * @param {Map<string, boolean>} expandedMap
+ */
+export function setExplorerExpandedMap(mode, rootUrl, expandedMap) {
+  if (!rootUrl || !(expandedMap instanceof Map)) return
+  try {
+    const record = readExpandedFoldersRecord()
+    record[expandedFoldersStorageKey(mode, rootUrl)] = Array.from(expandedMap.entries()).filter(
+      ([href]) => typeof href === 'string' && href
+    )
+    sessionStorage.setItem(KEY_EXPANDED_FOLDERS, JSON.stringify(record))
   } catch {
     /* ignore */
   }

@@ -159,7 +159,11 @@ export function createSiblingScanRunner(deps) {
         throwIfAborted(signal)
 
         injectCurrentMarkdownAtRootIfMissing(tree, activeFileUrl, stats, normalizeDirectoryUrl(scanRootDirUrl))
-        finalizeSiblingTreePresent(tree, stats, { maxScanDepth, folderLabel })
+        finalizeSiblingTreePresent(tree, stats, {
+          maxScanDepth,
+          folderLabel,
+          preserveExpandedState: Boolean(opts.preserveExpandedState)
+        })
       } catch (error) {
         if (isAbortError(error, signal)) return
         logger.warn('Deep sibling scan failed.', error)

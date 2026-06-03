@@ -9,6 +9,8 @@ import { scanFolderRecursive } from './folder-scanner.js'
 import { injectCurrentMarkdownAtRootIfMissing } from './explorer-files-context.js'
 import {
   clearWorkspaceRootUrl,
+  getExplorerExpandedMap,
+  getExplorerExpandedStateRoot,
   getWorkspaceRootUrl,
   getOriginalFileUrl,
   isOnOriginalFile,
@@ -51,6 +53,7 @@ export function createExplorerWorkspaceSession(deps) {
     navigateToFileRef,
     runSiblingScan,
     safePatch,
+    stateRef,
     viewActions
   } = deps
 
@@ -209,7 +212,8 @@ export function createExplorerWorkspaceSession(deps) {
 
       await finalizeWorkspaceTree(tree, stats, {
         maxScanDepth,
-        normalizedDirUrl: normalized
+        normalizedDirUrl: normalized,
+        preserveExpandedState: Boolean(opts.preserveExpandedState)
       })
     } catch (error) {
       const aborted = isAbortError(error, signal)
@@ -309,6 +313,9 @@ export function createExplorerWorkspaceSession(deps) {
       ? workspaceLabelFromNormalizedDirUrl(opts.normalizedDirUrl, opts.workspaceLabelOverride || tree.name || 'Workspace')
       : opts.workspaceLabelOverride || tree.name || 'Workspace'
     refs.workspaceDisplayLabelRef.current = workspaceLabel
+    const expandedStateRoot = getExplorerExpandedStateRoot(tree, opts.normalizedDirUrl || getWorkspaceRootUrl())
+    const storedExpandedMap = getExplorerExpandedMap('workspace', expandedStateRoot)
+    const preserveExpandedState = Boolean(opts.preserveExpandedState || storedExpandedMap)
 
     viewActions.showTree(tree, {
       workspaceLabel,
@@ -316,7 +323,9 @@ export function createExplorerWorkspaceSession(deps) {
       maxScanDepth: opts.maxScanDepth,
       showBack: false,
       actionsMode: 'workspace',
-      filesContext: buildFilesContext()
+      filesContext: buildFilesContext(),
+      expandedMap: opts.preserveExpandedState ? stateRef?.current?.expandedMap : storedExpandedMap,
+      preserveExpandedState
     })
   }
 

@@ -86,6 +86,27 @@ export function buildInitialExpandedMap(nodes) {
 }
 
 /**
+ * Builds an expanded-state map for a freshly scanned tree by preserving states
+ * for folders that still exist. New folders are collapsed by default.
+ * @param {Array<import('./folder-scanner.js').ExplorerTreeNode>} nodes
+ * @param {Map<string, boolean>} previousExpandedMap
+ * @returns {Map<string, boolean>}
+ */
+export function buildPreservedExpandedMap(nodes, previousExpandedMap) {
+  const expandedMap = new Map()
+  const previous = previousExpandedMap instanceof Map ? previousExpandedMap : new Map()
+  const walk = (list) => {
+    for (const node of list) {
+      if (node.type !== 'folder') continue
+      expandedMap.set(node.href, previous.has(node.href) ? previous.get(node.href) === true : false)
+      if (node.children?.length) walk(node.children)
+    }
+  }
+  walk(Array.isArray(nodes) ? nodes : [])
+  return expandedMap
+}
+
+/**
  * Returns a new expandedMap with all ancestor folders of `fileUrl` set to expanded.
  * If the file is not found in the tree, returns the original map unchanged.
  * @param {Array<import('./folder-scanner.js').ExplorerTreeNode>} nodes

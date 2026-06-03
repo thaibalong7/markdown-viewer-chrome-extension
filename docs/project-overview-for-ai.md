@@ -412,7 +412,7 @@ public/
   - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = ShadowRoot or `document.body`. Distinct from React **`Tooltip.jsx`** used on floating actions/resize handle.
 
 - `src/viewer/explorer/explorer-state.js`
-  - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`.
+  - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`, and explorer expanded-folder state keyed by mode/root.
 
 - `src/content/host-print.scss` — host/light-DOM print rules (injected with viewer root); pairs with `viewer/styles/_chrome-print.scss` (floating actions/sidebar hidden) and `viewer/styles/content/_article-print.scss` (article typography for print).
 - `src/viewer/styles/content.scss` (+ partials under `content/`) → compiled and inlined via the content script bundle

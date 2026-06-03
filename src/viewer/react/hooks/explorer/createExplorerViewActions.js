@@ -1,6 +1,7 @@
 import {
   buildDepthNotice,
   buildInitialExpandedMap,
+  buildPreservedExpandedMap,
   countMarkdownFilesInTree,
   getDirectoryLabelFromUrl,
   shortenPath
@@ -110,6 +111,8 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
       stats && (stats.skippedByDepth > 0 || stats.hitFileLimit || stats.hitFolderLimit)
         ? buildDepthNotice(stats, ctx.maxScanDepth)
         : ''
+    const previousExpandedMap = ctx.expandedMap || stateRef.current.expandedMap
+    const shouldPreserveExpandedState = Boolean(ctx.preserveExpandedState || ctx.expandedMap)
 
     safePatch({
       view: children.length ? 'tree' : 'empty',
@@ -118,7 +121,9 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
       files: [],
       listAriaLabel:
         ctx.listAriaLabel || (ctx.actionsMode === 'sibling' ? 'Markdown files in folder tree' : 'Workspace files'),
-      expandedMap: buildInitialExpandedMap(children),
+      expandedMap: shouldPreserveExpandedState
+        ? buildPreservedExpandedMap(children, previousExpandedMap)
+        : buildInitialExpandedMap(children),
       filesContext: ctx.filesContext || stateRef.current.filesContext,
       summaryDirectoryLabel: ctx.workspaceLabel || tree?.name || 'Workspace',
       summaryFileCount: count,

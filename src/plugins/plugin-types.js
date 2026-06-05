@@ -16,6 +16,11 @@ export const PLUGIN_IDS = {
   MERMAID: 'mermaid'
 }
 
+export const MERMAID_RENDERERS = {
+  OFFICIAL: 'official',
+  BEAUTIFUL: 'beautiful'
+}
+
 export const CORE_PLUGIN_DEFAULTS = {
   [PLUGIN_IDS.CODE_HIGHLIGHT]: { enabled: true },
   [PLUGIN_IDS.TASK_LIST]: { enabled: true },
@@ -28,7 +33,7 @@ export const OPTIONAL_PLUGIN_DEFAULTS = {
   [PLUGIN_IDS.EMOJI]: { enabled: true },
   [PLUGIN_IDS.FOOTNOTE]: { enabled: true },
   [PLUGIN_IDS.MATH]: { enabled: false },
-  [PLUGIN_IDS.MERMAID]: { enabled: false }
+  [PLUGIN_IDS.MERMAID]: { enabled: false, renderer: MERMAID_RENDERERS.OFFICIAL }
 }
 
 export function getDefaultPluginSettings() {
@@ -36,4 +41,19 @@ export function getDefaultPluginSettings() {
     ...CORE_PLUGIN_DEFAULTS,
     ...OPTIONAL_PLUGIN_DEFAULTS
   }
+}
+
+export function mergePluginSettings(pluginSettings = {}) {
+  const defaults = getDefaultPluginSettings()
+  const merged = {}
+  const pluginIds = new Set([...Object.keys(defaults), ...Object.keys(pluginSettings || {})])
+
+  for (const pluginId of pluginIds) {
+    merged[pluginId] = {
+      ...(defaults[pluginId] || {}),
+      ...(pluginSettings?.[pluginId] || {})
+    }
+  }
+
+  return merged
 }

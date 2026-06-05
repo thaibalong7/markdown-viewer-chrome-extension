@@ -50,11 +50,22 @@ describe('createRenderSettingsHash', () => {
         emoji: { enabled: true },
         footnote: { enabled: true },
         math: { enabled: false },
-        mermaid: { enabled: false }
+        mermaid: { enabled: false, renderer: 'official' }
       }
     })
 
     expect(explicitDefaults).toBe(implicitDefaults)
+  })
+
+  it('changes when Mermaid renderer changes', () => {
+    const official = createRenderSettingsHash({
+      plugins: { mermaid: { enabled: true, renderer: 'official' } }
+    })
+    const beautiful = createRenderSettingsHash({
+      plugins: { mermaid: { enabled: true, renderer: 'beautiful' } }
+    })
+
+    expect(beautiful).not.toBe(official)
   })
 
   it('reuses plugin manager and markdown engine for the same render-affecting settings hash', async () => {

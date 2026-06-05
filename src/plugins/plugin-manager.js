@@ -2,7 +2,7 @@ import { codeHighlightPlugin } from './core/code-highlight.plugin.js'
 import { taskListPlugin } from './core/task-list.plugin.js'
 import { anchorHeadingPlugin } from './core/anchor-heading.plugin.js'
 import { tableEnhancePlugin } from './core/table-enhance.plugin.js'
-import { PLUGIN_HOOKS, PLUGIN_IDS, getDefaultPluginSettings } from './plugin-types.js'
+import { PLUGIN_HOOKS, PLUGIN_IDS, mergePluginSettings } from './plugin-types.js'
 
 const CORE_PLUGINS = [
   codeHighlightPlugin,
@@ -47,10 +47,7 @@ function isEnabledPlugin(plugin, pluginSettings) {
 }
 
 export async function createPluginManager({ settings } = {}) {
-  const mergedPluginSettings = {
-    ...getDefaultPluginSettings(),
-    ...(settings?.plugins || {})
-  }
+  const mergedPluginSettings = mergePluginSettings(settings?.plugins)
 
   const activePlugins = CORE_PLUGINS.filter((plugin) => isEnabledPlugin(plugin, mergedPluginSettings))
   const optionalPluginIds = Object.keys(OPTIONAL_PLUGIN_LOADERS).filter((pluginId) => {

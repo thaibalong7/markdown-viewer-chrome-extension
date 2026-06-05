@@ -1,5 +1,14 @@
+import { MERMAID_RENDERERS, PLUGIN_IDS } from '../plugins/plugin-types.js'
+
 function isObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+function usesBeautifulMermaid(settings) {
+  return (
+    settings?.plugins?.[PLUGIN_IDS.MERMAID]?.enabled === true &&
+    settings?.plugins?.[PLUGIN_IDS.MERMAID]?.renderer === MERMAID_RENDERERS.BEAUTIFUL
+  )
 }
 
 /**
@@ -37,6 +46,7 @@ export function needsFullRender(previousSettings, nextSettings) {
   const changedPaths = collectChangedPaths(previousSettings, nextSettings)
   if (!changedPaths.size) return false
 
+  const beautifulMermaidActive = usesBeautifulMermaid(previousSettings) || usesBeautifulMermaid(nextSettings)
   const styleOnlyPrefixes = [
     'typography.',
     'layout.contentMaxWidth',
@@ -46,6 +56,10 @@ export function needsFullRender(previousSettings, nextSettings) {
   ]
 
   for (const path of changedPaths) {
+    if (beautifulMermaidActive && (path === 'typography' || path.startsWith('typography.'))) {
+      return true
+    }
+
     const isStyleOnly = styleOnlyPrefixes.some(
       (prefix) => path === prefix || path.startsWith(prefix)
     )

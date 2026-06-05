@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { getDefaultPluginSettings } from '../plugins/plugin-types.js'
+import { mergePluginSettings } from '../plugins/plugin-types.js'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
 import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
@@ -17,11 +17,7 @@ export function PopupApp() {
   const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.SETTINGS)
 
   const pluginsSnapshot = useMemo(() => {
-    const defaults = getDefaultPluginSettings()
-    return {
-      ...defaults,
-      ...(settings?.plugins || {})
-    }
+    return mergePluginSettings(settings?.plugins)
   }, [settings])
 
   const activeTabMeta = SETTINGS_TABS.find((tab) => tab.id === activeTab)

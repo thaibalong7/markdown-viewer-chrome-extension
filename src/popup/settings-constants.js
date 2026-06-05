@@ -1,4 +1,5 @@
 import { DEFAULT_SETTINGS } from '../settings/default-settings.js'
+import { MERMAID_RENDERERS } from '../plugins/plugin-types.js'
 
 export const THEME_LABELS = {
   light: 'Light',
@@ -38,8 +39,34 @@ export const PLUGIN_VERSION_NOTES = {
   emoji: 'Syntax support: markdown-it-emoji 3.0.0.',
   footnote: 'Syntax support: markdown-it-footnote 4.0.0.',
   math: 'Syntax support: @mdit/plugin-katex 0.25.2, KaTeX 0.16.44.',
-  mermaid: 'Syntax support: Mermaid 11.13.0.'
+  mermaid: 'Syntax support: Mermaid 11.13.0 or Beautiful Mermaid 1.1.3.'
 }
+
+export const MERMAID_RENDERER_OPTIONS = [
+  {
+    label: 'Mermaid official',
+    value: MERMAID_RENDERERS.OFFICIAL,
+    description: 'Best compatibility with Mermaid syntax.'
+  },
+  {
+    label: 'Cursor-like',
+    value: MERMAID_RENDERERS.BEAUTIFUL,
+    description: 'ELK-based layout similar to Cursor built-in rendering.'
+  }
+]
+
+export const MERMAID_RENDERER_LABELS = MERMAID_RENDERER_OPTIONS.reduce((labels, option) => {
+  labels[option.value] = option.label
+  return labels
+}, {})
+
+export const MERMAID_RENDERER_DESCRIPTIONS = MERMAID_RENDERER_OPTIONS.reduce(
+  (descriptions, option) => {
+    descriptions[option.value] = option.description
+    return descriptions
+  },
+  {}
+)
 
 export function createReaderUiDefaultsPatch() {
   return {

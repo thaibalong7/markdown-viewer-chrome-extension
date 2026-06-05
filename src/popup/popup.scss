@@ -156,6 +156,26 @@ body {
   color: #8c959f;
 }
 
+.popup-plugin-subfield {
+  margin: 4px 0 2px 24px;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 6px 8px;
+  align-items: center;
+}
+
+.popup-plugin-subfield__label {
+  color: #656d76;
+  font-size: 12px;
+}
+
+.popup-plugin-subfield__hint {
+  grid-column: 2;
+  color: #8c959f;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .popup-input {
   width: 100%;
   border: 1px solid #d0d7de;

@@ -1,5 +1,5 @@
 import { createPluginManager } from '../../plugins/plugin-manager.js'
-import { getDefaultPluginSettings } from '../../plugins/plugin-types.js'
+import { mergePluginSettings } from '../../plugins/plugin-types.js'
 import { createMarkdownEngine, injectSourceLineMapping } from './markdown-engine.js'
 
 const INTERNAL_RUNTIME_KEYS = new Set(['renderContextCache'])
@@ -16,10 +16,7 @@ function stableSortObject(value) {
 }
 
 export function createRenderSettingsHash(settings = {}) {
-  const effectivePluginSettings = {
-    ...getDefaultPluginSettings(),
-    ...(settings?.plugins || {})
-  }
+  const effectivePluginSettings = mergePluginSettings(settings?.plugins)
   return JSON.stringify(
     stableSortObject({
       plugins: effectivePluginSettings,

@@ -18,7 +18,7 @@ export class MarkdownViewerApp {
    * @param {object} options
    * @param {string} options.markdown
    * @param {object} options.settings
-   * @param {HTMLElement | ShadowRoot} options.container
+   * @param {HTMLElement} options.container
    * @param {string[]} [options.styles]
    */
   constructor({ markdown, settings, container, styles = [] } = {}) {
@@ -31,6 +31,8 @@ export class MarkdownViewerApp {
     /** @type {HTMLElement | null} */
     this._articleEl = null
     this._styleElements = []
+    /** @type {HTMLElement | null} */
+    this._reactContainerEl = null
     this._reactHandle = null
     /** @type {null | { scrollToLine: (line1Based: number) => void, scrollDOM: HTMLElement }} */
     this._editorApi = null
@@ -82,6 +84,9 @@ export class MarkdownViewerApp {
     for (const styleElement of this._styleElements) {
       this.container.appendChild(styleElement)
     }
+    this._reactContainerEl = document.createElement('div')
+    this._reactContainerEl.className = 'mdp-react-root'
+    this.container.appendChild(this._reactContainerEl)
 
     const explorerBridge = createExplorerBridge({
       getSettings: () => this.settings,
@@ -99,7 +104,7 @@ export class MarkdownViewerApp {
       }
     })
 
-    this._reactHandle = mountViewerReact(this.container, {
+    this._reactHandle = mountViewerReact(this._reactContainerEl, {
       settings: this.settings,
       tocItems: [],
       tocReady: false,
@@ -243,6 +248,7 @@ export class MarkdownViewerApp {
     this._reactHandle?.unmount()
     this._reactHandle = null
     this._styleElements = []
+    this._reactContainerEl = null
     this.container.innerHTML = ''
     this._rootEl = null
     this._articleEl = null

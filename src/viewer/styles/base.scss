@@ -1,4 +1,4 @@
-:host,
+#mdp-viewer-root,
 .mdp-root {
   --mdp-bg: #ffffff;
   --mdp-text: #1f2328;
@@ -47,20 +47,17 @@
   overflow-x: hidden;
 }
 
-* {
+#mdp-viewer-root,
+#mdp-viewer-root * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-}
-
-a {
+.mdp-markdown-body a {
   color: var(--mdp-link);
 }
 
-code,
-pre {
+.mdp-root code,
+.mdp-root pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 

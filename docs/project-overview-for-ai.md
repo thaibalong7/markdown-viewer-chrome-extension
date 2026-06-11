@@ -7,7 +7,7 @@
 Current implemented core:
 - Markdown detection from URL/content heuristics
 - Raw Markdown extraction from page (`<pre>` or body text sampling)
-- Viewer mount in overlay + Shadow DOM (when available)
+- Viewer mount in a body-level overlay. The rendered viewer intentionally uses light DOM so extensions such as Google Translate can detect selected Markdown text.
 - Markdown render pipeline: local link normalization → `markdown-it` → plugin hooks/render context → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
 - **Reader themes** (`light` / `dark`, default `light`) aligned with **Shiki themes** for code blocks
 - **Plugin registry** (task lists, heading anchors, table wrapper, code-highlight toggle) via lifecycle hooks
@@ -56,14 +56,14 @@ Generated output:
 
 ### 3.2 Core flow (implemented)
 
-1. Content script: `src/content/index.js` is a thin gate (local `file:` + `.md` only) and dynamically imports `src/content/viewer-loader.js`, which bundles compiled viewer SCSS (`?inline`) and injects those strings into the Shadow DOM (no `fetch` of per-sheet CSS assets). KaTeX CSS is not part of this path by default; it loads when the Math plugin runs (see `math.plugin.js` + `MarkdownViewerApp.injectViewerStyles`).
+1. Content script: `src/content/index.js` is a thin gate (local `file:` + `.md` only) and dynamically imports `src/content/viewer-loader.js`, which bundles compiled viewer SCSS (`?inline`) and injects those strings into the viewer root (no `fetch` of per-sheet CSS assets). KaTeX CSS is not part of this path by default; it loads when the Math plugin runs (see `math.plugin.js` + `MarkdownViewerApp.injectViewerStyles`).
 2. **Product gate:** `bootstrap.js` only mounts the viewer for **local `file:`** URLs whose path ends in `.md` / `.markdown` / `.mdown` (not remote pages).
 3. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()` (uses `getTextSample` from `text-sampling.js` and `looksLikeMarkdownText` / pathname helpers from `shared/markdown-detect.js`).
 4. If needed, fallback sampling checks whether page text resembles Markdown (`looksLikeMarkdownText` in `shared/markdown-detect.js`).
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
-7. `createViewerRoot()` mounts full-screen root and optional Shadow DOM.
-8. `MarkdownViewerApp` calls **`mountViewerReact()`** (React root in the same container as injected `<style>` tags), awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge, **internal Markdown link interception** via `resolveLink` + `navigateToFile` callbacks), marks the article busy during async render, runs **`await renderDocument()`** (async; creates/reuses a render context for plugin manager + markdown engine + effective plugin/theme settings hash within the current render controller), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree, with non-React explorer scan/navigation/workspace workflows owned by `src/viewer/explorer/`.
+7. `createViewerRoot()` mounts a full-screen root inside `<body>`, hides the original raw Markdown body children so browser Find only counts rendered content, and returns the root as the render container. Keeping rendered Markdown in light DOM preserves body-level selection detection for other extensions that react to selected text and inject their own body overlays.
+8. `MarkdownViewerApp` injects viewer `<style>` tags into the host root, mounts React into a dedicated child node, awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge, **internal Markdown link interception** via `resolveLink` + `navigateToFile` callbacks), marks the article busy during async render, runs **`await renderDocument()`** (async; creates/reuses a render context for plugin manager + markdown engine + effective plugin/theme settings hash within the current render controller), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree, with non-React explorer scan/navigation/workspace workflows owned by `src/viewer/explorer/`.
 9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
@@ -352,8 +352,8 @@ public/
 - **React viewer layer** (`src/viewer/react/`)
   - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, `setTocReady`, **`bumpChrome()`** (refresh floating-actions visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
   - **`ViewerApp.jsx`**: `ToastProvider`, **`SidebarTabProvider`** (active Outline/Files tab only), **`ViewerShell`** + floating actions slot.
-  - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the **ShadowRoot** when present (`shared/constants/tooltip.js` for delays).
-  - **Action chrome primitives**: `components/common/IconButton.jsx` and `ActionMenu.jsx` keep floating-action and explorer row button/menu markup consistent; `hooks/useDismissableLayer.js` owns Shadow DOM-safe outside-click/Escape dismissal; `hooks/useCopyFeedback.js` owns transient copied-state feedback.
+  - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the viewer root/document as appropriate (`shared/constants/tooltip.js` for delays).
+  - **Action chrome primitives**: `components/common/IconButton.jsx` and `ActionMenu.jsx` keep floating-action and explorer row button/menu markup consistent; `hooks/useDismissableLayer.js` owns root-aware outside-click/Escape dismissal; `hooks/useCopyFeedback.js` owns transient copied-state feedback.
   - **Sidebar**: `Sidebar.jsx`, `OutlinePanel.jsx` (TOC list + **`useScrollSpy`** and `tocReady` gating with skeleton state), `ResizeHandle.jsx` + **`useSidebarResize`** (CSS var `--mdp-toc-width`, sessionStorage width, keyboard resize).
   - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (React composition hook for explorer state/actions); **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers; **`useExplorerActions.js`** and **`useExplorerBridgeRegistration.js`** for React-only adapters. Non-React navigation, scan sessions, workspace open/restore/exit, and scanners live under `viewer/explorer/*.js`.
 
@@ -409,7 +409,7 @@ public/
   - `_mermaid.scss` includes both inline block chrome and lightbox styling.
 
 - `src/viewer/dom-tooltip.js`
-  - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = ShadowRoot or `document.body`. Distinct from React **`Tooltip.jsx`** used on floating actions/resize handle.
+  - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = root node or `document.body`. Distinct from React **`Tooltip.jsx`** used on floating actions/resize handle.
 
 - `src/viewer/explorer/explorer-state.js`
   - `sessionStorage`: original file URL, active sidebar tab, sidebar width, **workspace root** `file:` URL, **mode** `sibling` | `workspace`, and explorer expanded-folder state keyed by mode/root.

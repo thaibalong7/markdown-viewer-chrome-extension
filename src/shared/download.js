@@ -32,11 +32,7 @@ function blobToDataUrl(blob) {
   })
 }
 
-/**
- * Best parent for a temporary download link: must not sit under `<body>` when the
- * markdown viewer sets `document.body.inert` — in that case programmatic `.click()`
- * on anchors in the body subtree often does not start a download (Chrome).
- */
+/** Best parent for a temporary download link created outside the viewer root. */
 function resolveDownloadMountParent() {
   return document.documentElement || document.body
 }

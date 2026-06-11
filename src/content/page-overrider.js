@@ -5,7 +5,10 @@ const HOST_PRINT_STYLE_ID = 'mdp-viewer-host-print-style'
 const PREV_HTML_OVERFLOW_ATTR = 'data-mdp-prev-html-overflow'
 const PREV_BODY_OVERFLOW_ATTR = 'data-mdp-prev-body-overflow'
 const PREV_HTML_OVERSCROLL_ATTR = 'data-mdp-prev-html-overscroll'
-const PREV_BODY_INERT_ATTR = 'data-mdp-prev-body-inert'
+const HOST_PAGE_CHILD_ATTR = 'data-mdp-host-page-child'
+const PREV_DISPLAY_ATTR = 'data-mdp-prev-display'
+const BODY_ORIGINAL_HIDDEN_ATTR = 'data-mdp-original-children-hidden'
+const LEGACY_PREV_BODY_INERT_ATTR = 'data-mdp-prev-body-inert'
 
 function lockBackgroundScroll(host) {
   const html = document.documentElement
@@ -27,19 +30,6 @@ function lockBackgroundScroll(host) {
   html.style.overscrollBehavior = 'none'
 }
 
-function restoreOriginalPageVisibility(host) {
-  const body = document.body
-  if (!body || !host) return
-  // Keep body in normal layout so third-party diagram/layout code can measure the page.
-  if (!host.hasAttribute(PREV_BODY_INERT_ATTR)) {
-    host.setAttribute(PREV_BODY_INERT_ATTR, body.inert ? '1' : '0')
-  }
-
-  // Exclude the underlying document from interaction while the viewer is open.
-  // Use inert only: aria-hidden on <body> triggers a Chrome warning and hides the whole tree from AT.
-  body.inert = true
-}
-
 function restoreBackgroundScroll(host) {
   const html = document.documentElement
   const body = document.body
@@ -50,12 +40,39 @@ function restoreBackgroundScroll(host) {
   html.style.overscrollBehavior = host.getAttribute(PREV_HTML_OVERSCROLL_ATTR) || ''
 }
 
-function restoreOriginalPageInteractivity(host) {
+function restoreLegacyBodyInert(host) {
+  const body = document.body
+  if (!body || !host?.hasAttribute(LEGACY_PREV_BODY_INERT_ATTR)) return
+  body.inert = host.getAttribute(LEGACY_PREV_BODY_INERT_ATTR) === '1'
+}
+
+function hideOriginalPageChildren(host) {
   const body = document.body
   if (!body || !host) return
+  if (body.getAttribute(BODY_ORIGINAL_HIDDEN_ATTR) === '1') return
 
-  const prevInert = host.getAttribute(PREV_BODY_INERT_ATTR)
-  body.inert = prevInert === '1'
+  for (const child of Array.from(body.children)) {
+    if (child === host || child.id === ROOT_ID) continue
+    child.setAttribute(HOST_PAGE_CHILD_ATTR, '1')
+    child.setAttribute(PREV_DISPLAY_ATTR, child.style.display || '')
+    child.style.display = 'none'
+  }
+
+  body.setAttribute(BODY_ORIGINAL_HIDDEN_ATTR, '1')
+}
+
+function restoreOriginalPageChildren() {
+  const body = document.body
+  if (!body) return
+
+  for (const child of Array.from(body.children)) {
+    if (!child.hasAttribute(HOST_PAGE_CHILD_ATTR)) continue
+    child.style.display = child.getAttribute(PREV_DISPLAY_ATTR) || ''
+    child.removeAttribute(HOST_PAGE_CHILD_ATTR)
+    child.removeAttribute(PREV_DISPLAY_ATTR)
+  }
+
+  body.removeAttribute(BODY_ORIGINAL_HIDDEN_ATTR)
 }
 
 function ensureHostPrintStyles() {
@@ -66,15 +83,26 @@ function ensureHostPrintStyles() {
   document.documentElement.appendChild(style)
 }
 
+function getViewerHostParent() {
+  return document.body || document.documentElement
+}
+
 export function createViewerRoot() {
   const existing = document.getElementById(ROOT_ID)
   if (existing) {
-    ensureHostPrintStyles()
-    lockBackgroundScroll(existing)
-    restoreOriginalPageVisibility(existing)
-    return {
-      root: existing,
-      shadowRoot: existing.shadowRoot || null
+    if (existing.shadowRoot) {
+      restoreBackgroundScroll(existing)
+      restoreLegacyBodyInert(existing)
+      existing.remove()
+    } else {
+      const parent = getViewerHostParent()
+      if (existing.parentNode !== parent) {
+        parent.appendChild(existing)
+      }
+      ensureHostPrintStyles()
+      lockBackgroundScroll(existing)
+      hideOriginalPageChildren(existing)
+      return { root: existing }
     }
   }
 
@@ -82,23 +110,15 @@ export function createViewerRoot() {
   host.id = ROOT_ID
   host.style.position = 'fixed'
   host.style.inset = '0'
-  host.style.zIndex = '2147483647'
   host.style.background = '#ffffff'
 
-  document.documentElement.appendChild(host)
+  const parent = getViewerHostParent()
+  parent.appendChild(host)
   ensureHostPrintStyles()
   lockBackgroundScroll(host)
-  restoreOriginalPageVisibility(host)
+  hideOriginalPageChildren(host)
 
-  let shadowRoot = null
-  if (host.attachShadow) {
-    shadowRoot = host.attachShadow({ mode: 'open' })
-  }
-
-  return {
-    root: host,
-    shadowRoot
-  }
+  return { root: host }
 }
 
 export function teardownViewerRoot() {
@@ -106,7 +126,7 @@ export function teardownViewerRoot() {
   if (!host) return
 
   restoreBackgroundScroll(host)
-  restoreOriginalPageInteractivity(host)
+  restoreOriginalPageChildren()
   host.remove()
 
   const hostPrintStyle = document.getElementById(HOST_PRINT_STYLE_ID)

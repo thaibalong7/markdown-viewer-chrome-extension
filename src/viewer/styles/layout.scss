@@ -103,10 +103,10 @@
   font-size: 12px;
   line-height: 1.45;
   font-weight: 500;
-  color: var(--mdp-text);
-  background: var(--mdp-panel-bg);
-  border: 1px solid var(--mdp-border);
-  box-shadow: 0 4px 18px color-mix(in srgb, var(--mdp-text) 12%, transparent);
+  color: var(--mdp-text, #1f2328);
+  background: var(--mdp-panel-bg, #f6f8fa);
+  border: 1px solid var(--mdp-border, #d0d7de);
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--mdp-text, #1f2328) 12%, transparent);
   pointer-events: none;
   text-align: left;
 }

@@ -1,5 +1,7 @@
 import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../shared/constants/tooltip.js'
 
+const VIEWER_ROOT_SELECTOR = '#mdp-viewer-root'
+
 /**
  * Lightweight hover/focus tooltips for imperative viewer DOM (plugins).
  * @param {HTMLElement} anchor
@@ -21,6 +23,8 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
   function portalParent() {
     const root = anchor.getRootNode()
     if (root instanceof ShadowRoot) return root
+    const viewerRoot = anchor.closest?.(VIEWER_ROOT_SELECTOR)
+    if (viewerRoot) return viewerRoot
     return doc.body
   }
 

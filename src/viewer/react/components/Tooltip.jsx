@@ -12,6 +12,7 @@ import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../../../shared/constants/toolt
 
 const TIP_MARGIN_PX = 8
 const VIEWPORT_PAD_PX = 6
+const VIEWER_ROOT_SELECTOR = '#mdp-viewer-root'
 
 /** @param {import('react').Ref | undefined | null} ref @param {HTMLElement | null} node */
 function assignRef(ref, node) {
@@ -87,7 +88,7 @@ function measureTooltipPosition({
 }
 
 /**
- * Hover/focus tooltip for viewer chrome (Shadow DOM or document).
+ * Hover/focus tooltip for viewer chrome.
  *
  * @param {object} props
  * @param {string} props.content
@@ -176,6 +177,8 @@ export function Tooltip({
       const rootNode = node?.getRootNode?.()
       if (rootNode instanceof ShadowRoot) {
         setPortalTarget(rootNode)
+      } else if (node?.closest?.(VIEWER_ROOT_SELECTOR)) {
+        setPortalTarget(node.closest(VIEWER_ROOT_SELECTOR))
       } else if (node?.ownerDocument?.body) {
         setPortalTarget(node.ownerDocument.body)
       } else {

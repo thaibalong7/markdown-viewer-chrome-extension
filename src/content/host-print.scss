@@ -1,15 +1,17 @@
-/* Light DOM only: shadow-bound viewer styles cannot target `#mdp-viewer-root`.
+/* Light DOM host-page print rules for `#mdp-viewer-root`.
    Chrome print layout breaks across pages when the mount host stays `position: fixed`
    (content stacks / overlaps from page 2 onward). Reset for print.
 
-   The viewer host is a sibling of `<body>` (appended to `<html>`). Chrome still prints the
-   underlying `file:` markdown page (often a single `<pre>`), so output would show raw
-   source first, then the rendered viewer — hide the host page body for print.
+   Chrome still prints the underlying `file:` markdown page (often a single `<pre>`), so
+   output would show raw source first, then the rendered viewer. The viewer host is mounted
+   inside `<body>` without Shadow DOM for compatibility with body-level selection listeners
+   used by extensions such as Google Translate, so hide body children other than the viewer
+   for print.
 
-   Also see (Shadow DOM bundle): `src/viewer/styles/_chrome-print.scss` (viewer chrome print),
+   Also see: `src/viewer/styles/_chrome-print.scss` (viewer chrome print),
    `src/viewer/styles/content/_article-print.scss` (article typography for print). */
 @media print {
-  body {
+  body > :not(#mdp-viewer-root) {
     display: none !important;
   }
 

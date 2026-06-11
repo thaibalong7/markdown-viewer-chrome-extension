@@ -91,8 +91,7 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
     throw new Error('Viewer styles are missing.')
   }
 
-  const { shadowRoot, root } = createViewerRoot()
-  const mountTarget = shadowRoot || root
+  const { root: mountTarget } = createViewerRoot()
   // If the content script runs again (extension reload/HMR), clear previous UI
   // to prevent duplicated DOM/style accumulation.
   mountTarget.innerHTML = ''

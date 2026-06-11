@@ -9,7 +9,7 @@ const EXPORT_KATEX_CDN_CSS = 'https://cdn.jsdelivr.net/npm/katex@0.16.44/dist/ka
  * Minimal markdown-body styles for standalone HTML / Word HTML export (no extension CSS bundle).
  *
  * Intentionally mirrors `src/viewer/styles/content/*.scss` (typography, code, tables, plugins, mermaid).
- * Standalone exports cannot load the Shadow DOM SCSS bundle; keep this string aligned when changing
+ * Standalone exports cannot load the viewer SCSS bundle; keep this string aligned when changing
  * on-screen article styles. Theme colors come from `createStyleVars()` inlined as `:root` above this block.
  */
 const EXPORT_MARKDOWN_BODY_CSS = `

@@ -1,0 +1,1 @@
+../../.agents/rules/10-environment-build-and-assets.md

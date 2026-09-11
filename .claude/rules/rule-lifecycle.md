@@ -1,0 +1,1 @@
+../../.agents/rules/rule-lifecycle.md

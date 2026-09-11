@@ -1,0 +1,1 @@
+../../.agents/rules/40-settings-messaging.md

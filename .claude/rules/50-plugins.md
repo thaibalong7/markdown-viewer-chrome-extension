@@ -1,0 +1,1 @@
+../../.agents/rules/50-plugins.md

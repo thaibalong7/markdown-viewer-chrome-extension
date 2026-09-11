@@ -1,0 +1,1 @@
+../../.agents/rules/00-project-context.md

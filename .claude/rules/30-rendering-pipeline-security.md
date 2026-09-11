@@ -1,0 +1,1 @@
+../../.agents/rules/30-rendering-pipeline-security.md

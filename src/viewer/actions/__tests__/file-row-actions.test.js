@@ -1,12 +1,22 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { copyTextToClipboard } from '../../../shared/clipboard.js'
 import {
+  copyFileRowName,
   isBrowserOpenableFileHref,
   isPlainPrimaryClick,
   openFileHrefInNewTab
 } from '../file-row-actions.js'
 import { MDP_WS_FILE } from '../../../shared/constants/explorer.js'
 
+vi.mock('../../../shared/clipboard.js', () => ({
+  copyTextToClipboard: vi.fn()
+}))
+
 describe('file row actions', () => {
+  beforeEach(() => {
+    vi.mocked(copyTextToClipboard).mockReset()
+  })
+
   it('detects unmodified primary clicks', () => {
     expect(
       isPlainPrimaryClick({
@@ -40,5 +50,21 @@ describe('file row actions', () => {
 
     expect(openFileHrefInNewTab(`${MDP_WS_FILE}docs%2Fa.md`, openWindow)).toBe(false)
     expect(openWindow).not.toHaveBeenCalled()
+  })
+
+  it('copies the displayed file name', async () => {
+    await expect(copyFileRowName('README.md')).resolves.toBe('README.md')
+    expect(copyTextToClipboard).toHaveBeenCalledWith('README.md')
+  })
+
+  it('rejects an empty file name without using the clipboard', async () => {
+    await expect(copyFileRowName('')).rejects.toThrow('No file name to copy')
+    expect(copyTextToClipboard).not.toHaveBeenCalled()
+  })
+
+  it('surfaces clipboard failures while copying a file name', async () => {
+    vi.mocked(copyTextToClipboard).mockRejectedValueOnce(new Error('Clipboard unavailable'))
+
+    await expect(copyFileRowName('README.md')).rejects.toThrow('Clipboard unavailable')
   })
 })

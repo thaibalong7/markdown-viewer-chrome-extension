@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import {
   canCopyCurrentFileLink,
+  copyFileRowName,
   copyFileRowLink,
   isBrowserOpenableFileHref,
   isPlainPrimaryClick,
@@ -9,6 +10,7 @@ import {
 import { useToast } from '../../contexts/ToastContext.jsx'
 import { useDismissableLayer } from '../../hooks/useDismissableLayer.js'
 import { ActionMenu } from '../common/ActionMenu.jsx'
+import { CopyIcon } from '../icons/CopyIcon.jsx'
 import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
 import { MoreIcon } from '../icons/MoreIcon.jsx'
 import { OpenNewTabIcon } from '../icons/OpenNewTabIcon.jsx'
@@ -72,6 +74,18 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
     })()
   }
 
+  const onCopyName = () => {
+    void (async () => {
+      try {
+        await copyFileRowName(file.displayName)
+        setMenuOpen(false)
+        showToast?.('Copied file name', { variant: 'success' })
+      } catch {
+        showToast?.('Could not copy file name', { variant: 'error' })
+      }
+    })()
+  }
+
   return (
     <li
       className={`mdp-explorer__node mdp-explorer__tree-file${isActive ? ' is-active' : ''}${menuOpen ? ' is-menu-open' : ''}`}
@@ -121,6 +135,12 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
             disabled: !canCopyLink,
             icon: <CopyLinkIcon className="mdp-explorer__row-menu-icon" />,
             onClick: onCopyLink
+          },
+          {
+            key: 'copy-name',
+            label: 'Copy file name',
+            icon: <CopyIcon className="mdp-explorer__row-menu-icon" />,
+            onClick: onCopyName
           }
         ]}
       />

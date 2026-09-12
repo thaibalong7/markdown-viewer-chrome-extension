@@ -37,3 +37,15 @@ export async function copyFileRowLink(href) {
     throw error
   }
 }
+
+export async function copyFileRowName(fileName) {
+  const name = String(fileName || '')
+  if (!name) throw new Error('No file name to copy')
+  try {
+    await copyTextToClipboard(name)
+    return name
+  } catch (error) {
+    logger.debug('Copy file row name failed.', error)
+    throw error
+  }
+}

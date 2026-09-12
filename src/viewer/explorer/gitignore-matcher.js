@@ -143,11 +143,11 @@ export function createGitignoreMatcher() {
  * @param {import('./folder-scanner.js').ExplorerTreeNode} node
  * @returns {boolean}
  */
-export function explorerSubtreeHasMarkdownFile(node) {
+export function explorerSubtreeHasViewableFile(node) {
   if (!node) return false
   if (node.type === 'file') return true
   for (const c of node.children || []) {
-    if (explorerSubtreeHasMarkdownFile(c)) return true
+    if (explorerSubtreeHasViewableFile(c)) return true
   }
   return false
 }
@@ -157,7 +157,7 @@ export function explorerSubtreeHasMarkdownFile(node) {
  * @param {boolean} [isScanRoot] - keep node even when empty (workspace / folder scan root)
  * @returns {boolean}
  */
-export function pruneExplorerFoldersWithoutMarkdown(node, isScanRoot = false) {
+export function pruneExplorerFoldersWithoutViewableFiles(node, isScanRoot = false) {
   if (!node) return false
   if (node.type === 'file') return true
   const kids = node.children || []
@@ -165,7 +165,7 @@ export function pruneExplorerFoldersWithoutMarkdown(node, isScanRoot = false) {
   const next = []
   for (const c of kids) {
     if (c.type === 'folder') {
-      if (pruneExplorerFoldersWithoutMarkdown(c, false)) next.push(c)
+      if (pruneExplorerFoldersWithoutViewableFiles(c, false)) next.push(c)
     } else {
       next.push(c)
     }

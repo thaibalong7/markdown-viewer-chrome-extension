@@ -16,6 +16,7 @@ describe('file-io', () => {
 
   it('getSuggestedFilenameFromUrl uses leaf name', () => {
     expect(getSuggestedFilenameFromUrl('file:///Users/me/notes/Hello%20World.md')).toBe('Hello World.md')
+    expect(getSuggestedFilenameFromUrl('file:///Users/me/notes/rules.mdc')).toBe('rules.mdc')
   })
 
   it('getSuggestedFilenameFromUrl adds .md when missing', () => {

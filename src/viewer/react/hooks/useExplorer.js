@@ -9,7 +9,6 @@ import {
   DEFAULT_EXPLORER_MAX_FOLDERS,
   DEFAULT_EXPLORER_MAX_SCAN_DEPTH
 } from '../../../shared/constants/explorer.js'
-import { sendMessage } from '../../../messaging/index.js'
 import {
   buildExplorerFilesContext
 } from '../../explorer/explorer-files-context.js'
@@ -30,7 +29,8 @@ import {
 } from '../../explorer/explorer-scan-session.js'
 import {
   createExplorerNavigator,
-  createSiblingBackNavigationForUrl
+  createSiblingBackNavigationForUrl,
+  navigateFromBrowserHistory
 } from '../../explorer/explorer-navigation.js'
 import { createExplorerWorkspaceSession } from '../../explorer/explorer-workspace-session.js'
 import {
@@ -184,10 +184,10 @@ export function useExplorer({ bridge }) {
   )
 
   const resetViewerToPickWorkspaceFile = useCallback(async () => {
-    bridge?.setMarkdown?.('# Select a file\n\nPick a Markdown file from the sidebar list.')
+    const shown = await bridge?.showPlaceholder?.('Select a supported file from the Files panel.')
+    if (shown === false) return
     setCurrentFileUrl('')
     bridge?.setSmoothInitialHashScroll?.(false)
-    await bridge?.render?.({ preserveScroll: false, honorHash: false })
     bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
     document.title = 'Markdown Plus'
   }, [bridge, setCurrentFileUrl])
@@ -224,7 +224,7 @@ export function useExplorer({ bridge }) {
         backLabel: nav.backLabel,
         onBack: nav.onBack,
         actionsMode: 'sibling',
-        listAriaLabel: 'Markdown files in folder tree',
+        listAriaLabel: 'Supported files in folder tree',
         filesContext: buildFilesContext(),
         expandedMap: opts.preserveExpandedState ? stateRef.current.expandedMap : storedExpandedMap,
         preserveExpandedState
@@ -280,8 +280,7 @@ export function useExplorer({ bridge }) {
         buildFilesContext,
         setCurrentFileUrl,
         runSiblingScan,
-        syncExplorerBackButton,
-        sendMessage
+        syncExplorerBackButton
       }),
     [bridge, buildFilesContext, refs, runSiblingScan, safePatch, setCurrentFileUrl, syncExplorerBackButton]
   )
@@ -324,6 +323,22 @@ export function useExplorer({ bridge }) {
   )
 
   useExplorerBridgeRegistration({ bridge, navigateToFileRef, workspaceVirtualReadersRef })
+
+  useEffect(() => {
+    const handlePopState = () => {
+      void navigateFromBrowserHistory({
+        locationHref: window.location.href,
+        currentFileUrl: currentFileUrlRef.current,
+        navigateToFile: navigateToFileRef.current,
+        getLocationHref: () => window.location.href,
+        getCurrentFileUrl: () => currentFileUrlRef.current
+      }).catch((error) => {
+        logger.warn('Failed to navigate browser history.', error)
+      })
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   useEffect(() => {
     mountedRef.current = true

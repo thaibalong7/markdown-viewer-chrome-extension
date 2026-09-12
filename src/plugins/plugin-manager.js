@@ -112,10 +112,16 @@ export async function createPluginManager({ settings } = {}) {
         ...context,
         pluginSettings: mergedPluginSettings
       }
+      const cleanups = []
       for (const plugin of activePlugins) {
         const handler = plugin?.[PLUGIN_HOOKS.AFTER_RENDER]
         if (typeof handler !== 'function') continue
-        await Promise.resolve(handler(baseContext))
+        const cleanup = await Promise.resolve(handler(baseContext))
+        if (typeof cleanup === 'function') cleanups.push(cleanup)
+      }
+      if (!cleanups.length) return undefined
+      return () => {
+        for (const cleanup of cleanups.splice(0)) cleanup()
       }
     }
   }

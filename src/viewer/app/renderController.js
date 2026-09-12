@@ -1,11 +1,11 @@
 import { logger } from '../../shared/logger.js'
-import { buildTocItems } from '../core/toc-builder.js'
-import { renderDocument, renderIntoElement } from '../core/renderer.js'
+import { getFileTypeById } from '../../shared/file-types.js'
+import { getDocumentRenderer } from '../documents/renderer-registry.js'
 import { createStyleElement } from './viewerStyles.js'
 
 /**
  * @param {object} options
- * @param {() => string} options.getMarkdown
+ * @param {() => object | null} options.getLoadedDocument
  * @param {() => object} options.getSettings
  * @param {() => (HTMLElement | null)} options.getArticleEl
  * @param {() => object | null} options.getArticleInteractions
@@ -14,7 +14,7 @@ import { createStyleElement } from './viewerStyles.js'
  * @param {HTMLElement | ShadowRoot} options.container
  */
 export function createRenderController({
-  getMarkdown,
+  getLoadedDocument,
   getSettings,
   getArticleEl,
   getArticleInteractions,
@@ -25,6 +25,9 @@ export function createRenderController({
   let smoothInitialHashScroll = false
   let renderToken = 0
   let lastSuccessfulRenderMarkdown = ''
+  let lastTocItems = []
+  let activeRendererCleanup = null
+  let activeRenderController = null
   const renderContextCache = new Map()
   const runtimeStyleElements = new Map()
 
@@ -56,14 +59,15 @@ export function createRenderController({
   function syncTocItems() {
     const reactHandle = getReactHandle()
     const showToc = getSettings()?.layout?.showToc !== false
-    if (!showToc) {
+    const loadedDocument = getLoadedDocument()
+    const capabilities = getFileTypeById(loadedDocument?.document?.fileTypeId)?.capabilities
+    if (!showToc || capabilities?.outline !== true) {
       reactHandle?.updateChromeState?.({ tocItems: [] })
       reactHandle?.setTocReady?.(true)
       return
     }
 
-    const items = buildTocItems(getArticleEl())
-    reactHandle?.updateChromeState?.({ tocItems: items })
+    reactHandle?.updateChromeState?.({ tocItems: lastTocItems })
     reactHandle?.setTocReady?.(true)
   }
 
@@ -74,34 +78,56 @@ export function createRenderController({
     else article.removeAttribute('aria-busy')
   }
 
+  function cleanupActiveRenderer() {
+    const cleanup = activeRendererCleanup
+    activeRendererCleanup = null
+    if (typeof cleanup !== 'function') return
+    try {
+      cleanup()
+    } catch (error) {
+      logger.debug('Could not clean up the previous document renderer.', error)
+    }
+  }
+
   async function render({ preserveScroll = false, honorHash = true } = {}) {
     const reactHandle = getReactHandle()
     reactHandle?.setTocReady?.(false)
     const currentRenderToken = ++renderToken
+    activeRenderController?.abort()
+    cleanupActiveRenderer()
+    activeRenderController = new AbortController()
+    const signal = activeRenderController.signal
     const scrollSnapshot = preserveScroll ? captureScrollPosition() : null
     setArticleBusy(true)
     try {
-      const result = await renderDocument(getMarkdown(), getSettings(), {
-        injectViewerStyles,
-        renderContextCache
-      })
-
-      if (currentRenderToken !== renderToken) return null
+      const loadedDocument = getLoadedDocument()
+      const fileType = getFileTypeById(loadedDocument?.document?.fileTypeId)
+      if (!loadedDocument || !fileType) throw new Error('No loadable current document is available.')
+      const renderer = await getDocumentRenderer(fileType.rendererId)
+      if (currentRenderToken !== renderToken || signal.aborted) return null
       const article = getArticleEl()
       if (!article) return null
 
-      renderIntoElement(article, result.html)
-      if (currentRenderToken !== renderToken) return null
-
       const articleInteractions = getArticleInteractions()
-      await result.pluginManager?.afterRender({
+      const result = await renderer.render({
+        loadedDocument,
         articleEl: article,
         settings: getSettings(),
-        copyCodeWithToast: articleInteractions?.copyCodeWithToast.bind(articleInteractions)
+        signal,
+        services: {
+          injectViewerStyles,
+          renderContextCache,
+          copyCodeWithToast: articleInteractions?.copyCodeWithToast.bind(articleInteractions),
+          prepareZoomableImages: () => articleInteractions?.prepareZoomableImages(),
+          closeImageLightbox: () => articleInteractions?.closeImageLightbox()
+        }
       })
-      if (currentRenderToken !== renderToken) return null
-
-      articleInteractions?.prepareZoomableImages()
+      if (currentRenderToken !== renderToken || signal.aborted) {
+        result?.cleanup?.()
+        return null
+      }
+      activeRendererCleanup = typeof result?.cleanup === 'function' ? result.cleanup : null
+      lastTocItems = Array.isArray(result?.tocItems) ? result.tocItems : []
 
       syncTocItems()
       if (scrollSnapshot) {
@@ -112,11 +138,14 @@ export function createRenderController({
         if (smoothInitialHashScroll) smoothInitialHashScroll = false
       }
 
-      lastSuccessfulRenderMarkdown = getMarkdown()
+      if (fileType.id === 'markdown') {
+        lastSuccessfulRenderMarkdown = String(result?.renderedText ?? loadedDocument.text ?? '')
+      }
 
-      return result
+      return result?.renderResult ?? result
     } catch (error) {
-      logger.error('Failed to render markdown document.', error)
+      if (error?.name === 'AbortError') return null
+      logger.error('Failed to render document.', error)
       reactHandle?.setTocReady?.(true)
       return null
     } finally {
@@ -125,6 +154,11 @@ export function createRenderController({
   }
 
   function destroy() {
+    ++renderToken
+    activeRenderController?.abort()
+    activeRenderController = null
+    cleanupActiveRenderer()
+    lastTocItems = []
     renderContextCache.clear()
     runtimeStyleElements.clear()
   }

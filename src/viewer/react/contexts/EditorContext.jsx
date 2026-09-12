@@ -28,6 +28,16 @@ export function editorReducer(state, action) {
         sidebarVisible: false
       }
 
+    case 'EXIT_EDIT':
+      if (!state.enabled) return state
+      return {
+        ...state,
+        enabled: false,
+        dirty: false,
+        sidebarVisible: state._savedSidebarVisible ?? state.sidebarVisible,
+        _savedSidebarVisible: null
+      }
+
     case 'TOGGLE_SIDEBAR':
       if (state.enabled) return state
       return { ...state, sidebarVisible: !state.sidebarVisible }

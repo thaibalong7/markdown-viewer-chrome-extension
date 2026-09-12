@@ -1,9 +1,9 @@
 import {
   MDP_WS_FILE,
   fileUrlIsUnderDirectoryUrl,
-  isMarkdownFileHref,
   normalizeFileUrlForCompare
 } from './url-utils.js'
+import { getFileTypeFromUrl, isExplorerSupportedFile } from '../../shared/file-types.js'
 
 /**
  * @typedef {'folder' | 'workspace'} ExplorerModeBadgeId
@@ -64,9 +64,11 @@ function clearActiveFlagsInExplorerTree(node) {
  * @param {string} [scanRootDirUrl] - file: workspace / sibling scan root; required for file: URLs so unrelated files are never injected
  * @returns {{ injected: boolean }}
  */
-export function injectCurrentMarkdownAtRootIfMissing(tree, currentFileUrl, stats, scanRootDirUrl) {
+export function injectCurrentDocumentAtRootIfMissing(tree, currentFileUrl, stats, scanRootDirUrl) {
   if (!tree || tree.type !== 'folder' || !currentFileUrl) return { injected: false }
-  if (!isMarkdownFileHref(currentFileUrl)) return { injected: false }
+  if (!isExplorerSupportedFile(currentFileUrl)) return { injected: false }
+  const fileType = getFileTypeFromUrl(currentFileUrl)
+  if (!fileType) return { injected: false }
   if (explorerTreeContainsFileHref(tree, currentFileUrl)) return { injected: false }
   if (typeof currentFileUrl === 'string' && currentFileUrl.startsWith('file:')) {
     if (typeof scanRootDirUrl !== 'string' || !scanRootDirUrl.startsWith('file:')) {
@@ -104,6 +106,7 @@ export function injectCurrentMarkdownAtRootIfMissing(tree, currentFileUrl, stats
       type: 'file',
       name: displayName,
       href: currentFileUrl,
+      fileTypeId: fileType.id,
       depth: fileDepth,
       isActive: true
     },

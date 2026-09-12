@@ -21,7 +21,7 @@ function ensureMermaidToolbar(containerEl) {
  * @param {{ source?: string, copyCodeWithToast?: (text: string, triggerButton?: HTMLButtonElement | null) => Promise<void> }} [options] — `copyCodeWithToast` from `MarkdownViewerApp` (code-block / Mermaid copy; success uses inline button state when `triggerButton` is passed).
  */
 export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast } = {}) {
-  if (!containerEl || containerEl.dataset.mermaidCopyAttached === 'true') return
+  if (!containerEl || containerEl.dataset.mermaidCopyAttached === 'true') return () => {}
 
   const text = source == null ? '' : String(source)
   containerEl.dataset.mermaidCopyAttached = 'true'
@@ -31,46 +31,60 @@ export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast
   copyBtn.type = 'button'
   copyBtn.className = 'mdp-mermaid-toolbar__copy'
   copyBtn.setAttribute('aria-label', 'Copy Mermaid source')
-  attachTooltip(copyBtn, {
+  const tooltip = attachTooltip(copyBtn, {
     text: 'Copy Mermaid source',
     showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
   })
   copyBtn.appendChild(createCopyIconSvg())
 
-  copyBtn.addEventListener('click', (event) => {
+  const onClick = (event) => {
     event.preventDefault()
     event.stopPropagation()
     if (typeof copyCodeWithToast !== 'function') return
     void copyCodeWithToast(text, copyBtn)
-  })
+  }
+  copyBtn.addEventListener('click', onClick)
 
   toolbar.insertBefore(copyBtn, toolbar.firstChild)
+  return () => {
+    copyBtn.removeEventListener('click', onClick)
+    tooltip.destroy()
+    copyBtn.remove()
+    delete containerEl.dataset.mermaidCopyAttached
+  }
 }
 
 export function attachMermaidLightboxButton(containerEl) {
-  if (!containerEl || containerEl.dataset.mermaidExpandAttached === 'true') return
-  if (!containerEl.querySelector(':scope > svg')) return
+  if (!containerEl || containerEl.dataset.mermaidExpandAttached === 'true') return () => {}
+  if (!containerEl.querySelector(':scope > svg')) return () => {}
 
   containerEl.dataset.mermaidExpandAttached = 'true'
 
   const toolbar = ensureMermaidToolbar(containerEl)
   const expandBtn = createMermaidLightboxButton()
-  attachTooltip(expandBtn, {
+  const tooltip = attachTooltip(expandBtn, {
     text: 'Open chart in full-screen zoom view.',
     showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
   })
 
-  expandBtn.addEventListener('click', (event) => {
+  const onClick = (event) => {
     event.preventDefault()
     event.stopPropagation()
     openMermaidLightbox(containerEl)
-  })
+  }
+  expandBtn.addEventListener('click', onClick)
 
   const actionsRoot = toolbar.querySelector(':scope > .mdp-mermaid-actions')
   if (actionsRoot) {
     toolbar.insertBefore(expandBtn, actionsRoot)
   } else {
     toolbar.appendChild(expandBtn)
+  }
+  return () => {
+    expandBtn.removeEventListener('click', onClick)
+    tooltip.destroy()
+    expandBtn.remove()
+    delete containerEl.dataset.mermaidExpandAttached
   }
 }
 
@@ -142,8 +156,8 @@ function getScrollableAncestors(fromEl) {
 }
 
 export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
-  if (!containerEl || containerEl.dataset.mermaidActionsAttached === 'true') return
-  if (!containerEl.querySelector(':scope > svg')) return
+  if (!containerEl || containerEl.dataset.mermaidActionsAttached === 'true') return () => {}
+  if (!containerEl.querySelector(':scope > svg')) return () => {}
 
   containerEl.dataset.mermaidActionsAttached = 'true'
 
@@ -284,19 +298,20 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
     window.removeEventListener('keydown', onWindowKeyDown)
   }
 
-  attachTooltip(trigger, {
+  const tooltip = attachTooltip(trigger, {
     text: 'Export this diagram: SVG (vector) or PNG at 1x–4x resolution.',
     showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
   })
 
-  trigger.addEventListener('click', (event) => {
+  const onTriggerClick = (event) => {
     event.preventDefault()
     event.stopPropagation()
     if (isOpen) closeMenu()
     else openMenu()
-  })
+  }
+  trigger.addEventListener('click', onTriggerClick)
 
-  menu.addEventListener('click', async (event) => {
+  const onMenuClick = async (event) => {
     const button = getClosestActionButton(event.target)
     if (!(button instanceof HTMLButtonElement)) return
     event.preventDefault()
@@ -316,8 +331,18 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
     } catch (error) {
       logger.warn('Mermaid export action failed.', error)
     }
-  })
+  }
+  menu.addEventListener('click', onMenuClick)
 
   root.appendChild(trigger)
   ensureMermaidToolbar(containerEl).appendChild(root)
+  return () => {
+    closeMenu()
+    trigger.removeEventListener('click', onTriggerClick)
+    menu.removeEventListener('click', onMenuClick)
+    tooltip.destroy()
+    menu.remove()
+    root.remove()
+    delete containerEl.dataset.mermaidActionsAttached
+  }
 }

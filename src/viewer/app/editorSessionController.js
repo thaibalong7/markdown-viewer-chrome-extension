@@ -17,6 +17,7 @@ const EDITOR_RENDER_DEBOUNCE_MS = 300
  * @param {() => void} options.applyReaderStyles
  * @param {() => (HTMLElement | null)} options.getArticleEl
  * @param {() => object} options.getSettings
+ * @param {() => boolean} [options.canEditCurrentDocument]
  */
 export function createEditorSessionController({
   isDestroyed,
@@ -29,7 +30,8 @@ export function createEditorSessionController({
   showToast,
   applyReaderStyles,
   getArticleEl,
-  getSettings
+  getSettings,
+  canEditCurrentDocument = () => true
 }) {
   /** @type {ReturnType<typeof setTimeout> | null} */
   let editorDebounceTimer = null
@@ -66,6 +68,18 @@ export function createEditorSessionController({
     clearDebounce()
     setMarkdown(nextMarkdown)
     getReactHandle()?.updateMarkdown(nextMarkdown)
+    setDirty(false)
+  }
+
+  function prepareForDocumentSwitch() {
+    if (!editorDirty) {
+      clearDebounce()
+      return true
+    }
+    const discard = window.confirm('You have unsaved changes. Open another document and discard them?')
+    if (!discard) return false
+    clearDebounce()
+    return true
   }
 
   function handleEditorChange(nextMarkdown) {
@@ -91,7 +105,7 @@ export function createEditorSessionController({
    * @param {boolean} enabled
    */
   function setEditModeActive(enabled) {
-    editModeActive = Boolean(enabled)
+    editModeActive = Boolean(enabled) && canEditCurrentDocument()
     if (editModeActive) {
       applyEditModeOverrides()
       return
@@ -102,7 +116,7 @@ export function createEditorSessionController({
 
   async function handleSave() {
     if (isDestroyed() || saveInFlight) return
-    if (!editModeActive) return
+    if (!editModeActive || !canEditCurrentDocument()) return
 
     saveInFlight = true
     syncSaveStatus()
@@ -142,6 +156,7 @@ export function createEditorSessionController({
 
   return {
     setExternalMarkdown,
+    prepareForDocumentSwitch,
     handleEditorChange,
     setEditModeActive,
     handleSave,

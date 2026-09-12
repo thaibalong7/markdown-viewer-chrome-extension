@@ -1,4 +1,4 @@
-import { pathnameHasMarkdownExtension } from './markdown-detect.js'
+import { isDirectActivationUrl } from './file-types.js'
 
 export const MAX_FILE_HISTORY_ENTRIES = 12
 
@@ -9,7 +9,7 @@ export function normalizeFileHistoryUrl(rawUrl) {
     if (parsed.protocol !== 'file:') return null
     parsed.hash = ''
     parsed.search = ''
-    if (!pathnameHasMarkdownExtension(parsed.pathname)) return null
+    if (!isDirectActivationUrl(parsed)) return null
     return parsed.href
   } catch {
     return null

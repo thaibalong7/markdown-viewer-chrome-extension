@@ -1,7 +1,7 @@
 import { logger } from '../../shared/logger.js'
 import { scanFolderRecursive } from './folder-scanner.js'
 import { scanSiblingFiles } from './sibling-scanner.js'
-import { injectCurrentMarkdownAtRootIfMissing } from './explorer-files-context.js'
+import { injectCurrentDocumentAtRootIfMissing } from './explorer-files-context.js'
 import { getParentDirectoryPathLabel, getParentDirectoryUrl, normalizeDirectoryUrl } from './url-utils.js'
 
 export function scanCancelledError() {
@@ -155,7 +155,7 @@ export function createSiblingScanRunner(deps) {
         })
         throwIfAborted(signal)
 
-        injectCurrentMarkdownAtRootIfMissing(tree, activeFileUrl, stats, normalizeDirectoryUrl(scanRootDirUrl))
+        injectCurrentDocumentAtRootIfMissing(tree, activeFileUrl, stats, normalizeDirectoryUrl(scanRootDirUrl))
         finalizeSiblingTreePresent(tree, stats, {
           maxScanDepth,
           folderLabel,

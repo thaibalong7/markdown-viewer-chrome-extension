@@ -6,7 +6,7 @@ import {
   tryFileDirectoryUrlFromWebkitFiles
 } from './workspace-picker.js'
 import { scanFolderRecursive } from './folder-scanner.js'
-import { injectCurrentMarkdownAtRootIfMissing } from './explorer-files-context.js'
+import { injectCurrentDocumentAtRootIfMissing } from './explorer-files-context.js'
 import {
   clearWorkspaceRootUrl,
   getExplorerExpandedMap,
@@ -280,7 +280,7 @@ export function createExplorerWorkspaceSession(deps) {
   const finalizeWorkspaceTree = async (tree, stats, opts) => {
     const rootForInject =
       (opts.normalizedDirUrl && String(opts.normalizedDirUrl)) || getWorkspaceRootUrl() || ''
-    injectCurrentMarkdownAtRootIfMissing(
+    injectCurrentDocumentAtRootIfMissing(
       tree,
       refs.currentFileUrlRef.current,
       stats,

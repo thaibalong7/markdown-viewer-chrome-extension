@@ -5,12 +5,22 @@ import { DirtySync } from './components/DirtySync.jsx'
 import { ViewerShell } from './components/ViewerShell.jsx'
 import { FloatingActions } from './components/FloatingActions.jsx'
 
+export function shouldInitiallyShowFilesPanel(matchMedia = globalThis.window?.matchMedia) {
+  if (typeof matchMedia !== 'function') return true
+  try {
+    return matchMedia('(min-width: 1024px)').matches
+  } catch {
+    return true
+  }
+}
+
 export function ViewerApp({
   settings,
   tocItems,
   tocReady,
   explorerBridge,
   markdown,
+  documentUiState,
   onShellReady,
   getArticleEl,
   getSettings,
@@ -23,12 +33,13 @@ export function ViewerApp({
   onTocClickInEditor,
   onEditModeChange,
   onSave,
+  onViewModeChange,
   dirty = false,
   saveStatus = 'saved'
 }) {
   return (
     <ToastProvider onShowToastReady={onShowToastReady}>
-      <EditorProvider initialSidebarVisible>
+      <EditorProvider initialSidebarVisible={shouldInitiallyShowFilesPanel()}>
         <DirtySync dirty={dirty} />
         <ViewerShell
           onShellReady={onShellReady}
@@ -37,6 +48,7 @@ export function ViewerApp({
           tocReady={tocReady}
           explorerBridge={explorerBridge}
           markdown={markdown}
+          documentUiState={documentUiState}
           onContentChange={onContentChange}
           onEditorReady={onEditorReady}
           onEditorDestroy={onEditorDestroy}
@@ -50,7 +62,9 @@ export function ViewerApp({
             getArticleEl={getArticleEl}
             getSettings={getSettings}
             getCurrentFileUrl={getCurrentFileUrl}
+            documentUiState={documentUiState}
             onSave={onSave}
+            onViewModeChange={onViewModeChange}
           />
         </ViewerShell>
       </EditorProvider>

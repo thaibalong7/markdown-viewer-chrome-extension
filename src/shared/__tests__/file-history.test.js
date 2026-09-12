@@ -11,6 +11,9 @@ describe('file-history', () => {
     expect(normalizeFileHistoryUrl('file:///Users/me/docs/README.md?x=1#intro')).toBe(
       'file:///Users/me/docs/README.md'
     )
+    expect(normalizeFileHistoryUrl('file:///Users/me/docs/rules.mdc#scope')).toBe(
+      'file:///Users/me/docs/rules.mdc'
+    )
   })
 
   it('rejects non-file and non-markdown URLs', () => {

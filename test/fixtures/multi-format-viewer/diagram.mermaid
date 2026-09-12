@@ -1,0 +1,5 @@
+flowchart LR
+  Start([Start]) --> Choice{Valid?}
+  Choice -->|Yes| Done([Done])
+  Choice -->|No| Fix[Fix source]
+  Fix --> Choice

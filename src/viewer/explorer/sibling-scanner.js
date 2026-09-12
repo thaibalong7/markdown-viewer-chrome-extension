@@ -1,8 +1,8 @@
 import { logger } from '../../shared/logger.js'
+import { getFileTypeFromUrl, isExplorerSupportedFile } from '../../shared/file-types.js'
 import { MESSAGE_TYPES, sendMessage } from '../../messaging/index.js'
 import {
   getParentDirectoryUrl,
-  isMarkdownFileHref,
   normalizeDirectoryUrl,
   normalizeFileUrlForCompare
 } from './url-utils.js'
@@ -180,9 +180,9 @@ export function posixPathRelativeToFileRoot(rootDirUrl, targetUrl) {
 }
 
 /**
- * Scan the parent directory listing for sibling markdown files (same folder as current file).
+ * Scan the parent directory listing for supported sibling files (same folder as current file).
  * @param {string} currentFileUrl - e.g. window.location.href
- * @returns {Promise<Array<{ displayName: string, href: string, isActive: boolean }>>}
+ * @returns {Promise<Array<{ displayName: string, href: string, fileTypeId: string, isActive: boolean }>>}
  */
 export async function scanSiblingFiles(currentFileUrl, { signal } = {}) {
   throwIfAborted(signal)
@@ -195,11 +195,13 @@ export async function scanSiblingFiles(currentFileUrl, { signal } = {}) {
   const html = await fetchDirectoryListingHtml(dirUrl, { signal })
   throwIfAborted(signal)
   const seen = new Set()
-  /** @type {Array<{ displayName: string, href: string, isActive: boolean }>} */
+  /** @type {Array<{ displayName: string, href: string, fileTypeId: string, isActive: boolean }>} */
   const out = []
 
-  function pushIfMarkdown(absolute) {
-    if (!isMarkdownFileHref(absolute) || seen.has(absolute)) return
+  function pushIfSupported(absolute) {
+    if (!isExplorerSupportedFile(absolute) || seen.has(absolute)) return
+    const fileType = getFileTypeFromUrl(absolute)
+    if (!fileType) return
     seen.add(absolute)
 
     let pathname = ''
@@ -222,7 +224,7 @@ export async function scanSiblingFiles(currentFileUrl, { signal } = {}) {
     const normalizedEntry = normalizeFileUrlForCompare(absolute)
     const isActive = normalizedCurrent === normalizedEntry
 
-    out.push({ displayName, href: absolute, isActive })
+    out.push({ displayName, href: absolute, fileTypeId: fileType.id, isActive })
   }
 
   if (html) {
@@ -230,13 +232,13 @@ export async function scanSiblingFiles(currentFileUrl, { signal } = {}) {
     for (const e of entries) {
       throwIfAborted(signal)
       if (e.isDir) continue
-      pushIfMarkdown(e.href)
+      pushIfSupported(e.href)
     }
   }
 
   if (out.length === 0) {
     logger.debug(
-      'Sibling scan: no .md links in directory listing (html length:',
+      'Sibling scan: no supported files in directory listing (html length:',
       html.length,
       ').'
     )

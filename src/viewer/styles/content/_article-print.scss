@@ -137,6 +137,28 @@
     display: none !important;
   }
 
+  .mdp-markdown-body .mdp-text-document,
+  .mdp-markdown-body .mdp-mermaid-document__source {
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    border-color: #bbb !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .mdp-markdown-body .mdp-image-document {
+    min-height: 0 !important;
+    break-inside: avoid;
+  }
+
+  .mdp-markdown-body .mdp-image-document__image {
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    object-fit: contain !important;
+  }
+
   .mdp-markdown-body blockquote {
     font-size: 9.5pt !important;
     margin: 0 0 0.75em !important;

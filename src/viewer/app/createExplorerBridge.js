@@ -1,9 +1,9 @@
 /**
  * @param {object} options
  * @param {() => object} options.getSettings
- * @param {(markdown: string) => void} options.setMarkdown
  * @param {(value: boolean) => void} options.setSmoothInitialHashScroll
- * @param {(opts?: object) => Promise<unknown>} options.render
+ * @param {(href: string, opts?: object) => Promise<boolean>} options.openDocument
+ * @param {(text: string) => Promise<boolean>} options.showPlaceholder
  * @param {(message: string, options?: object) => void} options.showToast
  * @param {() => (HTMLElement | null)} options.getScrollRoot
  * @param {() => (HTMLElement | null)} options.getArticleEl
@@ -12,9 +12,9 @@
  */
 export function createExplorerBridge({
   getSettings,
-  setMarkdown,
   setSmoothInitialHashScroll,
-  render,
+  openDocument,
+  showPlaceholder,
   showToast,
   getScrollRoot,
   getArticleEl,
@@ -23,9 +23,9 @@ export function createExplorerBridge({
 }) {
   return {
     getSettings,
-    setMarkdown,
     setSmoothInitialHashScroll,
-    render,
+    openDocument,
+    showPlaceholder,
     showToast,
     getScrollRoot,
     getArticleEl,

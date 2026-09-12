@@ -216,7 +216,7 @@ export function createArticleInteractions({
     }
 
     if (
-      (resolved.kind === 'markdown-file' || resolved.kind === 'workspace-virtual-file') &&
+      (resolved.kind === 'document-file' || resolved.kind === 'workspace-virtual-file') &&
       resolved.resolvedUrl
     ) {
       void navigateToFile?.(resolved.resolvedUrl, { hash: resolved.hash || null })
@@ -323,5 +323,12 @@ export function createArticleInteractions({
     destroyImageLightbox()
   }
 
-  return { bind, destroy, prepareZoomableImages, scrollToHash, copyCodeWithToast }
+  return {
+    bind,
+    destroy,
+    prepareZoomableImages,
+    closeImageLightbox,
+    scrollToHash,
+    copyCodeWithToast
+  }
 }

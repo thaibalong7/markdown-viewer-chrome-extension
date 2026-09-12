@@ -3,15 +3,20 @@
  * Keep pathname extension checks in one place to avoid drift.
  */
 
-/** Case-insensitive: `.md`, `.markdown`, `.mdown` at end of a URL pathname. */
-export const MARKDOWN_PATHNAME_EXT_RE = /\.(md|markdown|mdown)$/i
+import { MARKDOWN_FILE_EXTENSIONS, getFileTypeFromName } from './file-types.js'
+
+/** Compatibility export derived from the file-type registry. */
+export const MARKDOWN_PATHNAME_EXT_RE = new RegExp(
+  `\\.(${MARKDOWN_FILE_EXTENSIONS.join('|')})$`,
+  'i'
+)
 
 /**
  * @param {string} [pathname] - `location.pathname` or similar
  * @returns {boolean}
  */
 export function pathnameHasMarkdownExtension(pathname) {
-  return typeof pathname === 'string' && MARKDOWN_PATHNAME_EXT_RE.test(pathname)
+  return getFileTypeFromName(pathname)?.id === 'markdown'
 }
 
 /**

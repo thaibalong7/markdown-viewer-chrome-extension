@@ -36,4 +36,13 @@ describe('EditorContext reducer', () => {
     expect(next).toBe(editing)
     expect(next.sidebarVisible).toBe(false)
   })
+
+  it('can force edit mode closed when document capabilities change', () => {
+    const editing = editorReducer(createInitialState(true), { type: 'TOGGLE_EDIT' })
+    const exited = editorReducer(editing, { type: 'EXIT_EDIT' })
+
+    expect(exited.enabled).toBe(false)
+    expect(exited.dirty).toBe(false)
+    expect(exited.sidebarVisible).toBe(true)
+  })
 })

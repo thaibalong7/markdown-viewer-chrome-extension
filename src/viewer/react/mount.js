@@ -9,6 +9,7 @@ export function mountViewerReact(container, options = {}) {
     tocReady = false,
     explorerBridge,
     markdown = '',
+    documentUiState = {},
     onShellReady,
     getArticleEl,
     getSettings,
@@ -19,7 +20,8 @@ export function mountViewerReact(container, options = {}) {
     onEditorScroll,
     onTocClickInEditor,
     onEditModeChange,
-    onSave
+    onSave,
+    onViewModeChange
   } = options
   const root = createRoot(container)
   let shellReadyResolve = () => { }
@@ -37,6 +39,7 @@ export function mountViewerReact(container, options = {}) {
     tocReady: Boolean(tocReady),
     explorerBridge: explorerBridge || null,
     markdown: markdown || '',
+    documentUiState: documentUiState || {},
     getArticleEl,
     getSettings,
     getCurrentFileUrl,
@@ -47,6 +50,7 @@ export function mountViewerReact(container, options = {}) {
     onTocClickInEditor,
     onEditModeChange,
     onSave,
+    onViewModeChange,
     dirty: false,
     saveStatus: 'saved',
     onShowToastReady: (showToastFn) => {
@@ -75,6 +79,10 @@ export function mountViewerReact(container, options = {}) {
     },
     updateMarkdown(nextMarkdown) {
       nextProps = { ...nextProps, markdown: typeof nextMarkdown === 'string' ? nextMarkdown : '' }
+      render()
+    },
+    updateDocumentUiState(nextDocumentUiState) {
+      nextProps = { ...nextProps, documentUiState: nextDocumentUiState || {} }
       render()
     },
     updateChromeState({ tocItems } = {}) {

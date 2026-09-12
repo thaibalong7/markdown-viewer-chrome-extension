@@ -1,6 +1,7 @@
 import { sanitizeDownloadFilename, triggerDownload } from '../../shared/download.js'
 import { MDP_WS_FILE } from '../../shared/constants/explorer.js'
 import { logger } from '../../shared/logger.js'
+import { getFileTypeFromName, MARKDOWN_FILE_EXTENSIONS } from '../../shared/file-types.js'
 
 export class FileMismatchError extends Error {
   /**
@@ -136,7 +137,7 @@ export function getSuggestedFilenameFromUrl(fileUrl) {
     const u = new URL(fileUrl)
     const leaf = u.pathname.split('/').filter(Boolean).pop() || ''
     const decoded = decodeURIComponent(leaf)
-    if (/\.(md|markdown|mdown)$/i.test(decoded)) {
+    if (getFileTypeFromName(decoded)?.id === 'markdown') {
       return sanitizeDownloadFilename(decoded)
     }
     const base = decoded.replace(/\.[^.]+$/, '') || 'document'
@@ -288,7 +289,9 @@ export async function saveWithFileSystemAccess(content, suggestedName, fileUrlKe
       types: [
         {
           description: 'Markdown',
-          accept: { 'text/markdown': ['.md', '.markdown', '.mdown'] }
+          accept: {
+            'text/markdown': MARKDOWN_FILE_EXTENSIONS.map((extension) => `.${extension}`)
+          }
         }
       ]
     })

@@ -1,0 +1,3 @@
+# Hướng dẫn workspace
+
+Nội dung fixture cho đường dẫn ảo có Unicode và khoảng trắng.

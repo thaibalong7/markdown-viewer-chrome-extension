@@ -1,12 +1,9 @@
 import { logger } from '../shared/logger.js'
-import { pathnameHasMarkdownExtension } from '../shared/markdown-detect.js'
+import { isDirectActivationUrl } from '../shared/file-types.js'
 
 (async function start() {
   try {
-    const protocol = window.location?.protocol || ''
-    const pathname = window.location?.pathname || ''
-    const isLocalMarkdownFile = protocol === 'file:' && pathnameHasMarkdownExtension(pathname)
-    if (!isLocalMarkdownFile) return
+    if (!isDirectActivationUrl(window.location?.href || '')) return
 
     const { startViewer } = await import('./viewer-loader.js')
     await startViewer()

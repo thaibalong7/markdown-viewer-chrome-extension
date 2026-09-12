@@ -1,0 +1,9 @@
+Plain text fixture
+
+    Indentation and trailing spaces stay literal.  
+	Tabbed line: Xin chào 👋 — 日本語 — Ελληνικά
+
+<script>document.body.dataset.executed = 'must-not-run'</script>
+**This is not Markdown.**
+
+Long line: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ

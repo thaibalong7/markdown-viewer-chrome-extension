@@ -1,6 +1,6 @@
 # markdown-plus
 
-A Chrome Extension (MV3) that detects local Markdown files and turns raw text into a clean reading experience with a **React**-based viewer shell (left Files explorer, right Outline and document-action rail), themes, plugins, and customizable settings via a **React popup**.
+A Chrome Extension (MV3) that opens local Markdown files as a polished multi-format workspace. Its **React** viewer shell can navigate Markdown, plain text, Mermaid diagrams, raster images, and SVG files from the Files explorer while keeping Markdown editing, themes, plugins, and exports capability-aware.
 
 ## Table of Contents
 
@@ -13,12 +13,13 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 
 ## Features
 
-- Auto-detects Markdown-like pages (product gate: local `file:` `.md` / `.markdown` / `.mdown` plus detector heuristics).
+- Auto-activates for local `file:` Markdown-family documents: `.md`, `.markdown`, `.mdown`, and `.mdc`.
 - Renders content in a readable viewer layout (markdown-it → optional Shiki syntax highlighting → DOMPurify → article `innerHTML`; React owns chrome only). Shiki uses an explicit language allowlist (`@shikijs/langs` + `github-light` / `github-dark` themes) to keep the extension package smaller than the full `shiki/bundle/web` set.
+- Opens `.txt`, `.mermaid`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.avif`, `.bmp`, `.ico`, `.apng`, and `.svg` from an active viewer without taking over those formats when opened directly. Plain text and raw Mermaid use text-only DOM APIs; SVG is displayed only as an image resource.
 - Dedicated right-side rail with document actions and an independently scrollable Outline for heading navigation.
 - Loading UX improvements: reusable skeleton placeholders for Outline TOC hydration, Files explorer loading state, and popup settings boot.
-- **Files explorer** (dedicated, independently resizable left panel): browse Markdown siblings in the same folder; use file-row actions to open in a new tab, copy a link, or copy the file name; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
-- **Internal Markdown link navigation**: click a relative or absolute link to another `.md` file (e.g. `./other.md`, `../README.md#install`, `guides/spec.md`) and it opens in the same viewer without a full page reload. Supports self-link scroll, hash fragment navigation, browser Back/Forward history, sidebar active-file sync, spaces/Unicode in filenames, and virtual workspace files. Modifier keys (Ctrl/Cmd+click, middle-click) and external/non-Markdown links keep their default browser behaviour.
+- **Files explorer** (dedicated, independently resizable left panel): browse every supported sibling format in the same folder; use file-row actions to open in a new tab, copy a link, or copy the file name; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list. Format-specific icons distinguish Markdown, text, Mermaid, raster, and SVG documents.
+- **Internal document navigation from Markdown**: click a relative or absolute link to any supported document and open it in the same viewer without a full page reload. Refresh, browser Back/Forward, active-file reveal, cross-folder scans, hash navigation, spaces/Unicode filenames, and virtual workspace files stay coordinated across format changes. Modifier keys and external or unsupported links keep their default browser behaviour.
 - **Inline Markdown editor** for local `file:` Markdown documents: toggle Edit from the floating actions, use a lazy-loaded CodeMirror 6 editor in split preview or focus mode, live-render through the existing sanitized viewer pipeline, sync editor scroll to preview, navigate TOC items back to editor source, resize the split panes, search/replace, and save with File System Access API plus download fallback.
 - GitHub-inspired Light/Dark themes and typography controls.
 - Built-in plugin system with core and optional plugins.
@@ -32,7 +33,7 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 - Mermaid export actions:
   - Download `SVG`
   - Download `PNG` with resolution options (`1x`, `2x`, `3x`, `4x`)
-- **Print** and **export** (HTML / Word) from the document actions in the right rail when a real `file:` URL is active.
+- Capability-driven document actions: Print is available for rendered formats; Edit and HTML/Word export remain Markdown-only; standalone Mermaid adds an accessible rendered/source toggle.
 - User settings persisted through browser storage (`chrome.storage.sync` with local fallback).
 - **Tech:** Vite, `@crxjs/vite-plugin`, `@vitejs/plugin-react`, React 19, CodeMirror 6 (lazy-loaded editor), Shiki (`shiki` core + `@shikijs/langs` / `@shikijs/themes`), SCSS inlined in the content script. KaTeX CSS for Math is loaded only when the Math plugin is enabled.
 
@@ -93,11 +94,11 @@ Development notes:
 ## Project Structure
 
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
-- `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + React chrome (`react/*`: shell, left Files panel, right Outline/action rail, editor, toast), async render pipeline (`core/*`), CodeMirror editor modules (`editor/*`: lazy bundle, theme, scroll sync, file save), article clicks/hash scroll/internal link interception (`article-interactions.js`), link resolver for internal Markdown navigation (`navigation/link-resolver.js`), plugin SVG helpers (`icons.js`), plugin tooltips (`dom-tooltip.js`), shared scroll math (`scroll-utils.js`), Files I/O helpers (`explorer/*` consumed by `useExplorer.js`).
+- `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + document session/load/render adapters (`app/*`, `documents/*`), shared Mermaid rendering (`mermaid/*`), React chrome (`react/*`), Markdown pipeline (`core/*`), CodeMirror editor (`editor/*`), article interactions/navigation, and Files explorer workflows.
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
 - `src/popup` - React settings UI (`PopupApp.jsx`, panels, `useSettingsPersistence`).
-- `src/shared` - Utilities (`logger`, `deep-merge`, `clipboard`, `download`, `settings-diff`, `markdown-detect`), reusable React primitives (`shared/react/Skeleton.jsx`), shared style partials (`shared/styles/_skeleton.scss`), and **constants** (`viewer.js`, `explorer.js`, `tooltip.js`, `editor.js`).
+- `src/shared` - Utilities including the central `file-types.js` registry, logging, settings diffs, clipboard/download helpers, reusable React primitives and styles, and shared constants.
 - `src/background` - Runtime messaging and settings handlers.
 
 For an up-to-date file tree and module notes, see [`docs/project-overview-for-ai.md`](docs/project-overview-for-ai.md).

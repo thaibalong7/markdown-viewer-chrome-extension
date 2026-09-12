@@ -55,7 +55,7 @@ describe('editor layout styles', () => {
       /\.mdp-sidebar__resize-handle\s*\{[^}]*right: -4\.5px/s
     )
     expect(layoutCss).toMatch(
-      /\.mdp-sidebar__resize-handle::after\s*\{[^}]*left: calc\(50% - 1px\)[^}]*width: 3px/s
+      /\.mdp-sidebar__resize-handle::after\s*\{[^}]*left: 50%[^}]*width: 3px[^}]*transform: translate\(-50%, -50%\)/s
     )
     expect(layoutCss).toMatch(
       /\.mdp-sidebar__resize-handle--right\s*\{[^}]*left: -4\.5px/s

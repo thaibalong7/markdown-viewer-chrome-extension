@@ -64,7 +64,7 @@ describe('resolveMarkdownLink', () => {
   describe('relative markdown file (same folder)', () => {
     it('resolves b.md', () => {
       const r = resolve('b.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///Users/me/docs/b.md')
       expect(r.hash).toBeNull()
       expect(r.shouldIntercept).toBe(true)
@@ -72,26 +72,32 @@ describe('resolveMarkdownLink', () => {
 
     it('resolves ./b.md', () => {
       const r = resolve('./b.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///Users/me/docs/b.md')
       expect(r.shouldIntercept).toBe(true)
     })
 
     it('resolves b.markdown', () => {
       const r = resolve('b.markdown')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.shouldIntercept).toBe(true)
     })
 
     it('resolves b.mdown', () => {
       const r = resolve('b.mdown')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
+      expect(r.shouldIntercept).toBe(true)
+    })
+
+    it('resolves b.mdc through the Markdown navigation path', () => {
+      const r = resolve('b.mdc')
+      expect(r.kind).toBe('document-file')
       expect(r.shouldIntercept).toBe(true)
     })
 
     it('resolves b.md#usage with hash', () => {
       const r = resolve('b.md#usage')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///Users/me/docs/b.md')
       expect(r.hash).toBe('usage')
       expect(r.shouldIntercept).toBe(true)
@@ -101,14 +107,14 @@ describe('resolveMarkdownLink', () => {
   describe('relative markdown file (subfolder / parent)', () => {
     it('resolves guides/install.md', () => {
       const r = resolve('guides/install.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///Users/me/docs/guides/install.md')
       expect(r.shouldIntercept).toBe(true)
     })
 
     it('resolves ./guides/install.md#step-2', () => {
       const r = resolve('./guides/install.md#step-2')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///Users/me/docs/guides/install.md')
       expect(r.hash).toBe('step-2')
       expect(r.shouldIntercept).toBe(true)
@@ -116,14 +122,14 @@ describe('resolveMarkdownLink', () => {
 
     it('resolves ../README.md', () => {
       const r = resolve('../README.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///Users/me/README.md')
       expect(r.shouldIntercept).toBe(true)
     })
 
     it('resolves ../../shared/spec.md', () => {
       const r = resolve('../../shared/spec.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///Users/shared/spec.md')
       expect(r.shouldIntercept).toBe(true)
     })
@@ -160,13 +166,13 @@ describe('resolveMarkdownLink', () => {
   describe('file names with spaces', () => {
     it('resolves My Notes.md', () => {
       const r = resolve('My%20Notes.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.shouldIntercept).toBe(true)
     })
 
     it('resolves URL-encoded My%20Notes.md', () => {
       const r = resolve('My%20Notes.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.shouldIntercept).toBe(true)
       expect(r.resolvedUrl).toContain('My%20Notes.md')
     })
@@ -175,7 +181,7 @@ describe('resolveMarkdownLink', () => {
   describe('file names with Unicode', () => {
     it('resolves ghi%20chu.md', () => {
       const r = resolve('ghi%20chu.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.shouldIntercept).toBe(true)
     })
   })
@@ -183,21 +189,77 @@ describe('resolveMarkdownLink', () => {
   describe('absolute file: links', () => {
     it('resolves file:///other/path/doc.md', () => {
       const r = resolve('file:///other/path/doc.md')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.resolvedUrl).toBe('file:///other/path/doc.md')
       expect(r.shouldIntercept).toBe(true)
     })
 
     it('resolves file:///other/doc.md#heading', () => {
       const r = resolve('file:///other/doc.md#heading')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.hash).toBe('heading')
       expect(r.shouldIntercept).toBe(true)
     })
   })
 
-  describe('non-markdown local assets', () => {
-    it.each(['image.png', 'diagram.svg', 'report.pdf', 'data.json', 'archive.zip'])(
+  describe('plain text documents', () => {
+    it('intercepts a relative .txt target as a supported document', () => {
+      const r = resolve('notes.txt')
+      expect(r).toMatchObject({
+        kind: 'document-file',
+        resolvedUrl: 'file:///Users/me/docs/notes.txt',
+        shouldIntercept: true
+      })
+    })
+
+    it('intercepts an existing relative .txt target in a virtual workspace', () => {
+      const target = 'mdp-ws-file:docs%2Fnotes.txt'
+      const r = resolveMarkdownLink('notes.txt', {
+        currentFileUrl: 'mdp-ws-file:docs%2Fa.md',
+        virtualFileExists: (href) => href === target
+      })
+      expect(r).toMatchObject({
+        kind: 'workspace-virtual-file',
+        resolvedUrl: target,
+        shouldIntercept: true
+      })
+    })
+  })
+
+  describe('raster image documents', () => {
+    it.each(['image.png', 'photo.JPG', 'animation.gif', 'photo.webp', 'photo.avif', 'photo.bmp', 'favicon.ico', 'animation.apng'])(
+      'intercepts supported raster image %s',
+      (href) => {
+        const r = resolve(href)
+        expect(r.kind).toBe('document-file')
+        expect(r.shouldIntercept).toBe(true)
+      }
+    )
+  })
+
+  describe('SVG image documents', () => {
+    it('intercepts SVG as a supported document', () => {
+      const r = resolve('diagram.svg')
+      expect(r).toMatchObject({
+        kind: 'document-file',
+        resolvedUrl: 'file:///Users/me/docs/diagram.svg',
+        shouldIntercept: true
+      })
+    })
+  })
+
+  describe('standalone Mermaid documents', () => {
+    it('intercepts Mermaid as a supported document', () => {
+      expect(resolve('chart.mermaid')).toMatchObject({
+        kind: 'document-file',
+        resolvedUrl: 'file:///Users/me/docs/chart.mermaid',
+        shouldIntercept: true
+      })
+    })
+  })
+
+  describe('unsupported local assets', () => {
+    it.each(['report.pdf', 'data.json', 'archive.zip'])(
       'returns asset for %s',
       (href) => {
         const r = resolve(href)
@@ -210,7 +272,7 @@ describe('resolveMarkdownLink', () => {
   describe('URL with query string', () => {
     it('checks extension on pathname not query', () => {
       const r = resolve('b.md?raw=1')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.shouldIntercept).toBe(true)
     })
   })
@@ -257,8 +319,27 @@ describe('resolveMarkdownLink', () => {
       expect(r.shouldIntercept).toBe(true)
     })
 
-    it('returns asset for non-markdown relative href from virtual workspace', () => {
+    it('opens an existing raster image relative to a virtual workspace document', () => {
       const r = resolveMarkdownLink('image.png', {
+        currentFileUrl: virtualBase,
+        virtualFileExists: () => true
+      })
+      expect(r.kind).toBe('workspace-virtual-file')
+      expect(r.shouldIntercept).toBe(true)
+    })
+
+    it('opens an existing SVG relative to a virtual workspace document', () => {
+      const r = resolveMarkdownLink('diagram.svg', {
+        currentFileUrl: virtualBase,
+        virtualFileExists: () => true
+      })
+      expect(r.kind).toBe('workspace-virtual-file')
+      expect(r.shouldIntercept).toBe(true)
+    })
+
+    it('does not intercept an existing unregistered virtual file URL', () => {
+      const target = `${MDP_WS_FILE}docs%2Fdata.json`
+      const r = resolveMarkdownLink(target, {
         currentFileUrl: virtualBase,
         virtualFileExists: () => true
       })
@@ -270,7 +351,7 @@ describe('resolveMarkdownLink', () => {
   describe('no currentFileUrl context', () => {
     it('resolves absolute file href without base', () => {
       const r = resolveMarkdownLink('file:///abs/path/doc.md', {})
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.shouldIntercept).toBe(true)
     })
 
@@ -284,13 +365,13 @@ describe('resolveMarkdownLink', () => {
   describe('hash edge cases', () => {
     it('preserves encoded Unicode in hash', () => {
       const r = resolve('b.md#%C4%91o%E1%BA%A1n-2')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.hash).toBe('đoạn-2')
     })
 
     it('handles hash with special chars', () => {
       const r = resolve('b.md#section-1.2')
-      expect(r.kind).toBe('markdown-file')
+      expect(r.kind).toBe('document-file')
       expect(r.hash).toBe('section-1.2')
     })
   })

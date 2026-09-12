@@ -1,5 +1,5 @@
 import { MDP_WS_FILE } from '../../shared/constants/explorer.js'
-import { MARKDOWN_PATHNAME_EXT_RE } from '../../shared/markdown-detect.js'
+import { getFileTypeFromName, getFileTypeFromUrl } from '../../shared/file-types.js'
 import { normalizeFileUrlForCompare } from '../explorer/url-utils.js'
 
 function decodeHashFragment(value) {
@@ -92,7 +92,7 @@ function resolveVirtualWorkspaceRelativeHref(href, currentFileUrl) {
  *   virtualFileExists?: ((href: string) => boolean) | null
  * }} [context]
  * @returns {{
- *   kind: 'same-document-hash' | 'self-link' | 'markdown-file' | 'workspace-virtual-file' | 'external' | 'asset' | 'unsupported',
+ *   kind: 'same-document-hash' | 'self-link' | 'document-file' | 'workspace-virtual-file' | 'external' | 'asset' | 'unsupported',
  *   resolvedUrl: string | null,
  *   hash: string | null,
  *   shouldIntercept: boolean
@@ -125,6 +125,9 @@ export function resolveMarkdownLink(rawHref, context = {}) {
   const { hrefWithoutHash, hash } = splitHrefHash(href)
 
   if (hrefWithoutHash.startsWith(MDP_WS_FILE)) {
+    if (!getFileTypeFromUrl(hrefWithoutHash)) {
+      return { kind: 'asset', resolvedUrl: hrefWithoutHash, hash, shouldIntercept: false }
+    }
     if (!virtualFileExists(hrefWithoutHash)) {
       return { kind: 'unsupported', resolvedUrl: null, hash, shouldIntercept: false }
     }
@@ -143,7 +146,7 @@ export function resolveMarkdownLink(rawHref, context = {}) {
     if (!resolvedVirtual?.virtualHref) {
       return { kind: 'unsupported', resolvedUrl: null, hash, shouldIntercept: false }
     }
-    if (!MARKDOWN_PATHNAME_EXT_RE.test(resolvedVirtual.pathname)) {
+    if (!getFileTypeFromName(resolvedVirtual.pathname)) {
       return {
         kind: 'asset',
         resolvedUrl: resolvedVirtual.virtualHref,
@@ -174,14 +177,14 @@ export function resolveMarkdownLink(rawHref, context = {}) {
     resolved.hash = ''
     resolved.search = ''
     const resolvedUrl = resolved.href
-    if (!MARKDOWN_PATHNAME_EXT_RE.test(resolved.pathname)) {
+    if (!getFileTypeFromUrl(resolved)) {
       return { kind: 'asset', resolvedUrl, hash, shouldIntercept: false }
     }
 
     const currentNormalized = normalizeFileUrlForCompare(currentFileUrl)
     const targetNormalized = normalizeFileUrlForCompare(resolvedUrl)
     return {
-      kind: currentNormalized && currentNormalized === targetNormalized ? 'self-link' : 'markdown-file',
+      kind: currentNormalized && currentNormalized === targetNormalized ? 'self-link' : 'document-file',
       resolvedUrl,
       hash,
       shouldIntercept: true

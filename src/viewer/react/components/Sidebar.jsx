@@ -17,7 +17,7 @@ export function Sidebar({ explorerBridge, rootEl, settings }) {
   return (
     <aside
       className="mdp-sidebar mdp-sidebar--files"
-      aria-label="Markdown files"
+      aria-label="Files"
       ref={handleSidebarRef}
     >
       <FilesPanel explorerBridge={explorerBridge} />

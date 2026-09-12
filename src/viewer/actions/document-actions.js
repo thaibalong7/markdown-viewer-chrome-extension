@@ -1,5 +1,6 @@
 import { sanitizeDownloadFilename, triggerDownload } from '../../shared/download.js'
 import { MDP_WS_FILE } from '../../shared/constants/explorer.js'
+import { stripRegisteredFileExtension } from '../../shared/file-types.js'
 import { createStyleVars } from '../../theme/index.js'
 
 /** KaTeX CSS from CDN so exported files hide MathML duplicate / render math like the viewer (offline export would need bundled fonts). */
@@ -68,7 +69,7 @@ export function buildExportFilename(fileUrl, extension) {
       try {
         const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
         const leaf = rel.split('/').filter(Boolean).pop() || ''
-        base = leaf.replace(/\.(md|markdown|mdown)$/i, '') || base
+        base = stripRegisteredFileExtension(leaf) || base
       } catch {
         /* keep base */
       }
@@ -76,7 +77,7 @@ export function buildExportFilename(fileUrl, extension) {
       try {
         const u = new URL(fileUrl)
         const leaf = u.pathname.split('/').filter(Boolean).pop() || ''
-        base = decodeURIComponent(leaf).replace(/\.(md|markdown|mdown)$/i, '') || base
+        base = stripRegisteredFileExtension(decodeURIComponent(leaf)) || base
       } catch {
         /* keep base */
       }

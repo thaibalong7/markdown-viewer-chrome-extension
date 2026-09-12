@@ -40,11 +40,11 @@ export function getDirectoryLabelFromUrl(fileUrl) {
  * @param {import('./folder-scanner.js').ExplorerTreeNode} node
  * @returns {number}
  */
-export function countMarkdownFilesInTree(node) {
+export function countViewableFilesInTree(node) {
   if (node.type === 'file') return 1
   let count = 0
   for (const child of node.children || []) {
-    count += countMarkdownFilesInTree(child)
+    count += countViewableFilesInTree(child)
   }
   return count
 }

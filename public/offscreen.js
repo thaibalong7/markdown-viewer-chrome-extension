@@ -23,8 +23,9 @@ function loadFileUrlAsText(url) {
       const text = xhr.responseText ?? ''
       const st = xhr.status
       // file:// frequently uses 0 for success; 2xx is normal for some builds
-      const looksOk =
-        (st >= 200 && st < 300) || (st === 0 && text.length > 0)
+      // A completed local file: XHR normally reports status 0, including for a
+      // valid empty file. Transport/access failures use the onerror path.
+      const looksOk = (st >= 200 && st < 300) || st === 0
       if (looksOk) {
         resolve(text)
         return

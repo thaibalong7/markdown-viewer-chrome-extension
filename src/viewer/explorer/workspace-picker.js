@@ -7,7 +7,8 @@ import {
   MDP_WS_FILE
 } from '../../shared/constants/explorer.js'
 import { logger } from '../../shared/logger.js'
-import { createGitignoreMatcher, pruneExplorerFoldersWithoutMarkdown } from './gitignore-matcher.js'
+import { getFileTypeFromName, isExplorerSupportedFile } from '../../shared/file-types.js'
+import { createGitignoreMatcher, pruneExplorerFoldersWithoutViewableFiles } from './gitignore-matcher.js'
 import { pathInputToFileDirectoryUrl } from './url-utils.js'
 
 /** @typedef {import('./folder-scanner.js').ExplorerTreeNode} ExplorerTreeNode */
@@ -314,7 +315,7 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
 
         const sub = await walk(/** @type {FileSystemDirectoryHandle} */ (handle), [...relParts, name], nextDepth)
         sub.name = name
-        if (pruneExplorerFoldersWithoutMarkdown(sub, false)) {
+        if (pruneExplorerFoldersWithoutViewableFiles(sub, false)) {
           children.push(sub)
         }
         if (stats.hitFolderLimit) break
@@ -327,7 +328,9 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
       ) {
         continue
       }
-      if (!/\.(md|markdown|mdown)$/i.test(name)) continue
+      if (!isExplorerSupportedFile(name)) continue
+      const fileType = getFileTypeFromName(name)
+      if (!fileType) continue
 
       if (gitignore?.shouldIgnore(entryRel, false)) continue
 
@@ -345,6 +348,7 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
         type: 'file',
         name,
         href,
+        fileTypeId: fileType.id,
         depth: depthFromRoot + 1,
         isActive: false
       })
@@ -362,7 +366,7 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
 
   const tree = await walk(rootHandle, [], 0)
   tree.name = rootName
-  pruneExplorerFoldersWithoutMarkdown(tree, true)
+  pruneExplorerFoldersWithoutViewableFiles(tree, true)
   emitProgress(workspaceVirtualDirHref(`${rootName}/`))
   return { tree, stats, readers }
 }
@@ -434,14 +438,14 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
     }
   }
 
-  const mdFiles = files.filter((f) => /\.(md|markdown|mdown)$/i.test(f.name))
-  mdFiles.sort((a, b) =>
+  const supportedFiles = files.filter((f) => isExplorerSupportedFile(f.name))
+  supportedFiles.sort((a, b) =>
     String(a.webkitRelativePath || '').localeCompare(String(b.webkitRelativePath || ''), undefined, {
       sensitivity: 'base'
     })
   )
 
-  if (!mdFiles.length) {
+  if (!supportedFiles.length) {
     const rootName = 'Folder'
     return {
       tree: {
@@ -456,7 +460,7 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
     }
   }
 
-  const rootName = String(mdFiles[0].webkitRelativePath || '').split('/')[0] || 'Folder'
+  const rootName = String(supportedFiles[0].webkitRelativePath || '').split('/')[0] || 'Folder'
 
   /** @type {Map<string, ExplorerTreeNode>} */
   const folders = new Map()
@@ -501,7 +505,7 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
   const root = /** @type {ExplorerTreeNode} */ (ensureFolder([rootName]))
   root.depth = 0
 
-  for (const file of mdFiles) {
+  for (const file of supportedFiles) {
     checkAborted()
 
     const rel = String(file.webkitRelativePath || '').replace(/\\/g, '/')
@@ -532,10 +536,13 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
     stats.scannedFiles++
 
     const fname = parts[parts.length - 1] || ''
+    const fileType = getFileTypeFromName(fname)
+    if (!fileType) continue
     parent.children.push({
       type: 'file',
       name: fname,
       href,
+      fileTypeId: fileType.id,
       depth: parts.length - 1,
       isActive: false
     })
@@ -555,7 +562,7 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
 
   sortTree(root)
   stats.scannedFolders = Math.max(0, folders.size - 1)
-  pruneExplorerFoldersWithoutMarkdown(root, true)
+  pruneExplorerFoldersWithoutViewableFiles(root, true)
   emitProgress(workspaceVirtualDirHref(`${rootName}/`))
   return { tree: root, stats, readers }
 }

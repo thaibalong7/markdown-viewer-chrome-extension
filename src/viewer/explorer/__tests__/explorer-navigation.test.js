@@ -1,11 +1,63 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
+  navigateFromBrowserHistory,
+  parseHistoryDocumentUrl,
   shouldReuseSiblingTreeAfterNavigation,
   workspaceDocumentStillValid
 } from '../explorer-navigation.js'
 import { MDP_WS_FILE } from '../../../shared/constants/explorer.js'
 
 describe('explorer navigation decisions', () => {
+  it('parses a browser-history file URL without carrying query or fragment into document identity', () => {
+    expect(parseHistoryDocumentUrl('file:///docs/chart.mermaid?raw=1#flow%20chart')).toEqual({
+      fileUrl: 'file:///docs/chart.mermaid',
+      hash: 'flow chart'
+    })
+    expect(parseHistoryDocumentUrl('https://example.com/readme.md')).toBeNull()
+  })
+
+  it('reopens a history target without creating another history entry', async () => {
+    const navigateToFile = vi.fn().mockResolvedValue(true)
+
+    await expect(navigateFromBrowserHistory({
+      locationHref: 'file:///docs/notes.txt#details',
+      currentFileUrl: 'file:///docs/readme.md',
+      navigateToFile
+    })).resolves.toBe(true)
+
+    expect(navigateToFile).toHaveBeenCalledWith('file:///docs/notes.txt', {
+      hash: 'details',
+      updateHistory: false
+    })
+  })
+
+  it('restores the current URL when dirty-state confirmation rejects history navigation', async () => {
+    const restoreUrl = vi.fn()
+
+    await expect(navigateFromBrowserHistory({
+      locationHref: 'file:///docs/notes.txt',
+      currentFileUrl: 'file:///docs/readme.md',
+      navigateToFile: vi.fn().mockResolvedValue(false),
+      restoreUrl
+    })).resolves.toBe(false)
+
+    expect(restoreUrl).toHaveBeenCalledWith('file:///docs/readme.md', { replace: false })
+  })
+
+  it('does not restore a stale rejected target after a newer history navigation starts', async () => {
+    const restoreUrl = vi.fn()
+
+    await navigateFromBrowserHistory({
+      locationHref: 'file:///docs/notes.txt',
+      currentFileUrl: 'file:///docs/readme.md',
+      navigateToFile: vi.fn().mockResolvedValue(false),
+      getLocationHref: () => 'file:///docs/photo.png',
+      restoreUrl
+    })
+
+    expect(restoreUrl).not.toHaveBeenCalled()
+  })
+
   it('reuses a sibling tree when the navigated file remains under the scanned root', () => {
     const siblingTree = { type: 'folder', href: 'file:///docs/', children: [] }
 

@@ -397,9 +397,9 @@ export function openMermaidLightbox(containerEl) {
 }
 
 export function attachMermaidLightbox(containerEl) {
-  if (!containerEl || containerEl.dataset.mermaidLightboxAttached === 'true') return
+  if (!containerEl || containerEl.dataset.mermaidLightboxAttached === 'true') return () => {}
   const svg = containerEl.querySelector(':scope > svg')
-  if (!(svg instanceof SVGSVGElement)) return
+  if (!(svg instanceof SVGSVGElement)) return () => {}
 
   containerEl.dataset.mermaidLightboxAttached = 'true'
   svg.classList.add('mdp-mermaid__zoom-target')
@@ -407,16 +407,31 @@ export function attachMermaidLightbox(containerEl) {
   svg.setAttribute('role', 'button')
   svg.setAttribute('aria-label', 'Open Mermaid chart in zoom view')
 
-  svg.addEventListener('click', (event) => {
+  const onClick = (event) => {
     event.preventDefault()
     openMermaidLightbox(containerEl)
-  })
+  }
 
-  svg.addEventListener('keydown', (event) => {
+  const onKeyDown = (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return
     event.preventDefault()
     openMermaidLightbox(containerEl)
-  })
+  }
+  svg.addEventListener('click', onClick)
+  svg.addEventListener('keydown', onKeyDown)
+  return () => {
+    svg.removeEventListener('click', onClick)
+    svg.removeEventListener('keydown', onKeyDown)
+    delete containerEl.dataset.mermaidLightboxAttached
+  }
+}
+
+export function destroyMermaidLightbox(rootEl = null) {
+  if (!activeLightbox) return
+  if (rootEl && activeLightbox.rootEl !== rootEl) return
+  closeMermaidLightbox()
+  activeLightbox.overlay.remove()
+  activeLightbox = null
 }
 
 export function createMermaidLightboxButton() {

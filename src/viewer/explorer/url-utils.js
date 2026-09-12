@@ -1,8 +1,7 @@
 import { MDP_WS_DIR, MDP_WS_FILE } from '../../shared/constants/explorer.js'
-import { MARKDOWN_PATHNAME_EXT_RE } from '../../shared/markdown-detect.js'
-
-/** Markdown file extensions for URL pathname checks (alias of `MARKDOWN_PATHNAME_EXT_RE`). */
-export const MARKDOWN_EXT = MARKDOWN_PATHNAME_EXT_RE
+import {
+  stripRegisteredFileExtension
+} from '../../shared/file-types.js'
 
 /** Re-export workspace virtual URL prefixes (source: `shared/constants/explorer.js`). */
 export { MDP_WS_DIR, MDP_WS_FILE }
@@ -13,21 +12,6 @@ export { MDP_WS_DIR, MDP_WS_FILE }
  */
 export function isWorkspaceVirtualHref(href) {
   return typeof href === 'string' && (href.startsWith(MDP_WS_FILE) || href.startsWith(MDP_WS_DIR))
-}
-
-/**
- * @param {string} href
- * @returns {boolean}
- */
-export function isMarkdownFileHref(href) {
-  if (!href || href === '/' || href.endsWith('/')) return false
-  try {
-    const u = new URL(href)
-    if (u.protocol !== 'file:') return false
-    return MARKDOWN_EXT.test(u.pathname)
-  } catch {
-    return false
-  }
 }
 
 /**
@@ -134,12 +118,12 @@ export function normalizeFileUrlForCompare(url) {
  * @param {string} fileUrl
  * @returns {string}
  */
-export function markdownFileTitleFromUrl(fileUrl) {
+export function documentTitleFromUrl(fileUrl) {
   if (typeof fileUrl === 'string' && fileUrl.startsWith(MDP_WS_FILE)) {
     try {
       const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
       const base = rel.split('/').pop() || ''
-      const name = base.replace(MARKDOWN_PATHNAME_EXT_RE, '')
+      const name = stripRegisteredFileExtension(base)
       return name || 'document'
     } catch {
       return 'document'
@@ -148,7 +132,7 @@ export function markdownFileTitleFromUrl(fileUrl) {
   try {
     const pathname = new URL(fileUrl).pathname
     const base = pathname.split('/').filter(Boolean).pop() || ''
-    const name = base.replace(MARKDOWN_PATHNAME_EXT_RE, '')
+    const name = stripRegisteredFileExtension(base)
     return decodeURIComponent(name) || 'original file'
   } catch {
     return 'original file'

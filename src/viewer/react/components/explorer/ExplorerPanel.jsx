@@ -32,7 +32,7 @@ export function ExplorerPanel({ bridge }) {
     state.view === 'progress'
   const refreshTooltip = (() => {
     if (state.view === 'loading' || state.view === 'progress') return 'Refresh is available after scanning finishes'
-    if (!state.currentFileUrl) return 'Open a Markdown file before refreshing'
+    if (!state.currentFileUrl) return 'Open a supported file before refreshing'
     if (isWorkspaceVirtualHref(state.currentFileUrl)) return 'Refresh is unavailable for virtual workspace files'
     if (state.explorerMode === 'workspace' && !getWorkspaceRootUrl()) return 'Refresh is unavailable for virtual workspaces'
     return state.isRefreshing ? 'Refreshing file and list' : 'Refresh open file and file list'
@@ -213,7 +213,7 @@ export function ExplorerPanel({ bridge }) {
   const treeVirtualItems = treeVirtualizer.getVirtualItems()
 
   return (
-    <div className="mdp-explorer" role="region" aria-label="Markdown files in folder" ref={panelRef}>
+    <div className="mdp-explorer" role="region" aria-label="Supported files in folder" ref={panelRef}>
       <ExplorerHeader
         filesContext={state.filesContext}
         summaryDirectoryLabel={state.summaryDirectoryLabel}
@@ -236,7 +236,7 @@ export function ExplorerPanel({ bridge }) {
       </div>
 
       <div className="mdp-explorer__empty" hidden={state.view !== 'empty'}>
-        No markdown files found in this directory.
+        No supported files found in this directory.
       </div>
 
       <div hidden={state.view !== 'progress'}>
@@ -261,7 +261,7 @@ export function ExplorerPanel({ bridge }) {
           return (
             <FileRow
               key={virtualItem.key}
-              file={{ displayName: file.displayName, href: file.href }}
+              file={{ displayName: file.displayName, href: file.href, fileTypeId: file.fileTypeId }}
               depth={1}
               rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
               isActive={normalizeFileUrlForCompare(file.href || '') === activeNormalized}
@@ -296,7 +296,11 @@ export function ExplorerPanel({ bridge }) {
           return (
             <FileRow
               key={virtualItem.key}
-              file={{ displayName: row.node.name, href: row.node.href }}
+              file={{
+                displayName: row.node.name,
+                href: row.node.href,
+                fileTypeId: row.node.fileTypeId
+              }}
               depth={row.depth}
               rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
               isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}

@@ -16,6 +16,7 @@ export function ViewerShell({
   tocReady,
   explorerBridge,
   markdown,
+  documentUiState,
   onContentChange,
   onEditorReady,
   onEditorDestroy,
@@ -41,12 +42,14 @@ export function ViewerShell({
   const [editorReady, setEditorReady] = useState(false)
   const editorState = useEditorState()
 
-  const isEditMode = editorState.enabled && (editorState.mode === 'split' || editorState.mode === 'focus')
+  const capabilities = documentUiState?.capabilities || {}
+  const editorAllowed = capabilities.edit === true && documentUiState?.sourceKind === 'file-url'
+  const isEditMode = editorAllowed && editorState.enabled && (editorState.mode === 'split' || editorState.mode === 'focus')
 
-  const isFocusMode = editorState.enabled && editorState.mode === 'focus'
-  const isSplitMode = editorState.enabled && editorState.mode === 'split'
-  const filesVisible = editorState.sidebarVisible && !editorState.enabled
-  const outlineVisible = settings?.layout?.showToc !== false && !editorState.enabled
+  const isFocusMode = isEditMode && editorState.mode === 'focus'
+  const isSplitMode = isEditMode && editorState.mode === 'split'
+  const filesVisible = editorState.sidebarVisible && !isEditMode
+  const outlineVisible = capabilities.outline === true && settings?.layout?.showToc !== false && !isEditMode
 
   const setContentPaneRef = useCallback((node) => {
     setContentPaneEl((prev) => (prev === node ? prev : node))
@@ -69,8 +72,8 @@ export function ViewerShell({
   }, [isSplitMode, contentPaneEl])
 
   useEffect(() => {
-    onEditModeChange?.(editorState.enabled)
-  }, [editorState.enabled, onEditModeChange])
+    onEditModeChange?.(isEditMode)
+  }, [isEditMode, onEditModeChange])
 
   const shouldUsePaneForScroll = isSplitMode && contentPaneEl
   const scrollRootForSidebar = shouldUsePaneForScroll ? contentPaneEl : rootEl

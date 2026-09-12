@@ -21,7 +21,14 @@ import { SaveIcon } from './icons/SaveIcon.jsx'
 import { FocusIcon } from './icons/FocusIcon.jsx'
 import { CopyLinkIcon } from './icons/CopyLinkIcon.jsx'
 
-export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, onSave }) {
+export function FloatingActions({
+  getArticleEl,
+  getSettings,
+  getCurrentFileUrl,
+  documentUiState,
+  onSave,
+  onViewModeChange
+}) {
   const exportBtnRef = useRef(null)
   const exportWrapRef = useRef(null)
   const { showToast } = useToast()
@@ -30,16 +37,30 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   const [menuOpen, setMenuOpen] = useState(false)
   const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
   const currentFileUrl = getCurrentFileUrl?.() || ''
-  const visible = Boolean(String(currentFileUrl).trim())
+  const capabilities = documentUiState?.capabilities || {}
+  const isLoading = documentUiState?.loading === true
+  const visible = Boolean(String(currentFileUrl).trim() || documentUiState?.displayName)
   const canCopyLink = canCopyCurrentFileLink(currentFileUrl)
   const isLocalFile = currentFileUrl.startsWith('file:')
+  const canEdit = capabilities.edit === true && isLocalFile
+  const canExport = capabilities.exportDocument === true
+  const canPrint = capabilities.print === true
+  const viewModes = Array.isArray(capabilities.viewModes) ? capabilities.viewModes : []
+  const canToggleViewMode = viewModes.includes('rendered') && viewModes.includes('raw')
+  const isRawMode = documentUiState?.viewMode === 'raw'
   useEffect(() => {
-    if (!visible) setMenuOpen(false)
-  }, [visible])
+    if (!visible || isLoading) setMenuOpen(false)
+  }, [isLoading, visible])
 
   useEffect(() => {
     if (editorState.enabled) setMenuOpen(false)
   }, [editorState.enabled])
+
+  useEffect(() => {
+    if (editorState.enabled && !canEdit) {
+      editorDispatch({ type: 'EXIT_EDIT' })
+    }
+  }, [canEdit, editorDispatch, editorState.enabled])
 
   const menuItems = useMemo(
     () => [
@@ -129,6 +150,11 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
     editorDispatch({ type: 'TOGGLE_FOCUS' })
   }
 
+  const onViewModeToggleClick = () => {
+    setMenuOpen(false)
+    onViewModeChange?.(isRawMode ? 'rendered' : 'raw')
+  }
+
   return (
     <div
       className="mdp-floating-actions"
@@ -151,6 +177,21 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
         </IconButton>
       )}
 
+      {!editorState.enabled && canToggleViewMode && (
+        <IconButton
+          tooltip={isRawMode ? 'View diagram' : 'View source'}
+          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+          className="mdp-fab-btn mdp-fab-btn--view-mode"
+          activeClassName="mdp-fab-btn--active"
+          aria-label={isRawMode ? 'View diagram' : 'View source'}
+          pressed={isRawMode}
+          disabled={isLoading}
+          onClick={onViewModeToggleClick}
+        >
+          <span aria-hidden="true">{isRawMode ? '◇' : '</>'}</span>
+        </IconButton>
+      )}
+
       {!editorState.enabled && (
         <IconButton
           tooltip={
@@ -165,14 +206,14 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
           copiedClassName="is-copied"
           copied={copyLinkCopied}
           aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
-          disabled={!canCopyLink}
+          disabled={!canCopyLink || isLoading}
           onClick={onCopyLinkClick}
         >
           <CopyLinkIcon className="mdp-fab-btn__icon" />
         </IconButton>
       )}
 
-      {isLocalFile && (
+      {canEdit && (
         <IconButton
           tooltip={editorState.enabled ? 'Exit edit mode' : 'Edit markdown'}
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
@@ -180,13 +221,14 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
           activeClassName="mdp-fab-btn--active"
           aria-label={editorState.enabled ? 'Exit edit mode' : 'Edit markdown'}
           pressed={editorState.enabled}
+          disabled={isLoading}
           onClick={onEditClick}
         >
           <EditIcon className="mdp-fab-btn__icon" />
         </IconButton>
       )}
 
-      {isLocalFile && editorState.enabled && (
+      {canEdit && editorState.enabled && (
         <IconButton
           tooltip={editorState.dirty ? 'Save (Ctrl+S)' : 'Save — no unsaved changes'}
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
@@ -198,7 +240,7 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
         </IconButton>
       )}
 
-      {isLocalFile && editorState.enabled && (
+      {canEdit && editorState.enabled && (
         <IconButton
           tooltip={editorState.mode === 'focus' ? 'Exit focus mode' : 'Focus mode — hide preview'}
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
@@ -212,19 +254,20 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
         </IconButton>
       )}
 
-      {!editorState.enabled && (
+      {!editorState.enabled && canPrint && (
         <IconButton
           tooltip="Print — Save as PDF in the dialog to export PDF."
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
           className="mdp-fab-btn"
           aria-label="Print — use Save as PDF in the print dialog."
+          disabled={isLoading}
           onClick={onPrintClick}
         >
           <PrintIcon className="mdp-fab-btn__icon" />
         </IconButton>
       )}
 
-      {!editorState.enabled && (
+      {!editorState.enabled && canExport && (
         <ActionMenu
           ref={exportWrapRef}
           open={menuOpen}
@@ -235,6 +278,7 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
           triggerLabel="Download — HTML or Word (.doc)."
           triggerTooltip="Download — HTML or Word (.doc)."
           triggerShowDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+          triggerDisabled={isLoading}
           menuClassName="mdp-fab-export__menu"
           menuLabel="Export format"
           itemClassName="mdp-fab-export__menu-item"

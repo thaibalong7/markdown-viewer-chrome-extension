@@ -1,5 +1,3 @@
-import { logger } from '../../shared/logger.js'
-import { MESSAGE_TYPES } from '../../messaging/index.js'
 import {
   findHeadingByHash,
   getToolbarHeightInScrollRoot,
@@ -15,7 +13,7 @@ import {
 import {
   fileUrlIsUnderDirectoryUrl,
   isWorkspaceVirtualHref,
-  markdownFileTitleFromUrl,
+  documentTitleFromUrl,
   normalizeFileUrlForCompare
 } from './url-utils.js'
 import { getOriginalFileUrl, isOnOriginalFile } from './explorer-state.js'
@@ -28,7 +26,7 @@ export function createSiblingBackNavigationForUrl(openUrl, onNavigate) {
   if (!showBack) return { showBack: false }
   return {
     showBack: true,
-    backLabel: `Back to ${markdownFileTitleFromUrl(original)}`,
+    backLabel: `Back to ${documentTitleFromUrl(original)}`,
     onBack: () => {
       if (!original) return
       void onNavigate?.(original, { replaceHistory: true })
@@ -60,6 +58,26 @@ export function focusAfterNavigation(bridge, hash) {
   article.focus({ preventScroll: true })
 }
 
+export function parseHistoryDocumentUrl(locationHref) {
+  try {
+    const url = new URL(locationHref)
+    if (url.protocol !== 'file:') return null
+    let hash = null
+    if (url.hash) {
+      try {
+        hash = decodeURIComponent(url.hash.slice(1)) || null
+      } catch {
+        hash = url.hash.slice(1) || null
+      }
+    }
+    url.hash = ''
+    url.search = ''
+    return { fileUrl: url.href, hash }
+  } catch {
+    return null
+  }
+}
+
 export function deferredScrollRetry(hash, scrollToHeadingHash) {
   if (!hash) return
   requestAnimationFrame(() => {
@@ -79,6 +97,36 @@ export function updateUrlWithoutReload(fileUrl, { replace = false, hash = null }
   } catch {
     /* file protocol may reject history updates */
   }
+}
+
+export async function navigateFromBrowserHistory({
+  locationHref,
+  currentFileUrl,
+  navigateToFile,
+  restoreUrl = updateUrlWithoutReload,
+  getLocationHref = () => locationHref,
+  getCurrentFileUrl = () => currentFileUrl
+}) {
+  const target = parseHistoryDocumentUrl(locationHref)
+  if (!target || typeof navigateToFile !== 'function') return false
+  const opened = await navigateToFile(target.fileUrl, {
+    hash: target.hash,
+    updateHistory: false
+  })
+  const liveTarget = parseHistoryDocumentUrl(getLocationHref())
+  const browserStillAtRejectedTarget = liveTarget?.fileUrl === target.fileUrl
+  const viewerStillAtPreviousDocument =
+    normalizeFileUrlForCompare(getCurrentFileUrl()) === normalizeFileUrlForCompare(currentFileUrl)
+  if (
+    opened === false &&
+    browserStillAtRejectedTarget &&
+    viewerStillAtPreviousDocument &&
+    typeof currentFileUrl === 'string' &&
+    currentFileUrl.startsWith('file:')
+  ) {
+    restoreUrl(currentFileUrl, { replace: false })
+  }
+  return opened !== false
 }
 
 export function createHeadingScroller(bridge) {
@@ -120,8 +168,7 @@ export function createExplorerNavigator(deps) {
     buildFilesContext,
     setCurrentFileUrl,
     runSiblingScan,
-    syncExplorerBackButton,
-    sendMessage
+    syncExplorerBackButton
   } = deps
   const scrollToHeadingHash = createHeadingScroller(bridge)
 
@@ -147,12 +194,13 @@ export function createExplorerNavigator(deps) {
     await runSiblingScan(refs.currentFileUrlRef.current)
   }
 
-  const renderNavigatedMarkdown = async (fileUrl, nextMarkdown, { hash = null, replaceHistory = false } = {}) => {
-    bridge?.setMarkdown?.(nextMarkdown)
+  const finishNavigatedDocument = async (
+    fileUrl,
+    { hash = null, replaceHistory = false, updateHistory = true } = {}
+  ) => {
     bridge?.setSmoothInitialHashScroll?.(false)
     setCurrentFileUrl(fileUrl)
-    await bridge?.render?.({ preserveScroll: false, honorHash: false })
-    if (!isWorkspaceVirtualHref(fileUrl)) {
+    if (updateHistory && !isWorkspaceVirtualHref(fileUrl)) {
       updateUrlWithoutReload(fileUrl, { replace: replaceHistory, hash })
     }
     const scrolledToHash = hash && scrollToHeadingHash(hash)
@@ -161,7 +209,7 @@ export function createExplorerNavigator(deps) {
     }
     focusAfterNavigation(bridge, hash)
     if (scrolledToHash) deferredScrollRetry(hash, scrollToHeadingHash)
-    document.title = `${markdownFileTitleFromUrl(fileUrl)} - Markdown Plus`
+    document.title = `${documentTitleFromUrl(fileUrl)} - Markdown Plus`
   }
 
   const navigateWorkspaceVirtualFile = async (fileUrl, { hash = null } = {}) => {
@@ -176,28 +224,9 @@ export function createExplorerNavigator(deps) {
       return false
     }
 
-    bridge?.getArticleEl?.()?.setAttribute('aria-busy', 'true')
-    try {
-      let nextMarkdown = ''
-      if (entry instanceof File) {
-        nextMarkdown = await entry.text()
-      } else {
-        const file = await entry.getFile()
-        nextMarkdown = await file.text()
-      }
-      if (!nextMarkdown.trim()) {
-        bridge?.showToast?.('Linked file is empty', { variant: 'warning' })
-        return false
-      }
-
-      await renderNavigatedMarkdown(fileUrl, nextMarkdown, { hash })
-    } catch (error) {
-      logger.warn('Failed to navigate to workspace virtual file.', error)
-      bridge?.showToast?.('Could not read linked file', { variant: 'error' })
-      return false
-    } finally {
-      bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
-    }
+    const opened = await bridge?.openDocument?.(fileUrl, { workspaceReader: entry })
+    if (!opened) return false
+    await finishNavigatedDocument(fileUrl, { hash })
 
     await afterSuccessfulNavigation({ hash })
     return true
@@ -205,7 +234,13 @@ export function createExplorerNavigator(deps) {
 
   const navigateToFile = async (
     fileUrl,
-    { replaceHistory = false, forceReload = false, hash = null, syncExplorer = true } = {}
+    {
+      replaceHistory = false,
+      forceReload = false,
+      hash = null,
+      syncExplorer = true,
+      updateHistory = true
+    } = {}
   ) => {
     if (!fileUrl) return false
     if (isWorkspaceVirtualHref(fileUrl)) {
@@ -214,35 +249,17 @@ export function createExplorerNavigator(deps) {
 
     const current = normalizeFileUrlForCompare(refs.currentFileUrlRef.current)
     const target = normalizeFileUrlForCompare(fileUrl)
-    if (!forceReload && current === target) return true
-
-    bridge?.getArticleEl?.()?.setAttribute('aria-busy', 'true')
-    try {
-      const response = await sendMessage({
-        type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT,
-        payload: { url: fileUrl }
-      })
-      if (!response?.ok) {
-        const msg = /permission|denied|access/i.test(response?.error || '')
-          ? 'Could not read linked file'
-          : 'Could not open linked file'
-        bridge?.showToast?.(msg, { variant: 'error' })
-        return false
-      }
-      const nextMarkdown = String(response.data?.text || '')
-      if (!nextMarkdown.trim()) {
-        bridge?.showToast?.('Linked file is empty', { variant: 'warning' })
-        return false
-      }
-
-      await renderNavigatedMarkdown(fileUrl, nextMarkdown, { hash, replaceHistory })
-    } catch (error) {
-      logger.warn('Failed to navigate to sibling markdown file.', error)
-      bridge?.showToast?.('Could not open linked file', { variant: 'error' })
-      return false
-    } finally {
-      bridge?.getArticleEl?.()?.removeAttribute('aria-busy')
+    if (!forceReload && current === target) {
+      const scrolledToHash = hash && scrollToHeadingHash(hash)
+      if (!scrolledToHash) bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
+      focusAfterNavigation(bridge, hash)
+      if (scrolledToHash) deferredScrollRetry(hash, scrollToHeadingHash)
+      return true
     }
+
+    const opened = await bridge?.openDocument?.(fileUrl, { forceReload })
+    if (!opened) return false
+    await finishNavigatedDocument(fileUrl, { hash, replaceHistory, updateHistory })
 
     if (syncExplorer) {
       await afterSuccessfulNavigation({ hash })

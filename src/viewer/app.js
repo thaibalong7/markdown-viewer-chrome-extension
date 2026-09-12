@@ -12,16 +12,19 @@ import { createRenderController } from './app/renderController.js'
 import { createSplitScrollSync } from './app/splitScrollSync.js'
 import { applyReaderStyles, createStyleElement } from './app/viewerStyles.js'
 import { createGlobalViewerListeners } from './app/globalViewerListeners.js'
+import { createDocumentSessionController } from './app/documentSessionController.js'
+import { createDocumentIdentity } from './documents/document-model.js'
 
 export class MarkdownViewerApp {
   /**
    * @param {object} options
    * @param {string} options.markdown
+   * @param {object} [options.initialDocument]
    * @param {object} options.settings
    * @param {HTMLElement} options.container
    * @param {string[]} [options.styles]
    */
-  constructor({ markdown, settings, container, styles = [] } = {}) {
+  constructor({ markdown, initialDocument, settings, container, styles = [] } = {}) {
     this.markdown = markdown
     this.settings = settings
     this.container = container
@@ -37,10 +40,18 @@ export class MarkdownViewerApp {
     /** @type {null | { scrollToLine: (line1Based: number) => void, scrollDOM: HTMLElement }} */
     this._editorApi = null
     this._currentFileUrl = window.location.href
+    const currentDocument = initialDocument || createDocumentIdentity(this._currentFileUrl)
+    this._initialLoadedDocument = {
+      document: currentDocument,
+      text: typeof markdown === 'string' ? markdown : '',
+      assetUrl: null,
+      revokeAssetUrl: null
+    }
+    this._documentSession = null
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
     this._renderController = createRenderController({
-      getMarkdown: () => this.markdown,
+      getLoadedDocument: () => this._documentSession?.getLoadedDocument() || this._initialLoadedDocument,
       getSettings: () => this.settings,
       getArticleEl: () => this._articleEl,
       getArticleInteractions: () => this._articleInteractions,
@@ -53,6 +64,7 @@ export class MarkdownViewerApp {
       getMarkdown: () => this.markdown,
       setMarkdown: (nextMarkdown) => {
         this.markdown = nextMarkdown
+        this._documentSession?.updateText(nextMarkdown)
       },
       getLastSuccessfulRenderMarkdown: () => this._renderController.getLastSuccessfulRenderMarkdown(),
       render: (opts) => this.render(opts),
@@ -61,7 +73,33 @@ export class MarkdownViewerApp {
       showToast: (message, options) => this.showToast(message, options),
       applyReaderStyles: () => this.applyReaderStyles(),
       getArticleEl: () => this._articleEl,
-      getSettings: () => this.settings
+      getSettings: () => this.settings,
+      canEditCurrentDocument: () => {
+        const state = this._documentSession?.getUiState()
+        return state?.capabilities?.edit === true && state?.sourceKind === 'file-url'
+      }
+    })
+    this._documentSession = createDocumentSessionController({
+      initialDocument: currentDocument,
+      initialText: this.markdown,
+      render: (opts) => this.render(opts),
+      beforeDocumentSwitch: () => this._editorSession.prepareForDocumentSwitch(),
+      onDocumentSwitchStart: () => this._articleInteractions?.closeImageLightbox(),
+      onDocumentLoaded: (loadedDocument) => {
+        this.markdown = String(loadedDocument?.text ?? '')
+        this._editorSession.setExternalMarkdown(this.markdown)
+      },
+      onCurrentDocumentChange: (document) => {
+        this._currentFileUrl = document?.href || ''
+        if (document) this._recordCurrentFileInHistory()
+        this._reactHandle?.bumpChrome()
+      },
+      publishUiState: (documentUiState) => {
+        if (documentUiState?.loading) this._articleEl?.setAttribute('aria-busy', 'true')
+        else this._articleEl?.removeAttribute('aria-busy')
+        this._reactHandle?.updateDocumentUiState?.(documentUiState)
+      },
+      showToast: (message, options) => this.showToast(message, options)
     })
     this._splitScrollSync = createSplitScrollSync({
       isDestroyed: () => this._destroyed,
@@ -71,9 +109,14 @@ export class MarkdownViewerApp {
       container: this.container,
       isDestroyed: () => this._destroyed,
       hasUnsavedChanges: () => this._editorSession.isDirty(),
-      canSave: () => this._editorSession.isEditModeActive(),
+      canSave: () =>
+        this._editorSession.isEditModeActive() &&
+        this._documentSession.getUiState().capabilities?.edit === true,
       onSave: () => {
         void this._editorSession.handleSave()
+      },
+      onViewModeChange: (viewMode) => {
+        void this._documentSession.setViewMode(viewMode)
       }
     })
     this._destroyed = false
@@ -90,15 +133,17 @@ export class MarkdownViewerApp {
 
     const explorerBridge = createExplorerBridge({
       getSettings: () => this.settings,
-      setMarkdown: (md) => this._editorSession.setExternalMarkdown(md),
       setSmoothInitialHashScroll: (value) => this._renderController.setSmoothInitialHashScroll(value),
-      render: (opts) => this.render(opts),
+      openDocument: (href, opts) => this._documentSession.openDocument(href, opts),
+      showPlaceholder: (text) => this._documentSession.showPlaceholder(text),
       showToast: (message, options) => this.showToast(message, options),
       getScrollRoot: () => this.getScrollRoot(),
       getArticleEl: () => this._articleEl,
       getCurrentFileUrl: () => this._currentFileUrl,
       updateCurrentFileUrl: (nextUrl) => {
-        this._currentFileUrl = typeof nextUrl === 'string' ? nextUrl : ''
+        const url = typeof nextUrl === 'string' ? nextUrl : ''
+        if (url === this._currentFileUrl) return
+        this._currentFileUrl = url
         this._recordCurrentFileInHistory()
         this._reactHandle?.bumpChrome()
       }
@@ -110,6 +155,7 @@ export class MarkdownViewerApp {
       tocReady: false,
       explorerBridge,
       markdown: this.markdown,
+      documentUiState: this._documentSession.getUiState(),
       getArticleEl: () => this._articleEl,
       getSettings: () => this.settings,
       getCurrentFileUrl: () => this._currentFileUrl,
@@ -135,6 +181,9 @@ export class MarkdownViewerApp {
       },
       onSave: () => {
         void this._editorSession.handleSave()
+      },
+      onViewModeChange: (viewMode) => {
+        void this._documentSession.setViewMode(viewMode)
       }
     })
 
@@ -241,6 +290,7 @@ export class MarkdownViewerApp {
     this._globalListeners.unbind()
     this._splitScrollSync.destroy()
     this._editorSession.destroy()
+    this._documentSession.destroy()
     this._renderController.destroy()
     this._editorApi = null
     this._articleInteractions?.destroy()

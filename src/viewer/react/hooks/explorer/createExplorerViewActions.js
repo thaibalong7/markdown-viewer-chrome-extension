@@ -2,7 +2,7 @@ import {
   buildDepthNotice,
   buildInitialExpandedMap,
   buildPreservedExpandedMap,
-  countMarkdownFilesInTree,
+  countViewableFilesInTree,
   getDirectoryLabelFromUrl,
   shortenPath
 } from '../../../explorer/explorer-tree-utils.js'
@@ -104,7 +104,7 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
   }
 
   const showTree = (tree, ctx = {}) => {
-    const count = countMarkdownFilesInTree(tree)
+    const count = countViewableFilesInTree(tree)
     const children = Array.isArray(tree?.children) ? tree.children : []
     const stats = ctx.stats
     const depthNotice =
@@ -120,7 +120,7 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
       tree,
       files: [],
       listAriaLabel:
-        ctx.listAriaLabel || (ctx.actionsMode === 'sibling' ? 'Markdown files in folder tree' : 'Workspace files'),
+        ctx.listAriaLabel || (ctx.actionsMode === 'sibling' ? 'Supported files in folder tree' : 'Workspace files'),
       expandedMap: shouldPreserveExpandedState
         ? buildPreservedExpandedMap(children, previousExpandedMap)
         : buildInitialExpandedMap(children),

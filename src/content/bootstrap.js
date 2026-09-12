@@ -2,19 +2,17 @@ import { logger } from '../shared/logger.js'
 import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { detectMarkdownPage } from './page-detector.js'
 import { extractRawMarkdown } from './raw-content-extractor.js'
-import { looksLikeMarkdownText, pathnameHasMarkdownExtension } from '../shared/markdown-detect.js'
+import { looksLikeMarkdownText } from '../shared/markdown-detect.js'
+import { isDirectActivationUrl } from '../shared/file-types.js'
 import { createViewerRoot } from './page-overrider.js'
 import { MarkdownViewerApp } from '../viewer/app.js'
+import { createDocumentIdentity } from '../viewer/documents/document-model.js'
 
 export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explorerCss, getViewerStyles }) {
   logger.info('Content bootstrap started.')
-  const protocol = window.location?.protocol || ''
-  const pathname = window.location?.pathname || ''
-
   // Product decision: MR view only applies to local opened Markdown files,
   // not remote web links that happen to serve markdown-like content.
-  const isLocalMarkdownFile = protocol === 'file:' && pathnameHasMarkdownExtension(pathname)
-  if (!isLocalMarkdownFile) {
+  if (!isDirectActivationUrl(window.location?.href || '')) {
     logger.debug('Skip viewer mount: current URL is not a local markdown file.')
     return
   }
@@ -98,6 +96,7 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
 
   const app = new MarkdownViewerApp({
     markdown: extraction.markdown,
+    initialDocument: createDocumentIdentity(window.location.href),
     settings,
     container: mountTarget,
     styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss, styles.explorerCss]

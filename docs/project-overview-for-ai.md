@@ -9,13 +9,14 @@ Current implemented core:
 - Raw Markdown extraction from page (`<pre>` or body text sampling)
 - Viewer mount in a body-level overlay. The rendered viewer intentionally uses light DOM so extensions such as Google Translate can detect selected Markdown text.
 - Markdown render pipeline: local link normalization → `markdown-it` → plugin hooks/render context → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
+- **Document session architecture**: explicit document identity + loaded payload, cancellable loading, renderer dispatch, renderer cleanup, and capability-driven React chrome. Markdown uses a behavior-preserving adapter; plain `.txt` uses a safe DOM renderer backed only by `<pre><code>` and `textContent`, with explicit empty/load-error/5 MiB limit states. Standalone `.mermaid` uses the shared sanitized Mermaid service with rendered/raw modes. Registered raster images and separately classified SVGs use direct normalized `file:` URLs or session-owned object URLs for virtual workspace files, render only through `<img>`, reuse the image lightbox, and release temporary resources on navigation/destroy. SVG source is never read into or mounted as viewer markup.
 - **Reader themes** (`light` / `dark`, default `light`) aligned with **Shiki themes** for code blocks
 - **Plugin registry** (task lists, heading anchors, table wrapper, code-highlight toggle) via lifecycle hooks
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Dedicated right rail with document actions plus an independently scrollable TOC (click-to-scroll + active heading tracking)
-- **Files explorer** (dedicated left panel): sibling `.md` list for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`; file-row browser/open/copy behavior is owned by `src/viewer/actions/file-row-actions.js`.
-- **Internal Markdown link navigation**: clicking a relative/absolute link to another `.md` file opens it in the same viewer without full page reload. Link resolver (`src/viewer/navigation/link-resolver.js`) classifies links into kinds (same-document-hash, self-link, markdown-file, workspace-virtual-file, external, asset, unsupported). Click interception in `article-interactions.js` respects modifier keys, `target`, `download` attrs. Browser Back/Forward via `popstate`/`hashchange` coordination. Sidebar active-file sync on cross-folder navigation. Supports spaces, Unicode, encoded hrefs, parent folder traversal, and virtual workspace files. See `docs/internal-hyperlink-navigation-solution.md`.
+- **Files explorer** (dedicated left panel): sibling supported-document list (`.md`, `.markdown`, `.mdown`, `.mdc`, `.txt`, `.mermaid`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.avif`, `.bmp`, `.ico`, `.apng`, `.svg`) for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list. All scan paths use the shared file-type registry, attach `fileTypeId` metadata to file nodes, and present type-aware file icons. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`; file-row browser/open/copy behavior is owned by `src/viewer/actions/file-row-actions.js`.
+- **Internal document navigation from Markdown**: clicking a relative/absolute link to a registered Markdown-family, `.txt`, `.mermaid`, raster image, or SVG file opens it in the same viewer without full page reload. Link resolver (`src/viewer/navigation/link-resolver.js`) classifies links into kinds (same-document-hash, self-link, document-file, workspace-virtual-file, external, asset, unsupported). Click interception in `article-interactions.js` respects modifier keys, `target`, `download` attrs. Browser Back/Forward via `popstate`/`hashchange` coordination. Sidebar active-file sync on cross-folder navigation. Supports spaces, Unicode, encoded hrefs, parent folder traversal, and virtual workspace files. See `docs/internal-hyperlink-navigation-solution.md`.
 - **Inline Markdown editor** (Phase 11.0–11.3): local `file:` Markdown pages can enter edit mode from the right-side document actions. The React shell mounts a lazy-loaded CodeMirror 6 editor with split preview/focus modes, independent Files-panel toggle, debounced live preview through the existing sanitized render pipeline, editor → preview scroll sync, TOC click → editor source line navigation, dirty state, Ctrl/Cmd+S, before-unload/exit confirmation, status bar, split resize, search/replace, and File System Access API save with download fallback. Editor preferences live in popup settings and persist through `chrome.storage`.
 - Loading skeleton UX: reusable `SkeletonLine` / `SkeletonBlock` primitives used by the Outline, Files panel, and popup settings loading state
 - Settings storage and runtime messaging
@@ -46,24 +47,24 @@ Generated output:
 
 - `background`: central runtime message handling plus background-owned services for settings broadcast, file history, downloads, and offscreen file fetches
 - `content`: detect/extract/mount flow on web pages
-- `viewer`: **React** shell (left Files panel, right Outline/action rail, toast) + **async** markdown render pipeline + imperative article interactions (no settings UI in-page yet). Browser-facing viewer commands live under `src/viewer/actions/`, shared React chrome primitives live under `src/viewer/react/components/common/`, and render pipeline setup lives under `src/viewer/core/`.
+- `viewer`: **React** shell (left Files panel, right Outline/action rail, toast) + document session/renderer dispatch + **async** Markdown pipeline + imperative article interactions (no settings UI in-page yet). Browser-facing viewer commands live under `src/viewer/actions/`, document boundaries under `src/viewer/documents/` and `src/viewer/app/`, shared React chrome primitives under `src/viewer/react/components/common/`, and Markdown rendering internals under `src/viewer/core/`.
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
 - `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
 - `settings`: pure defaults in `src/settings/default-settings.js`, storage key + deep-merge persistence in `src/settings/settings-service.js`, compatibility exports in `src/settings/index.js`
 - `popup` / `options`: UI entrypoints for reading/updating settings (popup is primary)
 - `messaging`: message constants and shared `sendMessage()` in `src/messaging/index.js`
-- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `markdown-detect.js` (pathname extension + `looksLikeMarkdownText`), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/tooltip.js` (hover delays for chrome tooltips), reusable React UI primitives in `shared/react/` and shared style partials in `shared/styles/`
+- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `file-types.js` (lightweight registry, activation/explorer classification, and document capabilities), `markdown-detect.js` (content heuristics plus compatibility pathname helpers derived from the registry), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/tooltip.js` (hover delays for chrome tooltips), reusable React UI primitives in `shared/react/` and shared style partials in `shared/styles/`
 
 ### 3.2 Core flow (implemented)
 
-1. Content script: `src/content/index.js` is a thin gate (local `file:` + `.md` only) and dynamically imports `src/content/viewer-loader.js`, which bundles compiled viewer SCSS (`?inline`) and injects those strings into the viewer root (no `fetch` of per-sheet CSS assets). KaTeX CSS is not part of this path by default; it loads when the Math plugin runs (see `math.plugin.js` + `MarkdownViewerApp.injectViewerStyles`).
-2. **Product gate:** `bootstrap.js` only mounts the viewer for **local `file:`** URLs whose path ends in `.md` / `.markdown` / `.mdown` (not remote pages).
+1. Content script: `src/content/index.js` is a thin gate (local `file:` + a direct-activation Markdown-family extension) and dynamically imports `src/content/viewer-loader.js`, which bundles compiled viewer SCSS (`?inline`) and injects those strings into the viewer root (no `fetch` of per-sheet CSS assets). KaTeX CSS is not part of this path by default; it loads when the Math plugin runs (see `math.plugin.js` + `MarkdownViewerApp.injectViewerStyles`).
+2. **Product gate:** `index.js` and `bootstrap.js` call the lightweight file-type registry and only mount for direct-activation **local `file:`** Markdown-family URLs (`.md`, `.markdown`, `.mdown`, `.mdc`; not remote pages).
 3. `src/content/bootstrap.js` runs page detection via `detectMarkdownPage()` (uses `getTextSample` from `text-sampling.js` and `looksLikeMarkdownText` / pathname helpers from `shared/markdown-detect.js`).
 4. If needed, fallback sampling checks whether page text resembles Markdown (`looksLikeMarkdownText` in `shared/markdown-detect.js`).
 5. Content script fetches settings from background using `MESSAGE_TYPES.GET_SETTINGS`.
 6. If enabled, Markdown is extracted (`single <pre>` preferred, else TreeWalker sampling via `getTextSample` in `text-sampling.js`).
 7. `createViewerRoot()` mounts a full-screen root inside `<body>`, hides the original raw Markdown body children so browser Find only counts rendered content, and returns the root as the render container. Keeping rendered Markdown in light DOM preserves body-level selection detection for other extensions that react to selected text and inject their own body overlays.
-8. `MarkdownViewerApp` injects viewer `<style>` tags into the host root, mounts React into a dedicated child node, awaits **`partsPromise`** → `{ root, article }`, applies theme CSS variables on `root`, composes **`createArticleInteractions()`** (hash links, copy, toast bridge, **internal Markdown link interception** via `resolveLink` + `navigateToFile` callbacks), marks the article busy during async render, runs **`await renderDocument()`** (async; creates/reuses a render context for plugin manager + markdown engine + effective plugin/theme settings hash within the current render controller), **`renderIntoElement(article, html)`**, **`pluginManager.afterRender(...)`**, then **`syncTocItems()`** → React outline; a bridge-level `tocReady` flag avoids the initial “No headings found” flash by showing skeleton until TOC hydration completes; Files/workspace UI is **`useExplorer`** + `ExplorerPanel.jsx` inside the React tree, with non-React explorer scan/navigation/workspace workflows owned by `src/viewer/explorer/`.
+8. `bootstrap.js` creates the initial document identity. `MarkdownViewerApp` mounts the React shell and composes article interactions, editor, explorer, document-session, and render controllers. Explorer navigation calls one `openDocument()` bridge; the session loads text, aborts/suppresses stale navigation, publishes `documentUiState`, and owns payload cleanup. `renderController.js` dynamically resolves the Markdown adapter, which preserves the existing `renderDocument()` → `renderIntoElement()` → plugin `afterRender` sequence and returns TOC items. React gates outline/edit/export/print from registry capabilities; `tocReady` still prevents the initial empty-outline flash.
 9. On `MESSAGE_TYPES.SETTINGS_UPDATED`, content script calls `app.updateSettings()` or tears down / remounts when disabled.
 
 ### 3.3 Messaging flow
@@ -118,6 +119,7 @@ src/
     clipboard.js
     download.js
     settings-diff.js
+    file-types.js
     markdown-detect.js
     fs-handle-debug.js
     constants/
@@ -147,6 +149,24 @@ src/
       mermaid-export.js
   viewer/
     app.js
+    app/
+      documentSessionController.js
+      renderController.js
+      editorSessionController.js
+      createExplorerBridge.js
+    documents/
+      document-loader.js
+      document-model.js
+      renderer-registry.js
+      renderers/
+        markdown-document-renderer.js
+        text-document-renderer.js
+        image-document-renderer.js
+        mermaid-document-renderer.js
+    mermaid/
+      mermaid-render-service.js
+      mermaid-sanitizer.js
+      mermaid-error-view.js
     article-interactions.js
     dom-tooltip.js
     icons.js
@@ -296,8 +316,10 @@ public/
 - `src/content/text-sampling.js`
   - `getTextSample(root, maxChars)` — TreeWalker sampling (used by detector + extractor).
 
+- `src/shared/file-types.js`
+  - Lightweight registry and pure classifiers for direct activation, explorer inclusion, file-type metadata, and document capabilities. It is the durable extension allowlist; Markdown-family files activate directly, while `.txt`, `.mermaid`, registered raster images, and separately classified SVG images are explorer-only document types.
 - `src/shared/markdown-detect.js`
-  - `MARKDOWN_PATHNAME_EXT_RE`, `pathnameHasMarkdownExtension(pathname)` — single source for `.md`/`.markdown`/`.mdown` pathname checks (used by `bootstrap`, `page-detector`, re-exported as `MARKDOWN_EXT` from `url-utils.js`).
+  - `MARKDOWN_PATHNAME_EXT_RE`, `pathnameHasMarkdownExtension(pathname)` — compatibility pathname helpers derived from `file-types.js`; `looksLikeMarkdownText(text)` remains the Markdown content heuristic.
   - `looksLikeMarkdownText(text)` — markdown-like heuristic for detector + bootstrap fallback.
 
 - `src/content/page-detector.js`
@@ -334,23 +356,24 @@ public/
   - Builds CSS custom properties from settings preset + typography + layout; applied to viewer root via `applyThemeSettings()`.
 
 - `src/viewer/navigation/link-resolver.js`
-  - **`resolveMarkdownLink(rawHref, context)`** — pure function that classifies a raw `<a href>` into one of: `same-document-hash`, `self-link`, `markdown-file`, `workspace-virtual-file`, `external`, `asset`, `unsupported`. Returns `{ kind, resolvedUrl, hash, shouldIntercept }`.
+  - **`resolveMarkdownLink(rawHref, context)`** — pure function that classifies a raw `<a href>` into one of: `same-document-hash`, `self-link`, `document-file`, `workspace-virtual-file`, `external`, `asset`, `unsupported`. Registered Markdown-family, `.txt`, `.mermaid`, raster image, and SVG targets are interceptable. Returns `{ kind, resolvedUrl, hash, shouldIntercept }`.
   - Handles edge cases: spaces/Unicode in filenames, percent-encoded hrefs, query strings, parent folder traversal (`../`), virtual workspace prefixes (`MDP_WS_FILE`).
-  - Uses `new URL(rawHref, currentFileUrl)` for resolution; `MARKDOWN_PATHNAME_EXT_RE` for extension matching; `normalizeFileUrlForCompare` for self-link detection.
+  - Uses `new URL(rawHref, currentFileUrl)` for resolution; the shared file-type registry for extension matching; `normalizeFileUrlForCompare` for self-link detection.
   - Unit tested in `src/viewer/navigation/__tests__/link-resolver.test.js`.
 
 - `src/viewer/app.js` and `src/viewer/app/*`
   - **`MarkdownViewerApp`** remains the public imperative orchestrator and stable import path for `content/bootstrap.js`. It mounts React, awaits shell `{ root, article }`, composes article interactions, and coordinates settings/render/editor/explorer controllers.
+  - **`documentSessionController.js`** owns current document identity and loaded payload, cancels superseded loads, prevents stale navigation commits, coordinates dirty-editor confirmation, publishes document UI capabilities, and releases payload resources on replacement/destroy.
   - **`viewerStyles.js`** owns reader theme/style application, Outline rail width preference, runtime `<style>` creation, and edit-mode article font overrides.
-  - **`renderController.js`** owns async `renderDocument()` orchestration, runtime CSS injection (`injectViewerStyles({ id, cssText })` for KaTeX/optional plugins), `renderIntoElement()`, plugin `afterRender`, scroll preservation, hash scroll, and TOC hydration.
+  - **`renderController.js`** owns renderer lookup/dispatch, render abort tokens, previous-renderer cleanup, runtime CSS injection (`injectViewerStyles({ id, cssText })` for KaTeX/optional plugins), scroll preservation, hash scroll, and renderer-provided TOC hydration.
   - **`editorSessionController.js`** owns edit-mode active state, dirty/save status, debounced live preview render, save flow, and user-facing save errors.
   - **`splitScrollSync.js`** owns editor-to-preview scroll sync listeners, RAF scheduling, smooth preview scroll cancellation, and teardown.
   - **`globalViewerListeners.js`** owns `beforeunload` and Ctrl/Cmd+S global key handling.
-  - **`createExplorerBridge.js`** builds the bridge callbacks passed into React for explorer navigation, re-render, and current-file URL sync.
+  - **`createExplorerBridge.js`** builds the bridge callbacks passed into React for `openDocument()`, placeholder rendering, and current-file URL sync; explorer code no longer mutates Markdown then invokes render as two separate operations.
   - **`createArticleInteractions({ getArticle, showToast, getScrollRoot, getCurrentFileUrl, navigateToFile, resolveLink })`** remains the imperative listener layer on the rendered article; internal Markdown link clicks are intercepted via `resolveLink` (wrapping `resolveMarkdownLink`) and delegated to `navigateToFile` (from `explorerBridge`).
 
 - **React viewer layer** (`src/viewer/react/`)
-  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders: `updateSettings`, `updateTocItems`, `setTocReady`, **`bumpChrome()`** (refresh floating-actions visibility when `currentFileUrl` changes imperatively). Settings are **not** duplicated in React context (passed as props from mount).
+  - **`mount.js`**: `createRoot(container)`, `partsPromise` resolves when **`ViewerShell`** calls `onShellReady({ root, article })`. Props-driven re-renders include settings, TOC readiness, Markdown editor text, and `documentUiState`; **`bumpChrome()`** refreshes URL-dependent actions. Settings are **not** duplicated in React context.
   - **`ViewerApp.jsx`**: `ToastProvider`, `EditorProvider`, and **`ViewerShell`** + document actions slot.
   - **Toast / Tooltip (chrome)**: `Toast.jsx`, `Tooltip.jsx` with portals targeting the viewer root/document as appropriate (`shared/constants/tooltip.js` for delays).
   - **Viewer chrome primitives**: `components/common/IconButton.jsx` and `ActionMenu.jsx` keep document-action and explorer row button/menu markup consistent; `PanelHeader.jsx` provides the shared title/meta surface for the Files and Outline panels. `hooks/useDismissableLayer.js` owns root-aware outside-click/Escape dismissal; `hooks/useCopyFeedback.js` owns transient copied-state feedback.
@@ -370,7 +393,7 @@ public/
   - `MDP_WS_FILE` / `MDP_WS_DIR` prefixes and default scan limits when persisted `settings.explorer` fields are missing; used by **`useExplorer.js`**, `workspace-picker.js`, `folder-scanner.js`. **`url-utils.js` re-exports** the `MDP_WS_*` symbols for older import paths.
 
 - `src/viewer/explorer/url-utils.js`
-  - Pure `file:` / virtual URL helpers: `isWorkspaceVirtualHref`, `getParentDirectoryUrl`, `normalizeDirectoryUrl`, `normalizeFileUrlForCompare`, `pathInputToFileDirectoryUrl`, `isMarkdownFileHref`, `MARKDOWN_EXT` (alias of `MARKDOWN_PATHNAME_EXT_RE` from `shared/markdown-detect.js`); re-exports `MDP_WS_FILE` / `MDP_WS_DIR` from `shared/constants/explorer.js`.
+  - Pure `file:` / virtual URL helpers: `isWorkspaceVirtualHref`, `getParentDirectoryUrl`, `normalizeDirectoryUrl`, `normalizeFileUrlForCompare`, `documentTitleFromUrl`, and `pathInputToFileDirectoryUrl`; re-exports `MDP_WS_FILE` / `MDP_WS_DIR` from `shared/constants/explorer.js`.
 
 - `src/viewer/explorer/sibling-scanner.js`
   - Directory listing fetch + parsing: `fetchDirectoryListingHtml`, `collectEntriesFromChromeAddRow` (Chrome `addRow()` HTML), `scanSiblingFiles`, `resolveListingHrefToFileUrl`, `posixPathRelativeToFileRoot`; accepts `AbortSignal` for sibling scan cancellation.
@@ -379,7 +402,7 @@ public/
   - AbortController ownership for explorer scans plus sibling scan runner orchestration and fallback behavior.
 
 - `src/viewer/explorer/explorer-navigation.js`
-  - Internal file navigation workflow helpers: same-file comparison, file fetch/render handoff, history/hash/title/focus updates, tree reveal decisions, and sibling-tree reuse decisions.
+  - Internal document navigation workflow helpers: same-file comparison, document-session handoff, history/hash/title/focus updates, tree reveal decisions, and sibling-tree reuse decisions. `useExplorer.js` binds `popstate` to this navigator without writing a duplicate history entry.
 
 - `src/viewer/explorer/explorer-workspace-session.js`
   - Workspace open/restore/exit workflows for file-listing roots, File System Access directory handles, and `webkitdirectory` virtual files.
@@ -388,7 +411,7 @@ public/
   - `showDirectoryPicker` scan (`scanWorkspaceFromDirectoryHandle`), `webkitdirectory` + optional `File.path` → `file:` root (`tryFileDirectoryUrlFromWebkitFiles`), else `scanWorkspaceFromWebkitFileList` (virtual `mdp-ws-*` hrefs + in-tab `File` / handle readers wired from **`useExplorer`**).
 
 - `src/viewer/explorer/folder-scanner.js`
-  - `scanFolderRecursive` — BFS-style recursive directory fetch, `maxScanDepth` / `maxFiles` / `maxFolders`, `AbortSignal`, progress callback; builds tree of folders + markdown files only.
+  - `scanFolderRecursive` — BFS-style recursive directory fetch, `maxScanDepth` / `maxFiles` / `maxFolders`, `AbortSignal`, progress callback; builds a tree containing registered supported files only.
 
 - `src/viewer/explorer/explorer-tree-utils.js`
   - Path labels, depth notices, folder expand state helpers, tree counts — used by **`useExplorer`** and explorer UI components.
@@ -403,10 +426,13 @@ public/
   - Imperative **plugin** SVG helpers only: `SVG_NS`, `createCopyIconSvg()`, Mermaid toolbar/lightbox icons (`createExpandIconSvg()`, `createZoomInIconSvg()`, `createZoomOutIconSvg()`, `createRecenterIconSvg()`, `createCloseIconSvg()`). Viewer chrome icons are React components under `react/components/icons/`.
 
 - `src/plugins/optional/mermaid.plugin.js` / `mermaid-actions.js` / `mermaid-lightbox.js` / `mermaid-export.js`
-  - Mermaid fence override renders placeholder `.mdp-mermaid` blocks, then lazy-renders SVGs on viewport entry.
+  - Mermaid fence override renders placeholder `.mdp-mermaid` blocks, then lazy-renders SVGs on viewport entry through the format-neutral service under `src/viewer/mermaid/`.
   - `mermaid-actions.js` attaches copy, expand/lightbox, and export actions for rendered Mermaid blocks.
   - `mermaid-lightbox.js` owns the full-screen diagram viewer: theme-aware overlay UI, higher-density `2x` SVG clone for sharper zoom, full-screen drag-to-pan, wheel/pinch zoom, `re-center`, and keyboard shortcuts (`Esc`, `+`, `-`, `0`).
   - `_mermaid.scss` includes both inline block chrome and lightbox styling.
+
+- `src/viewer/mermaid/mermaid-render-service.js` / `mermaid-sanitizer.js` / `mermaid-error-view.js`
+  - Shared lazy Mermaid rendering boundary for fenced Markdown diagrams and standalone `.mermaid` documents. It owns official/beautiful renderer loading and theme mapping, sanitized SVG insertion, safe source-preserving errors, shared actions, and cancellation-aware cleanup.
 
 - `src/viewer/dom-tooltip.js`
   - **`attachTooltip(anchor, { text })`** for **plugin-injected** controls (fenced copy button, Mermaid menu) — fixed positioning, parent = root node or `document.body`. Distinct from React **`Tooltip.jsx`** used on floating actions/resize handle.
@@ -486,6 +512,7 @@ Implemented strongly:
 - **UI Files Explorer** (see `docs/technical-spec-phases/ui-files-explorer-feature-spec.md`): Phase 1 (siblings + back) and **Phase 2** (open-folder workspace, recursive scan, limits, progress UI, tree). Phase 3+ (bookmarks/popup) not done.
 - **Internal Markdown link navigation** (see `docs/internal-hyperlink-navigation-solution.md`): all phases (0–5) completed. Link resolver, article click interception, browser history Back/Forward, sidebar integration, virtual workspace links, and polish/tests.
 - **Inline Markdown Editor** (see `docs/inline-markdown-editor-feature-spec.md`): Phase 11.0–11.3 completed. CodeMirror 6 editor, split/focus layout, Files-panel toggle, live preview, scroll sync, TOC → editor navigation, File System Access save with fallback, dirty/confirm flow, status bar, split resize, search/replace, and popup editor settings are implemented.
+- **Multi-format viewer architecture** (`docs/multi-format-viewer-architecture.md`): Phases 0–7 completed. File-type registry, `.mdc`, document identity/session/loading/renderer-dispatch boundaries, capability-driven chrome, explorer-only plain `.txt`, raster images, stricter `<img>`-only SVG rendering, and standalone `.mermaid` rendered/raw views are live. Integrated navigation now coordinates refresh, active-file state, cross-folder scans, browser Back/Forward, focus, and format changes. Standalone and fenced Mermaid share the lazy render service, sanitizer, safe error UI, actions, lightbox, and renderer/theme mapping.
 
 Not implemented yet (from planning docs):
 - Full “plugin packs” marketplace or remote packs as described in older phase docs

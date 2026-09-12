@@ -4,14 +4,15 @@ import {
   DEFAULT_EXPLORER_MAX_SCAN_DEPTH
 } from '../../shared/constants/explorer.js'
 import { logger } from '../../shared/logger.js'
+import { getFileTypeFromUrl, isExplorerSupportedFile } from '../../shared/file-types.js'
 import {
   collectEntriesFromChromeAddRow,
   fetchDirectoryListingHtml,
   fetchFileAsText,
   posixPathRelativeToFileRoot
 } from './sibling-scanner.js'
-import { isMarkdownFileHref, normalizeDirectoryUrl, normalizeFileUrlForCompare } from './url-utils.js'
-import { createGitignoreMatcher, pruneExplorerFoldersWithoutMarkdown } from './gitignore-matcher.js'
+import { normalizeDirectoryUrl, normalizeFileUrlForCompare } from './url-utils.js'
+import { createGitignoreMatcher, pruneExplorerFoldersWithoutViewableFiles } from './gitignore-matcher.js'
 
 /**
  * @typedef {object} ExplorerTreeNode
@@ -20,6 +21,7 @@ import { createGitignoreMatcher, pruneExplorerFoldersWithoutMarkdown } from './g
  * @property {'folder' | 'file'} type
  * @property {number} depth
  * @property {boolean} [isActive]
+ * @property {string} [fileTypeId]
  * @property {ExplorerTreeNode[]} [children]
  */
 
@@ -100,7 +102,7 @@ function sortListingEntries(entries) {
 }
 
 /**
- * Recursively scan a file:// directory tree via Chrome listing HTML; only markdown files are leaf nodes.
+ * Recursively scan a file:// directory tree via Chrome listing HTML; only supported files are leaf nodes.
  * @param {string} rootDirUrl - file: directory URL (with or without trailing slash)
  * @param {object} options
  * @param {number} [options.maxScanDepth]
@@ -109,7 +111,7 @@ function sortListingEntries(entries) {
  * @param {(p: ScanFolderStats & { currentFolder?: string }) => void} [options.onProgress]
  * @param {AbortSignal} [options.signal]
  * @param {string} [options.currentFileUrl] - marks active file in tree
- * @param {boolean} [options.siblingsFirstAtRoot] - at depth 0, list markdown files before recursing into subfolders
+ * @param {boolean} [options.siblingsFirstAtRoot] - at depth 0, list supported files before recursing into subfolders
  * @param {boolean} [options.respectGitignore] - load nested `.gitignore` and skip ignored paths (default true)
  * @returns {Promise<{ tree: ExplorerTreeNode, stats: ScanFolderStats, currentFileInTree: boolean }>}
  */
@@ -202,13 +204,13 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
     const rawEntries = collectEntriesFromChromeAddRow(html, dirUrl)
     const sorted = sortListingEntries(rawEntries)
     const dirs = sorted.filter((e) => e.isDir)
-    const mdFiles = sorted.filter((e) => !e.isDir && isMarkdownFileHref(e.href))
-    const otherFiles = sorted.filter((e) => !e.isDir && !isMarkdownFileHref(e.href))
+    const supportedFiles = sorted.filter((e) => !e.isDir && isExplorerSupportedFile(e.href))
+    const otherFiles = sorted.filter((e) => !e.isDir && !isExplorerSupportedFile(e.href))
 
     /** @type {typeof sorted} */
     let ordered = sorted
     if (siblingsFirstAtRoot && depthFromRoot === 0) {
-      ordered = [...mdFiles, ...dirs, ...otherFiles]
+      ordered = [...supportedFiles, ...dirs, ...otherFiles]
     }
 
     /** @type {ExplorerTreeNode[]} */
@@ -230,7 +232,7 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
 
       const subTree = await buildTree(entry.href, nextDepth)
       subTree.name = folderNameFromEntry(entry.name, entry.href)
-      if (pruneExplorerFoldersWithoutMarkdown(subTree)) {
+      if (pruneExplorerFoldersWithoutViewableFiles(subTree)) {
         children.push(subTree)
       }
     }
@@ -238,7 +240,9 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
     /**
      * @param {typeof sorted[0]} entry
      */
-    function pushMarkdownFile(entry) {
+    function pushSupportedFile(entry) {
+      const fileType = getFileTypeFromUrl(entry.href)
+      if (!fileType) return true
       const rel = posixPathRelativeToFileRoot(normalizedRoot, entry.href)
       if (gitignore?.shouldIgnore(rel, false)) return true
 
@@ -258,6 +262,7 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
         type: 'file',
         name: fileDisplayNameFromHref(href),
         href,
+        fileTypeId: fileType.id,
         depth: depthFromRoot + 1,
         isActive
       })
@@ -275,9 +280,9 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
         continue
       }
 
-      if (!isMarkdownFileHref(entry.href)) continue
+      if (!isExplorerSupportedFile(entry.href)) continue
 
-      if (!pushMarkdownFile(entry)) break
+      if (!pushSupportedFile(entry)) break
     }
 
     return {
@@ -291,7 +296,7 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
 
   const tree = await buildTree(normalizedRoot, 0)
   tree.name = folderDisplayNameFromUrl(normalizedRoot)
-  pruneExplorerFoldersWithoutMarkdown(tree, true)
+  pruneExplorerFoldersWithoutViewableFiles(tree, true)
   emitProgress(normalizedRoot)
 
   const currentFileInTree = Boolean(

@@ -10,7 +10,7 @@ export function detectMarkdownPage({ location, document }) {
 
   if (pathnameHasMarkdownExtension(pathname)) {
     score += 5
-    reasons.push('URL path ends with .md/.markdown/.mdown')
+    reasons.push('URL path has a registered Markdown-family extension')
   }
 
   if (contentType.includes('text/plain')) {

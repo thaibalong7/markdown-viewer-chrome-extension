@@ -15,6 +15,7 @@ import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
 import { MoreIcon } from '../icons/MoreIcon.jsx'
 import { OpenNewTabIcon } from '../icons/OpenNewTabIcon.jsx'
 import { FileIcon } from '../icons/FileIcon.jsx'
+import { getFileTypeById } from '../../../../shared/file-types.js'
 
 export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
   const linkRef = useRef(null)
@@ -24,6 +25,8 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
   const href = String(file?.href || '')
   const canOpenInNewTab = isBrowserOpenableFileHref(href)
   const canCopyLink = canCopyCurrentFileLink(href)
+  const fileType = getFileTypeById(file?.fileTypeId)
+  const fileTypeLabel = fileType?.label || 'Document'
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
@@ -99,14 +102,15 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
         className={`mdp-explorer__node-btn${isActive ? ' is-active' : ''}`}
         data-file-href={href}
         aria-current={isActive ? 'true' : 'false'}
-        title={href}
+        title={`${file.displayName} — ${fileTypeLabel}`}
+        data-file-type={file?.fileTypeId || undefined}
         style={{ paddingLeft: `${6 + Math.max(0, depth - 1) * 12}px` }}
         onClick={onFileClick}
         onAuxClick={onFileAuxClick}
       >
         <span className="mdp-explorer__node-depth" aria-hidden="true" />
         <span className="mdp-explorer__node-icon" aria-hidden="true">
-          <FileIcon />
+          <FileIcon kind={fileType?.explorerIcon} />
         </span>
         <span className="mdp-explorer__node-label">{file.displayName}</span>
       </a>

@@ -109,6 +109,7 @@ export function useEditorSplitResize({ rootEl, editorEl, previewEl, handleEl }) 
       const startX = event.clientX
       const startWidth = editorEl.getBoundingClientRect().width
       rootEl.classList.add('is-resizing-editor-split')
+      handleEl.classList.add('is-dragging')
 
       pointerMove = (moveEvent) => {
         const deltaX = moveEvent.clientX - startX
@@ -119,14 +120,19 @@ export function useEditorSplitResize({ rootEl, editorEl, previewEl, handleEl }) 
         const width = editorEl.getBoundingClientRect().width
         setEditorWidth(width, { persist: true })
         rootEl.classList.remove('is-resizing-editor-split')
+        handleEl.classList.remove('is-dragging')
         if (pointerMove) window.removeEventListener('pointermove', pointerMove)
-        if (pointerUp) window.removeEventListener('pointerup', pointerUp)
+        if (pointerUp) {
+          window.removeEventListener('pointerup', pointerUp)
+          window.removeEventListener('pointercancel', pointerUp)
+        }
         pointerMove = null
         pointerUp = null
       }
 
       window.addEventListener('pointermove', pointerMove)
       window.addEventListener('pointerup', pointerUp)
+      window.addEventListener('pointercancel', pointerUp)
     }
 
     const keyDown = (event) => {
@@ -143,9 +149,13 @@ export function useEditorSplitResize({ rootEl, editorEl, previewEl, handleEl }) 
 
     return () => {
       rootEl.classList.remove('is-resizing-editor-split')
+      handleEl.classList.remove('is-dragging')
       if (resizeRaf) window.cancelAnimationFrame(resizeRaf)
       if (pointerMove) window.removeEventListener('pointermove', pointerMove)
-      if (pointerUp) window.removeEventListener('pointerup', pointerUp)
+      if (pointerUp) {
+        window.removeEventListener('pointerup', pointerUp)
+        window.removeEventListener('pointercancel', pointerUp)
+      }
       handleEl.removeEventListener('pointerdown', pointerDown)
       handleEl.removeEventListener('keydown', keyDown)
       window.removeEventListener('resize', scheduleClamp)

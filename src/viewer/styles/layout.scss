@@ -149,7 +149,7 @@
 .mdp-sidebar__resize-handle {
   position: absolute;
   top: 0;
-  right: -4px;
+  right: -4.5px;
   width: 8px;
   height: 100%;
   cursor: col-resize;
@@ -160,13 +160,13 @@
     content: '';
     position: absolute;
     top: 50%;
-    left: 50%;
-    width: 2px;
+    left: calc(50%);
+    width: 3px;
     height: 42px;
     border-radius: 999px;
     transform: translate(-50%, -50%);
     background: color-mix(in srgb, var(--mdp-border) 82%, var(--mdp-text) 18%);
-    opacity: 0;
+    opacity: 0.62;
     transition:
       opacity 150ms ease,
       background-color 150ms ease;
@@ -178,9 +178,22 @@
     background: var(--mdp-link);
   }
 
+  &.is-dragging {
+    background: color-mix(in srgb, var(--mdp-link) 12%, transparent);
+  }
+
+  &.is-dragging::after {
+    width: 3px;
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+    background: var(--mdp-link);
+    transition: none;
+  }
+
   &--right {
     right: auto;
-    left: -4px;
+    left: -4.5px;
   }
 }
 

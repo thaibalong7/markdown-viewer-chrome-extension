@@ -25,4 +25,40 @@ describe('editor layout styles', () => {
       /\.mdp-root\.is-resizing-editor-split \.mdp-body--edit-split\s*\{[^}]*animation: none/s
     )
   })
+
+  it('emphasizes the full active resize handle while dragging', () => {
+    expect(layoutCss).toMatch(
+      /\.mdp-sidebar__resize-handle\.is-dragging::after\s*\{[^}]*height: 100%[^}]*background: var\(--mdp-link\)/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-editor-split__resize-handle\.is-dragging::after\s*\{[^}]*height: 100%[^}]*background: var\(--mdp-link\)/s
+    )
+  })
+
+  it('keeps resize grips visible before hover', () => {
+    expect(layoutCss).toMatch(
+      /\.mdp-sidebar__resize-handle::after\s*\{[^}]*height: 42px[^}]*opacity: 0\.62/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-editor-split__resize-handle::after\s*\{[^}]*height: 36px[^}]*opacity: 0\.62/s
+    )
+  })
+
+  it('centers the editor separator line under its resize grip', () => {
+    expect(layoutCss).toMatch(
+      /\.mdp-editor-split__resize-handle\s*\{[^}]*background-position: center[^}]*background-size: 1px 100%/s
+    )
+  })
+
+  it('optically centers sidebar grips over their one-pixel panel borders', () => {
+    expect(layoutCss).toMatch(
+      /\.mdp-sidebar__resize-handle\s*\{[^}]*right: -4\.5px/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-sidebar__resize-handle::after\s*\{[^}]*left: calc\(50% - 1px\)[^}]*width: 3px/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-sidebar__resize-handle--right\s*\{[^}]*left: -4\.5px/s
+    )
+  })
 })

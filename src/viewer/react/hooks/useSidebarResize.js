@@ -68,6 +68,7 @@ export function useSidebarResize({
       const startX = event.clientX
       const startWidth = sidebarEl.getBoundingClientRect().width
       rootEl.classList.add('is-resizing-sidebar')
+      handleEl.classList.add('is-dragging')
 
       pointerMove = (moveEvent) => {
         const deltaX = side === 'right'
@@ -80,11 +81,13 @@ export function useSidebarResize({
         const width = sidebarEl.getBoundingClientRect().width
         setSidebarWidth(width, { persist: true })
         rootEl.classList.remove('is-resizing-sidebar')
+        handleEl.classList.remove('is-dragging')
         if (pointerMove) {
           window.removeEventListener('pointermove', pointerMove)
         }
         if (pointerUp) {
           window.removeEventListener('pointerup', pointerUp)
+          window.removeEventListener('pointercancel', pointerUp)
         }
         pointerMove = null
         pointerUp = null
@@ -92,6 +95,7 @@ export function useSidebarResize({
 
       window.addEventListener('pointermove', pointerMove)
       window.addEventListener('pointerup', pointerUp)
+      window.addEventListener('pointercancel', pointerUp)
     }
 
     const keyDown = (event) => {
@@ -109,11 +113,13 @@ export function useSidebarResize({
 
     return () => {
       rootEl.classList.remove('is-resizing-sidebar')
+      handleEl.classList.remove('is-dragging')
       if (pointerMove) {
         window.removeEventListener('pointermove', pointerMove)
       }
       if (pointerUp) {
         window.removeEventListener('pointerup', pointerUp)
+        window.removeEventListener('pointercancel', pointerUp)
       }
       handleEl.removeEventListener('pointerdown', pointerDown)
       handleEl.removeEventListener('keydown', keyDown)

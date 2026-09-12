@@ -135,14 +135,10 @@
   cursor: col-resize;
   touch-action: none;
   background-color: var(--mdp-bg);
-  background-image:
-    linear-gradient(
-      to right,
-      var(--mdp-border) 0,
-      var(--mdp-border) 1px,
-      transparent 1px,
-      transparent 100%
-    );
+  background-image: linear-gradient(var(--mdp-border), var(--mdp-border));
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 1px 100%;
   z-index: 2;
 
   &::after {
@@ -155,7 +151,7 @@
     border-radius: 2px;
     transform: translate(-50%, -50%);
     background: color-mix(in srgb, var(--mdp-border) 78%, var(--mdp-text) 22%);
-    opacity: 0.42;
+    opacity: 0.62;
     transition: opacity 120ms ease, background 120ms ease;
   }
 
@@ -163,6 +159,20 @@
   &:focus-visible::after {
     opacity: 0.85;
     background: var(--mdp-link);
+  }
+
+  &.is-dragging {
+    background-color: color-mix(in srgb, var(--mdp-link) 12%, var(--mdp-bg));
+    background-image: none;
+  }
+
+  &.is-dragging::after {
+    width: 3px;
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+    background: var(--mdp-link);
+    transition: none;
   }
 }
 

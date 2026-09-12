@@ -7,6 +7,12 @@ import {
   hashTargetToUrlFragment,
   scrollToElementInViewer
 } from './scroll-utils.js'
+import {
+  closeImageLightbox,
+  destroyImageLightbox,
+  getRenderableImageDimensions,
+  openImageLightbox
+} from './image-lightbox.js'
 
 /**
  * Hash navigation, in-article link handling, and clipboard UX for the markdown body.
@@ -30,8 +36,43 @@ export function createArticleInteractions({
   let hashChangeHandler = null
   /** @type {((e: MouseEvent) => void) | null} */
   let articleClickHandler = null
+  /** @type {((e: KeyboardEvent) => void) | null} */
+  let articleKeyDownHandler = null
+  /** @type {((e: Event) => void) | null} */
+  let articleImageLoadHandler = null
   /** @type {WeakMap<HTMLButtonElement, number>} */
   const copyButtonFeedbackTimers = new WeakMap()
+
+  function markZoomableImage(image) {
+    if (
+      !(image instanceof HTMLImageElement) ||
+      image.closest('a') ||
+      !getRenderableImageDimensions(image)
+    ) return
+    image.classList.add('mdp-image-zoom-target')
+    image.setAttribute('tabindex', '0')
+    image.setAttribute('role', 'button')
+    image.setAttribute(
+      'aria-label',
+      image.alt ? `Zoom image: ${image.alt}` : 'Open image zoom view'
+    )
+  }
+
+  function prepareZoomableImages() {
+    closeImageLightbox()
+    const article = getArticle?.()
+    if (!(article instanceof HTMLElement)) return
+    for (const image of article.querySelectorAll('.mdp-markdown-body img')) {
+      markZoomableImage(image)
+    }
+  }
+
+  function handleImageZoom(target, article) {
+    if (!(target instanceof Element)) return false
+    const image = target.closest('img.mdp-image-zoom-target')
+    if (!(image instanceof HTMLImageElement) || !article.contains(image)) return false
+    return openImageLightbox(image)
+  }
 
   function flashCopyButtonCopied(button) {
     const prevTimer = copyButtonFeedbackTimers.get(button)
@@ -237,12 +278,28 @@ export function createArticleInteractions({
     window.addEventListener('hashchange', hashChangeHandler)
 
     articleClickHandler = (event) => {
+      if (handleImageZoom(event.target, article)) {
+        event.preventDefault()
+        return
+      }
       if (handleCodeCopyClick(event, article)) return
       if (handleAnchorLinkClick(event, article)) return
       if (handleInternalLinkClick(event, article)) return
       handleHashLinkClick(event, article)
     }
     article.addEventListener('click', articleClickHandler)
+
+    articleKeyDownHandler = (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return
+      if (!handleImageZoom(event.target, article)) return
+      event.preventDefault()
+    }
+    article.addEventListener('keydown', articleKeyDownHandler)
+
+    articleImageLoadHandler = (event) => {
+      markZoomableImage(event.target)
+    }
+    article.addEventListener('load', articleImageLoadHandler, true)
   }
 
   function destroy() {
@@ -255,7 +312,16 @@ export function createArticleInteractions({
       article.removeEventListener('click', articleClickHandler)
     }
     articleClickHandler = null
+    if (articleKeyDownHandler && article instanceof HTMLElement) {
+      article.removeEventListener('keydown', articleKeyDownHandler)
+    }
+    articleKeyDownHandler = null
+    if (articleImageLoadHandler && article instanceof HTMLElement) {
+      article.removeEventListener('load', articleImageLoadHandler, true)
+    }
+    articleImageLoadHandler = null
+    destroyImageLightbox()
   }
 
-  return { bind, destroy, scrollToHash, copyCodeWithToast }
+  return { bind, destroy, prepareZoomableImages, scrollToHash, copyCodeWithToast }
 }

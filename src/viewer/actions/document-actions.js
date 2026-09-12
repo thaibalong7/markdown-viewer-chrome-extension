@@ -32,7 +32,9 @@ const EXPORT_MARKDOWN_BODY_CSS = `
 .mdp-markdown-body th,.mdp-markdown-body td { border: 1px solid var(--mdp-table-border); padding: 8px 12px; }
 .mdp-markdown-body th { background: var(--mdp-table-header-bg); font-weight: 600; }
 .mdp-markdown-body tr:nth-child(even) { background: var(--mdp-table-row-alt-bg); }
-.mdp-markdown-body img { max-width: 100%; height: auto; }
+.mdp-markdown-body img,.mdp-markdown-body svg { max-width: 100%; height: auto; }
+.mdp-markdown-body img { display: block; margin-inline: auto; object-fit: contain; }
+.mdp-markdown-body > svg,.mdp-markdown-body > figure > svg { display: block; margin-inline: auto; }
 .mdp-markdown-body hr { border: 0; border-top: 1px solid var(--mdp-border); margin: 1.5em 0; }
 .mdp-markdown-body .table-wrapper { overflow-x: auto; margin: 0 0 1em; }
 .mdp-markdown-body ul:has(> li.mdp-task-list__item), .mdp-markdown-body ol:has(> li.mdp-task-list__item) { list-style: none; list-style-type: none; padding-left: 0; margin-left: 0; }

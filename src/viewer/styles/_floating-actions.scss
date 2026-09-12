@@ -1,27 +1,29 @@
 @use 'variables' as v;
 
-/* Floating document controls (print/export). */
+/* Document controls hosted by the right-side rail. */
 .mdp-floating-actions {
-  position: fixed;
-  top: 12px;
-  right: 24px;
-  z-index: 10;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px;
-  border: 1px solid color-mix(in srgb, var(--mdp-border) 88%, transparent);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--mdp-panel-bg) 88%, transparent);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 10px 28px color-mix(in srgb, var(--mdp-text) 12%, transparent);
-  opacity: 0.4;
-  transition: opacity 200ms ease;
+  flex-wrap: wrap;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 7px;
+  border: 1px solid var(--mdp-border);
+  border-radius: v.$radius-default;
+  background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
+  box-shadow: var(--mdp-shadow-subtle);
 
-  &:hover,
-  &:focus-within {
-    opacity: 1;
+  &[hidden] {
+    display: none;
   }
+}
+
+.mdp-right-rail--actions-only .mdp-floating-actions {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  padding: 5px;
+  border-radius: 12px;
+  background: var(--mdp-surface);
 }
 
 .mdp-fab-btn {
@@ -33,15 +35,23 @@
   padding: 0;
   border: 1px solid var(--mdp-border);
   border-radius: v.$radius-small;
-  background: var(--mdp-panel-bg);
-  color: var(--mdp-text);
+  background: transparent;
+  color: var(--mdp-muted);
   cursor: pointer;
   transition:
-    background 120ms ease,
-    border-color 120ms ease;
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease;
 
   &:hover {
-    background: color-mix(in srgb, var(--mdp-panel-bg) 70%, var(--mdp-border) 30%);
+    color: var(--mdp-link);
+    border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
+    background: var(--mdp-link-soft);
+  }
+
+  &:active {
+    transform: translateY(1px);
   }
 
   &:focus-visible {
@@ -56,9 +66,9 @@
   }
 
   &.is-copied {
-    color: var(--mdp-link);
-    border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
-    background: color-mix(in srgb, var(--mdp-link) 12%, transparent);
+    color: var(--mdp-accent);
+    border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+    background: var(--mdp-accent-soft);
     pointer-events: none;
 
     .mdp-fab-btn__icon {
@@ -84,20 +94,22 @@
 
 .mdp-fab-export__menu {
   position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
+  top: 0;
+  right: calc(100% + 6px);
   z-index: 30;
-  min-width: 160px;
-  padding: 4px;
-  border-radius: v.$radius-small;
+  min-width: 172px;
+  padding: 5px;
+  border-radius: v.$radius-default;
   border: 1px solid var(--mdp-border);
-  background: var(--mdp-bg);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-float);
 }
 
 .mdp-fab-export__menu-item {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
+  min-height: 36px;
   margin: 0;
   padding: 8px 10px;
   border: 0;
@@ -111,11 +123,40 @@
 
   &:hover,
   &:focus-visible {
-    background: color-mix(in srgb, var(--mdp-panel-bg) 85%, var(--mdp-border) 15%);
+    color: var(--mdp-link);
+    background: var(--mdp-link-soft);
   }
 
   &:focus-visible {
     outline: 2px solid var(--mdp-link);
     outline-offset: -1px;
+  }
+}
+
+@media (max-width: 899px) {
+  .mdp-floating-actions {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 5px;
+    background: var(--mdp-surface);
+  }
+}
+
+@media (max-width: 639px) {
+  .mdp-floating-actions,
+  .mdp-right-rail--actions-only .mdp-floating-actions {
+    flex-direction: row;
+    padding: 4px;
+  }
+
+  .mdp-fab-export__menu {
+    inset: auto 0 calc(100% + 8px) auto;
+  }
+}
+
+@media (pointer: coarse) {
+  .mdp-fab-btn {
+    width: 44px;
+    height: 44px;
   }
 }

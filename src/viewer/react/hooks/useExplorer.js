@@ -90,7 +90,6 @@ export function useExplorer({ bridge }) {
   const siblingTreeRef = useRef(null)
   const siblingFolderLabelRef = useRef('')
   const siblingScanRootUrlRef = useRef(null)
-  const workspaceDisplayLabelRef = useRef('')
 
   const refs = useMemo(
     () => ({
@@ -100,7 +99,6 @@ export function useExplorer({ bridge }) {
       siblingTreeRef,
       siblingFolderLabelRef,
       siblingScanRootUrlRef,
-      workspaceDisplayLabelRef,
       workspaceVirtualReadersRef
     }),
     []
@@ -137,23 +135,12 @@ export function useExplorer({ bridge }) {
 
   const buildFilesContext = useCallback((opts = {}) => {
     const scanPhase = opts.scanPhase === 'scanning' ? 'scanning' : 'idle'
-    const label =
-      opts.workspaceDisplayLabel != null && String(opts.workspaceDisplayLabel).trim() !== ''
-        ? String(opts.workspaceDisplayLabel).trim()
-        : workspaceDisplayLabelRef.current || getWorkspaceRootUrl() || undefined
-    const siblingFolderLabel =
-      opts.siblingFolderLabel != null && String(opts.siblingFolderLabel).trim() !== ''
-        ? String(opts.siblingFolderLabel).trim()
-        : siblingFolderLabelRef.current || undefined
 
     return buildExplorerFilesContext({
       explorerMode: explorerModeRef.current,
       currentFileUrl: currentFileUrlRef.current,
       workspaceTree: workspaceTreeRef.current,
       siblingTree: siblingTreeRef.current,
-      workspaceRootUrl: getWorkspaceRootUrl(),
-      workspaceDisplayLabel: label,
-      siblingFolderLabel,
       scanPhase
     })
   }, [])
@@ -257,7 +244,6 @@ export function useExplorer({ bridge }) {
       setExplorerMode('sibling')
       explorerModeRef.current = 'sibling'
       workspaceTreeRef.current = null
-      workspaceDisplayLabelRef.current = ''
       safePatch({ explorerMode: 'sibling' })
       await runSiblingScan(currentFileUrlRef.current)
     },

@@ -6,7 +6,7 @@ import {
   scrollToElementInViewer
 } from '../../scroll-utils.js'
 import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
-import { useSidebarTabState } from '../contexts/SidebarTabContext.jsx'
+import { PanelHeader } from './common/PanelHeader.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
 import { useEditorState } from '../contexts/EditorContext.jsx'
 import {
@@ -25,10 +25,8 @@ function updateHash(id) {
 const OUTLINE_SKELETON_WIDTHS = ['86%', '72%', '78%', '60%', '82%', '68%', '94%', '76%', '62%', '48%']
 
 export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEditor }) {
-  const { activeSidebarTab } = useSidebarTabState()
   const editorState = useEditorState()
   const editorEditActive = Boolean(editorState?.enabled)
-  const isFiles = activeSidebarTab === 'files'
   const tocScrollRef = useRef(null)
   const userTocInteractionPausedUntilRef = useRef(0)
   const contentSmoothScrollSuppressedUntilRef = useRef(0)
@@ -59,7 +57,7 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
   const outlineVirtualizer = useVirtualizer({
     count: outlineItems.length,
     getScrollElement: () => tocScrollRef.current,
-    estimateSize: () => 32,
+    estimateSize: () => 36,
     overscan: 8
   })
 
@@ -106,12 +104,15 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
   return (
     <div
       className="mdp-sidebar-panel mdp-sidebar-panel--outline"
-      role="tabpanel"
       id="mdp-panel-outline"
-      aria-labelledby="mdp-tab-outline"
-      hidden={isFiles}
     >
-      <div className="mdp-sidebar__title">Outline</div>
+      <PanelHeader
+        className="mdp-outline__header"
+        title="Outline"
+        meta={tocReady
+          ? `${outlineItems.length} ${outlineItems.length === 1 ? 'heading' : 'headings'}`
+          : 'Loading…'}
+      />
       <nav
         className="mdp-toc"
         aria-label="Table of contents"
@@ -126,7 +127,7 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
             className="mdp-toc__skeleton"
             lines={OUTLINE_SKELETON_WIDTHS.length}
             widths={OUTLINE_SKELETON_WIDTHS}
-            lineHeight={12}
+            lineHeight={14}
             gap={10}
           />
         ) : headings.length ? (

@@ -2,6 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   getExplorerExpandedMap,
   getExplorerExpandedStateRoot,
+  getFilesWidthPx,
+  getSidebarWidthPx,
+  setFilesWidthPx,
+  setSidebarWidthPx,
   setExplorerExpandedMap
 } from '../explorer-state.js'
 
@@ -60,5 +64,13 @@ describe('explorer expanded folder state', () => {
   it('normalizes the expanded state root from the tree href before falling back', () => {
     expect(getExplorerExpandedStateRoot({ href: 'file:///docs' }, 'file:///fallback/')).toBe('file:///docs/')
     expect(getExplorerExpandedStateRoot(null, 'file:///fallback/')).toBe('file:///fallback/')
+  })
+
+  it('stores Files and Outline widths independently', () => {
+    setFilesWidthPx(312)
+    setSidebarWidthPx(368)
+
+    expect(getFilesWidthPx()).toBe(312)
+    expect(getSidebarWidthPx()).toBe(368)
   })
 })

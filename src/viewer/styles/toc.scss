@@ -1,10 +1,4 @@
-.mdp-sidebar {
-  position: sticky;
-  top: 0;
-  align-self: start;
-  height: 100vh;
-  overflow: hidden;
-}
+@use 'variables' as v;
 
 .mdp-sidebar-panel--outline {
   flex: 1;
@@ -12,12 +6,18 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-top: 12px;
+
+  .mdp-outline__header {
+    margin-bottom: 8px;
+  }
 
   .mdp-toc {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     contain: content;
+    @include v.scrollbar-thin;
   }
 }
 
@@ -33,12 +33,18 @@
   width: 100%;
 
   &__skeleton {
-    padding: 6px 2px 4px;
+    padding: 8px 6px 4px;
   }
 
   &__empty {
     color: var(--mdp-muted);
     font-size: 14px;
+    line-height: 1.4;
+    margin-top: 4px;
+    padding: 14px 12px;
+    border: 1px dashed var(--mdp-border);
+    border-radius: v.$radius-small;
+    background: color-mix(in srgb, var(--mdp-surface) 52%, transparent);
   }
 
   &__list {
@@ -47,7 +53,7 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
   }
 
   &__list--virtual {
@@ -69,32 +75,63 @@
   }
 
   &__link {
+    position: relative;
     display: block;
     text-decoration: none;
     color: var(--mdp-muted);
-    padding: 6px 10px;
-    border-radius: 6px;
+    min-height: 34px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: v.$radius-small;
     font-size: 13px;
     line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
+    transition:
+      color 120ms ease,
+      background-color 120ms ease,
+      border-color 120ms ease;
 
     &:hover {
-      background: rgba(31, 35, 40, 0.06);
+      border-color: var(--mdp-border);
+      background: color-mix(in srgb, var(--mdp-surface) 68%, transparent);
       color: var(--mdp-text);
     }
 
     &.is-active {
-      background: var(--mdp-border);
+      border-color: color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
+      background: var(--mdp-link-soft);
       color: var(--mdp-text);
       font-weight: 600;
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 7px auto 7px -1px;
+        width: 3px;
+        border-radius: 999px;
+        background: var(--mdp-link);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--mdp-link);
+      outline-offset: 1px;
     }
 
     @for $i from 1 through 6 {
       &--h#{$i} {
-        padding-left: #{10px + ($i - 1) * 8px};
+        padding-left: #{10px + ($i - 1) * 9px};
       }
     }
+  }
+}
+
+@media (pointer: coarse) {
+  .mdp-toc__link {
+    min-height: 44px;
+    padding-block: 12px;
   }
 }

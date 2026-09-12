@@ -13,7 +13,7 @@ import {
  * @typedef {object} ExplorerFilesContext
  * @property {ExplorerModeBadgeId} modeBadge
  * @property {string} currentFileUrl
- * @property {string} currentLine - e.g. "Reading: README.md" or "No file selected"
+ * @property {string} currentLine - e.g. "README.md" or "No file selected"
  * @property {string} statusLine - workspace / folder status (short)
  * @property {string} [warningLine] - e.g. current file not listed in workspace tree
  */
@@ -123,9 +123,9 @@ function currentFileLineLabel(fileUrl) {
     try {
       const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
       const base = rel.split('/').pop() || ''
-      return base ? `Reading: ${base}` : 'Reading: document'
+      return base || 'Document'
     } catch {
-      return 'Reading: document'
+      return 'Document'
     }
   }
   try {
@@ -138,9 +138,9 @@ function currentFileLineLabel(fileUrl) {
         return base
       }
     })()
-    return decoded ? `Reading: ${decoded}` : 'Reading: document'
+    return decoded || 'Document'
   } catch {
-    return 'Reading: document'
+    return 'Document'
   }
 }
 
@@ -150,9 +150,6 @@ function currentFileLineLabel(fileUrl) {
  * @param {string} p.currentFileUrl
  * @param {import('./folder-scanner.js').ExplorerTreeNode | null} p.workspaceTree
  * @param {import('./folder-scanner.js').ExplorerTreeNode | null} [p.siblingTree]
- * @param {string | null} [p.workspaceRootUrl]
- * @param {string} [p.workspaceDisplayLabel] - folder name or decoded path
- * @param {string} [p.siblingFolderLabel] - decoded parent path for deep sibling mode
  * @param {'idle' | 'scanning'} [p.scanPhase]
  * @returns {ExplorerFilesContext}
  */
@@ -161,9 +158,6 @@ export function buildExplorerFilesContext({
   currentFileUrl,
   workspaceTree,
   siblingTree,
-  workspaceRootUrl,
-  workspaceDisplayLabel,
-  siblingFolderLabel,
   scanPhase = 'idle'
 } = {}) {
   /** @type {ExplorerModeBadgeId} */
@@ -171,23 +165,14 @@ export function buildExplorerFilesContext({
 
   const currentLine = currentFileLineLabel(currentFileUrl)
 
-  let statusLine = 'Not in workspace'
-  if (explorerMode === 'workspace') {
-    const rootHint = workspaceDisplayLabel || workspaceRootUrl || 'Workspace'
-    if (scanPhase === 'scanning') {
-      statusLine = `Scanning… · ${rootHint}`
-    } else {
-      statusLine = `Inside workspace · ${rootHint}`
-    }
-  } else if (scanPhase === 'scanning') {
-    const hint = siblingFolderLabel?.trim() || ''
-    statusLine = hint ? `Scanning folder tree… · ${hint}` : 'Scanning folder tree…'
-  } else {
-    const hint = siblingFolderLabel?.trim() || ''
-    statusLine = hint
-      ? `Folder tree (this file’s directory) · ${hint}`
-      : 'Folder tree (this file’s directory)'
-  }
+  const statusLine =
+    explorerMode === 'workspace'
+      ? scanPhase === 'scanning'
+        ? 'Scanning workspace…'
+        : 'Workspace files'
+      : scanPhase === 'scanning'
+        ? 'Scanning folder…'
+        : 'This file’s folder'
 
   /** @type {string | undefined} */
   let warningLine

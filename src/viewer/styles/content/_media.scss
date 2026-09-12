@@ -1,0 +1,174 @@
+.mdp-markdown-body {
+  img,
+  svg {
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  img {
+    display: block;
+    margin-inline: auto;
+    object-fit: contain;
+
+    &.mdp-image-zoom-target {
+      cursor: zoom-in;
+
+      &:focus-visible {
+        outline: 2px solid var(--mdp-link);
+        outline-offset: 4px;
+        border-radius: 3px;
+      }
+    }
+  }
+
+  // Raw block SVGs should align like Markdown images. Nested SVGs (for example,
+  // Mermaid toolbar icons) retain their component-specific display rules.
+  > svg,
+  > figure > svg {
+    display: block;
+    margin-inline: auto;
+  }
+}
+
+.mdp-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 36;
+  opacity: 0;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--mdp-bg) 86%, transparent);
+  backdrop-filter: blur(12px);
+  transition: opacity 160ms ease;
+
+  &[hidden] {
+    display: none !important;
+  }
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &.is-dragging .mdp-image-lightbox__viewport {
+    cursor: grabbing;
+  }
+}
+
+.mdp-image-lightbox__viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.mdp-image-lightbox__positioner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.mdp-image-lightbox__canvas {
+  position: relative;
+  transform-origin: center center;
+  will-change: transform;
+  user-select: none;
+
+  > img {
+    display: block;
+    filter: drop-shadow(0 20px 40px color-mix(in srgb, var(--mdp-text) 22%, transparent));
+  }
+}
+
+.mdp-image-lightbox__controls {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mdp-image-lightbox__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 82%, transparent);
+  border-radius: 999px;
+  color: var(--mdp-text);
+  background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
+  box-shadow: var(--mdp-shadow-float);
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--mdp-link);
+    border-color: color-mix(in srgb, var(--mdp-link) 32%, var(--mdp-border));
+    background: var(--mdp-link-soft);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--mdp-text) 32%, transparent);
+    outline-offset: 2px;
+  }
+
+  > svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.mdp-image-lightbox__hints {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 1;
+  max-width: min(calc(100% - 32px), 760px);
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 70%, transparent);
+  border-radius: 999px;
+  color: var(--mdp-muted);
+  background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
+  box-shadow: var(--mdp-shadow-float);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  text-align: center;
+  pointer-events: none;
+}
+
+@media (max-width: 639px) {
+  .mdp-image-lightbox__controls {
+    top: 12px;
+    right: 12px;
+    gap: 6px;
+  }
+
+  .mdp-image-lightbox__button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .mdp-image-lightbox__hints {
+    bottom: 12px;
+    font-size: 0.75rem;
+  }
+}
+
+@media print {
+  .mdp-image-lightbox {
+    display: none !important;
+  }
+}

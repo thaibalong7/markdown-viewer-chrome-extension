@@ -101,6 +101,8 @@ export function createRenderController({
       })
       if (currentRenderToken !== renderToken) return null
 
+      articleInteractions?.prepareZoomableImages()
+
       syncTocItems()
       if (scrollSnapshot) {
         restoreScrollPosition(scrollSnapshot)

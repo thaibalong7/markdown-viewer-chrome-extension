@@ -98,13 +98,13 @@ export function ExplorerPanel({ bridge }) {
   const fileVirtualizer = useVirtualizer({
     count: state.files.length,
     getScrollElement: () => scrollElement,
-    estimateSize: () => 34,
+    estimateSize: () => 36,
     overscan: 10
   })
   const treeVirtualizer = useVirtualizer({
     count: treeRows.length,
     getScrollElement: () => scrollElement,
-    estimateSize: () => 34,
+    estimateSize: () => 36,
     overscan: 12
   })
 

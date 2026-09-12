@@ -3,11 +3,11 @@
 .mdp-markdown-body {
   .mdp-mermaid {
     position: relative;
-    margin: 1em 0;
-    padding: 16px;
-    border-radius: 8px;
-    border: 1px solid var(--mdp-border);
-    background: var(--mdp-bg);
+    margin: 1.25em 0;
+    padding: 44px 0 12px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
     overflow-x: auto;
     display: flex;
     justify-content: center;
@@ -38,8 +38,8 @@
       .mdp-mermaid__error-banner {
         padding: 10px 12px;
         border-radius: $radius-small;
-        border: 1px solid color-mix(in srgb, #c62828 38%, var(--mdp-border));
-        background: color-mix(in srgb, #c62828 10%, var(--mdp-panel-bg));
+        border: 1px solid color-mix(in srgb, var(--mdp-danger) 38%, var(--mdp-border));
+        background: color-mix(in srgb, var(--mdp-danger) 10%, var(--mdp-surface));
       }
 
       .mdp-mermaid__error-title {
@@ -124,9 +124,9 @@
     margin: 0;
     padding: 0;
     border: 1px solid color-mix(in srgb, var(--mdp-border) 80%, transparent);
-    border-radius: 7px;
+    border-radius: $radius-small;
     color: var(--mdp-muted);
-    background: color-mix(in srgb, var(--mdp-panel-bg) 85%, transparent);
+    background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
     opacity: 0.45;
     cursor: pointer;
     transition:
@@ -136,8 +136,9 @@
 
     &:hover,
     &:focus-visible {
-      color: var(--mdp-text);
-      border-color: var(--mdp-border);
+      color: var(--mdp-link);
+      border-color: color-mix(in srgb, var(--mdp-link) 32%, var(--mdp-border));
+      background: var(--mdp-link-soft);
     }
 
     &.is-copied {
@@ -179,9 +180,9 @@
     margin: 0;
     padding: 0;
     border: 1px solid color-mix(in srgb, var(--mdp-border) 80%, transparent);
-    border-radius: 7px;
+    border-radius: $radius-small;
     color: var(--mdp-muted);
-    background: color-mix(in srgb, var(--mdp-panel-bg) 85%, transparent);
+    background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
     opacity: 0.45;
     cursor: pointer;
     transition:
@@ -191,8 +192,9 @@
 
     &:hover,
     &:focus-visible {
-      color: var(--mdp-text);
-      border-color: var(--mdp-border);
+      color: var(--mdp-link);
+      border-color: color-mix(in srgb, var(--mdp-link) 32%, var(--mdp-border));
+      background: var(--mdp-link-soft);
     }
   }
 
@@ -203,9 +205,9 @@
     min-width: 150px;
     padding: 6px;
     border: 1px solid var(--mdp-border);
-    border-radius: 8px;
-    background: var(--mdp-panel-bg);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    border-radius: $radius-default;
+    background: var(--mdp-surface);
+    box-shadow: var(--mdp-shadow-float);
   }
 
   .mdp-mermaid-actions__item {
@@ -226,18 +228,19 @@
       color 140ms ease;
 
     &:hover {
-      /* Stronger than `--mdp-code-bg` so hover reads clearly on `--mdp-panel-bg` menus */
-      background: color-mix(in srgb, var(--mdp-text) 10%, var(--mdp-panel-bg));
+      color: var(--mdp-link);
+      background: var(--mdp-link-soft);
     }
 
     &:focus-visible {
-      background: color-mix(in srgb, var(--mdp-text) 10%, var(--mdp-panel-bg));
-      outline: 2px solid color-mix(in srgb, var(--mdp-text) 42%, transparent);
+      color: var(--mdp-link);
+      background: var(--mdp-link-soft);
+      outline: 2px solid var(--mdp-focus-color);
       outline-offset: 1px;
     }
 
     &:active {
-      background: color-mix(in srgb, var(--mdp-text) 16%, var(--mdp-panel-bg));
+      background: color-mix(in srgb, var(--mdp-link) 18%, var(--mdp-surface));
     }
   }
 
@@ -264,8 +267,13 @@
   z-index: 35;
   opacity: 0;
   pointer-events: none;
-  background: color-mix(in srgb, var(--mdp-bg) 82%, transparent);
-  backdrop-filter: blur(8px);
+  background:
+    radial-gradient(
+      circle at 50% 44%,
+      var(--mdp-surface) 0%,
+      color-mix(in srgb, var(--mdp-bg) 72%, var(--mdp-surface)) 72%,
+      var(--mdp-bg) 100%
+    );
   transition: opacity 160ms ease;
 
   &[hidden] {
@@ -308,7 +316,7 @@
     width: 100%;
     height: 100%;
     max-width: none;
-    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.18));
+    filter: drop-shadow(0 20px 40px color-mix(in srgb, var(--mdp-text) 18%, transparent));
   }
 }
 
@@ -333,8 +341,8 @@
   border: 1px solid color-mix(in srgb, var(--mdp-border) 82%, transparent);
   border-radius: 999px;
   color: var(--mdp-text);
-  background: color-mix(in srgb, var(--mdp-panel-bg) 85%, transparent);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
+  box-shadow: var(--mdp-shadow-float);
   cursor: pointer;
   transition:
     transform 140ms ease,
@@ -344,9 +352,9 @@
 
   &:hover,
   &:focus-visible {
-    color: var(--mdp-text);
-    border-color: var(--mdp-border);
-    background: color-mix(in srgb, var(--mdp-text) 10%, var(--mdp-panel-bg));
+    color: var(--mdp-link);
+    border-color: color-mix(in srgb, var(--mdp-link) 32%, var(--mdp-border));
+    background: var(--mdp-link-soft);
     transform: translateY(-1px);
   }
 
@@ -372,8 +380,8 @@
   border: 1px solid color-mix(in srgb, var(--mdp-border) 70%, transparent);
   border-radius: 999px;
   color: var(--mdp-muted);
-  background: color-mix(in srgb, var(--mdp-panel-bg) 90%, transparent);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+  background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
+  box-shadow: var(--mdp-shadow-float);
   font-size: 0.82rem;
   line-height: 1.35;
   text-align: center;

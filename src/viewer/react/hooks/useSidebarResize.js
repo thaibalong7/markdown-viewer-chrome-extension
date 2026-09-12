@@ -1,33 +1,50 @@
 import { useCallback, useEffect } from 'react'
-import { getSidebarWidthPx, setSidebarWidthPx } from '../../explorer/explorer-state.js'
+import {
+  getFilesWidthPx,
+  getSidebarWidthPx,
+  setFilesWidthPx,
+  setSidebarWidthPx
+} from '../../explorer/explorer-state.js'
 import { SIDEBAR_MAX_WIDTH_PX, SIDEBAR_MIN_WIDTH_PX } from '../../../shared/constants/viewer.js'
 
-function clampSidebarWidth(widthPx) {
+export function clampSidebarWidth(widthPx) {
   const width = Number(widthPx)
   if (!Number.isFinite(width)) return SIDEBAR_MIN_WIDTH_PX
   return Math.max(SIDEBAR_MIN_WIDTH_PX, Math.min(SIDEBAR_MAX_WIDTH_PX, Math.round(width)))
 }
 
-export function useSidebarResize({ rootEl, sidebarEl, handleEl, settings }) {
+export function useSidebarResize({
+  rootEl,
+  sidebarEl,
+  handleEl,
+  settings,
+  side = 'left',
+  panel = 'outline'
+}) {
+  const isFilesPanel = panel === 'files'
+
   const resolveSidebarWidth = useCallback(() => {
-    const layoutWidth = Number(settings?.layout?.tocWidth)
-    const storedWidth = getSidebarWidthPx()
-    const base = Number.isFinite(storedWidth) ? storedWidth : layoutWidth
-    const fallback = 280
+    const configuredWidth = isFilesPanel ? Number.NaN : Number(settings?.layout?.tocWidth)
+    const storedWidth = isFilesPanel ? getFilesWidthPx() : getSidebarWidthPx()
+    const base = Number.isFinite(storedWidth) ? storedWidth : configuredWidth
+    const fallback = isFilesPanel ? 264 : 280
     return clampSidebarWidth(Number.isFinite(base) ? base : fallback)
-  }, [settings])
+  }, [isFilesPanel, settings])
 
   const setSidebarWidth = useCallback(
     (widthPx, { persist = false } = {}) => {
       if (!rootEl) return
       const clamped = clampSidebarWidth(widthPx)
-      rootEl.style.setProperty('--mdp-toc-width', `${clamped}px`)
+      rootEl.style.setProperty(isFilesPanel ? '--mdp-files-width' : '--mdp-toc-width', `${clamped}px`)
       if (handleEl) {
         handleEl.setAttribute('aria-valuenow', String(clamped))
       }
-      if (persist) setSidebarWidthPx(clamped)
+      if (persist) {
+        if (isFilesPanel) setFilesWidthPx(clamped)
+        else setSidebarWidthPx(clamped)
+      }
     },
-    [rootEl, handleEl]
+    [rootEl, handleEl, isFilesPanel]
   )
 
   const applySidebarWidth = useCallback(() => {
@@ -53,7 +70,9 @@ export function useSidebarResize({ rootEl, sidebarEl, handleEl, settings }) {
       rootEl.classList.add('is-resizing-sidebar')
 
       pointerMove = (moveEvent) => {
-        const deltaX = moveEvent.clientX - startX
+        const deltaX = side === 'right'
+          ? startX - moveEvent.clientX
+          : moveEvent.clientX - startX
         setSidebarWidth(startWidth + deltaX, { persist: false })
       }
 
@@ -79,7 +98,9 @@ export function useSidebarResize({ rootEl, sidebarEl, handleEl, settings }) {
       if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return
       event.preventDefault()
       const currentWidth = sidebarEl.getBoundingClientRect().width
-      const delta = event.key === 'ArrowRight' ? 16 : -16
+      const delta = side === 'right'
+        ? (event.key === 'ArrowLeft' ? 16 : -16)
+        : (event.key === 'ArrowRight' ? 16 : -16)
       setSidebarWidth(currentWidth + delta, { persist: true })
     }
 
@@ -97,7 +118,7 @@ export function useSidebarResize({ rootEl, sidebarEl, handleEl, settings }) {
       handleEl.removeEventListener('pointerdown', pointerDown)
       handleEl.removeEventListener('keydown', keyDown)
     }
-  }, [rootEl, sidebarEl, handleEl, setSidebarWidth])
+  }, [rootEl, sidebarEl, handleEl, setSidebarWidth, side])
 
   return { applySidebarWidth, resolveSidebarWidth, setSidebarWidth }
 }

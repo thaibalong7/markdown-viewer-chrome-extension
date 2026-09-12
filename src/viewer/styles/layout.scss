@@ -11,42 +11,138 @@
 
 .mdp-button {
   border: 1px solid var(--mdp-border);
-  background: var(--mdp-panel-bg);
+  background: var(--mdp-surface);
   color: var(--mdp-text);
-  padding: 8px 12px;
+  min-height: 36px;
+  padding: 7px 12px;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  box-shadow: var(--mdp-shadow-subtle);
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+
+  &:hover {
+    border-color: var(--mdp-border-strong);
+    background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-strong));
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+    box-shadow: none;
+  }
 }
 
 .mdp-body {
+  --mdp-files-track: var(--mdp-files-width);
+  --mdp-right-track: var(--mdp-toc-width);
   display: grid;
-  grid-template-columns: var(--mdp-toc-width) minmax(0, 1fr);
+  grid-template-columns: var(--mdp-files-track) minmax(0, 1fr) var(--mdp-right-track);
   min-height: 100vh;
+  background: var(--mdp-bg);
 
-  /* Sidebar `display:none` removes it from grid; single visible child must not land on the 0px TOC track. */
-  &--no-toc {
-    grid-template-columns: minmax(0, 1fr);
+  &--no-files {
+    --mdp-files-track: 0px;
+  }
+
+  &--no-outline {
+    --mdp-right-track: var(--mdp-actions-rail-width);
   }
 }
 
 .mdp-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  position: relative;
-  border-right: 1px solid var(--mdp-border);
-  background: var(--mdp-panel-bg);
-  padding: 16px;
-
-  &__title {
-    font-weight: 700;
-    margin-bottom: 8px;
-    flex-shrink: 0;
-  }
+  height: 100vh;
+  overflow: hidden;
+  border-right: 1px solid var(--mdp-border-strong);
+  background: var(--mdp-bg);
+  padding: 14px;
 
   &__placeholder {
     color: var(--mdp-muted);
     font-size: 14px;
+  }
+}
+
+.mdp-panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 2px 2px 12px;
+  border-bottom: 1px solid var(--mdp-border);
+}
+
+.mdp-panel-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mdp-panel-header__heading-main {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mdp-panel-header__heading {
+  margin: 0;
+  color: var(--mdp-text);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.055em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.mdp-panel-header__meta {
+  color: var(--mdp-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+}
+
+.mdp-sidebar--files {
+  grid-column: 1;
+  grid-row: 1;
+  overflow: visible;
+}
+
+.mdp-right-rail {
+  grid-column: 3;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow: visible;
+  gap: 4px;
+  padding: 14px;
+  border-left: 1px solid var(--mdp-border-strong);
+  background: var(--mdp-bg);
+
+  &--actions-only {
+    align-items: center;
+    padding: 10px 8px;
   }
 }
 
@@ -65,18 +161,26 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 3px;
-    height: 34px;
-    border-radius: 2px;
+    width: 2px;
+    height: 42px;
+    border-radius: 999px;
     transform: translate(-50%, -50%);
     background: color-mix(in srgb, var(--mdp-border) 82%, var(--mdp-text) 18%);
-    opacity: 0.35;
-    transition: opacity 120ms ease;
+    opacity: 0;
+    transition:
+      opacity 150ms ease,
+      background-color 150ms ease;
   }
 
   &:hover::after,
   &:focus-visible::after {
-    opacity: 0.75;
+    opacity: 1;
+    background: var(--mdp-link);
+  }
+
+  &--right {
+    right: auto;
+    left: -4px;
   }
 }
 
@@ -86,8 +190,11 @@
 }
 
 .mdp-content-pane {
-  padding: 24px;
+  grid-column: 2;
+  grid-row: 1;
+  padding: clamp(20px, 3vw, 44px) clamp(18px, 3.5vw, 56px) 64px;
   min-width: 0;
+  background: var(--mdp-surface);
 }
 
 .mdp-icon-button-tooltip-anchor {
@@ -98,15 +205,86 @@
 .mdp-tooltip {
   box-sizing: border-box;
   max-width: min(280px, calc(100vw - 16px));
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 7px 9px;
+  border-radius: 7px;
   font-size: 12px;
   line-height: 1.45;
   font-weight: 500;
-  color: var(--mdp-text, #1f2328);
-  background: var(--mdp-panel-bg, #f6f8fa);
-  border: 1px solid var(--mdp-border, #d0d7de);
-  box-shadow: 0 4px 18px color-mix(in srgb, var(--mdp-text, #1f2328) 12%, transparent);
+  color: var(--mdp-surface, #fff);
+  background: color-mix(in srgb, var(--mdp-text, #172033) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mdp-surface, #fff) 12%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mdp-text, #172033) 18%, transparent);
   pointer-events: none;
   text-align: left;
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    --mdp-right-track: min(var(--mdp-toc-width), 224px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    --mdp-files-track: 0px;
+  }
+
+  .mdp-sidebar--files {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 15;
+    width: min(var(--mdp-files-width), calc(100vw - 72px));
+    box-shadow: var(--mdp-shadow-float);
+  }
+}
+
+@media (max-width: 899px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    --mdp-right-track: var(--mdp-actions-rail-width);
+  }
+
+  .mdp-right-rail:not(.mdp-right-rail--actions-only) {
+    align-items: center;
+    padding: 10px 8px;
+  }
+
+  .mdp-right-rail .mdp-sidebar-panel--outline,
+  .mdp-right-rail .mdp-sidebar__resize-handle {
+    display: none;
+  }
+
+  .mdp-content-pane {
+    padding-inline: clamp(16px, 4vw, 32px);
+  }
+}
+
+@media (max-width: 639px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mdp-right-rail {
+    position: fixed;
+    inset: auto 12px 12px auto;
+    z-index: 14;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    border: 1px solid var(--mdp-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+    box-shadow: var(--mdp-shadow-float);
+    backdrop-filter: blur(14px);
+  }
+
+  .mdp-content-pane {
+    grid-column: 1;
+    padding: 12px 12px 84px;
+  }
+}
+
+@media (pointer: coarse) {
+  .mdp-button {
+    min-height: 44px;
+  }
 }

@@ -3,7 +3,7 @@
 .mdp-editor-panel {
   min-height: 0;
   overflow: hidden;
-  background: var(--mdp-bg);
+  background: var(--mdp-surface);
 
   .cm-editor {
     height: 100%;
@@ -18,10 +18,10 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  height: 26px;
-  padding: 0 12px 0 var(--mdp-editor-gutter-width);
+  height: 30px;
+  padding: 0 14px 0 var(--mdp-editor-gutter-width);
   border-top: 1px solid var(--mdp-border);
-  background: var(--mdp-panel-bg);
+  background: color-mix(in srgb, var(--mdp-panel-bg) 82%, var(--mdp-surface));
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 11px;
   line-height: 1;
@@ -41,11 +41,17 @@
 }
 
 .mdp-status-bar__save--modified {
-  color: var(--mdp-link);
+  color: var(--mdp-warning);
+  font-weight: 700;
 }
 
 .mdp-status-bar__save--saving {
-  opacity: 0.7;
+  color: var(--mdp-link);
+  opacity: 0.8;
+}
+
+.mdp-status-bar__save--saved {
+  color: var(--mdp-accent);
 }
 
 .mdp-body--edit-with-status {
@@ -53,72 +59,72 @@
   grid-template-rows: minmax(0, 1fr) auto;
 }
 
-.mdp-body--edit-split {
+.mdp-body.mdp-body--edit-split {
+  /*
+   * Keep this selector more specific than the base `.mdp-body` rule emitted
+   * later by layout.scss. Otherwise the reader's three-column grid wins the
+   * cascade and the explicitly positioned edit panes create implicit tracks.
+   */
   /* Independent scroll: editor (CM) and preview (pane) do not move with each other. */
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;
   overflow: hidden;
   grid-template-columns:
-    var(--mdp-toc-width)
     minmax(min(240px, 45vw), var(--mdp-editor-pane-width, 1fr))
     var(--mdp-editor-split-handle-width, 9px)
-    minmax(min(240px, 45vw), 1fr);
-
-  > .mdp-sidebar {
-    grid-column: 1;
-    grid-row: 1 / -1;
-  }
+    minmax(min(240px, 45vw), 1fr)
+    var(--mdp-actions-rail-width);
+  animation: mdp-enter-edit-split 480ms cubic-bezier(0.22, 1, 0.36, 1);
 
   > .mdp-editor-panel {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 1;
     min-width: 0;
+    border-right: 0;
   }
 
   > .mdp-editor-split__resize-handle {
-    grid-column: 3;
+    grid-column: 2;
     grid-row: 1;
   }
 
   > .mdp-content-pane {
-    grid-column: 4;
+    grid-column: 3;
     grid-row: 1;
     overflow-y: auto;
     min-height: 0;
-    padding-top: 12px;
+    padding: 12px;
+    background: var(--mdp-surface);
+
+    .mdp-markdown-body {
+      min-height: calc(100vh - 54px);
+      padding: clamp(24px, 3vw, 44px);
+    }
 
     .mdp-markdown-body > :first-child {
       margin-top: 0;
     }
   }
 
-  > .mdp-status-bar {
-    grid-column: 2 / 5;
-    grid-row: 2;
+  > .mdp-right-rail {
+    grid-column: 4;
+    grid-row: 1 / -1;
   }
 
-  &.mdp-body--no-toc {
+  > .mdp-status-bar {
+    grid-column: 1 / 4;
+    grid-row: 2;
+  }
+}
+
+@keyframes mdp-enter-edit-split {
+  from {
     grid-template-columns:
-      minmax(min(240px, 45vw), var(--mdp-editor-pane-width, 1fr))
-      var(--mdp-editor-split-handle-width, 9px)
-      minmax(min(240px, 45vw), 1fr);
-
-    > .mdp-editor-panel {
-      grid-column: 1;
-    }
-
-    > .mdp-editor-split__resize-handle {
-      grid-column: 2;
-    }
-
-    > .mdp-content-pane {
-      grid-column: 3;
-    }
-
-    > .mdp-status-bar {
-      grid-column: 1 / 4;
-    }
+      minmax(0, 0fr)
+      0
+      minmax(min(240px, 45vw), 1fr)
+      var(--mdp-actions-rail-width);
   }
 }
 
@@ -128,7 +134,8 @@
   height: 100%;
   cursor: col-resize;
   touch-action: none;
-  background:
+  background-color: var(--mdp-bg);
+  background-image:
     linear-gradient(
       to right,
       var(--mdp-border) 0,
@@ -162,14 +169,18 @@
 .mdp-root.is-resizing-editor-split {
   cursor: col-resize;
   user-select: none;
+
+  .mdp-body--edit-split {
+    animation: none;
+  }
 }
 
-.mdp-body--edit-focus {
+.mdp-body.mdp-body--edit-focus {
   height: 100vh;
   min-height: 100vh;
   max-height: 100vh;
   overflow: hidden;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) var(--mdp-actions-rail-width);
 
   > .mdp-editor-panel {
     grid-column: 1;
@@ -182,6 +193,11 @@
     display: none;
   }
 
+  > .mdp-right-rail {
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+
   > .mdp-status-bar {
     grid-column: 1;
     grid-row: 2;
@@ -189,9 +205,24 @@
 }
 
 .mdp-fab-btn--active {
-  background: color-mix(in srgb, var(--mdp-link) 14%, var(--mdp-panel-bg));
-  border-color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+  border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
   color: var(--mdp-link);
+}
+
+.mdp-fab-btn--edit:not(.mdp-fab-btn--active) {
+  color: var(--mdp-warning);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--mdp-warning) 36%, var(--mdp-border));
+    background: var(--mdp-warning-soft);
+  }
+}
+
+.mdp-fab-btn--save.is-dirty {
+  color: var(--mdp-accent);
+  border-color: color-mix(in srgb, var(--mdp-accent) 34%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
 }
 
 .mdp-fab-btn--dirty-dot {
@@ -205,8 +236,8 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--mdp-link);
-    box-shadow: 0 0 0 1px var(--mdp-panel-bg);
+    background: var(--mdp-warning);
+    box-shadow: 0 0 0 2px var(--mdp-surface);
     animation: mdp-dirty-pulse 2s ease-in-out infinite;
   }
 }
@@ -222,13 +253,78 @@
 }
 
 .mdp-edit-mode-note {
-  margin: 4px auto 8px;
+  margin: 0 auto 10px;
   max-width: var(--mdp-content-max-width);
   padding: 6px 10px;
-  border: 1px solid color-mix(in srgb, var(--mdp-border) 80%, transparent);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--mdp-panel-bg) 82%, var(--mdp-border));
+  border: 1px solid var(--mdp-border);
+  border-radius: v.$radius-small;
+  background: color-mix(in srgb, var(--mdp-panel-bg) 74%, var(--mdp-surface));
   color: var(--mdp-muted);
   font-size: 12px;
   line-height: 1.4;
+}
+
+@media (max-width: 899px) {
+  .mdp-body.mdp-body--edit-split {
+    height: auto;
+    min-height: 100vh;
+    max-height: none;
+    overflow: visible;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(360px, 50vh) minmax(360px, 50vh) auto;
+    animation: none;
+
+    > .mdp-editor-panel {
+      grid-column: 1;
+      grid-row: 1;
+      border-bottom: 1px solid var(--mdp-border);
+    }
+
+    > .mdp-editor-split__resize-handle {
+      display: none;
+    }
+
+    > .mdp-content-pane {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    > .mdp-right-rail {
+      position: fixed;
+      inset: 12px 12px auto auto;
+      z-index: 16;
+      display: block;
+      width: auto;
+      height: auto;
+      padding: 5px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+      box-shadow: var(--mdp-shadow-float);
+      backdrop-filter: blur(14px);
+    }
+
+    > .mdp-status-bar {
+      grid-column: 1;
+      grid-row: 3;
+    }
+  }
+
+  .mdp-body.mdp-body--edit-focus {
+    grid-template-columns: minmax(0, 1fr);
+
+    > .mdp-right-rail {
+      position: fixed;
+      inset: 12px 12px auto auto;
+      z-index: 16;
+      width: auto;
+      height: auto;
+      padding: 5px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+      box-shadow: var(--mdp-shadow-float);
+      backdrop-filter: blur(14px);
+    }
+  }
 }

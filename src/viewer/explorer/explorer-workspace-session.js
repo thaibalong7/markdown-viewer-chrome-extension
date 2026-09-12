@@ -80,10 +80,7 @@ export function createExplorerWorkspaceSession(deps) {
       currentFolder: displayLabel || '…',
       onCancel: () => workspaceScanSession.abort(),
       progressHeadline,
-      filesContext: buildFilesContext({
-        scanPhase: 'scanning',
-        workspaceDisplayLabel: displayLabel || 'Folder'
-      })
+      filesContext: buildFilesContext({ scanPhase: 'scanning' })
     })
 
     return { signal, maxScanDepth, maxFiles, maxFolders }
@@ -179,17 +176,13 @@ export function createExplorerWorkspaceSession(deps) {
     refs.explorerModeRef.current = 'workspace'
     safePatch({ explorerMode: 'workspace' })
 
-    const scanContextLabel = workspaceLabelFromNormalizedDirUrl(normalized, normalized)
     viewActions.showProgressLoading({
       scannedFiles: 0,
       scannedFolders: 0,
       currentFolder: normalized,
       onCancel: () => workspaceScanSession.abort(),
       progressHeadline: 'Scanning workspace (file listing)…',
-      filesContext: buildFilesContext({
-        scanPhase: 'scanning',
-        workspaceDisplayLabel: scanContextLabel
-      })
+      filesContext: buildFilesContext({ scanPhase: 'scanning' })
     })
 
     try {
@@ -262,7 +255,6 @@ export function createExplorerWorkspaceSession(deps) {
     setExplorerMode('sibling')
     refs.explorerModeRef.current = 'sibling'
     refs.workspaceTreeRef.current = null
-    refs.workspaceDisplayLabelRef.current = ''
     safePatch({ explorerMode: 'sibling' })
 
     const wasWorkspaceVirtualDoc = isWorkspaceVirtualHref(refs.currentFileUrlRef.current)
@@ -312,7 +304,6 @@ export function createExplorerWorkspaceSession(deps) {
     const workspaceLabel = opts.normalizedDirUrl
       ? workspaceLabelFromNormalizedDirUrl(opts.normalizedDirUrl, opts.workspaceLabelOverride || tree.name || 'Workspace')
       : opts.workspaceLabelOverride || tree.name || 'Workspace'
-    refs.workspaceDisplayLabelRef.current = workspaceLabel
     const expandedStateRoot = getExplorerExpandedStateRoot(tree, opts.normalizedDirUrl || getWorkspaceRootUrl())
     const storedExpandedMap = getExplorerExpandedMap('workspace', expandedStateRoot)
     const preserveExpandedState = Boolean(opts.preserveExpandedState || storedExpandedMap)

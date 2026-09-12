@@ -8,7 +8,7 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
   const settings = normalizeEditorSettings(editorSettings)
   return EditorView.theme({
     '&': {
-      backgroundColor: 'var(--mdp-bg)',
+      backgroundColor: 'var(--mdp-surface)',
       color: 'var(--mdp-text)',
       fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
       fontSize: `${settings.fontSize}px`,
@@ -20,21 +20,21 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     },
     '.cm-content': {
       caretColor: 'var(--mdp-text)',
-      padding: '12px 0',
+      padding: '18px 0',
       lineHeight: String(EDITOR_LINE_HEIGHT)
     },
     '.cm-gutters': {
-      backgroundColor: 'var(--mdp-panel-bg)',
+      backgroundColor: 'color-mix(in srgb, var(--mdp-panel-bg) 78%, var(--mdp-surface))',
       color: 'var(--mdp-muted)',
       borderRight: '1px solid var(--mdp-border)',
       minWidth: `${EDITOR_GUTTER_MIN_WIDTH_PX}px`
     },
     '.cm-activeLineGutter': {
-      backgroundColor: 'transparent',
-      color: 'var(--mdp-text)'
+      backgroundColor: 'var(--mdp-link-soft)',
+      color: 'var(--mdp-link)'
     },
     '.cm-activeLine': {
-      backgroundColor: 'color-mix(in srgb, var(--mdp-border) 20%, transparent)'
+      backgroundColor: 'color-mix(in srgb, var(--mdp-link-soft) 48%, transparent)'
     },
     '.cm-cursor, .cm-dropCursor': {
       borderLeftColor: 'var(--mdp-text)'
@@ -46,7 +46,7 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
       backgroundColor: 'color-mix(in srgb, var(--mdp-link) 14%, transparent)'
     },
     '.cm-panels': {
-      backgroundColor: 'var(--mdp-panel-bg)',
+      backgroundColor: 'var(--mdp-surface)',
       color: 'var(--mdp-text)',
       borderColor: 'var(--mdp-border)'
     },
@@ -57,9 +57,12 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
       display: 'flex',
       flexWrap: 'wrap',
       alignItems: 'center',
-      gap: '4px',
-      padding: '6px 40px 6px 8px',
-      backgroundColor: 'var(--mdp-panel-bg)',
+      gap: '6px',
+      margin: '10px',
+      padding: '8px 42px 8px 8px',
+      border: '1px solid var(--mdp-border)',
+      borderRadius: '10px',
+      backgroundColor: 'var(--mdp-surface)',
       color: 'var(--mdp-text)'
     },
     '.cm-panel.cm-search br': {
@@ -67,37 +70,39 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     },
     '.cm-panel.cm-search .cm-textfield': {
       minWidth: '120px',
-      height: '24px',
-      padding: '2px 7px',
+      height: '30px',
+      padding: '4px 8px',
       border: '1px solid var(--mdp-border)',
-      borderRadius: '4px',
+      borderRadius: '6px',
       backgroundColor: 'var(--mdp-bg)',
       color: 'var(--mdp-text)',
       font: 'inherit'
     },
     '.cm-panel.cm-search .cm-textfield:focus': {
       borderColor: 'var(--mdp-link)',
-      outline: '1px solid color-mix(in srgb, var(--mdp-link) 35%, transparent)'
+      outline: '2px solid color-mix(in srgb, var(--mdp-link) 26%, transparent)',
+      outlineOffset: '1px'
     },
     '.cm-panel.cm-search .cm-button': {
-      height: '24px',
-      padding: '2px 8px',
+      height: '30px',
+      padding: '4px 9px',
       border: '1px solid var(--mdp-border)',
-      borderRadius: '4px',
-      backgroundColor: 'var(--mdp-bg)',
+      borderRadius: '6px',
+      backgroundColor: 'var(--mdp-surface)',
       color: 'var(--mdp-text)',
       font: 'inherit',
       cursor: 'pointer'
     },
     '.cm-panel.cm-search .cm-button:hover': {
       borderColor: 'var(--mdp-link)',
-      color: 'var(--mdp-link)'
+      color: 'var(--mdp-link)',
+      backgroundColor: 'var(--mdp-link-soft)'
     },
     '.cm-panel.cm-search label': {
       display: 'inline-flex',
       alignItems: 'center',
       gap: '4px',
-      height: '24px',
+      height: '30px',
       margin: '0 6px 0 0',
       color: 'var(--mdp-muted)',
       lineHeight: '1',
@@ -112,21 +117,21 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     '.cm-panel.cm-search button[name="close"]': {
       top: '50%',
       right: '8px',
-      width: '24px',
-      height: '24px',
+      width: '30px',
+      height: '30px',
       padding: '0',
       border: '1px solid transparent',
-      borderRadius: '4px',
+      borderRadius: '6px',
       transform: 'translateY(-50%)',
       color: 'var(--mdp-muted)',
       fontSize: '16px',
-      lineHeight: '20px',
+      lineHeight: '26px',
       cursor: 'pointer'
     },
     '.cm-panel.cm-search button[name="close"]:hover': {
       borderColor: 'var(--mdp-border)',
       color: 'var(--mdp-text)',
-      backgroundColor: 'var(--mdp-bg)'
+      backgroundColor: 'var(--mdp-link-soft)'
     },
     '.cm-searchMatch': {
       backgroundColor: 'color-mix(in srgb, var(--mdp-link) 22%, transparent)'
@@ -144,9 +149,11 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
       color: 'var(--mdp-muted)'
     },
     '.cm-tooltip': {
-      backgroundColor: 'var(--mdp-panel-bg)',
+      backgroundColor: 'var(--mdp-surface)',
       border: '1px solid var(--mdp-border)',
-      color: 'var(--mdp-text)'
+      color: 'var(--mdp-text)',
+      borderRadius: '8px',
+      boxShadow: 'var(--mdp-shadow-float)'
     },
     '&.cm-focused': {
       outline: 'none'

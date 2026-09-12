@@ -12,7 +12,11 @@
     margin-left: 0.4em;
     opacity: 0;
     text-decoration: none;
-    font-size: 0.85em;
+    font-size: 0.78em;
+    color: var(--mdp-muted);
+    transition:
+      color 120ms ease,
+      opacity 120ms ease;
   }
 
   h1:hover .mdp-heading-anchor,
@@ -22,6 +26,11 @@
   h5:hover .mdp-heading-anchor,
   h6:hover .mdp-heading-anchor {
     opacity: 1;
+  }
+
+  .mdp-heading-anchor:focus-visible {
+    opacity: 1;
+    color: var(--mdp-link);
   }
 
   /* KaTeX (@mdit/plugin-katex) */

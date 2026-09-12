@@ -2,17 +2,22 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 0 0 1em;
+    margin: 0;
   }
 
   th,
   td {
     border: 1px solid var(--mdp-table-border);
-    padding: 8px 10px;
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
   }
 
   thead th {
     background: var(--mdp-table-header-bg);
+    color: var(--mdp-heading);
+    font-size: 0.9em;
+    font-weight: 700;
   }
 
   tbody tr:nth-child(even) {
@@ -24,5 +29,8 @@
   width: 100%;
   overflow-x: auto;
   border: 1px solid var(--mdp-table-border);
-  border-radius: 8px;
+  margin: 0 0 1.25em;
+  border-radius: 10px;
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-subtle);
 }

@@ -8,6 +8,7 @@
   color: var(--mdp-code-text);
   border-radius: $radius-default;
   border: 1px solid var(--mdp-border);
+  box-shadow: var(--mdp-shadow-raised);
 }
 
 /* Shiki: `.line` rows; inter-span newlines from `codeToHtml` are stripped in `normalizeShikiPreWhitespace` (`shiki-highlighter.js`)
@@ -18,6 +19,7 @@
   padding: $code-padding;
   border-radius: $radius-default;
   border: 1px solid var(--mdp-border);
+  box-shadow: var(--mdp-shadow-raised);
   white-space: pre;
   word-break: normal;
   tab-size: 4;

@@ -1,14 +1,13 @@
 import { normalizeDirectoryUrl, normalizeFileUrlForCompare } from './url-utils.js'
 
 const KEY_ORIGINAL = 'mdp:explorer:originalFile'
-const KEY_ACTIVE_TAB = 'mdp:explorer:activeTab'
 const KEY_SIDEBAR_WIDTH = 'mdp:sidebar:width'
+const KEY_FILES_WIDTH = 'mdp:explorer:filesWidth'
 const KEY_EDITOR_SPLIT_WIDTH = 'mdp:editor:splitWidth'
 const KEY_WORKSPACE_ROOT = 'mdp:explorer:workspaceRoot'
 const KEY_EXPLORER_MODE = 'mdp:explorer:mode'
 const KEY_EXPANDED_FOLDERS = 'mdp:explorer:expandedFolders'
 
-/** @typedef {'files' | 'outline'} ExplorerTabId */
 /** @typedef {'sibling' | 'workspace'} ExplorerMode */
 
 /**
@@ -46,30 +45,6 @@ export function isOnOriginalFile(currentUrl) {
 }
 
 /**
- * @returns {ExplorerTabId}
- */
-export function getActiveSidebarTab() {
-  try {
-    const v = sessionStorage.getItem(KEY_ACTIVE_TAB)
-    if (v === 'files') return 'files'
-    return 'outline'
-  } catch {
-    return 'outline'
-  }
-}
-
-/**
- * @param {ExplorerTabId} tabId
- */
-export function setActiveSidebarTab(tabId) {
-  try {
-    sessionStorage.setItem(KEY_ACTIVE_TAB, tabId)
-  } catch {
-    /* ignore */
-  }
-}
-
-/**
  * @returns {number | null}
  */
 export function getSidebarWidthPx() {
@@ -90,6 +65,32 @@ export function setSidebarWidthPx(widthPx) {
     const n = Number(widthPx)
     if (!Number.isFinite(n) || n <= 0) return
     sessionStorage.setItem(KEY_SIDEBAR_WIDTH, String(Math.round(n)))
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * @returns {number | null}
+ */
+export function getFilesWidthPx() {
+  try {
+    const raw = Number(sessionStorage.getItem(KEY_FILES_WIDTH))
+    if (!Number.isFinite(raw) || raw <= 0) return null
+    return raw
+  } catch {
+    return null
+  }
+}
+
+/**
+ * @param {number} widthPx
+ */
+export function setFilesWidthPx(widthPx) {
+  try {
+    const n = Number(widthPx)
+    if (!Number.isFinite(n) || n <= 0) return
+    sessionStorage.setItem(KEY_FILES_WIDTH, String(Math.round(n)))
   } catch {
     /* ignore */
   }

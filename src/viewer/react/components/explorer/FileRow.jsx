@@ -12,6 +12,7 @@ import { ActionMenu } from '../common/ActionMenu.jsx'
 import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
 import { MoreIcon } from '../icons/MoreIcon.jsx'
 import { OpenNewTabIcon } from '../icons/OpenNewTabIcon.jsx'
+import { FileIcon } from '../icons/FileIcon.jsx'
 
 export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
   const linkRef = useRef(null)
@@ -73,7 +74,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
 
   return (
     <li
-      className={`mdp-explorer__node mdp-explorer__tree-file${menuOpen ? ' is-menu-open' : ''}`}
+      className={`mdp-explorer__node mdp-explorer__tree-file${isActive ? ' is-active' : ''}${menuOpen ? ' is-menu-open' : ''}`}
       role="treeitem"
       aria-level={String(Math.max(1, depth))}
       style={rowStyle}
@@ -91,7 +92,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
       >
         <span className="mdp-explorer__node-depth" aria-hidden="true" />
         <span className="mdp-explorer__node-icon" aria-hidden="true">
-          📄
+          <FileIcon />
         </span>
         <span className="mdp-explorer__node-label">{file.displayName}</span>
       </a>

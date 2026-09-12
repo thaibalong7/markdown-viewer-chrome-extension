@@ -1,12 +1,30 @@
 #mdp-viewer-root,
 .mdp-root {
-  --mdp-bg: #ffffff;
-  --mdp-text: #1f2328;
-  --mdp-body-text: #1f2328;
-  --mdp-heading: #1f2328;
-  --mdp-border: #d0d7de;
-  --mdp-muted: #57606a;
+  --mdp-color-scheme: light;
+  --mdp-bg: #f6f8fb;
+  --mdp-surface: #ffffff;
+  --mdp-text: #172033;
+  --mdp-body-text: #273043;
+  --mdp-heading: #111827;
+  --mdp-border: #dce2ea;
+  --mdp-border-strong: #c5ced9;
+  --mdp-muted: #667085;
+  --mdp-panel-strong: #e3e9f0;
+  --mdp-link-soft: #eaf2ff;
+  --mdp-accent: #16815c;
+  --mdp-accent-soft: #e8f6ef;
+  --mdp-warning: #b35c00;
+  --mdp-warning-soft: #fff3dc;
+  --mdp-danger: #c2413a;
+  --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+  --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
+  --mdp-shadow-raised:
+    0 1px 2px rgb(15 23 42 / 0.025),
+    0 4px 12px rgb(15 23 42 / 0.035);
+  --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
   --mdp-toc-width: 280px;
+  --mdp-files-width: 264px;
+  --mdp-actions-rail-width: 60px;
   --mdp-content-max-width: 980px;
   --mdp-font-family: system-ui;
   --mdp-font-size: 16px;
@@ -31,6 +49,7 @@
   --mdp-toast-error-text: #b91c1c;
   --mdp-toast-error-border: #fecaca;
   color: var(--mdp-text);
+  color-scheme: var(--mdp-color-scheme);
   font-family:
     system-ui,
     -apple-system,
@@ -45,11 +64,26 @@
   min-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  background: var(--mdp-bg);
 }
 
 #mdp-viewer-root,
 #mdp-viewer-root * {
   box-sizing: border-box;
+}
+
+/* Keep this reset specificity-free so component typography can override it. */
+:where(#mdp-viewer-root) :where(button, input, select, textarea) {
+  font: inherit;
+}
+
+#mdp-viewer-root :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+}
+
+#mdp-viewer-root ::selection {
+  background: color-mix(in srgb, var(--mdp-link) 22%, transparent);
 }
 
 .mdp-markdown-body a {
@@ -68,19 +102,28 @@
   transform: translateX(-50%) translateY(12px);
   z-index: 20;
   max-width: min(420px, calc(100vw - 32px));
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 11px 16px 11px 18px;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 500;
   color: var(--mdp-toast-text, var(--mdp-text));
   background: var(--mdp-toast-bg, var(--mdp-panel-bg));
   border: 1px solid var(--mdp-toast-border, var(--mdp-border));
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--mdp-shadow-float);
   pointer-events: none;
   opacity: 0;
   transition:
     opacity 180ms ease,
     transform 180ms ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 8px auto 8px 6px;
+    width: 3px;
+    border-radius: 999px;
+    background: var(--mdp-toast-accent, var(--mdp-link));
+  }
 
   &.is-visible {
     opacity: 1;
@@ -91,23 +134,38 @@
     --mdp-toast-bg: var(--mdp-toast-info-bg);
     --mdp-toast-text: var(--mdp-toast-info-text);
     --mdp-toast-border: var(--mdp-toast-info-border);
+    --mdp-toast-accent: var(--mdp-link);
   }
 
   &--success {
     --mdp-toast-bg: var(--mdp-toast-success-bg);
     --mdp-toast-text: var(--mdp-toast-success-text);
     --mdp-toast-border: var(--mdp-toast-success-border);
+    --mdp-toast-accent: var(--mdp-accent);
   }
 
   &--warning {
     --mdp-toast-bg: var(--mdp-toast-warning-bg);
     --mdp-toast-text: var(--mdp-toast-warning-text);
     --mdp-toast-border: var(--mdp-toast-warning-border);
+    --mdp-toast-accent: var(--mdp-warning);
   }
 
   &--error {
     --mdp-toast-bg: var(--mdp-toast-error-bg);
     --mdp-toast-text: var(--mdp-toast-error-text);
     --mdp-toast-border: var(--mdp-toast-error-border);
+    --mdp-toast-accent: var(--mdp-danger);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mdp-viewer-root *,
+  #mdp-viewer-root *::before,
+  #mdp-viewer-root *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

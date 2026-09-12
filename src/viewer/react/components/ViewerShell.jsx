@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useEditorState } from '../contexts/EditorContext.jsx'
 import { Sidebar } from './Sidebar.jsx'
+import { RightRail } from './RightRail.jsx'
 import { EditorPanel } from './EditorPanel.jsx'
 import { EditorSplitResizeHandle } from './EditorSplitResizeHandle.jsx'
 import { StatusBar } from './StatusBar.jsx'
@@ -44,8 +45,8 @@ export function ViewerShell({
 
   const isFocusMode = editorState.enabled && editorState.mode === 'focus'
   const isSplitMode = editorState.enabled && editorState.mode === 'split'
-  const sidebarVisible = editorState.sidebarVisible && !editorState.enabled
-  const sidebarHidden = !sidebarVisible
+  const filesVisible = editorState.sidebarVisible && !editorState.enabled
+  const outlineVisible = settings?.layout?.showToc !== false && !editorState.enabled
 
   const setContentPaneRef = useCallback((node) => {
     setContentPaneEl((prev) => (prev === node ? prev : node))
@@ -113,25 +114,17 @@ export function ViewerShell({
   }, [isEditMode])
 
   const bodyClassNames = ['mdp-body']
-  if (sidebarHidden) bodyClassNames.push('mdp-body--no-toc')
+  if (!filesVisible) bodyClassNames.push('mdp-body--no-files')
+  if (!outlineVisible) bodyClassNames.push('mdp-body--no-outline')
   if (isSplitMode) bodyClassNames.push('mdp-body--edit-split')
   if (isFocusMode) bodyClassNames.push('mdp-body--edit-focus')
   if (isEditMode) bodyClassNames.push('mdp-body--edit-with-status')
 
   return (
     <div className="mdp-root" ref={handleRootRef}>
-      {children}
       <div className={bodyClassNames.join(' ')}>
-        {sidebarVisible && (
-          <Sidebar
-            settings={settings}
-            tocItems={tocItems}
-            tocReady={tocReady}
-            explorerBridge={explorerBridge}
-            scrollRoot={scrollRootForSidebar}
-            forceHidden={false}
-            onTocClickInEditor={onTocClickInEditor}
-          />
+        {filesVisible && (
+          <Sidebar explorerBridge={explorerBridge} rootEl={rootEl} settings={settings} />
         )}
 
         {(isSplitMode || isFocusMode) && (
@@ -167,6 +160,16 @@ export function ViewerShell({
           )}
           <article className="mdp-markdown-body" ref={articleRef} />
         </main>
+
+        <RightRail
+          actions={children}
+          outlineVisible={outlineVisible}
+          settings={settings}
+          tocItems={tocItems}
+          tocReady={tocReady}
+          scrollRoot={scrollRootForSidebar}
+          onTocClickInEditor={onTocClickInEditor}
+        />
 
         {isEditMode && editorReady && (
           <StatusBar

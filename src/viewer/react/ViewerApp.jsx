@@ -1,6 +1,5 @@
 import React from 'react'
 import { ToastProvider } from './contexts/ToastContext.jsx'
-import { SidebarTabProvider } from './contexts/SidebarTabContext.jsx'
 import { EditorProvider } from './contexts/EditorContext.jsx'
 import { DirtySync } from './components/DirtySync.jsx'
 import { ViewerShell } from './components/ViewerShell.jsx'
@@ -29,33 +28,31 @@ export function ViewerApp({
 }) {
   return (
     <ToastProvider onShowToastReady={onShowToastReady}>
-      <EditorProvider initialSidebarVisible={settings?.layout?.showToc !== false}>
+      <EditorProvider initialSidebarVisible>
         <DirtySync dirty={dirty} />
-        <SidebarTabProvider>
-          <ViewerShell
-            onShellReady={onShellReady}
-            settings={settings}
-            tocItems={tocItems}
-            tocReady={tocReady}
-            explorerBridge={explorerBridge}
-            markdown={markdown}
-            onContentChange={onContentChange}
-            onEditorReady={onEditorReady}
-            onEditorDestroy={onEditorDestroy}
-            onEditorScroll={onEditorScroll}
-            onTocClickInEditor={onTocClickInEditor}
-            onEditModeChange={onEditModeChange}
+        <ViewerShell
+          onShellReady={onShellReady}
+          settings={settings}
+          tocItems={tocItems}
+          tocReady={tocReady}
+          explorerBridge={explorerBridge}
+          markdown={markdown}
+          onContentChange={onContentChange}
+          onEditorReady={onEditorReady}
+          onEditorDestroy={onEditorDestroy}
+          onEditorScroll={onEditorScroll}
+          onTocClickInEditor={onTocClickInEditor}
+          onEditModeChange={onEditModeChange}
+          onSave={onSave}
+          saveStatus={saveStatus}
+        >
+          <FloatingActions
+            getArticleEl={getArticleEl}
+            getSettings={getSettings}
+            getCurrentFileUrl={getCurrentFileUrl}
             onSave={onSave}
-            saveStatus={saveStatus}
-          >
-            <FloatingActions
-              getArticleEl={getArticleEl}
-              getSettings={getSettings}
-              getCurrentFileUrl={getCurrentFileUrl}
-              onSave={onSave}
-            />
-          </ViewerShell>
-        </SidebarTabProvider>
+          />
+        </ViewerShell>
       </EditorProvider>
     </ToastProvider>
   )

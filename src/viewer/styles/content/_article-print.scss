@@ -86,6 +86,12 @@
     border-radius: 8px !important;
   }
 
+  .mdp-markdown-body .mdp-code-block,
+  .mdp-markdown-body pre,
+  .mdp-markdown-body .mdp-mermaid {
+    box-shadow: none !important;
+  }
+
   .mdp-markdown-body :not(pre) > code {
     font-size: 9pt !important;
     padding: 0.1em 0.3em !important;
@@ -116,6 +122,10 @@
   .mdp-markdown-body .mdp-mermaid svg {
     max-width: 100% !important;
     height: auto !important;
+  }
+
+  .mdp-markdown-body .mdp-mermaid {
+    padding: 12px 0 !important;
   }
 
   .mdp-markdown-body .mdp-mermaid-toolbar,

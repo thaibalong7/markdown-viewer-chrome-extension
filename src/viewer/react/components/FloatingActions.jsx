@@ -33,15 +33,13 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   const visible = Boolean(String(currentFileUrl).trim())
   const canCopyLink = canCopyCurrentFileLink(currentFileUrl)
   const isLocalFile = currentFileUrl.startsWith('file:')
-  const documentActionsDisabled = editorState.enabled
-
   useEffect(() => {
     if (!visible) setMenuOpen(false)
   }, [visible])
 
   useEffect(() => {
-    if (documentActionsDisabled) setMenuOpen(false)
-  }, [documentActionsDisabled])
+    if (editorState.enabled) setMenuOpen(false)
+  }, [editorState.enabled])
 
   const menuItems = useMemo(
     () => [
@@ -69,7 +67,6 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   })
 
   const runExport = (ext, exportFn, errorMsg) => {
-    if (documentActionsDisabled) return
     void (async () => {
       const article = getArticleEl?.()
       if (!article) {
@@ -88,13 +85,11 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
 
   const onPrintClick = () => {
     setMenuOpen(false)
-    if (documentActionsDisabled) return
     printDocument()
   }
 
   const onExportToggleClick = (ev) => {
     ev.stopPropagation()
-    if (documentActionsDisabled) return
     setMenuOpen((open) => !open)
   }
 
@@ -135,50 +130,53 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
   }
 
   return (
-    <div className="mdp-floating-actions" hidden={!visible} aria-hidden={visible ? 'false' : 'true'}>
-      <IconButton
-        tooltip={
-          editorState.enabled
-            ? 'Sidebar hidden in edit mode'
-            : editorState.sidebarVisible
-              ? 'Hide sidebar'
-              : 'Show sidebar'
-        }
-        showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-        className="mdp-fab-btn"
-        activeClassName="mdp-fab-btn--active"
-        aria-label="Toggle sidebar"
-        pressed={editorState.sidebarVisible}
-        disabled={editorState.enabled}
-        onClick={onSidebarToggleClick}
-      >
-        <SidebarToggleIcon className="mdp-fab-btn__icon" />
-      </IconButton>
+    <div
+      className="mdp-floating-actions"
+      role="toolbar"
+      aria-label="Document actions"
+      hidden={!visible}
+      aria-hidden={visible ? 'false' : 'true'}
+    >
+      {!editorState.enabled && (
+        <IconButton
+          tooltip={editorState.sidebarVisible ? 'Hide files panel' : 'Show files panel'}
+          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+          className="mdp-fab-btn"
+          activeClassName="mdp-fab-btn--active"
+          aria-label="Toggle files panel"
+          pressed={editorState.sidebarVisible}
+          onClick={onSidebarToggleClick}
+        >
+          <SidebarToggleIcon className="mdp-fab-btn__icon" />
+        </IconButton>
+      )}
 
-      <IconButton
-        tooltip={
-          canCopyLink
-            ? copyLinkCopied
-              ? 'Copied'
-              : 'Copy open file link'
-            : 'Copy link unavailable for workspace virtual files'
-        }
-        showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-        className="mdp-fab-btn mdp-fab-btn--copy-link"
-        copiedClassName="is-copied"
-        copied={copyLinkCopied}
-        aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
-        disabled={!canCopyLink}
-        onClick={onCopyLinkClick}
-      >
-        <CopyLinkIcon className="mdp-fab-btn__icon" />
-      </IconButton>
+      {!editorState.enabled && (
+        <IconButton
+          tooltip={
+            canCopyLink
+              ? copyLinkCopied
+                ? 'Copied'
+                : 'Copy open file link'
+              : 'Copy link unavailable for workspace virtual files'
+          }
+          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+          className="mdp-fab-btn mdp-fab-btn--copy-link"
+          copiedClassName="is-copied"
+          copied={copyLinkCopied}
+          aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
+          disabled={!canCopyLink}
+          onClick={onCopyLinkClick}
+        >
+          <CopyLinkIcon className="mdp-fab-btn__icon" />
+        </IconButton>
+      )}
 
       {isLocalFile && (
         <IconButton
           tooltip={editorState.enabled ? 'Exit edit mode' : 'Edit markdown'}
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-          className={`mdp-fab-btn${editorState.dirty ? ' mdp-fab-btn--dirty-dot' : ''}`}
+          className={`mdp-fab-btn mdp-fab-btn--edit${editorState.dirty ? ' mdp-fab-btn--dirty-dot' : ''}`}
           activeClassName="mdp-fab-btn--active"
           aria-label={editorState.enabled ? 'Exit edit mode' : 'Edit markdown'}
           pressed={editorState.enabled}
@@ -192,7 +190,7 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
         <IconButton
           tooltip={editorState.dirty ? 'Save (Ctrl+S)' : 'Save — no unsaved changes'}
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-          className="mdp-fab-btn"
+          className={`mdp-fab-btn mdp-fab-btn--save${editorState.dirty ? ' is-dirty' : ''}`}
           aria-label="Save markdown file"
           onClick={onSaveClick}
         >
@@ -214,49 +212,43 @@ export function FloatingActions({ getArticleEl, getSettings, getCurrentFileUrl, 
         </IconButton>
       )}
 
-      <IconButton
-        tooltip={
-          documentActionsDisabled
-            ? 'Print disabled in edit mode'
-            : 'Print — Save as PDF in the dialog to export PDF.'
-        }
-        showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-        className="mdp-fab-btn"
-        aria-label="Print — use Save as PDF in the print dialog."
-        disabled={documentActionsDisabled}
-        onClick={onPrintClick}
-      >
-        <PrintIcon className="mdp-fab-btn__icon" />
-      </IconButton>
+      {!editorState.enabled && (
+        <IconButton
+          tooltip="Print — Save as PDF in the dialog to export PDF."
+          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+          className="mdp-fab-btn"
+          aria-label="Print — use Save as PDF in the print dialog."
+          onClick={onPrintClick}
+        >
+          <PrintIcon className="mdp-fab-btn__icon" />
+        </IconButton>
+      )}
 
-      <ActionMenu
-        ref={exportWrapRef}
-        open={menuOpen}
-        className="mdp-fab-export"
-        triggerRef={exportBtnRef}
-        triggerClassName="mdp-fab-btn mdp-fab-export__trigger"
-        triggerIcon={<ExportIcon className="mdp-fab-btn__icon" />}
-        triggerLabel="Download — HTML or Word (.doc)."
-        triggerTooltip={
-          documentActionsDisabled
-            ? 'Export disabled in edit mode'
-            : 'Download — HTML or Word (.doc).'
-        }
-        triggerShowDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-        triggerDisabled={documentActionsDisabled}
-        menuClassName="mdp-fab-export__menu"
-        menuLabel="Export format"
-        itemClassName="mdp-fab-export__menu-item"
-        onToggle={onExportToggleClick}
-        items={menuItems.map((item) => ({
-          key: item.ext,
-          label: item.label,
-          onClick: () => {
-            setMenuOpen(false)
-            runExport(item.ext, item.exportFn, item.errorMsg)
-          }
-        }))}
-      />
+      {!editorState.enabled && (
+        <ActionMenu
+          ref={exportWrapRef}
+          open={menuOpen}
+          className="mdp-fab-export"
+          triggerRef={exportBtnRef}
+          triggerClassName="mdp-fab-btn mdp-fab-export__trigger"
+          triggerIcon={<ExportIcon className="mdp-fab-btn__icon" />}
+          triggerLabel="Download — HTML or Word (.doc)."
+          triggerTooltip="Download — HTML or Word (.doc)."
+          triggerShowDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+          menuClassName="mdp-fab-export__menu"
+          menuLabel="Export format"
+          itemClassName="mdp-fab-export__menu-item"
+          onToggle={onExportToggleClick}
+          items={menuItems.map((item) => ({
+            key: item.ext,
+            label: item.label,
+            onClick: () => {
+              setMenuOpen(false)
+              runExport(item.ext, item.exportFn, item.errorMsg)
+            }
+          }))}
+        />
+      )}
     </div>
   )
 }

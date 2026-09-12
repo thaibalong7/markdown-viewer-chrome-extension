@@ -1,6 +1,6 @@
 # markdown-plus
 
-A Chrome Extension (MV3) that detects local Markdown files and turns raw text into a clean reading experience with a **React**-based viewer shell (floating document actions, sidebar, TOC, Files explorer), themes, plugins, and customizable settings via a **React popup**.
+A Chrome Extension (MV3) that detects local Markdown files and turns raw text into a clean reading experience with a **React**-based viewer shell (left Files explorer, right Outline and document-action rail), themes, plugins, and customizable settings via a **React popup**.
 
 ## Table of Contents
 
@@ -15,9 +15,9 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 
 - Auto-detects Markdown-like pages (product gate: local `file:` `.md` / `.markdown` / `.mdown` plus detector heuristics).
 - Renders content in a readable viewer layout (markdown-it → optional Shiki syntax highlighting → DOMPurify → article `innerHTML`; React owns chrome only). Shiki uses an explicit language allowlist (`@shikijs/langs` + `github-light` / `github-dark` themes) to keep the extension package smaller than the full `shiki/bundle/web` set.
-- Left sidebar Table of Contents with heading navigation.
+- Dedicated right-side rail with document actions and an independently scrollable Outline for heading navigation.
 - Loading UX improvements: reusable skeleton placeholders for Outline TOC hydration, Files explorer loading state, and popup settings boot.
-- **Files explorer** (sidebar Files tab): browse Markdown siblings in the same folder; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
+- **Files explorer** (dedicated, independently resizable left panel): browse Markdown siblings in the same folder; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with expand/collapse, scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list.
 - **Internal Markdown link navigation**: click a relative or absolute link to another `.md` file (e.g. `./other.md`, `../README.md#install`, `guides/spec.md`) and it opens in the same viewer without a full page reload. Supports self-link scroll, hash fragment navigation, browser Back/Forward history, sidebar active-file sync, spaces/Unicode in filenames, and virtual workspace files. Modifier keys (Ctrl/Cmd+click, middle-click) and external/non-Markdown links keep their default browser behaviour.
 - **Inline Markdown editor** for local `file:` Markdown documents: toggle Edit from the floating actions, use a lazy-loaded CodeMirror 6 editor in split preview or focus mode, live-render through the existing sanitized viewer pipeline, sync editor scroll to preview, navigate TOC items back to editor source, resize the split panes, search/replace, and save with File System Access API plus download fallback.
 - GitHub-inspired Light/Dark themes and typography controls.
@@ -32,7 +32,7 @@ A Chrome Extension (MV3) that detects local Markdown files and turns raw text in
 - Mermaid export actions:
   - Download `SVG`
   - Download `PNG` with resolution options (`1x`, `2x`, `3x`, `4x`)
-- **Print** and **export** (HTML / Word) from the floating action bar when a real `file:` URL is active.
+- **Print** and **export** (HTML / Word) from the document actions in the right rail when a real `file:` URL is active.
 - User settings persisted through browser storage (`chrome.storage.sync` with local fallback).
 - **Tech:** Vite, `@crxjs/vite-plugin`, `@vitejs/plugin-react`, React 19, CodeMirror 6 (lazy-loaded editor), Shiki (`shiki` core + `@shikijs/langs` / `@shikijs/themes`), SCSS inlined in the content script. KaTeX CSS for Math is loaded only when the Math plugin is enabled.
 
@@ -93,7 +93,7 @@ Development notes:
 ## Project Structure
 
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
-- `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + React chrome (`react/*`: shell, sidebar, TOC, explorer, editor, toast), async render pipeline (`core/*`), CodeMirror editor modules (`editor/*`: lazy bundle, theme, scroll sync, file save), article clicks/hash scroll/internal link interception (`article-interactions.js`), link resolver for internal Markdown navigation (`navigation/link-resolver.js`), plugin SVG helpers (`icons.js`), plugin tooltips (`dom-tooltip.js`), shared scroll math (`scroll-utils.js`), Files I/O helpers (`explorer/*` consumed by `useExplorer.js`).
+- `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + React chrome (`react/*`: shell, left Files panel, right Outline/action rail, editor, toast), async render pipeline (`core/*`), CodeMirror editor modules (`editor/*`: lazy bundle, theme, scroll sync, file save), article clicks/hash scroll/internal link interception (`article-interactions.js`), link resolver for internal Markdown navigation (`navigation/link-resolver.js`), plugin SVG helpers (`icons.js`), plugin tooltips (`dom-tooltip.js`), shared scroll math (`scroll-utils.js`), Files I/O helpers (`explorer/*` consumed by `useExplorer.js`).
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
 - `src/settings` - Default settings and persistence layer.
 - `src/popup` - React settings UI (`PopupApp.jsx`, panels, `useSettingsPersistence`).

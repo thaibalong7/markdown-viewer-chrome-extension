@@ -135,10 +135,7 @@ export function createSiblingScanRunner(deps) {
           scannedFolders: 0,
           currentFolder: scanRootDirUrl,
           progressHeadline: 'Scanning folder tree…',
-          filesContext: buildFilesContext({
-            scanPhase: 'scanning',
-            siblingFolderLabel: folderLabel
-          })
+          filesContext: buildFilesContext({ scanPhase: 'scanning' })
         })
 
         const { tree, stats } = await scanFolderRecursive(scanRootDirUrl, {

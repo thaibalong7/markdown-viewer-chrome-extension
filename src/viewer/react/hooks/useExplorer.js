@@ -326,9 +326,14 @@ export function useExplorer({ bridge }) {
 
   useEffect(() => {
     const handlePopState = () => {
+      if (explorerModeRef.current === 'workspace') {
+        bridge?.resetBrowserRoute?.()
+        return
+      }
       void navigateFromBrowserHistory({
         locationHref: window.location.href,
         currentFileUrl: currentFileUrlRef.current,
+        entryFileUrl: bridge?.getEntryFileUrl?.(),
         navigateToFile: navigateToFileRef.current,
         getLocationHref: () => window.location.href,
         getCurrentFileUrl: () => currentFileUrlRef.current
@@ -338,13 +343,13 @@ export function useExplorer({ bridge }) {
     }
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)
-  }, [])
+  }, [bridge])
 
   useEffect(() => {
     mountedRef.current = true
     const initialUrl = getInitialExplorerFileUrl(bridge)
     setCurrentFileUrl(initialUrl)
-    setOriginalFileUrlIfUnset(initialUrl)
+    setOriginalFileUrlIfUnset(bridge?.getEntryFileUrl?.() || initialUrl)
 
     if (getExplorerMode() === 'workspace' && !getWorkspaceRootUrl()) {
       setExplorerMode('sibling')
@@ -356,7 +361,10 @@ export function useExplorer({ bridge }) {
       explorerModeRef.current = 'workspace'
       safePatch({ explorerMode: 'workspace', filesContext: buildFilesContext() })
       viewActions.showLoading({ filesContext: buildFilesContext() })
-      void workspaceSession.openWorkspaceFolder(storedRoot, { restore: true })
+      void workspaceSession.openWorkspaceFolder(storedRoot, {
+        restore: true,
+        keepCurrentDocumentOnMissing: true
+      })
     } else {
       explorerModeRef.current = 'sibling'
       safePatch({ explorerMode: 'sibling', filesContext: buildFilesContext() })

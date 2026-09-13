@@ -22,6 +22,7 @@ export function ViewerShell({
   onEditorDestroy,
   onEditorScroll,
   onTocClickInEditor,
+  onHeadingNavigate,
   onEditModeChange,
   onSave,
   saveStatus = 'saved'
@@ -172,6 +173,7 @@ export function ViewerShell({
           tocReady={tocReady}
           scrollRoot={scrollRootForSidebar}
           onTocClickInEditor={onTocClickInEditor}
+          onHeadingNavigate={onHeadingNavigate}
         />
 
         {isEditMode && editorReady && (

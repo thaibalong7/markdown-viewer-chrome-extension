@@ -2,10 +2,10 @@ import { logger } from '../shared/logger.js'
 import { copyTextToClipboard } from '../shared/clipboard.js'
 import { COPY_BUTTON_FEEDBACK_MS } from '../shared/constants/viewer.js'
 import {
+  cancelViewerAnchorLock,
   findHeadingByHash,
   getToolbarHeightInScrollRoot,
-  hashTargetToUrlFragment,
-  scrollToElementInViewer
+  scrollToElementInViewerWithAnchorLock
 } from './scroll-utils.js'
 import {
   closeImageLightbox,
@@ -20,16 +20,16 @@ import {
  * @param {() => (HTMLElement | null | undefined)} options.getArticle
  * @param {(message: string, options?: object) => void} options.showToast
  * @param {() => HTMLElement | null} options.getScrollRoot
- * @param {() => string} [options.getCurrentFileUrl]
  * @param {(fileUrl: string, opts?: object) => Promise<void>} [options.navigateToFile]
+ * @param {(headingId: string) => (string | null)} [options.updateDocumentHeading]
  * @param {(rawHref: string) => { kind: string, resolvedUrl: string | null, hash: string | null, shouldIntercept: boolean }} [options.resolveLink]
  */
 export function createArticleInteractions({
   getArticle,
   showToast,
   getScrollRoot,
-  getCurrentFileUrl,
   navigateToFile,
+  updateDocumentHeading,
   resolveLink
 } = {}) {
   /** @type {(() => void) | null} */
@@ -136,11 +136,9 @@ export function createArticleInteractions({
     if (!id) return false
     if (!link.classList.contains('mdp-heading-anchor')) return false
     event.preventDefault()
-    const hash = hashTargetToUrlFragment(id)
-    const baseUrl = window.location.href.replace(/#.*$/, '')
-    const url = `${baseUrl}${hash}`
-    window.history.replaceState(null, '', hash)
-    void copySectionLinkWithToast(url)
+    const url = updateDocumentHeading?.(id)
+    if (url) void copySectionLinkWithToast(url)
+    else showToast('Section links are unavailable for this workspace file', { variant: 'warning' })
     return true
   }
 
@@ -158,25 +156,18 @@ export function createArticleInteractions({
     const id = decodeURIComponent(href.slice(1))
     if (!id) return false
     event.preventDefault()
-    window.history.replaceState(null, '', hashTargetToUrlFragment(id))
-    scrollToHash({ behavior: 'smooth' })
+    updateDocumentHeading?.(id)
+    scrollToHash({ behavior: 'smooth', hash: id })
     return true
   }
 
   function updateCurrentDocumentHash(hash) {
-    const currentFileUrl = getCurrentFileUrl?.() || window.location.href
-    try {
-      const nextUrl = new URL(currentFileUrl || window.location.href)
-      nextUrl.hash = hash ? hashTargetToUrlFragment(hash) : ''
-      window.history.replaceState(null, '', nextUrl.href)
-    } catch {
-      if (hash) window.history.replaceState(null, '', hashTargetToUrlFragment(hash))
-      else window.history.replaceState(null, '', window.location.href.replace(/#.*$/, ''))
-    }
+    updateDocumentHeading?.(hash)
   }
 
   function scrollToTop() {
     const scrollRoot = getScrollRoot()
+    cancelViewerAnchorLock(scrollRoot)
     scrollRoot?.scrollTo?.({ top: 0, behavior: 'auto' })
   }
 
@@ -207,7 +198,7 @@ export function createArticleInteractions({
     if (resolved.kind === 'self-link') {
       if (resolved.hash) {
         updateCurrentDocumentHash(resolved.hash)
-        scrollToHash({ behavior: 'smooth' })
+        scrollToHash({ behavior: 'smooth', hash: resolved.hash })
       } else {
         updateCurrentDocumentHash('')
         scrollToTop()
@@ -254,9 +245,8 @@ export function createArticleInteractions({
     }
   }
 
-  function scrollToHash({ behavior = 'auto' } = {}) {
-    const hash = window.location.hash || ''
-    if (!hash.startsWith('#')) return
+  function scrollToHash({ behavior = 'auto', hash = window.location.hash || '' } = {}) {
+    if (!hash) return
 
     const article = getArticle?.()
     const headingEl = findHeadingByHash(article, hash)
@@ -265,7 +255,13 @@ export function createArticleInteractions({
     const scrollRoot = getScrollRoot()
     if (!scrollRoot) return
     const toolbarHeight = getToolbarHeightInScrollRoot(scrollRoot)
-    scrollToElementInViewer({ element: headingEl, scrollRoot, toolbarHeight, behavior })
+    scrollToElementInViewerWithAnchorLock({
+      element: headingEl,
+      scrollRoot,
+      layoutRoot: article,
+      toolbarHeight,
+      behavior
+    })
   }
 
   function bind() {
@@ -303,6 +299,7 @@ export function createArticleInteractions({
   }
 
   function destroy() {
+    cancelViewerAnchorLock(getScrollRoot())
     if (hashChangeHandler) {
       window.removeEventListener('hashchange', hashChangeHandler)
     }

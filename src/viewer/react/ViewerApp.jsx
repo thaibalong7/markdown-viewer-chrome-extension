@@ -31,6 +31,7 @@ export function ViewerApp({
   onEditorDestroy,
   onEditorScroll,
   onTocClickInEditor,
+  onHeadingNavigate,
   onEditModeChange,
   onSave,
   onViewModeChange,
@@ -54,6 +55,7 @@ export function ViewerApp({
           onEditorDestroy={onEditorDestroy}
           onEditorScroll={onEditorScroll}
           onTocClickInEditor={onTocClickInEditor}
+          onHeadingNavigate={onHeadingNavigate}
           onEditModeChange={onEditModeChange}
           onSave={onSave}
           saveStatus={saveStatus}

@@ -1,10 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import {
-  getToolbarHeightInScrollRoot,
-  hashTargetToUrlFragment,
-  scrollToElementInViewer
-} from '../../scroll-utils.js'
+import { getToolbarHeightInScrollRoot } from '../../scroll-utils.js'
 import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
 import { PanelHeader } from './common/PanelHeader.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
@@ -15,16 +11,15 @@ import {
   getOutlineRevealAction
 } from './outline-follow.js'
 
-function updateHash(id) {
-  if (!id) return
-  const encoded = hashTargetToUrlFragment(id)
-  if (window.location.hash === encoded) return
-  window.history.replaceState(null, '', encoded)
-}
-
 const OUTLINE_SKELETON_WIDTHS = ['86%', '72%', '78%', '60%', '82%', '68%', '94%', '76%', '62%', '48%']
 
-export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEditor }) {
+export function OutlinePanel({
+  tocItems,
+  tocReady,
+  scrollRoot,
+  onTocClickInEditor,
+  onHeadingNavigate
+}) {
   const editorState = useEditorState()
   const editorEditActive = Boolean(editorState?.enabled)
   const tocScrollRef = useRef(null)
@@ -150,18 +145,11 @@ export function OutlinePanel({ tocItems, tocReady, scrollRoot, onTocClickInEdito
                     data-mdp-toc-id={item.id}
                     onClick={(event) => {
                       event.preventDefault()
-                      const toolbarHeight = getToolbarHeightInScrollRoot(scrollRoot)
                       pendingClickTargetIdRef.current = item.id
                       contentSmoothScrollSuppressedUntilRef.current =
                         Date.now() + OUTLINE_CONTENT_SCROLL_SUPPRESS_MS
-                      updateHash(item.id)
+                      onHeadingNavigate?.(item.id)
                       outlineVirtualizer.scrollToIndex(virtualRow.index, { align: 'center' })
-                      scrollToElementInViewer({
-                        element: item.el,
-                        scrollRoot,
-                        toolbarHeight,
-                        behavior: 'smooth'
-                      })
                       if (editorEditActive && typeof onTocClickInEditor === 'function') {
                         onTocClickInEditor(item.text)
                       }

@@ -9,7 +9,8 @@ export function RightRail({
   tocItems,
   tocReady,
   scrollRoot,
-  onTocClickInEditor
+  onTocClickInEditor,
+  onHeadingNavigate
 }) {
   const [railEl, setRailEl] = useState(null)
   const [handleEl, setHandleEl] = useState(null)
@@ -35,6 +36,7 @@ export function RightRail({
           tocReady={tocReady}
           scrollRoot={scrollRoot}
           onTocClickInEditor={onTocClickInEditor}
+          onHeadingNavigate={onHeadingNavigate}
         />
       )}
       {outlineVisible && (

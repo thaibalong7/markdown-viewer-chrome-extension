@@ -19,6 +19,7 @@ export function mountViewerReact(container, options = {}) {
     onEditorDestroy,
     onEditorScroll,
     onTocClickInEditor,
+    onHeadingNavigate,
     onEditModeChange,
     onSave,
     onViewModeChange
@@ -48,6 +49,7 @@ export function mountViewerReact(container, options = {}) {
     onEditorDestroy,
     onEditorScroll,
     onTocClickInEditor,
+    onHeadingNavigate,
     onEditModeChange,
     onSave,
     onViewModeChange,

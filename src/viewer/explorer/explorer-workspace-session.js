@@ -64,6 +64,7 @@ export function createExplorerWorkspaceSession(deps) {
   }
 
   const enterWorkspaceScan = ({ displayLabel, progressHeadline }) => {
+    bridge?.resetBrowserRoute?.()
     siblingScanSession?.abort?.()
     resetSiblingRefsForWorkspace()
     clearWorkspaceVirtualReaders()
@@ -165,6 +166,7 @@ export function createExplorerWorkspaceSession(deps) {
     const { restore = false } = opts
     if (!dirUrl) return
     const normalized = normalizeDirectoryUrl(dirUrl)
+    bridge?.resetBrowserRoute?.()
     siblingScanSession?.abort?.()
     resetSiblingRefsForWorkspace()
     clearWorkspaceVirtualReaders()
@@ -206,7 +208,8 @@ export function createExplorerWorkspaceSession(deps) {
       await finalizeWorkspaceTree(tree, stats, {
         maxScanDepth,
         normalizedDirUrl: normalized,
-        preserveExpandedState: Boolean(opts.preserveExpandedState)
+        preserveExpandedState: Boolean(opts.preserveExpandedState),
+        keepCurrentDocumentOnMissing: Boolean(opts.keepCurrentDocumentOnMissing)
       })
     } catch (error) {
       const aborted = isAbortError(error, signal)
@@ -291,6 +294,7 @@ export function createExplorerWorkspaceSession(deps) {
 
     const current = refs.currentFileUrlRef.current
     if (
+      !opts.keepCurrentDocumentOnMissing &&
       current &&
       !workspaceDocumentStillValid({
         currentFileUrl: current,

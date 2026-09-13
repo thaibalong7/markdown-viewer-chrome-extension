@@ -8,6 +8,8 @@
  * @param {() => (HTMLElement | null)} options.getScrollRoot
  * @param {() => (HTMLElement | null)} options.getArticleEl
  * @param {() => string} options.getCurrentFileUrl
+ * @param {() => string} options.getEntryFileUrl
+ * @param {() => (string | null)} options.resetBrowserRoute
  * @param {(nextUrl: string) => void} options.updateCurrentFileUrl
  */
 export function createExplorerBridge({
@@ -19,6 +21,8 @@ export function createExplorerBridge({
   getScrollRoot,
   getArticleEl,
   getCurrentFileUrl,
+  getEntryFileUrl,
+  resetBrowserRoute,
   updateCurrentFileUrl
 }) {
   return {
@@ -30,6 +34,8 @@ export function createExplorerBridge({
     getScrollRoot,
     getArticleEl,
     getCurrentFileUrl,
+    getEntryFileUrl,
+    resetBrowserRoute,
     updateCurrentFileUrl,
     navigateToFile: null,
     virtualFileExists: null

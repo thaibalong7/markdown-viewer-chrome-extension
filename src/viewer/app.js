@@ -14,17 +14,26 @@ import { applyReaderStyles, createStyleElement } from './app/viewerStyles.js'
 import { createGlobalViewerListeners } from './app/globalViewerListeners.js'
 import { createDocumentSessionController } from './app/documentSessionController.js'
 import { createDocumentIdentity } from './documents/document-model.js'
+import { getExplorerMode } from './explorer/explorer-state.js'
+import { documentTitleFromUrl } from './explorer/url-utils.js'
+import {
+  buildDirectFileSectionUrl,
+  buildViewerRouteUrl,
+  parseViewerRoute,
+  writeViewerRoute
+} from './navigation/viewer-route.js'
 
 export class MarkdownViewerApp {
   /**
    * @param {object} options
    * @param {string} options.markdown
    * @param {object} [options.initialDocument]
+   * @param {object} [options.initialRoute]
    * @param {object} options.settings
    * @param {HTMLElement} options.container
    * @param {string[]} [options.styles]
    */
-  constructor({ markdown, initialDocument, settings, container, styles = [] } = {}) {
+  constructor({ markdown, initialDocument, initialRoute, settings, container, styles = [] } = {}) {
     this.markdown = markdown
     this.settings = settings
     this.container = container
@@ -39,7 +48,10 @@ export class MarkdownViewerApp {
     this._reactHandle = null
     /** @type {null | { scrollToLine: (line1Based: number) => void, scrollDOM: HTMLElement }} */
     this._editorApi = null
-    this._currentFileUrl = window.location.href
+    this._initialRoute = initialRoute || parseViewerRoute(window.location.href)
+    this._entryFileUrl = this._initialRoute?.entryFileUrl || window.location.href
+    this._currentFileUrl = this._entryFileUrl
+    this._initialRouteWarning = null
     const currentDocument = initialDocument || createDocumentIdentity(this._currentFileUrl)
     this._initialLoadedDocument = {
       document: currentDocument,
@@ -127,6 +139,9 @@ export class MarkdownViewerApp {
     for (const styleElement of this._styleElements) {
       this.container.appendChild(styleElement)
     }
+
+    await this._restoreInitialRoute()
+
     this._reactContainerEl = document.createElement('div')
     this._reactContainerEl.className = 'mdp-react-root'
     this.container.appendChild(this._reactContainerEl)
@@ -140,6 +155,8 @@ export class MarkdownViewerApp {
       getScrollRoot: () => this.getScrollRoot(),
       getArticleEl: () => this._articleEl,
       getCurrentFileUrl: () => this._currentFileUrl,
+      getEntryFileUrl: () => this._entryFileUrl,
+      resetBrowserRoute: () => this._resetBrowserRoute(),
       updateCurrentFileUrl: (nextUrl) => {
         const url = typeof nextUrl === 'string' ? nextUrl : ''
         if (url === this._currentFileUrl) return
@@ -176,6 +193,10 @@ export class MarkdownViewerApp {
       onTocClickInEditor: (headingText) => {
         this._handleTocClickInEditor(headingText)
       },
+      onHeadingNavigate: (headingId) => {
+        this._updateDocumentHeading(headingId)
+        this._articleInteractions?.scrollToHash({ behavior: 'smooth', hash: headingId })
+      },
       onEditModeChange: (enabled) => {
         this._editorSession.setEditModeActive(enabled)
       },
@@ -201,8 +222,8 @@ export class MarkdownViewerApp {
       getArticle: () => this._articleEl,
       showToast: (message, options) => this.showToast(message, options),
       getScrollRoot: () => this.getScrollRoot(),
-      getCurrentFileUrl: () => this._currentFileUrl,
       navigateToFile: (fileUrl, opts) => explorerBridge.navigateToFile?.(fileUrl, opts),
+      updateDocumentHeading: (headingId) => this._updateDocumentHeading(headingId),
       resolveLink: (rawHref) =>
         resolveMarkdownLink(rawHref, {
           currentFileUrl: this._currentFileUrl,
@@ -216,6 +237,28 @@ export class MarkdownViewerApp {
     void this.render()
     this._articleInteractions.bind()
     this._globalListeners.bind()
+    if (this._initialRouteWarning) {
+      this.showToast(this._initialRouteWarning, { variant: 'warning' })
+      this._initialRouteWarning = null
+    }
+  }
+
+  async _restoreInitialRoute() {
+    if (this._initialRoute?.invalidFileTarget || getExplorerMode() === 'workspace') {
+      this._resetBrowserRoute()
+      if (this._initialRoute?.invalidFileTarget) {
+        this._initialRouteWarning = 'The file route in this URL is not supported'
+      }
+    } else if (this._initialRoute?.hasFileTarget) {
+      const restored = await this._documentSession.openDocument(this._initialRoute.targetFileUrl)
+      if (!restored) {
+        this._resetBrowserRoute()
+        this._initialRouteWarning =
+          'Could not restore the linked file; returned to the original file'
+      } else {
+        document.title = `${documentTitleFromUrl(this._currentFileUrl)} - Markdown Plus`
+      }
+    }
   }
 
   _recordCurrentFileInHistory() {
@@ -230,6 +273,38 @@ export class MarkdownViewerApp {
     }).catch((error) => {
       logger.debug('Could not record file history.', error)
     })
+  }
+
+  _resetBrowserRoute() {
+    try {
+      return writeViewerRoute({
+        entryFileUrl: this._entryFileUrl,
+        currentFileUrl: this._entryFileUrl,
+        replace: true
+      })
+    } catch {
+      return null
+    }
+  }
+
+  _updateDocumentHeading(headingId) {
+    if (getExplorerMode() === 'workspace') {
+      return buildDirectFileSectionUrl(this._currentFileUrl, headingId)
+    }
+    try {
+      return writeViewerRoute({
+        entryFileUrl: this._entryFileUrl,
+        currentFileUrl: this._currentFileUrl,
+        hash: headingId,
+        replace: true
+      })
+    } catch {
+      return buildViewerRouteUrl({
+        entryFileUrl: this._entryFileUrl,
+        currentFileUrl: this._currentFileUrl,
+        hash: headingId
+      })
+    }
   }
 
   applyReaderStyles() {

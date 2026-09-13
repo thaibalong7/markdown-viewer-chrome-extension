@@ -7,6 +7,7 @@ import { isDirectActivationUrl } from '../shared/file-types.js'
 import { createViewerRoot } from './page-overrider.js'
 import { MarkdownViewerApp } from '../viewer/app.js'
 import { createDocumentIdentity } from '../viewer/documents/document-model.js'
+import { parseViewerRoute } from '../viewer/navigation/viewer-route.js'
 
 export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explorerCss, getViewerStyles }) {
   logger.info('Content bootstrap started.')
@@ -94,9 +95,12 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
   // to prevent duplicated DOM/style accumulation.
   mountTarget.innerHTML = ''
 
+  const initialRoute = parseViewerRoute(window.location.href)
+  const entryFileUrl = initialRoute?.entryFileUrl || window.location.href
   const app = new MarkdownViewerApp({
     markdown: extraction.markdown,
-    initialDocument: createDocumentIdentity(window.location.href),
+    initialDocument: createDocumentIdentity(entryFileUrl),
+    initialRoute,
     settings,
     container: mountTarget,
     styles: [styles.baseCss, styles.layoutCss, styles.contentCss, styles.tocCss, styles.explorerCss]

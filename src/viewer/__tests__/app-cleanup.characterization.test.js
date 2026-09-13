@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   editorDestroy: vi.fn(),
   renderDestroy: vi.fn(),
   documentSessionDestroy: vi.fn(),
+  documentSessionOpen: vi.fn(),
   interactionsDestroy: vi.fn(),
   reactUnmount: vi.fn()
 }))
@@ -30,8 +31,13 @@ vi.mock('../app/editorSessionController.js', () => ({
   })
 }))
 vi.mock('../app/documentSessionController.js', () => ({
-  createDocumentSessionController: () => ({
+  createDocumentSessionController: (options) => ({
     destroy: mocks.documentSessionDestroy,
+    openDocument: async (href) => {
+      const opened = await mocks.documentSessionOpen(href)
+      if (opened) options.onCurrentDocumentChange?.({ href })
+      return opened
+    },
     getLoadedDocument: () => null,
     getUiState: () => ({ capabilities: { edit: true }, sourceKind: 'file-url' }),
     updateText: vi.fn()
@@ -55,7 +61,13 @@ import { MarkdownViewerApp } from '../app.js'
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.stubGlobal('window', { location: { href: 'file:///fixtures/navigation/index.md' } })
+  vi.stubGlobal('window', {
+    location: { href: 'file:///fixtures/navigation/index.md' },
+    history: { pushState: vi.fn(), replaceState: vi.fn() }
+  })
+  vi.stubGlobal('document', { title: '' })
+  vi.stubGlobal('sessionStorage', { getItem: vi.fn(() => null) })
+  mocks.documentSessionOpen.mockResolvedValue(true)
 })
 
 describe('MarkdownViewerApp cleanup characterization', () => {
@@ -80,5 +92,73 @@ describe('MarkdownViewerApp cleanup characterization', () => {
     expect(mocks.interactionsDestroy).toHaveBeenCalledOnce()
     expect(mocks.reactUnmount).toHaveBeenCalledOnce()
     expect(container.innerHTML).toBe('')
+  })
+
+  it('keeps workspace heading navigation out of the browser URL', () => {
+    vi.stubGlobal('sessionStorage', {
+      getItem: vi.fn((key) => (key === 'mdp:explorer:mode' ? 'workspace' : null))
+    })
+    const app = new MarkdownViewerApp({
+      markdown: '# Fixture',
+      settings: {},
+      container: { innerHTML: '' }
+    })
+    app._currentFileUrl = 'file:///fixtures/navigation/docs/guide.md'
+
+    expect(app._updateDocumentHeading('install')).toBe(
+      'file:///fixtures/navigation/docs/guide.md#install'
+    )
+    expect(window.history.replaceState).not.toHaveBeenCalled()
+  })
+
+  it('restores an f route before the viewer shell mounts', async () => {
+    const app = new MarkdownViewerApp({
+      markdown: '# Fixture',
+      initialRoute: {
+        entryFileUrl: 'file:///fixtures/navigation/index.md',
+        targetFileUrl: 'file:///fixtures/navigation/docs/guide.md',
+        hash: 'install',
+        hasFileTarget: true,
+        invalidFileTarget: false
+      },
+      settings: {},
+      container: { innerHTML: '' }
+    })
+
+    await app._restoreInitialRoute()
+
+    expect(mocks.documentSessionOpen).toHaveBeenCalledWith(
+      'file:///fixtures/navigation/docs/guide.md'
+    )
+    expect(app._currentFileUrl).toBe('file:///fixtures/navigation/docs/guide.md')
+    expect(document.title).toBe('guide - Markdown Plus')
+  })
+
+  it('ignores an f route when restoring a workspace session', async () => {
+    vi.stubGlobal('sessionStorage', {
+      getItem: vi.fn((key) => (key === 'mdp:explorer:mode' ? 'workspace' : null))
+    })
+    const app = new MarkdownViewerApp({
+      markdown: '# Fixture',
+      initialRoute: {
+        entryFileUrl: 'file:///fixtures/navigation/index.md',
+        targetFileUrl: 'file:///fixtures/navigation/docs/guide.md',
+        hash: 'install',
+        hasFileTarget: true,
+        invalidFileTarget: false
+      },
+      settings: {},
+      container: { innerHTML: '' }
+    })
+
+    await app._restoreInitialRoute()
+
+    expect(mocks.documentSessionOpen).not.toHaveBeenCalled()
+    expect(app._currentFileUrl).toBe('file:///fixtures/navigation/index.md')
+    expect(window.history.replaceState).toHaveBeenCalledWith(
+      null,
+      '',
+      'file:///fixtures/navigation/index.md'
+    )
   })
 })

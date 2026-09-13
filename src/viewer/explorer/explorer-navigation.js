@@ -1,9 +1,9 @@
 import {
   findHeadingByHash,
   getToolbarHeightInScrollRoot,
-  hashTargetToUrlFragment,
-  scrollToElementInViewer
+  scrollToElementInViewerWithAnchorLock
 } from '../scroll-utils.js'
+import { parseViewerRoute, writeViewerRoute } from '../navigation/viewer-route.js'
 import {
   expandAncestorsForFile
 } from './explorer-tree-utils.js'
@@ -17,8 +17,6 @@ import {
   normalizeFileUrlForCompare
 } from './url-utils.js'
 import { getOriginalFileUrl, isOnOriginalFile } from './explorer-state.js'
-
-const DEFERRED_SCROLL_DELAY_MS = 200
 
 export function createSiblingBackNavigationForUrl(openUrl, onNavigate) {
   const original = getOriginalFileUrl()
@@ -58,42 +56,13 @@ export function focusAfterNavigation(bridge, hash) {
   article.focus({ preventScroll: true })
 }
 
-export function parseHistoryDocumentUrl(locationHref) {
-  try {
-    const url = new URL(locationHref)
-    if (url.protocol !== 'file:') return null
-    let hash = null
-    if (url.hash) {
-      try {
-        hash = decodeURIComponent(url.hash.slice(1)) || null
-      } catch {
-        hash = url.hash.slice(1) || null
-      }
-    }
-    url.hash = ''
-    url.search = ''
-    return { fileUrl: url.href, hash }
-  } catch {
-    return null
-  }
-}
-
-export function deferredScrollRetry(hash, scrollToHeadingHash) {
-  if (!hash) return
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      scrollToHeadingHash(hash, { behavior: 'auto' })
-    }, DEFERRED_SCROLL_DELAY_MS)
-  })
-}
-
-export function updateUrlWithoutReload(fileUrl, { replace = false, hash = null } = {}) {
+export function updateUrlWithoutReload(
+  fileUrl,
+  { entryFileUrl = fileUrl, replace = false, hash = null } = {}
+) {
   if (typeof fileUrl !== 'string' || !fileUrl.startsWith('file:')) return
   try {
-    const nextUrl = new URL(fileUrl)
-    nextUrl.hash = hash ? hashTargetToUrlFragment(hash) : ''
-    if (replace) window.history.replaceState(null, '', nextUrl.href)
-    else window.history.pushState(null, '', nextUrl.href)
+    return writeViewerRoute({ entryFileUrl, currentFileUrl: fileUrl, hash, replace })
   } catch {
     /* file protocol may reject history updates */
   }
@@ -102,19 +71,20 @@ export function updateUrlWithoutReload(fileUrl, { replace = false, hash = null }
 export async function navigateFromBrowserHistory({
   locationHref,
   currentFileUrl,
+  entryFileUrl,
   navigateToFile,
   restoreUrl = updateUrlWithoutReload,
   getLocationHref = () => locationHref,
   getCurrentFileUrl = () => currentFileUrl
 }) {
-  const target = parseHistoryDocumentUrl(locationHref)
+  const target = parseViewerRoute(locationHref)
   if (!target || typeof navigateToFile !== 'function') return false
-  const opened = await navigateToFile(target.fileUrl, {
+  const opened = await navigateToFile(target.targetFileUrl, {
     hash: target.hash,
     updateHistory: false
   })
-  const liveTarget = parseHistoryDocumentUrl(getLocationHref())
-  const browserStillAtRejectedTarget = liveTarget?.fileUrl === target.fileUrl
+  const liveTarget = parseViewerRoute(getLocationHref())
+  const browserStillAtRejectedTarget = liveTarget?.targetFileUrl === target.targetFileUrl
   const viewerStillAtPreviousDocument =
     normalizeFileUrlForCompare(getCurrentFileUrl()) === normalizeFileUrlForCompare(currentFileUrl)
   if (
@@ -124,7 +94,10 @@ export async function navigateFromBrowserHistory({
     typeof currentFileUrl === 'string' &&
     currentFileUrl.startsWith('file:')
   ) {
-    restoreUrl(currentFileUrl, { replace: false })
+    restoreUrl(currentFileUrl, {
+      entryFileUrl: entryFileUrl || target.entryFileUrl,
+      replace: false
+    })
   }
   return opened !== false
 }
@@ -140,7 +113,13 @@ export function createHeadingScroller(bridge) {
     if (!scrollRoot) return false
 
     const toolbarHeight = getToolbarHeightInScrollRoot(scrollRoot)
-    scrollToElementInViewer({ element: headingEl, scrollRoot, toolbarHeight, behavior })
+    scrollToElementInViewerWithAnchorLock({
+      element: headingEl,
+      scrollRoot,
+      layoutRoot: article,
+      toolbarHeight,
+      behavior
+    })
     return true
   }
 }
@@ -201,14 +180,17 @@ export function createExplorerNavigator(deps) {
     bridge?.setSmoothInitialHashScroll?.(false)
     setCurrentFileUrl(fileUrl)
     if (updateHistory && !isWorkspaceVirtualHref(fileUrl)) {
-      updateUrlWithoutReload(fileUrl, { replace: replaceHistory, hash })
+      updateUrlWithoutReload(fileUrl, {
+        entryFileUrl: bridge?.getEntryFileUrl?.() || fileUrl,
+        replace: replaceHistory,
+        hash
+      })
     }
     const scrolledToHash = hash && scrollToHeadingHash(hash)
     if (!scrolledToHash) {
       bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
     }
     focusAfterNavigation(bridge, hash)
-    if (scrolledToHash) deferredScrollRetry(hash, scrollToHeadingHash)
     document.title = `${documentTitleFromUrl(fileUrl)} - Markdown Plus`
   }
 
@@ -253,13 +235,16 @@ export function createExplorerNavigator(deps) {
       const scrolledToHash = hash && scrollToHeadingHash(hash)
       if (!scrolledToHash) bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
       focusAfterNavigation(bridge, hash)
-      if (scrolledToHash) deferredScrollRetry(hash, scrollToHeadingHash)
       return true
     }
 
     const opened = await bridge?.openDocument?.(fileUrl, { forceReload })
     if (!opened) return false
-    await finishNavigatedDocument(fileUrl, { hash, replaceHistory, updateHistory })
+    await finishNavigatedDocument(fileUrl, {
+      hash,
+      replaceHistory,
+      updateHistory: updateHistory && refs.explorerModeRef.current !== 'workspace'
+    })
 
     if (syncExplorer) {
       await afterSuccessfulNavigation({ hash })

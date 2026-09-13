@@ -5,7 +5,12 @@ import { normalizeLocalMarkdownLinkDestinations } from './markdown-link-normaliz
 function isExternalHref(href) {
   if (!href) return false
   const value = String(href).trimStart()
-  return /^https?:/i.test(value) || /^mailto:/i.test(value) || /^tel:/i.test(value)
+  return (
+    /^https?:/i.test(value) ||
+    /^\/\//.test(value) ||
+    /^mailto:/i.test(value) ||
+    /^tel:/i.test(value)
+  )
 }
 
 function createBaseEngine() {

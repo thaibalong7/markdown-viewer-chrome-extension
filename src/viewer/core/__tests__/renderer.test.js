@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { renderDocument } from '../renderer.js'
+import { hardenExternalWebsiteLink, renderDocument } from '../renderer.js'
 
 const BASE_SETTINGS = {
   theme: { preset: 'light' },
@@ -14,6 +14,37 @@ const BASE_SETTINGS = {
 }
 
 describe('renderDocument render context metadata', () => {
+  it('opens external website links in a safe new tab', async () => {
+    const result = await renderDocument('[Website](//example.com/docs)', BASE_SETTINGS)
+
+    expect(result.html).toContain(
+      '<a href="//example.com/docs" target="_blank" rel="noopener noreferrer">Website</a>'
+    )
+  })
+
+  it('hardens external website links emitted from raw HTML', () => {
+    const attributes = new Map([
+      ['href', 'https://example.org/help'],
+      ['rel', 'nofollow']
+    ])
+    const link = {
+      nodeName: 'a',
+      getAttribute: (name) => attributes.get(name) || null,
+      setAttribute: (name, value) => attributes.set(name, value)
+    }
+
+    expect(hardenExternalWebsiteLink(link)).toBe(true)
+    expect(attributes.get('target')).toBe('_blank')
+    expect(attributes.get('rel')).toBe('nofollow noopener noreferrer')
+  })
+
+  it('keeps local links in the current tab', async () => {
+    const result = await renderDocument('[Guide](docs/guide.md)', BASE_SETTINGS)
+
+    expect(result.html).toContain('<a href="docs/guide.md">Guide</a>')
+    expect(result.html).not.toContain('target="_blank"')
+  })
+
   it('keeps the same settings hash for style-only settings changes', async () => {
     const first = await renderDocument('# Title', BASE_SETTINGS)
     const second = await renderDocument('# Title', {

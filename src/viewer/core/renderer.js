@@ -7,6 +7,31 @@ const createPurifier = typeof DOMPurify === 'function' ? DOMPurify : null
 const windowRef = typeof window !== 'undefined' ? window : null
 const purifier = createPurifier && windowRef ? createPurifier(windowRef) : null
 
+function isExternalWebsiteHref(href) {
+  const value = String(href || '').trimStart()
+  return /^https?:\/\//i.test(value) || /^\/\//.test(value)
+}
+
+export function hardenExternalWebsiteLink(node) {
+  if (
+    String(node?.nodeName).toLowerCase() !== 'a' ||
+    !isExternalWebsiteHref(node.getAttribute('href'))
+  ) return false
+
+  node.setAttribute('target', '_blank')
+  const relValues = new Set((node.getAttribute('rel') || '').split(/\s+/).filter(Boolean))
+  relValues.add('noopener')
+  relValues.add('noreferrer')
+  node.setAttribute('rel', [...relValues].join(' '))
+  return true
+}
+
+if (purifier) {
+  purifier.addHook('afterSanitizeAttributes', (node) => {
+    hardenExternalWebsiteLink(node)
+  })
+}
+
 /**
  * @param {string} html
  * @param {{ allowKatex?: boolean }} [options]

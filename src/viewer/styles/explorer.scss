@@ -50,7 +50,14 @@
   }
 }
 
-.mdp-explorer__refresh-btn {
+.mdp-explorer__header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__header-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -90,6 +97,7 @@
   }
 }
 
+.mdp-explorer__header-action-icon,
 .mdp-explorer__refresh-icon {
   width: 16px;
   height: 16px;
@@ -749,7 +757,7 @@
 }
 
 @media (pointer: coarse) {
-  .mdp-explorer__refresh-btn,
+  .mdp-explorer__header-action-btn,
   .mdp-explorer__copy-link-btn {
     width: 44px;
     height: 44px;

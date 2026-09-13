@@ -29,4 +29,13 @@ describe('createExplorerActions', () => {
     expect(navigateToFile).toHaveBeenCalledWith('file:///docs/empty.md')
     expect(safePatch).not.toHaveBeenCalled()
   })
+
+  it('dispatches one action to collapse every folder', () => {
+    const dispatch = vi.fn()
+    const actions = createActions({ dispatch })
+
+    actions.onCollapseAllFolders()
+
+    expect(dispatch).toHaveBeenCalledWith({ type: 'COLLAPSE_ALL_FOLDERS' })
+  })
 })

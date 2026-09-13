@@ -142,3 +142,35 @@ export function expandAncestorsForFile(nodes, fileUrl, currentExpandedMap, norma
   for (const href of ancestors) nextMap.set(href, true)
   return nextMap
 }
+
+/**
+ * Implements two-stage collapse behavior. When folders outside the active
+ * file's ancestor chain are expanded, collapse those first and keep the file
+ * visible. When only that ancestor chain remains expanded, collapse it too.
+ * @param {Array<import('./folder-scanner.js').ExplorerTreeNode>} nodes
+ * @param {string} activeFileUrl
+ * @param {Map<string, boolean>} currentExpandedMap
+ * @param {(url: string) => string} normalizeUrl
+ * @returns {Map<string, boolean>}
+ */
+export function buildCollapsedExpandedMap(
+  nodes,
+  activeFileUrl,
+  currentExpandedMap,
+  normalizeUrl
+) {
+  const collapsedMap = new Map()
+  for (const href of currentExpandedMap.keys()) {
+    collapsedMap.set(href, false)
+  }
+  const activePathMap = expandAncestorsForFile(
+    nodes,
+    activeFileUrl,
+    collapsedMap,
+    normalizeUrl
+  )
+  const hasExpandedFolderOutsideActivePath = Array.from(currentExpandedMap.entries()).some(
+    ([href, expanded]) => expanded && activePathMap.get(href) !== true
+  )
+  return hasExpandedFolderOutsideActivePath ? activePathMap : collapsedMap
+}

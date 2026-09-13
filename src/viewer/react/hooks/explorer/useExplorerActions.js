@@ -32,6 +32,9 @@ export function createExplorerActions({
     },
     onToggleFolder: (href) => {
       dispatch({ type: 'TOGGLE_FOLDER', href })
+    },
+    onCollapseAllFolders: () => {
+      dispatch({ type: 'COLLAPSE_ALL_FOLDERS' })
     }
   }
 }

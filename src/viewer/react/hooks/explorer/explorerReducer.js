@@ -1,3 +1,6 @@
+import { buildCollapsedExpandedMap } from '../../../explorer/explorer-tree-utils.js'
+import { normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
+
 /** @typedef {ReturnType<typeof createInitialState>} ExplorerState */
 
 export function createInitialState() {
@@ -39,6 +42,17 @@ export function explorerReducer(state, action) {
       const href = action.href || ''
       nextMap.set(href, !(nextMap.get(href) === true))
       return { ...state, expandedMap: nextMap }
+    }
+    case 'COLLAPSE_ALL_FOLDERS': {
+      return {
+        ...state,
+        expandedMap: buildCollapsedExpandedMap(
+          state.tree?.children || [],
+          state.activeFileUrl,
+          state.expandedMap,
+          normalizeFileUrlForCompare
+        )
+      }
     }
     default:
       return state

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { isWorkspaceVirtualHref, normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
 import { getWorkspaceRootUrl } from '../../../explorer/explorer-state.js'
+import { buildCollapsedExpandedMap } from '../../../explorer/explorer-tree-utils.js'
 import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
 import { useExplorer } from '../../hooks/useExplorer.js'
 import { ExplorerHeader } from './ExplorerHeader.jsx'
@@ -30,6 +31,19 @@ export function ExplorerPanel({ bridge }) {
     (state.explorerMode === 'workspace' && !getWorkspaceRootUrl()) ||
     state.view === 'loading' ||
     state.view === 'progress'
+  const showCollapseAllFolders = state.view === 'tree'
+  const collapseAllExpandedMap = useMemo(
+    () =>
+      buildCollapsedExpandedMap(
+        state.tree?.children || [],
+        state.activeFileUrl,
+        state.expandedMap,
+        normalizeFileUrlForCompare
+      ),
+    [state.activeFileUrl, state.expandedMap, state.tree]
+  )
+  const canCollapseAllFolders = Array.from(state.expandedMap.values()).some(Boolean)
+  const collapseKeepsOpenFilePath = Array.from(collapseAllExpandedMap.values()).some(Boolean)
   const refreshTooltip = (() => {
     if (state.view === 'loading' || state.view === 'progress') return 'Refresh is available after scanning finishes'
     if (!state.currentFileUrl) return 'Open a supported file before refreshing'
@@ -209,6 +223,11 @@ export function ExplorerPanel({ bridge }) {
     actions.onRefresh()
   }
 
+  const onCollapseAllFoldersFromExplorer = () => {
+    suppressNextAutoRevealRef.current = activeNormalized
+    actions.onCollapseAllFolders()
+  }
+
   const fileVirtualItems = fileVirtualizer.getVirtualItems()
   const treeVirtualItems = treeVirtualizer.getVirtualItems()
 
@@ -225,8 +244,12 @@ export function ExplorerPanel({ bridge }) {
         isRefreshing={state.isRefreshing}
         refreshDisabled={refreshDisabled}
         refreshTooltip={refreshTooltip}
+        showCollapseAllFolders={showCollapseAllFolders}
+        collapseAllFoldersDisabled={!canCollapseAllFolders}
+        collapseKeepsOpenFilePath={collapseKeepsOpenFilePath}
         onBack={actions.onBack}
         onRefresh={onRefreshFromExplorer}
+        onCollapseAllFolders={onCollapseAllFoldersFromExplorer}
         onOpenAnotherFolder={actions.onOpenAnotherFolder}
         onExitWorkspace={actions.onExitWorkspace}
       />

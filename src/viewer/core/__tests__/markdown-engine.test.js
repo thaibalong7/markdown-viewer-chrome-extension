@@ -45,3 +45,36 @@ describe('markdown-engine local link normalization', () => {
     expect(html).not.toContain('href="javascript:')
   })
 })
+
+describe('markdown-engine heading IDs', () => {
+  it('uses GitHub-style slugs that remove punctuation and special characters', () => {
+    const html = render("# Release v1.2: What's new? [beta]!")
+
+    expect(html).toContain('id="release-v12-whats-new-beta"')
+  })
+
+  it('keeps Unicode text while removing unsupported symbols', () => {
+    const html = render('# Hướng dẫn: Cài đặt & cấu hình')
+
+    expect(html).toContain('id="hướng-dẫn-cài-đặt--cấu-hình"')
+  })
+
+  it('matches GitHub duplicate suffixes, including colliding suffixed headings', () => {
+    const html = render('# Foo\n\n# Foo\n\n# Foo-1\n\n# Foo')
+
+    expect(html).toContain('id="foo"')
+    expect(html).toContain('id="foo-1"')
+    expect(html).toContain('id="foo-1-1"')
+    expect(html).toContain('id="foo-2"')
+  })
+
+  it('resets duplicate tracking when a cached engine renders a new document', () => {
+    const markdownEngine = createMarkdownEngine()
+    const first = renderMarkdown('# Same\n\n# Same', { markdownEngine }).html
+    const second = renderMarkdown('# Same', { markdownEngine }).html
+
+    expect(first).toContain('id="same-1"')
+    expect(second).toContain('id="same"')
+    expect(second).not.toContain('id="same-1"')
+  })
+})

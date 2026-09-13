@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it'
 import anchor from 'markdown-it-anchor'
+import GithubSlugger from 'github-slugger'
 import { normalizeLocalMarkdownLinkDestinations } from './markdown-link-normalizer.js'
 
 function isExternalHref(href) {
@@ -23,10 +24,21 @@ function createBaseEngine() {
   const UNSAFE_PROTO_RE = /^(vbscript|javascript|data):/i
   md.validateLink = (url) => !UNSAFE_PROTO_RE.test(url.trim())
 
-  // Add stable `id` attributes to headings so we can build a TOC.
+  const headingSluggers = new WeakMap()
+
+  // Match GitHub heading IDs, including punctuation removal and duplicate suffixes.
+  // Each markdown-it state represents one render, so reused engines start fresh per document.
   // `permalink: false` keeps the rendered HTML clean (no extra anchor links).
   md.use(anchor, {
     permalink: false,
+    slugifyWithState: (title, state) => {
+      let slugger = headingSluggers.get(state)
+      if (!slugger) {
+        slugger = new GithubSlugger()
+        headingSluggers.set(state, slugger)
+      }
+      return slugger.slug(title)
+    },
     // Include all heading levels by default.
     level: [1, 2, 3, 4, 5, 6]
   })

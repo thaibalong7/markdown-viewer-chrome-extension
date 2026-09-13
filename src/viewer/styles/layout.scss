@@ -13,11 +13,11 @@
   border: 1px solid var(--mdp-border);
   background: var(--mdp-surface);
   color: var(--mdp-text);
-  min-height: 36px;
+  min-height: 38px;
   padding: 7px 12px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.25;
   box-shadow: var(--mdp-shadow-subtle);
@@ -75,7 +75,7 @@
 
   &__placeholder {
     color: var(--mdp-muted);
-    font-size: 14px;
+    font-size: 15px;
   }
 }
 
@@ -104,7 +104,7 @@
 .mdp-panel-header__heading {
   margin: 0;
   color: var(--mdp-text);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 750;
   letter-spacing: 0.055em;
   line-height: 1.25;
@@ -113,7 +113,7 @@
 
 .mdp-panel-header__meta {
   color: var(--mdp-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
   line-height: 1.35;
 }
@@ -220,7 +220,7 @@
   max-width: min(280px, calc(100vw - 16px));
   padding: 7px 9px;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.45;
   font-weight: 500;
   color: var(--mdp-surface, #fff);

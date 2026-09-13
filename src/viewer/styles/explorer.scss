@@ -38,7 +38,7 @@
 
   .mdp-panel-header__heading {
     color: var(--mdp-heading);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 750;
     letter-spacing: -0.01em;
     text-transform: none;
@@ -46,7 +46,7 @@
 
   .mdp-panel-header__meta {
     color: color-mix(in srgb, var(--mdp-muted) 90%, var(--mdp-text));
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 
@@ -62,8 +62,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   border: 1px solid var(--mdp-border);
   border-radius: v.$radius-small;
@@ -99,8 +99,8 @@
 
 .mdp-explorer__header-action-icon,
 .mdp-explorer__refresh-icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
 }
 
@@ -142,7 +142,7 @@
   border: 1px solid color-mix(in srgb, var(--mdp-link) 22%, var(--mdp-border));
   color: var(--mdp-link);
   background: var(--mdp-link-soft);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.055em;
   line-height: 1.35;
@@ -166,7 +166,7 @@
 
 .mdp-explorer__context-label {
   color: var(--mdp-muted);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
   letter-spacing: 0.035em;
   line-height: 1.3;
@@ -177,7 +177,7 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--mdp-text);
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 650;
   line-height: 1.35;
   overflow-wrap: anywhere;
@@ -190,8 +190,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   border: 1px solid var(--mdp-border);
   border-radius: v.$radius-small;
@@ -239,15 +239,15 @@
 }
 
 .mdp-explorer__copy-link-icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
 }
 
 .mdp-explorer__context-status {
   min-width: 0;
   overflow: hidden;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
   color: var(--mdp-muted);
   text-overflow: ellipsis;
@@ -255,7 +255,7 @@
 }
 
 .mdp-explorer__context-warning {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
   color: var(--mdp-warning);
   padding: 6px 8px;
@@ -272,7 +272,7 @@
   padding-top: 8px;
   border-top: 1px solid color-mix(in srgb, var(--mdp-border) 78%, transparent);
   color: color-mix(in srgb, var(--mdp-muted) 88%, var(--mdp-text));
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   line-height: 1.4;
 }
@@ -319,7 +319,7 @@
 .mdp-explorer__loading,
 .mdp-explorer__empty {
   color: var(--mdp-muted);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.4;
   padding: 14px 12px;
   border: 1px dashed var(--mdp-border);
@@ -393,12 +393,12 @@
   gap: 6px;
   width: 100%;
   text-align: left;
-  min-height: 36px;
+  min-height: 38px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--mdp-muted);
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: none;
   line-height: 1.25;
   padding: 8px 10px;
@@ -431,10 +431,6 @@
       border-radius: 999px;
       background: var(--mdp-link);
     }
-
-    .mdp-explorer__node-icon {
-      color: var(--mdp-link);
-    }
   }
 
   &:focus-visible {
@@ -453,14 +449,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 19px;
+  height: 19px;
   flex-shrink: 0;
-  color: color-mix(in srgb, var(--mdp-muted) 82%, var(--mdp-link));
 
   svg {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -483,8 +478,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: none;
   border-radius: v.$radius-tiny;
@@ -512,8 +507,8 @@
 }
 
 .mdp-explorer__row-action-icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
 }
 
 .mdp-explorer__row-menu {
@@ -538,14 +533,14 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  min-height: 34px;
+  min-height: 36px;
   padding: 7px 9px;
   border: none;
   border-radius: 6px;
   background: transparent;
   color: var(--mdp-text);
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.25;
   text-align: left;
   cursor: pointer;
@@ -568,8 +563,8 @@
 }
 
 .mdp-explorer__row-menu-icon {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
@@ -609,13 +604,13 @@
 }
 
 .mdp-explorer__action-icon {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
 .mdp-explorer__depth-notice {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
   color: color-mix(in srgb, var(--mdp-warning) 82%, var(--mdp-text));
   padding: 1px 2px;
@@ -643,14 +638,14 @@
 }
 
 .mdp-explorer__progress-headline {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.35;
   color: var(--mdp-text);
 }
 
 .mdp-explorer__progress-text {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.45;
   color: var(--mdp-text);
   white-space: pre-wrap;
@@ -659,7 +654,7 @@
 
 .mdp-explorer__progress-cancel {
   align-self: flex-start;
-  font-size: 12px;
+  font-size: 13px;
   padding: 4px 10px;
 }
 
@@ -676,12 +671,12 @@
   gap: 6px;
   width: 100%;
   text-align: left;
-  min-height: 36px;
+  min-height: 38px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--mdp-muted);
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.25;
   padding: 8px 10px 8px 6px;
   border-radius: v.$radius-small;
@@ -726,14 +721,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 19px;
+  height: 19px;
   flex-shrink: 0;
   color: color-mix(in srgb, var(--mdp-warning) 72%, var(--mdp-muted));
 
   svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-1px);
   }
 }
 

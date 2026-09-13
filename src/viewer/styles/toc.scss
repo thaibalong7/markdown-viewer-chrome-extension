@@ -38,7 +38,7 @@
 
   &__empty {
     color: var(--mdp-muted);
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.4;
     margin-top: 4px;
     padding: 14px 12px;
@@ -79,11 +79,11 @@
     display: block;
     text-decoration: none;
     color: var(--mdp-muted);
-    min-height: 34px;
+    min-height: 36px;
     padding: 8px 10px;
     border: 1px solid transparent;
     border-radius: v.$radius-small;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;

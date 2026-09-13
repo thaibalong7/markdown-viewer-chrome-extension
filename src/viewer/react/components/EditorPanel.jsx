@@ -308,7 +308,7 @@ export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContent
       ref={handleContainerRef}
     >
       {loading && (
-        <div style={{ padding: '16px', color: 'var(--mdp-muted)', fontSize: '14px' }}>
+        <div style={{ padding: '16px', color: 'var(--mdp-muted)', fontSize: '15px' }}>
           Loading editor…
         </div>
       )}

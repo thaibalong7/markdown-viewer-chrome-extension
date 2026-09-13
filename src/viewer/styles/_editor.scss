@@ -23,7 +23,7 @@
   border-top: 1px solid var(--mdp-border);
   background: color-mix(in srgb, var(--mdp-panel-bg) 82%, var(--mdp-surface));
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1;
   color: var(--mdp-muted);
   user-select: none;
@@ -270,7 +270,7 @@
   border-radius: v.$radius-small;
   background: color-mix(in srgb, var(--mdp-panel-bg) 74%, var(--mdp-surface));
   color: var(--mdp-muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.4;
 }
 

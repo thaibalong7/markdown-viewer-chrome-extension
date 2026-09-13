@@ -34,6 +34,7 @@
     "@codemirror/view": "^6.41.1",
     "@lezer/highlight": "^1.2.3",
     "@mdit/plugin-katex": "^0.25.2",
+    "@react-symbols/icons": "^1.4.1",
     "@shikijs/langs": "^4.0.2",
     "@shikijs/themes": "^4.0.2",
     "@tanstack/react-virtual": "^3.13.23",

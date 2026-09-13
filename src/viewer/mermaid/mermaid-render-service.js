@@ -6,6 +6,7 @@ import {
 } from '../../plugins/optional/mermaid-actions.js'
 import { attachMermaidLightbox } from '../../plugins/optional/mermaid-lightbox.js'
 import { logger } from '../../shared/logger.js'
+import { getThemeColorsByPreset } from '../../theme/index.js'
 import { setMermaidRenderError } from './mermaid-error-view.js'
 import { sanitizeMermaidSvg } from './mermaid-sanitizer.js'
 
@@ -29,7 +30,38 @@ function throwIfAborted(signal) {
 }
 
 export function getMermaidThemeByPreset(preset) {
-  return String(preset || '').toLowerCase() === 'dark' ? 'dark' : 'default'
+  return String(preset || '').toLowerCase() === 'dark' ? 'base' : 'default'
+}
+
+export function getMermaidThemeVariablesByPreset(preset) {
+  if (String(preset || '').toLowerCase() !== 'dark') return undefined
+
+  const colors = getThemeColorsByPreset('dark')
+  return {
+    darkMode: true,
+    background: colors.background,
+    primaryColor: colors.panelStrong,
+    primaryTextColor: colors.text,
+    primaryBorderColor: colors.borderStrong,
+    secondaryColor: colors.linkSoft,
+    secondaryTextColor: colors.text,
+    secondaryBorderColor: colors.link,
+    tertiaryColor: colors.accentSoft,
+    tertiaryTextColor: colors.text,
+    tertiaryBorderColor: colors.accent,
+    mainBkg: colors.panelStrong,
+    nodeBkg: colors.panelStrong,
+    nodeBorder: colors.borderStrong,
+    clusterBkg: colors.surface,
+    clusterBorder: colors.borderStrong,
+    lineColor: colors.muted,
+    textColor: colors.text,
+    titleColor: colors.heading,
+    edgeLabelBackground: colors.background,
+    noteBkgColor: colors.warningSoft,
+    noteTextColor: colors.text,
+    noteBorderColor: colors.warning
+  }
 }
 
 function getMermaid() {
@@ -46,10 +78,11 @@ function getBeautifulMermaidRenderer() {
   return beautifulMermaidImportPromise
 }
 
-async function ensureMermaidInitialized(theme) {
-  if (mermaidThemeKey !== theme) {
+async function ensureMermaidInitialized(themeConfig) {
+  const themeKey = JSON.stringify(themeConfig)
+  if (mermaidThemeKey !== themeKey) {
     mermaidInitializePromise = null
-    mermaidThemeKey = theme
+    mermaidThemeKey = themeKey
   }
   if (!mermaidInitializePromise) {
     mermaidInitializePromise = getMermaid().then((mermaid) => {
@@ -57,7 +90,7 @@ async function ensureMermaidInitialized(theme) {
         startOnLoad: false,
         suppressErrorRendering: true,
         securityLevel: 'strict',
-        theme,
+        ...themeConfig,
         htmlLabels: false
       })
       return mermaid
@@ -213,7 +246,11 @@ export async function renderMermaidIntoNode({
       throwIfAborted(signal)
       svg = renderMermaidSVG(code, getBeautifulMermaidRenderOptions(node))
     } else {
-      const mermaid = await ensureMermaidInitialized(getMermaidThemeByPreset(settings?.theme?.preset))
+      const themePreset = settings?.theme?.preset
+      const mermaid = await ensureMermaidInitialized({
+        theme: getMermaidThemeByPreset(themePreset),
+        themeVariables: getMermaidThemeVariablesByPreset(themePreset)
+      })
       throwIfAborted(signal)
       mermaidRenderCounter += 1
       svg = (await mermaid.render(`mdp-mermaid-${mermaidRenderCounter}`, code)).svg

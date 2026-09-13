@@ -27,7 +27,11 @@ vi.mock('../../../plugins/optional/mermaid-lightbox.js', () => ({
 }))
 vi.mock('../../../shared/logger.js', () => ({ logger: { warn: mocks.warn } }))
 
-import { renderMermaidIntoNode } from '../mermaid-render-service.js'
+import {
+  getMermaidThemeByPreset,
+  getMermaidThemeVariablesByPreset,
+  renderMermaidIntoNode
+} from '../mermaid-render-service.js'
 
 function createElement(tagName) {
   return {
@@ -80,6 +84,24 @@ beforeEach(() => {
 })
 
 describe('shared Mermaid render service', () => {
+  it('uses a readable app-aligned fallback palette for unstyled nodes in dark mode', () => {
+    expect(getMermaidThemeByPreset('dark')).toBe('base')
+    expect(getMermaidThemeVariablesByPreset('dark')).toMatchObject({
+      darkMode: true,
+      background: '#0d121b',
+      mainBkg: '#1d2735',
+      nodeBkg: '#1d2735',
+      nodeBorder: '#465469',
+      primaryTextColor: '#edf2f7',
+      lineColor: '#9ba9bb'
+    })
+  })
+
+  it('preserves Mermaid defaults in light mode', () => {
+    expect(getMermaidThemeByPreset('light')).toBe('default')
+    expect(getMermaidThemeVariablesByPreset('light')).toBeUndefined()
+  })
+
   it.each([
     ['official', mocks.officialRender],
     ['beautiful', mocks.beautifulRender]
@@ -102,7 +124,12 @@ describe('shared Mermaid render service', () => {
     if (renderer === 'official') {
       expect(mocks.initialize).toHaveBeenCalledWith(expect.objectContaining({
         securityLevel: 'strict',
-        htmlLabels: false
+        htmlLabels: false,
+        theme: 'base',
+        themeVariables: expect.objectContaining({
+          nodeBkg: '#1d2735',
+          primaryTextColor: '#edf2f7'
+        })
       }))
     }
     result.cleanup()

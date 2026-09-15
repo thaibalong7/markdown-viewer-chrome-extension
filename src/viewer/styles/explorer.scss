@@ -38,7 +38,7 @@
 
   .mdp-panel-header__heading {
     color: var(--mdp-heading);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 750;
     letter-spacing: -0.01em;
     text-transform: none;
@@ -46,7 +46,7 @@
 
   .mdp-panel-header__meta {
     color: color-mix(in srgb, var(--mdp-muted) 90%, var(--mdp-text));
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
@@ -142,7 +142,7 @@
   border: 1px solid color-mix(in srgb, var(--mdp-link) 22%, var(--mdp-border));
   color: var(--mdp-link);
   background: var(--mdp-link-soft);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 750;
   letter-spacing: 0.055em;
   line-height: 1.35;
@@ -166,7 +166,7 @@
 
 .mdp-explorer__context-label {
   color: var(--mdp-muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 650;
   letter-spacing: 0.035em;
   line-height: 1.3;
@@ -177,7 +177,7 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--mdp-text);
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 650;
   line-height: 1.35;
   overflow-wrap: anywhere;
@@ -247,7 +247,7 @@
 .mdp-explorer__context-status {
   min-width: 0;
   overflow: hidden;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.35;
   color: var(--mdp-muted);
   text-overflow: ellipsis;
@@ -255,7 +255,7 @@
 }
 
 .mdp-explorer__context-warning {
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.4;
   color: var(--mdp-warning);
   padding: 6px 8px;
@@ -272,7 +272,7 @@
   padding-top: 8px;
   border-top: 1px solid color-mix(in srgb, var(--mdp-border) 78%, transparent);
   color: color-mix(in srgb, var(--mdp-muted) 88%, var(--mdp-text));
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   line-height: 1.4;
 }
@@ -295,17 +295,18 @@
 .mdp-explorer__back-btn {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   width: 100%;
   min-width: 0;
+  min-height: 32px;
   text-align: left;
-  padding: 7px 9px;
+  padding: 5px 8px;
 }
 
 .mdp-explorer__back-icon {
   flex-shrink: 0;
   color: var(--mdp-muted);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
 }
 
@@ -319,7 +320,7 @@
 .mdp-explorer__loading,
 .mdp-explorer__empty {
   color: var(--mdp-muted);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.4;
   padding: 14px 12px;
   border: 1px dashed var(--mdp-border);
@@ -398,7 +399,7 @@
   background: transparent;
   color: var(--mdp-muted);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   text-decoration: none;
   line-height: 1.25;
   padding: 8px 10px;
@@ -540,7 +541,7 @@
   background: transparent;
   color: var(--mdp-text);
   font: inherit;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.25;
   text-align: left;
   cursor: pointer;
@@ -578,8 +579,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 6px;
   width: 100%;
+  min-height: 32px;
+  padding: 5px 9px;
   border-color: color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
   background: color-mix(in srgb, var(--mdp-link-soft) 58%, var(--mdp-surface));
   color: color-mix(in srgb, var(--mdp-link) 86%, var(--mdp-text));
@@ -604,13 +607,13 @@
 }
 
 .mdp-explorer__action-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
 }
 
 .mdp-explorer__depth-notice {
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.4;
   color: color-mix(in srgb, var(--mdp-warning) 82%, var(--mdp-text));
   padding: 1px 2px;
@@ -638,14 +641,14 @@
 }
 
 .mdp-explorer__progress-headline {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.35;
   color: var(--mdp-text);
 }
 
 .mdp-explorer__progress-text {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.45;
   color: var(--mdp-text);
   white-space: pre-wrap;
@@ -654,7 +657,7 @@
 
 .mdp-explorer__progress-cancel {
   align-self: flex-start;
-  font-size: 13px;
+  font-size: 12px;
   padding: 4px 10px;
 }
 
@@ -676,7 +679,7 @@
   background: transparent;
   color: var(--mdp-muted);
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.25;
   padding: 8px 10px 8px 6px;
   border-radius: v.$radius-small;

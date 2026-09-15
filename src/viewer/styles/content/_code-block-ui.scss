@@ -47,7 +47,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: $mono-font;
-  font-size: 0.65rem;
+  font-size: calc(0.65rem - 1px);
   font-weight: 650;
   letter-spacing: 0.055em;
   text-transform: uppercase;

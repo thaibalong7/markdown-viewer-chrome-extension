@@ -5,9 +5,9 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
   flex-shrink: 0;
-  padding: 7px;
+  padding: 6px;
   border: 1px solid var(--mdp-border);
   border-radius: v.$radius-default;
   background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
@@ -21,7 +21,7 @@
 .mdp-right-rail--actions-only .mdp-floating-actions {
   flex-direction: column;
   flex-wrap: nowrap;
-  padding: 5px;
+  padding: 4px;
   border-radius: 12px;
   background: var(--mdp-surface);
 }
@@ -30,8 +30,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   border: 1px solid var(--mdp-border);
   border-radius: v.$radius-small;
@@ -85,8 +85,8 @@
 }
 
 .mdp-fab-btn__icon {
-  width: 19px;
-  height: 19px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
 }
 
@@ -119,7 +119,7 @@
   background: transparent;
   color: var(--mdp-text);
   font: inherit;
-  font-size: 15px;
+  font-size: 14px;
   text-align: left;
   cursor: pointer;
 

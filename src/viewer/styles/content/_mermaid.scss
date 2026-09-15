@@ -252,7 +252,7 @@
     padding: 7px 9px;
     border: none;
     border-radius: 6px;
-    font-size: 0.84rem;
+    font-size: calc(0.84rem - 1px);
     line-height: 1.3;
     color: var(--mdp-text);
     background: transparent;
@@ -288,7 +288,7 @@
   .mdp-mermaid-actions__group-label {
     margin: 0;
     padding: 6px 9px 4px;
-    font-size: 0.72rem;
+    font-size: calc(0.72rem - 1px);
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -430,7 +430,7 @@
   color: var(--mdp-muted);
   background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
   box-shadow: var(--mdp-shadow-float);
-  font-size: 0.82rem;
+  font-size: calc(0.82rem - 1px);
   line-height: 1.35;
   text-align: center;
   white-space: normal;

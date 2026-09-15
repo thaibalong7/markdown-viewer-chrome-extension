@@ -143,7 +143,7 @@
   color: var(--mdp-muted);
   background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
   box-shadow: var(--mdp-shadow-float);
-  font-size: 0.82rem;
+  font-size: calc(0.82rem - 1px);
   line-height: 1.35;
   text-align: center;
   pointer-events: none;
@@ -163,7 +163,7 @@
 
   .mdp-image-lightbox__hints {
     bottom: 12px;
-    font-size: 0.75rem;
+    font-size: calc(0.75rem - 1px);
   }
 }
 

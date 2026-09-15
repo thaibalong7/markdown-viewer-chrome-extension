@@ -181,6 +181,29 @@ export function getShikiHighlighter() {
   return highlighterPromise
 }
 
+/** Highlight one complete source document with a registered Shiki grammar. */
+export async function highlightCode(source, rawLang, settings = {}) {
+  let highlighter
+  try {
+    highlighter = await getShikiHighlighter()
+  } catch {
+    return null
+  }
+
+  const langId = await ensureShikiLanguage(highlighter, rawLang)
+  if (!langId) return null
+
+  try {
+    const rendered = await highlighter.codeToHtml(String(source ?? ''), {
+      lang: langId,
+      theme: getShikiThemeIdForSettings(settings)
+    })
+    return normalizeShikiPreWhitespaceHtml(addDataLangToShikiPre(rendered.trim(), langId))
+  } catch {
+    return null
+  }
+}
+
 /** Replace fenced `<pre><code class="language-…">` with Shiki HTML. */
 export async function applyShikiToFencedCode(html, settings = {}) {
   let highlighter

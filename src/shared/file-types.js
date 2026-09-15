@@ -58,6 +58,16 @@ const FILE_TYPES = Object.freeze([
     capabilities: TEXT_CAPABILITIES
   }),
   Object.freeze({
+    id: 'sql',
+    extensions: Object.freeze(['sql']),
+    activation: 'explorer-only',
+    contentKind: 'text',
+    rendererId: 'sql',
+    label: 'SQL document',
+    explorerIcon: 'database',
+    capabilities: TEXT_CAPABILITIES
+  }),
+  Object.freeze({
     id: 'mermaid',
     extensions: Object.freeze(['mermaid']),
     activation: 'explorer-only',

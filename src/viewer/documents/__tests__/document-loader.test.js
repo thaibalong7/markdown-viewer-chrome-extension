@@ -10,6 +10,7 @@ import { loadDocument, MAX_PLAIN_TEXT_BYTES } from '../document-loader.js'
 
 const MARKDOWN_TYPE = { id: 'markdown', contentKind: 'text' }
 const TEXT_TYPE = { id: 'text', contentKind: 'text' }
+const SQL_TYPE = { id: 'sql', contentKind: 'text' }
 const MERMAID_TYPE = { id: 'mermaid', contentKind: 'text' }
 const IMAGE_TYPE = {
   id: 'raster-image',
@@ -133,6 +134,21 @@ describe('document loader', () => {
     await expect(loadDocument({
       href: 'file:///docs/large.mermaid',
       fileType: MERMAID_TYPE
+    })).rejects.toMatchObject({ code: 'document-too-large' })
+  })
+
+  it('loads SQL as text and enforces the standalone file limit', async () => {
+    mocks.sendMessage
+      .mockResolvedValueOnce({ ok: true, data: { text: 'SELECT * FROM users;' } })
+      .mockResolvedValueOnce({ ok: true, data: { text: 'a'.repeat(MAX_PLAIN_TEXT_BYTES + 1) } })
+
+    await expect(loadDocument({
+      href: 'file:///docs/schema.sql',
+      fileType: SQL_TYPE
+    })).resolves.toMatchObject({ text: 'SELECT * FROM users;', assetUrl: null })
+    await expect(loadDocument({
+      href: 'file:///docs/large.sql',
+      fileType: SQL_TYPE
     })).rejects.toMatchObject({ code: 'document-too-large' })
   })
 

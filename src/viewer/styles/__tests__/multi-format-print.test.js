@@ -8,8 +8,9 @@ const css = fs.readFileSync(
 )
 
 describe('multi-format print styles', () => {
-  it('wraps standalone text and Mermaid source instead of clipping it', () => {
-    expect(css).toMatch(/\.mdp-text-document,[\s\S]*\.mdp-mermaid-document__source[\s\S]*white-space:\s*pre-wrap/)
+  it('wraps standalone text, SQL, and Mermaid source instead of clipping it', () => {
+    expect(css).toMatch(/\.mdp-text-document,[\s\S]*\.mdp-sql-document pre,[\s\S]*\.mdp-mermaid-document__source[\s\S]*white-space:\s*pre-wrap/)
+    expect(css).toMatch(/\.mdp-sql-document code,[\s\S]*\.mdp-sql-document \.line[\s\S]*white-space:\s*pre-wrap/)
   })
 
   it('contains standalone images on the printed page', () => {

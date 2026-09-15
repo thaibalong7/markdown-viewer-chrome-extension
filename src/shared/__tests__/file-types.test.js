@@ -85,6 +85,27 @@ describe('file type registry', () => {
     })
   })
 
+  it('registers SQL as a distinct explorer-only document type', () => {
+    expect(getFileTypeFromName('schema.SQL')).toMatchObject({
+      id: 'sql',
+      activation: 'explorer-only',
+      contentKind: 'text',
+      rendererId: 'sql',
+      explorerIcon: 'database'
+    })
+    expect(getFileTypeFromUrl('file:///docs/schema.sql')?.id).toBe('sql')
+    expect(isExplorerSupportedFile('schema.sql')).toBe(true)
+    expect(isDirectActivationUrl('file:///docs/schema.sql')).toBe(false)
+    expect(getDocumentCapabilities('sql')).toEqual({
+      outline: false,
+      edit: false,
+      exportDocument: false,
+      print: true,
+      viewModes: ['rendered'],
+      zoom: false
+    })
+  })
+
   it('registers standalone Mermaid with rendered and raw modes but no direct activation', () => {
     expect(getFileTypeFromName('architecture.MERMAID')).toMatchObject({
       id: 'mermaid',
@@ -157,6 +178,7 @@ describe('file type registry', () => {
   it('strips only registered extensions', () => {
     expect(stripRegisteredFileExtension('Guide Notes.mdc')).toBe('Guide Notes')
     expect(stripRegisteredFileExtension('notes.txt')).toBe('notes')
+    expect(stripRegisteredFileExtension('schema.sql')).toBe('schema')
     expect(stripRegisteredFileExtension('architecture.mermaid')).toBe('architecture')
     expect(stripRegisteredFileExtension('photo.jpeg')).toBe('photo')
     expect(stripRegisteredFileExtension('diagram.svg')).toBe('diagram')

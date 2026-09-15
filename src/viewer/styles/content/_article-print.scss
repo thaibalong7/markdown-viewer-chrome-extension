@@ -138,6 +138,7 @@
   }
 
   .mdp-markdown-body .mdp-text-document,
+  .mdp-markdown-body .mdp-sql-document pre,
   .mdp-markdown-body .mdp-mermaid-document__source {
     max-height: none !important;
     overflow: visible !important;
@@ -146,6 +147,12 @@
     border-color: #bbb !important;
     background: #fff !important;
     color: #000 !important;
+  }
+
+  .mdp-markdown-body .mdp-sql-document code,
+  .mdp-markdown-body .mdp-sql-document .line {
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
   }
 
   .mdp-markdown-body .mdp-image-document {

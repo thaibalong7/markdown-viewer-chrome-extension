@@ -33,10 +33,71 @@
     border-color: color-mix(in srgb, var(--mdp-toast-error-border) 72%, var(--mdp-border));
     color: var(--mdp-toast-error-text);
   }
+
+  .mdp-sql-document {
+    overflow: hidden;
+    border: 1px solid var(--mdp-border);
+    border-radius: 8px;
+    background: var(--mdp-code-bg);
+    box-shadow: var(--mdp-shadow-raised);
+  }
+
+  .mdp-sql-document__header {
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid var(--mdp-border);
+    color: var(--mdp-muted);
+    font-family: var(--mdp-font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .mdp-sql-document__highlighted > pre.shiki,
+  pre.mdp-sql-document__source {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .mdp-sql-document__source {
+    overflow: auto;
+    padding: 1rem 1.1rem;
+    color: var(--mdp-code-text);
+    font-family: var(--mdp-font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 0.92em;
+    line-height: 1.6;
+    tab-size: 4;
+    white-space: pre;
+
+    code {
+      color: inherit;
+      font: inherit;
+      white-space: inherit;
+    }
+  }
+
+  .mdp-sql-document__state {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--mdp-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--mdp-code-bg) 76%, transparent);
+    color: var(--mdp-muted);
+  }
+
+  .mdp-sql-document__state--error {
+    border-color: color-mix(in srgb, var(--mdp-toast-error-border) 72%, var(--mdp-border));
+    color: var(--mdp-toast-error-text);
+  }
 }
 
 @media (max-width: 639px) {
   .mdp-markdown-body .mdp-text-document {
+    padding: 0.8rem;
+    font-size: 0.82em;
+  }
+
+  .mdp-markdown-body .mdp-sql-document__source {
     padding: 0.8rem;
     font-size: 0.82em;
   }

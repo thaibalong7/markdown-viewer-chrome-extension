@@ -24,6 +24,11 @@ describe('document model', () => {
       fileTypeId: 'text',
       sourceKind: 'file-url'
     })
+    expect(createDocumentIdentity('file:///docs/schema.sql')).toMatchObject({
+      displayName: 'schema.sql',
+      fileTypeId: 'sql',
+      sourceKind: 'file-url'
+    })
     expect(createDocumentIdentity('file:///docs/notes.json')).toBeNull()
     expect(documentDisplayNameFromUrl('')).toBe('')
   })

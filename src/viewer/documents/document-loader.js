@@ -25,7 +25,7 @@ function utf8ByteLength(value) {
 }
 
 function enforceStandaloneTextLimit(fileType, byteLength) {
-  if ((fileType?.id === 'text' || fileType?.id === 'mermaid') && byteLength > MAX_PLAIN_TEXT_BYTES) {
+  if (['text', 'sql', 'mermaid'].includes(fileType?.id) && byteLength > MAX_PLAIN_TEXT_BYTES) {
     throw new DocumentTooLargeError()
   }
 }

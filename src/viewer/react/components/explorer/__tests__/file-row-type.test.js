@@ -43,6 +43,18 @@ describe('explorer file type presentation', () => {
     expect(html).toContain('<rect width="16" height="2" x="4" y="6" fill="#64748B" rx="1"></rect>')
   })
 
+  it('renders SQL with its own database icon and label', () => {
+    const html = renderFile({
+      displayName: 'schema.sql',
+      href: 'file:///docs/schema.sql',
+      fileTypeId: 'sql'
+    })
+
+    expect(html).toContain('data-file-type="sql"')
+    expect(html).toContain('title="schema.sql — SQL document"')
+    expect(html).toContain('d="M4.8 6.6c0-.62.28-1.16.7-1.6')
+  })
+
   it('marks raster rows and renders the image-specific icon and label', () => {
     const html = renderFile({
       displayName: 'photo.png',

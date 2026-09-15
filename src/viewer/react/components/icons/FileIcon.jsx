@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Database,
   Document,
   Drawio,
   Image,
@@ -9,6 +10,7 @@ import {
 } from '@react-symbols/icons/files'
 
 const FILE_ICONS = {
+  database: Database,
   diagram: Drawio,
   document: Markdown,
   image: Image,

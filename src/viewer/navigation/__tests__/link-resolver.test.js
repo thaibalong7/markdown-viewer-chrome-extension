@@ -226,6 +226,17 @@ describe('resolveMarkdownLink', () => {
     })
   })
 
+  describe('SQL documents', () => {
+    it('intercepts a relative .sql target as a supported document', () => {
+      const r = resolve('schema.sql')
+      expect(r).toMatchObject({
+        kind: 'document-file',
+        resolvedUrl: 'file:///Users/me/docs/schema.sql',
+        shouldIntercept: true
+      })
+    })
+  })
+
   describe('raster image documents', () => {
     it.each(['image.png', 'photo.JPG', 'animation.gif', 'photo.webp', 'photo.avif', 'photo.bmp', 'favicon.ico', 'animation.apng'])(
       'intercepts supported raster image %s',

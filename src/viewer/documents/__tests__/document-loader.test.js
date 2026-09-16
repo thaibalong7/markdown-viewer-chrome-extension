@@ -122,6 +122,64 @@ describe('document loader', () => {
     })).resolves.toMatchObject({ text: largeText })
   })
 
+  it('applies the configured UTF-8 byte limit to file URL documents', async () => {
+    const oneMiBInTwoByteCharacters = 'é'.repeat((1024 * 1024) / 2)
+    mocks.sendMessage
+      .mockResolvedValueOnce({ ok: true, data: { text: oneMiBInTwoByteCharacters } })
+      .mockResolvedValueOnce({ ok: true, data: { text: `${oneMiBInTwoByteCharacters}é` } })
+
+    await expect(loadDocument({
+      href: 'file:///docs/within-limit.txt',
+      fileType: TEXT_TYPE,
+      maxStandaloneTextFileSizeMiB: 1
+    })).resolves.toMatchObject({ text: oneMiBInTwoByteCharacters })
+
+    await expect(loadDocument({
+      href: 'file:///docs/over-limit.txt',
+      fileType: TEXT_TYPE,
+      maxStandaloneTextFileSizeMiB: 1
+    })).rejects.toMatchObject({
+      code: 'document-too-large',
+      userMessage: 'This text file is larger than the 1 MiB viewing limit.'
+    })
+  })
+
+  it('applies the configured byte limit before reading a sized virtual workspace file', async () => {
+    const reader = {
+      size: (2 * 1024 * 1024) + 1,
+      text: vi.fn().mockResolvedValue('should not be read')
+    }
+
+    await expect(loadDocument({
+      fileType: MERMAID_TYPE,
+      workspaceReader: reader,
+      maxStandaloneTextFileSizeMiB: 2
+    })).rejects.toMatchObject({
+      code: 'document-too-large',
+      userMessage: 'This text file is larger than the 2 MiB viewing limit.'
+    })
+    expect(reader.text).not.toHaveBeenCalled()
+  })
+
+  it('allows a larger configured limit while retaining the safe default for invalid values', async () => {
+    const aboveDefaultLimit = 'a'.repeat(MAX_PLAIN_TEXT_BYTES + 1)
+    mocks.sendMessage
+      .mockResolvedValueOnce({ ok: true, data: { text: aboveDefaultLimit } })
+      .mockResolvedValueOnce({ ok: true, data: { text: aboveDefaultLimit } })
+
+    await expect(loadDocument({
+      href: 'file:///docs/allowed.txt',
+      fileType: TEXT_TYPE,
+      maxStandaloneTextFileSizeMiB: 6
+    })).resolves.toMatchObject({ text: aboveDefaultLimit })
+
+    await expect(loadDocument({
+      href: 'file:///docs/still-protected.txt',
+      fileType: TEXT_TYPE,
+      maxStandaloneTextFileSizeMiB: 500
+    })).rejects.toMatchObject({ code: 'document-too-large' })
+  })
+
   it('loads standalone Mermaid as text and enforces the standalone file limit', async () => {
     mocks.sendMessage
       .mockResolvedValueOnce({ ok: true, data: { text: 'flowchart LR\nA-->B' } })

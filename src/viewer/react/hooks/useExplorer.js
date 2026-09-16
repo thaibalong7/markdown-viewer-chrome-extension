@@ -7,7 +7,9 @@ import { useExplorerBridgeRegistration } from './explorer/useExplorerBridgeRegis
 import {
   DEFAULT_EXPLORER_MAX_FILES,
   DEFAULT_EXPLORER_MAX_FOLDERS,
-  DEFAULT_EXPLORER_MAX_SCAN_DEPTH
+  DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
+  DEFAULT_EXPLORER_RESPECT_GITIGNORE,
+  DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
 } from '../../../shared/constants/explorer.js'
 import {
   buildExplorerFilesContext
@@ -71,6 +73,33 @@ export function getSiblingRefreshScanOptions({
   }
 }
 
+export function resolveInitialExplorerStartup({
+  storedMode,
+  storedRoot,
+  restoreLastWorkspace = DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
+}) {
+  if (restoreLastWorkspace && storedMode === 'workspace' && storedRoot) {
+    return { mode: 'workspace', workspaceRoot: storedRoot }
+  }
+  return { mode: 'sibling', workspaceRoot: null }
+}
+
+export function launchInitialExplorerScan({
+  startup,
+  initialUrl,
+  siblingScanOptions,
+  runSiblingScan,
+  openWorkspaceFolder
+}) {
+  if (startup.mode === 'workspace') {
+    return openWorkspaceFolder(startup.workspaceRoot, {
+      restore: true,
+      keepCurrentDocumentOnMissing: true
+    })
+  }
+  return runSiblingScan(initialUrl, siblingScanOptions)
+}
+
 /** React composition hook for the Files explorer. */
 export function useExplorer({ bridge }) {
   const [state, dispatch] = useReducer(explorerReducer, undefined, createInitialState)
@@ -130,7 +159,11 @@ export function useExplorer({ bridge }) {
     const maxFolders = Number.isFinite(Number(ex.maxFolders))
       ? Number(ex.maxFolders)
       : DEFAULT_EXPLORER_MAX_FOLDERS
-    return { maxScanDepth, maxFiles, maxFolders }
+    const respectGitignore =
+      typeof ex.respectGitignore === 'boolean'
+        ? ex.respectGitignore
+        : DEFAULT_EXPLORER_RESPECT_GITIGNORE
+    return { maxScanDepth, maxFiles, maxFolders, respectGitignore }
   }, [bridge])
 
   const buildFilesContext = useCallback((opts = {}) => {
@@ -357,28 +390,34 @@ export function useExplorer({ bridge }) {
 
     const storedMode = getExplorerMode()
     const storedRoot = getWorkspaceRootUrl()
-    if (storedMode === 'workspace' && storedRoot) {
+    const startup = resolveInitialExplorerStartup({
+      storedMode,
+      storedRoot,
+      restoreLastWorkspace:
+        bridge?.getSettings?.()?.explorer?.restoreLastWorkspace ??
+        DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
+    })
+    if (startup.mode === 'workspace') {
       explorerModeRef.current = 'workspace'
       safePatch({ explorerMode: 'workspace', filesContext: buildFilesContext() })
       viewActions.showLoading({ filesContext: buildFilesContext() })
-      void workspaceSession.openWorkspaceFolder(storedRoot, {
-        restore: true,
-        keepCurrentDocumentOnMissing: true
-      })
     } else {
       explorerModeRef.current = 'sibling'
       safePatch({ explorerMode: 'sibling', filesContext: buildFilesContext() })
       viewActions.showLoading({ filesContext: buildFilesContext() })
-      void runSiblingScan(
-        initialUrl,
-        getSiblingRefreshScanOptions({
-          currentFileUrl: initialUrl,
-          originalFileUrl: getOriginalFileUrl(),
-          siblingScanRootUrl: siblingScanRootUrlRef.current,
-          siblingFolderLabel: siblingFolderLabelRef.current
-        })
-      )
     }
+    void launchInitialExplorerScan({
+      startup,
+      initialUrl,
+      siblingScanOptions: getSiblingRefreshScanOptions({
+        currentFileUrl: initialUrl,
+        originalFileUrl: getOriginalFileUrl(),
+        siblingScanRootUrl: siblingScanRootUrlRef.current,
+        siblingFolderLabel: siblingFolderLabelRef.current
+      }),
+      runSiblingScan,
+      openWorkspaceFolder: workspaceSession.openWorkspaceFolder
+    })
 
     return () => {
       mountedRef.current = false

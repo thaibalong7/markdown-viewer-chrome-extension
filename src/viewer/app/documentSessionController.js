@@ -26,6 +26,7 @@ export function createDocumentSessionController({
   initialDocument,
   initialText = '',
   loadDocument = defaultLoadDocument,
+  getSettings,
   render,
   beforeDocumentSwitch,
   onDocumentSwitchStart,
@@ -79,7 +80,9 @@ export function createDocumentSessionController({
         href,
         fileType,
         workspaceReader: options.workspaceReader,
-        signal: loadController.signal
+        signal: loadController.signal,
+        maxStandaloneTextFileSizeMiB:
+          getSettings?.()?.documents?.maxStandaloneTextFileSizeMiB
       })
       if (destroyed || token !== navigationToken) {
         cleanupLoadedDocument(payload)

@@ -1,0 +1,4 @@
+export const DEFAULT_HISTORY_ENABLED = true
+export const DEFAULT_HISTORY_MAX_ENTRIES = 12
+export const MIN_HISTORY_MAX_ENTRIES = 1
+export const MAX_HISTORY_MAX_ENTRIES = 50

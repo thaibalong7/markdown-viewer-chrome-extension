@@ -82,6 +82,17 @@ body {
   font-size: 16px;
 }
 
+.popup-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.popup-button-settings {
+  border-color: #8bb4ee;
+  color: #175cae;
+}
+
 .popup-settings-content {
   flex: 0 1 auto;
   overflow-y: auto;

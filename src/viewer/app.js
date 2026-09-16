@@ -94,6 +94,7 @@ export class MarkdownViewerApp {
     this._documentSession = createDocumentSessionController({
       initialDocument: currentDocument,
       initialText: this.markdown,
+      getSettings: () => this.settings,
       render: (opts) => this.render(opts),
       beforeDocumentSwitch: () => this._editorSession.prepareForDocumentSwitch(),
       onDocumentSwitchStart: () => this._articleInteractions?.closeImageLightbox(),

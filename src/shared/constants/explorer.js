@@ -18,3 +18,9 @@ export const DEFAULT_EXPLORER_MAX_FILES = 2000
 
 /** Default max folders visited when `settings.explorer.maxFolders` is unset or invalid. */
 export const DEFAULT_EXPLORER_MAX_FOLDERS = 500
+
+/** Default policy for applying nested `.gitignore` rules during workspace scans. */
+export const DEFAULT_EXPLORER_RESPECT_GITIGNORE = true
+
+/** Default policy for restoring a file-backed workspace when a viewer mounts. */
+export const DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE = true

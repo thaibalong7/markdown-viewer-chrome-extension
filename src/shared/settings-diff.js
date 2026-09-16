@@ -47,12 +47,15 @@ export function needsFullRender(previousSettings, nextSettings) {
   if (!changedPaths.size) return false
 
   const beautifulMermaidActive = usesBeautifulMermaid(previousSettings) || usesBeautifulMermaid(nextSettings)
-  const styleOnlyPrefixes = [
+  const noRenderPrefixes = [
     'typography.',
     'layout.contentMaxWidth',
     'layout.showToc',
     'layout.tocWidth',
-    'editor.'
+    'editor.',
+    'explorer.',
+    'history.',
+    'documents.'
   ]
 
   for (const path of changedPaths) {
@@ -60,10 +63,10 @@ export function needsFullRender(previousSettings, nextSettings) {
       return true
     }
 
-    const isStyleOnly = styleOnlyPrefixes.some(
+    const canSkipRender = noRenderPrefixes.some(
       (prefix) => path === prefix || path.startsWith(prefix)
     )
-    if (!isStyleOnly) return true
+    if (!canSkipRender) return true
   }
 
   return false

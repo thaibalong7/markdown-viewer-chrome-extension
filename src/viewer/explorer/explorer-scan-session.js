@@ -121,7 +121,7 @@ export function createSiblingScanRunner(deps) {
         return
       }
 
-      const { maxScanDepth, maxFiles, maxFolders } = getScanLimits()
+      const { maxScanDepth, maxFiles, maxFolders, respectGitignore } = getScanLimits()
       const folderLabel =
         opts.folderLabel ||
         (opts.rootDirUrl ? directoryPathLabelFromUrl(scanRootDirUrl) : getParentDirectoryPathLabel(urlForScan))
@@ -142,6 +142,7 @@ export function createSiblingScanRunner(deps) {
           maxScanDepth,
           maxFiles,
           maxFolders,
+          respectGitignore,
           signal,
           currentFileUrl: activeFileUrl,
           siblingsFirstAtRoot: true,

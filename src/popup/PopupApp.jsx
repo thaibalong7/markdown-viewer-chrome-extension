@@ -5,22 +5,33 @@ import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
 import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
 import { useFileHistory } from './hooks/useFileHistory.js'
 import { Tooltip } from './components/Tooltip.jsx'
-import { GeneralPanel } from './panels/GeneralPanel.jsx'
 import { ReaderPanel } from './panels/ReaderPanel.jsx'
 import { EditorSettingsPanel } from './panels/EditorSettingsPanel.jsx'
 import { PluginsPanel } from './panels/PluginsPanel.jsx'
 import { FileHistoryPanel } from './panels/FileHistoryPanel.jsx'
+import { openOptionsPage } from './actions/open-options-page.js'
 
 export function PopupApp() {
   const { settings, loading, saving, errorMessage, persistPatch } = useSettingsPersistence()
   const fileHistory = useFileHistory()
-  const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.SETTINGS)
+  const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.HISTORY)
+  const [optionsError, setOptionsError] = useState('')
 
   const pluginsSnapshot = useMemo(() => {
     return mergePluginSettings(settings?.plugins)
   }, [settings])
 
   const activeTabMeta = SETTINGS_TABS.find((tab) => tab.id === activeTab)
+
+  async function handleOpenSettings() {
+    setOptionsError('')
+    try {
+      await openOptionsPage()
+      window.close()
+    } catch (error) {
+      setOptionsError(error instanceof Error ? error.message : 'Could not open Settings.')
+    }
+  }
 
   if (loading) {
     return (
@@ -42,7 +53,13 @@ export function PopupApp() {
   if (!settings) {
     return (
       <div className="popup-root">
-        <div className="popup-error">{errorMessage || 'Could not load settings.'}</div>
+        <div className="popup-error">
+          <p>{errorMessage || 'Could not load settings.'}</p>
+          {optionsError ? <p>{optionsError}</p> : null}
+          <button type="button" className="popup-button" onClick={() => void handleOpenSettings()}>
+            Open Settings
+          </button>
+        </div>
       </div>
     )
   }
@@ -68,16 +85,21 @@ export function PopupApp() {
         <div className="popup-settings-main">
           <div className="popup-settings-header">
             <h2 className="popup-settings-title">{activeTabMeta?.title || 'Settings'}</h2>
-            <button type="button" className="popup-button" onClick={() => window.close()}>
-              Close
-            </button>
+            <div className="popup-header-actions">
+              <button
+                type="button"
+                className="popup-button popup-button-settings"
+                onClick={() => void handleOpenSettings()}
+              >
+                Open Settings
+              </button>
+              <button type="button" className="popup-button" onClick={() => window.close()}>
+                Close
+              </button>
+            </div>
           </div>
 
           <div className="popup-settings-content">
-            {activeTab === SETTINGS_TAB_IDS.SETTINGS && (
-              <GeneralPanel settings={settings} onPatch={persistPatch} />
-            )}
-
             {activeTab === SETTINGS_TAB_IDS.HISTORY && (
               <FileHistoryPanel
                 history={fileHistory.history}
@@ -104,7 +126,7 @@ export function PopupApp() {
 
           <div className="popup-footer">
             {saving ? 'Saving...' : 'Saved'}
-            {errorMessage ? ` - ${errorMessage}` : ''}
+            {errorMessage || optionsError ? ` - ${errorMessage || optionsError}` : ''}
           </div>
         </div>
       </div>

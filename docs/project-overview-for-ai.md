@@ -9,24 +9,25 @@ Current implemented core:
 - Raw Markdown extraction from page (`<pre>` or body text sampling)
 - Viewer mount in a body-level overlay. The rendered viewer intentionally uses light DOM so extensions such as Google Translate can detect selected Markdown text.
 - Markdown render pipeline: local link normalization → `markdown-it` → plugin hooks/render context → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
-- **Document session architecture**: explicit document identity + loaded payload, cancellable loading, renderer dispatch, renderer cleanup, and capability-driven React chrome. Markdown uses a behavior-preserving adapter; plain `.txt` uses a safe DOM renderer backed only by `<pre><code>` and `textContent`, while `.sql` has a distinct renderer with sanitized, theme-aware Shiki highlighting and a text-only fallback. Both use explicit empty/load-error/5 MiB limit states. Standalone `.mermaid` uses the shared sanitized Mermaid service with rendered/raw modes. Registered raster images and separately classified SVGs use direct normalized `file:` URLs or session-owned object URLs for virtual workspace files, render only through `<img>`, reuse the image lightbox, and release temporary resources on navigation/destroy. SVG source is never read into or mounted as viewer markup.
+- **Document session architecture**: explicit document identity + loaded payload, cancellable loading, renderer dispatch, renderer cleanup, and capability-driven React chrome. Markdown uses a behavior-preserving adapter; plain `.txt` uses a safe DOM renderer backed only by `<pre><code>` and `textContent`, while `.sql` has a distinct renderer with sanitized, theme-aware Shiki highlighting and a text-only fallback. Standalone `.mermaid` uses the shared sanitized Mermaid service with rendered/raw modes. `.txt`, `.sql`, and standalone `.mermaid` share an explicit empty/load-error state plus a configurable UTF-8 viewing limit (default `5 MiB`, hard range `1–50 MiB`) enforced for real file URLs and virtual workspace files. Registered raster images and separately classified SVGs use direct normalized `file:` URLs or session-owned object URLs for virtual workspace files, render only through `<img>`, reuse the image lightbox, and release temporary resources on navigation/destroy. SVG source is never read into or mounted as viewer markup.
 - **Reader themes** (`light` / `dark`, default `light`) aligned with **Shiki themes** for code blocks
 - **Plugin registry** (task lists, heading anchors, table wrapper, code-highlight toggle) via lifecycle hooks
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
 - Dedicated right rail with document actions plus an independently scrollable TOC (click-to-scroll + active heading tracking)
-- **Files explorer** (dedicated left panel): sibling supported-document list (`.md`, `.markdown`, `.mdown`, `.mdc`, `.txt`, `.sql`, `.mermaid`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.avif`, `.bmp`, `.ico`, `.apng`, `.svg`) for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), session restore of workspace root for `file:` scans only; “Exit workspace” returns to sibling list. All scan paths use the shared file-type registry, attach `fileTypeId` metadata to file nodes, and present type-aware file icons, including a distinct database icon for SQL. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`; file-row browser/open/copy behavior is owned by `src/viewer/actions/file-row-actions.js`.
+- **Files explorer** (dedicated left panel): sibling supported-document list (`.md`, `.markdown`, `.mdown`, `.mdc`, `.txt`, `.sql`, `.mermaid`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.avif`, `.bmp`, `.ico`, `.apng`, `.svg`) for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, configurable nested `.gitignore` handling, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), and configurable session restore of the workspace root for `file:` scans only; “Exit workspace” returns to sibling list. All scan paths use the shared file-type registry, attach `fileTypeId` metadata to file nodes, and present type-aware file icons, including a distinct database icon for SQL. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`; file-row browser/open/copy behavior is owned by `src/viewer/actions/file-row-actions.js`.
 - **Internal document navigation from Markdown**: clicking a relative/absolute link to a registered Markdown-family, `.txt`, `.sql`, `.mermaid`, raster image, or SVG file opens it in the same viewer without full page reload. Link resolver (`src/viewer/navigation/link-resolver.js`) classifies links into kinds (same-document-hash, self-link, document-file, workspace-virtual-file, external, asset, unsupported). The viewer route codec (`src/viewer/navigation/viewer-route.js`) keeps the original Markdown entry URL stable and represents real-file navigation as `?f=relative/path#heading`, enabling reload and browser Back/Forward restoration. Workspace navigation and headings intentionally do not mutate the URL, so reload returns to the entry document. Click interception in `article-interactions.js` respects modifier keys, `target`, and `download` attrs. Sidebar active-file sync on cross-folder navigation. Supports spaces, Unicode, encoded hrefs, parent folder traversal, and virtual workspace files. See `docs/internal-hyperlink-navigation-solution.md` for the earlier navigation design history.
 - **Inline Markdown editor** (Phase 11.0–11.3): local `file:` Markdown pages can enter edit mode from the right-side document actions. The React shell mounts a lazy-loaded CodeMirror 6 editor with split preview/focus modes, independent Files-panel toggle, debounced live preview through the existing sanitized render pipeline, editor → preview scroll sync, TOC click → editor source line navigation, dirty state, Ctrl/Cmd+S, before-unload/exit confirmation, status bar, split resize, search/replace, and File System Access API save with download fallback. Editor preferences live in popup settings and persist through `chrome.storage`.
 - Loading skeleton UX: reusable `SkeletonLine` / `SkeletonBlock` primitives used by the Outline, Files panel, and popup settings loading state
 - Settings storage and runtime messaging
-- **Extension popup (React)** for reader/plugins/general/editor settings; minimal **options** page (JSON-oriented); no in-viewer settings drawer yet
+- **Extension popup (React)** for recent files plus quick reader/editor/plugin controls, with a direct entry to the full **Settings page**
+- **Settings page (React)** at the existing `options_page` entry for extension activation, file-access diagnostics, validated explorer scan limits and behavior policies, recent-file privacy/retention, the standalone text-document viewing limit, normalized JSON import/export, section reset, and confirmed full reset. Recent file paths stay in `chrome.storage.local`; only the history policy is part of synced settings.
 
 ## 2) Tech stack and runtime
 
 - Runtime: Chrome Extension MV3
 - Build tool: Vite + `@vitejs/plugin-react` + `@crxjs/vite-plugin`; viewer chrome styles authored in **SCSS** and compiled by Vite via `?inline` imports from `src/content/viewer-loader.js` (after the thin gate in `src/content/index.js`), bundled into the content script in `dist/**`; no standalone `.css` under `src/viewer/styles/`
-- Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer core/plugins; **React 19** for `src/popup/` and **viewer chrome** under `src/viewer/react/` (`ViewerApp.jsx`, shell/sidebar/explorer/toast)
+- Languages: **Vanilla JavaScript (ES modules)** for content/background/viewer core/plugins; **React 19** for `src/popup/`, `src/options/`, and **viewer chrome** under `src/viewer/react/` (`ViewerApp.jsx`, shell/sidebar/explorer/toast)
 - Markdown: `markdown-it` + `markdown-it-anchor`
 - Editor: **CodeMirror 6** packages lazy-loaded only when edit mode is used
 - Fenced code highlighting: **Shiki** — `createHighlighterCore` from `shiki/core` with Oniguruma WASM (`shiki/engine/oniguruma`), explicit grammars from `@shikijs/langs` and themes from `@shikijs/themes` (see `src/viewer/core/shiki-config.js`; avoids shipping the full `shiki/bundle/web` language/theme set)
@@ -50,10 +51,10 @@ Generated output:
 - `viewer`: **React** shell (left Files panel, right Outline/action rail, toast) + document session/renderer dispatch + **async** Markdown pipeline + imperative article interactions (no settings UI in-page yet). Browser-facing viewer commands live under `src/viewer/actions/`, document boundaries under `src/viewer/documents/` and `src/viewer/app/`, shared React chrome primitives under `src/viewer/react/components/common/`, and Markdown rendering internals under `src/viewer/core/`.
 - `theme`: preset color tokens + CSS variable builder + `applyThemeSettings()` on viewer root
 - `plugins`: registered plugins, `plugin-manager` hooks (pre/post markdown/HTML)
-- `settings`: pure defaults in `src/settings/default-settings.js`, storage key + deep-merge persistence in `src/settings/settings-service.js`, compatibility exports in `src/settings/index.js`
-- `popup` / `options`: UI entrypoints for reading/updating settings (popup is primary)
+- `settings`: pure defaults in `src/settings/default-settings.js`, shared normalization/range validation in `src/settings/settings-schema.js`, message-envelope client calls in `src/settings/settings-client.js`, and storage key + normalized deep-merge persistence in `src/settings/settings-service.js`
+- `popup` / `options`: the popup owns quick reading controls and recent files; the full-page Options entry owns long-lived extension and explorer policy, import/export, and reset workflows
 - `messaging`: message constants and shared `sendMessage()` in `src/messaging/index.js`
-- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `file-types.js` (lightweight registry, activation/explorer classification, and document capabilities), `markdown-detect.js` (content heuristics plus compatibility pathname helpers derived from the registry), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/tooltip.js` (hover delays for chrome tooltips), reusable React UI primitives in `shared/react/` and shared style partials in `shared/styles/`
+- `shared`: `logger.js`, `deep-merge.js`, `clipboard.js`, `download.js` (downloads + `DOWNLOAD_DATA_URL`), `settings-diff.js` (settings path diff / full-render gate), `file-types.js` (lightweight registry, activation/explorer classification, and document capabilities), `markdown-detect.js` (content heuristics plus compatibility pathname helpers derived from the registry), `fs-handle-debug.js` (optional FS handle logging), `constants/viewer.js`, `constants/explorer.js`, `constants/documents.js`, `constants/tooltip.js` (hover delays for chrome tooltips), reusable React UI primitives in `shared/react/` and shared style partials in `shared/styles/`
 
 ### 3.2 Core flow (implemented)
 
@@ -95,6 +96,7 @@ src/
   background/
     service-worker.js
     message-router.js
+    file-history-service.js
     settings-broadcast-service.js
     offscreen-fetch.js
   content/
@@ -110,6 +112,8 @@ src/
   settings/
     index.js
     default-settings.js
+    settings-client.js
+    settings-schema.js
     settings-service.js
   theme/
     index.js
@@ -119,11 +123,14 @@ src/
     clipboard.js
     download.js
     settings-diff.js
+    file-history.js
     file-types.js
     markdown-detect.js
     fs-handle-debug.js
     constants/
       editor.js
+      documents.js
+      history.js
       viewer.js
       explorer.js
       tooltip.js
@@ -298,16 +305,28 @@ src/
     icon-placeholder-128.png
     components/
       Tooltip.jsx
+    actions/
+      open-options-page.js
     hooks/
       useSettingsPersistence.js
     panels/
       EditorSettingsPanel.jsx
-      GeneralPanel.jsx
       ReaderPanel.jsx
       PluginsPanel.jsx
   options/
     index.html
-    index.js
+    index.jsx
+    OptionsApp.jsx
+    options-actions.js
+    settings-import.js
+    options.scss
+    hooks/
+      useSettingsForm.js
+    sections/
+      GeneralSettings.jsx
+      ExplorerSettings.jsx
+      PrivacySettings.jsx
+      AdvancedSettings.jsx
 public/
   offscreen.js
   offscreen.html
@@ -457,10 +476,19 @@ public/
   - Current-file link building/copying plus explorer file-row click/open/copy helpers. Workspace virtual file hrefs stay copyable but are not browser-openable in a new tab.
 
 - `src/settings/default-settings.js`
-  - Pure `DEFAULT_SETTINGS` shape, including plugin defaults, explorer limits, and editor defaults. Tests and pure modules can import this without pulling `chrome.storage`.
+  - Pure `DEFAULT_SETTINGS` shape, including plugin defaults, explorer limits/behavior policies, document resource limits, and editor defaults. Tests and pure modules can import this without pulling `chrome.storage`.
 
 - `src/settings/settings-service.js`
-  - Settings persistence ownership: `STORAGE_KEYS.SETTINGS`, storage area selection, default-safe deep merge, save, and reset. Reads/writes via `chrome.storage.sync` (fallback `local`).
+  - Settings persistence ownership: `STORAGE_KEYS.SETTINGS`, storage area selection, default-safe deep merge, schema normalization, save, and reset. Reads/writes via `chrome.storage.sync` (fallback `local`). Invalid save payloads are rejected before persistence; corrupt stored validated values fall back to safe defaults on read.
+
+- `src/settings/settings-schema.js`
+  - Pure normalization and validation boundary for settings. Explorer limits accept numeric strings, persist as integers, and enforce hard ranges: depth `0–20`, indexed files `10–20,000`, scanned folders `1–5,000`. Explorer behavior policies are validated as booleans. File-history policy validates `enabled` and a `1–50` entry retention limit. The standalone text-document viewing limit accepts whole MiB values in the hard range `1–50`.
+
+- `src/settings/settings-client.js`
+  - Shared UI client for `GET_SETTINGS`, `SAVE_SETTINGS`, and `RESET_SETTINGS`; preserves and unwraps the background response envelope for Popup and Options callers.
+
+- `src/background/file-history-service.js`
+  - Owns recent-file reads, writes, retention pruning, and clearing in `chrome.storage.local`. It consults the normalized `history` policy before recording and never falls back to sync storage for local paths.
 
 - `src/settings/index.js`
   - Compatibility export surface for existing callers: re-exports `DEFAULT_SETTINGS`, `STORAGE_KEYS`, and `settingsService`.
@@ -488,14 +516,23 @@ Default shape in `src/settings/default-settings.js` (plugins come from `getDefau
   explorer: {
     maxScanDepth: 4,
     maxFiles: 2000,
-    maxFolders: 500
+    maxFolders: 500,
+    respectGitignore: true,
+    restoreLastWorkspace: true
+  },
+  history: {
+    enabled: true,
+    maxEntries: 12
+  },
+  documents: {
+    maxStandaloneTextFileSizeMiB: 5
   },
   editor: { ...DEFAULT_EDITOR_SETTINGS },
   version: 1
 }
 ```
 
-Defaults for optional plugins come from `getDefaultPluginSettings()` in `src/plugins/plugin-types.js`; editor defaults come from `DEFAULT_EDITOR_SETTINGS` in `src/shared/constants/editor.js`. **Settings UI:** React popup (`PopupApp` + `panels/*`); labels in `popup/settings-constants.js`.
+Defaults for optional plugins come from `getDefaultPluginSettings()` in `src/plugins/plugin-types.js`; editor defaults come from `DEFAULT_EDITOR_SETTINGS` in `src/shared/constants/editor.js`. **Settings UI ownership:** the React Settings page owns `enabled`, explorer scan limits/behavior policies, recent-file privacy/retention, standalone text-document viewing limits, import/export, and global reset; the React Popup owns the recent-file list plus quick reader/editor/plugin controls. File-history entries remain device-local while the policy follows normal settings storage. Popup labels remain in `popup/settings-constants.js`.
 
 Preset keys for theme/Shiki must match built-ins: `light`, `dark`.
 
@@ -510,7 +547,7 @@ Implemented strongly:
 - Theme presets + CSS-variable based theming (Phase 5)
 - **Plugin hooks + core plugins** (task list, anchor heading, table enhance, code-highlight gating for Shiki) — aligns with **parts of Phases 6–7** in planning docs
 - **Optional plugins completed** (Mermaid, Math, Footnote, Emoji), including Mermaid export actions (SVG + PNG with scale options)
-- **Popup (React)** + **minimal options** page (Phase 9): full settings UX lives in the popup; options remain JSON-oriented reset/export-style surface
+- **Popup (React)** + **full Settings page**: Popup provides recent files and quick reader/editor/plugin controls; the existing `options_page` provides General, Files & Workspace, Privacy & Data, and Advanced resource/backup settings with shared validation and import/export/reset workflows
 - **UI Files Explorer** (see `docs/technical-spec-phases/ui-files-explorer-feature-spec.md`): Phase 1 (siblings + back) and **Phase 2** (open-folder workspace, recursive scan, limits, progress UI, tree). Phase 3+ (bookmarks/popup) not done.
 - **Internal Markdown link navigation** (see `docs/internal-hyperlink-navigation-solution.md`): all phases (0–5) completed. Link resolver, article click interception, browser history Back/Forward, sidebar integration, virtual workspace links, and polish/tests.
 - **Inline Markdown Editor** (see `docs/inline-markdown-editor-feature-spec.md`): Phase 11.0–11.3 completed. CodeMirror 6 editor, split/focus layout, Files-panel toggle, live preview, scroll sync, TOC → editor navigation, File System Access save with fallback, dirty/confirm flow, status bar, split resize, search/replace, and popup editor settings are implemented.
@@ -550,7 +587,7 @@ Use this audit as the baseline for optimization tasks.
   - Inspect `src/settings/default-settings.js`, `src/settings/settings-service.js`, `src/settings/index.js`, and `src/background/message-router.js`.
 
 - Popup/options not syncing:
-  - Inspect `src/popup/index.jsx`, `src/popup/PopupApp.jsx`, `src/popup/hooks/useSettingsPersistence.js`, `src/options/index.js`, and message type usage (`SETTINGS_UPDATED` on the content script).
+  - Inspect `src/settings/settings-client.js`, `src/popup/index.jsx`, `src/popup/PopupApp.jsx`, `src/popup/hooks/useSettingsPersistence.js`, `src/options/OptionsApp.jsx`, `src/options/hooks/useSettingsForm.js`, and message type usage (`SETTINGS_UPDATED` on the content script).
 
 - Loading-state UX in chrome/popup:
   - Inspect `src/shared/react/Skeleton.jsx`, `src/shared/styles/_skeleton.scss`, `src/viewer/react/components/OutlinePanel.jsx`, `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `src/popup/PopupApp.jsx`, and `tocReady` updates in `src/viewer/app.js` / `src/viewer/react/mount.js`.

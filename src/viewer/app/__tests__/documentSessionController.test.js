@@ -120,6 +120,32 @@ describe('document session controller', () => {
     expect(render).toHaveBeenCalledOnce()
   })
 
+  it('passes the latest configured standalone text limit through the session boundary', async () => {
+    const settings = { documents: { maxStandaloneTextFileSizeMiB: 8 } }
+    const loadDocument = vi.fn().mockResolvedValue({
+      text: 'loaded',
+      assetUrl: null,
+      revokeAssetUrl: null
+    })
+    const session = createSession({
+      getSettings: () => settings,
+      loadDocument
+    })
+
+    await session.openDocument('file:///docs/first.txt')
+    settings.documents.maxStandaloneTextFileSizeMiB = 14
+    await session.openDocument('file:///docs/second.sql')
+
+    expect(loadDocument.mock.calls[0][0]).toMatchObject({
+      fileType: { id: 'text' },
+      maxStandaloneTextFileSizeMiB: 8
+    })
+    expect(loadDocument.mock.calls[1][0]).toMatchObject({
+      fileType: { id: 'sql' },
+      maxStandaloneTextFileSizeMiB: 14
+    })
+  })
+
   it('publishes image capabilities and closes active image UI before loading the next document', async () => {
     const publishUiState = vi.fn()
     const onDocumentSwitchStart = vi.fn()

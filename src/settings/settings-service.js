@@ -1,6 +1,7 @@
 import { deepMerge } from '../shared/deep-merge.js'
 import { logger } from '../shared/logger.js'
 import { DEFAULT_SETTINGS } from './default-settings.js'
+import { normalizeSettings } from './settings-schema.js'
 
 export const STORAGE_KEYS = {
   SETTINGS: 'mdViewer.settings'
@@ -18,25 +19,26 @@ async function getRawSettings() {
 
 async function getSettings() {
   const raw = await getRawSettings()
-  return deepMerge(DEFAULT_SETTINGS, raw || {})
+  const merged = deepMerge(DEFAULT_SETTINGS, raw || {})
+  return normalizeSettings(merged, { invalid: 'default' })
 }
 
 async function saveSettings(partialSettings) {
   const storage = getStorageArea()
   const current = await getSettings()
-  const nextSettings = deepMerge(current, partialSettings || {})
+  const nextSettings = normalizeSettings(deepMerge(current, partialSettings || {}))
 
   await storage.set({
     [STORAGE_KEYS.SETTINGS]: nextSettings
   })
 
-  logger.info('Settings saved.', nextSettings)
+  logger.info('Settings saved.')
   return nextSettings
 }
 
 async function resetSettings() {
   const storage = getStorageArea()
-  const fresh = deepMerge({}, DEFAULT_SETTINGS)
+  const fresh = normalizeSettings(deepMerge({}, DEFAULT_SETTINGS))
   await storage.set({
     [STORAGE_KEYS.SETTINGS]: fresh
   })

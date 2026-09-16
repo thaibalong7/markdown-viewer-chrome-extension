@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { MESSAGE_TYPES, sendMessage } from '../../messaging/index.js'
+import { getSettings, saveSettings } from '../../settings/settings-client.js'
 import { deepMerge } from '../../shared/deep-merge.js'
 
 const DEBOUNCE_MS = 360
@@ -19,9 +19,7 @@ export function useSettingsPersistence() {
     setLoading(true)
     setErrorMessage('')
     try {
-      const response = await sendMessage({ type: MESSAGE_TYPES.GET_SETTINGS })
-      if (!response?.ok) throw new Error(response?.error || 'Failed to load settings.')
-      setSettings(response.data)
+      setSettings(await getSettings())
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : 'Failed to load settings.')
     } finally {
@@ -37,12 +35,7 @@ export function useSettingsPersistence() {
     setSaving(true)
     setErrorMessage('')
     try {
-      const response = await sendMessage({
-        type: MESSAGE_TYPES.SAVE_SETTINGS,
-        payload: partial
-      })
-      if (!response?.ok) throw new Error(response?.error || 'Failed to save settings.')
-      setSettings(response.data)
+      setSettings(await saveSettings(partial))
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : 'Failed to save settings.')
     } finally {

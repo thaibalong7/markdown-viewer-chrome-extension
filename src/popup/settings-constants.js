@@ -77,7 +77,6 @@ export function createReaderUiDefaultsPatch() {
 }
 
 export const SETTINGS_TAB_IDS = {
-  SETTINGS: 'settings',
   HISTORY: 'history',
   READER: 'reader',
   EDITOR: 'editor',
@@ -85,7 +84,6 @@ export const SETTINGS_TAB_IDS = {
 }
 
 export const SETTINGS_TABS = [
-  { id: SETTINGS_TAB_IDS.SETTINGS, label: 'Settings', icon: '\u2699', title: 'Extension settings' },
   { id: SETTINGS_TAB_IDS.HISTORY, label: 'History', icon: '\u23F2', title: 'Recent files' },
   { id: SETTINGS_TAB_IDS.READER, label: 'Reader', icon: '\u{1F4D6}', title: 'Reader UI' },
   { id: SETTINGS_TAB_IDS.EDITOR, label: 'Editor', icon: '\u270E', title: 'Editor settings' },

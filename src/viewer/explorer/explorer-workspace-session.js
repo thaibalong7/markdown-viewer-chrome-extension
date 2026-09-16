@@ -70,7 +70,7 @@ export function createExplorerWorkspaceSession(deps) {
     clearWorkspaceVirtualReaders()
     clearWorkspaceRootUrl()
     const signal = workspaceScanSession.start()
-    const { maxScanDepth, maxFiles, maxFolders } = getScanLimits()
+    const { maxScanDepth, maxFiles, maxFolders, respectGitignore } = getScanLimits()
     setExplorerMode('workspace')
     refs.explorerModeRef.current = 'workspace'
     safePatch({ explorerMode: 'workspace' })
@@ -84,12 +84,12 @@ export function createExplorerWorkspaceSession(deps) {
       filesContext: buildFilesContext({ scanPhase: 'scanning' })
     })
 
-    return { signal, maxScanDepth, maxFiles, maxFolders }
+    return { signal, maxScanDepth, maxFiles, maxFolders, respectGitignore }
   }
 
   const openWorkspaceFromDirectoryHandle = async (dirHandle) => {
     if (!dirHandle) return
-    const { signal, maxScanDepth, maxFiles, maxFolders } = enterWorkspaceScan({
+    const { signal, maxScanDepth, maxFiles, maxFolders, respectGitignore } = enterWorkspaceScan({
       displayLabel: dirHandle.name || 'Folder',
       progressHeadline: 'Scanning picked folder…'
     })
@@ -99,6 +99,7 @@ export function createExplorerWorkspaceSession(deps) {
         maxScanDepth,
         maxFiles,
         maxFolders,
+        respectGitignore,
         signal,
         currentFileUrl: refs.currentFileUrlRef.current,
         onProgress: (progress) => {
@@ -127,7 +128,7 @@ export function createExplorerWorkspaceSession(deps) {
 
   const openWorkspaceFromVirtualWebkitFiles = async (files) => {
     if (!files?.length) return
-    const { signal, maxScanDepth, maxFiles, maxFolders } = enterWorkspaceScan({
+    const { signal, maxScanDepth, maxFiles, maxFolders, respectGitignore } = enterWorkspaceScan({
       displayLabel: 'Imported folder',
       progressHeadline: 'Scanning imported folder…'
     })
@@ -137,6 +138,7 @@ export function createExplorerWorkspaceSession(deps) {
         maxScanDepth,
         maxFiles,
         maxFolders,
+        respectGitignore,
         signal,
         onProgress: (progress) => {
           viewActions.updateProgressLoading({
@@ -171,7 +173,7 @@ export function createExplorerWorkspaceSession(deps) {
     resetSiblingRefsForWorkspace()
     clearWorkspaceVirtualReaders()
     const signal = workspaceScanSession.start()
-    const { maxScanDepth, maxFiles, maxFolders } = getScanLimits()
+    const { maxScanDepth, maxFiles, maxFolders, respectGitignore } = getScanLimits()
 
     setExplorerMode('workspace')
     setWorkspaceRootUrl(normalized)
@@ -192,6 +194,7 @@ export function createExplorerWorkspaceSession(deps) {
         maxScanDepth,
         maxFiles,
         maxFolders,
+        respectGitignore,
         signal,
         currentFileUrl: refs.currentFileUrlRef.current,
         siblingsFirstAtRoot: true,

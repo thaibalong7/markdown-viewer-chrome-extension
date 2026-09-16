@@ -91,7 +91,12 @@ describe('explorer scan session', () => {
         siblingFolderLabelRef: { current: '' },
         siblingScanRootUrlRef: { current: null }
       },
-      getScanLimits: () => ({ maxScanDepth: 4, maxFiles: 100, maxFolders: 100 }),
+      getScanLimits: () => ({
+        maxScanDepth: 4,
+        maxFiles: 100,
+        maxFolders: 100,
+        respectGitignore: false
+      }),
       buildFilesContext: () => null,
       siblingBackNavigationForUrl: () => ({ showBack: false }),
       finalizeSiblingTreePresent,
@@ -116,6 +121,10 @@ describe('explorer scan session', () => {
         maxScanDepth: 4,
         preserveExpandedState: true
       })
+    )
+    expect(scanFolderRecursive).toHaveBeenCalledWith(
+      'file:///docs/',
+      expect.objectContaining({ respectGitignore: false })
     )
   })
 })

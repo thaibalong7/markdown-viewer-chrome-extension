@@ -1,6 +1,8 @@
 import { isDirectActivationUrl } from './file-types.js'
+import { DEFAULT_HISTORY_MAX_ENTRIES } from './constants/history.js'
 
-export const MAX_FILE_HISTORY_ENTRIES = 12
+// Compatibility alias for callers that use the historical default-limit name.
+export const MAX_FILE_HISTORY_ENTRIES = DEFAULT_HISTORY_MAX_ENTRIES
 
 export function normalizeFileHistoryUrl(rawUrl) {
   if (typeof rawUrl !== 'string' || !rawUrl.trim()) return null

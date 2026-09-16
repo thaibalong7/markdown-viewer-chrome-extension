@@ -2,7 +2,7 @@
   max-width: var(--mdp-content-max-width);
   margin: 0 auto;
   min-height: calc(100vh - clamp(40px, 6vw, 88px));
-  padding: clamp(28px, 4.5vw, 56px) clamp(24px, 5vw, 68px) clamp(44px, 7vw, 80px);
+  padding: clamp(16px, 2vw, 28px) clamp(20px, 3.5vw, 48px) clamp(36px, 5vw, 64px);
   background: transparent;
   line-height: var(--mdp-line-height);
   font-size: var(--mdp-font-size);
@@ -150,6 +150,6 @@
 @media (max-width: 639px) {
   .mdp-markdown-body {
     min-height: calc(100vh - 24px);
-    padding: 26px 20px 48px;
+    padding: 16px 14px 40px;
   }
 }

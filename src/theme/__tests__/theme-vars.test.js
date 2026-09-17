@@ -38,6 +38,17 @@ describe('createStyleVars', () => {
     expect(vars['--mdp-link']).toBe('#356a38')
     expect(vars['--mdp-link-soft']).toBe('#e7efe0')
   })
+
+  it('exposes a deep teal solarized dark palette with high legibility', () => {
+    const vars = createStyleVars({ theme: { preset: 'solarized-dark' } })
+
+    expect(vars['--mdp-color-scheme']).toBe('dark')
+    expect(vars['--mdp-bg']).toBe('#002b36')
+    expect(vars['--mdp-surface']).toBe('#073642')
+    expect(vars['--mdp-heading']).toBe('#eee8d5')
+    expect(vars['--mdp-link']).toBe('#2e9fe6')
+    expect(vars['--mdp-link-soft']).toBe('#073c48')
+  })
 })
 
 describe('getLightDarkThemeToggleTarget', () => {
@@ -46,6 +57,7 @@ describe('getLightDarkThemeToggleTarget', () => {
     expect(getLightDarkThemeToggleTarget('dark')).toBe('light')
     expect(getLightDarkThemeToggleTarget('sakura')).toBeNull()
     expect(getLightDarkThemeToggleTarget('matcha')).toBeNull()
+    expect(getLightDarkThemeToggleTarget('solarized-dark')).toBeNull()
     expect(getLightDarkThemeToggleTarget('sepia')).toBeNull()
   })
 })

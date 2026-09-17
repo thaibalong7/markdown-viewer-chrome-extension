@@ -30,13 +30,14 @@ function throwIfAborted(signal) {
 }
 
 export function getMermaidThemeByPreset(preset) {
-  return String(preset || '').toLowerCase() === 'dark' ? 'base' : 'default'
+  const colors = getThemeColorsByPreset(preset)
+  return colors.colorScheme === 'dark' ? 'base' : 'default'
 }
 
 export function getMermaidThemeVariablesByPreset(preset) {
-  if (String(preset || '').toLowerCase() !== 'dark') return undefined
+  const colors = getThemeColorsByPreset(preset)
+  if (colors.colorScheme !== 'dark') return undefined
 
-  const colors = getThemeColorsByPreset('dark')
   return {
     darkMode: true,
     background: colors.background,

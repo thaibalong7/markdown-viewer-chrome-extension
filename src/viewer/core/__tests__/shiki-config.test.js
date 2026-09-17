@@ -16,4 +16,10 @@ describe('Shiki reader theme mapping', () => {
       .toBe('everforest-light')
     expect(SHIKI_BUNDLED_THEME_IDS).toContain('everforest-light')
   })
+
+  it('maps the solarized-dark reader preset to its bundled dark syntax theme', () => {
+    expect(getShikiThemeIdForSettings({ theme: { preset: 'solarized-dark' } }))
+      .toBe('solarized-dark')
+    expect(SHIKI_BUNDLED_THEME_IDS).toContain('solarized-dark')
+  })
 })

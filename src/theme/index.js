@@ -150,11 +150,50 @@ const MATCHA_THEME_COLORS = {
   toastErrorBorder: '#e8b7b2'
 }
 
+const SOLARIZED_DARK_THEME_COLORS = {
+  colorScheme: 'dark',
+  background: '#002b36',
+  surface: '#073642',
+  text: '#d2dede',
+  bodyText: '#a3b8bd',
+  heading: '#eee8d5',
+  border: '#0d4350',
+  borderStrong: '#195464',
+  muted: '#78949c',
+  codeBg: '#073642',
+  codeText: '#c4d5d8',
+  panelBg: '#05303c',
+  panelStrong: '#0b3e4d',
+  link: '#2e9fe6',
+  linkSoft: '#073c48',
+  accent: '#2aa198',
+  accentSoft: '#073c44',
+  warning: '#cb8b00',
+  warningSoft: '#2a2408',
+  danger: '#ea4d49',
+  tableBorder: '#0d4350',
+  tableHeaderBg: '#073642',
+  tableRowAltBg: '#022f3b',
+  toastInfoBg: '#073949',
+  toastInfoText: '#4eb8f5',
+  toastInfoBorder: '#195c73',
+  toastSuccessBg: '#083a2c',
+  toastSuccessText: '#48cfa0',
+  toastSuccessBorder: '#16664d',
+  toastWarningBg: '#382a0b',
+  toastWarningText: '#f0b838',
+  toastWarningBorder: '#785612',
+  toastErrorBg: '#3c1214',
+  toastErrorText: '#ff8280',
+  toastErrorBorder: '#852528'
+}
+
 export const BUILT_IN_THEMES = {
   light: LIGHT_THEME_COLORS,
   dark: DARK_THEME_COLORS,
   sakura: SAKURA_THEME_COLORS,
-  matcha: MATCHA_THEME_COLORS
+  matcha: MATCHA_THEME_COLORS,
+  'solarized-dark': SOLARIZED_DARK_THEME_COLORS
 }
 
 // Keep the floating quick-toggle intentionally narrower than the full theme
@@ -169,7 +208,8 @@ export function getLightDarkThemeToggleTarget(preset) {
 }
 
 export function getThemeColorsByPreset(preset) {
-  const key = String(preset || '').toLowerCase()
+  const rawKey = String(preset || '').toLowerCase()
+  const key = rawKey === 'solarized' || rawKey === 'solarized_dark' ? 'solarized-dark' : rawKey
   if (Object.prototype.hasOwnProperty.call(BUILT_IN_THEMES, key)) {
     return { ...BUILT_IN_THEMES[key] }
   }

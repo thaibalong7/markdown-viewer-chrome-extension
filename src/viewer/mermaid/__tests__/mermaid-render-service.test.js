@@ -95,6 +95,13 @@ describe('shared Mermaid render service', () => {
       primaryTextColor: '#edf2f7',
       lineColor: '#9ba9bb'
     })
+    expect(getMermaidThemeByPreset('solarized-dark')).toBe('base')
+    expect(getMermaidThemeVariablesByPreset('solarized-dark')).toMatchObject({
+      darkMode: true,
+      background: '#002b36',
+      mainBkg: '#0b3e4d',
+      primaryTextColor: '#d2dede'
+    })
   })
 
   it('preserves Mermaid defaults in light mode', () => {

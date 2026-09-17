@@ -5,7 +5,8 @@ export const THEME_LABELS = {
   light: 'Light',
   dark: 'Dark',
   sakura: 'Sakura',
-  matcha: 'Matcha'
+  matcha: 'Matcha',
+  'solarized-dark': 'Solarized Dark'
 }
 
 /** Display names for plugin toggles (keys match `PLUGIN_IDS` / persisted `settings.plugins`). */

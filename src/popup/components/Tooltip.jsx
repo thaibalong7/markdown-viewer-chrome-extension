@@ -103,8 +103,7 @@ export function Tooltip({ content, children }) {
           top: coords.top,
           left: coords.left,
           zIndex: 2147483646,
-          width: 280,
-          boxSizing: 'border-box'
+          width: 280
         }}
         role="tooltip"
       >

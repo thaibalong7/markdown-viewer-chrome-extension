@@ -1,5 +1,6 @@
 import React from 'react'
 import { PLUGIN_IDS, MERMAID_RENDERERS } from '../../plugins/plugin-types.js'
+import { Switch } from '../../shared/react/Switch.jsx'
 import {
   MERMAID_RENDERER_DESCRIPTIONS,
   MERMAID_RENDERER_OPTIONS,
@@ -22,10 +23,12 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
         const mermaidRenderer =
           pluginsSnapshot?.[pluginId]?.renderer || MERMAID_RENDERERS.OFFICIAL
         return (
-          <div key={pluginId} className="popup-field popup-plugin-item">
-            <label className="popup-field-inline">
-              <input
-                type="checkbox"
+          <div key={pluginId} className="mdp-ui-field popup-plugin-item">
+            <div className="popup-setting-row popup-plugin-heading">
+              <span className="popup-setting-row__label">{PLUGIN_LABELS[pluginId] || pluginId}</span>
+              <Switch
+                id={`popup-plugin-${pluginId}`}
+                label={PLUGIN_LABELS[pluginId] || pluginId}
                 checked={mermaidEnabled}
                 onChange={(event) =>
                   onPatch({
@@ -37,14 +40,13 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
                   })
                 }
               />
-              <span className="popup-label">{PLUGIN_LABELS[pluginId] || pluginId}</span>
-            </label>
+            </div>
             {hint ? <p className="popup-plugin-note">{hint}</p> : null}
             {isMermaid ? (
-              <label className="popup-plugin-subfield">
-                <span className="popup-plugin-subfield__label">Renderer</span>
+              <label className="mdp-ui-field popup-plugin-subfield">
+                <span className="mdp-ui-field__label">Renderer</span>
                 <select
-                  className="popup-input"
+                  className="mdp-ui-select"
                   value={mermaidRenderer}
                   disabled={!mermaidEnabled}
                   onChange={(event) =>

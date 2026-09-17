@@ -1,5 +1,7 @@
 import React from 'react'
 import { fileHistoryDirectoryFromUrl, fileHistoryTitleFromUrl } from '../../shared/file-history.js'
+import { Button } from '../../shared/react/Button.jsx'
+import { LoadingState } from '../../shared/react/LoadingState.jsx'
 
 function formatOpenedAt(openedAt) {
   const date = new Date(Number(openedAt))
@@ -24,14 +26,14 @@ function formatOpenedAt(openedAt) {
  */
 export function FileHistoryPanel({ history, loading, busyUrl, errorMessage, onOpen, onClear }) {
   if (loading) {
-    return <div className="popup-muted">Loading recent files...</div>
+    return <LoadingState label="Loading recent files…" />
   }
 
   if (!history.length) {
     return (
-      <div className="popup-empty-state">
-        <p className="popup-empty-state__title">No recent files yet</p>
-        <p className="popup-empty-state__copy">
+      <div className="mdp-ui-state">
+        <strong className="mdp-ui-state__title">No recent files yet</strong>
+        <p className="mdp-ui-state__message">
           Open local Markdown files with Markdown Plus and they will appear here.
         </p>
         {errorMessage ? <div className="popup-error-inline">{errorMessage}</div> : null}
@@ -43,9 +45,9 @@ export function FileHistoryPanel({ history, loading, busyUrl, errorMessage, onOp
     <div className="popup-history-panel">
       <div className="popup-history-actions">
         <span className="popup-muted">{history.length} recent file{history.length === 1 ? '' : 's'}</span>
-        <button type="button" className="popup-button" onClick={onClear}>
+        <Button variant="quiet" onClick={onClear}>
           Clear
-        </button>
+        </Button>
       </div>
 
       <div className="popup-history-list">

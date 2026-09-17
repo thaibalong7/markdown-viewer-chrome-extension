@@ -6,12 +6,12 @@
 }
 
 .mdp-ui-setting-row {
-  min-height: 104px;
+  min-height: 88px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 24px;
-  padding: 22px 24px;
+  padding: 16px 24px;
 }
 
 .mdp-ui-setting-row__title {

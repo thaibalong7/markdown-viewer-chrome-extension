@@ -29,17 +29,22 @@ describe('shared application primitives', () => {
       React.createElement(NumberField, {
         id: 'max-files',
         label: 'Maximum files',
+        labelAction: React.createElement('button', { type: 'button' }, 'Help'),
         helper: 'Files indexed during a scan.',
         error: 'Enter a value from 10 to 20,000.',
         rangeLabel: '10–20,000',
+        inputMode: 'decimal',
         value: '0',
         readOnly: true
       })
     )
 
     expect(html).toContain('for="max-files"')
+    expect(html).toContain('mdp-ui-field__label-row')
+    expect(html).toContain('Help')
     expect(html).toContain('aria-invalid="true"')
     expect(html).toContain('aria-describedby="max-files-helper max-files-error"')
+    expect(html).toContain('inputMode="decimal"')
   })
 
   it('renders a labelled native switch and semantic feedback variants', () => {

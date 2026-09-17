@@ -22,6 +22,18 @@ describe('settings design-system styles', () => {
     )
   })
 
+  it('keeps page controls compact while preserving coarse-pointer targets', () => {
+    expect(optionsCss).toMatch(
+      /\.mdp-ui-button\s*\{[^}]*min-height: 36px;[^}]*padding: 6px 11px;/s
+    )
+    expect(optionsCss).toMatch(
+      /\.mdp-ui-input,[^{]*\.mdp-ui-select\s*\{[^}]*min-height: 36px;[^}]*padding: 6px 10px;[^}]*font-size: 13px;/s
+    )
+    expect(optionsCss).toMatch(
+      /@media \(pointer: coarse\)[\s\S]*\.mdp-ui-input,[\s\S]*\.mdp-ui-switch\s*\{[^}]*min-height: 44px;/s
+    )
+  })
+
   it('includes system dark-theme tokens and reduced-motion behavior', () => {
     expect(optionsCss).toMatch(/@media \(prefers-color-scheme: dark\)/)
     expect(optionsCss).toMatch(/@media \(prefers-reduced-motion: reduce\)/)

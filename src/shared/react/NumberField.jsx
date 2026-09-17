@@ -3,9 +3,11 @@ import React from 'react'
 export function NumberField({
   id,
   label,
+  labelAction,
   helper,
   error = '',
   rangeLabel,
+  inputMode = 'numeric',
   className = '',
   ...inputProps
 }) {
@@ -16,7 +18,10 @@ export function NumberField({
   return (
     <div className={`mdp-ui-number-field ${className}`.trim()}>
       <div className="mdp-ui-field">
-        <label className="mdp-ui-field__label" htmlFor={id}>{label}</label>
+        <div className="mdp-ui-field__label-row">
+          <label className="mdp-ui-field__label" htmlFor={id}>{label}</label>
+          {labelAction || null}
+        </div>
         {helper ? <p className="mdp-ui-field__helper" id={helperId}>{helper}</p> : null}
       </div>
       <div className="mdp-ui-number-field__control">
@@ -24,7 +29,7 @@ export function NumberField({
           {...inputProps}
           id={id}
           type="number"
-          inputMode="numeric"
+          inputMode={inputMode}
           className="mdp-ui-input mdp-ui-input--technical"
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy || undefined}

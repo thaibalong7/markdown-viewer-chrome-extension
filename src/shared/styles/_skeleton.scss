@@ -34,16 +34,6 @@
   }
 }
 
-.popup-skeleton {
-  .mdp-skeleton-line {
-    background: #e6ebf1;
-
-    &::after {
-      background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 70%) 45%, transparent 100%);
-    }
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .mdp-skeleton-line::after {
     animation-duration: 0.01ms;

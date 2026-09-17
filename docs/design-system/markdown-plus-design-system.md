@@ -14,7 +14,7 @@ Use these sources in this order when values disagree:
 6. `src/viewer/styles/content/**/*.scss` — rendered-document typography and media styles.
 7. This document, `markdown-plus-ui-demo.html`, and `markdown-plus-component-catalog.html` — documentation and visual previews only.
 
-The Popup is a legacy surface and is not a design-system reference. The Settings page consumes the shared application tokens and implemented form/container/feedback primitives; it does not define the core system itself.
+The Popup and Settings page consume the shared application tokens and implemented form/container/feedback primitives; neither surface defines the core system itself. Popup-specific geometry remains local, while controls and semantic states should keep composing `src/shared/react/**` and `src/shared/styles/**`.
 
 ## Product character
 
@@ -220,10 +220,11 @@ The canonical action surface is the compact icon toolbar in the right rail, not 
 
 ### General button
 
-`src/shared/styles/_button.scss` defines the reusable button foundation. The Viewer-specific `.mdp-button` composes its shared mixin, while imperative/shared surfaces can use the emitted `.mdp-ui-button` base class. Add a React wrapper only when a real React consumer needs behavior beyond native button props.
+`src/shared/styles/_button.scss` defines the reusable button foundation. The Viewer-specific `.mdp-button` composes its shared mixin at Viewer density, while application surfaces use the emitted `.mdp-ui-button` class at the slightly denser form-control scale. Add a React wrapper only when a real React consumer needs behavior beyond native button props.
 
-- minimum height `38px` on fine pointers and `44px` on coarse pointers;
-- `7px 12px` padding;
+- Viewer `.mdp-button`: minimum height `38px` with `7px 12px` padding;
+- application `.mdp-ui-button`: minimum height `36px` with `6px 11px` padding;
+- both return to a minimum height of `44px` on coarse pointers;
 - `8px` radius;
 - `13px`, weight `600`;
 - surface background, standard border, subtle shadow;
@@ -355,7 +356,7 @@ Anatomy: optional leading icon, label, optional trailing icon/spinner.
 
 Sizes:
 
-- default: minimum `38px`, `7px 12px`, `13px`, `8px` radius;
+- default: minimum `36px`, `6px 11px`, `13px`, `8px` radius;
 - large/touch: minimum `44px`, `9px 14px`;
 - compact: minimum `32px`, only inside dense toolbars or table rows.
 
@@ -387,8 +388,9 @@ Use one primary action per local decision area. Save may be primary while saved 
 
 Anatomy: label, control, optional helper, optional validation message. Label and error text must be programmatically associated with the control.
 
-- default control height: `44px` for Settings and other form-heavy pages;
-- horizontal padding: `10px 12px`;
+- default control height: `36px` for Settings and other form-heavy pages;
+- compact Popup control height: `32px`; coarse-pointer controls return to `44px`;
+- horizontal padding: `6px 10px` by default and `5px 8px` in the Popup;
 - standard border and `8px` radius;
 - surface background and primary text;
 - placeholder uses muted text but must remain readable;
@@ -409,15 +411,15 @@ Related fields use `fieldset` and `legend` when they form one question. Visual g
 
 ### Checkbox and radio
 
-- Visual control: `18px–20px`; interactive label row: at least `38px` and `44px` on coarse pointers/form pages.
+- Visual control: `18px–20px`; interactive label row: at least `38px` and `44px` on coarse pointers.
 - Checked/selected uses link blue. Green is reserved for successful outcomes.
 - The visible text and control are part of the same label target.
 - Indeterminate checkbox must have a distinct mark and `aria-checked="mixed"` where applicable.
 
 ### Switch
 
-- Interactive wrapper: minimum `44px` high.
-- Track: `46px × 26px`; thumb: `20px`.
+- Interactive wrapper: minimum `36px` high and `44px` on coarse pointers.
+- Track: `38px × 22px`; thumb: `16px`. The compact Popup may use a `34px × 20px` track with a `14px` thumb.
 - Off uses border/panel colors; on uses `--mdp-link`.
 - The setting name remains visible next to the switch and belongs to the same label target.
 - Use switches only for immediate boolean changes. Use checkbox when submission is deferred with a larger form.

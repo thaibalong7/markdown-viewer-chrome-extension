@@ -221,8 +221,8 @@
       align-items: center;
       justify-content: center;
       gap: 7px;
-      min-height: 38px;
-      padding: 7px 12px;
+      min-height: 36px;
+      padding: 6px 11px;
       border: 1px solid var(--mdp-border);
       border-radius: 8px;
       background: var(--mdp-surface);
@@ -345,8 +345,8 @@
     .mdp-ui-select,
     .mdp-ui-textarea {
       width: 100%;
-      min-height: 44px;
-      padding: 9px 11px;
+      min-height: 36px;
+      padding: 6px 10px;
       border: 1px solid var(--mdp-border-strong);
       border-radius: 8px;
       background: var(--mdp-surface);
@@ -442,7 +442,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      min-height: 44px;
+      min-height: 36px;
       color: var(--mdp-text);
       font-size: 13px;
       cursor: pointer;
@@ -458,8 +458,8 @@
     .mdp-ui-switch__track {
       position: relative;
       flex: 0 0 auto;
-      width: 46px;
-      height: 26px;
+      width: 38px;
+      height: 22px;
       border: 1px solid var(--mdp-border-strong);
       border-radius: 999px;
       background: var(--mdp-panel-strong);
@@ -471,8 +471,8 @@
       position: absolute;
       top: 2px;
       left: 2px;
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: var(--mdp-surface);
       box-shadow: var(--mdp-shadow-subtle);
@@ -485,7 +485,7 @@
     }
 
     .mdp-ui-switch input:checked + .mdp-ui-switch__track::after {
-      transform: translateX(20px);
+      transform: translateX(16px);
     }
 
     .mdp-ui-switch input:focus-visible + .mdp-ui-switch__track {
@@ -1068,7 +1068,10 @@
     @media (pointer: coarse) {
       .mdp-ui-button,
       .mdp-ui-choice,
-      .mdp-ui-tab {
+      .mdp-ui-tab,
+      .mdp-ui-input,
+      .mdp-ui-select,
+      .mdp-ui-switch {
         min-width: 44px;
         min-height: 44px;
       }
@@ -1098,8 +1101,8 @@
         <p class="mdp-ui-catalog__eyebrow">Runtime foundation &amp; component specification</p>
         <h2 id="component-catalog-title">Component catalog</h2>
         <p>
-          These components inherit the Viewer foundation. Settings now uses the shared runtime
-          foundations; remaining examples specify the next reusable pieces for a refreshed Popup.
+          These components inherit the Viewer foundation. Settings and Popup use the shared runtime
+          foundations; remaining examples specify reusable pieces for future application surfaces.
         </p>
         <div class="mdp-ui-catalog__actions">
           <a class="mdp-ui-button" href="./markdown-plus-ui-demo.html">Open Viewer demo</a>

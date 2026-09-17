@@ -84,10 +84,10 @@ export const SETTINGS_TAB_IDS = {
 }
 
 export const SETTINGS_TABS = [
-  { id: SETTINGS_TAB_IDS.HISTORY, label: 'History', icon: '\u23F2', title: 'Recent files' },
-  { id: SETTINGS_TAB_IDS.READER, label: 'Reader', icon: '\u{1F4D6}', title: 'Reader UI' },
-  { id: SETTINGS_TAB_IDS.EDITOR, label: 'Editor', icon: '\u270E', title: 'Editor settings' },
-  { id: SETTINGS_TAB_IDS.PLUGINS, label: 'Plugins', icon: '\u{1F9E9}', title: 'Plugin toggles' }
+  { id: SETTINGS_TAB_IDS.HISTORY, label: 'History', title: 'Recent files' },
+  { id: SETTINGS_TAB_IDS.READER, label: 'Reader', title: 'Reader UI' },
+  { id: SETTINGS_TAB_IDS.EDITOR, label: 'Editor', title: 'Editor settings' },
+  { id: SETTINGS_TAB_IDS.PLUGINS, label: 'Plugins', title: 'Plugin toggles' }
 ]
 
 export const FONT_FAMILY_PRESETS = [

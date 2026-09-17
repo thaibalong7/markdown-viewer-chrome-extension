@@ -1,9 +1,9 @@
-@mixin button-base {
+@mixin button-base($min-height: 38px, $padding: 7px 12px) {
   border: 1px solid var(--mdp-border);
   background: var(--mdp-surface);
   color: var(--mdp-text);
-  min-height: 38px;
-  padding: 7px 12px;
+  min-height: $min-height;
+  padding: $padding;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
@@ -33,7 +33,7 @@
 }
 
 .mdp-ui-button {
-  @include button-base;
+  @include button-base($min-height: 36px, $padding: 6px 11px);
   display: inline-flex;
   align-items: center;
   justify-content: center;

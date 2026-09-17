@@ -16,6 +16,7 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    scrollbar-gutter: stable;
     contain: content;
     @include v.scrollbar-thin;
   }
@@ -34,6 +35,12 @@
 
   &__skeleton {
     padding: 8px 6px 4px;
+    opacity: 1;
+    transition: opacity 120ms ease;
+
+    &.is-pending {
+      opacity: 0;
+    }
   }
 
   &__empty {
@@ -133,5 +140,11 @@
   .mdp-toc__link {
     min-height: 44px;
     padding-block: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-toc__skeleton {
+    transition: none;
   }
 }

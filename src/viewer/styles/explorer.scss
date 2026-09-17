@@ -12,6 +12,7 @@
   min-height: 0;
   flex: 1;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   padding-right: 3px;
   @include v.scrollbar-thin;
 }
@@ -326,6 +327,16 @@
   border: 1px dashed var(--mdp-border);
   border-radius: v.$radius-small;
   background: color-mix(in srgb, var(--mdp-surface) 52%, transparent);
+}
+
+.mdp-explorer__loading,
+.mdp-explorer__busy-view {
+  opacity: 1;
+  transition: opacity 120ms ease;
+
+  &.is-pending {
+    opacity: 0;
+  }
 }
 
 .mdp-explorer__list {
@@ -700,6 +711,13 @@
 
   &.is-expanded .mdp-explorer__tree-chevron::before {
     transform: translateY(-0.75px) rotate(45deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-explorer__loading,
+  .mdp-explorer__busy-view {
+    transition: none;
   }
 }
 

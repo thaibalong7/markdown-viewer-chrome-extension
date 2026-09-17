@@ -4,6 +4,7 @@ import { getToolbarHeightInScrollRoot } from '../../scroll-utils.js'
 import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
 import { PanelHeader } from './common/PanelHeader.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
+import { useDelayedBusyState } from '../hooks/useDelayedBusyState.js'
 import { useEditorState } from '../contexts/EditorContext.jsx'
 import {
   OUTLINE_AUTO_FOLLOW_PAUSE_MS,
@@ -30,6 +31,10 @@ export function OutlinePanel({
     () => (tocItems || []).filter((item) => item?.id && item?.el),
     [tocItems]
   )
+  const loadingVisible = useDelayedBusyState(!tocReady)
+  const hasPreviousOutline = outlineItems.length > 0
+  const showLoadingPlaceholder = loadingVisible || (!tocReady && !hasPreviousOutline)
+  const loadingPlaceholderPending = showLoadingPlaceholder && !loadingVisible
 
   const headings = useMemo(
     () => outlineItems.map((item) => ({ id: item.id, el: item.el })),
@@ -104,22 +109,24 @@ export function OutlinePanel({
       <PanelHeader
         className="mdp-outline__header"
         title="Outline"
-        meta={tocReady
-          ? `${outlineItems.length} ${outlineItems.length === 1 ? 'heading' : 'headings'}`
-          : 'Loading…'}
+        meta={loadingVisible
+          ? 'Loading…'
+          : outlineItems.length || tocReady
+            ? `${outlineItems.length} ${outlineItems.length === 1 ? 'heading' : 'headings'}`
+            : ''}
       />
       <nav
         className="mdp-toc"
         aria-label="Table of contents"
-        aria-busy={!tocReady}
+        aria-busy={!tocReady || loadingVisible}
         ref={tocScrollRef}
         onWheel={pauseAutoFollowForTocInteraction}
         onPointerDown={pauseAutoFollowForTocInteraction}
         onKeyDown={pauseAutoFollowForTocInteraction}
       >
-        {!tocReady ? (
+        {showLoadingPlaceholder ? (
           <SkeletonBlock
-            className="mdp-toc__skeleton"
+            className={`mdp-toc__skeleton${loadingPlaceholderPending ? ' is-pending' : ''}`}
             lines={OUTLINE_SKELETON_WIDTHS.length}
             widths={OUTLINE_SKELETON_WIDTHS}
             lineHeight={14}

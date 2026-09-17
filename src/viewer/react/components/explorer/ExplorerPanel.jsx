@@ -5,6 +5,7 @@ import { getWorkspaceRootUrl } from '../../../explorer/explorer-state.js'
 import { buildCollapsedExpandedMap } from '../../../explorer/explorer-tree-utils.js'
 import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
 import { useExplorer } from '../../hooks/useExplorer.js'
+import { useDelayedBusyState } from '../../hooks/useDelayedBusyState.js'
 import { ExplorerHeader } from './ExplorerHeader.jsx'
 import { ExplorerProgress } from './ExplorerProgress.jsx'
 import {
@@ -18,50 +19,70 @@ import { FolderRow } from './FolderRow.jsx'
 export function ExplorerPanel({ bridge }) {
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
+  const actualBusy = state.view === 'loading' || state.view === 'progress'
+  const loadingVisible = useDelayedBusyState(actualBusy)
+  const lastSettledStateRef = useRef(null)
+  const busyStateRef = useRef(state)
+
+  if (actualBusy) {
+    busyStateRef.current = state
+  } else {
+    lastSettledStateRef.current = state
+  }
+
+  const viewState = actualBusy
+    ? loadingVisible || !lastSettledStateRef.current
+      ? state
+      : lastSettledStateRef.current
+    : loadingVisible
+      ? busyStateRef.current
+      : state
+  const presentedView =
+    viewState.view === 'progress' && !viewState.showProgressCancel ? 'loading' : viewState.view
   const panelRef = useRef(null)
   const pendingRefreshTreeScrollRef = useRef(null)
   const restoreScrollRafRef = useRef(0)
   const suppressNextAutoRevealRef = useRef('')
   const revealTimersRef = useRef({ afterScrollRaf: 0, raf: 0, timeouts: [] })
   const [scrollElement, setScrollElement] = useState(null)
-  const activeNormalized = normalizeFileUrlForCompare(state.activeFileUrl || '')
+  const activeNormalized = normalizeFileUrlForCompare(viewState.activeFileUrl || '')
   const refreshDisabled =
-    !state.currentFileUrl ||
-    isWorkspaceVirtualHref(state.currentFileUrl) ||
-    (state.explorerMode === 'workspace' && !getWorkspaceRootUrl()) ||
-    state.view === 'loading' ||
-    state.view === 'progress'
-  const isBusy = state.view === 'loading' || state.view === 'progress'
-  const showCollapseAllFolders = state.view === 'tree'
+    !viewState.currentFileUrl ||
+    isWorkspaceVirtualHref(viewState.currentFileUrl) ||
+    (viewState.explorerMode === 'workspace' && !getWorkspaceRootUrl()) ||
+    actualBusy ||
+    loadingVisible
+  const isBusy = actualBusy || loadingVisible
+  const showCollapseAllFolders = presentedView === 'tree'
   const collapseAllExpandedMap = useMemo(
     () =>
       buildCollapsedExpandedMap(
-        state.tree?.children || [],
-        state.activeFileUrl,
-        state.expandedMap,
+        viewState.tree?.children || [],
+        viewState.activeFileUrl,
+        viewState.expandedMap,
         normalizeFileUrlForCompare
       ),
-    [state.activeFileUrl, state.expandedMap, state.tree]
+    [viewState.activeFileUrl, viewState.expandedMap, viewState.tree]
   )
-  const canCollapseAllFolders = Array.from(state.expandedMap.values()).some(Boolean)
+  const canCollapseAllFolders = Array.from(viewState.expandedMap.values()).some(Boolean)
   const collapseKeepsOpenFilePath = Array.from(collapseAllExpandedMap.values()).some(Boolean)
   const refreshTooltip = (() => {
-    if (state.view === 'loading' || state.view === 'progress') return 'Refresh is available after scanning finishes'
-    if (!state.currentFileUrl) return 'Open a supported file before refreshing'
-    if (isWorkspaceVirtualHref(state.currentFileUrl)) return 'Refresh is unavailable for virtual workspace files'
-    if (state.explorerMode === 'workspace' && !getWorkspaceRootUrl()) return 'Refresh is unavailable for virtual workspaces'
+    if (isBusy) return 'Refresh is available after scanning finishes'
+    if (!viewState.currentFileUrl) return 'Open a supported file before refreshing'
+    if (isWorkspaceVirtualHref(viewState.currentFileUrl)) return 'Refresh is unavailable for virtual workspace files'
+    if (viewState.explorerMode === 'workspace' && !getWorkspaceRootUrl()) return 'Refresh is unavailable for virtual workspaces'
     return state.isRefreshing ? 'Refreshing file and list' : 'Refresh open file and file list'
   })()
   const treeRows = useMemo(
-    () => flattenVisibleTree(state.tree?.children || [], state.expandedMap),
-    [state.tree, state.expandedMap]
+    () => flattenVisibleTree(viewState.tree?.children || [], viewState.expandedMap),
+    [viewState.tree, viewState.expandedMap]
   )
   const activeFileIndex = useMemo(
     () =>
-      state.files.findIndex(
+      viewState.files.findIndex(
         (file) => normalizeFileUrlForCompare(file?.href || '') === activeNormalized
       ),
-    [activeNormalized, state.files]
+    [activeNormalized, viewState.files]
   )
   const activeTreeIndex = useMemo(
     () =>
@@ -72,15 +93,15 @@ export function ExplorerPanel({ bridge }) {
     [activeNormalized, treeRows]
   )
   const headerLayoutKey = [
-    state.actionsMode,
-    state.backLabel,
-    state.depthNotice,
-    state.filesContext?.currentLine,
-    state.filesContext?.statusLine,
-    state.filesContext?.warningLine,
-    state.showBack ? 'back' : 'no-back',
-    state.summaryDirectoryLabel,
-    state.summaryFileCount
+    viewState.actionsMode,
+    viewState.backLabel,
+    viewState.depthNotice,
+    viewState.filesContext?.currentLine,
+    viewState.filesContext?.statusLine,
+    viewState.filesContext?.warningLine,
+    viewState.showBack ? 'back' : 'no-back',
+    viewState.summaryDirectoryLabel,
+    viewState.summaryFileCount
   ].join('|')
 
   useEffect(() => {
@@ -111,7 +132,7 @@ export function ExplorerPanel({ bridge }) {
   }, [state.isRefreshing, state.view])
 
   const fileVirtualizer = useVirtualizer({
-    count: state.files.length,
+    count: viewState.files.length,
     getScrollElement: () => scrollElement,
     estimateSize: () => 36,
     overscan: 10
@@ -153,7 +174,7 @@ export function ExplorerPanel({ bridge }) {
   }, [clearRevealTimers, scrollElement])
 
   useEffect(() => {
-    if (state.view !== 'files') return
+    if (presentedView !== 'files') return
     if (activeFileIndex < 0) return
     if (suppressNextAutoRevealRef.current === activeNormalized) {
       suppressNextAutoRevealRef.current = ''
@@ -166,11 +187,11 @@ export function ExplorerPanel({ bridge }) {
     fileVirtualizer,
     headerLayoutKey,
     revealActiveRow,
-    state.view
+    presentedView
   ])
 
   useEffect(() => {
-    if (state.view !== 'tree') return
+    if (presentedView !== 'tree') return
     if (activeTreeIndex < 0) return
     if (suppressNextAutoRevealRef.current === activeNormalized) {
       suppressNextAutoRevealRef.current = ''
@@ -182,7 +203,7 @@ export function ExplorerPanel({ bridge }) {
     activeTreeIndex,
     headerLayoutKey,
     revealActiveRow,
-    state.view,
+    presentedView,
     treeVirtualizer
   ])
 
@@ -241,13 +262,13 @@ export function ExplorerPanel({ bridge }) {
       ref={panelRef}
     >
       <ExplorerHeader
-        filesContext={state.filesContext}
-        summaryDirectoryLabel={state.summaryDirectoryLabel}
-        summaryFileCount={state.summaryFileCount}
-        depthNotice={state.depthNotice}
-        actionsMode={state.actionsMode}
-        showBack={state.showBack}
-        backLabel={state.backLabel}
+        filesContext={viewState.filesContext}
+        summaryDirectoryLabel={viewState.summaryDirectoryLabel}
+        summaryFileCount={viewState.summaryFileCount}
+        depthNotice={viewState.depthNotice}
+        actionsMode={viewState.actionsMode}
+        showBack={viewState.showBack}
+        backLabel={viewState.backLabel}
         isRefreshing={state.isRefreshing}
         refreshDisabled={refreshDisabled}
         refreshTooltip={refreshTooltip}
@@ -261,19 +282,25 @@ export function ExplorerPanel({ bridge }) {
         onExitWorkspace={actions.onExitWorkspace}
       />
 
-      <div className="mdp-explorer__loading" hidden={state.view !== 'loading'}>
+      <div
+        className={`mdp-explorer__loading${!loadingVisible ? ' is-pending' : ''}`}
+        hidden={presentedView !== 'loading'}
+      >
         <SkeletonBlock lines={loadingWidths.length} widths={loadingWidths} lineHeight={14} gap={10} />
       </div>
 
-      <div className="mdp-explorer__empty" hidden={state.view !== 'empty'}>
+      <div className="mdp-explorer__empty" hidden={presentedView !== 'empty'}>
         No supported files found in this directory.
       </div>
 
-      <div hidden={state.view !== 'progress'}>
+      <div
+        className={`mdp-explorer__busy-view${!loadingVisible ? ' is-pending' : ''}`}
+        hidden={presentedView !== 'progress'}
+      >
         <ExplorerProgress
-          headline={state.progressHeadline}
-          text={state.progressText}
-          showCancel={state.showProgressCancel}
+          headline={viewState.progressHeadline}
+          text={viewState.progressText}
+          showCancel={viewState.showProgressCancel}
           onCancel={actions.onCancelProgress}
         />
       </div>
@@ -282,11 +309,11 @@ export function ExplorerPanel({ bridge }) {
         className="mdp-explorer__list mdp-explorer__list--virtual"
         role="tree"
         aria-label="Files in current folder"
-        hidden={state.view !== 'files'}
+        hidden={presentedView !== 'files'}
         style={{ height: `${fileVirtualizer.getTotalSize()}px` }}
       >
         {fileVirtualItems.map((virtualItem) => {
-          const file = state.files[virtualItem.index]
+          const file = viewState.files[virtualItem.index]
           if (!file) return null
           return (
             <FileRow
@@ -304,8 +331,8 @@ export function ExplorerPanel({ bridge }) {
       <ul
         className="mdp-explorer__list mdp-explorer__list--virtual"
         role="tree"
-        aria-label={state.listAriaLabel || 'Workspace files'}
-        hidden={state.view !== 'tree'}
+        aria-label={viewState.listAriaLabel || 'Workspace files'}
+        hidden={presentedView !== 'tree'}
         style={{ height: `${treeVirtualizer.getTotalSize()}px` }}
       >
         {treeVirtualItems.map((virtualItem) => {

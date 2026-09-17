@@ -61,4 +61,15 @@ describe('editor layout styles', () => {
       /\.mdp-sidebar__resize-handle--right\s*\{[^}]*left: -4\.5px/s
     )
   })
+
+  it('gives the light/dark quick toggle distinct theme-aware emphasis', () => {
+    expect(layoutCss).toMatch(
+      /\.mdp-fab-btn--theme\s*\{[^}]*--mdp-theme-action-color:\s*var\(--mdp-link\);[^}]*box-shadow:/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-fab-btn--theme\[aria-pressed=true\]\s*\{[^}]*--mdp-theme-action-color:\s*var\(--mdp-warning\);/s
+    )
+    expect(layoutCss).toContain('.mdp-fab-btn__theme-icon--light')
+    expect(layoutCss).toContain('.mdp-fab-btn__theme-icon--dark')
+  })
 })

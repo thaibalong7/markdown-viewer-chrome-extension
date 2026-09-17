@@ -22,7 +22,8 @@ export function mountViewerReact(container, options = {}) {
     onHeadingNavigate,
     onEditModeChange,
     onSave,
-    onViewModeChange
+    onViewModeChange,
+    onThemeToggle
   } = options
   const root = createRoot(container)
   let shellReadyResolve = () => { }
@@ -53,6 +54,7 @@ export function mountViewerReact(container, options = {}) {
     onEditModeChange,
     onSave,
     onViewModeChange,
+    onThemeToggle,
     dirty: false,
     saveStatus: 'saved',
     onShowToastReady: (showToastFn) => {

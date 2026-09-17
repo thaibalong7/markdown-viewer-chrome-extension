@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
+import { getLightDarkThemeToggleTarget } from '../../../theme/index.js'
 import {
   buildExportFilename,
   exportAsHtml,
@@ -20,6 +21,7 @@ import { SidebarToggleIcon } from './icons/SidebarToggleIcon.jsx'
 import { SaveIcon } from './icons/SaveIcon.jsx'
 import { FocusIcon } from './icons/FocusIcon.jsx'
 import { CopyLinkIcon } from './icons/CopyLinkIcon.jsx'
+import { ThemeToggleIcon } from './icons/ThemeToggleIcon.jsx'
 
 export function FloatingActions({
   getArticleEl,
@@ -27,7 +29,8 @@ export function FloatingActions({
   getCurrentFileUrl,
   documentUiState,
   onSave,
-  onViewModeChange
+  onViewModeChange,
+  onThemeToggle
 }) {
   const exportBtnRef = useRef(null)
   const exportWrapRef = useRef(null)
@@ -35,6 +38,7 @@ export function FloatingActions({
   const editorState = useEditorState()
   const editorDispatch = useEditorDispatch()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [themeSaving, setThemeSaving] = useState(false)
   const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
   const currentFileUrl = getCurrentFileUrl?.() || ''
   const capabilities = documentUiState?.capabilities || {}
@@ -48,6 +52,9 @@ export function FloatingActions({
   const viewModes = Array.isArray(capabilities.viewModes) ? capabilities.viewModes : []
   const canToggleViewMode = viewModes.includes('rendered') && viewModes.includes('raw')
   const isRawMode = documentUiState?.viewMode === 'raw'
+  const currentThemePreset = String(getSettings?.()?.theme?.preset || '').toLowerCase()
+  const themeToggleTarget = getLightDarkThemeToggleTarget(currentThemePreset)
+  const canToggleTheme = Boolean(themeToggleTarget && typeof onThemeToggle === 'function')
   useEffect(() => {
     if (!visible || isLoading) setMenuOpen(false)
   }, [isLoading, visible])
@@ -155,6 +162,19 @@ export function FloatingActions({
     onViewModeChange?.(isRawMode ? 'rendered' : 'raw')
   }
 
+  const onThemeToggleClick = () => {
+    if (!canToggleTheme || themeSaving) return
+    setMenuOpen(false)
+    setThemeSaving(true)
+    void (async () => {
+      try {
+        await onThemeToggle()
+      } finally {
+        setThemeSaving(false)
+      }
+    })()
+  }
+
   return (
     <div
       className="mdp-floating-actions"
@@ -174,6 +194,25 @@ export function FloatingActions({
           onClick={onSidebarToggleClick}
         >
           <SidebarToggleIcon className="mdp-fab-btn__icon" />
+        </IconButton>
+      )}
+
+      {canToggleTheme && (
+        <IconButton
+          tooltip={themeSaving
+            ? 'Switching theme…'
+            : `Switch to ${themeToggleTarget} theme`}
+          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
+          className="mdp-fab-btn mdp-fab-btn--theme"
+          aria-label={`Switch to ${themeToggleTarget} theme`}
+          pressed={currentThemePreset === 'dark'}
+          disabled={themeSaving}
+          onClick={onThemeToggleClick}
+        >
+          <ThemeToggleIcon
+            className="mdp-fab-btn__icon"
+            targetPreset={themeToggleTarget}
+          />
         </IconButton>
       )}
 

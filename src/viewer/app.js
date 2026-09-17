@@ -1,4 +1,5 @@
 import { logger } from '../shared/logger.js'
+import { deepMerge } from '../shared/deep-merge.js'
 import { needsFullRender } from '../shared/settings-diff.js'
 import { createArticleInteractions } from './article-interactions.js'
 import { resolveMarkdownLink } from './navigation/link-resolver.js'
@@ -14,6 +15,8 @@ import { applyReaderStyles, createStyleElement } from './app/viewerStyles.js'
 import { createGlobalViewerListeners } from './app/globalViewerListeners.js'
 import { createDocumentSessionController } from './app/documentSessionController.js'
 import { createDocumentIdentity } from './documents/document-model.js'
+import { getLightDarkThemeToggleTarget } from '../theme/index.js'
+import { saveSettings } from '../settings/settings-client.js'
 import { getExplorerMode } from './explorer/explorer-state.js'
 import { documentTitleFromUrl } from './explorer/url-utils.js'
 import {
@@ -60,6 +63,7 @@ export class MarkdownViewerApp {
       revokeAssetUrl: null
     }
     this._documentSession = null
+    this._themeTogglePromise = null
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
     this._renderController = createRenderController({
@@ -214,6 +218,9 @@ export class MarkdownViewerApp {
       },
       onViewModeChange: (viewMode) => {
         void this._documentSession.setViewMode(viewMode)
+      },
+      onThemeToggle: () => {
+        return this._toggleLightDarkTheme()
       }
     })
 
@@ -368,6 +375,47 @@ export class MarkdownViewerApp {
     return this.render({ preserveScroll: true, honorHash: false })
   }
 
+  _toggleLightDarkTheme() {
+    if (this._destroyed) return Promise.resolve(null)
+    if (this._themeTogglePromise) return this._themeTogglePromise
+
+    const previousSettings = this.settings
+    const targetPreset = getLightDarkThemeToggleTarget(previousSettings?.theme?.preset)
+    if (!targetPreset) return Promise.resolve(null)
+    const optimisticSettings = deepMerge(previousSettings, {
+      theme: { preset: targetPreset }
+    })
+
+    const operation = (async () => {
+      try {
+        // Apply CSS variables and start the theme-aware render immediately so
+        // the button never waits for a service-worker broadcast to feel live.
+        const localUpdate = this.updateSettings(optimisticSettings)
+        const savedSettings = await saveSettings({ theme: { preset: targetPreset } })
+        await localUpdate
+        if (this._destroyed) return savedSettings
+
+        // Reconcile with the canonical saved object in case another settings
+        // field changed while the theme request was in flight.
+        await this.updateSettings(savedSettings)
+        this.showToast(`Switched to ${targetPreset} theme`, { variant: 'success' })
+        return savedSettings
+      } catch (error) {
+        if (!this._destroyed && this.settings?.theme?.preset === targetPreset) {
+          await this.updateSettings(previousSettings)
+        }
+        logger.warn('Could not switch reader theme.', error)
+        this.showToast('Could not switch theme', { variant: 'error' })
+        return null
+      } finally {
+        if (this._themeTogglePromise === operation) this._themeTogglePromise = null
+      }
+    })()
+
+    this._themeTogglePromise = operation
+    return operation
+  }
+
   destroy() {
     if (this._destroyed) return
     this._destroyed = true
@@ -381,6 +429,7 @@ export class MarkdownViewerApp {
     this._articleInteractions = null
     this._reactHandle?.unmount()
     this._reactHandle = null
+    this._themeTogglePromise = null
     this._styleElements = []
     this._reactContainerEl = null
     this.container.innerHTML = ''

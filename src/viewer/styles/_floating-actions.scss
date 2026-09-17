@@ -42,6 +42,7 @@
     color 140ms ease,
     background-color 140ms ease,
     border-color 140ms ease,
+    box-shadow 140ms ease,
     transform 140ms ease;
 
   &:hover {
@@ -88,6 +89,46 @@
   width: 17px;
   height: 17px;
   flex-shrink: 0;
+}
+
+.mdp-fab-btn--theme {
+  --mdp-theme-action-color: var(--mdp-link);
+  --mdp-theme-action-soft: var(--mdp-link-soft);
+
+  color: var(--mdp-theme-action-color);
+  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 44%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-theme-action-soft) 88%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--mdp-theme-action-color) 18%, transparent);
+
+  &:hover {
+    color: var(--mdp-theme-action-color);
+    border-color: color-mix(in srgb, var(--mdp-theme-action-color) 68%, var(--mdp-border));
+    background: color-mix(in srgb, var(--mdp-theme-action-soft) 76%, var(--mdp-theme-action-color) 10%);
+    box-shadow: 0 3px 11px color-mix(in srgb, var(--mdp-theme-action-color) 25%, transparent);
+  }
+
+  &[aria-pressed='true'] {
+    --mdp-theme-action-color: var(--mdp-warning);
+    --mdp-theme-action-soft: var(--mdp-warning-soft);
+  }
+}
+
+.mdp-fab-btn__theme-icon {
+  transition: transform 180ms ease;
+}
+
+.mdp-fab-btn__theme-icon--dark path,
+.mdp-fab-btn__theme-icon--light circle {
+  fill: currentColor;
+  fill-opacity: 0.16;
+}
+
+.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--dark {
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--light {
+  transform: rotate(18deg) scale(1.08);
 }
 
 .mdp-fab-export {

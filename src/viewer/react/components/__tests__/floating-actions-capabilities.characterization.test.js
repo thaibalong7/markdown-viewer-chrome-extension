@@ -7,7 +7,14 @@ import { ToastProvider } from '../../contexts/ToastContext.jsx'
 import { FloatingActions } from '../FloatingActions.jsx'
 import { getDocumentCapabilities } from '../../../../shared/file-types.js'
 
-function renderActions(currentFileUrl, fileTypeId = 'markdown', viewMode = 'rendered', loading = false) {
+function renderActions(
+  currentFileUrl,
+  fileTypeId = 'markdown',
+  viewMode = 'rendered',
+  loading = false,
+  themePreset = 'light',
+  onThemeToggle = () => {}
+) {
   return renderToStaticMarkup(
     React.createElement(
       ToastProvider,
@@ -17,7 +24,7 @@ function renderActions(currentFileUrl, fileTypeId = 'markdown', viewMode = 'rend
         null,
         React.createElement(FloatingActions, {
           getArticleEl: () => null,
-          getSettings: () => ({}),
+          getSettings: () => ({ theme: { preset: themePreset } }),
           getCurrentFileUrl: () => currentFileUrl,
           documentUiState: {
             displayName: fileTypeId === 'text'
@@ -32,7 +39,8 @@ function renderActions(currentFileUrl, fileTypeId = 'markdown', viewMode = 'rend
             viewMode,
             loading
           },
-          onSave: () => {}
+          onSave: () => {},
+          onThemeToggle
         })
       )
     )
@@ -110,5 +118,24 @@ describe('current document-action visibility assumptions', () => {
     expect(html).toMatch(/<button[^>]*aria-label="View source"[^>]*disabled=""/)
     expect(html).toMatch(/<button[^>]*aria-label="Copy open file link"[^>]*disabled=""/)
     expect(html).toMatch(/<button[^>]*aria-label="Print — use Save as PDF in the print dialog\."[^>]*disabled=""/)
+  })
+
+  it('offers a fixed light/dark theme toggle without absorbing future presets', () => {
+    const lightThemeHtml = renderActions('file:///fixtures/index.md')
+    const darkThemeHtml = renderActions(
+      'file:///fixtures/index.md',
+      'markdown',
+      'rendered',
+      false,
+      'dark'
+    )
+    expect(lightThemeHtml).toContain('aria-label="Switch to dark theme"')
+    expect(lightThemeHtml).toContain('mdp-fab-btn__theme-icon--dark')
+    expect(darkThemeHtml).toContain('aria-label="Switch to light theme"')
+    expect(darkThemeHtml).toContain('mdp-fab-btn__theme-icon--light')
+    expect(renderActions('file:///fixtures/index.md', 'markdown', 'rendered', false, 'sepia'))
+      .not.toContain('mdp-fab-btn--theme')
+    expect(renderActions('file:///fixtures/index.md', 'markdown', 'rendered', false, 'light', null))
+      .not.toContain('mdp-fab-btn--theme')
   })
 })

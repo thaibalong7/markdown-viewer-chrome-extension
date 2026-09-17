@@ -35,6 +35,7 @@ export function ViewerApp({
   onEditModeChange,
   onSave,
   onViewModeChange,
+  onThemeToggle,
   dirty = false,
   saveStatus = 'saved'
 }) {
@@ -67,6 +68,7 @@ export function ViewerApp({
             documentUiState={documentUiState}
             onSave={onSave}
             onViewModeChange={onViewModeChange}
+            onThemeToggle={onThemeToggle}
           />
         </ViewerShell>
       </EditorProvider>

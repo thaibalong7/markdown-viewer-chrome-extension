@@ -8,7 +8,8 @@ const mocks = vi.hoisted(() => ({
   documentSessionDestroy: vi.fn(),
   documentSessionOpen: vi.fn(),
   interactionsDestroy: vi.fn(),
-  reactUnmount: vi.fn()
+  reactUnmount: vi.fn(),
+  mountOptions: null
 }))
 
 vi.mock('../../shared/logger.js', () => ({
@@ -56,6 +57,34 @@ vi.mock('../app/globalViewerListeners.js', () => ({
     unbind: mocks.globalUnbind
   })
 }))
+vi.mock('../../messaging/index.js', () => ({
+  MESSAGE_TYPES: { RECORD_FILE_OPENED: 'RECORD_FILE_OPENED' },
+  sendMessage: vi.fn().mockResolvedValue({ ok: true })
+}))
+vi.mock('../article-interactions.js', () => ({
+  createArticleInteractions: () => ({
+    bind: vi.fn(),
+    destroy: mocks.interactionsDestroy,
+    scrollToHash: vi.fn(),
+    closeImageLightbox: vi.fn()
+  })
+}))
+vi.mock('../react/mount.js', () => ({
+  mountViewerReact: (_container, options) => {
+    mocks.mountOptions = options
+    return {
+      partsPromise: Promise.resolve({
+        root: { style: { setProperty: vi.fn() } },
+        article: { style: {}, closest: vi.fn(() => null), removeAttribute: vi.fn() }
+      }),
+      unmount: mocks.reactUnmount,
+      updateSettings: vi.fn(),
+      updateDocumentUiState: vi.fn(),
+      bumpChrome: vi.fn(),
+      showToast: vi.fn()
+    }
+  }
+}))
 
 import { MarkdownViewerApp } from '../app.js'
 
@@ -68,6 +97,7 @@ beforeEach(() => {
   vi.stubGlobal('document', { title: '' })
   vi.stubGlobal('sessionStorage', { getItem: vi.fn(() => null) })
   mocks.documentSessionOpen.mockResolvedValue(true)
+  mocks.mountOptions = null
 })
 
 describe('MarkdownViewerApp cleanup characterization', () => {
@@ -160,5 +190,25 @@ describe('MarkdownViewerApp cleanup characterization', () => {
       '',
       'file:///fixtures/navigation/index.md'
     )
+  })
+
+  it('wires the floating theme action to the viewer theme handler', async () => {
+    const reactContainer = { className: '' }
+    vi.stubGlobal('document', {
+      title: '',
+      createElement: vi.fn(() => reactContainer)
+    })
+    const container = { innerHTML: '', appendChild: vi.fn() }
+    const app = new MarkdownViewerApp({
+      markdown: '# Fixture',
+      settings: { theme: { preset: 'light' } },
+      container
+    })
+    app._toggleLightDarkTheme = vi.fn().mockResolvedValue(null)
+
+    await app.init()
+    await mocks.mountOptions.onThemeToggle()
+
+    expect(app._toggleLightDarkTheme).toHaveBeenCalledOnce()
   })
 })

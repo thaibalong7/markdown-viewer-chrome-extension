@@ -79,6 +79,17 @@ export const BUILT_IN_THEMES = {
   dark: DARK_THEME_COLORS
 }
 
+// Keep the floating quick-toggle intentionally narrower than the full theme
+// registry so future presets do not silently become part of its cycle.
+const LIGHT_DARK_THEME_TARGETS = Object.freeze({ light: 'dark', dark: 'light' })
+
+export function getLightDarkThemeToggleTarget(preset) {
+  const normalizedPreset = String(preset || '').toLowerCase()
+  return Object.hasOwn(LIGHT_DARK_THEME_TARGETS, normalizedPreset)
+    ? LIGHT_DARK_THEME_TARGETS[normalizedPreset]
+    : null
+}
+
 export function getThemeColorsByPreset(preset) {
   const key = String(preset || '').toLowerCase()
   if (Object.prototype.hasOwnProperty.call(BUILT_IN_THEMES, key)) {

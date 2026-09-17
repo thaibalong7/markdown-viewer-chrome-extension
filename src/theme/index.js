@@ -74,9 +74,87 @@ const DARK_THEME_COLORS = {
   toastErrorBorder: '#b91c1c'
 }
 
+const SAKURA_THEME_COLORS = {
+  colorScheme: 'light',
+  background: '#f7f2f4',
+  surface: '#fffafb',
+  text: '#2f282b',
+  bodyText: '#3e3538',
+  heading: '#22191d',
+  border: '#ded5d8',
+  borderStrong: '#c8bcc0',
+  muted: '#73666d',
+  codeBg: '#f4ecef',
+  codeText: '#502c3b',
+  panelBg: '#f2e8ec',
+  panelStrong: '#e8dbdf',
+  link: '#983256',
+  linkSoft: '#fbeaf0',
+  accent: '#35755e',
+  accentSoft: '#e8f3ee',
+  warning: '#a05414',
+  warningSoft: '#fff2df',
+  danger: '#b53b49',
+  tableBorder: '#ded5d8',
+  tableHeaderBg: '#f4edf0',
+  tableRowAltBg: '#faf5f7',
+  toastInfoBg: '#fbeaf0',
+  toastInfoText: '#8f294e',
+  toastInfoBorder: '#edb8ca',
+  toastSuccessBg: '#edf8f2',
+  toastSuccessText: '#286149',
+  toastSuccessBorder: '#a9d8c3',
+  toastWarningBg: '#fff6e8',
+  toastWarningText: '#8b4513',
+  toastWarningBorder: '#edcf9d',
+  toastErrorBg: '#fff0f1',
+  toastErrorText: '#a52f3d',
+  toastErrorBorder: '#efb5bc'
+}
+
+const MATCHA_THEME_COLORS = {
+  colorScheme: 'light',
+  background: '#f2f4ec',
+  surface: '#faf8f2',
+  text: '#2b3227',
+  bodyText: '#373e33',
+  heading: '#1e261a',
+  border: '#d6dac9',
+  borderStrong: '#bcc3ad',
+  muted: '#656e5f',
+  codeBg: '#edf1e4',
+  codeText: '#2d4029',
+  panelBg: '#e9ece0',
+  panelStrong: '#dde2cf',
+  link: '#356a38',
+  linkSoft: '#e7efe0',
+  accent: '#2b6a54',
+  accentSoft: '#e1f0e7',
+  warning: '#945711',
+  warningSoft: '#fff3db',
+  danger: '#af3a3a',
+  tableBorder: '#d6dac9',
+  tableHeaderBg: '#e9eee0',
+  tableRowAltBg: '#f5f6ee',
+  toastInfoBg: '#e7efe0',
+  toastInfoText: '#335e35',
+  toastInfoBorder: '#b9cbb1',
+  toastSuccessBg: '#e6f3ec',
+  toastSuccessText: '#245f44',
+  toastSuccessBorder: '#a5d1ba',
+  toastWarningBg: '#fff4e2',
+  toastWarningText: '#804d17',
+  toastWarningBorder: '#e6cb9d',
+  toastErrorBg: '#feeeec',
+  toastErrorText: '#9d3333',
+  toastErrorBorder: '#e8b7b2'
+}
+
 export const BUILT_IN_THEMES = {
   light: LIGHT_THEME_COLORS,
-  dark: DARK_THEME_COLORS
+  dark: DARK_THEME_COLORS,
+  sakura: SAKURA_THEME_COLORS,
+  matcha: MATCHA_THEME_COLORS
 }
 
 // Keep the floating quick-toggle intentionally narrower than the full theme

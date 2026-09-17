@@ -6,7 +6,9 @@
 /** Reader `settings.theme.preset` -> Shiki theme id. */
 const PRESET_TO_SHIKI_THEME_ID = {
   light: 'github-light',
-  dark: 'github-dark'
+  dark: 'github-dark',
+  sakura: 'rose-pine-dawn',
+  matcha: 'everforest-light'
 }
 
 /**
@@ -58,7 +60,9 @@ const SHIKI_LANGUAGE_LOADERS = {
 
 const SHIKI_THEME_LOADERS = {
   'github-light': () => import('@shikijs/themes/github-light'),
-  'github-dark': () => import('@shikijs/themes/github-dark')
+  'github-dark': () => import('@shikijs/themes/github-dark'),
+  'rose-pine-dawn': () => import('@shikijs/themes/rose-pine-dawn'),
+  'everforest-light': () => import('@shikijs/themes/everforest-light')
 }
 
 /** Explicit allowlist of shipped Shiki language ids. */

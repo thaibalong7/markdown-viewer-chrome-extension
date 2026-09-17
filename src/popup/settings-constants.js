@@ -3,7 +3,9 @@ import { MERMAID_RENDERERS } from '../plugins/plugin-types.js'
 
 export const THEME_LABELS = {
   light: 'Light',
-  dark: 'Dark'
+  dark: 'Dark',
+  sakura: 'Sakura',
+  matcha: 'Matcha'
 }
 
 /** Display names for plugin toggles (keys match `PLUGIN_IDS` / persisted `settings.plugins`). */

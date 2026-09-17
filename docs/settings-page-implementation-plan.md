@@ -176,7 +176,7 @@ Các setting mới ở vòng sau là additive và được default-safe merge. C
 - `src/options/OptionsApp.jsx`
   - Page shell, section navigation, save status và route section đơn giản.
 - `src/options/options.scss`
-  - Style riêng cho full-page Settings; dùng token/phong cách từ design-system draft, không import CSS của Popup như một dependency ngược.
+  - Style riêng cho full-page Settings; dùng token/phong cách từ Viewer-first design system, không import CSS của Popup như một dependency ngược.
 - `src/options/sections/GeneralSettings.jsx`
 - `src/options/sections/ExplorerSettings.jsx`
 - `src/options/sections/PrivacySettings.jsx` — tạo khi làm phase privacy.
@@ -302,4 +302,3 @@ Manual smoke test:
 - Lưu folder path hoặc directory handle vào `chrome.storage.sync`.
 - Per-folder profiles.
 - Thay đổi thiết kế Viewer/Reader cùng lúc với Settings page.
-

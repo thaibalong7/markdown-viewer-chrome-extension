@@ -1,0 +1,84 @@
+@mixin light-theme {
+  --mdp-color-scheme: light;
+  --mdp-bg: #f6f8fb;
+  --mdp-surface: #ffffff;
+  --mdp-text: #172033;
+  --mdp-body-text: #273043;
+  --mdp-heading: #111827;
+  --mdp-border: #dce2ea;
+  --mdp-border-strong: #c5ced9;
+  --mdp-muted: #667085;
+  --mdp-code-bg: #f2f5f8;
+  --mdp-code-text: #172033;
+  --mdp-panel-bg: #eef2f6;
+  --mdp-panel-strong: #e3e9f0;
+  --mdp-link: #2563eb;
+  --mdp-link-soft: #eaf2ff;
+  --mdp-accent: #16815c;
+  --mdp-accent-soft: #e8f6ef;
+  --mdp-warning: #b35c00;
+  --mdp-warning-soft: #fff3dc;
+  --mdp-danger: #c2413a;
+  --mdp-table-border: #dce2ea;
+  --mdp-table-header-bg: #f2f5f8;
+  --mdp-table-row-alt-bg: #fafbfc;
+  --mdp-toast-info-bg: #eff6ff;
+  --mdp-toast-info-text: #1d4ed8;
+  --mdp-toast-info-border: #bfdbfe;
+  --mdp-toast-success-bg: #ecfdf5;
+  --mdp-toast-success-text: #047857;
+  --mdp-toast-success-border: #a7f3d0;
+  --mdp-toast-warning-bg: #fffbeb;
+  --mdp-toast-warning-text: #92400e;
+  --mdp-toast-warning-border: #fde68a;
+  --mdp-toast-error-bg: #fef2f2;
+  --mdp-toast-error-text: #b91c1c;
+  --mdp-toast-error-border: #fecaca;
+}
+
+@mixin dark-theme {
+  --mdp-color-scheme: dark;
+  --mdp-bg: #0d121b;
+  --mdp-surface: #151b26;
+  --mdp-text: #edf2f7;
+  --mdp-body-text: #dce4ee;
+  --mdp-heading: #f8fafc;
+  --mdp-border: #2d3848;
+  --mdp-border-strong: #465469;
+  --mdp-muted: #9ba9bb;
+  --mdp-code-bg: #0b111a;
+  --mdp-code-text: #e6edf3;
+  --mdp-panel-bg: #101722;
+  --mdp-panel-strong: #1d2735;
+  --mdp-link: #7ab7ff;
+  --mdp-link-soft: #122b4d;
+  --mdp-accent: #56d39a;
+  --mdp-accent-soft: #123529;
+  --mdp-warning: #f4b24e;
+  --mdp-warning-soft: #3b2a0e;
+  --mdp-danger: #ff8d85;
+  --mdp-table-border: #2d3848;
+  --mdp-table-header-bg: #1a2330;
+  --mdp-table-row-alt-bg: #111925;
+  --mdp-toast-info-bg: #0c2d6b;
+  --mdp-toast-info-text: #bfdbfe;
+  --mdp-toast-info-border: #1d4ed8;
+  --mdp-toast-success-bg: #063f2c;
+  --mdp-toast-success-text: #bbf7d0;
+  --mdp-toast-success-border: #047857;
+  --mdp-toast-warning-bg: #3b2a05;
+  --mdp-toast-warning-text: #fde68a;
+  --mdp-toast-warning-border: #b45309;
+  --mdp-toast-error-bg: #450a0a;
+  --mdp-toast-error-text: #fecaca;
+  --mdp-toast-error-border: #b91c1c;
+}
+
+@mixin application-foundation {
+  --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+  --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
+  --mdp-shadow-raised:
+    0 1px 2px color-mix(in srgb, var(--mdp-text) 3%, transparent),
+    0 4px 12px color-mix(in srgb, var(--mdp-text) 4%, transparent);
+  --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+}

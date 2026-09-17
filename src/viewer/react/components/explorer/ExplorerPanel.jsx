@@ -31,6 +31,7 @@ export function ExplorerPanel({ bridge }) {
     (state.explorerMode === 'workspace' && !getWorkspaceRootUrl()) ||
     state.view === 'loading' ||
     state.view === 'progress'
+  const isBusy = state.view === 'loading' || state.view === 'progress'
   const showCollapseAllFolders = state.view === 'tree'
   const collapseAllExpandedMap = useMemo(
     () =>
@@ -232,7 +233,13 @@ export function ExplorerPanel({ bridge }) {
   const treeVirtualItems = treeVirtualizer.getVirtualItems()
 
   return (
-    <div className="mdp-explorer" role="region" aria-label="Supported files in folder" ref={panelRef}>
+    <div
+      className="mdp-explorer"
+      role="region"
+      aria-label="Supported files in folder"
+      aria-busy={isBusy}
+      ref={panelRef}
+    >
       <ExplorerHeader
         filesContext={state.filesContext}
         summaryDirectoryLabel={state.summaryDirectoryLabel}

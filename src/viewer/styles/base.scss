@@ -1,27 +1,9 @@
+@use '../../shared/styles/tokens';
+
 #mdp-viewer-root,
 .mdp-root {
-  --mdp-color-scheme: light;
-  --mdp-bg: #f6f8fb;
-  --mdp-surface: #ffffff;
-  --mdp-text: #172033;
-  --mdp-body-text: #273043;
-  --mdp-heading: #111827;
-  --mdp-border: #dce2ea;
-  --mdp-border-strong: #c5ced9;
-  --mdp-muted: #667085;
-  --mdp-panel-strong: #e3e9f0;
-  --mdp-link-soft: #eaf2ff;
-  --mdp-accent: #16815c;
-  --mdp-accent-soft: #e8f6ef;
-  --mdp-warning: #b35c00;
-  --mdp-warning-soft: #fff3dc;
-  --mdp-danger: #c2413a;
-  --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
-  --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
-  --mdp-shadow-raised:
-    0 1px 2px rgb(15 23 42 / 0.025),
-    0 4px 12px rgb(15 23 42 / 0.035);
-  --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+  @include tokens.light-theme;
+  @include tokens.application-foundation;
   --mdp-toc-width: 280px;
   --mdp-files-width: 264px;
   --mdp-actions-rail-width: 60px;
@@ -29,25 +11,6 @@
   --mdp-font-family: system-ui;
   --mdp-font-size: 16px;
   --mdp-line-height: 1.7;
-  --mdp-code-bg: #f6f8fa;
-  --mdp-code-text: #1f2328;
-  --mdp-panel-bg: #f6f8fa;
-  --mdp-link: #0969da;
-  --mdp-table-border: #d0d7de;
-  --mdp-table-header-bg: #f6f8fa;
-  --mdp-table-row-alt-bg: #f8fafc;
-  --mdp-toast-info-bg: #eff6ff;
-  --mdp-toast-info-text: #1d4ed8;
-  --mdp-toast-info-border: #bfdbfe;
-  --mdp-toast-success-bg: #ecfdf5;
-  --mdp-toast-success-text: #047857;
-  --mdp-toast-success-border: #a7f3d0;
-  --mdp-toast-warning-bg: #fffbeb;
-  --mdp-toast-warning-text: #92400e;
-  --mdp-toast-warning-border: #fde68a;
-  --mdp-toast-error-bg: #fef2f2;
-  --mdp-toast-error-text: #b91c1c;
-  --mdp-toast-error-border: #fecaca;
   color: var(--mdp-text);
   color-scheme: var(--mdp-color-scheme);
   font-family:
@@ -102,10 +65,10 @@
   transform: translateX(-50%) translateY(12px);
   z-index: 20;
   max-width: min(420px, calc(100vw - 32px));
-  padding: 11px 16px 11px 18px;
+  padding: 11px 16px;
   border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--mdp-toast-text, var(--mdp-text));
   background: var(--mdp-toast-bg, var(--mdp-panel-bg));
   border: 1px solid var(--mdp-toast-border, var(--mdp-border));
@@ -116,15 +79,6 @@
     opacity 180ms ease,
     transform 180ms ease;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 8px auto 8px 6px;
-    width: 3px;
-    border-radius: 999px;
-    background: var(--mdp-toast-accent, var(--mdp-link));
-  }
-
   &.is-visible {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -134,28 +88,24 @@
     --mdp-toast-bg: var(--mdp-toast-info-bg);
     --mdp-toast-text: var(--mdp-toast-info-text);
     --mdp-toast-border: var(--mdp-toast-info-border);
-    --mdp-toast-accent: var(--mdp-link);
   }
 
   &--success {
     --mdp-toast-bg: var(--mdp-toast-success-bg);
     --mdp-toast-text: var(--mdp-toast-success-text);
     --mdp-toast-border: var(--mdp-toast-success-border);
-    --mdp-toast-accent: var(--mdp-accent);
   }
 
   &--warning {
     --mdp-toast-bg: var(--mdp-toast-warning-bg);
     --mdp-toast-text: var(--mdp-toast-warning-text);
     --mdp-toast-border: var(--mdp-toast-warning-border);
-    --mdp-toast-accent: var(--mdp-warning);
   }
 
   &--error {
     --mdp-toast-bg: var(--mdp-toast-error-bg);
     --mdp-toast-text: var(--mdp-toast-error-text);
     --mdp-toast-border: var(--mdp-toast-error-border);
-    --mdp-toast-accent: var(--mdp-danger);
   }
 }
 

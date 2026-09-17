@@ -69,6 +69,14 @@ export class MarkdownViewerApp {
       getArticleInteractions: () => this._articleInteractions,
       getReactHandle: () => this._reactHandle,
       getScrollRoot: () => this.getScrollRoot(),
+      onBusyChange: (isBusy) => {
+        const currentUiState = this._documentSession?.getUiState()
+        if (!currentUiState) return
+        this._reactHandle?.updateDocumentUiState?.({
+          ...currentUiState,
+          loading: Boolean(isBusy)
+        })
+      },
       container: this.container
     })
     this._editorSession = createEditorSessionController({

@@ -4,6 +4,7 @@ import { createEditorTheme } from '../../editor/editor-theme.js'
 import { getScrollFraction } from '../../editor/scroll-sync.js'
 import { countWords } from '../../editor/editor-stats.js'
 import { normalizeEditorSettings } from '../../../shared/constants/editor.js'
+import { LoadingState } from '../../../shared/react/LoadingState.jsx'
 
 /**
  * @param {object} props
@@ -308,9 +309,7 @@ export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContent
       ref={handleContainerRef}
     >
       {loading && (
-        <div style={{ padding: '16px', color: 'var(--mdp-muted)', fontSize: '14px' }}>
-          Loading editor…
-        </div>
+        <LoadingState className="mdp-editor-panel__loading" label="Loading editor…" />
       )}
     </div>
   )

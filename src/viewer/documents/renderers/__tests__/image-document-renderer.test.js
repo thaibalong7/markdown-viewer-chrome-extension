@@ -63,7 +63,7 @@ describe('image document renderer', () => {
   it('renders through img.src, preserves an accessible loading state, and enables zoom on load', async () => {
     const { articleEl } = createHarness()
     const prepareZoomableImages = vi.fn()
-    const result = await render({
+    const renderPromise = render({
       loadedDocument: {
         document: { displayName: 'Xin chào.png' },
         assetUrl: 'blob:photo'
@@ -71,10 +71,15 @@ describe('image document renderer', () => {
       articleEl,
       services: { prepareZoomableImages }
     })
+    await Promise.resolve()
 
     const [figure] = articleEl.children
     const [loading, image] = figure.children
-    expect(loading.textContent).toBe('Loading Xin chào.png…')
+    expect(loading).toMatchObject({
+      className: expect.stringContaining('mdp-ui-loading-state'),
+      attributes: { role: 'status', 'aria-busy': 'true' }
+    })
+    expect(loading.children[1].textContent).toBe('Loading Xin chào.png…')
     expect(image).toMatchObject({
       tagName: 'IMG',
       className: 'mdp-image-document__image',
@@ -86,6 +91,7 @@ describe('image document renderer', () => {
     image.naturalWidth = 640
     image.naturalHeight = 480
     image.dispatch('load')
+    const result = await renderPromise
     expect(image.hidden).toBe(false)
     expect(figure.children).toEqual([image])
     expect(prepareZoomableImages).toHaveBeenCalledOnce()
@@ -110,15 +116,17 @@ describe('image document renderer', () => {
     })
 
     const next = createHarness()
-    await render({
+    const brokenRender = render({
       loadedDocument: {
         document: { displayName: '<script>.png' },
         assetUrl: 'file:///broken.png'
       },
       articleEl: next.articleEl
     })
+    await Promise.resolve()
     const figure = next.articleEl.children[0]
     figure.children[1].dispatch('error')
+    await brokenRender
     expect(figure.children[0]).toMatchObject({
       textContent: 'Could not display <script>.png.',
       attributes: { role: 'alert' }
@@ -127,7 +135,7 @@ describe('image document renderer', () => {
 
   it('mounts SVG only through img.src and never inserts source markup', async () => {
     const { articleEl } = createHarness()
-    await render({
+    const renderPromise = render({
       loadedDocument: {
         document: { displayName: 'unsafe.svg', fileTypeId: 'svg-image' },
         text: '<svg onload="alert(1)"><script>alert(1)</script></svg>',
@@ -135,14 +143,19 @@ describe('image document renderer', () => {
       },
       articleEl
     })
+    await Promise.resolve()
 
     const [loading, image] = articleEl.children[0].children
-    expect(loading.textContent).toBe('Loading unsafe.svg…')
+    expect(loading.children[1].textContent).toBe('Loading unsafe.svg…')
     expect(image).toMatchObject({
       tagName: 'IMG',
       src: 'blob:unsafe-svg',
       alt: 'unsafe.svg'
     })
     expect(articleEl.children[0].children.every((node) => node.tagName !== 'SVG')).toBe(true)
+    image.naturalWidth = 100
+    image.naturalHeight = 100
+    image.dispatch('load')
+    await renderPromise
   })
 })

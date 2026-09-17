@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Button } from '../shared/react/Button.jsx'
+import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { useSettingsForm } from './hooks/useSettingsForm.js'
 import { AdvancedSettings } from './sections/AdvancedSettings.jsx'
 import { ExplorerSettings } from './sections/ExplorerSettings.jsx'
@@ -15,6 +17,7 @@ const SECTIONS = [
 export function OptionsApp() {
   const [activeSection, setActiveSection] = useState(SECTIONS[0].id)
   const form = useSettingsForm()
+  const statusVariant = form.status.type === 'idle' ? 'info' : form.status.type
 
   return (
     <div className="settings-app">
@@ -27,11 +30,11 @@ export function OptionsApp() {
           </div>
         </div>
         <div
-          className={`settings-status settings-status--${form.status.type}`}
+          className={`mdp-ui-status mdp-ui-status--${statusVariant} settings-status`}
           role="status"
           aria-live="polite"
         >
-          <span aria-hidden="true" />
+          <span className="mdp-ui-status__dot" aria-hidden="true" />
           {form.status.message}
         </div>
       </header>
@@ -42,6 +45,7 @@ export function OptionsApp() {
             <span>Section</span>
             <select
               id="settings-section-select"
+              className="mdp-ui-select"
               value={activeSection}
               onChange={(event) => setActiveSection(event.target.value)}
             >
@@ -51,16 +55,16 @@ export function OptionsApp() {
             </select>
           </label>
 
-          <nav className="settings-nav" aria-label="Settings sections">
+          <nav className="mdp-ui-side-nav settings-nav" aria-label="Settings sections">
             {SECTIONS.map((section) => (
               <button
                 key={section.id}
                 type="button"
-                className={activeSection === section.id ? 'is-active' : ''}
+                className={`mdp-ui-side-nav__item${activeSection === section.id ? ' is-active' : ''}`}
                 aria-current={activeSection === section.id ? 'page' : undefined}
                 onClick={() => setActiveSection(section.id)}
               >
-                <span>{section.label}</span>
+                <strong>{section.label}</strong>
                 <small>{section.description}</small>
               </button>
             ))}
@@ -69,18 +73,21 @@ export function OptionsApp() {
 
         <main className="settings-main">
           {form.loading ? (
-            <div className="settings-loading" aria-label="Loading settings">
-              <div />
-              <div />
-              <div />
+            <div className="mdp-ui-card settings-loading" aria-label="Loading settings" aria-busy="true">
+              <SkeletonBlock
+                lines={5}
+                gap={16}
+                lineHeight={18}
+                widths={['34%', '72%', '100%', '88%', '56%']}
+              />
             </div>
           ) : !form.settings ? (
-            <div className="settings-error-state">
-              <h2>Settings could not be loaded</h2>
-              <p>{form.status.message}</p>
-              <button type="button" className="settings-button" onClick={() => void form.load()}>
+            <div className="mdp-ui-state mdp-ui-state--error settings-error-state">
+              <strong className="mdp-ui-state__title">Settings could not be loaded</strong>
+              <p className="mdp-ui-state__message">{form.status.message}</p>
+              <Button className="mdp-ui-state__action" onClick={() => void form.load()}>
                 Try again
-              </button>
+              </Button>
             </div>
           ) : (
             <>

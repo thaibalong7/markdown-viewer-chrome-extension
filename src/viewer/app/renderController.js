@@ -11,6 +11,7 @@ import { createStyleElement } from './viewerStyles.js'
  * @param {() => object | null} options.getArticleInteractions
  * @param {() => object | null} options.getReactHandle
  * @param {() => (HTMLElement | null)} options.getScrollRoot
+ * @param {(isBusy: boolean) => void} [options.onBusyChange]
  * @param {HTMLElement | ShadowRoot} options.container
  */
 export function createRenderController({
@@ -20,6 +21,7 @@ export function createRenderController({
   getArticleInteractions,
   getReactHandle,
   getScrollRoot,
+  onBusyChange,
   container
 }) {
   let smoothInitialHashScroll = false
@@ -76,6 +78,66 @@ export function createRenderController({
     if (!article) return
     if (isBusy) article.setAttribute('aria-busy', 'true')
     else article.removeAttribute('aria-busy')
+    onBusyChange?.(isBusy)
+  }
+
+  function scheduleInitialSkeleton(article) {
+    if (!article || article.childElementCount > 0 || typeof article.replaceChildren !== 'function') {
+      return () => {}
+    }
+
+    let skeletonMounted = false
+    const timer = setTimeout(() => {
+      const ownerDocument = article.ownerDocument || globalThis.document
+      if (!ownerDocument?.createElement || article.childElementCount > 0) return
+      const skeleton = ownerDocument.createElement('div')
+      skeleton.className = 'mdp-skeleton mdp-document-skeleton'
+      skeleton.setAttribute('aria-hidden', 'true')
+      const widths = ['52%', '94%', '88%', '72%', '90%', '64%']
+      for (const [index, width] of widths.entries()) {
+        const line = ownerDocument.createElement('span')
+        line.className = `mdp-skeleton-line${index === 0 ? ' mdp-document-skeleton__title' : ''}`
+        line.style.width = width
+        line.style.height = index === 0 ? '24px' : '14px'
+        skeleton.appendChild(line)
+      }
+      article.setAttribute('aria-label', 'Loading document')
+      article.replaceChildren(skeleton)
+      skeletonMounted = true
+    }, 180)
+
+    return () => {
+      clearTimeout(timer)
+      if (skeletonMounted) article.removeAttribute('aria-label')
+    }
+  }
+
+  function showRenderError(article) {
+    const ownerDocument = article?.ownerDocument || globalThis.document
+    if (!ownerDocument?.createElement || typeof article?.replaceChildren !== 'function') return
+
+    const state = ownerDocument.createElement('section')
+    state.className = 'mdp-ui-state mdp-ui-state--error mdp-document-render-error'
+    state.setAttribute('role', 'alert')
+
+    const title = ownerDocument.createElement('strong')
+    title.className = 'mdp-ui-state__title'
+    title.textContent = 'Document could not be rendered'
+
+    const message = ownerDocument.createElement('p')
+    message.className = 'mdp-ui-state__message'
+    message.textContent = 'Try again. If the problem continues, refresh the file or disable optional rendering plugins.'
+
+    const retry = ownerDocument.createElement('button')
+    retry.type = 'button'
+    retry.className = 'mdp-ui-button mdp-ui-state__action'
+    retry.textContent = 'Try again'
+    retry.addEventListener('click', () => {
+      void render({ preserveScroll: false, honorHash: false })
+    }, { once: true })
+
+    state.append(title, message, retry)
+    article.replaceChildren(state)
   }
 
   function cleanupActiveRenderer() {
@@ -98,6 +160,8 @@ export function createRenderController({
     activeRenderController = new AbortController()
     const signal = activeRenderController.signal
     const scrollSnapshot = preserveScroll ? captureScrollPosition() : null
+    const article = getArticleEl()
+    const clearInitialSkeleton = scheduleInitialSkeleton(article)
     setArticleBusy(true)
     try {
       const loadedDocument = getLoadedDocument()
@@ -105,7 +169,6 @@ export function createRenderController({
       if (!loadedDocument || !fileType) throw new Error('No loadable current document is available.')
       const renderer = await getDocumentRenderer(fileType.rendererId)
       if (currentRenderToken !== renderToken || signal.aborted) return null
-      const article = getArticleEl()
       if (!article) return null
 
       const articleInteractions = getArticleInteractions()
@@ -147,8 +210,10 @@ export function createRenderController({
       if (error?.name === 'AbortError') return null
       logger.error('Failed to render document.', error)
       reactHandle?.setTocReady?.(true)
+      showRenderError(article)
       return null
     } finally {
+      clearInitialSkeleton()
       if (currentRenderToken === renderToken) setArticleBusy(false)
     }
   }

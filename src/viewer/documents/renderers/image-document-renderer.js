@@ -2,7 +2,18 @@ function createState(document, modifier, message, role = 'status') {
   const state = document.createElement('div')
   state.className = `mdp-image-document__state mdp-image-document__state--${modifier}`
   state.setAttribute('role', role)
-  state.textContent = message
+  if (modifier === 'loading') {
+    state.className += ' mdp-ui-loading-state'
+    state.setAttribute('aria-busy', 'true')
+    const spinner = document.createElement('span')
+    spinner.className = 'mdp-ui-spinner'
+    spinner.setAttribute('aria-hidden', 'true')
+    const label = document.createElement('span')
+    label.textContent = message
+    state.append(spinner, label)
+  } else {
+    state.textContent = message
+  }
   return state
 }
 
@@ -35,12 +46,29 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   image.decoding = 'async'
 
   let cleaned = false
+  let settled = false
+  let resolveImage
+  let rejectImage
+  const imageReady = new Promise((resolve, reject) => {
+    resolveImage = resolve
+    rejectImage = reject
+  })
+  const settleReady = () => {
+    if (settled) return
+    settled = true
+    resolveImage()
+  }
+  const settleAborted = () => {
+    if (settled) return
+    settled = true
+    rejectImage(abortError())
+  }
   const cleanup = () => {
     if (cleaned) return
     cleaned = true
     image.removeEventListener('load', handleLoad)
     image.removeEventListener('error', handleError)
-    signal?.removeEventListener?.('abort', cleanup)
+    signal?.removeEventListener?.('abort', handleAbort)
     services.closeImageLightbox?.()
   }
   const handleLoad = () => {
@@ -48,6 +76,7 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
     loadingState.remove()
     image.hidden = false
     services.prepareZoomableImages?.()
+    settleReady()
   }
   const handleError = () => {
     if (cleaned || signal?.aborted) return
@@ -55,11 +84,16 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
     figure.replaceChildren(
       createState(ownerDocument, 'error', `Could not display ${displayName}.`, 'alert')
     )
+    settleReady()
+  }
+  const handleAbort = () => {
+    cleanup()
+    settleAborted()
   }
 
   image.addEventListener('load', handleLoad)
   image.addEventListener('error', handleError)
-  signal?.addEventListener?.('abort', cleanup, { once: true })
+  signal?.addEventListener?.('abort', handleAbort, { once: true })
   image.src = loadedDocument.assetUrl
   figure.append(loadingState, image)
   articleEl.replaceChildren(figure)
@@ -70,6 +104,12 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   if (image.complete) {
     if (Number(image.naturalWidth) > 0 && Number(image.naturalHeight) > 0) handleLoad()
     else handleError()
+  }
+
+  await imageReady
+  if (signal?.aborted) {
+    cleanup()
+    throw abortError()
   }
 
   return { tocItems: [], interactionProfile: 'image', cleanup }

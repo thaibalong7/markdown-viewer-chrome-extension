@@ -220,9 +220,9 @@
   }
 
   &.is-copied {
-    color: var(--mdp-link);
-    border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
-    background: color-mix(in srgb, var(--mdp-link) 12%, transparent);
+    color: var(--mdp-accent);
+    border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+    background: var(--mdp-accent-soft);
     pointer-events: none;
 
     .mdp-explorer__copy-link-icon {
@@ -641,6 +641,9 @@
 }
 
 .mdp-explorer__progress-headline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
   font-weight: 700;
   line-height: 1.35;

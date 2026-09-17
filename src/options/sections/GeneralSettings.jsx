@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { Badge } from '../../shared/react/Badge.jsx'
+import { Switch } from '../../shared/react/Switch.jsx'
 import { getFileSchemeAccess } from '../options-actions.js'
 
 export function GeneralSettings({ settings, saving, onEnabledChange }) {
@@ -30,6 +32,12 @@ export function GeneralSettings({ settings, saving, onEnabledChange }) {
     }
   }, [])
 
+  const badgeVariant = fileAccess.state === 'allowed'
+    ? 'success'
+    : fileAccess.state === 'blocked'
+      ? 'danger'
+      : 'default'
+
   return (
     <section className="settings-section" aria-labelledby="general-title">
       <div className="settings-section__heading">
@@ -38,38 +46,33 @@ export function GeneralSettings({ settings, saving, onEnabledChange }) {
         <p>Control whether Markdown Plus activates for supported local Markdown files.</p>
       </div>
 
-      <div className="settings-card">
-        <div className="settings-row settings-row--toggle">
+      <div className="mdp-ui-card">
+        <div className="mdp-ui-setting-row settings-row--toggle">
           <div>
-            <h3>Enable Markdown Plus</h3>
-            <p>Automatically open supported local Markdown files in the Markdown Plus viewer.</p>
+            <h3 className="mdp-ui-setting-row__title">Enable Markdown Plus</h3>
+            <p className="mdp-ui-setting-row__description">Automatically open supported local Markdown files in the Markdown Plus viewer.</p>
           </div>
-          <label className="settings-switch">
-            <input
-              type="checkbox"
-              checked={settings.enabled !== false}
-              disabled={saving}
-              onChange={(event) => void onEnabledChange(event.target.checked)}
-            />
-            <span aria-hidden="true" />
-            <span className="settings-sr-only">Enable Markdown Plus</span>
-          </label>
+          <Switch
+            id="general-enabled"
+            label="Enable Markdown Plus"
+            checked={settings.enabled !== false}
+            disabled={saving}
+            onChange={(event) => void onEnabledChange(event.target.checked)}
+          />
         </div>
 
-        <div className="settings-divider" />
+        <div className="mdp-ui-divider" />
 
-        <div className="settings-row settings-row--access">
+        <div className="mdp-ui-setting-row settings-row--access">
           <div>
-            <h3>File URL access</h3>
-            <p>
+            <h3 className="mdp-ui-setting-row__title">File URL access</h3>
+            <p className="mdp-ui-setting-row__description">
               Chrome controls this permission. If access is blocked, open
               <strong> chrome://extensions</strong>, choose Markdown Plus → Details, then enable
               “Allow access to file URLs”.
             </p>
           </div>
-          <span className={`settings-badge settings-badge--${fileAccess.state}`}>
-            {fileAccess.message}
-          </span>
+          <Badge variant={badgeVariant}>{fileAccess.message}</Badge>
         </div>
       </div>
     </section>

@@ -1,7 +1,10 @@
+@use '../../shared/styles/skeleton';
+@use '../../shared/styles/loading';
+@use '../../shared/styles/feedback';
+@use '../../shared/styles/button' as shared-button;
 @use 'floating-actions';
 @use 'editor';
 @use 'chrome-print';
-@use '../../shared/styles/skeleton';
 
 .mdp-root {
   background: var(--mdp-bg);
@@ -10,37 +13,7 @@
 }
 
 .mdp-button {
-  border: 1px solid var(--mdp-border);
-  background: var(--mdp-surface);
-  color: var(--mdp-text);
-  min-height: 38px;
-  padding: 7px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.25;
-  box-shadow: var(--mdp-shadow-subtle);
-  transition:
-    background-color 150ms ease,
-    border-color 150ms ease,
-    color 150ms ease,
-    transform 150ms ease;
-
-  &:hover {
-    border-color: var(--mdp-border-strong);
-    background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-strong));
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.48;
-    box-shadow: none;
-  }
+  @include shared-button.button-base;
 }
 
 .mdp-body {

@@ -1,0 +1,36 @@
+.mdp-ui-state {
+  padding: 18px;
+  border: 1px dashed var(--mdp-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mdp-panel-bg) 52%, transparent);
+  color: var(--mdp-text);
+  text-align: center;
+}
+
+.mdp-ui-state--error {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--mdp-danger) 38%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-danger) 8%, var(--mdp-surface));
+}
+
+.mdp-ui-state__title {
+  display: block;
+  color: var(--mdp-heading);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.mdp-ui-state--error .mdp-ui-state__title {
+  color: var(--mdp-danger);
+}
+
+.mdp-ui-state__message {
+  margin: 6px 0 0;
+  color: var(--mdp-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.mdp-ui-state__action {
+  margin-top: 12px;
+}

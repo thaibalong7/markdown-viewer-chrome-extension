@@ -1,0 +1,107 @@
+.mdp-ui-status {
+  --mdp-ui-status-color: var(--mdp-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mdp-ui-status-color);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.mdp-ui-status__dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.mdp-ui-status--info {
+  --mdp-ui-status-color: var(--mdp-link);
+}
+
+.mdp-ui-status--success {
+  --mdp-ui-status-color: var(--mdp-accent);
+}
+
+.mdp-ui-status--warning {
+  --mdp-ui-status-color: var(--mdp-warning);
+}
+
+.mdp-ui-status--error {
+  --mdp-ui-status-color: var(--mdp-danger);
+}
+
+.mdp-ui-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 999px;
+  background: var(--mdp-panel-bg);
+  color: var(--mdp-muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.mdp-ui-badge--info {
+  border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+}
+
+.mdp-ui-badge--success {
+  border-color: color-mix(in srgb, var(--mdp-accent) 30%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
+  color: var(--mdp-accent);
+}
+
+.mdp-ui-badge--warning {
+  border-color: color-mix(in srgb, var(--mdp-warning) 32%, var(--mdp-border));
+  background: var(--mdp-warning-soft);
+  color: var(--mdp-warning);
+}
+
+.mdp-ui-badge--danger {
+  border-color: color-mix(in srgb, var(--mdp-danger) 32%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-danger) 10%, var(--mdp-surface));
+  color: var(--mdp-danger);
+}
+
+.mdp-ui-notice {
+  --mdp-ui-notice-color: var(--mdp-link);
+  --mdp-ui-notice-bg: var(--mdp-link-soft);
+  padding: 13px 15px;
+  border: 1px solid color-mix(in srgb, var(--mdp-ui-notice-color) 28%, var(--mdp-border));
+  border-left: 3px solid var(--mdp-ui-notice-color);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mdp-ui-notice-bg) 72%, var(--mdp-surface));
+  color: var(--mdp-text);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.mdp-ui-notice strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--mdp-ui-notice-color);
+  font-size: 12px;
+}
+
+.mdp-ui-notice--success {
+  --mdp-ui-notice-color: var(--mdp-accent);
+  --mdp-ui-notice-bg: var(--mdp-accent-soft);
+}
+
+.mdp-ui-notice--warning {
+  --mdp-ui-notice-color: var(--mdp-warning);
+  --mdp-ui-notice-bg: var(--mdp-warning-soft);
+}
+
+.mdp-ui-notice--danger {
+  --mdp-ui-notice-color: var(--mdp-danger);
+  --mdp-ui-notice-bg: color-mix(in srgb, var(--mdp-danger) 12%, var(--mdp-surface));
+}

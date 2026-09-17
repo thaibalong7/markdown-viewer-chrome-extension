@@ -1,4 +1,8 @@
 import React from 'react'
+import { Button } from '../../shared/react/Button.jsx'
+import { Notice } from '../../shared/react/Notice.jsx'
+import { NumberField } from '../../shared/react/NumberField.jsx'
+import { Switch } from '../../shared/react/Switch.jsx'
 import { EXPLORER_LIMIT_FIELDS } from '../../settings/settings-schema.js'
 
 const FIELD_COPY = {
@@ -33,7 +37,7 @@ export function ExplorerSettings({
       </div>
 
       <form
-        className="settings-card"
+        className="mdp-ui-card"
         onSubmit={(event) => {
           event.preventDefault()
           void onSave()
@@ -41,112 +45,89 @@ export function ExplorerSettings({
         noValidate
       >
         <div className="settings-policy-fields">
-          <div className="settings-row settings-row--toggle">
+          <div className="mdp-ui-setting-row settings-row--toggle">
             <div>
-              <h3>Respect .gitignore files</h3>
-              <p>Exclude files and folders ignored by nested .gitignore rules during workspace scans.</p>
+              <h3 className="mdp-ui-setting-row__title">Respect .gitignore files</h3>
+              <p className="mdp-ui-setting-row__description">Exclude files and folders ignored by nested .gitignore rules during workspace scans.</p>
             </div>
-            <label className="settings-switch">
-              <input
-                type="checkbox"
-                checked={settings.respectGitignore !== false}
-                disabled={saving}
-                onChange={(event) =>
-                  void onBehaviorChange('respectGitignore', event.target.checked)
-                }
-              />
-              <span aria-hidden="true" />
-              <span className="settings-sr-only">Respect .gitignore files</span>
-            </label>
+            <Switch
+              id="explorer-respect-gitignore"
+              label="Respect .gitignore files"
+              checked={settings.respectGitignore !== false}
+              disabled={saving}
+              onChange={(event) =>
+                void onBehaviorChange('respectGitignore', event.target.checked)
+              }
+            />
           </div>
 
-          <div className="settings-divider" />
+          <div className="mdp-ui-divider" />
 
-          <div className="settings-row settings-row--toggle">
+          <div className="mdp-ui-setting-row settings-row--toggle">
             <div>
-              <h3>Restore last workspace</h3>
-              <p>
+              <h3 className="mdp-ui-setting-row__title">Restore last workspace</h3>
+              <p className="mdp-ui-setting-row__description">
                 Reopen the last file-backed workspace when a new viewer starts. Turning this off
                 does not close the workspace currently in use.
               </p>
             </div>
-            <label className="settings-switch">
-              <input
-                type="checkbox"
-                checked={settings.restoreLastWorkspace !== false}
-                disabled={saving}
-                onChange={(event) =>
-                  void onBehaviorChange('restoreLastWorkspace', event.target.checked)
-                }
-              />
-              <span aria-hidden="true" />
-              <span className="settings-sr-only">Restore last workspace</span>
-            </label>
+            <Switch
+              id="explorer-restore-workspace"
+              label="Restore last workspace"
+              checked={settings.restoreLastWorkspace !== false}
+              disabled={saving}
+              onChange={(event) =>
+                void onBehaviorChange('restoreLastWorkspace', event.target.checked)
+              }
+            />
           </div>
         </div>
 
-        <div className="settings-divider" />
+        <div className="mdp-ui-divider" />
 
         <div className="settings-fields">
           {Object.entries(EXPLORER_LIMIT_FIELDS).map(([field, definition]) => {
             const inputId = `explorer-${field}`
-            const errorId = `${inputId}-error`
-            const helperId = `${inputId}-helper`
             const error = fieldErrors[field]
             return (
-              <div className="settings-number-field" key={field}>
-                <div className="settings-number-field__copy">
-                  <label htmlFor={inputId}>{definition.label}</label>
-                  <p id={helperId}>{FIELD_COPY[field].helper}</p>
-                </div>
-                <div className="settings-number-field__control">
-                  <input
-                    id={inputId}
-                    type="number"
-                    inputMode="numeric"
-                    min={definition.min}
-                    max={definition.max}
-                    step="1"
-                    value={draft[field]}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={`${helperId}${error ? ` ${errorId}` : ''}`}
-                    onChange={(event) => onFieldChange(field, event.target.value)}
-                  />
-                  <span className="settings-range">
-                    {definition.min.toLocaleString()}–{definition.max.toLocaleString()}
-                  </span>
-                  {error ? (
-                    <span className="settings-field-error" id={errorId}>
-                      {error}
-                    </span>
-                  ) : null}
-                </div>
-              </div>
+              <NumberField
+                key={field}
+                id={inputId}
+                label={definition.label}
+                helper={FIELD_COPY[field].helper}
+                error={error}
+                rangeLabel={`${definition.min.toLocaleString()}–${definition.max.toLocaleString()}`}
+                min={definition.min}
+                max={definition.max}
+                step="1"
+                value={draft[field]}
+                disabled={saving}
+                onChange={(event) => onFieldChange(field, event.target.value)}
+              />
             )
           })}
         </div>
 
-        <div className="settings-notice">
+        <Notice variant="warning" title="Large workspace scans" className="settings-notice">
           Higher limits can make large workspace scans slower and use more memory. An active scan is
           never restarted automatically when these values change.
-        </div>
+        </Notice>
 
-        <div className="settings-card__actions">
-          <button
-            type="button"
-            className="settings-button settings-button--quiet"
+        <div className="mdp-ui-action-footer">
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={!dirty || saving}
+          >
+            {saving ? 'Saving…' : 'Save changes'}
+          </Button>
+          <Button
+            variant="quiet"
             onClick={onReset}
             disabled={saving}
           >
             Reset section to defaults
-          </button>
-          <button
-            type="submit"
-            className="settings-button settings-button--primary"
-            disabled={!dirty || saving}
-          >
-            {saving ? 'Saving…' : 'Save changes'}
-          </button>
+          </Button>
         </div>
       </form>
     </section>

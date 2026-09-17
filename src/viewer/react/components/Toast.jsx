@@ -10,6 +10,7 @@ export function Toast() {
       className={`mdp-toast ${variantClass}${isVisible ? ' is-visible' : ''}`}
       role="status"
       aria-live="polite"
+      aria-atomic="true"
     >
       {toastMessage}
     </div>

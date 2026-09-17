@@ -1,4 +1,7 @@
 import React, { useRef } from 'react'
+import { Button } from '../../shared/react/Button.jsx'
+import { Notice } from '../../shared/react/Notice.jsx'
+import { NumberField } from '../../shared/react/NumberField.jsx'
 import { DOCUMENT_FIELDS } from '../../settings/settings-schema.js'
 import { confirmResetAllSettings } from '../options-actions.js'
 
@@ -18,8 +21,6 @@ export function AdvancedSettings({
   const busy = Boolean(busyAction)
   const definition = DOCUMENT_FIELDS.maxStandaloneTextFileSizeMiB
   const inputId = 'documents-maxStandaloneTextFileSizeMiB'
-  const helperId = `${inputId}-helper`
-  const errorId = `${inputId}-error`
 
   return (
     <section className="settings-section" aria-labelledby="advanced-title">
@@ -30,7 +31,7 @@ export function AdvancedSettings({
       </div>
 
       <form
-        className="settings-card"
+        className="mdp-ui-card"
         onSubmit={(event) => {
           event.preventDefault()
           void onSaveDocumentLimit()
@@ -38,81 +39,68 @@ export function AdvancedSettings({
         noValidate
       >
         <div className="settings-fields">
-          <div className="settings-number-field">
-            <div className="settings-number-field__copy">
-              <label htmlFor={inputId}>{definition.label}</label>
-              <p id={helperId}>
-                Maximum UTF-8 size for standalone .txt, .sql, and .mermaid files opened in the
-                viewer. Markdown documents are not affected.
-              </p>
-            </div>
-            <div className="settings-number-field__control">
-              <input
-                id={inputId}
-                type="number"
-                inputMode="numeric"
-                min={definition.min}
-                max={definition.max}
-                step="1"
-                value={draft}
-                disabled={busy}
-                aria-invalid={Boolean(fieldError)}
-                aria-describedby={`${helperId}${fieldError ? ` ${errorId}` : ''}`}
-                onChange={(event) => onFieldChange(event.target.value)}
-              />
-              <span className="settings-range">
-                {definition.min}–{definition.max} MiB
-              </span>
-              {fieldError ? (
-                <span className="settings-field-error" id={errorId}>
-                  {fieldError}
-                </span>
-              ) : null}
-            </div>
-          </div>
+          <NumberField
+            id={inputId}
+            label={definition.label}
+            helper="Maximum UTF-8 size for standalone .txt, .sql, and .mermaid files opened in the viewer. Markdown documents are not affected."
+            error={fieldError}
+            rangeLabel={`${definition.min}–${definition.max} MiB`}
+            min={definition.min}
+            max={definition.max}
+            step="1"
+            value={draft}
+            disabled={busy}
+            onChange={(event) => onFieldChange(event.target.value)}
+          />
         </div>
 
-        <div className="settings-notice">
+        <Notice variant="warning" title="Large document loads" className="settings-notice">
           Larger files use more memory and may take longer to render. Changes apply on the next
           document open and do not reload the current document.
-        </div>
+        </Notice>
 
-        <div className="settings-card__actions">
-          <button
-            type="button"
-            className="settings-button settings-button--quiet"
+        <div className="mdp-ui-action-footer">
+          <Button
+            type="submit"
+            variant="primary"
+            busy={busyAction === 'documentLimit'}
+            busyLabel="Saving…"
+            disabled={!dirty || busy}
+          >
+            Save changes
+          </Button>
+          <Button
+            variant="quiet"
             onClick={onResetDocumentLimit}
             disabled={busy}
           >
             Reset to default
-          </button>
-          <button
-            type="submit"
-            className="settings-button settings-button--primary"
-            disabled={!dirty || busy}
-          >
-            {busyAction === 'documentLimit' ? 'Saving…' : 'Save changes'}
-          </button>
+          </Button>
         </div>
       </form>
 
-      <div className="settings-card settings-card--secondary settings-card--advanced">
-        <div className="settings-action-row">
+      <div className="mdp-ui-card settings-card--secondary">
+        <div className="mdp-ui-setting-row settings-action-row">
           <div>
-            <h3>Export settings</h3>
-            <p>Download the complete, normalized settings object as JSON.</p>
+            <h3 className="mdp-ui-setting-row__title">Export settings</h3>
+            <p className="mdp-ui-setting-row__description">Download the complete, normalized settings object as JSON.</p>
           </div>
-          <button type="button" className="settings-button" disabled={busy} onClick={() => void onExport()}>
-            {busyAction === 'export' ? 'Exporting…' : 'Export JSON'}
-          </button>
+          <Button
+            busy={busyAction === 'export'}
+            busyLabel="Exporting…"
+            disabled={busy && busyAction !== 'export'}
+            onClick={() => void onExport()}
+          >
+            Export JSON
+          </Button>
         </div>
 
-        <div className="settings-divider" />
+        <div className="mdp-ui-divider" />
 
-        <div className="settings-action-row">
+        <div className="mdp-ui-setting-row settings-action-row">
           <div>
-            <h3>Import settings</h3>
-            <p>The file is fully parsed and validated before any settings are saved.</p>
+            <h3 className="mdp-ui-setting-row__title">Import settings</h3>
+            <p className="mdp-ui-setting-row__description">The file is fully parsed and validated before any settings are saved.</p>
           </div>
           <input
             ref={fileInputRef}
@@ -125,36 +113,37 @@ export function AdvancedSettings({
               if (file) void onImport(file)
             }}
           />
-          <button
-            type="button"
-            className="settings-button"
-            disabled={busy}
+          <Button
+            busy={busyAction === 'import'}
+            busyLabel="Importing…"
+            disabled={busy && busyAction !== 'import'}
             onClick={() => fileInputRef.current?.click()}
           >
-            {busyAction === 'import' ? 'Importing…' : 'Choose JSON'}
-          </button>
+            Choose JSON
+          </Button>
         </div>
 
-        <div className="settings-divider" />
+        <div className="mdp-ui-divider" />
 
-        <div className="settings-action-row settings-action-row--danger">
+        <div className="mdp-ui-setting-row settings-action-row settings-action-row--danger">
           <div>
-            <h3>Reset all settings</h3>
-            <p>
+            <h3 className="mdp-ui-setting-row__title">Reset all settings</h3>
+            <p className="mdp-ui-setting-row__description">
               Restore General, Reader, Editor, Plugins, Files & Workspace, Privacy, and document
               resource preferences. Local recent-file data is cleared separately.
             </p>
           </div>
-          <button
-            type="button"
-            className="settings-button settings-button--danger"
-            disabled={busy}
+          <Button
+            variant="danger"
+            busy={busyAction === 'resetAll'}
+            busyLabel="Resetting…"
+            disabled={busy && busyAction !== 'resetAll'}
             onClick={() => {
               if (confirmResetAllSettings()) void onResetAll()
             }}
           >
-            {busyAction === 'resetAll' ? 'Resetting…' : 'Reset all settings'}
-          </button>
+            Reset all settings
+          </Button>
         </div>
       </div>
     </section>

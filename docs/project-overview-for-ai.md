@@ -18,7 +18,7 @@ Current implemented core:
 - **Files explorer** (dedicated left panel): sibling supported-document list (`.md`, `.markdown`, `.mdown`, `.mdc`, `.txt`, `.sql`, `.mermaid`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.avif`, `.bmp`, `.ico`, `.apng`, `.svg`) for the parent folder; **workspace mode** — recursive folder scan (Chrome `file:` directory listings via `FETCH_FILE_AS_TEXT` when a real `file:` root is known), depth/file/folder limits, configurable nested `.gitignore` handling, tree UI with expand/collapse, progress + cancel, “Open this folder” / “Open another folder…” (native **directory picker** via File System Access API when available, else **webkitdirectory**; may fall back to in-memory virtual files without `file:` paths), and configurable session restore of the workspace root for `file:` scans only; “Exit workspace” returns to sibling list. All scan paths use the shared file-type registry, attach `fileTypeId` metadata to file nodes, and present type-aware file icons, including a distinct database icon for SQL. Explorer orchestration is split between non-React workflows in `src/viewer/explorer/` and React adapters in `src/viewer/react/hooks/explorer/`; file-row browser/open/copy behavior is owned by `src/viewer/actions/file-row-actions.js`.
 - **Internal document navigation from Markdown**: clicking a relative/absolute link to a registered Markdown-family, `.txt`, `.sql`, `.mermaid`, raster image, or SVG file opens it in the same viewer without full page reload. Link resolver (`src/viewer/navigation/link-resolver.js`) classifies links into kinds (same-document-hash, self-link, document-file, workspace-virtual-file, external, asset, unsupported). The viewer route codec (`src/viewer/navigation/viewer-route.js`) keeps the original Markdown entry URL stable and represents real-file navigation as `?f=relative/path#heading`, enabling reload and browser Back/Forward restoration. Workspace navigation and headings intentionally do not mutate the URL, so reload returns to the entry document. Click interception in `article-interactions.js` respects modifier keys, `target`, and `download` attrs. Sidebar active-file sync on cross-folder navigation. Supports spaces, Unicode, encoded hrefs, parent folder traversal, and virtual workspace files. See `docs/internal-hyperlink-navigation-solution.md` for the earlier navigation design history.
 - **Inline Markdown editor** (Phase 11.0–11.3): local `file:` Markdown pages can enter edit mode from the right-side document actions. The React shell mounts a lazy-loaded CodeMirror 6 editor with split preview/focus modes, independent Files-panel toggle, debounced live preview through the existing sanitized render pipeline, editor → preview scroll sync, TOC click → editor source line navigation, dirty state, Ctrl/Cmd+S, before-unload/exit confirmation, status bar, split resize, search/replace, and File System Access API save with download fallback. Editor preferences live in popup settings and persist through `chrome.storage`.
-- Loading skeleton UX: reusable `SkeletonLine` / `SkeletonBlock` primitives used by the Outline, Files panel, and popup settings loading state
+- Shared async-state UX: reusable `SkeletonLine` / `SkeletonBlock` and `Spinner` / `LoadingState` React primitives plus shared feedback-state styles. The Viewer uses them for Outline/Files skeletons, lazy editor loading, workspace-scan progress, image loading, and recoverable document-render failures; popup settings retains the shared skeleton loading state.
 - Settings storage and runtime messaging
 - **Extension popup (React)** for recent files plus quick reader/editor/plugin controls, with a direct entry to the full **Settings page**
 - **Settings page (React)** at the existing `options_page` entry for extension activation, file-access diagnostics, validated explorer scan limits and behavior policies, recent-file privacy/retention, the standalone text-document viewing limit, normalized JSON import/export, section reset, and confirmed full reset. Recent file paths stay in `chrome.storage.local`; only the history policy is part of synced settings.
@@ -135,8 +135,12 @@ src/
       explorer.js
       tooltip.js
     react/
+      LoadingState.jsx
       Skeleton.jsx
     styles/
+      _button.scss
+      _feedback.scss
+      _loading.scss
       _skeleton.scss
   plugins/
     plugin-types.js
@@ -386,7 +390,7 @@ public/
   - **`MarkdownViewerApp`** remains the public imperative orchestrator and stable import path for `content/bootstrap.js`. It mounts React, awaits shell `{ root, article }`, composes article interactions, and coordinates settings/render/editor/explorer controllers.
   - **`documentSessionController.js`** owns current document identity and loaded payload, cancels superseded loads, prevents stale navigation commits, coordinates dirty-editor confirmation, publishes document UI capabilities, and releases payload resources on replacement/destroy.
   - **`viewerStyles.js`** owns reader theme/style application, Outline rail width preference, runtime `<style>` creation, and edit-mode article font overrides.
-  - **`renderController.js`** owns renderer lookup/dispatch, render abort tokens, previous-renderer cleanup, runtime CSS injection (`injectViewerStyles({ id, cssText })` for KaTeX/optional plugins), scroll preservation, hash scroll, and renderer-provided TOC hydration.
+  - **`renderController.js`** owns renderer lookup/dispatch, render abort tokens, previous-renderer cleanup, runtime CSS injection (`injectViewerStyles({ id, cssText })` for KaTeX/optional plugins), scroll preservation, hash scroll, renderer-provided TOC hydration, render-busy publication, delayed first-render skeleton, and the recoverable render-error state.
   - **`editorSessionController.js`** owns edit-mode active state, dirty/save status, debounced live preview render, save flow, and user-facing save errors.
   - **`splitScrollSync.js`** owns editor-to-preview scroll sync listeners, RAF scheduling, smooth preview scroll cancellation, and teardown.
   - **`globalViewerListeners.js`** owns `beforeunload` and Ctrl/Cmd+S global key handling.
@@ -401,11 +405,13 @@ public/
   - **Viewer side panels**: `Sidebar.jsx` owns the dedicated left Files panel; `RightRail.jsx` composes document actions with `OutlinePanel.jsx` (TOC list + **`useScrollSpy`** and `tocReady` gating with skeleton state). `ResizeHandle.jsx` + **`useSidebarResize`** independently resize Files and Outline through `--mdp-files-width` / `--mdp-toc-width`, separate sessionStorage widths, and keyboard controls.
   - **Files**: `ExplorerPanel.jsx` + **`useExplorer`** (React composition hook for explorer state/actions); **`hooks/explorer/explorerReducer.js`** + **`createExplorerViewActions.js`** for reducer/patch helpers; **`useExplorerActions.js`** and **`useExplorerBridgeRegistration.js`** for React-only adapters. Non-React navigation, scan sessions, workspace open/restore/exit, and scanners live under `viewer/explorer/*.js`.
 
-- `src/shared/react/Skeleton.jsx`
-  - Shared loading primitives (`SkeletonLine`, `SkeletonBlock`) used by viewer and popup.
+- `src/shared/react/`
+  - Shared application primitives include `Button`, `Switch`, `NumberField`, `Badge`, and `Notice`, plus the async-state `LoadingState` / `Spinner` and `SkeletonLine` / `SkeletonBlock` components. Settings consumes these primitives directly; Viewer uses the shared button/loading/feedback style contracts where its imperative or viewer-specific markup does not need a React wrapper.
 
-- `src/shared/styles/_skeleton.scss`
-  - Shared shimmer animation and skeleton base styles (`.mdp-skeleton*`) plus popup variant class (`.popup-skeleton`).
+- `src/shared/styles/`
+  - `_tokens.scss` owns reusable light/dark semantic token fallbacks and application focus/elevation tokens; Viewer and Settings both compose it while runtime theme settings may override the Viewer values.
+  - `_button.scss`, `_forms.scss`, `_containers.scss`, and `_status.scss` own the neutral `mdp-ui-*` application contracts for buttons, fields, switches, cards, setting rows, action footers, side navigation, badges, status, and notices.
+  - `_loading.scss`, `_feedback.scss`, and `_skeleton.scss` own spinner/loading, empty/error, and reduced-motion-safe skeleton styles. Viewer-specific `.mdp-button` composes the shared button mixin while retaining its stable class.
 
 - `src/shared/constants/viewer.js`
   - Viewer-wide numeric constants: top-offset fallback, scroll padding, sidebar min/max width, copy-button feedback duration (consumed by `scroll-utils.js`, `scroll-spy.js`, `useSidebarResize.js`, `article-interactions.js`).
@@ -589,8 +595,8 @@ Use this audit as the baseline for optimization tasks.
 - Popup/options not syncing:
   - Inspect `src/settings/settings-client.js`, `src/popup/index.jsx`, `src/popup/PopupApp.jsx`, `src/popup/hooks/useSettingsPersistence.js`, `src/options/OptionsApp.jsx`, `src/options/hooks/useSettingsForm.js`, and message type usage (`SETTINGS_UPDATED` on the content script).
 
-- Loading-state UX in chrome/popup:
-  - Inspect `src/shared/react/Skeleton.jsx`, `src/shared/styles/_skeleton.scss`, `src/viewer/react/components/OutlinePanel.jsx`, `src/viewer/react/components/explorer/ExplorerPanel.jsx`, `src/popup/PopupApp.jsx`, and `tocReady` updates in `src/viewer/app.js` / `src/viewer/react/mount.js`.
+- Loading-state UX in Viewer/popup:
+  - Inspect shared primitives under `src/shared/react/` and `src/shared/styles/`, `src/viewer/app/renderController.js`, `src/viewer/react/components/EditorPanel.jsx`, `OutlinePanel.jsx`, `explorer/ExplorerPanel.jsx`, `explorer/ExplorerProgress.jsx`, `src/viewer/documents/renderers/image-document-renderer.js`, and `src/popup/PopupApp.jsx`.
 
 - **Theme vs fenced code colors**:
   - Reader theme uses CSS vars; Shiki colors are inline in HTML. `updateSettings()` skips full render for style-only diffs (`typography.*`, `layout.contentMaxWidth`, `layout.showToc`, `layout.tocWidth`) but still re-renders for theme/plugin/other structural diffs; keep `shiki-config.js` preset map in sync with `src/theme/index.js`. See `.cursor/rules/30-rendering-pipeline-security.mdc`.

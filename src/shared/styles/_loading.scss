@@ -1,0 +1,35 @@
+@keyframes mdp-ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mdp-ui-spinner {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: mdp-ui-spin 750ms linear infinite;
+}
+
+.mdp-ui-loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 72px;
+  padding: 14px 16px;
+  color: var(--mdp-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-ui-spinner {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}

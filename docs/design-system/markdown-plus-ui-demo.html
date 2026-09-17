@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown Plus Viewer Design System</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --mdp-color-scheme: light;
+      --mdp-bg: #f6f8fb;
+      --mdp-surface: #ffffff;
+      --mdp-text: #172033;
+      --mdp-body-text: #273043;
+      --mdp-heading: #111827;
+      --mdp-border: #dce2ea;
+      --mdp-border-strong: #c5ced9;
+      --mdp-muted: #667085;
+      --mdp-code-bg: #f2f5f8;
+      --mdp-code-text: #172033;
+      --mdp-panel-bg: #eef2f6;
+      --mdp-panel-strong: #e3e9f0;
+      --mdp-link: #2563eb;
+      --mdp-link-soft: #eaf2ff;
+      --mdp-accent: #16815c;
+      --mdp-accent-soft: #e8f6ef;
+      --mdp-warning: #b35c00;
+      --mdp-warning-soft: #fff3dc;
+      --mdp-danger: #c2413a;
+      --mdp-table-border: #dce2ea;
+      --mdp-table-header-bg: #f2f5f8;
+      --mdp-table-row-alt-bg: #fafbfc;
+      --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+      --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
+      --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+      --mdp-files-width: 264px;
+      --mdp-toc-width: 280px;
+      --mdp-actions-rail-width: 60px;
+      --mdp-content-max-width: 980px;
+      --mdp-font-family: system-ui;
+      --mdp-font-size: 16px;
+      --mdp-line-height: 1.7;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --mdp-color-scheme: dark;
+      --mdp-bg: #0d121b;
+      --mdp-surface: #151b26;
+      --mdp-text: #edf2f7;
+      --mdp-body-text: #dce4ee;
+      --mdp-heading: #f8fafc;
+      --mdp-border: #2d3848;
+      --mdp-border-strong: #465469;
+      --mdp-muted: #9ba9bb;
+      --mdp-code-bg: #0b111a;
+      --mdp-code-text: #e6edf3;
+      --mdp-panel-bg: #101722;
+      --mdp-panel-strong: #1d2735;
+      --mdp-link: #7ab7ff;
+      --mdp-link-soft: #122b4d;
+      --mdp-accent: #56d39a;
+      --mdp-accent-soft: #123529;
+      --mdp-warning: #f4b24e;
+      --mdp-warning-soft: #3b2a0e;
+      --mdp-danger: #ff8d85;
+      --mdp-table-border: #2d3848;
+      --mdp-table-header-bg: #1a2330;
+      --mdp-table-row-alt-bg: #111925;
+      --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: var(--mdp-bg);
+      color: var(--mdp-text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+      outline: 2px solid var(--mdp-focus-color);
+      outline-offset: 2px;
+    }
+
+    svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+
+    .mdp-root {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: var(--mdp-bg);
+      color: var(--mdp-text);
+    }
+
+    .mdp-body {
+      --mdp-files-track: var(--mdp-files-width);
+      --mdp-right-track: var(--mdp-toc-width);
+      display: grid;
+      grid-template-columns: var(--mdp-files-track) minmax(0, 1fr) var(--mdp-right-track);
+      min-height: 100vh;
+      background: var(--mdp-bg);
+    }
+
+    .mdp-body--no-files {
+      --mdp-files-track: 0px;
+    }
+
+    .mdp-body--no-outline {
+      --mdp-right-track: var(--mdp-actions-rail-width);
+    }
+
+    .mdp-body--no-files .mdp-sidebar--files,
+    .mdp-body--no-outline .mdp-sidebar-panel--outline {
+      display: none;
+    }
+
+    .mdp-sidebar,
+    .mdp-right-rail {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      height: 100vh;
+      overflow: hidden;
+      gap: 4px;
+      padding: 14px;
+      background: var(--mdp-bg);
+    }
+
+    .mdp-sidebar {
+      grid-column: 1;
+      border-right: 1px solid var(--mdp-border-strong);
+    }
+
+    .mdp-right-rail {
+      grid-column: 3;
+      overflow: visible;
+      border-left: 1px solid var(--mdp-border-strong);
+    }
+
+    .mdp-right-rail--actions-only {
+      align-items: center;
+      padding: 10px 8px;
+    }
+
+    .mdp-sidebar-panel {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .mdp-panel-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+      padding: 2px 2px 12px;
+      border-bottom: 1px solid var(--mdp-border);
+    }
+
+    .mdp-panel-header__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .mdp-panel-header__heading-main {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .mdp-panel-header__heading {
+      color: var(--mdp-text);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.055em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .mdp-panel-header__meta {
+      color: var(--mdp-muted);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.35;
+    }
+
+    .mdp-explorer {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--mdp-muted) 28%, transparent) transparent;
+    }
+
+    .mdp-explorer .mdp-panel-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--mdp-bg);
+    }
+
+    .mdp-explorer .mdp-panel-header__heading-main {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .mdp-explorer .mdp-panel-header__heading {
+      color: var(--mdp-heading);
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      text-transform: none;
+    }
+
+    .mdp-header-actions {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .mdp-small-icon-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid var(--mdp-border);
+      border-radius: 8px;
+      background: var(--mdp-surface);
+      color: var(--mdp-muted);
+      cursor: pointer;
+    }
+
+    .mdp-small-icon-button:hover {
+      border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+      background: var(--mdp-link-soft);
+      color: var(--mdp-link);
+    }
+
+    .mdp-explorer__context {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 10px;
+      border: 1px solid color-mix(in srgb, var(--mdp-border) 86%, transparent);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-bg));
+    }
+
+    .mdp-explorer__context-summary {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .mdp-explorer__badge {
+      flex-shrink: 0;
+      padding: 2px 7px;
+      border: 1px solid color-mix(in srgb, var(--mdp-accent) 26%, var(--mdp-border));
+      border-radius: 999px;
+      background: var(--mdp-accent-soft);
+      color: var(--mdp-accent);
+      font-size: 9px;
+      font-weight: 750;
+      letter-spacing: 0.055em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .mdp-explorer__context-current {
+      display: grid;
+      flex: 1;
+      min-width: 0;
+      gap: 1px;
+    }
+
+    .mdp-explorer__context-label {
+      color: var(--mdp-muted);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0.035em;
+      text-transform: uppercase;
+    }
+
+    .mdp-explorer__context-file {
+      overflow: hidden;
+      color: var(--mdp-text);
+      font-size: 12.5px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mdp-explorer__path {
+      overflow: hidden;
+      color: var(--mdp-muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10.5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mdp-explorer__list,
+    .mdp-toc__list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mdp-explorer__node-btn,
+    .mdp-toc__link {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--mdp-muted);
+      font-size: 13px;
+      line-height: 1.25;
+      text-align: left;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+    }
+
+    .mdp-explorer__node-btn:hover,
+    .mdp-toc__link:hover {
+      border-color: var(--mdp-border);
+      background: color-mix(in srgb, var(--mdp-surface) 68%, transparent);
+      color: var(--mdp-text);
+    }
+
+    .mdp-explorer__node-btn.is-active,
+    .mdp-toc__link.is-active {
+      background: var(--mdp-link-soft);
+      color: var(--mdp-text);
+      font-weight: 600;
+    }
+
+    .mdp-explorer__node-btn.is-active::before,
+    .mdp-toc__link.is-active::before {
+      content: '';
+      position: absolute;
+      inset: 7px auto 7px -1px;
+      width: 3px;
+      border-radius: 999px;
+      background: var(--mdp-link);
+    }
+
+    .mdp-row-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mdp-row-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mdp-content-pane {
+      grid-column: 2;
+      min-width: 0;
+      padding: clamp(12px, 1.5vw, 20px) clamp(16px, 2.5vw, 36px) 48px;
+      background: var(--mdp-surface);
+    }
+
+    .mdp-markdown-body {
+      position: relative;
+      max-width: var(--mdp-content-max-width);
+      min-height: calc(100vh - clamp(40px, 6vw, 88px));
+      margin: 0 auto;
+      padding: clamp(16px, 2vw, 28px) clamp(20px, 3.5vw, 48px) clamp(36px, 5vw, 64px);
+      background: transparent;
+      color: var(--mdp-body-text);
+      font-family: var(--mdp-font-family);
+      font-size: var(--mdp-font-size);
+      line-height: var(--mdp-line-height);
+    }
+
+    .mdp-markdown-body > :first-child {
+      margin-top: 0;
+    }
+
+    .mdp-markdown-body :is(h1, h2, h3) {
+      margin-top: 1.65em;
+      margin-bottom: 0.65em;
+      color: var(--mdp-heading);
+      font-weight: 720;
+      letter-spacing: -0.018em;
+      line-height: 1.22;
+      text-wrap: balance;
+    }
+
+    .mdp-markdown-body h1 {
+      margin-bottom: 0.8em;
+      padding-bottom: 0.42em;
+      border-bottom: 1px solid var(--mdp-border);
+      font-size: clamp(1.9em, 4vw, 2.35em);
+      letter-spacing: -0.035em;
+    }
+
+    .mdp-markdown-body h2 {
+      padding-bottom: 0.32em;
+      border-bottom: 1px solid color-mix(in srgb, var(--mdp-border) 76%, transparent);
+      font-size: 1.55em;
+    }
+
+    .mdp-markdown-body h3 {
+      font-size: 1.25em;
+    }
+
+    .mdp-markdown-body :is(p, ul, ol, blockquote, pre) {
+      margin: 0 0 1em;
+    }
+
+    .mdp-markdown-body a {
+      color: var(--mdp-link);
+      text-decoration-color: color-mix(in srgb, var(--mdp-link) 48%, transparent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+    }
+
+    .mdp-markdown-body :not(pre) > code {
+      padding: 0.16em 0.38em;
+      border: 1px solid color-mix(in srgb, var(--mdp-border) 72%, transparent);
+      border-radius: 5px;
+      background: color-mix(in srgb, var(--mdp-code-bg) 95%, var(--mdp-body-text));
+      color: var(--mdp-code-text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    .mdp-markdown-body pre {
+      overflow: auto;
+      padding: 16px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 12px;
+      background: var(--mdp-code-bg);
+      color: var(--mdp-code-text);
+      font: 0.875em/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .mdp-markdown-body blockquote {
+      margin-left: 0;
+      padding: 0.75em 1em;
+      border-left: 3px solid var(--mdp-link);
+      border-radius: 0 8px 8px 0;
+      background: color-mix(in srgb, var(--mdp-link-soft) 66%, transparent);
+      color: var(--mdp-muted);
+    }
+
+    .mdp-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1em;
+    }
+
+    .mdp-markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+    }
+
+    .mdp-markdown-body th,
+    .mdp-markdown-body td {
+      padding: 8px 10px;
+      border: 1px solid var(--mdp-table-border);
+      text-align: left;
+    }
+
+    .mdp-markdown-body th {
+      background: var(--mdp-table-header-bg);
+      color: var(--mdp-heading);
+    }
+
+    .mdp-markdown-body tbody tr:nth-child(even) {
+      background: var(--mdp-table-row-alt-bg);
+    }
+
+    .mdp-floating-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      flex-shrink: 0;
+      padding: 6px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
+      box-shadow: var(--mdp-shadow-subtle);
+    }
+
+    .mdp-fab-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid var(--mdp-border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--mdp-muted);
+      cursor: pointer;
+      transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+    }
+
+    .mdp-fab-btn:hover {
+      border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
+      background: var(--mdp-link-soft);
+      color: var(--mdp-link);
+    }
+
+    .mdp-fab-btn:active {
+      transform: translateY(1px);
+    }
+
+    .mdp-fab-btn.is-active {
+      border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+      background: var(--mdp-link-soft);
+      color: var(--mdp-link);
+    }
+
+    .mdp-fab-btn--edit:not(.is-active) {
+      color: var(--mdp-warning);
+    }
+
+    .mdp-fab-btn.is-copied {
+      border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+      background: var(--mdp-accent-soft);
+      color: var(--mdp-accent);
+    }
+
+    .mdp-sidebar-panel--outline {
+      flex: 1;
+      min-height: 0;
+      padding-top: 12px;
+    }
+
+    .mdp-toc {
+      min-height: 0;
+      overflow-y: auto;
+      padding-top: 8px;
+    }
+
+    .mdp-toc__link {
+      display: block;
+      min-height: 36px;
+    }
+
+    .mdp-toc__link--h2 {
+      padding-left: 19px;
+    }
+
+    .mdp-toc__link--h3 {
+      padding-left: 28px;
+    }
+
+    .mdp-source-note {
+      margin-top: 2em;
+      padding: 10px 12px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--mdp-panel-bg) 74%, var(--mdp-surface));
+      color: var(--mdp-muted);
+      font-size: 12px;
+    }
+
+
+
+    @media (min-width: 1024px) and (max-width: 1279px) {
+      .mdp-body:not(.mdp-body--no-outline) {
+        --mdp-right-track: min(var(--mdp-toc-width), 224px);
+      }
+    }
+
+    @media (max-width: 1023px) {
+      .mdp-body {
+        --mdp-files-track: 0px;
+      }
+
+      .mdp-sidebar--files {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 15;
+        width: min(var(--mdp-files-width), calc(100vw - 72px));
+        box-shadow: var(--mdp-shadow-float);
+      }
+
+      .mdp-body--no-files .mdp-sidebar--files {
+        display: none;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .mdp-body {
+        --mdp-right-track: var(--mdp-actions-rail-width);
+      }
+
+      .mdp-right-rail {
+        align-items: center;
+        padding: 10px 8px;
+      }
+
+      .mdp-sidebar-panel--outline {
+        display: none;
+      }
+
+      .mdp-floating-actions {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        padding: 5px;
+        background: var(--mdp-surface);
+      }
+
+      .mdp-content-pane {
+        padding-inline: clamp(16px, 4vw, 32px);
+      }
+    }
+
+    @media (max-width: 639px) {
+      .mdp-body {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .mdp-right-rail {
+        position: fixed;
+        inset: auto 12px 12px auto;
+        z-index: 14;
+        width: auto;
+        height: auto;
+        padding: 5px;
+        border: 1px solid var(--mdp-border);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+        box-shadow: var(--mdp-shadow-float);
+        backdrop-filter: blur(14px);
+      }
+
+      .mdp-floating-actions {
+        flex-direction: row;
+        padding: 4px;
+      }
+
+      .mdp-content-pane {
+        grid-column: 1;
+        padding: 8px 10px 64px;
+      }
+
+      .mdp-markdown-body {
+        min-height: calc(100vh - 24px);
+        padding: 16px 14px 40px;
+      }
+    }
+
+    @media (pointer: coarse) {
+      .mdp-fab-btn,
+      .mdp-small-icon-button,
+      .mdp-toc__link {
+        min-width: 44px;
+        min-height: 44px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="mdp-root">
+    <div class="mdp-body" id="viewer-shell">
+      <aside class="mdp-sidebar mdp-sidebar--files" aria-label="Files">
+        <div class="mdp-sidebar-panel">
+          <div class="mdp-explorer">
+            <div class="mdp-panel-header">
+              <div class="mdp-panel-header__row">
+                <div class="mdp-panel-header__heading-main">
+                  <strong class="mdp-panel-header__heading">Files</strong>
+                  <span class="mdp-panel-header__meta">24 documents</span>
+                </div>
+                <div class="mdp-header-actions">
+                  <button class="mdp-small-icon-button" type="button" aria-label="Collapse folders" title="Collapse folders">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 9 4 4 4-4"/><path d="M5 5h14v14H5z"/></svg>
+                  </button>
+                  <button class="mdp-small-icon-button" type="button" aria-label="Refresh files" title="Refresh files">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0 1 4"/><path d="M20 4v7h-7"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mdp-explorer__context">
+              <div class="mdp-explorer__context-summary">
+                <span class="mdp-explorer__badge">Workspace</span>
+                <div class="mdp-explorer__context-current">
+                  <span class="mdp-explorer__context-label">Current file</span>
+                  <span class="mdp-explorer__context-file">design-system.md</span>
+                </div>
+              </div>
+              <div class="mdp-explorer__path">~/projects/markdown-plus/docs</div>
+            </div>
+
+            <ul class="mdp-explorer__list" aria-label="Workspace files">
+              <li>
+                <button class="mdp-explorer__node-btn" type="button">
+                  <svg class="mdp-row-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h6l2 2h10v11H3z"/></svg>
+                  <span class="mdp-row-label">architecture</span>
+                </button>
+              </li>
+              <li>
+                <button class="mdp-explorer__node-btn is-active" type="button">
+                  <svg class="mdp-row-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg>
+                  <span class="mdp-row-label">design-system.md</span>
+                </button>
+              </li>
+              <li>
+                <button class="mdp-explorer__node-btn" type="button">
+                  <svg class="mdp-row-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg>
+                  <span class="mdp-row-label">settings-page-implementation-plan.md</span>
+                </button>
+              </li>
+              <li>
+                <button class="mdp-explorer__node-btn" type="button">
+                  <svg class="mdp-row-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg>
+                  <span class="mdp-row-label">project-overview-for-ai.md</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <main class="mdp-content-pane">
+        <article class="mdp-markdown-body">
+          <h1>Viewer-first design system</h1>
+          <p>
+            The running Viewer is the canonical visual reference for Markdown Plus. New surfaces
+            reuse its semantic colors, system typography, radii, focus treatment, and state language.
+          </p>
+
+          <blockquote>
+            Documentation follows runtime source. It does not introduce a second visual direction.
+          </blockquote>
+
+          <h2 id="foundation">Foundation</h2>
+          <p>
+            The interface uses a neutral blue-gray canvas, a white reading surface, compact rails,
+            and <a href="#states">semantic interaction states</a>. Normal structure is separated by
+            borders; shadows are reserved for temporary floating layers.
+          </p>
+          <ul>
+            <li>Blue communicates navigation, focus, and active selection.</li>
+            <li>Green communicates successful completion and saved state.</li>
+            <li>Amber communicates editing, dirty state, and warnings.</li>
+            <li>Red communicates failure and destructive actions.</li>
+          </ul>
+
+          <h2 id="layout">Runtime layout</h2>
+          <p>
+            Read mode uses three tracks: Files, document content, and a right rail containing
+            document actions plus Outline. The document article stays transparent inside the
+            surface-colored content pane instead of becoming a raised card.
+          </p>
+
+          <pre><code>.mdp-body {
+  grid-template-columns:
+    var(--mdp-files-width)
+    minmax(0, 1fr)
+    var(--mdp-toc-width);
+}</code></pre>
+
+          <h2 id="states">Interaction states</h2>
+          <p>
+            Active rows use a soft blue fill and leading accent rail. Icon actions are compact on
+            fine pointers and expand to 44px on coarse pointers. Focus always remains visible.
+          </p>
+
+          <div class="mdp-table-wrap">
+            <table>
+              <thead>
+                <tr><th>Element</th><th>Fine pointer</th><th>Coarse pointer</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Action icon</td><td>34px</td><td>44px</td></tr>
+                <tr><td>Outline row</td><td>36px</td><td>44px</td></tr>
+                <tr><td>Text button</td><td>38px</td><td>44px</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="extension">Extending the system</h2>
+          <p>
+            Settings and future Popup work should derive application controls from these Viewer
+            foundations. They may use page-specific layouts, but must not introduce alternate
+            palettes, font stacks, focus rings, or status semantics.
+          </p>
+
+          <div class="mdp-source-note">
+            Source of truth: <code>src/theme/index.js</code> and <code>src/viewer/styles/**</code>.
+            Use the controls in the right rail to preview theme and rail states. Open the <a href="./markdown-plus-component-catalog.html">component catalog</a> for future application primitives.
+          </div>
+        </article>
+      </main>
+
+      <aside class="mdp-right-rail" aria-label="Document actions and outline">
+        <div class="mdp-floating-actions" role="toolbar" aria-label="Document actions">
+          <button class="mdp-fab-btn is-active" type="button" aria-label="Toggle files panel" title="Toggle files panel" aria-pressed="true" id="files-toggle">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h10"/><path d="M4 19h16"/></svg>
+          </button>
+          <button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" id="copy-button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>
+          </button>
+          <button class="mdp-fab-btn mdp-fab-btn--edit" type="button" aria-label="Edit Markdown" title="Edit Markdown">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16 4a2 2 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </button>
+          <button class="mdp-fab-btn" type="button" aria-label="Toggle outline" title="Toggle outline" aria-pressed="true" id="outline-toggle">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>
+          </button>
+          <button class="mdp-fab-btn" type="button" aria-label="Toggle light and dark theme" title="Toggle light and dark theme" id="theme-toggle">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7z"/></svg>
+          </button>
+        </div>
+
+        <div class="mdp-sidebar-panel mdp-sidebar-panel--outline">
+          <div class="mdp-panel-header">
+            <div class="mdp-panel-header__row">
+              <div class="mdp-panel-header__heading-main">
+                <strong class="mdp-panel-header__heading">Outline</strong>
+                <span class="mdp-panel-header__meta">4 headings</span>
+              </div>
+            </div>
+          </div>
+          <nav class="mdp-toc" aria-label="Document outline">
+            <ul class="mdp-toc__list">
+              <li><a class="mdp-toc__link is-active" href="#foundation">Foundation</a></li>
+              <li><a class="mdp-toc__link mdp-toc__link--h2" href="#layout">Runtime layout</a></li>
+              <li><a class="mdp-toc__link mdp-toc__link--h2" href="#states">Interaction states</a></li>
+              <li><a class="mdp-toc__link mdp-toc__link--h2" href="#extension">Extending the system</a></li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    const body = document.body
+    const shell = document.getElementById('viewer-shell')
+    const filesToggle = document.getElementById('files-toggle')
+    const outlineToggle = document.getElementById('outline-toggle')
+    const themeToggle = document.getElementById('theme-toggle')
+    const copyButton = document.getElementById('copy-button')
+    const rightRail = document.querySelector('.mdp-right-rail')
+
+    filesToggle.addEventListener('click', () => {
+      const hidden = shell.classList.toggle('mdp-body--no-files')
+      filesToggle.classList.toggle('is-active', !hidden)
+      filesToggle.setAttribute('aria-pressed', hidden ? 'false' : 'true')
+    })
+
+    outlineToggle.addEventListener('click', () => {
+      const hidden = shell.classList.toggle('mdp-body--no-outline')
+      rightRail.classList.toggle('mdp-right-rail--actions-only', hidden)
+      outlineToggle.classList.toggle('is-active', !hidden)
+      outlineToggle.setAttribute('aria-pressed', hidden ? 'false' : 'true')
+    })
+
+    themeToggle.addEventListener('click', () => {
+      body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark'
+    })
+
+    copyButton.addEventListener('click', () => {
+      copyButton.classList.add('is-copied')
+      copyButton.title = 'Copied'
+      copyButton.setAttribute('aria-label', 'Copied')
+      window.setTimeout(() => {
+        copyButton.classList.remove('is-copied')
+        copyButton.title = 'Copy open file link'
+        copyButton.setAttribute('aria-label', 'Copy open file link')
+      }, 1200)
+    })
+  </script>
+</body>
+</html>

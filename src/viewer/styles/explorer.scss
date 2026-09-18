@@ -318,7 +318,11 @@
   white-space: nowrap;
 }
 
-.mdp-explorer__loading,
+.mdp-explorer__loading {
+  padding: 8px 6px 4px;
+  background: transparent;
+}
+
 .mdp-explorer__empty {
   color: var(--mdp-muted);
   font-size: 14px;

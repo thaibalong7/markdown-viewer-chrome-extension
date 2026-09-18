@@ -37,6 +37,7 @@ export function ExplorerHeader({
   showCollapseAllFolders,
   collapseAllFoldersDisabled,
   collapseKeepsOpenFilePath,
+  actionsDisabled,
   onBack,
   onRefresh,
   onCollapseAllFolders,
@@ -52,7 +53,7 @@ export function ExplorerHeader({
   const directoryLabel = summaryDirectoryLabel || 'Current folder'
   const directoryDisplayLabel = getDirectoryDisplayLabel(directoryLabel)
   const openFolderLabel = actionsMode === 'workspace' ? 'Switch folder…' : 'Open folder…'
-  const buttonState = getExplorerHeaderButtonState({ actionsMode, showBack })
+  const buttonState = getExplorerHeaderButtonState({ actionsMode, showBack, actionsDisabled })
 
   const onCopyCurrentFile = () => {
     void (async () => {
@@ -148,6 +149,7 @@ export function ExplorerHeader({
         <button
           type="button"
           className="mdp-explorer__action-btn mdp-button"
+          disabled={buttonState.openFolderDisabled}
           onClick={() => onOpenAnotherFolder?.()}
         >
           <FolderIcon className="mdp-explorer__action-icon" />
@@ -158,6 +160,7 @@ export function ExplorerHeader({
             type="button"
             className="mdp-explorer__action-btn mdp-explorer__action-btn--secondary mdp-button"
             hidden={buttonState.leaveWorkspaceHidden}
+            disabled={buttonState.leaveWorkspaceDisabled}
             onClick={() => onExitWorkspace?.()}
           >
             Leave workspace

@@ -16,10 +16,10 @@ import {
  * @param {import('react').MutableRefObject<string>} deps.currentFileUrlRef
  */
 export function createExplorerViewActions({ stateRef, safePatch, setBackNavigation, currentFileUrlRef }) {
-  const showLoading = ({ filesContext, actionsMode = 'hidden' } = {}) => {
+  const showLoading = ({ filesContext, actionsMode } = {}) => {
     safePatch({
       view: 'loading',
-      actionsMode,
+      actionsMode: actionsMode ?? stateRef.current.actionsMode,
       depthNotice: '',
       files: [],
       tree: null,
@@ -45,7 +45,6 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
     const cur = payload.currentFolder ? `\n${shortenPath(payload.currentFolder)}` : ''
     safePatch({
       view: 'progress',
-      actionsMode: 'hidden',
       depthNotice: '',
       files: [],
       tree: null,

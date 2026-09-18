@@ -6,7 +6,9 @@ describe('getExplorerHeaderButtonState', () => {
     expect(
       getExplorerHeaderButtonState({ actionsMode: 'workspace', showBack: false })
     ).toEqual({
+      openFolderDisabled: false,
       leaveWorkspaceHidden: false,
+      leaveWorkspaceDisabled: false,
       backHidden: true,
       backDisabled: true
     })
@@ -16,7 +18,9 @@ describe('getExplorerHeaderButtonState', () => {
     expect(
       getExplorerHeaderButtonState({ actionsMode: 'sibling', showBack: false })
     ).toEqual({
+      openFolderDisabled: false,
       leaveWorkspaceHidden: true,
+      leaveWorkspaceDisabled: false,
       backHidden: false,
       backDisabled: true
     })
@@ -26,9 +30,27 @@ describe('getExplorerHeaderButtonState', () => {
     expect(
       getExplorerHeaderButtonState({ actionsMode: 'sibling', showBack: true })
     ).toEqual({
+      openFolderDisabled: false,
       leaveWorkspaceHidden: true,
+      leaveWorkspaceDisabled: false,
       backHidden: false,
       backDisabled: false
+    })
+  })
+
+  it('keeps visible navigation actions disabled while the explorer is busy', () => {
+    expect(
+      getExplorerHeaderButtonState({
+        actionsMode: 'sibling',
+        showBack: true,
+        actionsDisabled: true
+      })
+    ).toEqual({
+      openFolderDisabled: true,
+      leaveWorkspaceHidden: true,
+      leaveWorkspaceDisabled: true,
+      backHidden: false,
+      backDisabled: true
     })
   })
 })

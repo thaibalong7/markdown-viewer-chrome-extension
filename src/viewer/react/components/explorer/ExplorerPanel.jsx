@@ -275,6 +275,7 @@ export function ExplorerPanel({ bridge }) {
         showCollapseAllFolders={showCollapseAllFolders}
         collapseAllFoldersDisabled={!canCollapseAllFolders}
         collapseKeepsOpenFilePath={collapseKeepsOpenFilePath}
+        actionsDisabled={isBusy}
         onBack={actions.onBack}
         onRefresh={onRefreshFromExplorer}
         onCollapseAllFolders={onCollapseAllFoldersFromExplorer}

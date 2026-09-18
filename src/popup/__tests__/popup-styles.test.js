@@ -36,6 +36,27 @@ describe('popup design-system styles', () => {
     expect(popupCss).toMatch(
       /\.popup-settings-content \.mdp-ui-button\s*\{[^}]*min-height: 32px;/s
     )
+    expect(popupCss).toMatch(
+      /\.popup-plugin-heading\s*\{[^}]*align-items: flex-start;/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-plugin-heading \.mdp-ui-switch\s*\{[^}]*min-height: 24px;/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-plugin-info\s*\{[^}]*width: 14px;[^}]*height: 14px;/s
+    )
+  })
+
+  it('presents Mermaid renderers as a compact segmented control', () => {
+    expect(popupCss).toMatch(
+      /\.popup-mermaid-renderers__options\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-mermaid-renderer\.is-selected \.popup-mermaid-renderer__label\s*\{[^}]*background: var\(--mdp-surface\);[^}]*color: var\(--mdp-link\);/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-mermaid-renderer__label\s*\{[^}]*min-height: 24px;/s
+    )
   })
 
   it('scrolls overflowing panels without shrinking and overlapping their fields', () => {

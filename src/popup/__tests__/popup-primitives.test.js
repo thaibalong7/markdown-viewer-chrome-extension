@@ -40,6 +40,24 @@ describe('popup shared primitives', () => {
     expect(editorHtml).toContain('mdp-ui-number-field')
     expect(editorHtml).toContain('mdp-ui-switch__track')
     expect(pluginsHtml).toContain('mdp-ui-switch__track')
+    expect(pluginsHtml).toContain('popup-plugin-note')
+    expect(pluginsHtml).toContain('popup-mermaid-renderers')
+    expect(pluginsHtml).toContain('type="radio"')
+    expect(pluginsHtml).toContain('Broadest Mermaid syntax support and the safest default.')
+    expect(pluginsHtml).toContain('Official')
+    expect(pluginsHtml).toContain('Beautiful')
+    expect(pluginsHtml).not.toContain('mdp-ui-select')
+  })
+
+  it('only reveals Mermaid renderer choices while the plugin is enabled', () => {
+    const pluginsHtml = renderToStaticMarkup(
+      React.createElement(PluginsPanel, {
+        pluginsSnapshot: { mermaid: { enabled: false, renderer: 'official' } },
+        onPatch: noop
+      })
+    )
+
+    expect(pluginsHtml).not.toContain('popup-mermaid-renderers')
   })
 
   it('uses shared loading and empty-state contracts for recent files', () => {

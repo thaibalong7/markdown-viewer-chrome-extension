@@ -23,16 +23,14 @@ export const PLUGIN_LABELS = {
 
 /** Short English hints shown under each plugin toggle in the popup. */
 export const PLUGIN_HINTS = {
-  codeHighlight:
-    'Colors fenced code with Shiki. When off, code blocks use plain monospace styling (faster, fewer bytes).',
-  taskList: 'Renders GitHub-style task lists. Checkboxes are read-only in the viewer.',
-  anchorHeading: 'Adds a “#” control on headings to copy a deep link to that section.',
-  tableEnhance: 'Wraps wide tables for horizontal scrolling and slightly richer table chrome.',
-  emoji: 'Enables :shortcode:-style emoji where the emoji plugin supports them.',
-  footnote: 'Renders footnote markers, definitions, and return links in the document.',
-  math: 'Renders LaTeX-style math via KaTeX. Heavier than plain Markdown; enable when needed.',
-  mermaid:
-    'Renders Mermaid diagrams from ```mermaid``` fences. When on, charts can be exported from the viewer.'
+  codeHighlight: 'Highlights fenced code with Shiki; turn it off for a lighter plain-code view.',
+  taskList: 'Renders GitHub-style task lists with read-only checkboxes.',
+  anchorHeading: 'Adds a “#” action to headings for copying deep links.',
+  tableEnhance: 'Makes wide tables scrollable with enhanced table styling.',
+  emoji: 'Converts supported :shortcode: text into emoji.',
+  footnote: 'Adds footnote markers, definitions, and return links.',
+  math: 'Renders LaTeX-style math with KaTeX when needed.',
+  mermaid: 'Renders Mermaid code fences as diagrams with export actions.'
 }
 
 /** Parser/syntax package versions shown only when a plugin has a concrete versioned dependency. */
@@ -48,28 +46,17 @@ export const PLUGIN_VERSION_NOTES = {
 export const MERMAID_RENDERER_OPTIONS = [
   {
     label: 'Mermaid official',
+    shortLabel: 'Official',
     value: MERMAID_RENDERERS.OFFICIAL,
-    description: 'Best compatibility with Mermaid syntax.'
+    description: 'Broadest Mermaid syntax support and the safest default.'
   },
   {
     label: 'Cursor-like',
+    shortLabel: 'Beautiful',
     value: MERMAID_RENDERERS.BEAUTIFUL,
-    description: 'ELK-based layout similar to Cursor built-in rendering.'
+    description: 'A cleaner, Cursor-like layout powered by ELK.'
   }
 ]
-
-export const MERMAID_RENDERER_LABELS = MERMAID_RENDERER_OPTIONS.reduce((labels, option) => {
-  labels[option.value] = option.label
-  return labels
-}, {})
-
-export const MERMAID_RENDERER_DESCRIPTIONS = MERMAID_RENDERER_OPTIONS.reduce(
-  (descriptions, option) => {
-    descriptions[option.value] = option.description
-    return descriptions
-  },
-  {}
-)
 
 export function createReaderUiDefaultsPatch() {
   return {

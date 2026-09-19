@@ -4,6 +4,7 @@ const DEFAULT_INITIAL_STATE = {
   enabled: false,
   mode: 'split',
   sidebarVisible: true,
+  outlineVisible: true,
   _savedSidebarVisible: null,
   dirty: false
 }
@@ -41,6 +42,10 @@ export function editorReducer(state, action) {
     case 'TOGGLE_SIDEBAR':
       if (state.enabled) return state
       return { ...state, sidebarVisible: !state.sidebarVisible }
+
+    case 'TOGGLE_OUTLINE':
+      if (state.enabled) return state
+      return { ...state, outlineVisible: !state.outlineVisible }
 
     case 'SET_MODE':
       return { ...state, mode: action.payload }

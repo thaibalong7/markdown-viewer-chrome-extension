@@ -173,7 +173,9 @@ Read mode uses the current three-track shell:
     main.mdp-content-pane
       article.mdp-markdown-body
     aside.mdp-right-rail
-      .mdp-floating-actions
+      .mdp-right-rail__actions-row
+        .mdp-right-rail__actions-label
+        .mdp-floating-actions.mdp-floating-actions--rail-strip
       .mdp-sidebar-panel--outline
 ```
 
@@ -208,11 +210,14 @@ Both side rails are sticky, full viewport height, independently scrollable where
 
 ### Document actions
 
-The canonical action surface is the compact icon toolbar in the right rail, not an expandable labeled drawer.
+The canonical action surface is a quiet utility strip above Outline, not an expandable drawer or a floating capsule. It is a contextual variant of the existing quiet-button language and does not redefine general buttons elsewhere in the extension.
 
-- Toolbar: flexible row, `4px` gap, `6px` padding, `12px` radius.
+- Utility row: `44px` minimum height, `8px` bottom padding, and a quiet divider separating document commands from Outline.
+- The `Actions` label anchors the strip on wider rails and hides below `340px`; the icon group then centers itself.
+- Toolbar: `mdp-floating-actions--rail-strip`, flexible row with `4px` gap and no enclosing border, background, shadow, padding, or radius.
 - Icon button: `34px × 34px` on fine pointers, `44px × 44px` on coarse pointers, `8px` radius.
-- Idle icons use muted color; hover and pressed states use blue/link semantics.
+- Idle buttons use the quiet pattern: muted icons with transparent borders/backgrounds; hover and pressed states restore blue/link emphasis.
+- Collapsed/actions-only rails keep the same quiet styling and stack the toolbar vertically instead of introducing a second capsule treatment.
 - Edit uses amber when available but inactive.
 - Dirty save uses green with a separate amber dirty indicator.
 - Export formats open in a lightweight floating menu.

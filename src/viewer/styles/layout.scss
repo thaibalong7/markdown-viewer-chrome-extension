@@ -23,9 +23,14 @@
   grid-template-columns: var(--mdp-files-track) minmax(0, 1fr) var(--mdp-right-track);
   min-height: 100vh;
   background: var(--mdp-bg);
+  transition: grid-template-columns 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
   &--no-files {
     --mdp-files-track: 0px;
+  }
+
+  &--files-collapsed {
+    --mdp-files-track: var(--mdp-files-gutter-width);
   }
 
   &--no-outline {
@@ -45,6 +50,7 @@
   border-right: 1px solid var(--mdp-border-strong);
   background: var(--mdp-bg);
   padding: 14px;
+  transition: padding 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
   &__placeholder {
     color: var(--mdp-muted);
@@ -95,9 +101,84 @@
   grid-column: 1;
   grid-row: 1;
   overflow: visible;
+  min-width: 0;
+  /* Balance the 6px stable scrollbar gutter plus the explorer's 3px inset. */
+  padding-inline-end: 5px;
+
+  &.mdp-sidebar--collapsed {
+    padding: 0;
+    border-right: 0;
+  }
+}
+
+.mdp-sidebar__panel-clip,
+.mdp-right-rail__outline-clip {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+  transition:
+    opacity 140ms ease,
+    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s linear;
+}
+
+.mdp-sidebar--collapsed .mdp-sidebar__panel-clip {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-10px);
+  visibility: hidden;
+  transition:
+    opacity 100ms ease,
+    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s linear 180ms;
+}
+
+.mdp-sidebar__collapsed-hit-area {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 3;
+  width: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 calc(var(--mdp-files-gutter-width) - 1px);
+    width: 1px;
+    background: var(--mdp-border-strong);
+    opacity: 1;
+    transition:
+      left 140ms ease,
+      width 140ms ease,
+      opacity 140ms ease,
+      background-color 140ms ease;
+  }
+
+  &:hover::after,
+  &:active::after {
+    left: calc(var(--mdp-files-gutter-width) - 2px);
+    width: 3px;
+    opacity: 0.9;
+    background: var(--mdp-link);
+  }
+
+  &:active::after {
+    opacity: 1;
+  }
 }
 
 .mdp-right-rail {
+  container: mdp-right-rail / inline-size;
   grid-column: 3;
   grid-row: 1;
   position: sticky;
@@ -112,11 +193,132 @@
   padding: 14px;
   border-left: 1px solid var(--mdp-border-strong);
   background: var(--mdp-bg);
+  transition:
+    padding 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    gap 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
   &--actions-only {
     align-items: center;
     padding: 10px 8px;
   }
+}
+
+.mdp-right-rail--outline-expanded > .mdp-panel-toggle--outline {
+  top: 25px;
+}
+
+.mdp-right-rail__actions-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 2px 8px;
+  border-bottom: 1px solid var(--mdp-border);
+}
+
+.mdp-right-rail__actions-label {
+  color: var(--mdp-muted);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.065em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mdp-right-rail__actions-row > .mdp-floating-actions {
+  margin-left: auto;
+}
+
+.mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
+  display: contents;
+}
+
+@container mdp-right-rail (max-width: 339px) {
+  .mdp-right-rail__actions-row {
+    justify-content: center;
+  }
+
+  .mdp-right-rail__actions-label {
+    display: none;
+  }
+
+  .mdp-right-rail__actions-row > .mdp-floating-actions {
+    margin-inline: auto;
+  }
+}
+
+.mdp-right-rail--outline-collapsed .mdp-floating-actions {
+  margin-top: 0;
+}
+
+.mdp-right-rail--outline-collapsed .mdp-right-rail__outline-clip {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(10px);
+  visibility: hidden;
+  transition:
+    opacity 100ms ease,
+    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s linear 180ms;
+}
+
+.mdp-panel-toggle {
+  position: absolute;
+  top: 16px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--mdp-panel-toggle-border);
+  border-radius: 999px;
+  background: var(--mdp-panel-toggle-bg);
+  color: var(--mdp-panel-toggle-text);
+  box-shadow: var(--mdp-panel-toggle-shadow);
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+
+  &:hover {
+    color: var(--mdp-panel-toggle-hover-text);
+    border-color: var(--mdp-panel-toggle-border);
+    background: var(--mdp-panel-toggle-hover-bg);
+    box-shadow: var(--mdp-panel-toggle-hover-shadow);
+    transform: scale(1.08);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: 2px;
+  }
+}
+
+.mdp-panel-toggle--files {
+  right: auto;
+  left: max(0px, calc(100% - 11px));
+}
+
+.mdp-panel-toggle--outline {
+  left: -11px;
+}
+
+.mdp-panel-toggle__chevron {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
 }
 
 .mdp-sidebar__resize-handle {
@@ -222,6 +424,11 @@
     width: min(var(--mdp-files-width), calc(100vw - 72px));
     box-shadow: var(--mdp-shadow-float);
   }
+
+  .mdp-sidebar--files.mdp-sidebar--collapsed {
+    width: var(--mdp-files-gutter-width);
+    box-shadow: none;
+  }
 }
 
 @media (max-width: 899px) {
@@ -234,9 +441,19 @@
     padding: 10px 8px;
   }
 
+  .mdp-right-rail__actions-row {
+    display: contents;
+  }
+
   .mdp-right-rail .mdp-sidebar-panel--outline,
-  .mdp-right-rail .mdp-sidebar__resize-handle {
+  .mdp-right-rail .mdp-sidebar__resize-handle,
+  .mdp-right-rail__outline-clip,
+  .mdp-panel-toggle--outline {
     display: none;
+  }
+
+  .mdp-right-rail--outline-expanded > .mdp-floating-actions {
+    margin-left: 0;
   }
 
   .mdp-content-pane {
@@ -272,5 +489,26 @@
 @media (pointer: coarse) {
   .mdp-button {
     min-height: 44px;
+  }
+
+  .mdp-panel-toggle {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mdp-panel-toggle--files {
+    left: max(0px, calc(100% - 16px));
+  }
+
+  .mdp-panel-toggle--outline {
+    left: -16px;
+  }
+
+  .mdp-right-rail--outline-expanded > .mdp-panel-toggle--outline {
+    top: 20px;
+  }
+
+  .mdp-sidebar__collapsed-hit-area {
+    width: 32px;
   }
 }

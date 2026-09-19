@@ -37,6 +37,21 @@ describe('EditorContext reducer', () => {
     expect(next.sidebarVisible).toBe(false)
   })
 
+  it('toggles the outline independently outside edit mode', () => {
+    const initial = createInitialState(true)
+    const collapsed = editorReducer(initial, { type: 'TOGGLE_OUTLINE' })
+
+    expect(collapsed.outlineVisible).toBe(false)
+    expect(collapsed.sidebarVisible).toBe(true)
+    expect(editorReducer(collapsed, { type: 'TOGGLE_OUTLINE' }).outlineVisible).toBe(true)
+  })
+
+  it('ignores outline toggle while edit mode is enabled', () => {
+    const editing = editorReducer(createInitialState(true), { type: 'TOGGLE_EDIT' })
+
+    expect(editorReducer(editing, { type: 'TOGGLE_OUTLINE' })).toBe(editing)
+  })
+
   it('can force edit mode closed when document capabilities change', () => {
     const editing = editorReducer(createInitialState(true), { type: 'TOGGLE_EDIT' })
     const exited = editorReducer(editing, { type: 'EXIT_EDIT' })

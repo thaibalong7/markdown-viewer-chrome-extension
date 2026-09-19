@@ -160,6 +160,7 @@
     }
 
     .mdp-right-rail {
+      container: mdp-right-rail / inline-size;
       grid-column: 3;
       overflow: visible;
       border-left: 1px solid var(--mdp-border-strong);
@@ -168,6 +169,49 @@
     .mdp-right-rail--actions-only {
       align-items: center;
       padding: 10px 8px;
+    }
+
+    .mdp-right-rail__actions-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      padding: 0 2px 8px;
+      border-bottom: 1px solid var(--mdp-border);
+    }
+
+    .mdp-right-rail__actions-label {
+      color: var(--mdp-muted);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 0.065em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .mdp-right-rail__actions-row > .mdp-floating-actions {
+      margin-left: auto;
+    }
+
+    .mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
+      display: contents;
+    }
+
+    @container mdp-right-rail (max-width: 339px) {
+      .mdp-right-rail__actions-row {
+        justify-content: center;
+      }
+
+      .mdp-right-rail__actions-label {
+        display: none;
+      }
+
+      .mdp-right-rail__actions-row > .mdp-floating-actions {
+        margin-inline: auto;
+      }
     }
 
     .mdp-sidebar-panel {
@@ -539,6 +583,24 @@
       box-shadow: var(--mdp-shadow-subtle);
     }
 
+    .mdp-floating-actions.mdp-floating-actions--rail-strip {
+      gap: 4px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .mdp-right-rail--actions-only .mdp-floating-actions--rail-strip {
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+
+    .mdp-floating-actions--rail-strip .mdp-fab-btn:not(.mdp-fab-btn--theme) {
+      border-color: transparent;
+    }
+
     .mdp-fab-btn {
       position: relative;
       display: inline-flex;
@@ -656,7 +718,7 @@
         display: none;
       }
 
-      .mdp-floating-actions {
+      .mdp-floating-actions:not(.mdp-floating-actions--rail-strip) {
         flex-direction: column;
         flex-wrap: nowrap;
         padding: 5px;
@@ -687,7 +749,7 @@
         backdrop-filter: blur(14px);
       }
 
-      .mdp-floating-actions {
+      .mdp-floating-actions:not(.mdp-floating-actions--rail-strip) {
         flex-direction: row;
         padding: 4px;
       }
@@ -860,8 +922,10 @@
         </article>
       </main>
 
-      <aside class="mdp-right-rail" aria-label="Document actions and outline">
-        <div class="mdp-floating-actions" role="toolbar" aria-label="Document actions">
+      <aside class="mdp-right-rail mdp-right-rail--outline-expanded" aria-label="Document actions and outline">
+        <div class="mdp-right-rail__actions-row">
+          <span class="mdp-right-rail__actions-label" aria-hidden="true">Actions</span>
+          <div class="mdp-floating-actions mdp-floating-actions--rail-strip" role="toolbar" aria-label="Document actions">
           <button class="mdp-fab-btn is-active" type="button" aria-label="Toggle files panel" title="Toggle files panel" aria-pressed="true" id="files-toggle">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h10"/><path d="M4 19h16"/></svg>
           </button>
@@ -877,6 +941,7 @@
           <button class="mdp-fab-btn" type="button" aria-label="Toggle light and dark theme" title="Toggle light and dark theme" id="theme-toggle">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7z"/></svg>
           </button>
+          </div>
         </div>
 
         <div class="mdp-sidebar-panel mdp-sidebar-panel--outline">
@@ -919,6 +984,7 @@
     outlineToggle.addEventListener('click', () => {
       const hidden = shell.classList.toggle('mdp-body--no-outline')
       rightRail.classList.toggle('mdp-right-rail--actions-only', hidden)
+      rightRail.classList.toggle('mdp-right-rail--outline-expanded', !hidden)
       outlineToggle.classList.toggle('is-active', !hidden)
       outlineToggle.setAttribute('aria-pressed', hidden ? 'false' : 'true')
     })

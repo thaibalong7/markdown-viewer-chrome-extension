@@ -18,12 +18,22 @@
   }
 }
 
-.mdp-right-rail--actions-only .mdp-floating-actions {
+.mdp-floating-actions.mdp-floating-actions--rail-strip {
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.mdp-right-rail--actions-only .mdp-floating-actions--rail-strip {
   flex-direction: column;
   flex-wrap: nowrap;
-  padding: 4px;
-  border-radius: 12px;
-  background: var(--mdp-surface);
+}
+
+.mdp-floating-actions--rail-strip .mdp-fab-btn:not(.mdp-fab-btn--theme) {
+  border-color: transparent;
 }
 
 .mdp-fab-btn {
@@ -190,6 +200,10 @@
   .mdp-right-rail--actions-only .mdp-floating-actions {
     flex-direction: row;
     padding: 4px;
+  }
+
+  .mdp-floating-actions.mdp-floating-actions--rail-strip {
+    padding: 0;
   }
 
   .mdp-fab-export__menu {

@@ -17,7 +17,6 @@ import { IconButton } from './common/IconButton.jsx'
 import { ExportIcon } from './icons/ExportIcon.jsx'
 import { PrintIcon } from './icons/PrintIcon.jsx'
 import { EditIcon } from './icons/EditIcon.jsx'
-import { SidebarToggleIcon } from './icons/SidebarToggleIcon.jsx'
 import { SaveIcon } from './icons/SaveIcon.jsx'
 import { FocusIcon } from './icons/FocusIcon.jsx'
 import { CopyLinkIcon } from './icons/CopyLinkIcon.jsx'
@@ -135,10 +134,6 @@ export function FloatingActions({
     onSave?.()
   }
 
-  const onSidebarToggleClick = () => {
-    editorDispatch({ type: 'TOGGLE_SIDEBAR' })
-  }
-
   const onCopyLinkClick = () => {
     setMenuOpen(false)
     void (async () => {
@@ -177,26 +172,12 @@ export function FloatingActions({
 
   return (
     <div
-      className="mdp-floating-actions"
+      className="mdp-floating-actions mdp-floating-actions--rail-strip"
       role="toolbar"
       aria-label="Document actions"
       hidden={!visible}
       aria-hidden={visible ? 'false' : 'true'}
     >
-      {!editorState.enabled && (
-        <IconButton
-          tooltip={editorState.sidebarVisible ? 'Hide files panel' : 'Show files panel'}
-          showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
-          className="mdp-fab-btn"
-          activeClassName="mdp-fab-btn--active"
-          aria-label="Toggle files panel"
-          pressed={editorState.sidebarVisible}
-          onClick={onSidebarToggleClick}
-        >
-          <SidebarToggleIcon className="mdp-fab-btn__icon" />
-        </IconButton>
-      )}
-
       {canToggleTheme && (
         <IconButton
           tooltip={themeSaving

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { useEditorState } from '../contexts/EditorContext.jsx'
+import { useEditorDispatch, useEditorState } from '../contexts/EditorContext.jsx'
 import { Sidebar } from './Sidebar.jsx'
 import { RightRail } from './RightRail.jsx'
 import { EditorPanel } from './EditorPanel.jsx'
@@ -42,6 +42,7 @@ export function ViewerShell({
   }))
   const [editorReady, setEditorReady] = useState(false)
   const editorState = useEditorState()
+  const editorDispatch = useEditorDispatch()
 
   const capabilities = documentUiState?.capabilities || {}
   const editorAllowed = capabilities.edit === true && documentUiState?.sourceKind === 'file-url'
@@ -49,8 +50,10 @@ export function ViewerShell({
 
   const isFocusMode = isEditMode && editorState.mode === 'focus'
   const isSplitMode = isEditMode && editorState.mode === 'split'
-  const filesVisible = editorState.sidebarVisible && !isEditMode
-  const outlineVisible = capabilities.outline === true && settings?.layout?.showToc !== false && !isEditMode
+  const filesAvailable = !isEditMode
+  const filesExpanded = filesAvailable && editorState.sidebarVisible
+  const outlineAvailable = capabilities.outline === true && settings?.layout?.showToc !== false && !isEditMode
+  const outlineExpanded = outlineAvailable && editorState.outlineVisible
 
   const setContentPaneRef = useCallback((node) => {
     setContentPaneEl((prev) => (prev === node ? prev : node))
@@ -111,6 +114,14 @@ export function ViewerShell({
     onEditorDestroy?.()
   }, [onEditorDestroy])
 
+  const handleFilesToggle = useCallback(() => {
+    editorDispatch({ type: 'TOGGLE_SIDEBAR' })
+  }, [editorDispatch])
+
+  const handleOutlineToggle = useCallback(() => {
+    editorDispatch({ type: 'TOGGLE_OUTLINE' })
+  }, [editorDispatch])
+
   useEffect(() => {
     if (!isEditMode) {
       setEditorReady(false)
@@ -118,8 +129,9 @@ export function ViewerShell({
   }, [isEditMode])
 
   const bodyClassNames = ['mdp-body']
-  if (!filesVisible) bodyClassNames.push('mdp-body--no-files')
-  if (!outlineVisible) bodyClassNames.push('mdp-body--no-outline')
+  if (!filesAvailable) bodyClassNames.push('mdp-body--no-files')
+  else if (!filesExpanded) bodyClassNames.push('mdp-body--files-collapsed')
+  if (!outlineExpanded) bodyClassNames.push('mdp-body--no-outline')
   if (isSplitMode) bodyClassNames.push('mdp-body--edit-split')
   if (isFocusMode) bodyClassNames.push('mdp-body--edit-focus')
   if (isEditMode) bodyClassNames.push('mdp-body--edit-with-status')
@@ -127,8 +139,14 @@ export function ViewerShell({
   return (
     <div className="mdp-root" ref={handleRootRef}>
       <div className={bodyClassNames.join(' ')}>
-        {filesVisible && (
-          <Sidebar explorerBridge={explorerBridge} rootEl={rootEl} settings={settings} />
+        {filesAvailable && (
+          <Sidebar
+            explorerBridge={explorerBridge}
+            rootEl={rootEl}
+            settings={settings}
+            expanded={filesExpanded}
+            onToggle={handleFilesToggle}
+          />
         )}
 
         {(isSplitMode || isFocusMode) && (
@@ -167,7 +185,9 @@ export function ViewerShell({
 
         <RightRail
           actions={children}
-          outlineVisible={outlineVisible}
+          outlineAvailable={outlineAvailable}
+          outlineExpanded={outlineExpanded}
+          onOutlineToggle={handleOutlineToggle}
           settings={settings}
           tocItems={tocItems}
           tocReady={tocReady}

@@ -13,7 +13,7 @@
   flex: 1;
   overflow-y: auto;
   scrollbar-gutter: stable;
-  padding-right: 3px;
+  padding-inline-end: 3px;
   @include v.scrollbar-thin;
 }
 

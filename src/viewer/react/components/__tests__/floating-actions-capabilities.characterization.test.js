@@ -48,14 +48,15 @@ function renderActions(
 }
 
 describe('current document-action visibility assumptions', () => {
-  it('shows Markdown edit, print, export, copy-link, and Files actions for a local file', () => {
+  it('shows Markdown edit, print, export, and copy-link actions for a local file', () => {
     const html = renderActions('file:///fixtures/navigation/index.md')
 
+    expect(html).toContain('mdp-floating-actions--rail-strip')
     expect(html).toContain('aria-label="Edit markdown"')
     expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
     expect(html).toContain('aria-label="Download — HTML or Word (.doc)."')
     expect(html).toContain('aria-label="Copy open file link"')
-    expect(html).toContain('aria-label="Toggle files panel"')
+    expect(html).not.toContain('files panel')
   })
 
   it('keeps print/export visible but disables edit and copy-link for a virtual workspace file', () => {
@@ -74,7 +75,7 @@ describe('current document-action visibility assumptions', () => {
     expect(html).not.toContain('aria-label="Download — HTML or Word (.doc)."')
     expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
     expect(html).toContain('aria-label="Copy open file link"')
-    expect(html).toContain('aria-label="Toggle files panel"')
+    expect(html).not.toContain('files panel')
   })
 
   it('shows only generic and print actions for a raster image document', () => {
@@ -84,7 +85,7 @@ describe('current document-action visibility assumptions', () => {
     expect(html).not.toContain('aria-label="Download — HTML or Word (.doc)."')
     expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
     expect(html).toContain('aria-label="Copy open file link"')
-    expect(html).toContain('aria-label="Toggle files panel"')
+    expect(html).not.toContain('files panel')
   })
 
   it('shows no raw toggle or Markdown-only actions for an SVG document', () => {
@@ -95,7 +96,7 @@ describe('current document-action visibility assumptions', () => {
     expect(html).not.toContain('View source')
     expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
     expect(html).toContain('aria-label="Copy open file link"')
-    expect(html).toContain('aria-label="Toggle files panel"')
+    expect(html).not.toContain('files panel')
   })
 
   it('shows an accessible pressed-state toggle only for standalone Mermaid', () => {

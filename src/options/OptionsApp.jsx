@@ -23,7 +23,15 @@ export function OptionsApp() {
     <div className="settings-app">
       <header className="settings-header">
         <div className="settings-brand">
-          <span className="settings-brand__mark" aria-hidden="true">M+</span>
+          <img
+            className="settings-brand__mark"
+            src="/icons/icon-48.png"
+            width="48"
+            height="48"
+            alt=""
+            aria-hidden="true"
+            draggable="false"
+          />
           <div>
             <span className="settings-brand__name">Markdown Plus</span>
             <span className="settings-brand__page">Settings</span>

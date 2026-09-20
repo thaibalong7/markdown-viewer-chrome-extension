@@ -11,7 +11,11 @@
   },
   "action": {
     "default_title": "Markdown Plus",
-    "default_popup": "src/popup/index.html"
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
   },
   "options_page": "src/options/index.html",
   "content_scripts": [
@@ -30,8 +34,9 @@
     }
   ],
   "icons": {
-    "16": "src/popup/icon-placeholder-16.png",
-    "48": "src/popup/icon-placeholder-48.png",
-    "128": "src/popup/icon-placeholder-128.png"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   }
 }

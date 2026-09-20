@@ -80,16 +80,11 @@ input[type='checkbox'] {
 }
 
 .settings-brand__mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 8px;
-  background: var(--mdp-text);
-  color: var(--mdp-surface);
-  font-size: 15px;
-  font-weight: 750;
-  letter-spacing: -0.03em;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  display: block;
+  object-fit: contain;
 }
 
 .settings-brand > div {

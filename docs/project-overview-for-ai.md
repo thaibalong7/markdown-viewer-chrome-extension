@@ -304,9 +304,6 @@ src/
     PopupApp.jsx
     popup.scss
     settings-constants.js
-    icon-placeholder-16.png
-    icon-placeholder-48.png
-    icon-placeholder-128.png
     components/
       Tooltip.jsx
     actions/
@@ -332,6 +329,11 @@ src/
       PrivacySettings.jsx
       AdvancedSettings.jsx
 public/
+  icons/
+    icon-16.png
+    icon-32.png
+    icon-48.png
+    icon-128.png
   offscreen.js
   offscreen.html
 ```

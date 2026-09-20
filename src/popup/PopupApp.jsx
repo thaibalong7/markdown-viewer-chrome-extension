@@ -88,7 +88,15 @@ export function PopupApp() {
     <div className="popup-root">
       <header className="popup-app-header">
         <div className="popup-brand">
-          <span className="popup-brand__mark" aria-hidden="true">M+</span>
+          <img
+            className="popup-brand__mark"
+            src="/icons/icon-32.png"
+            width="32"
+            height="32"
+            alt=""
+            aria-hidden="true"
+            draggable="false"
+          />
           <strong>Markdown Plus</strong>
         </div>
       </header>

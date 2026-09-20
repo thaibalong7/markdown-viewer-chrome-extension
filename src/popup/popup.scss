@@ -68,17 +68,11 @@ input[type='checkbox'] { cursor: pointer; }
 }
 
 .popup-brand__mark {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border-radius: 7px;
-  background: var(--mdp-text);
-  color: var(--mdp-surface);
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: -0.03em;
+  display: block;
+  object-fit: contain;
 }
 
 .popup-brand strong {

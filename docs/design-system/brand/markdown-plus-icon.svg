@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background gradient derived from the design system's mdp-text color. -->
+    <linearGradient id="mdp-icon-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E283D"/>
+      <stop offset="100%" stop-color="#111622"/>
+    </linearGradient>
+
+    <!-- Accent gradient derived from the design system's mdp-link color. -->
+    <linearGradient id="mdp-icon-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+
+    <filter id="mdp-icon-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle base frame. -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#mdp-icon-bg)" stroke="#2B374E" stroke-width="2.5"/>
+
+  <!-- Main M and Markdown down-arrow lockup. -->
+  <g filter="url(#mdp-icon-shadow)">
+    <path d="M 116 364
+             L 116 172
+             C 116 156 128 144 144 144
+             L 174 144
+             C 186 144 196 152 202 162
+             L 256 248
+             L 310 162
+             C 316 152 326 144 338 144
+             L 368 144
+             C 384 144 396 156 396 172
+             L 396 364
+             C 396 372 388 380 380 380
+             L 344 380
+             C 336 380 328 372 328 364
+             L 328 248
+             L 278 328
+             C 268 344 244 344 234 328
+             L 184 248
+             L 184 364
+             C 184 372 176 380 168 380
+             L 132 380
+             C 124 380 116 372 116 364 Z"
+          fill="#FFFFFF"/>
+  </g>
+
+  <!-- Plus mark in brand blue. -->
+  <g transform="translate(404, 114)">
+    <circle cx="0" cy="0" r="32" fill="#2563EB" opacity="0.25"/>
+    <rect x="-26" y="-8" width="52" height="16" rx="8" fill="url(#mdp-icon-blue)"/>
+    <rect x="-8" y="-26" width="16" height="52" rx="8" fill="url(#mdp-icon-blue)"/>
+  </g>
+
+  <!-- Minimal foundation rule. -->
+  <rect x="116" y="406" width="280" height="8" rx="4" fill="#3B82F6" opacity="0.85"/>
+</svg>

@@ -3,3 +3,6 @@ node_modules
 dist
 
 .DS_Store
+
+# Unselected logo explorations (the official master lives in design-system/brand).
+/docs/design-system/logos/

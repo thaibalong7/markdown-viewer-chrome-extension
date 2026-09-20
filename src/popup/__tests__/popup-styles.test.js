@@ -20,6 +20,24 @@ describe('popup design-system styles', () => {
     )
   })
 
+  it('uses a compact labeled tab bar instead of a permanent side rail', () => {
+    expect(popupCss).toMatch(
+      /\.popup-settings-tabs\s*\{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-settings-tab\s*\{[^}]*min-height: 38px;[^}]*display: inline-flex;/s
+    )
+  })
+
+  it('renders reader themes as compact visual choices', () => {
+    expect(popupCss).toMatch(
+      /\.popup-theme-options\s*\{[^}]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-theme-option\.is-selected\s*\{[^}]*background: var\(--mdp-link-soft\);/s
+    )
+  })
+
   it('keeps compact number fields in a stable single-column layout', () => {
     expect(popupCss).toMatch(
       /\.popup-settings-content \.mdp-ui-number-field\s*\{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*gap: 6px;/s

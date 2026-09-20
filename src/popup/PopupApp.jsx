@@ -5,7 +5,6 @@ import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
 import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
 import { useFileHistory } from './hooks/useFileHistory.js'
-import { Tooltip } from './components/Tooltip.jsx'
 import { SettingsTabIcon } from './components/SettingsTabIcon.jsx'
 import { ReaderPanel } from './panels/ReaderPanel.jsx'
 import { EditorSettingsPanel } from './panels/EditorSettingsPanel.jsx'
@@ -16,7 +15,7 @@ import { openOptionsPage } from './actions/open-options-page.js'
 export function PopupApp() {
   const { settings, loading, saving, errorMessage, persistPatch } = useSettingsPersistence()
   const fileHistory = useFileHistory()
-  const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.HISTORY)
+  const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.READER)
   const [optionsError, setOptionsError] = useState('')
 
   const pluginsSnapshot = useMemo(() => {
@@ -33,6 +32,24 @@ export function PopupApp() {
     } catch (error) {
       setOptionsError(error instanceof Error ? error.message : 'Could not open Settings.')
     }
+  }
+
+  function handleTabKeyDown(event, tabId) {
+    const currentIndex = SETTINGS_TABS.findIndex((tab) => tab.id === tabId)
+    let nextIndex = currentIndex
+
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % SETTINGS_TABS.length
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + SETTINGS_TABS.length) % SETTINGS_TABS.length
+    if (event.key === 'Home') nextIndex = 0
+    if (event.key === 'End') nextIndex = SETTINGS_TABS.length - 1
+    if (nextIndex === currentIndex) return
+
+    event.preventDefault()
+    const nextTabId = SETTINGS_TABS[nextIndex].id
+    setActiveTab(nextTabId)
+    event.currentTarget.parentElement
+      ?.querySelector(`#popup-tab-${nextTabId}`)
+      ?.focus()
   }
 
   if (loading) {
@@ -72,46 +89,40 @@ export function PopupApp() {
       <header className="popup-app-header">
         <div className="popup-brand">
           <span className="popup-brand__mark" aria-hidden="true">M+</span>
-          <div>
-            <strong>Markdown Plus</strong>
-            <span>Quick controls</span>
-          </div>
+          <strong>Markdown Plus</strong>
         </div>
-        <Button
-          variant="quiet"
-          className="popup-open-settings"
-          onClick={() => void handleOpenSettings()}
-        >
-          Open Settings
-        </Button>
       </header>
 
       <div className="popup-settings-panel">
-        <nav className="popup-settings-rail" aria-label="Settings sections">
+        <nav className="popup-settings-tabs" aria-label="Quick control sections" role="tablist">
           {SETTINGS_TABS.map((tab) => (
-            <Tooltip key={tab.id} content={`${tab.title}. Switch section.`}>
-              <button
-                type="button"
-                className={`popup-settings-tab ${activeTab === tab.id ? 'is-active' : ''}`}
-                aria-label={tab.label}
-                aria-current={activeTab === tab.id ? 'page' : undefined}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                <SettingsTabIcon name={tab.id} />
-              </button>
-            </Tooltip>
+            <button
+              key={tab.id}
+              id={`popup-tab-${tab.id}`}
+              type="button"
+              role="tab"
+              className={`popup-settings-tab ${activeTab === tab.id ? 'is-active' : ''}`}
+              aria-selected={activeTab === tab.id}
+              tabIndex={activeTab === tab.id ? 0 : -1}
+              onClick={() => setActiveTab(tab.id)}
+              onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
+            >
+              <SettingsTabIcon name={tab.id} />
+              <span>{tab.label}</span>
+            </button>
           ))}
         </nav>
 
         <div className="popup-settings-main">
           <div className="popup-settings-header">
-            <div>
-              <p className="popup-settings-eyebrow">{activeTabMeta?.label || 'Settings'}</p>
-              <h1 className="popup-settings-title">{activeTabMeta?.title || 'Settings'}</h1>
-            </div>
+            <h1 className="popup-settings-title">{activeTabMeta?.title || 'Settings'}</h1>
           </div>
 
-          <div className="popup-settings-content">
+          <div
+            className="popup-settings-content"
+            role="tabpanel"
+            aria-labelledby={`popup-tab-${activeTab}`}
+          >
             {activeTab === SETTINGS_TAB_IDS.HISTORY && (
               <FileHistoryPanel
                 history={fileHistory.history}
@@ -144,6 +155,18 @@ export function PopupApp() {
               <span className="mdp-ui-status__dot" aria-hidden="true" />
               {errorMessage || optionsError || (saving ? 'Saving changes…' : 'Settings saved')}
             </span>
+            <Button
+              variant="quiet"
+              className="popup-open-settings"
+              onClick={() => void handleOpenSettings()}
+            >
+              All settings
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                <path d="M7 4h9v9" />
+                <path d="m16 4-9.5 9.5" />
+                <path d="M13 10v6H4V7h6" />
+              </svg>
+            </Button>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { EditorSettingsPanel } from '../panels/EditorSettingsPanel.jsx'
 import { FileHistoryPanel } from '../panels/FileHistoryPanel.jsx'
 import { PluginsPanel } from '../panels/PluginsPanel.jsx'
 import { ReaderPanel } from '../panels/ReaderPanel.jsx'
+import { SETTINGS_TAB_IDS, SETTINGS_TABS } from '../settings-constants.js'
 
 const noop = () => {}
 
@@ -32,6 +33,9 @@ describe('popup shared primitives', () => {
     )
 
     expect(readerHtml).toContain('mdp-ui-select')
+    expect(readerHtml).toContain('popup-theme-options')
+    expect(readerHtml).toContain('name="popup-reader-theme"')
+    expect(readerHtml).toContain('type="radio"')
     expect(readerHtml).toContain('mdp-ui-number-field')
     expect(readerHtml).toContain('mdp-ui-field__label-row')
     expect(readerHtml).toContain('About line height')
@@ -93,5 +97,10 @@ describe('popup shared primitives', () => {
     expect(html).toContain('<svg')
     expect(html).toContain('aria-hidden="true"')
     expect(html).not.toContain('📖')
+  })
+
+  it('prioritizes reader controls and keeps recent files last', () => {
+    expect(SETTINGS_TABS[0].id).toBe(SETTINGS_TAB_IDS.READER)
+    expect(SETTINGS_TABS.at(-1).id).toBe(SETTINGS_TAB_IDS.HISTORY)
   })
 })

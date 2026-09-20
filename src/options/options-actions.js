@@ -1,33 +1,6 @@
 import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { triggerDownload } from '../shared/download.js'
 
-export async function getFileSchemeAccess() {
-  const accessApi = globalThis.chrome?.extension?.isAllowedFileSchemeAccess
-  if (typeof accessApi !== 'function') return null
-
-  return new Promise((resolve, reject) => {
-    let settled = false
-    const finish = (allowed) => {
-      if (settled) return
-      settled = true
-      const runtimeError = globalThis.chrome?.runtime?.lastError
-      if (runtimeError) reject(new Error(runtimeError.message))
-      else resolve(Boolean(allowed))
-    }
-
-    try {
-      const result = accessApi.call(globalThis.chrome.extension, finish)
-      if (result && typeof result.then === 'function') {
-        result.then(finish, reject)
-      } else if (typeof result === 'boolean') {
-        finish(result)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
 export function confirmResetAllSettings() {
   return window.confirm(
     'Reset all Markdown Plus settings to their defaults? This includes reader, editor, plugin, and explorer preferences.'

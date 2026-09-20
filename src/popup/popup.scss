@@ -81,6 +81,49 @@ input[type='checkbox'] { cursor: pointer; }
   line-height: 1.25;
 }
 
+.popup-file-access {
+  margin: 8px 10px 0;
+  padding: 9px 10px;
+  font-size: 11px;
+}
+
+.popup-file-access strong {
+  font-size: 12px;
+}
+
+.popup-file-access p {
+  margin: 3px 0 0;
+  line-height: 1.4;
+}
+
+.popup-file-access ol {
+  margin: 5px 0 0;
+  padding-left: 18px;
+  line-height: 1.45;
+}
+
+.popup-file-access .mdp-ui-button {
+  min-height: 28px;
+  margin-top: 7px;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.popup-file-access__error {
+  color: var(--mdp-danger);
+}
+
+.popup-file-access--allowed {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-block: 7px;
+}
+
+.popup-file-access--allowed p {
+  margin: 0;
+}
+
 .popup-open-settings {
   min-height: 30px;
   padding: 4px 7px;

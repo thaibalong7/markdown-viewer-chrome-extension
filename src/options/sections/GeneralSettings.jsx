@@ -1,36 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Badge } from '../../shared/react/Badge.jsx'
+import { Button } from '../../shared/react/Button.jsx'
 import { Switch } from '../../shared/react/Switch.jsx'
-import { getFileSchemeAccess } from '../options-actions.js'
+import { openExtensionDetails } from '../../shared/file-scheme-access.js'
+import { useFileSchemeAccess } from '../../shared/react/useFileSchemeAccess.js'
 
 export function GeneralSettings({ settings, saving, onEnabledChange }) {
-  const [fileAccess, setFileAccess] = useState({ state: 'loading', message: 'Checking…' })
+  const fileAccess = useFileSchemeAccess()
+  const [detailsError, setDetailsError] = useState('')
 
-  useEffect(() => {
-    let active = true
-    getFileSchemeAccess()
-      .then((allowed) => {
-        if (!active) return
-        if (allowed === null) {
-          setFileAccess({ state: 'unknown', message: 'Unavailable' })
-        } else {
-          setFileAccess({
-            state: allowed ? 'allowed' : 'blocked',
-            message: allowed ? 'Allowed' : 'Not allowed'
-          })
-        }
-      })
-      .catch((error) => {
-        if (!active) return
-        setFileAccess({
-          state: 'unknown',
-          message: error instanceof Error ? error.message : 'Could not check access'
-        })
-      })
-    return () => {
-      active = false
+  async function handleOpenDetails() {
+    setDetailsError('')
+    try {
+      await openExtensionDetails()
+    } catch (error) {
+      setDetailsError(error instanceof Error ? error.message : 'Could not open extension details.')
     }
-  }, [])
+  }
 
   const badgeVariant = fileAccess.state === 'allowed'
     ? 'success'
@@ -71,8 +57,16 @@ export function GeneralSettings({ settings, saving, onEnabledChange }) {
               <strong> chrome://extensions</strong>, choose Markdown Plus → Details, then enable
               “Allow access to file URLs”.
             </p>
+            {detailsError ? <p className="settings-inline-error" role="alert">{detailsError}</p> : null}
           </div>
-          <Badge variant={badgeVariant}>{fileAccess.message}</Badge>
+          <div className="settings-access-actions">
+            <Badge variant={badgeVariant}>{fileAccess.message}</Badge>
+            {fileAccess.state === 'blocked' || fileAccess.state === 'unavailable' ? (
+              <Button variant="secondary" onClick={() => void handleOpenDetails()}>
+                Open extension details
+              </Button>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>

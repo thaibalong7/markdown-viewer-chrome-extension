@@ -30,9 +30,8 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
     // Phase 1 fallback: low confidence, but still try mounting if extracted
     // content clearly looks like markdown.
     //
-    // Important: since this content script runs on `<all_urls>`, we must avoid
-    // expensive `document.body.innerText` extraction unless we have at least
-    // some hint (score/sourceType).
+    // Avoid expensive `document.body.innerText` extraction unless we have at
+    // least some hint (score/sourceType).
     const shouldAttemptFallback =
       detection.score >= 1 || detection.sourceType === 'raw-pre' || detection.sourceType === 'raw-text'
 

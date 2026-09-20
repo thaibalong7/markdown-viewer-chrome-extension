@@ -2,6 +2,7 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { SettingsTabIcon } from '../components/SettingsTabIcon.jsx'
+import { FileAccessCallout } from '../components/FileAccessCallout.jsx'
 import { EditorSettingsPanel } from '../panels/EditorSettingsPanel.jsx'
 import { FileHistoryPanel } from '../panels/FileHistoryPanel.jsx'
 import { PluginsPanel } from '../panels/PluginsPanel.jsx'
@@ -102,5 +103,25 @@ describe('popup shared primitives', () => {
   it('prioritizes reader controls and keeps recent files last', () => {
     expect(SETTINGS_TABS[0].id).toBe(SETTINGS_TAB_IDS.READER)
     expect(SETTINGS_TABS.at(-1).id).toBe(SETTINGS_TAB_IDS.HISTORY)
+  })
+
+  it('clearly distinguishes file access states and only offers setup when needed', () => {
+    const allowedHtml = renderToStaticMarkup(
+      React.createElement(FileAccessCallout, { state: 'allowed', onOpenDetails: noop })
+    )
+    const blockedHtml = renderToStaticMarkup(
+      React.createElement(FileAccessCallout, { state: 'blocked', onOpenDetails: noop })
+    )
+    const unavailableHtml = renderToStaticMarkup(
+      React.createElement(FileAccessCallout, { state: 'unavailable', onOpenDetails: noop })
+    )
+
+    expect(allowedHtml).toContain('File access is ready')
+    expect(allowedHtml).not.toContain('Open extension details')
+    expect(blockedHtml).toContain('Allow access to local files')
+    expect(blockedHtml).toContain('Allow access to file URLs')
+    expect(blockedHtml).toContain('Open extension details')
+    expect(unavailableHtml).toContain('File access status unavailable')
+    expect(unavailableHtml).toContain('chrome://extensions')
   })
 })

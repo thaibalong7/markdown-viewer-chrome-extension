@@ -8,6 +8,7 @@ A Chrome Extension (MV3) that opens local Markdown files as a polished multi-for
 - [Quick Start](#quick-start)
 - [Development](#development)
 - [Project Structure](#project-structure)
+- [Privacy](#privacy)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -102,6 +103,14 @@ Development notes:
 - `src/background` - Runtime messaging and settings handlers.
 
 For an up-to-date file tree and module notes, see [`docs/project-overview-for-ai.md`](docs/project-overview-for-ai.md).
+
+## Privacy
+
+Markdown Plus processes local documents in the browser and does not send their
+content to a developer-operated server. See the
+[public Privacy Policy](https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/)
+for storage details and the limited cases where document resources or exported
+Math content may contact a third party.
 
 ## Contributing
 

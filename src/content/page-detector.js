@@ -42,7 +42,7 @@ export function detectMarkdownPage({ location, document }) {
   }
 
   // Only scan the page text when we don't already have enough evidence.
-  // This prevents heavy CPU/RAM spikes on every tab because the content script runs on `<all_urls>`.
+  // This prevents unnecessary CPU/RAM spikes on local file pages.
   if (score < 3 && body) {
     const bodyTextSample = getTextSample(body, 20_000).trim()
 

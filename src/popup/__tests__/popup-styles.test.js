@@ -20,6 +20,11 @@ describe('popup design-system styles', () => {
     )
   })
 
+  it('keeps file-access onboarding compact and visually stateful', () => {
+    expect(popupCss).toMatch(/\.popup-file-access\s*\{[^}]*margin: 8px 10px 0;[^}]*font-size: 11px;/s)
+    expect(popupCss).toMatch(/\.popup-file-access--allowed\s*\{[^}]*display: flex;/s)
+  })
+
   it('uses a compact labeled tab bar instead of a permanent side rail', () => {
     expect(popupCss).toMatch(
       /\.popup-settings-tabs\s*\{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);/s

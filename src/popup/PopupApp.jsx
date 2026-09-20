@@ -1,11 +1,14 @@
 import React, { useMemo, useState } from 'react'
 import { mergePluginSettings } from '../plugins/plugin-types.js'
+import { openExtensionDetails } from '../shared/file-scheme-access.js'
 import { Button } from '../shared/react/Button.jsx'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
+import { useFileSchemeAccess } from '../shared/react/useFileSchemeAccess.js'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
 import { useSettingsPersistence } from './hooks/useSettingsPersistence.js'
 import { useFileHistory } from './hooks/useFileHistory.js'
 import { SettingsTabIcon } from './components/SettingsTabIcon.jsx'
+import { FileAccessCallout } from './components/FileAccessCallout.jsx'
 import { ReaderPanel } from './panels/ReaderPanel.jsx'
 import { EditorSettingsPanel } from './panels/EditorSettingsPanel.jsx'
 import { PluginsPanel } from './panels/PluginsPanel.jsx'
@@ -17,6 +20,8 @@ export function PopupApp() {
   const fileHistory = useFileHistory()
   const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.READER)
   const [optionsError, setOptionsError] = useState('')
+  const [detailsError, setDetailsError] = useState('')
+  const fileAccess = useFileSchemeAccess()
 
   const pluginsSnapshot = useMemo(() => {
     return mergePluginSettings(settings?.plugins)
@@ -31,6 +36,15 @@ export function PopupApp() {
       window.close()
     } catch (error) {
       setOptionsError(error instanceof Error ? error.message : 'Could not open Settings.')
+    }
+  }
+
+  async function handleOpenDetails() {
+    setDetailsError('')
+    try {
+      await openExtensionDetails()
+    } catch (error) {
+      setDetailsError(error instanceof Error ? error.message : 'Could not open extension details.')
     }
   }
 
@@ -100,6 +114,12 @@ export function PopupApp() {
           <strong>Markdown Plus</strong>
         </div>
       </header>
+
+      <FileAccessCallout
+        state={fileAccess.state}
+        errorMessage={detailsError}
+        onOpenDetails={() => void handleOpenDetails()}
+      />
 
       <div className="popup-settings-panel">
         <nav className="popup-settings-tabs" aria-label="Quick control sections" role="tablist">

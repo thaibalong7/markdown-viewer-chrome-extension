@@ -196,6 +196,20 @@ input[type='checkbox'] {
   margin: 0 24px 24px;
 }
 
+.settings-access-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.settings-inline-error {
+  margin: 8px 0 0;
+  color: var(--mdp-danger);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .settings-action-row--danger {
   background: color-mix(in srgb, var(--mdp-danger) 4%, var(--mdp-surface));
 }
@@ -276,6 +290,10 @@ input[type='checkbox'] {
 
   .settings-action-row .mdp-ui-button {
     width: 100%;
+  }
+
+  .settings-access-actions {
+    align-items: stretch;
   }
 }
 

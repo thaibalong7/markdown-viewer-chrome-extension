@@ -117,7 +117,7 @@ Tiêu chí hoàn thành:
 
 - [ ] Xác nhận privacy policy đã deploy thành công tại
   `https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/` sau
-  khi merge workflow vào `main` và chọn GitHub Actions làm Pages source.
+  khi merge workflow vào `master` và chọn GitHub Actions làm Pages source.
 - [x] Thêm privacy policy và GitHub Pages deployment workflow vào repo.
 - [x] Mô tả nội dung file được xử lý local trong browser.
 - [x] Mô tả recent file URLs/path được lưu trong `chrome.storage.local`.

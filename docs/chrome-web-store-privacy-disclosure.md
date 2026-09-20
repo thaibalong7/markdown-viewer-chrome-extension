@@ -14,7 +14,7 @@ It is a submission aid, not the public privacy policy.
 - Source:
   `https://github.com/thaibalong7/markdown-viewer-chrome-extension`
 
-The Pages URL becomes public after this change reaches `main`, the deployment
+The Pages URL becomes public after this change reaches `master`, the deployment
 workflow succeeds, and GitHub Pages is configured to use **GitHub Actions** as
 its source in the repository settings.
 

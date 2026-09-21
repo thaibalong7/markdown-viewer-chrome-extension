@@ -6,6 +6,14 @@ import {
 import { BUILT_IN_THEMES } from '../../../theme/index.js'
 
 describe('Shiki reader theme mapping', () => {
+  it.each([
+    ['high-contrast-light', 'github-light-high-contrast'],
+    ['high-contrast-dark', 'github-dark-high-contrast']
+  ])('maps %s to its matching high-contrast syntax theme', (preset, shikiTheme) => {
+    expect(getShikiThemeIdForSettings({ theme: { preset } })).toBe(shikiTheme)
+    expect(SHIKI_BUNDLED_THEME_IDS).toContain(shikiTheme)
+  })
+
   it('maps the sakura reader preset to its bundled light syntax theme', () => {
     expect(getShikiThemeIdForSettings({ theme: { preset: 'sakura' } }))
       .toBe('rose-pine-dawn')

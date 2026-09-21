@@ -3,7 +3,9 @@ import { MERMAID_RENDERERS } from '../plugins/plugin-types.js'
 
 export const THEME_LABELS = {
   light: 'Light',
+  'high-contrast-light': 'High Contrast Light',
   dark: 'Dark',
+  'high-contrast-dark': 'High Contrast Dark',
   sakura: 'Sakura',
   matcha: 'Matcha',
   'solarized-dark': 'Solarized Dark',

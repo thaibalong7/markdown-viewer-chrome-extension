@@ -45,6 +45,8 @@ describe('popup shared primitives', () => {
     expect(themeSelectHtml).toContain('<optgroup label="Dark themes">')
     expect(themeSelectHtml).toContain('Dark (VS Code)')
     expect(themeSelectHtml).toContain('Min (Dark)')
+    expect(themeSelectHtml).toContain('High Contrast Light')
+    expect(themeSelectHtml).toContain('High Contrast Dark')
     expect(readerHtml).toContain('--popup-theme-paper')
     expect(readerHtml).toContain('mdp-ui-number-field')
     expect(readerHtml).toContain('mdp-ui-field__label-row')

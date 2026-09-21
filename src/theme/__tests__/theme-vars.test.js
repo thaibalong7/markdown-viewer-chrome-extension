@@ -34,6 +34,27 @@ describe('createStyleVars', () => {
     expect(darkVars['--mdp-toast-error-text']).not.toBe(lightVars['--mdp-toast-error-text'])
   })
 
+  it.each([
+    ['high-contrast-light', 'light', '#ffffff', '#003b8f'],
+    ['high-contrast-dark', 'dark', '#000000', '#75baff']
+  ])('exposes an accessible %s palette', (preset, colorScheme, background, link) => {
+    const vars = createStyleVars({ theme: { preset } })
+
+    expect(vars['--mdp-color-scheme']).toBe(colorScheme)
+    expect(vars['--mdp-bg']).toBe(background)
+    expect(vars['--mdp-link']).toBe(link)
+    expect(getContrastRatio(vars['--mdp-body-text'], vars['--mdp-bg'])).toBeGreaterThanOrEqual(7)
+    expect(getContrastRatio(vars['--mdp-link'], vars['--mdp-bg'])).toBeGreaterThanOrEqual(7)
+    expect(getContrastRatio(vars['--mdp-muted'], vars['--mdp-bg'])).toBeGreaterThanOrEqual(7)
+    expect(getContrastRatio(vars['--mdp-border'], vars['--mdp-bg'])).toBeGreaterThanOrEqual(3)
+    for (const variant of ['info', 'success', 'warning', 'error']) {
+      expect(getContrastRatio(
+        vars[`--mdp-toast-${variant}-text`],
+        vars[`--mdp-toast-${variant}-bg`]
+      )).toBeGreaterThanOrEqual(7)
+    }
+  })
+
   it('exposes theme-specific panel toggle styling', () => {
     const lightVars = createStyleVars({ theme: { preset: 'light' } })
     const darkVars = createStyleVars({ theme: { preset: 'dark' } })

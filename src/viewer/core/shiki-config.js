@@ -6,7 +6,9 @@
 /** Reader `settings.theme.preset` -> Shiki theme id. */
 const PRESET_TO_SHIKI_THEME_ID = {
   light: 'github-light',
+  'high-contrast-light': 'github-light-high-contrast',
   dark: 'github-dark',
+  'high-contrast-dark': 'github-dark-high-contrast',
   sakura: 'rose-pine-dawn',
   matcha: 'everforest-light',
   'solarized-dark': 'solarized-dark',
@@ -67,7 +69,9 @@ const SHIKI_LANGUAGE_LOADERS = {
 
 const SHIKI_THEME_LOADERS = {
   'github-light': () => import('@shikijs/themes/github-light'),
+  'github-light-high-contrast': () => import('@shikijs/themes/github-light-high-contrast'),
   'github-dark': () => import('@shikijs/themes/github-dark'),
+  'github-dark-high-contrast': () => import('@shikijs/themes/github-dark-high-contrast'),
   'rose-pine-dawn': () => import('@shikijs/themes/rose-pine-dawn'),
   'everforest-light': () => import('@shikijs/themes/everforest-light'),
   'solarized-dark': () => import('@shikijs/themes/solarized-dark'),

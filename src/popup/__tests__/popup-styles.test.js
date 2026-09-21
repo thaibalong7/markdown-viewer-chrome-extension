@@ -37,12 +37,15 @@ describe('popup design-system styles', () => {
     )
   })
 
-  it('renders reader themes as compact visual choices', () => {
+  it('keeps the reader theme selector compact as the preset count grows', () => {
     expect(popupCss).toMatch(
-      /\.popup-theme-options\s*\{[^}]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s
+      /\.popup-theme-select-wrap\s*\{[^}]*position: relative;/s
     )
     expect(popupCss).toMatch(
-      /\.popup-theme-option\.is-selected\s*\{[^}]*background: var\(--mdp-link-soft\);/s
+      /\.popup-settings-content \.mdp-ui-select\.popup-theme-select\s*\{[^}]*padding-left: 44px;/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-theme-preview\s*\{[^}]*position: absolute;[^}]*pointer-events: none;/s
     )
   })
 

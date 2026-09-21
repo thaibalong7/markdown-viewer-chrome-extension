@@ -10,6 +10,11 @@ const PRESET_TO_SHIKI_THEME_ID = {
   sakura: 'rose-pine-dawn',
   matcha: 'everforest-light',
   'solarized-dark': 'solarized-dark',
+  'vscode-dark': 'dark-plus',
+  dracula: 'dracula',
+  gruvbox: 'gruvbox-dark-medium',
+  'night-owl': 'night-owl',
+  'min-dark': 'min-dark',
   solarized: 'solarized-dark'
 }
 
@@ -65,7 +70,12 @@ const SHIKI_THEME_LOADERS = {
   'github-dark': () => import('@shikijs/themes/github-dark'),
   'rose-pine-dawn': () => import('@shikijs/themes/rose-pine-dawn'),
   'everforest-light': () => import('@shikijs/themes/everforest-light'),
-  'solarized-dark': () => import('@shikijs/themes/solarized-dark')
+  'solarized-dark': () => import('@shikijs/themes/solarized-dark'),
+  'dark-plus': () => import('@shikijs/themes/dark-plus'),
+  dracula: () => import('@shikijs/themes/dracula'),
+  'gruvbox-dark-medium': () => import('@shikijs/themes/gruvbox-dark-medium'),
+  'night-owl': () => import('@shikijs/themes/night-owl'),
+  'min-dark': () => import('@shikijs/themes/min-dark')
 }
 
 /** Explicit allowlist of shipped Shiki language ids. */

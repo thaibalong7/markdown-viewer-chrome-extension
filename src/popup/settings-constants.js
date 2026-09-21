@@ -6,7 +6,12 @@ export const THEME_LABELS = {
   dark: 'Dark',
   sakura: 'Sakura',
   matcha: 'Matcha',
-  'solarized-dark': 'Solarized Dark'
+  'solarized-dark': 'Solarized Dark',
+  'vscode-dark': 'Dark (VS Code)',
+  dracula: 'Dracula',
+  gruvbox: 'Gruvbox',
+  'night-owl': 'Night Owl',
+  'min-dark': 'Min (Dark)'
 }
 
 /** Display names for plugin toggles (keys match `PLUGIN_IDS` / persisted `settings.plugins`). */

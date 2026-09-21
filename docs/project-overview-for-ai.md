@@ -10,7 +10,7 @@ Current implemented core:
 - Viewer mount in a body-level overlay. The rendered viewer intentionally uses light DOM so extensions such as Google Translate can detect selected Markdown text.
 - Markdown render pipeline: local link normalization → `markdown-it` → plugin hooks/render context → optional **Shiki** fenced highlighting → `sanitizeHtml` → DOM
 - **Document session architecture**: explicit document identity + loaded payload, cancellable loading, renderer dispatch, renderer cleanup, and capability-driven React chrome. Markdown uses a behavior-preserving adapter; plain `.txt` uses a safe DOM renderer backed only by `<pre><code>` and `textContent`, while `.sql` has a distinct renderer with sanitized, theme-aware Shiki highlighting and a text-only fallback. Standalone `.mermaid` uses the shared sanitized Mermaid service with rendered/raw modes. `.txt`, `.sql`, and standalone `.mermaid` share an explicit empty/load-error state plus a configurable UTF-8 viewing limit (default `5 MiB`, hard range `1–50 MiB`) enforced for real file URLs and virtual workspace files. Registered raster images and separately classified SVGs use direct normalized `file:` URLs or session-owned object URLs for virtual workspace files, render only through `<img>`, reuse the image lightbox, and release temporary resources on navigation/destroy. SVG source is never read into or mounted as viewer markup.
-- **Reader themes** (`light` / `dark`, default `light`) aligned with **Shiki themes** for code blocks
+- **Reader themes** (registry-backed presets; default `light`) aligned with **Shiki themes** for code blocks
 - **Plugin registry** (task lists, heading anchors, table wrapper, code-highlight toggle) via lifecycle hooks
 - Optional plugins (Mermaid, Math/KaTeX, Footnote, Emoji) with runtime toggle in Settings
 - Mermaid chart actions: three-dot menu with `Download SVG` and `Download PNG` (1x/2x/3x/4x)
@@ -375,7 +375,7 @@ public/
   - Returns `{ html, pluginManager, metadata, warnings }`.
 
 - `src/viewer/core/shiki-config.js` / `shiki-highlighter.js`
-  - **`shiki-config`**: explicit `SHIKI_LANG_IDS` allowlist with per-id loaders (static `import()` entries so the bundler does not include every Shiki grammar); `SHIKI_BUNDLED_THEME_IDS` / `github-light` + `github-dark`; maps reader `settings.theme.preset` to Shiki theme; must stay aligned with `src/theme/index.js` `BUILT_IN_THEMES` keys.
+  - **`shiki-config`**: explicit `SHIKI_LANG_IDS` allowlist with per-id loaders (static `import()` entries so the bundler does not include every Shiki grammar); an explicit `SHIKI_BUNDLED_THEME_IDS` allowlist; maps every reader `settings.theme.preset` to its bundled Shiki theme; must stay aligned with `src/theme/index.js` `BUILT_IN_THEMES` keys.
   - **`shiki-highlighter`** also contains `normalizeShikiPreWhitespace` (HTML string path) to remove whitespace-only text nodes Shiki inserts between `.line` spans so `white-space: pre` does not create blank lines while preserving tabs/indent.
   - **`shiki-highlighter`**: string-first `applyShikiToFencedCode` replaces fenced `<pre><code class="language-…">` blocks in the HTML string with Shiki output before sanitize.
 
@@ -542,7 +542,7 @@ Default shape in `src/settings/default-settings.js` (plugins come from `getDefau
 
 Defaults for optional plugins come from `getDefaultPluginSettings()` in `src/plugins/plugin-types.js`; editor defaults come from `DEFAULT_EDITOR_SETTINGS` in `src/shared/constants/editor.js`. **Settings UI ownership:** the React Settings page owns `enabled`, explorer scan limits/behavior policies, recent-file privacy/retention, standalone text-document viewing limits, import/export, and global reset; the React Popup owns the recent-file list plus quick reader/editor/plugin controls. File-history entries remain device-local while the policy follows normal settings storage. Popup labels remain in `popup/settings-constants.js`.
 
-Preset keys for theme/Shiki must match built-ins: `light`, `dark`.
+Theme preset keys come from `src/theme/index.js` `BUILT_IN_THEMES`; every key must have a matching Shiki mapping in `src/viewer/core/shiki-config.js`.
 
 ## 7) Current state vs roadmap
 

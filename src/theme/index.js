@@ -223,12 +223,156 @@ const SOLARIZED_DARK_THEME_COLORS = {
   toastErrorBorder: '#852528'
 }
 
+function createDarkThemePalette(colors) {
+  return {
+    colorScheme: 'dark',
+    ...colors,
+    panelToggleBg: colors.panelToggleBg || colors.panelStrong,
+    panelToggleText: colors.panelToggleText || colors.muted,
+    panelToggleBorder: colors.panelToggleBorder || colors.borderStrong,
+    panelToggleHoverBg: colors.panelToggleHoverBg || colors.linkSoft,
+    panelToggleHoverText: colors.panelToggleHoverText || colors.link,
+    panelToggleShadow: '0 1px 5px rgb(0 0 0 / 26%)',
+    panelToggleHoverShadow: '0 2px 7px rgb(0 0 0 / 34%)',
+    tableBorder: colors.tableBorder || colors.border,
+    tableHeaderBg: colors.tableHeaderBg || colors.panelStrong,
+    tableRowAltBg: colors.tableRowAltBg || colors.panelBg,
+    toastInfoBg: colors.toastInfoBg || colors.linkSoft,
+    toastInfoText: colors.toastInfoText || colors.link,
+    toastInfoBorder: colors.toastInfoBorder || colors.borderStrong,
+    toastSuccessBg: colors.toastSuccessBg || '#123a2e',
+    toastSuccessText: colors.toastSuccessText || '#8ee6bc',
+    toastSuccessBorder: colors.toastSuccessBorder || '#2e765c',
+    toastWarningBg: colors.toastWarningBg || '#3b2f14',
+    toastWarningText: colors.toastWarningText || '#f4cf78',
+    toastWarningBorder: colors.toastWarningBorder || '#856721',
+    toastErrorBg: colors.toastErrorBg || '#421f24',
+    toastErrorText: colors.toastErrorText || '#ffb4ab',
+    toastErrorBorder: colors.toastErrorBorder || '#93454c'
+  }
+}
+
+const VSCODE_DARK_THEME_COLORS = createDarkThemePalette({
+  background: '#181818',
+  surface: '#1f1f1f',
+  text: '#d4d4d4',
+  bodyText: '#cccccc',
+  heading: '#f0f0f0',
+  border: '#333333',
+  borderStrong: '#484848',
+  muted: '#a0a0a0',
+  codeBg: '#1e1e1e',
+  codeText: '#d4d4d4',
+  panelBg: '#181818',
+  panelStrong: '#252526',
+  link: '#4daafc',
+  linkSoft: '#193a55',
+  accent: '#4ec9b0',
+  accentSoft: '#173b35',
+  warning: '#e2c08d',
+  warningSoft: '#3b321f',
+  danger: '#f48771'
+})
+
+const DRACULA_THEME_COLORS = createDarkThemePalette({
+  background: '#282a36',
+  surface: '#303241',
+  text: '#f8f8f2',
+  bodyText: '#e6e6df',
+  heading: '#ffffff',
+  border: '#44475a',
+  borderStrong: '#6272a4',
+  muted: '#b6b7c5',
+  codeBg: '#21222c',
+  codeText: '#f8f8f2',
+  panelBg: '#252631',
+  panelStrong: '#373948',
+  link: '#8be9fd',
+  linkSoft: '#244650',
+  accent: '#50fa7b',
+  accentSoft: '#1f4930',
+  warning: '#ffb86c',
+  warningSoft: '#49311f',
+  danger: '#ff7b96'
+})
+
+const GRUVBOX_THEME_COLORS = createDarkThemePalette({
+  background: '#282828',
+  surface: '#32302f',
+  text: '#ebdbb2',
+  bodyText: '#d5c4a1',
+  heading: '#fbf1c7',
+  border: '#504945',
+  borderStrong: '#665c54',
+  muted: '#a89984',
+  codeBg: '#1d2021',
+  codeText: '#ebdbb2',
+  panelBg: '#242424',
+  panelStrong: '#3c3836',
+  link: '#83a598',
+  linkSoft: '#273735',
+  accent: '#b8bb26',
+  accentSoft: '#3c411f',
+  warning: '#fabd2f',
+  warningSoft: '#493c20',
+  danger: '#fb7c6c'
+})
+
+const NIGHT_OWL_THEME_COLORS = createDarkThemePalette({
+  background: '#011627',
+  surface: '#0b253a',
+  text: '#d6deeb',
+  bodyText: '#c5d2e2',
+  heading: '#ffffff',
+  border: '#1d3b53',
+  borderStrong: '#31566f',
+  muted: '#8fa8bd',
+  codeBg: '#01111d',
+  codeText: '#d6deeb',
+  panelBg: '#071d2e',
+  panelStrong: '#102f46',
+  link: '#82aaff',
+  linkSoft: '#152d52',
+  accent: '#addb67',
+  accentSoft: '#273b25',
+  warning: '#ecc48d',
+  warningSoft: '#3a3324',
+  danger: '#ff7a85'
+})
+
+const MIN_DARK_THEME_COLORS = createDarkThemePalette({
+  background: '#171717',
+  surface: '#202020',
+  text: '#d4d4d4',
+  bodyText: '#c3c3c3',
+  heading: '#f2f2f2',
+  border: '#343434',
+  borderStrong: '#4b4b4b',
+  muted: '#969696',
+  codeBg: '#121212',
+  codeText: '#d8d8d8',
+  panelBg: '#1b1b1b',
+  panelStrong: '#292929',
+  link: '#9cb6d6',
+  linkSoft: '#293442',
+  accent: '#a8b5a2',
+  accentSoft: '#30372e',
+  warning: '#d8bd8a',
+  warningSoft: '#393225',
+  danger: '#e69797'
+})
+
 export const BUILT_IN_THEMES = {
   light: LIGHT_THEME_COLORS,
   dark: DARK_THEME_COLORS,
   sakura: SAKURA_THEME_COLORS,
   matcha: MATCHA_THEME_COLORS,
-  'solarized-dark': SOLARIZED_DARK_THEME_COLORS
+  'solarized-dark': SOLARIZED_DARK_THEME_COLORS,
+  'vscode-dark': VSCODE_DARK_THEME_COLORS,
+  dracula: DRACULA_THEME_COLORS,
+  gruvbox: GRUVBOX_THEME_COLORS,
+  'night-owl': NIGHT_OWL_THEME_COLORS,
+  'min-dark': MIN_DARK_THEME_COLORS
 }
 
 // Keep the floating quick-toggle intentionally narrower than the full theme

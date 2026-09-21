@@ -261,71 +261,24 @@ input[type='checkbox'] { cursor: pointer; }
   scrollbar-color: var(--mdp-border-strong) transparent;
 }
 
-.popup-theme-picker {
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.popup-theme-picker legend {
-  margin-bottom: 7px;
-  padding: 0;
-}
-
-.popup-theme-options {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 6px;
-}
-
-.popup-theme-option {
+.popup-theme-select-wrap {
   position: relative;
   min-width: 0;
-  min-height: 57px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 6px 3px 5px;
-  border: 1px solid var(--mdp-border);
-  border-radius: 9px;
-  background: color-mix(in srgb, var(--mdp-panel-bg) 36%, var(--mdp-surface));
-  color: var(--mdp-muted);
-  cursor: pointer;
-  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
-.popup-theme-option:hover {
-  border-color: color-mix(in srgb, var(--mdp-link) 34%, var(--mdp-border-strong));
-  color: var(--mdp-text);
+.popup-settings-content .mdp-ui-select.popup-theme-select {
+  width: 100%;
+  padding-left: 44px;
 }
 
-.popup-theme-option.is-selected {
-  border-color: color-mix(in srgb, var(--mdp-link) 62%, var(--mdp-border));
-  background: var(--mdp-link-soft);
-  color: var(--mdp-link);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdp-link) 10%, transparent);
-}
-
-.popup-theme-option input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-}
-
-.popup-theme-option input:focus-visible + .popup-theme-option__swatch {
-  outline: 2px solid var(--mdp-focus-color);
-  outline-offset: 2px;
-}
-
-.popup-theme-option__swatch {
+.popup-theme-preview {
   --popup-theme-paper: #fff;
   --popup-theme-ink: #334155;
   --popup-theme-accent: #2563eb;
-  position: relative;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 8px;
   width: 28px;
   height: 22px;
   overflow: hidden;
@@ -333,11 +286,13 @@ input[type='checkbox'] { cursor: pointer; }
   border-radius: 5px;
   background: linear-gradient(135deg, var(--popup-theme-paper) 0 68%, var(--popup-theme-accent) 68%);
   box-shadow: 0 1px 2px rgb(15 23 42 / 12%);
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 
-.popup-theme-option__swatch span,
-.popup-theme-option__swatch::before,
-.popup-theme-option__swatch::after {
+.popup-theme-preview span,
+.popup-theme-preview::before,
+.popup-theme-preview::after {
   position: absolute;
   left: 5px;
   height: 1px;
@@ -345,48 +300,12 @@ input[type='checkbox'] { cursor: pointer; }
   background: var(--popup-theme-ink);
 }
 
-.popup-theme-option__swatch::before,
-.popup-theme-option__swatch::after { content: ''; }
+.popup-theme-preview::before,
+.popup-theme-preview::after { content: ''; }
 
-.popup-theme-option__swatch::before { top: 6px; width: 12px; }
-.popup-theme-option__swatch::after { top: 10px; width: 9px; opacity: 0.72; }
-.popup-theme-option__swatch span { top: 14px; width: 11px; opacity: 0.48; }
-
-.popup-theme-option[data-theme='dark'] .popup-theme-option__swatch {
-  --popup-theme-paper: #141b27;
-  --popup-theme-ink: #e5edf7;
-  --popup-theme-accent: #7ab7ff;
-}
-
-.popup-theme-option[data-theme='sakura'] .popup-theme-option__swatch {
-  --popup-theme-paper: #fff7f9;
-  --popup-theme-ink: #713f52;
-  --popup-theme-accent: #ed8da8;
-}
-
-.popup-theme-option[data-theme='matcha'] .popup-theme-option__swatch {
-  --popup-theme-paper: #f5f7ed;
-  --popup-theme-ink: #3f5138;
-  --popup-theme-accent: #87a96b;
-}
-
-.popup-theme-option[data-theme='solarized-dark'] .popup-theme-option__swatch {
-  --popup-theme-paper: #002b36;
-  --popup-theme-ink: #93a1a1;
-  --popup-theme-accent: #b58900;
-}
-
-.popup-theme-option__label {
-  max-width: 100%;
-  overflow: hidden;
-  color: inherit;
-  font-size: 9px;
-  font-weight: 650;
-  line-height: 1.1;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.popup-theme-preview::before { top: 6px; width: 12px; }
+.popup-theme-preview::after { top: 10px; width: 9px; opacity: 0.72; }
+.popup-theme-preview span { top: 14px; width: 11px; opacity: 0.48; }
 
 .popup-settings-content > * {
   flex: 0 0 auto;

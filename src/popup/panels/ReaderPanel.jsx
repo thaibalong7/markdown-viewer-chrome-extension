@@ -10,6 +10,17 @@ import {
   THEME_LABELS
 } from '../settings-constants.js'
 
+const THEME_GROUPS = [
+  {
+    label: 'Light themes',
+    themes: Object.entries(BUILT_IN_THEMES).filter(([, colors]) => colors.colorScheme !== 'dark')
+  },
+  {
+    label: 'Dark themes',
+    themes: Object.entries(BUILT_IN_THEMES).filter(([, colors]) => colors.colorScheme === 'dark')
+  }
+]
+
 function InfoTooltip({ label, content }) {
   return (
     <Tooltip content={content}>
@@ -24,39 +35,52 @@ function InfoTooltip({ label, content }) {
  * @param {{ settings: object, onPatch: (partial: object) => void }} props
  */
 export function ReaderPanel({ settings, onPatch }) {
+  const requestedPreset = settings.theme?.preset || 'light'
+  const selectedPreset = Object.hasOwn(BUILT_IN_THEMES, requestedPreset)
+    ? requestedPreset
+    : 'light'
+  const selectedColors = BUILT_IN_THEMES[selectedPreset]
+
   return (
     <>
-      <fieldset className="popup-theme-picker">
-        <legend className="mdp-ui-field__label">Theme</legend>
-        <div className="popup-theme-options">
-          {Object.keys(BUILT_IN_THEMES).map((preset) => {
-            const selected = (settings.theme?.preset || 'light') === preset
-            return (
-              <label
-                key={preset}
-                className={`popup-theme-option ${selected ? 'is-selected' : ''}`}
-                data-theme={preset}
-              >
-                <input
-                  type="radio"
-                  name="popup-reader-theme"
-                  value={preset}
-                  checked={selected}
-                  onChange={(event) =>
-                    onPatch({
-                      theme: { preset: event.target.value }
-                    })
-                  }
-                />
-                <span className="popup-theme-option__swatch" aria-hidden="true">
-                  <span />
-                </span>
-                <span className="popup-theme-option__label">{THEME_LABELS[preset] || preset}</span>
-              </label>
-            )
-          })}
+      <div className="mdp-ui-field">
+        <label className="mdp-ui-field__label" htmlFor="popup-reader-theme">
+          Theme
+        </label>
+        <div className="popup-theme-select-wrap">
+          <span
+            className="popup-theme-preview"
+            aria-hidden="true"
+            style={{
+              '--popup-theme-paper': selectedColors.surface || selectedColors.background,
+              '--popup-theme-ink': selectedColors.text,
+              '--popup-theme-accent': selectedColors.link
+            }}
+          >
+            <span />
+          </span>
+          <select
+            id="popup-reader-theme"
+            className="mdp-ui-select popup-theme-select"
+            value={selectedPreset}
+            onChange={(event) =>
+              onPatch({
+                theme: { preset: event.target.value }
+              })
+            }
+          >
+            {THEME_GROUPS.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.themes.map(([preset]) => (
+                  <option key={preset} value={preset}>
+                    {THEME_LABELS[preset] || preset}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
         </div>
-      </fieldset>
+      </div>
 
       <div className="mdp-ui-field">
         <div className="mdp-ui-field__label-row">

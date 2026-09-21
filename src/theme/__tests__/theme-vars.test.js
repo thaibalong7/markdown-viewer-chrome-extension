@@ -1,5 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { createStyleVars, getLightDarkThemeToggleTarget } from '../index.js'
+import { BUILT_IN_THEMES, createStyleVars, getLightDarkThemeToggleTarget } from '../index.js'
+
+function getContrastRatio(foreground, background) {
+  const getLuminance = (hex) => {
+    const channels = hex.slice(1).match(/../g).map((channel) => Number.parseInt(channel, 16) / 255)
+    const [red, green, blue] = channels.map((channel) =>
+      channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+    )
+    return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue)
+  }
+
+  const foregroundLuminance = getLuminance(foreground)
+  const backgroundLuminance = getLuminance(background)
+  const lighter = Math.max(foregroundLuminance, backgroundLuminance)
+  const darker = Math.min(foregroundLuminance, backgroundLuminance)
+  return (lighter + 0.05) / (darker + 0.05)
+}
 
 describe('createStyleVars', () => {
   it('exposes toast variant colors for the light reader theme', () => {
@@ -62,15 +78,35 @@ describe('createStyleVars', () => {
     expect(vars['--mdp-link']).toBe('#2e9fe6')
     expect(vars['--mdp-link-soft']).toBe('#073c48')
   })
+
+  it.each([
+    ['vscode-dark', '#181818', '#4daafc'],
+    ['dracula', '#282a36', '#8be9fd'],
+    ['gruvbox', '#282828', '#83a598'],
+    ['night-owl', '#011627', '#82aaff'],
+    ['min-dark', '#171717', '#9cb6d6']
+  ])('exposes the %s dark reader palette', (preset, background, link) => {
+    const vars = createStyleVars({ theme: { preset } })
+
+    expect(vars['--mdp-color-scheme']).toBe('dark')
+    expect(vars['--mdp-bg']).toBe(background)
+    expect(vars['--mdp-link']).toBe(link)
+    expect(getContrastRatio(vars['--mdp-body-text'], vars['--mdp-bg'])).toBeGreaterThanOrEqual(4.5)
+    expect(getContrastRatio(vars['--mdp-link'], vars['--mdp-bg'])).toBeGreaterThanOrEqual(4.5)
+    expect(getContrastRatio(vars['--mdp-toast-info-text'], vars['--mdp-toast-info-bg']))
+      .toBeGreaterThanOrEqual(4.5)
+  })
 })
 
 describe('getLightDarkThemeToggleTarget', () => {
   it('toggles only between the current light and dark presets', () => {
     expect(getLightDarkThemeToggleTarget('light')).toBe('dark')
     expect(getLightDarkThemeToggleTarget('dark')).toBe('light')
-    expect(getLightDarkThemeToggleTarget('sakura')).toBeNull()
-    expect(getLightDarkThemeToggleTarget('matcha')).toBeNull()
-    expect(getLightDarkThemeToggleTarget('solarized-dark')).toBeNull()
+    for (const preset of Object.keys(BUILT_IN_THEMES)) {
+      if (preset !== 'light' && preset !== 'dark') {
+        expect(getLightDarkThemeToggleTarget(preset)).toBeNull()
+      }
+    }
     expect(getLightDarkThemeToggleTarget('sepia')).toBeNull()
   })
 })

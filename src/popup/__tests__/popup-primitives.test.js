@@ -8,6 +8,7 @@ import { FileHistoryPanel } from '../panels/FileHistoryPanel.jsx'
 import { PluginsPanel } from '../panels/PluginsPanel.jsx'
 import { ReaderPanel } from '../panels/ReaderPanel.jsx'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from '../settings-constants.js'
+import { BUILT_IN_THEMES } from '../../theme/index.js'
 
 const noop = () => {}
 
@@ -32,11 +33,19 @@ describe('popup shared primitives', () => {
         onPatch: noop
       })
     )
+    const themeSelectHtml = readerHtml.match(
+      /<select id="popup-reader-theme"[\s\S]*?<\/select>/
+    )?.[0] || ''
 
     expect(readerHtml).toContain('mdp-ui-select')
-    expect(readerHtml).toContain('popup-theme-options')
-    expect(readerHtml).toContain('name="popup-reader-theme"')
-    expect(readerHtml).toContain('type="radio"')
+    expect(readerHtml).toContain('popup-theme-select')
+    expect(readerHtml).toContain('id="popup-reader-theme"')
+    expect(themeSelectHtml.match(/<option /g)).toHaveLength(Object.keys(BUILT_IN_THEMES).length)
+    expect(themeSelectHtml).toContain('<optgroup label="Light themes">')
+    expect(themeSelectHtml).toContain('<optgroup label="Dark themes">')
+    expect(themeSelectHtml).toContain('Dark (VS Code)')
+    expect(themeSelectHtml).toContain('Min (Dark)')
+    expect(readerHtml).toContain('--popup-theme-paper')
     expect(readerHtml).toContain('mdp-ui-number-field')
     expect(readerHtml).toContain('mdp-ui-field__label-row')
     expect(readerHtml).toContain('About line height')

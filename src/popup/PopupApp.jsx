@@ -28,6 +28,7 @@ export function PopupApp() {
   }, [settings])
 
   const activeTabMeta = SETTINGS_TABS.find((tab) => tab.id === activeTab)
+  const fileAccessReady = fileAccess.state === 'allowed'
 
   async function handleOpenSettings() {
     setOptionsError('')
@@ -113,13 +114,18 @@ export function PopupApp() {
           />
           <strong>Markdown Plus</strong>
         </div>
+        {fileAccessReady ? (
+          <FileAccessCallout state={fileAccess.state} />
+        ) : null}
       </header>
 
-      <FileAccessCallout
-        state={fileAccess.state}
-        errorMessage={detailsError}
-        onOpenDetails={() => void handleOpenDetails()}
-      />
+      {!fileAccessReady ? (
+        <FileAccessCallout
+          state={fileAccess.state}
+          errorMessage={detailsError}
+          onOpenDetails={() => void handleOpenDetails()}
+        />
+      ) : null}
 
       <div className="popup-settings-panel">
         <nav className="popup-settings-tabs" aria-label="Quick control sections" role="tablist">

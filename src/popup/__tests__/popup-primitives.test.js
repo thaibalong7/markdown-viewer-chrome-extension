@@ -117,6 +117,7 @@ describe('popup shared primitives', () => {
     )
 
     expect(allowedHtml).toContain('File access is ready')
+    expect(allowedHtml).not.toContain('<p>')
     expect(allowedHtml).not.toContain('Open extension details')
     expect(blockedHtml).toContain('Allow access to local files')
     expect(blockedHtml).toContain('Allow access to file URLs')

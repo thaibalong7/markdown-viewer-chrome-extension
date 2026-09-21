@@ -22,7 +22,10 @@ describe('popup design-system styles', () => {
 
   it('keeps file-access onboarding compact and visually stateful', () => {
     expect(popupCss).toMatch(/\.popup-file-access\s*\{[^}]*margin: 8px 10px 0;[^}]*font-size: 11px;/s)
-    expect(popupCss).toMatch(/\.popup-file-access--allowed\s*\{[^}]*display: flex;/s)
+    expect(popupCss).toMatch(
+      /\.popup-file-access--allowed\s*\{[^}]*display: inline-flex;[^}]*margin: 0 0 0 auto;[^}]*padding: 4px 7px;[^}]*border: 0;[^}]*border-radius: 999px;/s
+    )
+    expect(popupCss).toMatch(/\.popup-file-access--allowed::before\s*\{[^}]*background: var\(--mdp-accent\);/s)
   })
 
   it('uses a compact labeled tab bar instead of a permanent side rail', () => {
@@ -85,6 +88,19 @@ describe('popup design-system styles', () => {
   it('scrolls overflowing panels without shrinking and overlapping their fields', () => {
     expect(popupCss).toMatch(
       /\.popup-settings-content > \*\s*\{[^}]*flex: 0 0 auto;/s
+    )
+  })
+
+  it('keeps scrolling owned by the active panel when the file-access callout is visible', () => {
+    expect(popupCss).toMatch(/body\s*\{[^}]*overflow: hidden;/s)
+    expect(popupCss).toMatch(
+      /\.popup-root\s*\{[^}]*max-height: 600px;[^}]*display: flex;[^}]*overflow: hidden;/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-settings-panel\s*\{[^}]*flex: 1 1 auto;[^}]*overflow: hidden;/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-settings-content\s*\{[^}]*min-height: 0;[^}]*flex: 1 1 auto;[^}]*overflow-y: auto;/s
     )
   })
 

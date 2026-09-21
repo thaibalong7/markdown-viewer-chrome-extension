@@ -27,6 +27,7 @@ body,
 
 body {
   width: 420px;
+  overflow: hidden;
   background: var(--mdp-bg);
 }
 
@@ -48,6 +49,10 @@ input[type='checkbox'] { cursor: pointer; }
 
 .popup-root {
   min-height: 280px;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--mdp-bg);
 }
 
@@ -55,6 +60,7 @@ input[type='checkbox'] { cursor: pointer; }
   min-height: 48px;
   display: flex;
   align-items: center;
+  gap: 12px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--mdp-border-strong);
   background: var(--mdp-surface);
@@ -114,14 +120,30 @@ input[type='checkbox'] { cursor: pointer; }
 }
 
 .popup-file-access--allowed {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  padding-block: 7px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 0 auto;
+  padding: 4px 7px;
+  border: 0;
+  border-radius: 999px;
+  line-height: 1.25;
 }
 
-.popup-file-access--allowed p {
+.popup-file-access--allowed::before {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--mdp-accent);
+  content: '';
+}
+
+.popup-file-access--allowed strong {
   margin: 0;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
 .popup-open-settings {
@@ -149,6 +171,7 @@ input[type='checkbox'] { cursor: pointer; }
 
 .popup-settings-panel {
   min-height: 320px;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -227,8 +250,9 @@ input[type='checkbox'] { cursor: pointer; }
 }
 
 .popup-settings-content {
+  min-height: 0;
   max-height: 380px;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   gap: 10px;

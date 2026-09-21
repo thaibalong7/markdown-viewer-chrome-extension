@@ -10,8 +10,7 @@ const CONTENT = {
   },
   allowed: {
     variant: 'success',
-    title: 'File access is ready',
-    message: 'Markdown Plus can open supported local Markdown files.'
+    title: 'File access is ready'
   },
   blocked: {
     variant: 'warning',
@@ -41,9 +40,9 @@ export function FileAccessCallout({ state, errorMessage = '', onOpenDetails }) {
           <li>Select Markdown Plus → Details.</li>
           <li>Enable “Allow access to file URLs”.</li>
         </ol>
-      ) : (
+      ) : content.message ? (
         <p>{content.message}</p>
-      )}
+      ) : null}
       {errorMessage ? <p className="popup-file-access__error">{errorMessage}</p> : null}
       {showAction ? (
         <Button variant="secondary" onClick={onOpenDetails}>

@@ -1,18 +1,14 @@
-import { sanitizeDownloadFilename, triggerDownload } from '../../shared/download.js'
 import { MDP_WS_FILE } from '../../shared/constants/explorer.js'
+import { sanitizeDownloadFilename } from '../../shared/download.js'
 import { logger } from '../../shared/logger.js'
 import { getFileTypeFromName, MARKDOWN_FILE_EXTENSIONS } from '../../shared/file-types.js'
 
 export class FileMismatchError extends Error {
-  /**
-   * @param {string} expectedName
-   * @param {string} selectedName
-   */
   constructor(expectedName, selectedName) {
     const expected = String(expectedName || 'this file').trim() || 'this file'
     const selected = String(selectedName || 'another file').trim() || 'another file'
     super(
-      `The selected file (“${selected}”) is not the file you are editing (“${expected}”). Choose the correct file to save.`
+      `The selected file (“${selected}”) is not the file you are editing (“${expected}”). Choose the original file shown in Markdown Plus.`
     )
     this.name = 'FileMismatchError'
     this.expectedName = expected
@@ -20,78 +16,91 @@ export class FileMismatchError extends Error {
   }
 }
 
+export class FileContentMismatchError extends Error {
+  constructor(filename) {
+    super(
+      `“${filename || 'The selected file'}” does not match the document currently open in Markdown Plus. Reload the viewer if the file changed, or choose the original file.`
+    )
+    this.name = 'FileContentMismatchError'
+  }
+}
+
+export class FileConflictError extends Error {
+  constructor(filename) {
+    super(
+      `“${filename || 'This file'}” changed on disk after editing started. Reload it before saving so external changes are not overwritten.`
+    )
+    this.name = 'FileConflictError'
+  }
+}
+
+export class FileNotConnectedError extends Error {
+  constructor() {
+    super('The original file is not connected. Exit edit mode and connect it again before saving.')
+    this.name = 'FileNotConnectedError'
+  }
+}
+
 const IDB_NAME = 'mdp-editor'
-const IDB_VERSION = 1
+const IDB_VERSION = 2
 const IDB_STORE = 'file-handles'
 
 /** @type {Map<string, FileSystemFileHandle>} */
 const memoryHandleCache = new Map()
+/** @type {Map<string, string>} */
+const lastKnownDiskContent = new Map()
 
-/**
- * @returns {boolean}
- */
 export function isFileSystemAccessSupported() {
-  return typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function'
+  return typeof window !== 'undefined' && typeof window.showOpenFilePicker === 'function'
 }
 
-/**
- * @param {string | null | undefined} fileUrl
- * @returns {string}
- */
 export function normalizeFileUrlKey(fileUrl) {
   if (!fileUrl || typeof fileUrl !== 'string') return ''
   try {
-    const u = new URL(fileUrl)
-    u.hash = ''
-    return u.href
+    const url = new URL(fileUrl)
+    url.hash = ''
+    return url.href
   } catch {
     return String(fileUrl).trim()
   }
 }
 
-/**
- * @param {string | null | undefined} fileUrl
- * @returns {string}
- */
-/**
- * Leaf filename from the page / document URL (for matching picker selection).
- * @param {string | null | undefined} fileUrl
- * @returns {string}
- */
 export function getLeafFilenameFromFileUrl(fileUrl) {
   if (!fileUrl || typeof fileUrl !== 'string') return ''
   if (fileUrl.startsWith(MDP_WS_FILE)) {
     try {
-      const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
-      return rel.split('/').filter(Boolean).pop() || ''
+      const relativePath = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
+      return relativePath.split('/').filter(Boolean).pop() || ''
     } catch {
       return ''
     }
   }
   try {
-    const u = new URL(fileUrl)
-    const leaf = u.pathname.split('/').filter(Boolean).pop() || ''
+    const url = new URL(fileUrl)
+    const leaf = url.pathname.split('/').filter(Boolean).pop() || ''
     return decodeURIComponent(leaf)
   } catch {
     return ''
   }
 }
 
-/**
- * @param {string} name
- * @returns {string}
- */
-function normalizeFilenameForCompare(name) {
-  return String(name || '')
-    .trim()
-    .toLowerCase()
+export function getDisplayPathFromFileUrl(fileUrl) {
+  if (!fileUrl || typeof fileUrl !== 'string') return ''
+  try {
+    const url = new URL(fileUrl)
+    if (url.protocol !== 'file:') return fileUrl
+    const decodedPath = decodeURIComponent(url.pathname)
+    const windowsPath = /^\/[a-zA-Z]:\//.test(decodedPath) ? decodedPath.slice(1) : decodedPath
+    return url.hostname ? `//${url.hostname}${windowsPath}` : windowsPath
+  } catch {
+    return fileUrl
+  }
 }
 
-/**
- * @param {FileSystemFileHandle} handle
- * @param {string | null | undefined} fileUrl
- * @returns {boolean}
- */
+function normalizeFilenameForCompare(name) {
+  return String(name || '').normalize('NFC')
+}
+
 export function handleMatchesFileUrl(handle, fileUrl) {
   const expected = getLeafFilenameFromFileUrl(fileUrl)
   const selected = handle?.name
@@ -99,10 +108,6 @@ export function handleMatchesFileUrl(handle, fileUrl) {
   return normalizeFilenameForCompare(selected) === normalizeFilenameForCompare(expected)
 }
 
-/**
- * @param {FileSystemFileHandle} handle
- * @param {string | null | undefined} fileUrl
- */
 function assertHandleMatchesFileUrl(handle, fileUrl) {
   const expected = getLeafFilenameFromFileUrl(fileUrl)
   if (!expected) return
@@ -111,35 +116,13 @@ function assertHandleMatchesFileUrl(handle, fileUrl) {
   }
 }
 
-/**
- * @param {string} fileUrlKey
- */
-async function clearPersistedHandle(fileUrlKey) {
-  if (!fileUrlKey) return
-  memoryHandleCache.delete(fileUrlKey)
-  try {
-    const db = await openHandleDb()
-    await new Promise((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readwrite')
-      tx.oncomplete = () => resolve(undefined)
-      tx.onerror = () => reject(tx.error)
-      tx.objectStore(IDB_STORE).delete(fileUrlKey)
-    })
-    db.close()
-  } catch (err) {
-    logger.warn('Failed to clear persisted file handle.', err)
-  }
-}
-
 export function getSuggestedFilenameFromUrl(fileUrl) {
   if (!fileUrl || typeof fileUrl !== 'string') return 'document.md'
   try {
-    const u = new URL(fileUrl)
-    const leaf = u.pathname.split('/').filter(Boolean).pop() || ''
+    const url = new URL(fileUrl)
+    const leaf = url.pathname.split('/').filter(Boolean).pop() || ''
     const decoded = decodeURIComponent(leaf)
-    if (getFileTypeFromName(decoded)?.id === 'markdown') {
-      return sanitizeDownloadFilename(decoded)
-    }
+    if (getFileTypeFromName(decoded)?.id === 'markdown') return sanitizeDownloadFilename(decoded)
     const base = decoded.replace(/\.[^.]+$/, '') || 'document'
     return `${sanitizeDownloadFilename(base)}.md`
   } catch {
@@ -147,9 +130,6 @@ export function getSuggestedFilenameFromUrl(fileUrl) {
   }
 }
 
-/**
- * @returns {Promise<IDBDatabase>}
- */
 function openHandleDb() {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === 'undefined') {
@@ -161,63 +141,81 @@ function openHandleDb() {
     request.onsuccess = () => resolve(request.result)
     request.onupgradeneeded = (event) => {
       const db = /** @type {IDBOpenDBRequest} */ (event.target).result
-      if (!db.objectStoreNames.contains(IDB_STORE)) {
-        db.createObjectStore(IDB_STORE)
-      }
+      // Version 1 handles were accepted by filename only. Drop them so every
+      // edit target is explicitly reconnected and content-verified once.
+      if (db.objectStoreNames.contains(IDB_STORE)) db.deleteObjectStore(IDB_STORE)
+      db.createObjectStore(IDB_STORE)
     }
   })
 }
 
-/**
- * @param {string} key
- * @param {FileSystemFileHandle} handle
- */
+async function clearPersistedHandle(fileUrlKey) {
+  if (!fileUrlKey) return
+  memoryHandleCache.delete(fileUrlKey)
+  lastKnownDiskContent.delete(fileUrlKey)
+  try {
+    const db = await openHandleDb()
+    await new Promise((resolve, reject) => {
+      const transaction = db.transaction(IDB_STORE, 'readwrite')
+      transaction.oncomplete = () => resolve(undefined)
+      transaction.onerror = () => reject(transaction.error)
+      transaction.objectStore(IDB_STORE).delete(fileUrlKey)
+    })
+    db.close()
+  } catch (error) {
+    logger.warn('Failed to clear persisted file handle.', error)
+  }
+}
+
 async function persistHandle(key, handle) {
   if (!key) return
   try {
     const db = await openHandleDb()
     await new Promise((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readwrite')
-      tx.oncomplete = () => resolve(undefined)
-      tx.onerror = () => reject(tx.error)
-      tx.objectStore(IDB_STORE).put(handle, key)
+      const transaction = db.transaction(IDB_STORE, 'readwrite')
+      transaction.oncomplete = () => resolve(undefined)
+      transaction.onerror = () => reject(transaction.error)
+      transaction.objectStore(IDB_STORE).put(handle, key)
     })
     db.close()
-  } catch (err) {
-    logger.warn('Failed to persist file handle to IndexedDB.', err)
+  } catch (error) {
+    logger.warn('Failed to persist file handle to IndexedDB.', error)
   }
 }
 
-/**
- * @param {string} key
- * @returns {Promise<FileSystemFileHandle | null>}
- */
 async function restoreHandle(key) {
   if (!key) return null
   try {
     const db = await openHandleDb()
     const handle = await new Promise((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readonly')
-      tx.onerror = () => reject(tx.error)
-      const req = tx.objectStore(IDB_STORE).get(key)
-      req.onsuccess = () => resolve(req.result ?? null)
-      req.onerror = () => reject(req.error)
+      const transaction = db.transaction(IDB_STORE, 'readonly')
+      transaction.onerror = () => reject(transaction.error)
+      const request = transaction.objectStore(IDB_STORE).get(key)
+      request.onsuccess = () => resolve(request.result ?? null)
+      request.onerror = () => reject(request.error)
     })
     db.close()
-    if (handle && typeof handle === 'object' && 'createWritable' in handle) {
-      return /** @type {FileSystemFileHandle} */ (handle)
-    }
+    if (handle && typeof handle === 'object' && 'createWritable' in handle) return handle
     return null
-  } catch (err) {
-    logger.warn('Failed to restore file handle from IndexedDB.', err)
+  } catch (error) {
+    logger.warn('Failed to restore file handle from IndexedDB.', error)
     return null
   }
 }
 
-/**
- * @param {FileSystemFileHandle} handle
- * @returns {Promise<boolean>}
- */
+export async function primePersistedEditHandle(fileUrl) {
+  const fileUrlKey = normalizeFileUrlKey(fileUrl)
+  if (!fileUrlKey || memoryHandleCache.has(fileUrlKey)) return
+  const handle = await restoreHandle(fileUrlKey)
+  if (memoryHandleCache.has(fileUrlKey)) return
+  if (!handle) return
+  if (!handleMatchesFileUrl(handle, fileUrl)) {
+    await clearPersistedHandle(fileUrlKey)
+    return
+  }
+  memoryHandleCache.set(fileUrlKey, handle)
+}
+
 async function ensureWritePermission(handle) {
   if (!handle || typeof handle.queryPermission !== 'function') return true
   let state = await handle.queryPermission({ mode: 'readwrite' })
@@ -227,65 +225,30 @@ async function ensureWritePermission(handle) {
   return state === 'granted'
 }
 
-/**
- * @param {FileSystemFileHandle} handle
- * @param {string} content
- */
-async function writeToHandle(handle, content) {
-  const writable = await handle.createWritable()
-  await writable.write(content)
-  await writable.close()
+async function readHandleText(handle) {
+  const file = await handle.getFile()
+  return file.text()
 }
 
-/**
- * @param {string} content
- * @param {string} suggestedName
- * @param {string} fileUrlKey
- * @param {string} fileUrl
- * @returns {Promise<'fsa' | 'cancelled'>}
- */
-export async function saveWithFileSystemAccess(content, suggestedName, fileUrlKey, fileUrl) {
-  if (!isFileSystemAccessSupported()) {
-    throw new Error('File System Access API not supported')
+function normalizeTextForIdentity(content) {
+  return String(content ?? '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n')
+}
+
+async function validateHandleContent(handle, fileUrl, expectedContent) {
+  assertHandleMatchesFileUrl(handle, fileUrl)
+  const diskContent = await readHandleText(handle)
+  if (normalizeTextForIdentity(diskContent) !== normalizeTextForIdentity(expectedContent)) {
+    throw new FileContentMismatchError(handle?.name)
   }
+  return diskContent
+}
 
-  let handle =
-    (fileUrlKey && memoryHandleCache.get(fileUrlKey)) ||
-    (fileUrlKey ? await restoreHandle(fileUrlKey) : null)
-
-  if (handle && !handleMatchesFileUrl(handle, fileUrl)) {
-    logger.warn('Cached file handle does not match the document being edited; clearing cache.')
-    await clearPersistedHandle(fileUrlKey)
-    handle = null
-  }
-
-  if (handle) {
-    const allowed = await ensureWritePermission(handle)
-    if (allowed) {
-      try {
-        assertHandleMatchesFileUrl(handle, fileUrl)
-        await writeToHandle(handle, content)
-        if (fileUrlKey) {
-          memoryHandleCache.set(fileUrlKey, handle)
-          await persistHandle(fileUrlKey, handle)
-        }
-        return 'fsa'
-      } catch (err) {
-        if (err instanceof FileMismatchError) {
-          await clearPersistedHandle(fileUrlKey)
-          throw err
-        }
-        logger.warn('Failed to write with cached handle; opening picker.', err)
-        handle = null
-      }
-    } else {
-      handle = null
-    }
-  }
-
+async function pickOriginalMarkdownFile() {
   try {
-    handle = await window.showSaveFilePicker({
-      suggestedName: suggestedName || 'document.md',
+    const handles = await window.showOpenFilePicker({
+      id: 'markdown-plus-edit-original',
+      multiple: false,
+      excludeAcceptAllOption: true,
       types: [
         {
           description: 'Markdown',
@@ -295,64 +258,90 @@ export async function saveWithFileSystemAccess(content, suggestedName, fileUrlKe
         }
       ]
     })
-  } catch (err) {
-    if (err?.name === 'AbortError') {
-      return 'cancelled'
-    }
-    throw err
+    return handles?.[0] || null
+  } catch (error) {
+    if (error?.name === 'AbortError') return null
+    throw error
   }
+}
+
+/**
+ * Connect the existing document to a user-approved writable handle before the
+ * editor is allowed to start. A restored handle is accepted only after its
+ * filename and current contents match the document loaded in the viewer.
+ */
+export async function prepareFileForEditing(content, { fileUrl = '' } = {}) {
+  if (!isFileSystemAccessSupported()) {
+    throw new Error('This browser cannot connect a local file for safe editing.')
+  }
+
+  const expectedContent = typeof content === 'string' ? content : ''
+  const fileUrlKey = normalizeFileUrlKey(fileUrl)
+  if (!fileUrlKey) throw new FileNotConnectedError()
+
+  let handle = memoryHandleCache.get(fileUrlKey) || null
+  if (handle) {
+    try {
+      if (!(await ensureWritePermission(handle))) throw new Error('Write permission was not granted.')
+      const diskContent = await validateHandleContent(handle, fileUrl, expectedContent)
+      memoryHandleCache.set(fileUrlKey, handle)
+      lastKnownDiskContent.set(fileUrlKey, diskContent)
+      await persistHandle(fileUrlKey, handle)
+      return { status: 'ready', reused: true, filename: handle.name }
+    } catch (error) {
+      logger.warn('Stored edit target could not be verified; asking the user to reconnect it.', {
+        filename: handle?.name || '',
+        message: error instanceof Error ? error.message : String(error)
+      })
+      await clearPersistedHandle(fileUrlKey)
+      throw error
+    }
+  }
+
+  handle = await pickOriginalMarkdownFile()
+  if (!handle) return { status: 'cancelled' }
+
+  const diskContent = await validateHandleContent(handle, fileUrl, expectedContent)
+  if (!(await ensureWritePermission(handle))) {
+    throw new Error('Write permission was not granted for the selected file.')
+  }
+
+  memoryHandleCache.set(fileUrlKey, handle)
+  lastKnownDiskContent.set(fileUrlKey, diskContent)
+  await persistHandle(fileUrlKey, handle)
+  return { status: 'ready', reused: false, filename: handle.name }
+}
+
+async function writeToHandle(handle, content) {
+  const writable = await handle.createWritable()
+  await writable.write(content)
+  await writable.close()
+}
+
+/**
+ * Save only through the handle explicitly connected before edit mode started.
+ * This function never falls back to downloading a copy.
+ */
+export async function saveFile(content, { fileUrl = '' } = {}) {
+  const text = typeof content === 'string' ? content : ''
+  const fileUrlKey = normalizeFileUrlKey(fileUrl)
+  if (!fileUrlKey) throw new FileNotConnectedError()
+
+  const handle = memoryHandleCache.get(fileUrlKey)
+  const baseline = lastKnownDiskContent.get(fileUrlKey)
+  if (!handle || baseline === undefined) throw new FileNotConnectedError()
 
   assertHandleMatchesFileUrl(handle, fileUrl)
-
-  const allowed = await ensureWritePermission(handle)
-  if (!allowed) {
-    throw new Error('Write permission denied for the selected file.')
+  if (!(await ensureWritePermission(handle))) {
+    throw new Error('Write permission was not granted for the connected file.')
   }
 
-  await writeToHandle(handle, content)
-  if (fileUrlKey) {
-    memoryHandleCache.set(fileUrlKey, handle)
-    await persistHandle(fileUrlKey, handle)
-  }
+  const currentDiskContent = await readHandleText(handle)
+  if (currentDiskContent !== baseline) throw new FileConflictError(handle.name)
+
+  await writeToHandle(handle, text)
+  lastKnownDiskContent.set(fileUrlKey, text)
+  memoryHandleCache.set(fileUrlKey, handle)
+  await persistHandle(fileUrlKey, handle)
   return 'fsa'
-}
-
-/**
- * @param {string} content
- * @param {string} filename
- */
-export async function saveViaDownload(content, filename) {
-  const safeName = sanitizeDownloadFilename(filename || 'document.md')
-  const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
-  await triggerDownload({ blob, filename: safeName })
-}
-
-/**
- * @param {string} content
- * @param {{ fileUrl?: string, suggestedName?: string }} [options]
- * @returns {Promise<'fsa' | 'download' | 'cancelled'>}
- */
-export async function saveFile(content, options = {}) {
-  const text = typeof content === 'string' ? content : ''
-  const fileUrl = options.fileUrl || ''
-  const fileUrlKey = normalizeFileUrlKey(fileUrl)
-  const suggestedName =
-    options.suggestedName || getSuggestedFilenameFromUrl(fileUrl) || 'document.md'
-
-  if (isFileSystemAccessSupported()) {
-    try {
-      const result = await saveWithFileSystemAccess(text, suggestedName, fileUrlKey, fileUrl)
-      if (result === 'cancelled') return 'cancelled'
-      return 'fsa'
-    } catch (err) {
-      if (err instanceof FileMismatchError) {
-        throw err
-      }
-      if (err?.name === 'AbortError') return 'cancelled'
-      logger.warn('File System Access save failed; falling back to download.', err)
-    }
-  }
-
-  await saveViaDownload(text, suggestedName)
-  return 'download'
 }

@@ -156,11 +156,11 @@ Explorer navigation ultimately calls the document session's `openDocument()` pat
 
 ## Markdown editor
 
-Editing is available when document capabilities allow it and the source is a local Markdown URL. CodeMirror is loaded only after edit mode is requested.
+Editing is an experimental opt-in feature controlled by `settings.editor.enabled`, which defaults to disabled. It is available only when document capabilities allow it and the source is a local Markdown URL; CodeMirror remains lazy-loaded until a verified edit session starts. If editing is disabled while a session has unsaved changes, that dirty session remains available for Save or Discard, but new edit sessions are blocked.
 
 The editor reuses the sanitized Markdown pipeline for debounced previews. It supports split and focus layouts, editor-to-preview scroll sync, Outline-to-source navigation, dirty state, save shortcuts, exit/before-unload confirmation, search/replace, and persisted preferences.
 
-Save uses the File System Access API when a matching handle can be obtained and falls back to a download. File I/O lives in `src/viewer/editor/file-io.js`; session policy remains in `editorSessionController.js`.
+Before edit mode opens, the user-facing safety gate shows the current local path and requires the original existing file to be selected through the File System Access API. `src/viewer/editor/file-io.js` verifies the exact filename and loaded content, requests write permission, persists the verified handle in IndexedDB, and records an in-memory disk baseline. Save writes only through that connected handle and blocks when the file changed externally; it never falls back to downloading a copy, and failures keep the editor dirty. Session policy remains in `editorSessionController.js`.
 
 ## Plugins, Mermaid, and code highlighting
 

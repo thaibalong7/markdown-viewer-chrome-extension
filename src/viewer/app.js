@@ -19,6 +19,7 @@ import { getLightDarkThemeToggleTarget } from '../theme/index.js'
 import { saveSettings } from '../settings/settings-client.js'
 import { getExplorerMode } from './explorer/explorer-state.js'
 import { documentTitleFromUrl } from './explorer/url-utils.js'
+import { isEditorFeatureEnabled } from '../shared/constants/editor.js'
 import {
   buildDirectFileSectionUrl,
   buildViewerRouteUrl,
@@ -100,7 +101,13 @@ export class MarkdownViewerApp {
       getSettings: () => this.settings,
       canEditCurrentDocument: () => {
         const state = this._documentSession?.getUiState()
-        return state?.capabilities?.edit === true && state?.sourceKind === 'file-url'
+        const supportsEditing =
+          state?.capabilities?.edit === true && state?.sourceKind === 'file-url'
+        const preservingDirtySession =
+          this._editorSession?.isEditModeActive() && this._editorSession?.isDirty()
+        return supportsEditing && (
+          isEditorFeatureEnabled(this.settings) || preservingDirtySession
+        )
       }
     })
     this._documentSession = createDocumentSessionController({
@@ -113,10 +120,12 @@ export class MarkdownViewerApp {
       onDocumentLoaded: (loadedDocument) => {
         this.markdown = String(loadedDocument?.text ?? '')
         this._editorSession.setExternalMarkdown(this.markdown)
+        this._reactHandle?.exitEditMode?.()
       },
       onCurrentDocumentChange: (document) => {
         this._currentFileUrl = document?.href || ''
         if (document) this._recordCurrentFileInHistory()
+        void this._editorSession.primeFileConnection()
         this._reactHandle?.bumpChrome()
       },
       publishUiState: (documentUiState) => {
@@ -136,7 +145,8 @@ export class MarkdownViewerApp {
       hasUnsavedChanges: () => this._editorSession.isDirty(),
       canSave: () =>
         this._editorSession.isEditModeActive() &&
-        this._documentSession.getUiState().capabilities?.edit === true,
+        this._documentSession.getUiState().capabilities?.edit === true &&
+        (isEditorFeatureEnabled(this.settings) || this._editorSession.isDirty()),
       onSave: () => {
         void this._editorSession.handleSave()
       },
@@ -154,6 +164,7 @@ export class MarkdownViewerApp {
     }
 
     await this._restoreInitialRoute()
+    await this._editorSession.primeFileConnection()
 
     this._reactContainerEl = document.createElement('div')
     this._reactContainerEl.className = 'mdp-react-root'
@@ -213,6 +224,7 @@ export class MarkdownViewerApp {
       onEditModeChange: (enabled) => {
         this._editorSession.setEditModeActive(enabled)
       },
+      onPrepareEdit: () => this._editorSession.prepareForEditing(),
       onSave: () => {
         void this._editorSession.handleSave()
       },

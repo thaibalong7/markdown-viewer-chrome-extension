@@ -7,6 +7,8 @@ import { EditorSplitResizeHandle } from './EditorSplitResizeHandle.jsx'
 import { StatusBar } from './StatusBar.jsx'
 import { Toast } from './Toast.jsx'
 import { countWords } from '../../editor/editor-stats.js'
+import { getDisplayPathFromFileUrl } from '../../editor/file-io.js'
+import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
 
 export function ViewerShell({
   children,
@@ -17,6 +19,7 @@ export function ViewerShell({
   explorerBridge,
   markdown,
   documentUiState,
+  getCurrentFileUrl,
   onContentChange,
   onEditorReady,
   onEditorDestroy,
@@ -25,7 +28,8 @@ export function ViewerShell({
   onHeadingNavigate,
   onEditModeChange,
   onSave,
-  saveStatus = 'saved'
+  saveStatus = 'saved',
+  exitEditRequest = 0
 }) {
   const rootNodeRef = useRef(null)
   const wasSplitEditRef = useRef(false)
@@ -45,8 +49,14 @@ export function ViewerShell({
   const editorDispatch = useEditorDispatch()
 
   const capabilities = documentUiState?.capabilities || {}
-  const editorAllowed = capabilities.edit === true && documentUiState?.sourceKind === 'file-url'
+  const supportsEditing =
+    capabilities.edit === true && documentUiState?.sourceKind === 'file-url'
+  const editorFeatureEnabled = isEditorFeatureEnabled(settings)
+  const editorAllowed = supportsEditing && (
+    editorFeatureEnabled || (editorState.enabled && editorState.dirty)
+  )
   const isEditMode = editorAllowed && editorState.enabled && (editorState.mode === 'split' || editorState.mode === 'focus')
+  const editTargetPath = getDisplayPathFromFileUrl(getCurrentFileUrl?.() || '')
 
   const isFocusMode = isEditMode && editorState.mode === 'focus'
   const isSplitMode = isEditMode && editorState.mode === 'split'
@@ -78,6 +88,10 @@ export function ViewerShell({
   useEffect(() => {
     onEditModeChange?.(isEditMode)
   }, [isEditMode, onEditModeChange])
+
+  useEffect(() => {
+    if (exitEditRequest > 0) editorDispatch({ type: 'EXIT_EDIT' })
+  }, [editorDispatch, exitEditRequest])
 
   const shouldUsePaneForScroll = isSplitMode && contentPaneEl
   const scrollRootForSidebar = shouldUsePaneForScroll ? contentPaneEl : rootEl
@@ -202,6 +216,7 @@ export function ViewerShell({
             col={editorStatus.col}
             wordCount={editorStatus.wordCount}
             saveStatus={saveStatus}
+            targetPath={editTargetPath}
           />
         )}
       </div>

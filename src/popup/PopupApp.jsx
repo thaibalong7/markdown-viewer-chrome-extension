@@ -16,7 +16,14 @@ import { FileHistoryPanel } from './panels/FileHistoryPanel.jsx'
 import { openOptionsPage } from './actions/open-options-page.js'
 
 export function PopupApp() {
-  const { settings, loading, saving, errorMessage, persistPatch } = useSettingsPersistence()
+  const {
+    settings,
+    loading,
+    saving,
+    errorMessage,
+    persistPatch,
+    persistPatchImmediately
+  } = useSettingsPersistence()
   const fileHistory = useFileHistory()
   const [activeTab, setActiveTab] = useState(SETTINGS_TAB_IDS.READER)
   const [optionsError, setOptionsError] = useState('')
@@ -173,7 +180,12 @@ export function PopupApp() {
             )}
 
             {activeTab === SETTINGS_TAB_IDS.EDITOR && (
-              <EditorSettingsPanel settings={settings} onPatch={persistPatch} />
+              <EditorSettingsPanel
+                settings={settings}
+                saving={saving}
+                onPatch={persistPatch}
+                onImmediatePatch={persistPatchImmediately}
+              />
             )}
 
             {activeTab === SETTINGS_TAB_IDS.PLUGINS && (

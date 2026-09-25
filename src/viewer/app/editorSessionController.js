@@ -1,5 +1,9 @@
 import { logger } from '../../shared/logger.js'
-import { FileMismatchError, getSuggestedFilenameFromUrl, saveFile } from '../editor/file-io.js'
+import {
+  prepareFileForEditing,
+  primePersistedEditHandle,
+  saveFile
+} from '../editor/file-io.js'
 import { applyEditModeOverrides as applyEditorStyles } from './viewerStyles.js'
 
 const EDITOR_RENDER_DEBOUNCE_MS = 300
@@ -38,6 +42,7 @@ export function createEditorSessionController({
   let editModeActive = false
   let editorDirty = false
   let saveInFlight = false
+  let editBaselineMarkdown = getMarkdown()
   /** @type {'saved' | 'modified' | 'saving'} */
   let saveStatus = 'saved'
 
@@ -67,6 +72,7 @@ export function createEditorSessionController({
     const nextMarkdown = typeof markdown === 'string' ? markdown : ''
     clearDebounce()
     setMarkdown(nextMarkdown)
+    editBaselineMarkdown = nextMarkdown
     getReactHandle()?.updateMarkdown(nextMarkdown)
     setDirty(false)
   }
@@ -101,14 +107,52 @@ export function createEditorSessionController({
     applyEditorStyles(getArticleEl(), getSettings())
   }
 
+  async function prepareForEditing() {
+    if (isDestroyed() || !canEditCurrentDocument()) return false
+    try {
+      const fileUrl = getCurrentFileUrl() || window.location.href
+      const result = await prepareFileForEditing(getMarkdown(), { fileUrl })
+      if (result.status === 'cancelled') return false
+      editBaselineMarkdown = getMarkdown()
+      showToast(
+        result.reused
+          ? `Verified save target: ${result.filename}`
+          : `Connected save target: ${result.filename}`,
+        { variant: 'success' }
+      )
+      return true
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      logger.warn('Could not connect the original markdown file for editing.', {
+        message
+      })
+      showToast(message || 'Could not connect the original file.', { variant: 'error' })
+      return false
+    }
+  }
+
+  async function primeFileConnection() {
+    if (isDestroyed()) return
+    const fileUrl = getCurrentFileUrl() || window.location.href
+    await primePersistedEditHandle(fileUrl)
+  }
+
   /**
    * @param {boolean} enabled
    */
   function setEditModeActive(enabled) {
-    editModeActive = Boolean(enabled) && canEditCurrentDocument()
+    const nextActive = Boolean(enabled) && canEditCurrentDocument()
+    const discardingChanges = editModeActive && !nextActive && editorDirty
+    editModeActive = nextActive
     if (editModeActive) {
       applyEditModeOverrides()
       return
+    }
+    if (discardingChanges) {
+      clearDebounce()
+      setMarkdown(editBaselineMarkdown)
+      getReactHandle()?.updateMarkdown(editBaselineMarkdown)
+      void render({ preserveScroll: true, honorHash: false })
     }
     setDirty(false)
     applyReaderStyles()
@@ -123,24 +167,12 @@ export function createEditorSessionController({
     try {
       const content = getMarkdown()
       const fileUrl = getCurrentFileUrl() || window.location.href
-      const suggestedName = getSuggestedFilenameFromUrl(fileUrl)
-      const result = await saveFile(content, { fileUrl, suggestedName })
+      await saveFile(content, { fileUrl })
 
-      if (result === 'cancelled') {
-        return
-      }
-
+      editBaselineMarkdown = content
       setDirty(false)
-      if (result === 'fsa') {
-        showToast('Saved', { variant: 'success' })
-      } else {
-        showToast('Downloaded copy (save to original file via picker next time)', { variant: 'warning' })
-      }
+      showToast('Saved to the connected original file', { variant: 'success' })
     } catch (error) {
-      if (error instanceof FileMismatchError) {
-        showToast(error.message, { variant: 'error' })
-        return
-      }
       const message = error instanceof Error ? error.message : String(error)
       logger.error('Failed to save markdown file.', error)
       showToast(message ? `Save failed: ${message}` : 'Save failed.', { variant: 'error' })
@@ -158,6 +190,8 @@ export function createEditorSessionController({
     setExternalMarkdown,
     prepareForDocumentSwitch,
     handleEditorChange,
+    primeFileConnection,
+    prepareForEditing,
     setEditModeActive,
     handleSave,
     destroy,

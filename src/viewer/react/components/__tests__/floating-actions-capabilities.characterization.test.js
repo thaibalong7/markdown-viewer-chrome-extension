@@ -5,6 +5,7 @@ import { MDP_WS_FILE } from '../../../../shared/constants/explorer.js'
 import { EditorProvider } from '../../contexts/EditorContext.jsx'
 import { ToastProvider } from '../../contexts/ToastContext.jsx'
 import { FloatingActions } from '../FloatingActions.jsx'
+import { EditFileConnectDialog } from '../EditFileConnectDialog.jsx'
 import { getDocumentCapabilities } from '../../../../shared/file-types.js'
 
 function renderActions(
@@ -13,7 +14,8 @@ function renderActions(
   viewMode = 'rendered',
   loading = false,
   themePreset = 'light',
-  onThemeToggle = () => {}
+  onThemeToggle = () => {},
+  editorEnabled = true
 ) {
   return renderToStaticMarkup(
     React.createElement(
@@ -24,7 +26,10 @@ function renderActions(
         null,
         React.createElement(FloatingActions, {
           getArticleEl: () => null,
-          getSettings: () => ({ theme: { preset: themePreset } }),
+          getSettings: () => ({
+            theme: { preset: themePreset },
+            editor: { enabled: editorEnabled }
+          }),
           getCurrentFileUrl: () => currentFileUrl,
           documentUiState: {
             displayName: fileTypeId === 'text'
@@ -48,6 +53,23 @@ function renderActions(
 }
 
 describe('current document-action visibility assumptions', () => {
+  it('explains and identifies the original file before editing', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(EditFileConnectDialog, {
+        open: true,
+        busy: false,
+        filePath: '/docs/README.md',
+        onCancel: () => {},
+        onConfirm: () => {}
+      })
+    )
+
+    expect(html).toContain('role="dialog"')
+    expect(html).toContain('Connect the original file before editing')
+    expect(html).toContain('/docs/README.md')
+    expect(html).toContain('Verify file and edit')
+  })
+
   it('shows Markdown edit, print, export, and copy-link actions for a local file', () => {
     const html = renderActions('file:///fixtures/navigation/index.md')
 
@@ -66,6 +88,21 @@ describe('current document-action visibility assumptions', () => {
     expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
     expect(html).toContain('aria-label="Download — HTML or Word (.doc)."')
     expect(html).toMatch(/<button[^>]*aria-label="Copy open file link"[^>]*disabled=""/)
+  })
+
+  it('hides the edit action when the experimental editor setting is disabled', () => {
+    const html = renderActions(
+      'file:///fixtures/navigation/index.md',
+      'markdown',
+      'rendered',
+      false,
+      'light',
+      () => {},
+      false
+    )
+
+    expect(html).not.toContain('aria-label="Edit markdown"')
+    expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
   })
 
   it('shows only generic and print actions for a plain text document', () => {

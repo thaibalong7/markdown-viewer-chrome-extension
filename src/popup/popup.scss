@@ -359,6 +359,31 @@ input[type='checkbox'] { cursor: pointer; }
   line-height: 1.4;
 }
 
+.popup-setting-row__description {
+  margin: 2px 0 0;
+  color: var(--mdp-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.popup-editor-notice {
+  margin-bottom: 8px;
+  padding: 9px 11px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.popup-editor-preferences {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  transition: opacity 120ms ease;
+}
+
+.popup-editor-preferences.is-disabled {
+  opacity: 0.55;
+}
+
 .popup-settings-content .mdp-ui-field__meta {
   font-size: 10px;
   text-align: right;

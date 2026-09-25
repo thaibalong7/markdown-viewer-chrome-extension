@@ -136,10 +136,25 @@ describe('settings schema', () => {
     expect(() => normalizeSettings({ ...DEFAULT_SETTINGS, enabled: 'yes' })).toThrow(
       'Enable Markdown Plus must be true or false.'
     )
+    expect(() => normalizeSettings({ editor: { enabled: 'yes' } })).toThrow(
+      'Enable experimental editor must be true or false.'
+    )
+  })
+
+  it('defaults corrupt editor feature settings to disabled', () => {
+    expect(
+      normalizeSettings({ ...DEFAULT_SETTINGS, editor: { enabled: 'yes' } }, { invalid: 'default' })
+        .editor.enabled
+    ).toBe(false)
+    expect(normalizeSettings({ ...DEFAULT_SETTINGS, editor: null }, { invalid: 'default' }).editor)
+      .toEqual(DEFAULT_SETTINGS.editor)
   })
 
   it('normalizes valid partial settings without inventing unrelated fields', () => {
     expect(normalizeSettings({ enabled: false })).toEqual({ enabled: false })
+    expect(normalizeSettings({ editor: { enabled: true } })).toEqual({
+      editor: { enabled: true }
+    })
     expect(normalizeSettings({ explorer: { maxFiles: '1200' } })).toEqual({
       explorer: { maxFiles: 1200 }
     })

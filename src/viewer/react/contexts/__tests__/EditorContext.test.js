@@ -2,6 +2,13 @@ import { describe, expect, it } from 'vitest'
 import { createInitialState, editorReducer } from '../EditorContext.jsx'
 
 describe('EditorContext reducer', () => {
+  it('enters edit mode through the explicit enter action', () => {
+    const editing = editorReducer(createInitialState(true), { type: 'ENTER_EDIT' })
+
+    expect(editing.enabled).toBe(true)
+    expect(editing.sidebarVisible).toBe(false)
+  })
+
   it('hides sidebar when entering edit mode and restores previous visibility on exit', () => {
     const initial = createInitialState(true)
 

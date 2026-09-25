@@ -11,6 +11,16 @@ const DEFAULT_INITIAL_STATE = {
 
 export function editorReducer(state, action) {
   switch (action.type) {
+    case 'ENTER_EDIT':
+      if (state.enabled) return state
+      return {
+        ...state,
+        enabled: true,
+        mode: 'split',
+        _savedSidebarVisible: state.sidebarVisible,
+        sidebarVisible: false
+      }
+
     case 'TOGGLE_EDIT':
       if (state.enabled) {
         return {

@@ -17,6 +17,10 @@ import {
   MIN_STANDALONE_TEXT_FILE_SIZE_LIMIT_MIB
 } from '../shared/constants/documents.js'
 import { deepMerge, isPlainObject } from '../shared/deep-merge.js'
+import {
+  DEFAULT_EDITOR_ENABLED,
+  DEFAULT_EDITOR_SETTINGS
+} from '../shared/constants/editor.js'
 
 export const EXPLORER_LIMIT_FIELDS = Object.freeze({
   maxScanDepth: Object.freeze({
@@ -279,6 +283,27 @@ export function normalizeSettings(settings, options = {}) {
       throw new SettingsValidationError({
         enabled: 'Enable Markdown Plus must be true or false.'
       })
+    }
+  }
+
+  if (Object.hasOwn(normalized, 'editor')) {
+    if (!isPlainObject(normalized.editor)) {
+      if (invalidPolicy === 'default') normalized.editor = { ...DEFAULT_EDITOR_SETTINGS }
+      else {
+        throw new SettingsValidationError({
+          editor: 'Editor settings must be an object.'
+        })
+      }
+    } else if (
+      normalized.editor.enabled !== undefined &&
+      typeof normalized.editor.enabled !== 'boolean'
+    ) {
+      if (invalidPolicy === 'default') normalized.editor.enabled = DEFAULT_EDITOR_ENABLED
+      else {
+        throw new SettingsValidationError({
+          'editor.enabled': 'Enable experimental editor must be true or false.'
+        })
+      }
     }
   }
 

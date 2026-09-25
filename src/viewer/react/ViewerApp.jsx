@@ -33,11 +33,13 @@ export function ViewerApp({
   onTocClickInEditor,
   onHeadingNavigate,
   onEditModeChange,
+  onPrepareEdit,
   onSave,
   onViewModeChange,
   onThemeToggle,
   dirty = false,
-  saveStatus = 'saved'
+  saveStatus = 'saved',
+  exitEditRequest = 0
 }) {
   return (
     <ToastProvider onShowToastReady={onShowToastReady}>
@@ -51,6 +53,7 @@ export function ViewerApp({
           explorerBridge={explorerBridge}
           markdown={markdown}
           documentUiState={documentUiState}
+          getCurrentFileUrl={getCurrentFileUrl}
           onContentChange={onContentChange}
           onEditorReady={onEditorReady}
           onEditorDestroy={onEditorDestroy}
@@ -60,12 +63,14 @@ export function ViewerApp({
           onEditModeChange={onEditModeChange}
           onSave={onSave}
           saveStatus={saveStatus}
+          exitEditRequest={exitEditRequest}
         >
           <FloatingActions
             getArticleEl={getArticleEl}
             getSettings={getSettings}
             getCurrentFileUrl={getCurrentFileUrl}
             documentUiState={documentUiState}
+            onPrepareEdit={onPrepareEdit}
             onSave={onSave}
             onViewModeChange={onViewModeChange}
             onThemeToggle={onThemeToggle}

@@ -27,6 +27,7 @@ vi.mock('../app/renderController.js', () => ({
 vi.mock('../app/editorSessionController.js', () => ({
   createEditorSessionController: () => ({
     destroy: mocks.editorDestroy,
+    primeFileConnection: vi.fn().mockResolvedValue(undefined),
     isDirty: () => false,
     isEditModeActive: () => false
   })

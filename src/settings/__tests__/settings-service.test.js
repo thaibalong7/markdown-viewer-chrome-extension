@@ -40,6 +40,7 @@ describe('settingsService', () => {
     expect(settings.typography.lineHeight).toBe(DEFAULT_SETTINGS.typography.lineHeight)
     expect(settings.plugins.mermaid.enabled).toBe(true)
     expect(settings.plugins.math.enabled).toBe(DEFAULT_SETTINGS.plugins.math.enabled)
+    expect(settings.editor.enabled).toBe(false)
     expect(settings.explorer.maxFiles).toBe(DEFAULT_SETTINGS.explorer.maxFiles)
     expect(settings.explorer.respectGitignore).toBe(true)
     expect(settings.explorer.restoreLastWorkspace).toBe(true)

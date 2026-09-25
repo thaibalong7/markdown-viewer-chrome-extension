@@ -6,8 +6,15 @@ import React from 'react'
  * @param {number} props.col - 1-based column number
  * @param {number} props.wordCount
  * @param {'saved' | 'modified' | 'saving'} props.saveStatus
+ * @param {string} props.targetPath
  */
-export function StatusBar({ line = 1, col = 1, wordCount = 0, saveStatus = 'saved' }) {
+export function StatusBar({
+  line = 1,
+  col = 1,
+  wordCount = 0,
+  saveStatus = 'saved',
+  targetPath = ''
+}) {
   const saveLabel =
     saveStatus === 'saving'
       ? 'Saving\u2026'
@@ -30,6 +37,11 @@ export function StatusBar({ line = 1, col = 1, wordCount = 0, saveStatus = 'save
       >
         {saveLabel}
       </span>
+      {targetPath ? (
+        <span className="mdp-status-bar__target" title={targetPath}>
+          Target: {targetPath}
+        </span>
+      ) : null}
     </div>
   )
 }

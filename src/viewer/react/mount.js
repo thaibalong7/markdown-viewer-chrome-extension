@@ -21,6 +21,7 @@ export function mountViewerReact(container, options = {}) {
     onTocClickInEditor,
     onHeadingNavigate,
     onEditModeChange,
+    onPrepareEdit,
     onSave,
     onViewModeChange,
     onThemeToggle
@@ -52,11 +53,13 @@ export function mountViewerReact(container, options = {}) {
     onTocClickInEditor,
     onHeadingNavigate,
     onEditModeChange,
+    onPrepareEdit,
     onSave,
     onViewModeChange,
     onThemeToggle,
     dirty: false,
     saveStatus: 'saved',
+    exitEditRequest: 0,
     onShowToastReady: (showToastFn) => {
       showToastBridge = typeof showToastFn === 'function' ? showToastFn : null
     },
@@ -108,6 +111,13 @@ export function mountViewerReact(container, options = {}) {
     /** @param {'saved' | 'modified' | 'saving'} status */
     setSaveStatus(status) {
       nextProps = { ...nextProps, saveStatus: status || 'saved' }
+      render()
+    },
+    exitEditMode() {
+      nextProps = {
+        ...nextProps,
+        exitEditRequest: Number(nextProps.exitEditRequest || 0) + 1
+      }
       render()
     },
     updateTocItems(nextTocItems) {

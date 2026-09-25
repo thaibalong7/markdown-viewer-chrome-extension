@@ -14,16 +14,14 @@ describe('editor layout styles', () => {
     )
   })
 
-  it('animates the desktop preview into its split width quickly', () => {
+  it('keeps grid animation and transitions out of edit layout changes', () => {
     expect(layoutCss).toMatch(
-      /\.mdp-body\.mdp-body--edit-split\s*\{[^}]*animation: mdp-enter-edit-split 480ms/s
+      /\.mdp-body\.mdp-body--edit-split\s*\{[^}]*transition: none/s
     )
     expect(layoutCss).toMatch(
-      /@keyframes mdp-enter-edit-split\s*\{\s*from\s*\{[^}]*grid-template-columns:/s
+      /\.mdp-body\.mdp-body--edit-focus\s*\{[^}]*transition: none/s
     )
-    expect(layoutCss).toMatch(
-      /\.mdp-root\.is-resizing-editor-split \.mdp-body--edit-split\s*\{[^}]*animation: none/s
-    )
+    expect(layoutCss).not.toContain('mdp-enter-edit-split')
   })
 
   it('emphasizes the full active resize handle while dragging', () => {

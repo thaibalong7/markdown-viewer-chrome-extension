@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { Spinner } from './LoadingState.jsx'
 
 const BUTTON_VARIANTS = new Set(['secondary', 'primary', 'quiet', 'danger'])
 
-export function Button({
+export const Button = forwardRef(function Button({
   variant = 'secondary',
   busy = false,
   busyLabel,
@@ -12,7 +12,7 @@ export function Button({
   children,
   type = 'button',
   ...props
-}) {
+}, ref) {
   const resolvedVariant = BUTTON_VARIANTS.has(variant) ? variant : 'secondary'
   const classes = [
     'mdp-ui-button',
@@ -23,6 +23,7 @@ export function Button({
   return (
     <button
       {...props}
+      ref={ref}
       type={type}
       className={classes}
       disabled={disabled || busy}
@@ -32,4 +33,4 @@ export function Button({
       <span>{busy && busyLabel ? busyLabel : children}</span>
     </button>
   )
-}
+})

@@ -12,6 +12,7 @@ describe('DEFAULT_SETTINGS', () => {
     expect(DEFAULT_SETTINGS.enabled).toBe(true)
     expect(DEFAULT_SETTINGS.plugins.mermaid.enabled).toBe(false)
     expect(DEFAULT_SETTINGS.plugins.mermaid.renderer).toBe('official')
+    expect(DEFAULT_SETTINGS.editor.enabled).toBe(false)
     expect(DEFAULT_SETTINGS.editor.wordWrap).toBe(true)
     expect(DEFAULT_SETTINGS.history).toEqual({ enabled: true, maxEntries: 12 })
     expect(DEFAULT_SETTINGS.documents).toEqual({ maxStandaloneTextFileSizeMiB: 5 })

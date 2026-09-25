@@ -62,6 +62,17 @@ export function useSettingsPersistence() {
     }, DEBOUNCE_MS)
   }, [persistPatchNow])
 
+  const persistPatchImmediately = useCallback((partial) => {
+    if (!partial) return Promise.resolve(null)
+    if (persistTimerRef.current) {
+      clearTimeout(persistTimerRef.current)
+      persistTimerRef.current = null
+    }
+    const patch = deepMerge(pendingPatchRef.current, partial)
+    pendingPatchRef.current = {}
+    return persistPatchNow(patch)
+  }, [persistPatchNow])
+
   useEffect(() => {
     return () => {
       if (persistTimerRef.current) {
@@ -76,6 +87,7 @@ export function useSettingsPersistence() {
     saving,
     errorMessage,
     persistPatch,
+    persistPatchImmediately,
     loadSettings
   }
 }

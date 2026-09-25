@@ -25,7 +25,11 @@ describe('popup shared primitives', () => {
       })
     )
     const editorHtml = renderToStaticMarkup(
-      React.createElement(EditorSettingsPanel, { settings: {}, onPatch: noop })
+      React.createElement(EditorSettingsPanel, {
+        settings: {},
+        onPatch: noop,
+        onImmediatePatch: noop
+      })
     )
     const pluginsHtml = renderToStaticMarkup(
       React.createElement(PluginsPanel, {
@@ -55,6 +59,8 @@ describe('popup shared primitives', () => {
     expect(readerHtml).toContain('mdp-ui-button--danger')
     expect(editorHtml).toContain('mdp-ui-number-field')
     expect(editorHtml).toContain('mdp-ui-switch__track')
+    expect(editorHtml).toContain('id="popup-editor-enabled"')
+    expect(editorHtml).toContain('Experimental editor')
     expect(pluginsHtml).toContain('mdp-ui-switch__track')
     expect(pluginsHtml).toContain('popup-plugin-note')
     expect(pluginsHtml).toContain('popup-mermaid-renderers')

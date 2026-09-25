@@ -21,12 +21,16 @@ import { SaveIcon } from './icons/SaveIcon.jsx'
 import { FocusIcon } from './icons/FocusIcon.jsx'
 import { CopyLinkIcon } from './icons/CopyLinkIcon.jsx'
 import { ThemeToggleIcon } from './icons/ThemeToggleIcon.jsx'
+import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
+import { getDisplayPathFromFileUrl } from '../../editor/file-io.js'
+import { EditFileConnectDialog } from './EditFileConnectDialog.jsx'
 
 export function FloatingActions({
   getArticleEl,
   getSettings,
   getCurrentFileUrl,
   documentUiState,
+  onPrepareEdit,
   onSave,
   onViewModeChange,
   onThemeToggle
@@ -38,6 +42,8 @@ export function FloatingActions({
   const editorDispatch = useEditorDispatch()
   const [menuOpen, setMenuOpen] = useState(false)
   const [themeSaving, setThemeSaving] = useState(false)
+  const [connectDialogOpen, setConnectDialogOpen] = useState(false)
+  const [connectingFile, setConnectingFile] = useState(false)
   const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
   const currentFileUrl = getCurrentFileUrl?.() || ''
   const capabilities = documentUiState?.capabilities || {}
@@ -45,7 +51,12 @@ export function FloatingActions({
   const visible = Boolean(String(currentFileUrl).trim() || documentUiState?.displayName)
   const canCopyLink = canCopyCurrentFileLink(currentFileUrl)
   const isLocalFile = currentFileUrl.startsWith('file:')
-  const canEdit = capabilities.edit === true && isLocalFile
+  const supportsEditing = capabilities.edit === true && isLocalFile
+  const editorFeatureEnabled = isEditorFeatureEnabled(getSettings?.())
+  const preservingDirtySession = editorState.enabled && editorState.dirty
+  const canEdit = supportsEditing && (editorFeatureEnabled || preservingDirtySession)
+  const canStartEdit = supportsEditing && editorFeatureEnabled
+  const editTargetPath = getDisplayPathFromFileUrl(currentFileUrl)
   const canExport = capabilities.exportDocument === true
   const canPrint = capabilities.print === true
   const viewModes = Array.isArray(capabilities.viewModes) ? capabilities.viewModes : []
@@ -63,10 +74,10 @@ export function FloatingActions({
   }, [editorState.enabled])
 
   useEffect(() => {
-    if (editorState.enabled && !canEdit) {
+    if (editorState.enabled && (!supportsEditing || (!editorFeatureEnabled && !editorState.dirty))) {
       editorDispatch({ type: 'EXIT_EDIT' })
     }
-  }, [canEdit, editorDispatch, editorState.enabled])
+  }, [editorDispatch, editorFeatureEnabled, editorState.dirty, editorState.enabled, supportsEditing])
 
   const menuItems = useMemo(
     () => [
@@ -126,7 +137,28 @@ export function FloatingActions({
       const leave = window.confirm('You have unsaved changes. Exit edit mode without saving?')
       if (!leave) return
     }
-    editorDispatch({ type: 'TOGGLE_EDIT' })
+    if (editorState.enabled) {
+      editorDispatch({ type: 'TOGGLE_EDIT' })
+      return
+    }
+    if (canStartEdit) setConnectDialogOpen(true)
+  }
+
+  const onConnectConfirm = () => {
+    if (connectingFile) return
+    setConnectingFile(true)
+    void (async () => {
+      try {
+        const ready = await onPrepareEdit?.()
+        if (!ready) return
+        setConnectDialogOpen(false)
+        editorDispatch({ type: 'ENTER_EDIT' })
+      } catch {
+        showToast?.('Could not connect the original file.', { variant: 'error' })
+      } finally {
+        setConnectingFile(false)
+      }
+    })()
   }
 
   const onSaveClick = () => {
@@ -171,7 +203,8 @@ export function FloatingActions({
   }
 
   return (
-    <div
+    <>
+      <div
       className="mdp-floating-actions mdp-floating-actions--rail-strip"
       role="toolbar"
       aria-label="Document actions"
@@ -313,6 +346,14 @@ export function FloatingActions({
           }))}
         />
       )}
-    </div>
+      </div>
+      <EditFileConnectDialog
+        open={connectDialogOpen}
+        busy={connectingFile}
+        filePath={editTargetPath}
+        onCancel={() => setConnectDialogOpen(false)}
+        onConfirm={onConnectConfirm}
+      />
+    </>
   )
 }

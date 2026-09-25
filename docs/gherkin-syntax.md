@@ -1,6 +1,6 @@
 # Hướng dẫn cú pháp Gherkin (Cucumber)
 
-Tài liệu tóm tắt cú pháp Gherkin dùng trong tệp `.feature` (và tương đương trong fence ` ```gherkin` / ` ```cucumber` khi bật plugin Gherkin trong Markdown Plus). Tham chiếu chuẩn: [Cucumber — Gherkin Reference](https://cucumber.io/docs/gherkin/reference/).
+Tài liệu tóm tắt cú pháp Gherkin dùng trong tệp `.feature` và trong code fence ` ```gherkin` / ` ```cucumber` của Markdown. Markdown Plus dùng grammar Gherkin của Shiki để tô màu cú pháp cho các fence này; extension không parse hoặc chạy kịch bản Cucumber. Tham chiếu chuẩn: [Cucumber — Gherkin Reference](https://cucumber.io/docs/gherkin/reference/).
 
 ---
 
@@ -226,7 +226,7 @@ Feature: Báo cáo
 
 ## 14. Tương thích với Markdown Plus
 
-- Bật plugin **Gherkin (Cucumber)** trong cài đặt extension, viết trong fence:
+- Đặt nội dung trong fence `gherkin`, `cucumber` hoặc `feature` để Shiki nhận diện và tô màu:
 
   ````markdown
   ```gherkin
@@ -236,8 +236,8 @@ Feature: Báo cáo
   ```
   ````
 
-- Nội dung phải **hợp lệ theo parser**; nếu thiếu `Feature:` / `Scenario:` (khi cần), sẽ báo lỗi parse.
-- Giao diện viewer dựa trên **AST**, không bảo toàn từng khoảng trắng đầu dòng giống file gốc; cấp bậc thể hiện bằng cách bố cục HTML/CSS, không bắt chước 1-1 từng dấu cách nguồn.
+- Markdown Plus chỉ thực hiện syntax highlighting. Extension không kiểm tra tính hợp lệ, không tạo AST Gherkin và không chạy step definitions.
+- Nội dung code fence vẫn được hiển thị như source code, bao gồm thụt dòng và khoảng trắng.
 
 ---
 

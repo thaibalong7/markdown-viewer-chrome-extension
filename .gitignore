@@ -4,5 +4,5 @@ dist
 
 .DS_Store
 
-# Unselected logo explorations (the official master lives in design-system/brand).
-/docs/design-system/logos/
+# Unselected logo explorations (the official master lives in assets/brand).
+/assets/brand/concepts/

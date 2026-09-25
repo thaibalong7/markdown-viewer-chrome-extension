@@ -1,5 +1,5 @@
 ---
-description: "Markdown Plus project context, source-of-truth order, and historical-document handling."
+description: "Markdown Plus project context and source-of-truth order."
 alwaysApply: true
 trigger: always_on
 ---
@@ -8,8 +8,8 @@ trigger: always_on
 
 - This project is a Chrome Extension MV3 Markdown viewer for local `file:` Markdown documents.
 - Runtime truth is `src/**`, `manifest.json`, `vite.config.mjs`, and `package.json`.
-- Start architecture-sensitive work by reading `docs/project-overview-for-ai.md`. For performance work, also read `docs/performance-issues-audit.md`.
-- Treat `docs/technical-spec-phases/**`, `docs/react-migration-plan.md`, and older phase plans as historical intent when they conflict with current source.
-- `docs/refactor-progress-log.md` records completed refactor phases. Do not preserve phase-specific constraints just because they appear in the log.
-- Update `docs/project-overview-for-ai.md` when moving ownership boundaries, changing entry flows, or introducing/removing major modules.
+- Start architecture-sensitive work by reading `docs/architecture-overview.md`.
+- Treat `docs/**` as current-state documentation and `planning/**` as incomplete work, never as runtime truth.
+- Keep each Markdown prose paragraph on one physical source line because the viewer renders source softbreaks as visible `<br>` elements.
+- Update `docs/architecture-overview.md` when moving ownership boundaries, changing entry flows, or introducing/removing major modules.
 - Treat `dist/**` as generated output. Do not hand-edit it.

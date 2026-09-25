@@ -102,15 +102,11 @@ Development notes:
 - `src/shared` - Utilities including the central `file-types.js` registry, logging, settings diffs, clipboard/download helpers, reusable React primitives and styles, and shared constants.
 - `src/background` - Runtime messaging and settings handlers.
 
-For an up-to-date file tree and module notes, see [`docs/project-overview-for-ai.md`](docs/project-overview-for-ai.md).
+For current runtime flows, subsystem ownership, and task-to-source guidance, see [`docs/architecture-overview.md`](docs/architecture-overview.md).
 
 ## Privacy
 
-Markdown Plus processes local documents in the browser and does not send their
-content to a developer-operated server. See the
-[public Privacy Policy](https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/)
-for storage details and the limited cases where document resources or exported
-Math content may contact a third party.
+Markdown Plus processes local documents in the browser and does not send their content to a developer-operated server. See the [public Privacy Policy](https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/) for storage details and the limited cases where document resources or exported Math content may contact a third party.
 
 ## Contributing
 

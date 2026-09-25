@@ -836,13 +836,13 @@
               <li>
                 <button class="mdp-explorer__node-btn" type="button">
                   <svg class="mdp-row-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg>
-                  <span class="mdp-row-label">settings-page-implementation-plan.md</span>
+                  <span class="mdp-row-label">architecture-overview.md</span>
                 </button>
               </li>
               <li>
                 <button class="mdp-explorer__node-btn" type="button">
                   <svg class="mdp-row-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg>
-                  <span class="mdp-row-label">project-overview-for-ai.md</span>
+                  <span class="mdp-row-label">gherkin-syntax.md</span>
                 </button>
               </li>
             </ul>
@@ -910,14 +910,15 @@
 
           <h2 id="extension">Extending the system</h2>
           <p>
-            Settings and future Popup work should derive application controls from these Viewer
-            foundations. They may use page-specific layouts, but must not introduce alternate
-            palettes, font stacks, focus rings, or status semantics.
+            Settings and Popup derive shared controls from the same application foundations. They
+            keep page-specific layouts without introducing alternate palettes, font stacks, focus
+            rings, or status semantics.
           </p>
 
           <div class="mdp-source-note">
-            Source of truth: <code>src/theme/index.js</code> and <code>src/viewer/styles/**</code>.
-            Use the controls in the right rail to preview theme and rail states. Open the <a href="./markdown-plus-component-catalog.html">component catalog</a> for future application primitives.
+            Source of truth: <code>src/theme/index.js</code>, <code>src/shared/styles/**</code>, and
+            <code>src/viewer/styles/**</code>. Use the controls in the right rail to preview theme
+            and rail states.
           </div>
         </article>
       </main>

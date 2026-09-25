@@ -1,16 +1,13 @@
 # Chrome Web Store Release Checklist
 
-Tài liệu này ghi lại các việc cần hoàn thành trước khi phát hành Markdown Plus
-lên Chrome Web Store. Thực hiện theo thứ tự ưu tiên bên dưới; không cần thêm
-tính năng lớn trước khi hoàn thành các blocker.
+Tài liệu này ghi lại các việc cần hoàn thành trước khi phát hành Markdown Plus lên Chrome Web Store. Thực hiện theo thứ tự ưu tiên bên dưới; không cần thêm tính năng lớn trước khi hoàn thành các blocker.
 
 ## Trạng thái review ban đầu
 
 - [x] `npm test`: 87 test files, 485 tests pass.
 - [x] `npm run build`: production build thành công trên Node 20.19.5.
 - [x] Kích thước `dist`: khoảng 11 MB; tổng JavaScript khoảng 9.4 MB.
-- [x] Production dependency audit sạch hoặc mọi advisory còn lại đã được đánh
-  giá và ghi rõ lý do chấp nhận.
+- [x] Production dependency audit sạch hoặc mọi advisory còn lại đã được đánh giá và ghi rõ lý do chấp nhận.
 - [x] Manifest chỉ yêu cầu các quyền thực sự cần thiết.
 - [x] Có onboarding rõ ràng cho quyền `file://`.
 - [ ] Có privacy policy và đầy đủ nội dung Chrome Web Store listing.
@@ -21,9 +18,7 @@ tính năng lớn trước khi hoàn thành các blocker.
 
 ### 1. Cập nhật dependency có advisory bảo mật
 
-Audit ngày 2026-09-20 báo 6 production vulnerabilities: 2 high và 4 moderate.
-Các package bị ảnh hưởng gồm `dompurify`, `markdown-it`, `linkify-it`,
-`mermaid`, `lodash-es` và `uuid`.
+Audit ngày 2026-09-20 báo 6 production vulnerabilities: 2 high và 4 moderate. Các package bị ảnh hưởng gồm `dompurify`, `markdown-it`, `linkify-it`, `mermaid`, `lodash-es` và `uuid`.
 
 - [x] Tạo branch/changelog riêng cho dependency security update.
 - [x] Nâng các dependency trực tiếp và cập nhật `package-lock.json`.
@@ -33,8 +28,7 @@ Các package bị ảnh hưởng gồm `dompurify`, `markdown-it`, `linkify-it`,
   - `linkify-it` >= 5.0.2
   - `mermaid` >= 11.17.2
 - [x] Kiểm tra các thay đổi transitive đối với `lodash-es` và `uuid`.
-- [x] Xác nhận clean install trên Node 20 không còn cảnh báo engine từ
-  `chevrotain@12`.
+- [x] Xác nhận clean install trên Node 20 không còn cảnh báo engine từ `chevrotain@12`.
 - [x] Chạy toàn bộ test, build và size report.
 - [x] Chạy lại production audit.
 
@@ -49,52 +43,39 @@ npm run size:report
 
 Tiêu chí hoàn thành:
 
-- `npm audit --omit=dev` không còn advisory tác động đến runtime, hoặc advisory
-  còn lại có phân tích exploitability và quyết định chấp nhận rõ ràng.
+- `npm audit --omit=dev` không còn advisory tác động đến runtime, hoặc advisory còn lại có phân tích exploitability và quyết định chấp nhận rõ ràng.
 - Markdown, Mermaid, Math, Shiki và export vẫn hoạt động sau update.
 - Không có regression trong 485 test hiện tại và các test mới.
 
 ### 2. Thu hẹp manifest permissions
 
-`manifest.json` trước đây dùng `<all_urls>` dù sản phẩm chỉ trực tiếp kích hoạt
-trên local `file:` Markdown.
+`manifest.json` trước đây dùng `<all_urls>` dù sản phẩm chỉ trực tiếp kích hoạt trên local `file:` Markdown.
 
 - [x] Đổi `content_scripts.matches` từ `<all_urls>` sang `file:///*`.
-- [x] Loại `<all_urls>` khỏi `host_permissions`; giữ phạm vi local nhỏ nhất cần
-  thiết.
-- [x] Thu hẹp `web_accessible_resources.matches` xuống `file:///*` nếu build và
-  dynamic imports vẫn hoạt động.
-- [ ] Giữ `storage`, `offscreen`, `downloads` chỉ khi mỗi quyền có justification
-  cụ thể trong Store dashboard.
-- [x] Thêm `"minimum_chrome_version": "109"` vì `chrome.offscreen` yêu cầu
-  Chrome 109+.
+- [x] Loại `<all_urls>` khỏi `host_permissions`; giữ phạm vi local nhỏ nhất cần thiết.
+- [x] Thu hẹp `web_accessible_resources.matches` xuống `file:///*` nếu build và dynamic imports vẫn hoạt động.
+- [ ] Giữ `storage`, `offscreen`, `downloads` chỉ khi mỗi quyền có justification cụ thể trong Store dashboard.
+- [x] Thêm `"minimum_chrome_version": "109"` vì `chrome.offscreen` yêu cầu Chrome 109+.
 - [x] Build lại và kiểm tra manifest sinh ra trong `dist/manifest.json`.
 
 Justification gợi ý:
 
-- `storage`: lưu reader/editor/plugin preferences; recent file paths được giữ
-  riêng trong local storage.
-- `offscreen`: đọc local `file:` documents và directory listing cho Files
-  explorer.
-- `downloads`: lưu HTML, Word, Mermaid images và download fallback khi thao tác
-  từ trang `file:`.
+- `storage`: lưu reader/editor/plugin preferences; recent file paths được giữ riêng trong local storage.
+- `offscreen`: đọc local `file:` documents và directory listing cho Files explorer.
+- `downloads`: lưu HTML, Word, Mermaid images và download fallback khi thao tác từ trang `file:`.
 - `file:///*`: nhận diện, đọc và hiển thị local Markdown documents.
 
-Đã xác nhận các quyền trên còn được runtime sử dụng. Các justification này vẫn
-cần được nhập vào Store dashboard khi tạo submission.
+Đã xác nhận các quyền trên còn được runtime sử dụng. Các justification này vẫn cần được nhập vào Store dashboard khi tạo submission.
 
 Tiêu chí hoàn thành:
 
 - Source manifest và built manifest không còn `<all_urls>`.
-- Viewer, lazy chunks, KaTeX fonts, Shiki, Mermaid và editor vẫn load được trên
-  `file:` pages.
+- Viewer, lazy chunks, KaTeX fonts, Shiki, Mermaid và editor vẫn load được trên `file:` pages.
 - Extension không yêu cầu quyền đọc/thay đổi dữ liệu trên mọi website.
 
 ### 3. Thêm onboarding cho file URL access
 
-Chrome không tự bật “Allow access to file URLs”. Nếu quyền này bị tắt, content
-script không thể chạy trên local Markdown và người dùng hiện không nhận được
-hướng dẫn ngay trong popup.
+Chrome không tự bật “Allow access to file URLs”. Nếu quyền này bị tắt, content script không thể chạy trên local Markdown và người dùng hiện không nhận được hướng dẫn ngay trong popup.
 
 - [x] Kiểm tra `chrome.extension.isAllowedFileSchemeAccess()` trong popup.
 - [x] Hiển thị banner/callout khi file access chưa được bật.
@@ -115,38 +96,31 @@ Tiêu chí hoàn thành:
 
 ### 4. Privacy policy và data disclosure
 
-- [ ] Xác nhận privacy policy đã deploy thành công tại
-  `https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/` sau
-  khi merge workflow vào `master` và chọn GitHub Actions làm Pages source.
+- [ ] Xác nhận privacy policy đã deploy thành công tại `https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/` sau khi merge workflow vào `master` và chọn GitHub Actions làm Pages source.
 - [x] Thêm privacy policy và GitHub Pages deployment workflow vào repo.
 - [x] Mô tả nội dung file được xử lý local trong browser.
 - [x] Mô tả recent file URLs/path được lưu trong `chrome.storage.local`.
 - [x] Mô tả preferences có thể đi qua Chrome Sync khi `storage.sync` khả dụng.
 - [x] Mô tả file handles có thể được lưu trong IndexedDB để hỗ trợ Save.
-- [x] Khẳng định nội dung file không được gửi đến server do Markdown Plus vận
-  hành.
+- [x] Khẳng định nội dung file không được gửi đến server do Markdown Plus vận hành.
 - [x] Không tuyên bố “zero network requests” một cách tuyệt đối:
   - Markdown có thể tham chiếu remote images/resources.
   - HTML/Word export có Math hiện tham chiếu KaTeX CSS trên jsDelivr.
 - [ ] Điền Chrome Web Store Privacy practices nhất quán với policy và runtime.
-- [x] Chuẩn bị single-purpose statement, data-use declaration và permission
-  justifications trong `docs/chrome-web-store-privacy-disclosure.md`.
+- [x] Chuẩn bị single-purpose statement, data-use declaration và permission justifications trong [`privacy-disclosure.md`](./privacy-disclosure.md).
 
 Single-purpose statement gợi ý:
 
-> A private local Markdown workspace for reading, navigating, editing, and
-> exporting documents in Chrome.
+> A private local Markdown workspace for reading, navigating, editing, and exporting documents in Chrome.
 
 Tiêu chí hoàn thành:
 
-- Store disclosures, privacy policy, manifest và hành vi runtime không mâu
-  thuẫn nhau.
+- Store disclosures, privacy policy, manifest và hành vi runtime không mâu thuẫn nhau.
 - Có justification cho từng permission.
 
 ### 5. Tạo package phát hành đúng cấu trúc
 
-Không sử dụng `markdown-plus.zip` hiện tại. Artifact này cũ và đặt toàn bộ
-extension dưới thư mục `dist/`, khiến `manifest.json` không nằm ở root ZIP.
+Không sử dụng `markdown-plus.zip` hiện tại. Artifact này cũ và đặt toàn bộ extension dưới thư mục `dist/`, khiến `manifest.json` không nằm ở root ZIP.
 
 - [ ] Build sạch từ commit/tag sẽ phát hành.
 - [ ] Kiểm tra `dist/manifest.json`, icons, popup, options và runtime assets.
@@ -154,8 +128,7 @@ extension dưới thư mục `dist/`, khiến `manifest.json` không nằm ở r
 - [ ] Đặt tên có version, ví dụ `markdown-plus-0.1.0.zip`.
 - [ ] Kiểm tra archive có `manifest.json` ở root.
 - [ ] Load unpacked từ `dist/` và smoke-test trước.
-- [ ] Nếu có thể, giải nén ZIP sang thư mục tạm và load chính thư mục giải nén
-  để xác nhận package upload hoạt động độc lập.
+- [ ] Nếu có thể, giải nén ZIP sang thư mục tạm và load chính thư mục giải nén để xác nhận package upload hoạt động độc lập.
 
 Ví dụ đóng gói:
 
@@ -172,16 +145,13 @@ Tiêu chí hoàn thành:
 
 - `manifest.json` xuất hiện ở root ZIP.
 - ZIP chứa `icons/icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png`.
-- Không chứa source-only files, `.DS_Store`, old ZIP hoặc `stats.html` không cần
-  thiết.
+- Không chứa source-only files, `.DS_Store`, old ZIP hoặc `stats.html` không cần thiết.
 
 ## P1 — Hardening nên hoàn thành trong release đầu
 
 ### 6. Test sanitizer trong môi trường có DOM thật
 
-Vitest hiện dùng Node environment. Trong môi trường đó DOMPurify không có
-`window`, nên các test hiện tại chưa chứng minh sanitizer production loại bỏ
-malicious HTML/SVG đúng cách.
+Vitest hiện dùng Node environment. Trong môi trường đó DOMPurify không có `window`, nên các test hiện tại chưa chứng minh sanitizer production loại bỏ malicious HTML/SVG đúng cách.
 
 - [ ] Đổi sanitizer thành fail-closed nếu purifier không khởi tạo được.
 - [ ] Thêm jsdom/happy-dom hoặc browser test riêng cho sanitizer.
@@ -199,9 +169,7 @@ Tiêu chí hoàn thành:
 
 ### 7. Hỗ trợ empty Markdown document
 
-Hiện empty `.md` không mount viewer; linked empty Markdown cũng bị từ chối.
-Điều này không phù hợp với inline editor vì người dùng không thể mở một note
-mới trống để bắt đầu viết.
+Hiện empty `.md` không mount viewer; linked empty Markdown cũng bị từ chối. Điều này không phù hợp với inline editor vì người dùng không thể mở một note mới trống để bắt đầu viết.
 
 - [ ] Mount viewer cho empty direct-activation Markdown.
 - [ ] Hiển thị empty state rõ ràng thay vì blank/raw page.
@@ -247,15 +215,13 @@ Tiêu chí hoàn thành:
 - [ ] Tránh broadcast settings tới mọi tab không liên quan.
 - [ ] Thêm in-flight guard cho export double-click.
 - [ ] Đánh giá bundle lớn nhất (~1.53 MB) và cold-start trên máy yếu.
-- [ ] Theo dõi các issue còn mở trong `docs/performance-issues-audit.md` dựa
-  trên profile thực tế, không tối ưu chỉ vì kích thước code.
+- [ ] Ghi lại và xử lý bottleneck dựa trên profile thực tế, không tối ưu chỉ vì kích thước code.
 
 ## Chrome Web Store listing
 
 ### Metadata
 
-- [ ] Chọn version public: giữ `0.1.0` cho beta hoặc chuyển `1.0.0` nếu định vị
-  là stable release.
+- [ ] Chọn version public: giữ `0.1.0` cho beta hoặc chuyển `1.0.0` nếu định vị là stable release.
 - [ ] Cập nhật manifest description để nói rõ local Markdown value proposition.
 - [ ] Viết detailed description, tránh keyword stuffing.
 - [ ] Chọn category phù hợp, có thể là Developer Tools hoặc Productivity.
@@ -373,5 +339,4 @@ Không đưa các mục này vào release đầu nếu chúng làm chậm harden
 - Workspace filename/content search.
 - Read-only raw/render toggle độc lập với Edit mode.
 - Thêm theme hoặc Markdown extensions mới.
-- Remote raw Markdown URLs; tính năng này sẽ làm permission/privacy scope lớn
-  hơn và cần review thiết kế riêng.
+- Remote raw Markdown URLs; tính năng này sẽ làm permission/privacy scope lớn hơn và cần review thiết kế riêng.

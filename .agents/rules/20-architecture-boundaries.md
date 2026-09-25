@@ -21,7 +21,7 @@ trigger: glob
 - Preserve the traceable viewer path: `src/content/index.js` -> `src/content/viewer-loader.js` / `src/content/bootstrap.js` -> `src/viewer/app.js`.
 - `src/content/index.js` should stay a cheap gate for local `file:` Markdown files before loading the heavier viewer bundle.
 - Keep bootstrap idempotent for reinjection/HMR and avoid repeated full-page scans in content scripts.
-- Keep viewer isolation inside the dedicated root (`mdp-viewer-root`) using the current light-DOM strategy documented in `docs/project-overview-for-ai.md`.
+- Keep viewer isolation inside the dedicated root (`mdp-viewer-root`) using the current light-DOM strategy documented in `docs/architecture-overview.md`.
 
 ## Viewer App
 

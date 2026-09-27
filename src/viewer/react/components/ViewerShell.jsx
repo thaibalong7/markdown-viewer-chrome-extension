@@ -11,6 +11,7 @@ import { getDisplayPathFromFileUrl } from '../../editor/file-io.js'
 import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
 import { BackgroundScene, resolveBackgroundSceneForSettings } from './BackgroundScene.jsx'
 import { ViewerScrollbar } from './ViewerScrollbar.jsx'
+import { ScrollToTopButton } from './ScrollToTopButton.jsx'
 
 export function ViewerShell({
   children,
@@ -183,6 +184,8 @@ export function ViewerShell({
         label="Editor scrollbar"
       />
       <div className={bodyClassNames.join(' ')}>
+        <ScrollToTopButton scrollElement={isFocusMode ? null : scrollRootForSidebar} />
+
         {filesAvailable && (
           <Sidebar
             explorerBridge={explorerBridge}

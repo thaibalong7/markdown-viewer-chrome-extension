@@ -7,6 +7,7 @@
 @use 'chrome-print';
 @use 'background-scene';
 @use 'viewer-scrollbar';
+@use 'scroll-to-top';
 
 .mdp-root {
   --mdp-sidebar-layer-background: var(--mdp-sidebar-surface, var(--mdp-bg));

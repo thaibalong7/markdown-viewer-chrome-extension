@@ -39,6 +39,24 @@ describe('settings design-system styles', () => {
     expect(optionsCss).toMatch(/@media \(prefers-reduced-motion: reduce\)/)
   })
 
+  it('uses a wide, bounded settings frame with responsive navigation', () => {
+    expect(optionsCss).toMatch(
+      /\.settings-header__inner\s*\{[^}]*width: min\(var\(--settings-frame-width\), 100%\);/s
+    )
+    expect(optionsCss).toMatch(
+      /\.settings-layout\s*\{[^}]*width: min\(var\(--settings-frame-width\), 100%\);[^}]*grid-template-columns: clamp\(224px, 18vw, 280px\) minmax\(0, 1fr\);/s
+    )
+    expect(optionsCss).toMatch(
+      /\.settings-section--themes\s*\{[^}]*width: min\(1280px, 100%\);/s
+    )
+    expect(optionsCss).toMatch(
+      /\.settings-section\s*\{[^}]*width: min\(880px, 100%\);[^}]*margin-inline: auto;/s
+    )
+    expect(optionsCss).toMatch(
+      /@media \(max-width: 1023px\)[\s\S]*\.settings-layout\s*\{[^}]*grid-template-columns: 208px minmax\(0, 1fr\);/s
+    )
+  })
+
   it('lays out the custom theme library, editor, and color controls', () => {
     expect(optionsCss).toContain('.settings-theme-list')
     expect(optionsCss).toContain('.settings-theme-card__actions')

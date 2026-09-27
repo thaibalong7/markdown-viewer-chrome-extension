@@ -31,28 +31,30 @@ export function OptionsApp() {
   return (
     <div className="settings-app">
       <header className="settings-header">
-        <div className="settings-brand">
-          <img
-            className="settings-brand__mark"
-            src="/icons/icon-128.png"
-            width="48"
-            height="48"
-            alt=""
-            aria-hidden="true"
-            draggable="false"
-          />
-          <div>
-            <span className="settings-brand__name">Markdown Plus</span>
-            <span className="settings-brand__page">Settings</span>
+        <div className="settings-header__inner">
+          <div className="settings-brand">
+            <img
+              className="settings-brand__mark"
+              src="/icons/icon-128.png"
+              width="48"
+              height="48"
+              alt=""
+              aria-hidden="true"
+              draggable="false"
+            />
+            <div>
+              <span className="settings-brand__name">Markdown Plus</span>
+              <span className="settings-brand__page">Settings</span>
+            </div>
           </div>
-        </div>
-        <div
-          className={`mdp-ui-status mdp-ui-status--${statusVariant} settings-status`}
-          role="status"
-          aria-live="polite"
-        >
-          <span className="mdp-ui-status__dot" aria-hidden="true" />
-          {form.status.message}
+          <div
+            className={`mdp-ui-status mdp-ui-status--${statusVariant} settings-status`}
+            role="status"
+            aria-live="polite"
+          >
+            <span className="mdp-ui-status__dot" aria-hidden="true" />
+            {form.status.message}
+          </div>
         </div>
       </header>
 

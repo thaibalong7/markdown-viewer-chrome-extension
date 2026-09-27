@@ -56,6 +56,7 @@ input[type='checkbox'] {
 }
 
 .settings-app {
+  --settings-frame-width: 1920px;
   min-height: 100vh;
 }
 
@@ -63,14 +64,19 @@ input[type='checkbox'] {
   position: sticky;
   top: 0;
   z-index: 10;
+  border-bottom: 1px solid var(--mdp-border-strong);
+  background: var(--mdp-surface);
+}
+
+.settings-header__inner {
+  width: min(var(--settings-frame-width), 100%);
   min-height: 72px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 12px clamp(20px, 4vw, 56px);
-  border-bottom: 1px solid var(--mdp-border-strong);
-  background: var(--mdp-surface);
+  padding: 12px clamp(24px, 2.5vw, 48px);
 }
 
 .settings-brand {
@@ -112,15 +118,15 @@ input[type='checkbox'] {
 }
 
 .settings-layout {
-  width: min(1380px, 100%);
+  width: min(var(--settings-frame-width), 100%);
   min-height: calc(100vh - 72px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: clamp(224px, 18vw, 280px) minmax(0, 1fr);
 }
 
 .settings-sidebar {
-  padding: 40px 24px 40px 20px;
+  padding: 40px clamp(20px, 2.5vw, 48px);
   border-right: 1px solid var(--mdp-border-strong);
 }
 
@@ -135,16 +141,16 @@ input[type='checkbox'] {
 
 .settings-main {
   min-width: 0;
-  padding: 44px clamp(28px, 4vw, 56px) 72px;
+  padding: 44px clamp(32px, 4vw, 72px) 72px;
 }
 
 .settings-section {
-  max-width: 760px;
-  margin: 0 auto;
+  width: min(880px, 100%);
+  margin-inline: auto;
 }
 
 .settings-section--themes {
-  max-width: 1120px;
+  width: min(1280px, 100%);
 }
 
 .settings-section__heading {
@@ -228,8 +234,8 @@ input[type='checkbox'] {
 
 .settings-loading,
 .settings-error-state {
-  max-width: 760px;
-  margin: 0 auto;
+  width: min(880px, 100%);
+  margin-inline: auto;
   padding: 28px;
 }
 
@@ -1023,9 +1029,26 @@ input[type='checkbox'] {
   }
 }
 
+@media (max-width: 1023px) {
+  .settings-layout {
+    grid-template-columns: 208px minmax(0, 1fr);
+  }
+
+  .settings-sidebar {
+    padding-inline: 16px;
+  }
+
+  .settings-main {
+    padding-inline: 28px;
+  }
+}
+
 @media (max-width: 767px) {
   .settings-header {
     position: static;
+  }
+
+  .settings-header__inner {
     align-items: flex-start;
     padding: 14px 18px;
   }

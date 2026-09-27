@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from '../../shared/react/Button.jsx'
 import { NumberField } from '../../shared/react/NumberField.jsx'
 import { Switch } from '../../shared/react/Switch.jsx'
-import { getThemeOptions, resolveThemeById } from '../../theme/index.js'
+import { BUILT_IN_THEMES, getThemeOptions, resolveThemeById } from '../../theme/index.js'
 import { Tooltip } from '../components/Tooltip.jsx'
 import {
   createReaderUiDefaultsPatch,
@@ -24,6 +24,16 @@ function InfoTooltip({ label, content }) {
  */
 export function ReaderPanel({ settings, onPatch }) {
   const themeOptions = getThemeOptions(settings)
+  const builtInThemeGroups = [
+    {
+      label: 'Light themes',
+      themes: themeOptions.builtIn.filter(({ id }) => BUILT_IN_THEMES[id]?.colorScheme !== 'dark')
+    },
+    {
+      label: 'Dark themes',
+      themes: themeOptions.builtIn.filter(({ id }) => BUILT_IN_THEMES[id]?.colorScheme === 'dark')
+    }
+  ]
   const selectedTheme = resolveThemeById(settings, settings.theme?.activeId)
   const selectedColors = selectedTheme.colors
   return (
@@ -54,11 +64,13 @@ export function ReaderPanel({ settings, onPatch }) {
               })
             }
           >
-            <optgroup label="Built-in themes">
-              {themeOptions.builtIn.map((theme) => (
-                <option key={theme.id} value={theme.id}>{theme.name}</option>
-              ))}
-            </optgroup>
+            {builtInThemeGroups.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.themes.map((theme) => (
+                  <option key={theme.id} value={theme.id}>{theme.name}</option>
+                ))}
+              </optgroup>
+            ))}
             {themeOptions.custom.length ? (
               <optgroup label="My themes">
                 {themeOptions.custom.map((theme) => (

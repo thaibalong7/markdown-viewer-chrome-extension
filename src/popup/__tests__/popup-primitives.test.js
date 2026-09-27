@@ -49,18 +49,33 @@ describe('popup shared primitives', () => {
     const themeSelectHtml = readerHtml.match(
       /<select id="popup-reader-theme"[\s\S]*?<\/select>/
     )?.[0] || ''
+    const lightThemeGroupHtml = themeSelectHtml.match(
+      /<optgroup label="Light themes">[\s\S]*?<\/optgroup>/
+    )?.[0] || ''
+    const darkThemeGroupHtml = themeSelectHtml.match(
+      /<optgroup label="Dark themes">[\s\S]*?<\/optgroup>/
+    )?.[0] || ''
+    const customThemeGroupHtml = themeSelectHtml.match(
+      /<optgroup label="My themes">[\s\S]*?<\/optgroup>/
+    )?.[0] || ''
 
     expect(readerHtml).toContain('mdp-ui-select')
     expect(readerHtml).toContain('popup-theme-select')
     expect(readerHtml).toContain('id="popup-reader-theme"')
     expect(themeSelectHtml.match(/<option /g)).toHaveLength(Object.keys(BUILT_IN_THEMES).length + 1)
-    expect(themeSelectHtml).toContain('<optgroup label="Built-in themes">')
+    expect(themeSelectHtml).toContain('<optgroup label="Light themes">')
+    expect(themeSelectHtml).toContain('<optgroup label="Dark themes">')
     expect(themeSelectHtml).toContain('<optgroup label="My themes">')
-    expect(themeSelectHtml).toContain('Midnight')
-    expect(themeSelectHtml).toContain('Dark (VS Code)')
-    expect(themeSelectHtml).toContain('Min (Dark)')
-    expect(themeSelectHtml).toContain('High Contrast Light')
-    expect(themeSelectHtml).toContain('High Contrast Dark')
+    expect(themeSelectHtml).not.toContain('<optgroup label="Built-in themes">')
+    expect(lightThemeGroupHtml).toContain('value="light"')
+    expect(lightThemeGroupHtml).toContain('High Contrast Light')
+    expect(lightThemeGroupHtml).not.toContain('value="dark"')
+    expect(darkThemeGroupHtml).toContain('value="dark"')
+    expect(darkThemeGroupHtml).toContain('Dark (VS Code)')
+    expect(darkThemeGroupHtml).toContain('Min (Dark)')
+    expect(darkThemeGroupHtml).toContain('High Contrast Dark')
+    expect(customThemeGroupHtml).toContain('Midnight')
+    expect(darkThemeGroupHtml).not.toContain('Midnight')
     expect(readerHtml).toContain('--popup-theme-paper')
     expect(readerHtml).toContain('mdp-ui-number-field')
     expect(readerHtml).toContain('mdp-ui-field__label-row')

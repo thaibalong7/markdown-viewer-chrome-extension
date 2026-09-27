@@ -509,7 +509,7 @@ Built-in theme không xuất hiện trong custom theme editor và không thể b
 
 ## 11. Popup và quick theme toggle
 
-Popup Reader panel gọi `getThemeOptions(settings)` để tạo hai nhóm option “Built-in themes” và “My themes”. Khi chọn, Popup chỉ save `{ theme: { activeId } }`.
+Popup Reader panel gọi `getThemeOptions(settings)` để tạo các option, sau đó chia built-in theme thành hai nhóm “Light themes” và “Dark themes” theo `colorScheme`; custom theme đã lưu nằm trong nhóm “My themes”. Khi chọn, Popup chỉ save `{ theme: { activeId } }`.
 
 Popup có preview nhỏ dựa trên resolved `surface/background`, `text`, và `link`. Preview này không render background image hoặc gradient scene; nó chỉ giúp nhận biết palette.
 

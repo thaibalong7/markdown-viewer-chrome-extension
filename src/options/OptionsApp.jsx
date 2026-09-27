@@ -27,7 +27,7 @@ export function OptionsApp() {
         <div className="settings-brand">
           <img
             className="settings-brand__mark"
-            src="/icons/icon-48.png"
+            src="/icons/icon-128.png"
             width="48"
             height="48"
             alt=""

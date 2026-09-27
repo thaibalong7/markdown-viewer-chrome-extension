@@ -11,6 +11,7 @@ export const MESSAGE_TYPES = {
   RECORD_FILE_OPENED: 'RECORD_FILE_OPENED',
   CLEAR_FILE_HISTORY: 'CLEAR_FILE_HISTORY',
   OPEN_FILE_FROM_HISTORY: 'OPEN_FILE_FROM_HISTORY',
+  OPEN_EXPLORER_SETTINGS: 'OPEN_EXPLORER_SETTINGS',
   /** Background fetches file: URLs (content scripts on file pages cannot; origin is opaque). */
   FETCH_FILE_AS_TEXT: 'FETCH_FILE_AS_TEXT',
   /**

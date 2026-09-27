@@ -17,6 +17,9 @@ function createRouterHarness() {
     deleteThemeAsset: vi.fn(async () => ({ deleted: true })),
     clearThemeAssets: vi.fn(async () => ({ cleared: true }))
   }
+  const optionsPageService = {
+    openExplorerSettings: vi.fn(async () => undefined)
+  }
   const logger = {
     warn: vi.fn()
   }
@@ -25,12 +28,14 @@ function createRouterHarness() {
     settingsService,
     settingsBroadcastService,
     themeAssetService,
+    optionsPageService,
     logger,
     routeMessage: createMessageRouter({
       settingsService,
       settingsBroadcastService,
       themeAssetService,
       fileHistoryService: {},
+      optionsPageService,
       logger
     })
   }
@@ -99,6 +104,15 @@ describe('message router settings routes', () => {
     expect(themeAssetService.deleteThemeAsset).toHaveBeenCalledWith({
       assetId: 'theme-asset:12345678'
     })
+  })
+
+  it('routes explorer Settings navigation through the background service', async () => {
+    const { routeMessage, optionsPageService } = createRouterHarness()
+
+    await expect(
+      routeMessage({ type: MESSAGE_TYPES.OPEN_EXPLORER_SETTINGS })
+    ).resolves.toBeUndefined()
+    expect(optionsPageService.openExplorerSettings).toHaveBeenCalledTimes(1)
   })
 
   it('still resets settings when local background cleanup is unavailable', async () => {

@@ -5,6 +5,12 @@ import { describe, expect, it } from 'vitest'
 const explorerCss = compile(fileURLToPath(new URL('../explorer.scss', import.meta.url))).css
 
 describe('explorer interaction styles', () => {
+  it('keeps the scan-limit Settings action flowing with the notice text', () => {
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__depth-notice \.mdp-explorer__settings-link\s*\{[^}]*display:\s*inline;[^}]*white-space:\s*normal;/s
+    )
+  })
+
   it('keeps the loading skeleton integrated with the panel background', () => {
     expect(explorerCss).toMatch(
       /\.mdp-explorer__loading\s*\{[^}]*padding:\s*8px 6px 4px;[^}]*background:\s*transparent;/s

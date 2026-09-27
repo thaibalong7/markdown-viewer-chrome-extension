@@ -1,6 +1,7 @@
 import React from 'react'
 import { explorerModeBadgeLabel } from '../../../explorer/explorer-files-context.js'
 import { canCopyCurrentFileLink, copyCurrentFileLink } from '../../../actions/file-link-actions.js'
+import { openExplorerSettings } from '../../../actions/explorer-settings-actions.js'
 import { useToast } from '../../contexts/ToastContext.jsx'
 import { useCopyFeedback } from '../../hooks/useCopyFeedback.js'
 import { IconButton } from '../common/IconButton.jsx'
@@ -65,6 +66,22 @@ export function ExplorerHeader({
         showToast?.('Could not copy file link', { variant: 'error' })
       }
     })()
+  }
+
+  const onOpenExplorerSettings = () => {
+    void (async () => {
+      try {
+        await openExplorerSettings()
+      } catch {
+        showToast?.('Could not open Settings.', { variant: 'error' })
+      }
+    })()
+  }
+
+  const onExplorerSettingsKeyDown = (event) => {
+    if (event.key !== 'Enter') return
+    event.preventDefault()
+    onOpenExplorerSettings()
   }
 
   return (
@@ -184,7 +201,17 @@ export function ExplorerHeader({
 
       {depthNotice ? (
         <div className="mdp-explorer__depth-notice" role="note">
-          {depthNotice}
+          <span>{depthNotice}</span>{' '}
+          <span
+            role="link"
+            tabIndex={0}
+            className="mdp-explorer__settings-link"
+            onClick={onOpenExplorerSettings}
+            onKeyDown={onExplorerSettingsKeyDown}
+          >
+            Adjust scan limits in Settings
+          </span>
+          , then refresh.
         </div>
       ) : null}
     </PanelHeader>

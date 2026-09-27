@@ -16,8 +16,15 @@ const SECTIONS = [
   { id: 'advanced', label: 'Advanced', description: 'Limits, backup, and reset' }
 ]
 
+export function resolveSettingsSection(hash) {
+  const sectionId = String(hash || '').replace(/^#/, '')
+  return SECTIONS.some(({ id }) => id === sectionId) ? sectionId : SECTIONS[0].id
+}
+
 export function OptionsApp() {
-  const [activeSection, setActiveSection] = useState(SECTIONS[0].id)
+  const [activeSection, setActiveSection] = useState(() =>
+    resolveSettingsSection(globalThis.location?.hash)
+  )
   const form = useSettingsForm()
   const statusVariant = form.status.type === 'idle' ? 'info' : form.status.type
 

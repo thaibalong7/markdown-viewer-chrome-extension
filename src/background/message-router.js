@@ -4,6 +4,7 @@ import { logger } from '../shared/logger.js'
 import { fetchFileTextViaOffscreen } from './offscreen-fetch.js'
 import { sanitizeDownloadFilename } from '../shared/download.js'
 import { fileHistoryService } from './file-history-service.js'
+import { optionsPageService } from './options-page-service.js'
 import { settingsBroadcastService } from './settings-broadcast-service.js'
 import { themeAssetService } from './theme-asset-service.js'
 
@@ -72,6 +73,7 @@ export function createMessageRouter(dependencies = {}) {
     settingsBroadcast: dependencies.settingsBroadcastService || settingsBroadcastService,
     themeAssets: dependencies.themeAssetService || themeAssetService,
     fileHistory: dependencies.fileHistoryService || fileHistoryService,
+    optionsPage: dependencies.optionsPageService || optionsPageService,
     fetchFileText: dependencies.fetchFileTextViaOffscreen || fetchFileTextViaOffscreen,
     downloadsApi: dependencies.downloadsApi,
     extensionApi: dependencies.extensionApi,
@@ -112,6 +114,9 @@ export function createMessageRouter(dependencies = {}) {
     [MESSAGE_TYPES.CLEAR_FILE_HISTORY]: () => services.fileHistory.clearFileHistory(),
     [MESSAGE_TYPES.OPEN_FILE_FROM_HISTORY]: (message) => (
       services.fileHistory.openFileFromHistory(message.payload || {})
+    ),
+    [MESSAGE_TYPES.OPEN_EXPLORER_SETTINGS]: () => (
+      services.optionsPage.openExplorerSettings()
     ),
     [MESSAGE_TYPES.FETCH_FILE_AS_TEXT]: async (message) => {
       const url = normalizeFileFetchUrl(message.payload)

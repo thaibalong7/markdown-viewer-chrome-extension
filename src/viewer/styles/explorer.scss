@@ -641,6 +641,26 @@
   line-height: 1.4;
   color: color-mix(in srgb, var(--mdp-warning) 82%, var(--mdp-text));
   padding: 1px 2px;
+
+  .mdp-explorer__settings-link {
+    display: inline;
+    white-space: normal;
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--mdp-text);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--mdp-focus-color);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
 }
 
 /* Author `display: flex` beats the default `[hidden]` rule in some engines — force hide when hidden. */

@@ -10,25 +10,13 @@
   }
 
   .cm-scroller {
-    &::-webkit-scrollbar:vertical {
+    /* ViewerScrollbar owns the editor chrome, matching the split preview pane. */
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
       width: 0;
-    }
-
-    &::-webkit-scrollbar:horizontal {
-      height: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 999px;
-      background: var(--mdp-scrollbar-thumb);
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background: var(--mdp-scrollbar-thumb-hover);
+      height: 0;
     }
   }
 }

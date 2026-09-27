@@ -9,19 +9,47 @@ const tocCss = compile(fileURLToPath(new URL('../toc.scss', import.meta.url))).c
 describe('sidebar scrollbar layout', () => {
   it('reserves a stable scrollbar gutter in Files', () => {
     expect(explorerCss).toMatch(
-      /\.mdp-explorer-container\s*\{[^}]*overflow-y:\s*auto;[^}]*scrollbar-gutter:\s*stable;/s
+      /\.mdp-explorer-container\s*\{[^}]*overflow:\s*hidden;[^}]*padding-inline-end:\s*3px;/s
     )
     expect(explorerCss).toMatch(
-      /\.mdp-explorer-container\s*\{[^}]*padding-inline-end:\s*3px;/s
+      /\.mdp-explorer__scroll-region\s*\{[^}]*overflow-y:\s*auto;[^}]*scrollbar-gutter:\s*stable;/s
     )
     expect(layoutCss).toMatch(
-      /\.mdp-sidebar--files\s*\{[^}]*padding-inline-end:\s*5px;/s
+      /\.mdp-sidebar--files\s*\{[^}]*padding-inline-start:\s*8px;[^}]*padding-inline-end:\s*5px;/s
     )
   })
 
   it('reserves a stable scrollbar gutter in Outline', () => {
     expect(tocCss).toMatch(
       /\.mdp-sidebar-panel--outline \.mdp-toc\s*\{[^}]*overflow-y:\s*auto;[^}]*scrollbar-gutter:\s*stable;/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-right-rail\s*\{[^}]*padding-inline-start:\s*8px;[^}]*padding-inline-end:\s*14px;/s
+    )
+  })
+
+  it('uses compact hierarchy spacing while keeping heading names on one line', () => {
+    expect(tocCss).toMatch(
+      /\.mdp-toc__link\s*\{[^}]*padding:\s*8px 6px;[^}]*white-space:\s*nowrap;/s
+    )
+    expect(tocCss).toMatch(/\.mdp-toc__link--h1\s*\{[^}]*padding-left:\s*10px;/s)
+    expect(tocCss).toMatch(/\.mdp-toc__link--h2\s*\{[^}]*padding-left:\s*18px;/s)
+    expect(tocCss).toMatch(/\.mdp-toc__link--h6\s*\{[^}]*padding-left:\s*50px;/s)
+    expect(tocCss).not.toMatch(/\.mdp-toc__link--h\d\.is-active\s*\{[^}]*padding-left:/s)
+  })
+
+  it('shares theme scrollbar colors between native panels and the viewer overlay', () => {
+    expect(tocCss).toMatch(
+      /\.mdp-sidebar-panel--outline \.mdp-toc\s*\{[^}]*scrollbar-color:\s*var\(--mdp-scrollbar-thumb\) transparent;/s
+    )
+    expect(tocCss).toMatch(
+      /\.mdp-sidebar-panel--outline \.mdp-toc::-webkit-scrollbar-thumb\s*\{[^}]*background:\s*var\(--mdp-scrollbar-thumb\);/s
+    )
+    expect(tocCss).toMatch(
+      /\.mdp-sidebar-panel--outline \.mdp-toc::-webkit-scrollbar-thumb:hover\s*\{[^}]*background:\s*var\(--mdp-scrollbar-thumb-hover\);/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-viewer-scrollbar__thumb\s*\{[^}]*background:\s*var\(\s*--mdp-scrollbar-thumb,/s
     )
   })
 

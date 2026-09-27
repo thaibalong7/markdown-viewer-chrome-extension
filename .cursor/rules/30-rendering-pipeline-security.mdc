@@ -37,8 +37,8 @@ trigger: glob
 
 ## Theme and Shiki
 
-- Reader presets are defined in `src/theme/index.js`; the default preset lives in `DEFAULT_SETTINGS.theme.preset`.
-- `src/viewer/core/shiki-config.js` must map every reader preset key to a bundled Shiki theme id and keep the explicit grammar/theme allowlists in sync.
+- Built-in reader themes and custom-theme resolution are defined in `src/theme/index.js`; the active theme id and saved custom themes live under `DEFAULT_SETTINGS.theme`.
+- `src/viewer/core/shiki-config.js` must map every built-in/base theme key to a bundled Shiki theme id and keep the explicit grammar/theme allowlists in sync.
 - Shiki emits inline styles that must remain allowed by sanitizer config when code highlighting is enabled.
 - Shiki/reader theme changes that affect fenced code require a full render because code colors are baked into HTML.
 - Keep `.mdp-markdown-body pre.shiki code` specificity higher than generic inline-code styles so Shiki block whitespace remains stable.

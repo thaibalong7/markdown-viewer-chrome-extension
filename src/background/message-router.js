@@ -5,6 +5,7 @@ import { fetchFileTextViaOffscreen } from './offscreen-fetch.js'
 import { sanitizeDownloadFilename } from '../shared/download.js'
 import { fileHistoryService } from './file-history-service.js'
 import { settingsBroadcastService } from './settings-broadcast-service.js'
+import { themeAssetService } from './theme-asset-service.js'
 
 function createPingResponse() {
   return {
@@ -69,6 +70,7 @@ export function createMessageRouter(dependencies = {}) {
   const services = {
     settings: dependencies.settingsService || settingsService,
     settingsBroadcast: dependencies.settingsBroadcastService || settingsBroadcastService,
+    themeAssets: dependencies.themeAssetService || themeAssetService,
     fileHistory: dependencies.fileHistoryService || fileHistoryService,
     fetchFileText: dependencies.fetchFileTextViaOffscreen || fetchFileTextViaOffscreen,
     downloadsApi: dependencies.downloadsApi,
@@ -86,9 +88,23 @@ export function createMessageRouter(dependencies = {}) {
     },
     [MESSAGE_TYPES.RESET_SETTINGS]: async () => {
       const nextSettings = await services.settings.resetSettings()
+      try {
+        await services.themeAssets.clearThemeAssets()
+      } catch (error) {
+        services.log.warn('Could not clear theme assets during settings reset.', error)
+      }
       await services.settingsBroadcast.broadcastSettingsUpdated(nextSettings)
       return nextSettings
     },
+    [MESSAGE_TYPES.SAVE_THEME_ASSET]: (message) => (
+      services.themeAssets.saveThemeAsset(message.payload || {})
+    ),
+    [MESSAGE_TYPES.GET_THEME_ASSET]: (message) => (
+      services.themeAssets.getThemeAsset(message.payload || {})
+    ),
+    [MESSAGE_TYPES.DELETE_THEME_ASSET]: (message) => (
+      services.themeAssets.deleteThemeAsset(message.payload || {})
+    ),
     [MESSAGE_TYPES.GET_FILE_HISTORY]: () => services.fileHistory.getFileHistory(),
     [MESSAGE_TYPES.RECORD_FILE_OPENED]: (message) => (
       services.fileHistory.recordFileOpened(message.payload || {})

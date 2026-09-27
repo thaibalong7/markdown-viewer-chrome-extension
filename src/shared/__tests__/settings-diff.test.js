@@ -58,4 +58,45 @@ describe('needsFullRender', () => {
       )
     ).toBe(false)
   })
+
+  it('keeps the active custom theme background on the style-only path', () => {
+    const theme = {
+      activeId: 'custom:midnight-1234',
+      customThemes: [{
+        id: 'custom:midnight-1234',
+        name: 'Midnight',
+        baseId: 'dark',
+        colors: { background: '#101827' },
+        background: { type: 'none' }
+      }]
+    }
+    expect(
+      needsFullRender(
+        { theme },
+        {
+          theme: {
+            ...theme,
+            customThemes: [{
+              ...theme.customThemes[0],
+              background: {
+                type: 'gradient',
+                startColor: '#101827',
+                endColor: '#312e81',
+                angle: 135
+              }
+            }]
+          }
+        }
+      )
+    ).toBe(false)
+  })
+
+  it('keeps scrollbar visibility changes on the style-only path', () => {
+    expect(
+      needsFullRender(
+        { appearance: { scrollbarVisibility: 'auto' } },
+        { appearance: { scrollbarVisibility: 'always' } }
+      )
+    ).toBe(false)
+  })
 })

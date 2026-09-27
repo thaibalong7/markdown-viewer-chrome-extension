@@ -6,10 +6,16 @@ import {
   normalizeDocumentSettings,
   normalizeExplorerSettings,
   normalizeHistorySettings,
+  normalizeThemeSettings,
   normalizeSettings
 } from '../../settings/settings-schema.js'
 import { clearRecentFiles, exportSettingsFile, readSettingsFile } from '../options-actions.js'
 import { parseSettingsJson } from '../settings-import.js'
+import { SCROLLBAR_VISIBILITY } from '../../shared/constants/scrollbar.js'
+import { readImageFileAsDataUrl } from '../../shared/background-image.js'
+import { logger } from '../../shared/logger.js'
+import { createThemeAssetId } from '../../theme/index.js'
+import { deleteThemeAsset, saveThemeAsset } from '../../theme/theme-asset-client.js'
 
 function toExplorerDraft(explorer = DEFAULT_SETTINGS.explorer) {
   return {
@@ -138,6 +144,99 @@ export function useSettingsForm() {
     (enabled) => persist(() => saveSettings({ enabled }), 'General settings saved.', 'general'),
     [persist]
   )
+
+  const setScrollbarAutoHide = useCallback(
+    (enabled) =>
+      persist(
+        () => saveSettings({
+          appearance: {
+            scrollbarVisibility: enabled
+              ? SCROLLBAR_VISIBILITY.AUTO
+              : SCROLLBAR_VISIBILITY.ALWAYS
+          }
+        }),
+        enabled ? 'Document scrollbars will auto-hide.' : 'Document scrollbars will stay visible.',
+        'scrollbarVisibility'
+      ),
+    [persist]
+  )
+
+  const setActiveTheme = useCallback(
+    (activeId) => persist(
+      () => saveSettings({ theme: { activeId } }),
+      'Active theme updated.',
+      'themeSelect'
+    ),
+    [persist]
+  )
+
+  const saveCustomTheme = useCallback(async (draft, imageFile = null) => {
+    if (!settings) return null
+    const existingTheme = settings.theme.customThemes.find(({ id }) => id === draft.id)
+    let uploadedAssetId = null
+    const nextSettings = await persist(async () => {
+      let nextTheme = { ...draft, colors: { ...draft.colors }, background: { ...draft.background } }
+      if (imageFile) {
+        uploadedAssetId = createThemeAssetId()
+        const dataUrl = await readImageFileAsDataUrl(imageFile)
+        await saveThemeAsset(uploadedAssetId, dataUrl)
+        nextTheme = {
+          ...nextTheme,
+          background: {
+            ...nextTheme.background,
+            type: 'image',
+            assetId: uploadedAssetId,
+            assetRevision: Date.now()
+          }
+        }
+      }
+      const customThemes = existingTheme
+        ? settings.theme.customThemes.map((theme) => theme.id === nextTheme.id ? nextTheme : theme)
+        : [...settings.theme.customThemes, nextTheme]
+      const theme = normalizeThemeSettings({ activeId: nextTheme.id, customThemes })
+      return saveSettings({ theme })
+    }, existingTheme ? 'Custom theme saved.' : 'Custom theme created.', 'themeSave')
+
+    if (!nextSettings && uploadedAssetId) {
+      try {
+        await deleteThemeAsset(uploadedAssetId)
+      } catch (error) {
+        logger.warn('Could not remove an unused theme asset after save failed.', error)
+      }
+    }
+    const oldAssetId = existingTheme?.background?.assetId
+    const savedTheme = nextSettings?.theme?.customThemes.find(({ id }) => id === draft.id)
+    const nextAssetId = savedTheme?.background?.assetId
+    if (nextSettings && oldAssetId && oldAssetId !== nextAssetId) {
+      try {
+        await deleteThemeAsset(oldAssetId)
+      } catch (error) {
+        logger.warn('Could not remove the replaced theme asset.', error)
+      }
+    }
+    return nextSettings
+  }, [persist, settings])
+
+  const deleteCustomTheme = useCallback(async (themeId) => {
+    if (!settings) return null
+    const existingTheme = settings.theme.customThemes.find(({ id }) => id === themeId)
+    if (!existingTheme) return settings
+    const activeId = settings.theme.activeId === themeId ? existingTheme.baseId : settings.theme.activeId
+    const customThemes = settings.theme.customThemes.filter(({ id }) => id !== themeId)
+    const nextSettings = await persist(
+      () => saveSettings({ theme: { activeId, customThemes } }),
+      'Custom theme deleted.',
+      'themeDelete'
+    )
+    if (nextSettings && existingTheme.background?.assetId) {
+      try {
+        await deleteThemeAsset(existingTheme.background.assetId)
+      } catch (error) {
+        logger.warn('Could not remove the deleted theme asset.', error)
+      }
+    }
+    return nextSettings
+  }, [persist, settings])
 
   const saveExplorer = useCallback(async () => {
     let explorer
@@ -314,6 +413,10 @@ export function useSettingsForm() {
     status,
     load,
     setEnabled,
+    setScrollbarAutoHide,
+    setActiveTheme,
+    saveCustomTheme,
+    deleteCustomTheme,
     updateExplorerField,
     updateHistoryMaxEntries,
     updateDocumentLimit,

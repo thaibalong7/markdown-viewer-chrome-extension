@@ -910,15 +910,15 @@
 
           <h2 id="extension">Extending the system</h2>
           <p>
-            Settings and Popup derive shared controls from the same application foundations. They
-            keep page-specific layouts without introducing alternate palettes, font stacks, focus
-            rings, or status semantics.
+            Settings owns named custom-theme authoring, including colors and structured backgrounds;
+            Popup only selects saved themes. Both surfaces derive shared controls from the same
+            application foundations without introducing alternate focus or status semantics.
           </p>
 
           <div class="mdp-source-note">
-            Source of truth: <code>src/theme/index.js</code>, <code>src/shared/styles/**</code>, and
-            <code>src/viewer/styles/**</code>. Use the controls in the right rail to preview theme
-            and rail states.
+            Source of truth: <code>src/theme/index.js</code>, <code>src/theme/backgrounds.js</code>,
+            <code>src/shared/styles/**</code>, and <code>src/viewer/styles/**</code>. Use the controls
+            in the right rail to preview theme and rail states.
           </div>
         </article>
       </main>

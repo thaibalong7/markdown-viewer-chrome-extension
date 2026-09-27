@@ -11,7 +11,6 @@ function rectNumber(rect, key) {
 export function getExplorerRevealScrollDelta({
   rowRect,
   scrollRect,
-  stickyHeaderRect,
   topGap = DEFAULT_REVEAL_TOP_GAP,
   bottomGap = DEFAULT_REVEAL_BOTTOM_GAP
 }) {
@@ -19,11 +18,10 @@ export function getExplorerRevealScrollDelta({
   const rowBottom = rectNumber(rowRect, 'bottom')
   const scrollTop = rectNumber(scrollRect, 'top')
   const scrollBottom = rectNumber(scrollRect, 'bottom')
-  const stickyBottom = rectNumber(stickyHeaderRect, 'bottom')
 
   if (rowBottom <= rowTop || scrollBottom <= scrollTop) return 0
 
-  const safeTop = Math.max(scrollTop, stickyBottom) + topGap
+  const safeTop = scrollTop + topGap
   const safeBottom = scrollBottom - bottomGap
 
   if (rowTop < safeTop) return rowTop - safeTop
@@ -31,24 +29,19 @@ export function getExplorerRevealScrollDelta({
   return 0
 }
 
-function getActiveExplorerRowElements({ panelEl, scrollEl }) {
-  if (!(panelEl instanceof HTMLElement) || !(scrollEl instanceof HTMLElement)) return null
-
-  const rowEl = panelEl.querySelector('.mdp-explorer__node-btn.is-active')
-  if (!(rowEl instanceof HTMLElement)) return null
-
-  const headerEl = panelEl.querySelector('.mdp-explorer__header')
-  return { rowEl, headerEl }
+function getActiveExplorerRow(scrollEl) {
+  if (!(scrollEl instanceof HTMLElement)) return null
+  const rowEl = scrollEl.querySelector('.mdp-explorer__node-btn.is-active')
+  return rowEl instanceof HTMLElement ? rowEl : null
 }
 
-export function getActiveExplorerRowRevealState({ panelEl, scrollEl }) {
-  const elements = getActiveExplorerRowElements({ panelEl, scrollEl })
-  if (!elements) return 'missing'
+export function getActiveExplorerRowRevealState({ scrollEl }) {
+  const rowEl = getActiveExplorerRow(scrollEl)
+  if (!rowEl) return 'missing'
 
   const delta = getExplorerRevealScrollDelta({
-    rowRect: elements.rowEl.getBoundingClientRect(),
+    rowRect: rowEl.getBoundingClientRect(),
     scrollRect: scrollEl.getBoundingClientRect(),
-    stickyHeaderRect: elements.headerEl?.getBoundingClientRect?.(),
     topGap: DEFAULT_VISIBILITY_TOP_GAP,
     bottomGap: DEFAULT_VISIBILITY_BOTTOM_GAP
   })
@@ -56,14 +49,13 @@ export function getActiveExplorerRowRevealState({ panelEl, scrollEl }) {
   return delta === 0 ? 'visible' : 'hidden'
 }
 
-export function revealActiveExplorerRow({ panelEl, scrollEl }) {
-  const elements = getActiveExplorerRowElements({ panelEl, scrollEl })
-  if (!elements) return
+export function revealActiveExplorerRow({ scrollEl }) {
+  const rowEl = getActiveExplorerRow(scrollEl)
+  if (!rowEl) return
 
   const delta = getExplorerRevealScrollDelta({
-    rowRect: elements.rowEl.getBoundingClientRect(),
-    scrollRect: scrollEl.getBoundingClientRect(),
-    stickyHeaderRect: elements.headerEl?.getBoundingClientRect?.()
+    rowRect: rowEl.getBoundingClientRect(),
+    scrollRect: scrollEl.getBoundingClientRect()
   })
 
   if (delta === 0) return

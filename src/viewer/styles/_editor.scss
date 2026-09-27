@@ -10,7 +10,26 @@
   }
 
   .cm-scroller {
-    @include v.scrollbar-thin;
+    &::-webkit-scrollbar:vertical {
+      width: 0;
+    }
+
+    &::-webkit-scrollbar:horizontal {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: var(--mdp-scrollbar-thumb);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--mdp-scrollbar-thumb-hover);
+    }
   }
 }
 
@@ -109,6 +128,13 @@
     min-height: 0;
     padding: 12px;
     background: var(--mdp-surface);
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
 
     .mdp-markdown-body {
       min-height: calc(100vh - 54px);

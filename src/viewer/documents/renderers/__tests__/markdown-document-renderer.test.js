@@ -30,7 +30,7 @@ describe('Markdown document renderer', () => {
     const result = await render({
       loadedDocument: { text: '# Title' },
       articleEl,
-      settings: { theme: { preset: 'light' } },
+      settings: { theme: { activeId: 'light', customThemes: [] } },
       services,
       signal: new AbortController().signal
     })

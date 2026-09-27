@@ -10,7 +10,7 @@ describe('broadcastSettingsUpdated', () => {
         if (tabId === 2) throw new Error('No receiving end')
       })
     }
-    const settings = { theme: { preset: 'dark' } }
+    const settings = { theme: { activeId: 'dark', customThemes: [] } }
 
     await expect(broadcastSettingsUpdated(settings, { tabsApi })).resolves.toEqual({
       attempted: 2

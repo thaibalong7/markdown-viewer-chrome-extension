@@ -20,6 +20,15 @@ describe('explorer interaction styles', () => {
     )
   })
 
+  it('shrinks long file names before the row action button can cover them', () => {
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__node:hover \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node:focus-within \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node\.is-menu-open \.mdp-explorer__node-btn\s*\{[^}]*padding-right:\s*38px;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__node-label\s*\{[^}]*min-width:\s*0;[^}]*overflow:\s*hidden;[^}]*text-overflow:\s*ellipsis;/s
+    )
+  })
+
   it('keeps tree icons consistently sized and optically aligns folder artwork', () => {
     expect(explorerCss).toMatch(
       /\.mdp-explorer__node-icon\s*\{[^}]*width:\s*19px;[^}]*height:\s*19px;/s
@@ -32,6 +41,21 @@ describe('explorer interaction styles', () => {
     )
     expect(explorerCss).toMatch(
       /\.mdp-explorer__tree-folder-icon svg\s*\{[^}]*width:\s*18px;[^}]*height:\s*18px;[^}]*transform:\s*translateY\(-1px\);/s
+    )
+  })
+
+  it('uses compact tree spacing while keeping names on one line', () => {
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__node-btn\s*\{[^}]*gap:\s*5px;[^}]*padding:\s*8px 6px;[^}]*white-space:\s*nowrap;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__tree-folder-row\s*\{[^}]*gap:\s*5px;[^}]*padding:\s*8px 6px 8px 2px;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__node-depth\s*\{[^}]*width:\s*14px;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__tree-chevron\s*\{[^}]*width:\s*14px;/s
     )
   })
 })

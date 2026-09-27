@@ -4,8 +4,9 @@ import { Button } from '../../shared/react/Button.jsx'
 import { Switch } from '../../shared/react/Switch.jsx'
 import { openExtensionDetails } from '../../shared/file-scheme-access.js'
 import { useFileSchemeAccess } from '../../shared/react/useFileSchemeAccess.js'
+import { SCROLLBAR_VISIBILITY } from '../../shared/constants/scrollbar.js'
 
-export function GeneralSettings({ settings, saving, onEnabledChange }) {
+export function GeneralSettings({ settings, saving, onEnabledChange, onScrollbarAutoHideChange }) {
   const fileAccess = useFileSchemeAccess()
   const [detailsError, setDetailsError] = useState('')
 
@@ -29,7 +30,7 @@ export function GeneralSettings({ settings, saving, onEnabledChange }) {
       <div className="settings-section__heading">
         <p className="settings-eyebrow">Behavior</p>
         <h2 id="general-title">General</h2>
-        <p>Control whether Markdown Plus activates for supported local Markdown files.</p>
+        <p>Control Markdown Plus activation and viewer behavior.</p>
       </div>
 
       <div className="mdp-ui-card">
@@ -44,6 +45,22 @@ export function GeneralSettings({ settings, saving, onEnabledChange }) {
             checked={settings.enabled !== false}
             disabled={saving}
             onChange={(event) => void onEnabledChange(event.target.checked)}
+          />
+        </div>
+
+        <div className="mdp-ui-divider" />
+
+        <div className="mdp-ui-setting-row settings-row--toggle">
+          <div>
+            <h3 className="mdp-ui-setting-row__title">Auto-hide document scrollbars</h3>
+            <p className="mdp-ui-setting-row__description">Fade vertical scrollbars when idle and reveal them while scrolling, near the pane edge, or using the keyboard.</p>
+          </div>
+          <Switch
+            id="general-scrollbar-auto-hide"
+            label="Auto-hide document scrollbars"
+            checked={settings.appearance?.scrollbarVisibility !== SCROLLBAR_VISIBILITY.ALWAYS}
+            disabled={saving}
+            onChange={(event) => void onScrollbarAutoHideChange(event.target.checked)}
           />
         </div>
 

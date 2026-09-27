@@ -32,11 +32,11 @@ Direct activation is limited to local `file:` URLs with `.md`, `.markdown`, `.md
 | `src/content/` | Activation gate, page detection, raw Markdown extraction, viewer mount |
 | `src/viewer/` | App orchestration, document sessions, renderers, navigation, editor, explorer, React chrome |
 | `src/plugins/` | Core and optional Markdown extensions |
-| `src/theme/` | Reader presets and runtime CSS variables |
+| `src/theme/` | Built-in themes, custom-theme resolution, theme-owned background descriptors, local theme-asset client, and runtime CSS variables |
 | `src/settings/` | Defaults, validation, persistence client, storage service |
-| `src/popup/` | Recent files and quick reader/editor/plugin controls |
-| `src/options/` | Full settings, diagnostics, import/export, and reset workflows |
-| `src/background/` | Message routing, local file reads, downloads, settings broadcasts, file history |
+| `src/popup/` | Recent files, theme selection, and quick reader/editor/plugin controls |
+| `src/options/` | Full settings, custom-theme management, diagnostics, import/export, and reset workflows |
+| `src/background/` | Message routing, local file reads, downloads, settings broadcasts, file history, and device-local theme assets |
 | `src/messaging/` | Shared message names and caller wrapper |
 | `src/shared/` | File registry, utilities, constants, React primitives, and shared styles |
 
@@ -122,6 +122,7 @@ Viewer React code lives under `src/viewer/react/`. `mount.js` owns the React roo
 Major ownership:
 
 - `ViewerShell.jsx`: overall layout and rendered-article boundary;
+- `BackgroundScene.jsx`: trusted full-viewport rendering for the active theme's structured background descriptor, page-visibility pausing, reduced-motion handling, and local image URL cleanup;
 - `Sidebar.jsx` and `FilesPanel.jsx`: left Files panel;
 - `RightRail.jsx` and `OutlinePanel.jsx`: document actions and heading navigation;
 - `EditorPanel.jsx` and `StatusBar.jsx`: CodeMirror shell and editor state;
@@ -173,6 +174,10 @@ Optional plugins are dynamically imported when enabled. Hooks can extend Markdow
 
 Shiki uses explicit language and theme loaders from `src/viewer/core/shiki-config.js`. Reader theme keys in `src/theme/index.js` must stay aligned with Shiki mappings.
 
+Each reader theme is a complete visual entity. `src/theme/index.js` owns built-in palettes and resolves `theme.activeId` across built-in and saved custom themes; every resolved theme includes semantic colors, a built-in/base theme id for Shiki, and a structured background descriptor. `src/theme/backgrounds.js` resolves the supported `none`, `solid`, `gradient`, and local `image` descriptor variants into trusted render data. `BackgroundScene` renders the active theme's background behind the Viewer grid while sidebar and content surfaces remain theme-colored overlays. Settings never accept arbitrary CSS or remote URLs.
+
+For the complete theme schema, source map, custom-theme workflow, asset lifecycle, extension guidance, and test checklist, see [`theme-system.md`](./theme-system.md).
+
 Standalone and fenced Mermaid share `src/viewer/mermaid/` services for renderer loading, SVG sanitization, theme mapping, errors, lightbox behavior, and export actions.
 
 ## Settings, storage, and messaging
@@ -187,9 +192,13 @@ Settings ownership:
 
 Preferences use `chrome.storage.sync` with local fallback. Recent local-file history is stored separately in `chrome.storage.local` and follows its privacy/retention policy.
 
+Theme settings use `theme.activeId` plus `theme.customThemes`. The Settings page is the only authoring surface: it creates, names, edits, and deletes custom themes and configures their colors and background. The Popup is a selector only and lists built-in themes together with saved custom themes. Custom theme records are validated, bounded, and synchronized with settings; incompatible version-1 `theme.preset` data is migrated explicitly.
+
+Custom theme images are device-local assets. Settings validates supported raster and animated-image formats with a 5 MiB limit, then the background service persists each Blob in IndexedDB under an independent `assetId`; the synchronized theme descriptor stores only that reference, presentation settings, motion, dimming, and an asset revision. The Viewer requests the active theme asset through centralized messaging, creates a session object URL, and revokes it when the theme changes or the Viewer unmounts. Replacing or deleting a custom theme removes its superseded asset, and reset clears the complete theme-asset store.
+
 Message names are centralized in `src/messaging/index.js`. UI/content callers use `sendMessage()`; background services own browser APIs. Normal responses use `{ ok: true, data }` or `{ ok: false, error }`.
 
-`src/background/message-router.js` routes settings, history, local reads, and downloads. Offscreen fetch wire messages bypass that router. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown.
+`src/background/message-router.js` routes settings, history, local reads, downloads, and theme-asset lifecycle calls. Offscreen fetch wire messages bypass that router. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown.
 
 ## Security and privacy boundaries
 
@@ -198,6 +207,7 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 - External website links receive `noopener noreferrer` protection.
 - Plain text and raw Mermaid use text-only DOM APIs.
 - SVG documents render as image resources, never inline source markup.
+- Custom theme backgrounds accept structured colors and gradients or bounded local raster/animated images only, never arbitrary CSS, inline SVG, or remote image URLs.
 - Manifest permissions remain minimal and tied to concrete features.
 - Logs contain intent and lightweight context, not document bodies.
 - Local content is processed in the browser and is not sent to a developer-operated service. User-authored remote resources and exported Math assets can still contact their external hosts.
@@ -217,7 +227,7 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 | Links/history | `src/viewer/navigation/`, `explorer-navigation.js` |
 | Editor/save | `src/viewer/app/editorSessionController.js`, `src/viewer/editor/` |
 | Plugins | `src/plugins/plugin-manager.js`, `src/plugins/core/`, `src/plugins/optional/` |
-| Theme/Shiki | `src/theme/index.js`, `src/viewer/core/shiki-config.js` |
+| Theme/background/Shiki | [`docs/theme-system.md`](./theme-system.md), `src/theme/index.js`, `src/theme/backgrounds.js`, `ThemeSettings.jsx`, `BackgroundScene.jsx`, `src/viewer/core/shiki-config.js` |
 | Settings | `src/settings/`, `src/background/message-router.js` |
 | Popup/Options | `src/popup/`, `src/options/`, `src/shared/react/` |
 | Print/export | `src/viewer/actions/document-actions.js`, `src/shared/download.js` |

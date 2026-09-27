@@ -62,7 +62,7 @@ export function FloatingActions({
   const viewModes = Array.isArray(capabilities.viewModes) ? capabilities.viewModes : []
   const canToggleViewMode = viewModes.includes('rendered') && viewModes.includes('raw')
   const isRawMode = documentUiState?.viewMode === 'raw'
-  const currentThemePreset = String(getSettings?.()?.theme?.preset || '').toLowerCase()
+  const currentThemePreset = String(getSettings?.()?.theme?.activeId || '').toLowerCase()
   const themeToggleTarget = getLightDarkThemeToggleTarget(currentThemePreset)
   const canToggleTheme = Boolean(themeToggleTarget && typeof onThemeToggle === 'function')
   useEffect(() => {

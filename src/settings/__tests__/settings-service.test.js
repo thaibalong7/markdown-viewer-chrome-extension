@@ -8,7 +8,9 @@ describe('settingsService', () => {
 
   beforeEach(() => {
     storedSettings = {
+      version: 1,
       theme: { preset: 'dark' },
+      appearance: { background: { mode: 'custom' } },
       typography: { fontSize: 18 },
       plugins: {
         mermaid: { enabled: true }
@@ -35,7 +37,9 @@ describe('settingsService', () => {
   it('deep merges stored settings over defaults', async () => {
     const settings = await settingsService.getSettings()
 
-    expect(settings.theme.preset).toBe('dark')
+    expect(settings.theme).toEqual({ activeId: 'dark', customThemes: [] })
+    expect(settings.appearance).not.toHaveProperty('background')
+    expect(settings.version).toBe(2)
     expect(settings.typography.fontSize).toBe(18)
     expect(settings.typography.lineHeight).toBe(DEFAULT_SETTINGS.typography.lineHeight)
     expect(settings.plugins.mermaid.enabled).toBe(true)
@@ -53,7 +57,7 @@ describe('settingsService', () => {
       layout: { contentMaxWidth: 860 }
     })
 
-    expect(settings.theme.preset).toBe('dark')
+    expect(settings.theme.activeId).toBe('dark')
     expect(settings.layout.contentMaxWidth).toBe(860)
     expect(settings.layout.showToc).toBe(DEFAULT_SETTINGS.layout.showToc)
     expect(storage.set).toHaveBeenCalledWith({
@@ -92,7 +96,7 @@ describe('settingsService', () => {
     })
 
     expect(settings.history).toEqual({ enabled: false, maxEntries: 25 })
-    expect(settings.theme.preset).toBe('dark')
+    expect(settings.theme.activeId).toBe('dark')
   })
 
   it('normalizes and persists the standalone text document limit', async () => {
@@ -101,7 +105,7 @@ describe('settingsService', () => {
     })
 
     expect(settings.documents).toEqual({ maxStandaloneTextFileSizeMiB: 18 })
-    expect(settings.theme.preset).toBe('dark')
+    expect(settings.theme.activeId).toBe('dark')
   })
 
   it('uses safe defaults for corrupt stored explorer limits', async () => {
@@ -134,7 +138,7 @@ describe('settingsService', () => {
     })
 
     expect(settings.explorer).toEqual(DEFAULT_SETTINGS.explorer)
-    expect(settings.theme.preset).toBe('dark')
+    expect(settings.theme.activeId).toBe('dark')
     expect(settings.typography.fontSize).toBe(18)
   })
 

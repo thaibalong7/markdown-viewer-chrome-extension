@@ -87,7 +87,7 @@
     text-decoration: none;
     color: var(--mdp-muted);
     min-height: 36px;
-    padding: 8px 10px;
+    padding: 8px 6px;
     border: 1px solid transparent;
     border-radius: v.$radius-small;
     font-size: 13px;
@@ -130,7 +130,7 @@
 
     @for $i from 1 through 6 {
       &--h#{$i} {
-        padding-left: #{10px + ($i - 1) * 9px};
+        padding-left: #{10px + ($i - 1) * 8px};
       }
     }
   }

@@ -1,3 +1,5 @@
+import { AURORA_THEME_BACKGROUND, DEFAULT_THEME_BACKGROUND } from './backgrounds.js'
+
 const LIGHT_THEME_COLORS = {
   colorScheme: 'light',
   background: '#f6f8fb',
@@ -90,6 +92,8 @@ const DARK_THEME_COLORS = {
 
 const HIGH_CONTRAST_LIGHT_THEME_COLORS = {
   colorScheme: 'light',
+  scrollbarThumb: '#707070',
+  scrollbarThumbHover: '#333333',
   background: '#ffffff',
   surface: '#ffffff',
   text: '#000000',
@@ -135,6 +139,8 @@ const HIGH_CONTRAST_LIGHT_THEME_COLORS = {
 
 const HIGH_CONTRAST_DARK_THEME_COLORS = {
   colorScheme: 'dark',
+  scrollbarThumb: '#8c8c8c',
+  scrollbarThumbHover: '#d0d0d0',
   background: '#000000',
   surface: '#0a0a0a',
   text: '#ffffff',
@@ -452,6 +458,28 @@ const MIN_DARK_THEME_COLORS = createDarkThemePalette({
   danger: '#e69797'
 })
 
+const AURORA_GLASS_THEME_COLORS = createDarkThemePalette({
+  background: '#0b1020',
+  surface: '#121a2d',
+  text: '#e5edff',
+  bodyText: '#dbeafe',
+  heading: '#f8fafc',
+  border: '#33415d',
+  borderStrong: '#52617e',
+  muted: '#a7b5ce',
+  codeBg: '#09101f',
+  codeText: '#e0e7ff',
+  panelBg: '#0e172a',
+  panelStrong: '#1a2540',
+  link: '#67e8f9',
+  linkSoft: '#15354b',
+  accent: '#c4b5fd',
+  accentSoft: '#30285a',
+  warning: '#fbbf24',
+  warningSoft: '#3d2e12',
+  danger: '#fda4af'
+})
+
 export const BUILT_IN_THEMES = {
   light: LIGHT_THEME_COLORS,
   'high-contrast-light': HIGH_CONTRAST_LIGHT_THEME_COLORS,
@@ -464,7 +492,196 @@ export const BUILT_IN_THEMES = {
   dracula: DRACULA_THEME_COLORS,
   gruvbox: GRUVBOX_THEME_COLORS,
   'night-owl': NIGHT_OWL_THEME_COLORS,
-  'min-dark': MIN_DARK_THEME_COLORS
+  'min-dark': MIN_DARK_THEME_COLORS,
+  'aurora-glass': AURORA_GLASS_THEME_COLORS
+}
+
+export const BUILT_IN_THEME_LABELS = Object.freeze({
+  light: 'Light',
+  'high-contrast-light': 'High Contrast Light',
+  dark: 'Dark',
+  'high-contrast-dark': 'High Contrast Dark',
+  sakura: 'Sakura',
+  matcha: 'Matcha',
+  'solarized-dark': 'Solarized Dark',
+  'vscode-dark': 'Dark (VS Code)',
+  dracula: 'Dracula',
+  gruvbox: 'Gruvbox',
+  'night-owl': 'Night Owl',
+  'min-dark': 'Min (Dark)',
+  'aurora-glass': 'Aurora Glass'
+})
+
+export const BUILT_IN_THEME_DEFINITIONS = Object.freeze(
+  Object.fromEntries(
+    Object.entries(BUILT_IN_THEMES).map(([id, colors]) => [
+      id,
+      Object.freeze({
+        id,
+        name: BUILT_IN_THEME_LABELS[id] || id,
+        colors: Object.freeze({ ...colors }),
+        background: id === 'aurora-glass'
+          ? AURORA_THEME_BACKGROUND
+          : DEFAULT_THEME_BACKGROUND
+      })
+    ])
+  )
+)
+
+export const DEFAULT_THEME_SETTINGS = Object.freeze({
+  activeId: 'light',
+  customThemes: Object.freeze([])
+})
+
+export const MAX_CUSTOM_THEMES = 32
+
+export const EDITABLE_THEME_COLOR_FIELDS = Object.freeze([
+  Object.freeze({ key: 'background', label: 'Page background' }),
+  Object.freeze({ key: 'surface', label: 'Content surface' }),
+  Object.freeze({ key: 'panelBg', label: 'Panel surface' }),
+  Object.freeze({ key: 'text', label: 'Interface text' }),
+  Object.freeze({ key: 'bodyText', label: 'Document text' }),
+  Object.freeze({ key: 'heading', label: 'Headings' }),
+  Object.freeze({ key: 'muted', label: 'Muted text' }),
+  Object.freeze({ key: 'border', label: 'Borders' }),
+  Object.freeze({ key: 'codeBg', label: 'Code background' }),
+  Object.freeze({ key: 'codeText', label: 'Code text' }),
+  Object.freeze({ key: 'link', label: 'Links' }),
+  Object.freeze({ key: 'accent', label: 'Accent' })
+])
+
+const EDITABLE_COLOR_KEYS = EDITABLE_THEME_COLOR_FIELDS.map(({ key }) => key)
+
+function getEditableThemeColors(baseId) {
+  const normalizedBaseId = Object.hasOwn(BUILT_IN_THEMES, baseId)
+    ? baseId
+    : DEFAULT_THEME_SETTINGS.activeId
+  const baseColors = BUILT_IN_THEMES[normalizedBaseId]
+  return Object.fromEntries(
+    EDITABLE_COLOR_KEYS.map((key) => [key, baseColors[key]])
+  )
+}
+
+function cloneBackground(background) {
+  return { ...(background || DEFAULT_THEME_BACKGROUND) }
+}
+
+export function getBuiltInThemeBackground(themeId) {
+  return cloneBackground(
+    BUILT_IN_THEME_DEFINITIONS[themeId]?.background || DEFAULT_THEME_BACKGROUND
+  )
+}
+
+export function getActiveThemeId(settings = {}) {
+  return String(settings?.theme?.activeId || DEFAULT_THEME_SETTINGS.activeId)
+}
+
+export function getCustomThemeById(settings = {}, themeId) {
+  const themes = Array.isArray(settings?.theme?.customThemes) ? settings.theme.customThemes : []
+  return themes.find((theme) => theme?.id === themeId) || null
+}
+
+export function resolveThemeById(settings = {}, requestedId) {
+  const themeId = String(requestedId || DEFAULT_THEME_SETTINGS.activeId)
+  if (Object.hasOwn(BUILT_IN_THEMES, themeId)) {
+    const definition = BUILT_IN_THEME_DEFINITIONS[themeId]
+    return {
+      id: themeId,
+      name: definition.name,
+      source: 'built-in',
+      baseId: themeId,
+      colors: { ...definition.colors },
+      background: cloneBackground(definition.background)
+    }
+  }
+
+  const customTheme = getCustomThemeById(settings, themeId)
+  if (customTheme) {
+    const baseId = Object.hasOwn(BUILT_IN_THEMES, customTheme.baseId)
+      ? customTheme.baseId
+      : DEFAULT_THEME_SETTINGS.activeId
+    return {
+      id: customTheme.id,
+      name: customTheme.name,
+      source: 'custom',
+      baseId,
+      colors: { ...BUILT_IN_THEMES[baseId], ...(customTheme.colors || {}) },
+      background: cloneBackground(customTheme.background)
+    }
+  }
+
+  return resolveThemeById(settings, DEFAULT_THEME_SETTINGS.activeId)
+}
+
+export function resolveActiveTheme(settings = {}) {
+  return resolveThemeById(settings, getActiveThemeId(settings))
+}
+
+export function getThemeColorsForSettings(settings = {}) {
+  return resolveActiveTheme(settings).colors
+}
+
+export function getThemeBasePresetForSettings(settings = {}) {
+  return resolveActiveTheme(settings).baseId
+}
+
+export function getThemeOptions(settings = {}) {
+  const builtIn = Object.keys(BUILT_IN_THEMES).map((id) => ({
+    id,
+    name: BUILT_IN_THEME_DEFINITIONS[id].name
+  }))
+  const custom = (Array.isArray(settings?.theme?.customThemes) ? settings.theme.customThemes : [])
+    .map((theme) => ({
+      id: theme.id,
+      name: theme.name
+    }))
+  return { builtIn, custom }
+}
+
+function createRandomId(prefix) {
+  const randomId = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  return `${prefix}:${String(randomId).toLowerCase().replace(/[^a-z0-9-]/g, '-')}`
+}
+
+export function createCustomThemeDraft(baseId = DEFAULT_THEME_SETTINGS.activeId, name = 'My theme') {
+  const normalizedBaseId = Object.hasOwn(BUILT_IN_THEMES, baseId)
+    ? baseId
+    : DEFAULT_THEME_SETTINGS.activeId
+  const colors = getEditableThemeColors(normalizedBaseId)
+  const builtInBackground = getBuiltInThemeBackground(normalizedBaseId)
+  const background = builtInBackground.variant === 'aurora'
+    ? {
+        type: 'gradient',
+        angle: 135,
+        startColor: '#312e81',
+        endColor: '#0f766e',
+        motion: builtInBackground.motion,
+        overlayOpacity: builtInBackground.overlayOpacity
+      }
+    : builtInBackground
+  return {
+    id: createRandomId('custom'),
+    name,
+    baseId: normalizedBaseId,
+    colors,
+    background
+  }
+}
+
+export function rebaseCustomThemeDraft(theme, baseId) {
+  if (!theme) return theme
+  const normalizedBaseId = Object.hasOwn(BUILT_IN_THEMES, baseId)
+    ? baseId
+    : DEFAULT_THEME_SETTINGS.activeId
+  return {
+    ...theme,
+    baseId: normalizedBaseId,
+    colors: getEditableThemeColors(normalizedBaseId)
+  }
+}
+
+export function createThemeAssetId() {
+  return createRandomId('theme-asset')
 }
 
 // Keep the floating quick-toggle intentionally narrower than the full theme
@@ -502,7 +719,7 @@ function toLineHeight(value, fallback) {
 export function createStyleVars(settings = {}) {
   const typography = settings?.typography || {}
   const layout = settings?.layout || {}
-  const colors = getThemeColorsByPreset(String(settings?.theme?.preset || '').toLowerCase() || 'light')
+  const colors = getThemeColorsForSettings(settings)
 
   return {
     '--mdp-color-scheme': colors.colorScheme || 'light',
@@ -512,6 +729,11 @@ export function createStyleVars(settings = {}) {
     '--mdp-content-max-width': toPx(layout.contentMaxWidth, 980),
     '--mdp-toc-width': layout.showToc === false ? '0px' : toPx(layout.tocWidth, 280),
     '--mdp-bg': colors.background,
+    '--mdp-viewer-background': colors.background,
+    '--mdp-sidebar-surface': colors.panelBg || colors.background,
+    '--mdp-content-surface': colors.surface || colors.background,
+    '--mdp-scrollbar-thumb': colors.scrollbarThumb || 'color-mix(in srgb, var(--mdp-muted) 32%, transparent)',
+    '--mdp-scrollbar-thumb-hover': colors.scrollbarThumbHover || 'color-mix(in srgb, var(--mdp-muted) 52%, transparent)',
     '--mdp-surface': colors.surface || colors.background,
     '--mdp-text': colors.text,
     '--mdp-body-text': colors.bodyText || colors.text,

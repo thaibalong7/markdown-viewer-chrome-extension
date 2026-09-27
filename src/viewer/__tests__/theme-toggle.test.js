@@ -14,7 +14,7 @@ function createThemeHarness(preset = 'light') {
   const app = Object.create(MarkdownViewerApp.prototype)
   app.settings = {
     enabled: true,
-    theme: { preset },
+    theme: { activeId: preset, customThemes: [] },
     typography: { fontSize: 16 }
   }
   app._destroyed = false
@@ -41,11 +41,11 @@ describe('MarkdownViewerApp light/dark quick toggle', () => {
     const togglePromise = app._toggleLightDarkTheme()
 
     expect(app.updateSettings).toHaveBeenCalledWith(expect.objectContaining({
-      theme: { preset: 'dark' }
+      theme: { activeId: 'dark', customThemes: [] }
     }))
-    expect(app.settings.theme.preset).toBe('dark')
+    expect(app.settings.theme.activeId).toBe('dark')
 
-    resolveSave({ ...app.settings, theme: { preset: 'dark' } })
+    resolveSave({ ...app.settings, theme: { activeId: 'dark', customThemes: [] } })
     await togglePromise
     expect(app.showToast).toHaveBeenCalledWith('Switched to dark theme', {
       variant: 'success'
@@ -58,7 +58,7 @@ describe('MarkdownViewerApp light/dark quick toggle', () => {
 
     await app._toggleLightDarkTheme()
 
-    expect(app.settings.theme.preset).toBe('dark')
+    expect(app.settings.theme.activeId).toBe('dark')
     expect(app.showToast).toHaveBeenCalledWith('Could not switch theme', {
       variant: 'error'
     })

@@ -48,6 +48,15 @@ describe('editor layout styles', () => {
     )
   })
 
+  it('uses overlay vertical scrollbars for both editor panes', () => {
+    expect(layoutCss).toMatch(
+      /\.mdp-editor-panel \.cm-scroller::-webkit-scrollbar:vertical\s*\{[^}]*width:\s*0;/s
+    )
+    expect(layoutCss).toMatch(
+      /\.mdp-body\.mdp-body--edit-split > \.mdp-content-pane\s*\{[^}]*scrollbar-width:\s*none;/s
+    )
+  })
+
   it('optically centers sidebar grips over their one-pixel panel borders', () => {
     expect(layoutCss).toMatch(
       /\.mdp-sidebar__resize-handle\s*\{[^}]*right: -4\.5px/s

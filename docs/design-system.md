@@ -2,11 +2,13 @@
 
 This document records the visual contracts currently implemented by Markdown Plus. Runtime source is canonical; this document and `design-system-demo.html` are derived references.
 
+For the persisted theme schema, built-in/custom resolution, background descriptors, local asset lifecycle, and theme extension workflow, see [`theme-system.md`](./theme-system.md).
+
 ## Source of truth
 
 Use these sources in order when values disagree:
 
-1. `src/theme/index.js` for reader presets and runtime CSS-variable mapping.
+1. `src/theme/index.js` and `src/theme/backgrounds.js` for complete reader themes, background descriptors, and runtime CSS-variable mapping.
 2. `src/shared/react/**` and `src/shared/styles/**` for reusable application primitives.
 3. `src/viewer/styles/**` for Viewer foundations, layout, document typography, and components.
 4. `src/options/options.scss` and `src/popup/popup.scss` for surface-specific layout.
@@ -23,11 +25,11 @@ Markdown Plus is a local-file document reader with developer tools. Its visual l
 - neutral blue-gray surfaces with blue navigation, green success, amber edit/warning, and red failure/destructive states;
 - predictable across reading, workspace navigation, and editing.
 
-Avoid decorative gradients, marketing-scale headings, permanent top chrome, heavy elevation, and unrelated accent colors in application surfaces.
+Avoid decorative gradients in application chrome, marketing-scale headings, permanent top chrome, heavy elevation, and unrelated accent colors in application surfaces. User-authored theme backgrounds are an explicit canvas layer and do not change this chrome rule.
 
 ## Semantic tokens
 
-Viewer color values are owned by the light and dark presets in `src/theme/index.js`. Shared application fallbacks live in `src/shared/styles/_tokens.scss`.
+Viewer color values are owned by the resolved active built-in or custom theme in `src/theme/index.js`. Shared application fallbacks live in `src/shared/styles/_tokens.scss`.
 
 | Token | Role |
 | --- | --- |
@@ -96,12 +98,14 @@ Rendered document typography is user-configurable through `--mdp-font-family`, `
 ### Settings
 
 - Settings uses page-level side navigation and bordered content sections.
+- The Themes section is the sole authoring surface for named custom themes, their semantic colors, and their structured backgrounds.
 - Shared fields, buttons, switches, badges, notices, loading, and status primitives come from `src/shared/`.
 - Wide settings rows may use label/control columns; narrow layouts stack them.
 
 ### Popup
 
 - Popup geometry remains compact and local to `src/popup/popup.scss`.
+- The Popup selects built-in and saved custom themes but does not author theme colors or backgrounds.
 - Shared primitives provide consistent controls and feedback without importing the Settings or Viewer stylesheet wholesale.
 
 ## Implemented shared primitives

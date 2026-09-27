@@ -117,7 +117,7 @@ describe('shared Mermaid render service', () => {
     const result = await renderMermaidIntoNode({
       node,
       source: node.textContent,
-      settings: { theme: { preset: 'dark' }, plugins: { mermaid: { renderer } } },
+      settings: { theme: { activeId: 'dark', customThemes: [] }, plugins: { mermaid: { renderer } } },
       copyCodeWithToast: vi.fn(),
       signal: new AbortController().signal
     })

@@ -20,7 +20,7 @@ export function createRenderSettingsHash(settings = {}) {
   return JSON.stringify(
     stableSortObject({
       plugins: effectivePluginSettings,
-      themePreset: settings?.theme?.preset || 'light'
+      theme: settings?.theme || { activeId: 'light', customThemes: [] }
     })
   )
 }

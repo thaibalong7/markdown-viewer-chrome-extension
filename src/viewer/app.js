@@ -392,10 +392,10 @@ export class MarkdownViewerApp {
     if (this._themeTogglePromise) return this._themeTogglePromise
 
     const previousSettings = this.settings
-    const targetPreset = getLightDarkThemeToggleTarget(previousSettings?.theme?.preset)
+    const targetPreset = getLightDarkThemeToggleTarget(previousSettings?.theme?.activeId)
     if (!targetPreset) return Promise.resolve(null)
     const optimisticSettings = deepMerge(previousSettings, {
-      theme: { preset: targetPreset }
+      theme: { activeId: targetPreset }
     })
 
     const operation = (async () => {
@@ -403,7 +403,7 @@ export class MarkdownViewerApp {
         // Apply CSS variables and start the theme-aware render immediately so
         // the button never waits for a service-worker broadcast to feel live.
         const localUpdate = this.updateSettings(optimisticSettings)
-        const savedSettings = await saveSettings({ theme: { preset: targetPreset } })
+        const savedSettings = await saveSettings({ theme: { activeId: targetPreset } })
         await localUpdate
         if (this._destroyed) return savedSettings
 
@@ -413,7 +413,7 @@ export class MarkdownViewerApp {
         this.showToast(`Switched to ${targetPreset} theme`, { variant: 'success' })
         return savedSettings
       } catch (error) {
-        if (!this._destroyed && this.settings?.theme?.preset === targetPreset) {
+        if (!this._destroyed && this.settings?.theme?.activeId === targetPreset) {
           await this.updateSettings(previousSettings)
         }
         logger.warn('Could not switch reader theme.', error)

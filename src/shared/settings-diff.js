@@ -1,4 +1,5 @@
 import { MERMAID_RENDERERS, PLUGIN_IDS } from '../plugins/plugin-types.js'
+import { resolveActiveTheme } from '../theme/index.js'
 
 function isObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -47,18 +48,29 @@ export function needsFullRender(previousSettings, nextSettings) {
   if (!changedPaths.size) return false
 
   const beautifulMermaidActive = usesBeautifulMermaid(previousSettings) || usesBeautifulMermaid(nextSettings)
+  const previousTheme = resolveActiveTheme(previousSettings)
+  const nextTheme = resolveActiveTheme(nextSettings)
+  const themeRenderChanged = JSON.stringify({
+    baseId: previousTheme.baseId,
+    colors: previousTheme.colors
+  }) !== JSON.stringify({
+    baseId: nextTheme.baseId,
+    colors: nextTheme.colors
+  })
   const noRenderPrefixes = [
     'typography.',
     'layout.contentMaxWidth',
     'layout.showToc',
     'layout.tocWidth',
     'editor.',
+    'appearance.scrollbarVisibility',
     'explorer.',
     'history.',
     'documents.'
   ]
 
   for (const path of changedPaths) {
+    if ((path === 'theme' || path.startsWith('theme.')) && !themeRenderChanged) continue
     if (beautifulMermaidActive && (path === 'typography' || path.startsWith('typography.'))) {
       return true
     }

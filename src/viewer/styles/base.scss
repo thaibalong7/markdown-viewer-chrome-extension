@@ -28,7 +28,15 @@
   min-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--mdp-bg);
+  background: var(--mdp-viewer-background, var(--mdp-bg));
+  /* The visual scrollbar is rendered as an overlay so no native gutter can expose the scene. */
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
 
 #mdp-viewer-root,

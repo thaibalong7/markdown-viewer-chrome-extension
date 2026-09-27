@@ -7,8 +7,10 @@ import {
   HISTORY_FIELDS,
   SettingsValidationError,
   normalizeDocumentSettings,
+  normalizeBackgroundSettings,
   normalizeExplorerSettings,
   normalizeHistorySettings,
+  normalizeThemeSettings,
   normalizeSettings
 } from '../settings-schema.js'
 
@@ -118,7 +120,9 @@ describe('settings schema', () => {
           restoreLastWorkspace: 1
         },
         history: { enabled: 'yes', maxEntries: 500 },
-        documents: { maxStandaloneTextFileSizeMiB: 200 }
+        documents: { maxStandaloneTextFileSizeMiB: 200 },
+        theme: { activeId: 'missing', customThemes: [{ nope: true }] },
+        appearance: { background: { mode: 'remote' }, scrollbarVisibility: 'sometimes' }
       },
       { invalid: 'default' }
     )
@@ -126,6 +130,9 @@ describe('settings schema', () => {
     expect(normalized.explorer).toEqual(DEFAULT_SETTINGS.explorer)
     expect(normalized.history).toEqual(DEFAULT_SETTINGS.history)
     expect(normalized.documents).toEqual(DEFAULT_SETTINGS.documents)
+    expect(normalized.theme).toEqual(DEFAULT_SETTINGS.theme)
+    expect(normalized.appearance).not.toHaveProperty('background')
+    expect(normalized.appearance.scrollbarVisibility).toBe('auto')
     expect(
       normalizeSettings({ ...DEFAULT_SETTINGS, explorer: null }, { invalid: 'default' }).explorer
     ).toEqual(DEFAULT_SETTINGS.explorer)
@@ -166,5 +173,70 @@ describe('settings schema', () => {
     })).toEqual({
       documents: { maxStandaloneTextFileSizeMiB: 12 }
     })
+    expect(normalizeSettings({
+      appearance: {
+        background: { mode: 'preset', preset: 'aurora', overlayOpacity: '0.25' },
+        scrollbarVisibility: 'always'
+      }
+    })).toEqual({
+      appearance: {
+        scrollbarVisibility: 'always'
+      }
+    })
+  })
+
+  it('validates structured theme backgrounds without accepting remote URLs or CSS', () => {
+    expect(() => normalizeBackgroundSettings({ type: 'url', url: 'https://example.com/a.jpg' }))
+      .toThrow('Choose a supported background type.')
+    expect(() => normalizeBackgroundSettings({ type: 'gradient', css: 'url(https://example.com)' }))
+      .toThrow('Choose a valid hexadecimal color.')
+    expect(() => normalizeBackgroundSettings({ type: 'none', motion: 'fast' }))
+      .toThrow('Choose a supported background motion policy.')
+    expect(() => normalizeBackgroundSettings({ type: 'solid', color: '#123456', overlayOpacity: 1 }))
+      .toThrow('Background dimming must be between 0 and 0.8.')
+    expect(normalizeBackgroundSettings({
+      type: 'image',
+      assetId: 'theme-asset:12345678',
+      fit: 'contain',
+      position: 'top',
+      repeat: true
+    })).toMatchObject({
+      type: 'image',
+      assetId: 'theme-asset:12345678',
+      fit: 'contain',
+      position: 'top',
+      repeat: true
+    })
+    expect(() => normalizeSettings({
+      appearance: { scrollbarVisibility: 'hover-only' }
+    })).toThrow('Choose auto-hide or always-visible scrollbars.')
+  })
+
+  it('normalizes named custom themes and requires the active id to exist', () => {
+    const theme = normalizeThemeSettings({
+      activeId: 'custom:midnight-1234',
+      customThemes: [{
+        id: 'custom:midnight-1234',
+        name: 'Midnight',
+        baseId: 'dark',
+        colors: { background: '#101827', link: '#67e8f9' },
+        background: {
+          type: 'gradient',
+          startColor: '#101827',
+          endColor: '#312e81',
+          angle: '145'
+        }
+      }]
+    })
+
+    expect(theme.activeId).toBe('custom:midnight-1234')
+    expect(theme.customThemes[0]).toMatchObject({
+      name: 'Midnight',
+      baseId: 'dark',
+      colors: { background: '#101827', link: '#67e8f9' },
+      background: { type: 'gradient', angle: 145 }
+    })
+    expect(() => normalizeThemeSettings({ activeId: 'custom:missing', customThemes: [] }))
+      .toThrow('Choose an available theme.')
   })
 })

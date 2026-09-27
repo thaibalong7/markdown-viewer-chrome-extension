@@ -27,7 +27,7 @@ function renderActions(
         React.createElement(FloatingActions, {
           getArticleEl: () => null,
           getSettings: () => ({
-            theme: { preset: themePreset },
+            theme: { activeId: themePreset, customThemes: [] },
             editor: { enabled: editorEnabled }
           }),
           getCurrentFileUrl: () => currentFileUrl,

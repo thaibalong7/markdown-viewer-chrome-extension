@@ -17,7 +17,16 @@ describe('popup shared primitives', () => {
     const readerHtml = renderToStaticMarkup(
       React.createElement(ReaderPanel, {
         settings: {
-          theme: { preset: 'light' },
+          theme: {
+            activeId: 'custom:midnight-1234',
+            customThemes: [{
+              id: 'custom:midnight-1234',
+              name: 'Midnight',
+              baseId: 'dark',
+              colors: { background: '#101827' },
+              background: { type: 'none' }
+            }]
+          },
           typography: { fontSize: 16, lineHeight: 1.7 },
           layout: { contentMaxWidth: 980, showToc: true }
         },
@@ -44,9 +53,10 @@ describe('popup shared primitives', () => {
     expect(readerHtml).toContain('mdp-ui-select')
     expect(readerHtml).toContain('popup-theme-select')
     expect(readerHtml).toContain('id="popup-reader-theme"')
-    expect(themeSelectHtml.match(/<option /g)).toHaveLength(Object.keys(BUILT_IN_THEMES).length)
-    expect(themeSelectHtml).toContain('<optgroup label="Light themes">')
-    expect(themeSelectHtml).toContain('<optgroup label="Dark themes">')
+    expect(themeSelectHtml.match(/<option /g)).toHaveLength(Object.keys(BUILT_IN_THEMES).length + 1)
+    expect(themeSelectHtml).toContain('<optgroup label="Built-in themes">')
+    expect(themeSelectHtml).toContain('<optgroup label="My themes">')
+    expect(themeSelectHtml).toContain('Midnight')
     expect(themeSelectHtml).toContain('Dark (VS Code)')
     expect(themeSelectHtml).toContain('Min (Dark)')
     expect(themeSelectHtml).toContain('High Contrast Light')

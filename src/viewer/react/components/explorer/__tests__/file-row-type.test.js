@@ -4,14 +4,14 @@ import { describe, expect, it } from 'vitest'
 import { ToastProvider } from '../../../contexts/ToastContext.jsx'
 import { FileRow } from '../FileRow.jsx'
 
-function renderFile(file) {
+function renderFile(file, depth = 1) {
   return renderToStaticMarkup(
     React.createElement(
       ToastProvider,
       null,
       React.createElement(FileRow, {
         file,
-        depth: 1,
+        depth,
         isActive: false,
         onPick: () => {}
       })
@@ -20,6 +20,17 @@ function renderFile(file) {
 }
 
 describe('explorer file type presentation', () => {
+  it('uses compact indentation for root and nested file rows', () => {
+    const file = {
+      displayName: 'notes.md',
+      href: 'file:///docs/notes.md',
+      fileTypeId: 'markdown'
+    }
+
+    expect(renderFile(file)).toContain('style="padding-left:2px"')
+    expect(renderFile(file, 2)).toContain('style="padding-left:12px"')
+  })
+
   it('renders Markdown with its recognizable M and down-arrow mark', () => {
     const html = renderFile({
       displayName: 'notes.md',

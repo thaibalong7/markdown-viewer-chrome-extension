@@ -8,6 +8,7 @@ A Chrome Extension (MV3) that opens local Markdown files as a polished multi-for
 - [Quick Start](#quick-start)
 - [Development](#development)
 - [Project Structure](#project-structure)
+- [Documentation](#documentation)
 - [Privacy](#privacy)
 - [Contributing](#contributing)
 - [License](#license)
@@ -22,7 +23,7 @@ A Chrome Extension (MV3) that opens local Markdown files as a polished multi-for
 - **Files explorer** (dedicated, independently resizable left panel): browse every supported sibling format in the same folder; use file-row actions to open in a new tab, copy a link, or copy the file name; open a **workspace** to recursively scan a directory (configurable depth and safety limits), tree view with per-folder expand/collapse and a two-stage **Collapse folders** action (first keep the open file’s ancestor path visible, then collapse that path), scan progress and cancel, or **open another folder** via the system folder picker (File System Access API when available, otherwise Chrome’s directory picker); exit workspace to return to the flat sibling list. Format-specific icons distinguish Markdown, text, SQL, Mermaid, raster, and SVG documents.
 - **Internal document navigation from Markdown**: click a relative or absolute link to any supported document and open it in the same viewer without a full page reload. Real-file navigation keeps the original Markdown entry URL stable and records the open file as a compact `?f=relative/path` route, so refresh and browser Back/Forward restore the document and heading. Workspace navigation intentionally leaves the URL unchanged, so refresh returns to the original file. Active-file reveal, cross-folder scans, spaces/Unicode filenames, and format changes stay coordinated; modifier keys and external or unsupported links keep their default browser behaviour.
 - **Opt-in experimental Markdown editor** for local `file:` Markdown documents: enable it in Editor settings, connect and verify the original file before editing, use a lazy-loaded CodeMirror 6 editor in split preview or focus mode, live-render through the existing sanitized viewer pipeline, sync editor scroll to preview, navigate TOC items back to editor source, resize the split panes, search/replace, and save only through the verified File System Access handle with external-change protection.
-- GitHub-inspired Light/Dark themes and typography controls, with a persistent Light/Dark quick toggle in the floating actions.
+- Built-in and user-authored named themes with semantic colors and theme-owned solid, gradient, static-image, or animated-image backgrounds. Full authoring lives in Settings, while the Popup remains a theme selector; see the [Theme System guide](docs/theme-system.md).
 - Built-in plugin system with core and optional plugins.
 - Optional Mermaid support with diagram rendering (diagrams render when they enter the viewport).
 - Mermaid lightbox viewer:
@@ -97,12 +98,19 @@ Development notes:
 - `src/content` - Page detection, extraction, and viewer bootstrapping.
 - `src/viewer` - **`MarkdownViewerApp`** (`app.js`) + document session/load/render adapters (`app/*`, `documents/*`), shared Mermaid rendering (`mermaid/*`), React chrome (`react/*`), Markdown pipeline (`core/*`), CodeMirror editor (`editor/*`), article interactions/navigation, and Files explorer workflows.
 - `src/plugins` - Plugin manager, plugin types, core plugins, and optional plugins (Mermaid/Math/Footnote/Emoji).
+- `src/theme` - Built-in palettes, custom-theme resolution, structured background descriptors, local asset client, and runtime CSS variables.
 - `src/settings` - Default settings and persistence layer.
 - `src/popup` - React settings UI (`PopupApp.jsx`, panels, `useSettingsPersistence`).
+- `src/options` - Full Settings UI, including custom-theme authoring, import/export, diagnostics, and reset workflows.
 - `src/shared` - Utilities including the central `file-types.js` registry, logging, settings diffs, clipboard/download helpers, reusable React primitives and styles, and shared constants.
 - `src/background` - Runtime messaging and settings handlers.
 
-For current runtime flows, subsystem ownership, and task-to-source guidance, see [`docs/architecture-overview.md`](docs/architecture-overview.md).
+## Documentation
+
+- [Documentation index](docs/README.md) — entry point for current project documentation.
+- [Architecture Overview](docs/architecture-overview.md) — runtime flows, subsystem ownership, security boundaries, and task-to-source guidance.
+- [Theme System](docs/theme-system.md) — complete theme schema, built-in/custom behavior, backgrounds, assets, extension workflows, and tests.
+- [Design System](docs/design-system.md) — visual tokens, reusable component contracts, and UI conventions.
 
 ## Privacy
 

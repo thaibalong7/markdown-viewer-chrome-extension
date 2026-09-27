@@ -10,24 +10,24 @@ describe('Shiki reader theme mapping', () => {
     ['high-contrast-light', 'github-light-high-contrast'],
     ['high-contrast-dark', 'github-dark-high-contrast']
   ])('maps %s to its matching high-contrast syntax theme', (preset, shikiTheme) => {
-    expect(getShikiThemeIdForSettings({ theme: { preset } })).toBe(shikiTheme)
+    expect(getShikiThemeIdForSettings({ theme: { activeId: preset, customThemes: [] } })).toBe(shikiTheme)
     expect(SHIKI_BUNDLED_THEME_IDS).toContain(shikiTheme)
   })
 
   it('maps the sakura reader preset to its bundled light syntax theme', () => {
-    expect(getShikiThemeIdForSettings({ theme: { preset: 'sakura' } }))
+    expect(getShikiThemeIdForSettings({ theme: { activeId: 'sakura', customThemes: [] } }))
       .toBe('rose-pine-dawn')
     expect(SHIKI_BUNDLED_THEME_IDS).toContain('rose-pine-dawn')
   })
 
   it('maps the matcha reader preset to its bundled forest syntax theme', () => {
-    expect(getShikiThemeIdForSettings({ theme: { preset: 'matcha' } }))
+    expect(getShikiThemeIdForSettings({ theme: { activeId: 'matcha', customThemes: [] } }))
       .toBe('everforest-light')
     expect(SHIKI_BUNDLED_THEME_IDS).toContain('everforest-light')
   })
 
   it('maps the solarized-dark reader preset to its bundled dark syntax theme', () => {
-    expect(getShikiThemeIdForSettings({ theme: { preset: 'solarized-dark' } }))
+    expect(getShikiThemeIdForSettings({ theme: { activeId: 'solarized-dark', customThemes: [] } }))
       .toBe('solarized-dark')
     expect(SHIKI_BUNDLED_THEME_IDS).toContain('solarized-dark')
   })
@@ -39,13 +39,13 @@ describe('Shiki reader theme mapping', () => {
     ['night-owl', 'night-owl'],
     ['min-dark', 'min-dark']
   ])('maps the %s reader preset to %s', (preset, shikiTheme) => {
-    expect(getShikiThemeIdForSettings({ theme: { preset } })).toBe(shikiTheme)
+    expect(getShikiThemeIdForSettings({ theme: { activeId: preset, customThemes: [] } })).toBe(shikiTheme)
   })
 
   it('maps every built-in reader preset to a bundled Shiki theme', () => {
     for (const preset of Object.keys(BUILT_IN_THEMES)) {
       expect(SHIKI_BUNDLED_THEME_IDS).toContain(
-        getShikiThemeIdForSettings({ theme: { preset } })
+        getShikiThemeIdForSettings({ theme: { activeId: preset, customThemes: [] } })
       )
     }
   })

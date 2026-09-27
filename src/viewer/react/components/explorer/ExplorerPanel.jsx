@@ -39,7 +39,6 @@ export function ExplorerPanel({ bridge }) {
       : state
   const presentedView =
     viewState.view === 'progress' && !viewState.showProgressCancel ? 'loading' : viewState.view
-  const panelRef = useRef(null)
   const pendingRefreshTreeScrollRef = useRef(null)
   const restoreScrollRafRef = useRef(0)
   const suppressNextAutoRevealRef = useRef('')
@@ -104,8 +103,8 @@ export function ExplorerPanel({ bridge }) {
     viewState.summaryFileCount
   ].join('|')
 
-  useEffect(() => {
-    setScrollElement(panelRef.current?.closest('.mdp-explorer-container') || null)
+  const handleScrollElementRef = useCallback((node) => {
+    setScrollElement((current) => (current === node ? current : node))
   }, [])
 
   const clearRevealTimers = useCallback(() => {
@@ -150,7 +149,6 @@ export function ExplorerPanel({ bridge }) {
 
     const reveal = () => {
       const revealState = getActiveExplorerRowRevealState({
-        panelEl: panelRef.current,
         scrollEl: scrollElement
       })
       if (revealState === 'visible') return
@@ -159,12 +157,12 @@ export function ExplorerPanel({ bridge }) {
         virtualizer.scrollToIndex(activeIndex, { align: 'start' })
         timers.afterScrollRaf = requestAnimationFrame(() => {
           timers.afterScrollRaf = 0
-          revealActiveExplorerRow({ panelEl: panelRef.current, scrollEl: scrollElement })
+          revealActiveExplorerRow({ scrollEl: scrollElement })
         })
         return
       }
 
-      revealActiveExplorerRow({ panelEl: panelRef.current, scrollEl: scrollElement })
+      revealActiveExplorerRow({ scrollEl: scrollElement })
     }
     timers.raf = requestAnimationFrame(() => {
       timers.raf = 0
@@ -259,7 +257,6 @@ export function ExplorerPanel({ bridge }) {
       role="region"
       aria-label="Supported files in folder"
       aria-busy={isBusy}
-      ref={panelRef}
     >
       <ExplorerHeader
         filesContext={viewState.filesContext}
@@ -283,90 +280,92 @@ export function ExplorerPanel({ bridge }) {
         onExitWorkspace={actions.onExitWorkspace}
       />
 
-      <div
-        className={`mdp-explorer__loading${!loadingVisible ? ' is-pending' : ''}`}
-        hidden={presentedView !== 'loading'}
-      >
-        <SkeletonBlock lines={loadingWidths.length} widths={loadingWidths} lineHeight={14} gap={10} />
-      </div>
+      <div className="mdp-explorer__scroll-region" ref={handleScrollElementRef}>
+        <div
+          className={`mdp-explorer__loading${!loadingVisible ? ' is-pending' : ''}`}
+          hidden={presentedView !== 'loading'}
+        >
+          <SkeletonBlock lines={loadingWidths.length} widths={loadingWidths} lineHeight={14} gap={10} />
+        </div>
 
-      <div className="mdp-explorer__empty" hidden={presentedView !== 'empty'}>
-        No supported files found in this directory.
-      </div>
+        <div className="mdp-explorer__empty" hidden={presentedView !== 'empty'}>
+          No supported files found in this directory.
+        </div>
 
-      <div
-        className={`mdp-explorer__busy-view${!loadingVisible ? ' is-pending' : ''}`}
-        hidden={presentedView !== 'progress'}
-      >
-        <ExplorerProgress
-          headline={viewState.progressHeadline}
-          text={viewState.progressText}
-          showCancel={viewState.showProgressCancel}
-          onCancel={actions.onCancelProgress}
-        />
-      </div>
+        <div
+          className={`mdp-explorer__busy-view${!loadingVisible ? ' is-pending' : ''}`}
+          hidden={presentedView !== 'progress'}
+        >
+          <ExplorerProgress
+            headline={viewState.progressHeadline}
+            text={viewState.progressText}
+            showCancel={viewState.showProgressCancel}
+            onCancel={actions.onCancelProgress}
+          />
+        </div>
 
-      <ul
-        className="mdp-explorer__list mdp-explorer__list--virtual"
-        role="tree"
-        aria-label="Files in current folder"
-        hidden={presentedView !== 'files'}
-        style={{ height: `${fileVirtualizer.getTotalSize()}px` }}
-      >
-        {fileVirtualItems.map((virtualItem) => {
-          const file = viewState.files[virtualItem.index]
-          if (!file) return null
-          return (
-            <FileRow
-              key={virtualItem.key}
-              file={{ displayName: file.displayName, href: file.href, fileTypeId: file.fileTypeId }}
-              depth={1}
-              rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
-              isActive={normalizeFileUrlForCompare(file.href || '') === activeNormalized}
-              onPick={onPickFileFromExplorer}
-            />
-          )
-        })}
-      </ul>
-
-      <ul
-        className="mdp-explorer__list mdp-explorer__list--virtual"
-        role="tree"
-        aria-label={viewState.listAriaLabel || 'Workspace files'}
-        hidden={presentedView !== 'tree'}
-        style={{ height: `${treeVirtualizer.getTotalSize()}px` }}
-      >
-        {treeVirtualItems.map((virtualItem) => {
-          const row = treeRows[virtualItem.index]
-          if (!row?.node) return null
-          if (row.type === 'folder') {
+        <ul
+          className="mdp-explorer__list mdp-explorer__list--virtual"
+          role="tree"
+          aria-label="Files in current folder"
+          hidden={presentedView !== 'files'}
+          style={{ height: `${fileVirtualizer.getTotalSize()}px` }}
+        >
+          {fileVirtualItems.map((virtualItem) => {
+            const file = viewState.files[virtualItem.index]
+            if (!file) return null
             return (
-              <FolderRow
+              <FileRow
                 key={virtualItem.key}
-                node={row.node}
-                depth={row.depth}
-                expanded={row.expanded}
+                file={{ displayName: file.displayName, href: file.href, fileTypeId: file.fileTypeId }}
+                depth={1}
                 rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
-                onToggleFolder={onToggleFolderFromExplorer}
+                isActive={normalizeFileUrlForCompare(file.href || '') === activeNormalized}
+                onPick={onPickFileFromExplorer}
               />
             )
-          }
-          return (
-            <FileRow
-              key={virtualItem.key}
-              file={{
-                displayName: row.node.name,
-                href: row.node.href,
-                fileTypeId: row.node.fileTypeId
-              }}
-              depth={row.depth}
-              rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
-              isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
-              onPick={onPickFileFromExplorer}
-            />
-          )
-        })}
-      </ul>
+          })}
+        </ul>
+
+        <ul
+          className="mdp-explorer__list mdp-explorer__list--virtual"
+          role="tree"
+          aria-label={viewState.listAriaLabel || 'Workspace files'}
+          hidden={presentedView !== 'tree'}
+          style={{ height: `${treeVirtualizer.getTotalSize()}px` }}
+        >
+          {treeVirtualItems.map((virtualItem) => {
+            const row = treeRows[virtualItem.index]
+            if (!row?.node) return null
+            if (row.type === 'folder') {
+              return (
+                <FolderRow
+                  key={virtualItem.key}
+                  node={row.node}
+                  depth={row.depth}
+                  expanded={row.expanded}
+                  rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
+                  onToggleFolder={onToggleFolderFromExplorer}
+                />
+              )
+            }
+            return (
+              <FileRow
+                key={virtualItem.key}
+                file={{
+                  displayName: row.node.name,
+                  href: row.node.href,
+                  fileTypeId: row.node.fileTypeId
+                }}
+                depth={row.depth}
+                rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
+                isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
+                onPick={onPickFileFromExplorer}
+              />
+            )
+          })}
+        </ul>
+      </div>
     </div>
   )
 }

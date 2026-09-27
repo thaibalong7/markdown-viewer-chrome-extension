@@ -1,21 +1,6 @@
 import { DEFAULT_SETTINGS } from '../settings/default-settings.js'
 import { MERMAID_RENDERERS } from '../plugins/plugin-types.js'
 
-export const THEME_LABELS = {
-  light: 'Light',
-  'high-contrast-light': 'High Contrast Light',
-  dark: 'Dark',
-  'high-contrast-dark': 'High Contrast Dark',
-  sakura: 'Sakura',
-  matcha: 'Matcha',
-  'solarized-dark': 'Solarized Dark',
-  'vscode-dark': 'Dark (VS Code)',
-  dracula: 'Dracula',
-  gruvbox: 'Gruvbox',
-  'night-owl': 'Night Owl',
-  'min-dark': 'Min (Dark)'
-}
-
 /** Display names for plugin toggles (keys match `PLUGIN_IDS` / persisted `settings.plugins`). */
 export const PLUGIN_LABELS = {
   codeHighlight: 'Code highlight',
@@ -67,7 +52,7 @@ export const MERMAID_RENDERER_OPTIONS = [
 
 export function createReaderUiDefaultsPatch() {
   return {
-    theme: { ...DEFAULT_SETTINGS.theme },
+    theme: { activeId: DEFAULT_SETTINGS.theme.activeId },
     typography: { ...DEFAULT_SETTINGS.typography },
     layout: { ...DEFAULT_SETTINGS.layout }
   }

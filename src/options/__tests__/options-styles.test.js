@@ -38,4 +38,26 @@ describe('settings design-system styles', () => {
     expect(optionsCss).toMatch(/@media \(prefers-color-scheme: dark\)/)
     expect(optionsCss).toMatch(/@media \(prefers-reduced-motion: reduce\)/)
   })
+
+  it('lays out the custom theme library, editor, and color controls', () => {
+    expect(optionsCss).toContain('.settings-theme-list')
+    expect(optionsCss).toContain('.settings-theme-card__actions')
+    expect(optionsCss).toMatch(
+      /\.settings-theme-card\s*\{[^}]*grid-template-columns: 96px minmax\(0, 1fr\) auto;[^}]*min-height: 80px;[^}]*padding: 11px 14px;/s
+    )
+    expect(optionsCss).toMatch(
+      /\.settings-theme-card__swatches\s*\{[^}]*height: 46px;/s
+    )
+    expect(optionsCss).toContain('.settings-theme-editor-page__nav')
+    expect(optionsCss).toContain('.settings-theme-workbench')
+    expect(optionsCss).toContain('.settings-theme-identity-grid')
+    expect(optionsCss).toContain('.settings-theme-base-control__palette')
+    expect(optionsCss).toContain('.settings-theme-color-grid')
+    expect(optionsCss).toContain('.settings-theme-color-field__control')
+    expect(optionsCss).toContain('.settings-theme-preview__viewer')
+    expect(optionsCss).toContain('.settings-theme-preview__viewport--visual')
+    expect(optionsCss).toMatch(
+      /@media \(max-width: 1240px\)[\s\S]*\.settings-theme-workbench\s*\{[^}]*grid-template-columns: 1fr;/s
+    )
+  })
 })

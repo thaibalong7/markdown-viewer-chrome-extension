@@ -53,7 +53,7 @@ beforeEach(() => {
 describe('SQL document renderer', () => {
   it('renders a dedicated SQL card with sanitized syntax highlighting', async () => {
     const { articleEl } = createHarness()
-    const settings = { theme: { preset: 'dark' }, plugins: { codeHighlight: { enabled: true } } }
+    const settings = { theme: { activeId: 'dark', customThemes: [] }, plugins: { codeHighlight: { enabled: true } } }
 
     await render({
       loadedDocument: { text: 'SELECT * FROM users;' },

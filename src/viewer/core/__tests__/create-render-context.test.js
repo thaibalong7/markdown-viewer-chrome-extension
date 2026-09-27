@@ -4,7 +4,7 @@ import { createRenderContext, createRenderSettingsHash } from '../create-render-
 describe('createRenderSettingsHash', () => {
   it('is stable across plugin key insertion order', () => {
     const first = createRenderSettingsHash({
-      theme: { preset: 'dark' },
+      theme: { activeId: 'dark', customThemes: [] },
       plugins: {
         math: { enabled: true },
         mermaid: { enabled: false }
@@ -15,7 +15,7 @@ describe('createRenderSettingsHash', () => {
         mermaid: { enabled: false },
         math: { enabled: true }
       },
-      theme: { preset: 'dark' }
+      theme: { activeId: 'dark', customThemes: [] }
     })
 
     expect(second).toBe(first)
@@ -23,15 +23,15 @@ describe('createRenderSettingsHash', () => {
 
   it('changes for plugin or Shiki theme-affecting settings', () => {
     const base = createRenderSettingsHash({
-      theme: { preset: 'light' },
+      theme: { activeId: 'light', customThemes: [] },
       plugins: { math: { enabled: false } }
     })
     const pluginChanged = createRenderSettingsHash({
-      theme: { preset: 'light' },
+      theme: { activeId: 'light', customThemes: [] },
       plugins: { math: { enabled: true } }
     })
     const themeChanged = createRenderSettingsHash({
-      theme: { preset: 'dark' },
+      theme: { activeId: 'dark', customThemes: [] },
       plugins: { math: { enabled: false } }
     })
 
@@ -71,7 +71,7 @@ describe('createRenderSettingsHash', () => {
   it('reuses plugin manager and markdown engine for the same render-affecting settings hash', async () => {
     const cache = new Map()
     const settings = {
-      theme: { preset: 'light' },
+      theme: { activeId: 'light', customThemes: [] },
       plugins: {
         codeHighlight: { enabled: false },
         emoji: { enabled: false },
@@ -87,7 +87,7 @@ describe('createRenderSettingsHash', () => {
           emoji: { enabled: false },
           codeHighlight: { enabled: false }
         },
-        theme: { preset: 'light' }
+        theme: { activeId: 'light', customThemes: [] }
       },
       { renderContextCache: cache }
     )
@@ -128,7 +128,7 @@ describe('createRenderSettingsHash', () => {
   it('invalidates the cached context when the reader preset changes for Shiki theme safety', async () => {
     const cache = new Map()
     const settings = {
-      theme: { preset: 'light' },
+      theme: { activeId: 'light', customThemes: [] },
       plugins: {
         codeHighlight: { enabled: false },
         emoji: { enabled: false },
@@ -140,7 +140,7 @@ describe('createRenderSettingsHash', () => {
     const second = await createRenderContext(
       {
         ...settings,
-        theme: { preset: 'dark' }
+        theme: { activeId: 'dark', customThemes: [] }
       },
       { renderContextCache: cache }
     )

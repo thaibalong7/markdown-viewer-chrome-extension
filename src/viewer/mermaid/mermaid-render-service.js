@@ -6,7 +6,7 @@ import {
 } from '../../plugins/optional/mermaid-actions.js'
 import { attachMermaidLightbox } from '../../plugins/optional/mermaid-lightbox.js'
 import { logger } from '../../shared/logger.js'
-import { getThemeColorsByPreset } from '../../theme/index.js'
+import { getThemeColorsByPreset, getThemeColorsForSettings } from '../../theme/index.js'
 import { setMermaidRenderError } from './mermaid-error-view.js'
 import { sanitizeMermaidSvg } from './mermaid-sanitizer.js'
 
@@ -34,8 +34,7 @@ export function getMermaidThemeByPreset(preset) {
   return colors.colorScheme === 'dark' ? 'base' : 'default'
 }
 
-export function getMermaidThemeVariablesByPreset(preset) {
-  const colors = getThemeColorsByPreset(preset)
+function getMermaidThemeVariables(colors) {
   if (colors.colorScheme !== 'dark') return undefined
 
   return {
@@ -63,6 +62,10 @@ export function getMermaidThemeVariablesByPreset(preset) {
     noteTextColor: colors.text,
     noteBorderColor: colors.warning
   }
+}
+
+export function getMermaidThemeVariablesByPreset(preset) {
+  return getMermaidThemeVariables(getThemeColorsByPreset(preset))
 }
 
 function getMermaid() {
@@ -247,10 +250,10 @@ export async function renderMermaidIntoNode({
       throwIfAborted(signal)
       svg = renderMermaidSVG(code, getBeautifulMermaidRenderOptions(node))
     } else {
-      const themePreset = settings?.theme?.preset
+      const colors = getThemeColorsForSettings(settings)
       const mermaid = await ensureMermaidInitialized({
-        theme: getMermaidThemeByPreset(themePreset),
-        themeVariables: getMermaidThemeVariablesByPreset(themePreset)
+        theme: colors.colorScheme === 'dark' ? 'base' : 'default',
+        themeVariables: getMermaidThemeVariables(colors)
       })
       throwIfAborted(signal)
       mermaidRenderCounter += 1

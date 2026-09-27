@@ -6,9 +6,11 @@ import { AdvancedSettings } from './sections/AdvancedSettings.jsx'
 import { ExplorerSettings } from './sections/ExplorerSettings.jsx'
 import { GeneralSettings } from './sections/GeneralSettings.jsx'
 import { PrivacySettings } from './sections/PrivacySettings.jsx'
+import { ThemeSettings } from './sections/ThemeSettings.jsx'
 
 const SECTIONS = [
   { id: 'general', label: 'General', description: 'Activation and access' },
+  { id: 'themes', label: 'Themes', description: 'Colors and backgrounds' },
   { id: 'explorer', label: 'Files & Workspace', description: 'Folder scan limits' },
   { id: 'privacy', label: 'Privacy & Data', description: 'Recent local files' },
   { id: 'advanced', label: 'Advanced', description: 'Limits, backup, and reset' }
@@ -104,6 +106,7 @@ export function OptionsApp() {
                   settings={form.settings}
                   saving={form.busyAction !== ''}
                   onEnabledChange={form.setEnabled}
+                  onScrollbarAutoHideChange={form.setScrollbarAutoHide}
                 />
               ) : null}
               {activeSection === 'explorer' ? (
@@ -117,6 +120,15 @@ export function OptionsApp() {
                   onBehaviorChange={form.setExplorerBehavior}
                   onSave={form.saveExplorer}
                   onReset={form.resetExplorer}
+                />
+              ) : null}
+              {activeSection === 'themes' ? (
+                <ThemeSettings
+                  settings={form.settings}
+                  busyAction={form.busyAction}
+                  onActiveThemeChange={form.setActiveTheme}
+                  onSaveTheme={form.saveCustomTheme}
+                  onDeleteTheme={form.deleteCustomTheme}
                 />
               ) : null}
               {activeSection === 'privacy' ? (

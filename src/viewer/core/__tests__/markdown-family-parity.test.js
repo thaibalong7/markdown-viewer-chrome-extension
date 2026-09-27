@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { renderDocument } from '../renderer.js'
 
 const SETTINGS = {
-  theme: { preset: 'light' },
+  theme: { activeId: 'light', customThemes: [] },
   plugins: {
     codeHighlight: { enabled: false },
     emoji: { enabled: false },

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { hardenExternalWebsiteLink, renderDocument } from '../renderer.js'
 
 const BASE_SETTINGS = {
-  theme: { preset: 'light' },
+  theme: { activeId: 'light', customThemes: [] },
   typography: { fontSize: 16 },
   plugins: {
     codeHighlight: { enabled: false },
@@ -66,7 +66,7 @@ describe('renderDocument render context metadata', () => {
     })
     const themeChanged = await renderDocument('# Title', {
       ...BASE_SETTINGS,
-      theme: { preset: 'dark' }
+      theme: { activeId: 'dark', customThemes: [] }
     })
 
     expect(pluginChanged.metadata.settingsHash).not.toBe(base.metadata.settingsHash)

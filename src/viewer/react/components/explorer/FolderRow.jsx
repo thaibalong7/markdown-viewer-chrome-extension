@@ -20,7 +20,7 @@ export function FolderRow({ node, expandedMap, onToggleFolder, children, expande
           type="button"
           className={`mdp-explorer__tree-folder-row${resolvedExpanded ? ' is-expanded' : ''}`}
           aria-expanded={resolvedExpanded ? 'true' : 'false'}
-          style={{ paddingLeft: `${6 + Math.max(0, resolvedDepth - 1) * 12}px` }}
+          style={{ paddingLeft: `${2 + Math.max(0, resolvedDepth - 1) * 10}px` }}
           onClick={() => onToggleFolder?.(node.href)}
         >
           <span className="mdp-explorer__tree-chevron" aria-hidden="true" />

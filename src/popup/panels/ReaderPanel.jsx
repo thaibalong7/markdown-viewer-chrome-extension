@@ -2,24 +2,12 @@ import React from 'react'
 import { Button } from '../../shared/react/Button.jsx'
 import { NumberField } from '../../shared/react/NumberField.jsx'
 import { Switch } from '../../shared/react/Switch.jsx'
-import { BUILT_IN_THEMES } from '../../theme/index.js'
+import { getThemeOptions, resolveThemeById } from '../../theme/index.js'
 import { Tooltip } from '../components/Tooltip.jsx'
 import {
   createReaderUiDefaultsPatch,
-  FONT_FAMILY_PRESETS,
-  THEME_LABELS
+  FONT_FAMILY_PRESETS
 } from '../settings-constants.js'
-
-const THEME_GROUPS = [
-  {
-    label: 'Light themes',
-    themes: Object.entries(BUILT_IN_THEMES).filter(([, colors]) => colors.colorScheme !== 'dark')
-  },
-  {
-    label: 'Dark themes',
-    themes: Object.entries(BUILT_IN_THEMES).filter(([, colors]) => colors.colorScheme === 'dark')
-  }
-]
 
 function InfoTooltip({ label, content }) {
   return (
@@ -35,12 +23,9 @@ function InfoTooltip({ label, content }) {
  * @param {{ settings: object, onPatch: (partial: object) => void }} props
  */
 export function ReaderPanel({ settings, onPatch }) {
-  const requestedPreset = settings.theme?.preset || 'light'
-  const selectedPreset = Object.hasOwn(BUILT_IN_THEMES, requestedPreset)
-    ? requestedPreset
-    : 'light'
-  const selectedColors = BUILT_IN_THEMES[selectedPreset]
-
+  const themeOptions = getThemeOptions(settings)
+  const selectedTheme = resolveThemeById(settings, settings.theme?.activeId)
+  const selectedColors = selectedTheme.colors
   return (
     <>
       <div className="mdp-ui-field">
@@ -62,22 +47,25 @@ export function ReaderPanel({ settings, onPatch }) {
           <select
             id="popup-reader-theme"
             className="mdp-ui-select popup-theme-select"
-            value={selectedPreset}
+            value={selectedTheme.id}
             onChange={(event) =>
               onPatch({
-                theme: { preset: event.target.value }
+                theme: { activeId: event.target.value }
               })
             }
           >
-            {THEME_GROUPS.map((group) => (
-              <optgroup key={group.label} label={group.label}>
-                {group.themes.map(([preset]) => (
-                  <option key={preset} value={preset}>
-                    {THEME_LABELS[preset] || preset}
-                  </option>
+            <optgroup label="Built-in themes">
+              {themeOptions.builtIn.map((theme) => (
+                <option key={theme.id} value={theme.id}>{theme.name}</option>
+              ))}
+            </optgroup>
+            {themeOptions.custom.length ? (
+              <optgroup label="My themes">
+                {themeOptions.custom.map((theme) => (
+                  <option key={theme.id} value={theme.id}>{theme.name}</option>
                 ))}
               </optgroup>
-            ))}
+            ) : null}
           </select>
         </div>
       </div>

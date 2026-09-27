@@ -9,6 +9,8 @@ import { Toast } from './Toast.jsx'
 import { countWords } from '../../editor/editor-stats.js'
 import { getDisplayPathFromFileUrl } from '../../editor/file-io.js'
 import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
+import { BackgroundScene, resolveBackgroundSceneForSettings } from './BackgroundScene.jsx'
+import { ViewerScrollbar } from './ViewerScrollbar.jsx'
 
 export function ViewerShell({
   children,
@@ -38,6 +40,7 @@ export function ViewerShell({
   const [rootEl, setRootEl] = useState(null)
   const [contentPaneEl, setContentPaneEl] = useState(null)
   const [editorPanelEl, setEditorPanelEl] = useState(null)
+  const [editorScrollEl, setEditorScrollEl] = useState(null)
   const [splitResizeHandleEl, setSplitResizeHandleEl] = useState(null)
   const [editorStatus, setEditorStatus] = useState(() => ({
     line: 1,
@@ -123,8 +126,14 @@ export function ViewerShell({
     setEditorReady(true)
   }, [])
 
+  const handleEditorReady = useCallback((api) => {
+    setEditorScrollEl(api?.scrollDOM || null)
+    onEditorReady?.(api)
+  }, [onEditorReady])
+
   const handleEditorDestroy = useCallback(() => {
     setEditorReady(false)
+    setEditorScrollEl(null)
     onEditorDestroy?.()
   }, [onEditorDestroy])
 
@@ -149,9 +158,30 @@ export function ViewerShell({
   if (isSplitMode) bodyClassNames.push('mdp-body--edit-split')
   if (isFocusMode) bodyClassNames.push('mdp-body--edit-focus')
   if (isEditMode) bodyClassNames.push('mdp-body--edit-with-status')
+  const backgroundScene = resolveBackgroundSceneForSettings(settings)
+  const rootClassName = backgroundScene.visual
+    ? 'mdp-root mdp-root--has-visual-background'
+    : 'mdp-root'
+  const scrollbarVisibility = settings?.appearance?.scrollbarVisibility
 
   return (
-    <div className="mdp-root" ref={handleRootRef}>
+    <div className={rootClassName} ref={handleRootRef}>
+      <BackgroundScene scene={backgroundScene} />
+      <ViewerScrollbar
+        scrollElement={isEditMode ? null : rootEl}
+        visibility={scrollbarVisibility}
+        label="Document scrollbar"
+      />
+      <ViewerScrollbar
+        scrollElement={isSplitMode ? contentPaneEl : null}
+        visibility={scrollbarVisibility}
+        label="Preview scrollbar"
+      />
+      <ViewerScrollbar
+        scrollElement={isEditMode ? editorScrollEl : null}
+        visibility={scrollbarVisibility}
+        label="Editor scrollbar"
+      />
       <div className={bodyClassNames.join(' ')}>
         {filesAvailable && (
           <Sidebar
@@ -168,7 +198,7 @@ export function ViewerShell({
             ref={setEditorPanelRef}
             markdown={markdown}
             onContentChange={onContentChange}
-            onEditorReady={onEditorReady}
+            onEditorReady={handleEditorReady}
             onEditorDestroy={handleEditorDestroy}
             onEditorScroll={isSplitMode ? onEditorScroll : undefined}
             onSave={onSave}

@@ -1,0 +1,73 @@
+.mdp-viewer-scrollbar {
+  position: fixed;
+  z-index: 12;
+  width: 12px;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+
+  .mdp-viewer-scrollbar__thumb {
+    opacity: 0;
+  }
+
+  &.is-active .mdp-viewer-scrollbar__thumb,
+  &:hover .mdp-viewer-scrollbar__thumb,
+  &:focus-visible .mdp-viewer-scrollbar__thumb {
+    opacity: 1;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: color-mix(in srgb, var(--mdp-sidebar-surface) 24%, transparent);
+    outline: none;
+  }
+}
+
+.mdp-viewer-scrollbar__thumb {
+  width: 7px;
+  margin-inline: auto;
+  border-radius: 999px;
+  background: var(
+    --mdp-scrollbar-thumb,
+    color-mix(in srgb, var(--mdp-muted) 32%, transparent)
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdp-bg) 52%, transparent);
+  cursor: grab;
+  transition:
+    opacity 160ms ease,
+    width 120ms ease,
+    background-color 120ms ease;
+
+  &:hover,
+  .mdp-viewer-scrollbar:focus-visible & {
+    width: 9px;
+    background: var(
+      --mdp-scrollbar-thumb-hover,
+      color-mix(in srgb, var(--mdp-muted) 52%, transparent)
+    );
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-viewer-scrollbar__thumb {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mdp-viewer-scrollbar__thumb {
+    opacity: 1;
+    forced-color-adjust: auto;
+  }
+}
+
+@media print {
+  .mdp-viewer-scrollbar {
+    display: none !important;
+  }
+}

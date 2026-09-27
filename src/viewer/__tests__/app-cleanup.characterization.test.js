@@ -202,7 +202,7 @@ describe('MarkdownViewerApp cleanup characterization', () => {
     const container = { innerHTML: '', appendChild: vi.fn() }
     const app = new MarkdownViewerApp({
       markdown: '# Fixture',
-      settings: { theme: { preset: 'light' } },
+      settings: { theme: { activeId: 'light', customThemes: [] } },
       container
     })
     app._toggleLightDarkTheme = vi.fn().mockResolvedValue(null)

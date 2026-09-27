@@ -104,7 +104,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
         aria-current={isActive ? 'true' : 'false'}
         title={`${file.displayName} — ${fileTypeLabel}`}
         data-file-type={file?.fileTypeId || undefined}
-        style={{ paddingLeft: `${6 + Math.max(0, depth - 1) * 12}px` }}
+        style={{ paddingLeft: `${2 + Math.max(0, depth - 1) * 10}px` }}
         onClick={onFileClick}
         onAuxClick={onFileAuxClick}
       >

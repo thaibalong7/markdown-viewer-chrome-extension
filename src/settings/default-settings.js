@@ -12,6 +12,8 @@ import {
   DEFAULT_EXPLORER_RESPECT_GITIGNORE,
   DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
 } from '../shared/constants/explorer.js'
+import { DEFAULT_THEME_SETTINGS } from '../theme/index.js'
+import { DEFAULT_SCROLLBAR_VISIBILITY } from '../shared/constants/scrollbar.js'
 
 export const DEFAULT_SETTINGS = {
   enabled: true,
@@ -21,7 +23,11 @@ export const DEFAULT_SETTINGS = {
     contentMaxWidth: 980
   },
   theme: {
-    preset: 'light'
+    activeId: DEFAULT_THEME_SETTINGS.activeId,
+    customThemes: []
+  },
+  appearance: {
+    scrollbarVisibility: DEFAULT_SCROLLBAR_VISIBILITY
   },
   typography: {
     fontFamily: 'system-ui',
@@ -44,5 +50,5 @@ export const DEFAULT_SETTINGS = {
     maxStandaloneTextFileSizeMiB: DEFAULT_STANDALONE_TEXT_FILE_SIZE_LIMIT_MIB
   },
   editor: { ...DEFAULT_EDITOR_SETTINGS },
-  version: 1
+  version: 2
 }

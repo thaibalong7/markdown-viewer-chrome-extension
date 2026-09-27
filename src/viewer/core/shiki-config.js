@@ -3,7 +3,9 @@
  * `BUILT_IN_THEMES` in `src/theme/index.js`.
  */
 
-/** Reader `settings.theme.preset` -> Shiki theme id. */
+import { getThemeBasePresetForSettings } from '../../theme/index.js'
+
+/** Reader built-in/base theme id -> Shiki theme id. */
 const PRESET_TO_SHIKI_THEME_ID = {
   light: 'github-light',
   'high-contrast-light': 'github-light-high-contrast',
@@ -17,6 +19,7 @@ const PRESET_TO_SHIKI_THEME_ID = {
   gruvbox: 'gruvbox-dark-medium',
   'night-owl': 'night-owl',
   'min-dark': 'min-dark',
+  'aurora-glass': 'night-owl',
   solarized: 'solarized-dark'
 }
 
@@ -138,6 +141,6 @@ export function loadShikiThemeModule(themeId) {
 }
 
 export function getShikiThemeIdForSettings(settings = {}) {
-  const preset = String(settings?.theme?.preset || 'light').toLowerCase()
+  const preset = getThemeBasePresetForSettings(settings)
   return PRESET_TO_SHIKI_THEME_ID[preset] ?? 'github-light'
 }

@@ -184,7 +184,7 @@ export function ViewerShell({
         label="Editor scrollbar"
       />
       <div className={bodyClassNames.join(' ')}>
-        <ScrollToTopButton scrollElement={isFocusMode ? null : scrollRootForSidebar} />
+        <ScrollToTopButton scrollElement={isEditMode ? null : scrollRootForSidebar} />
 
         {filesAvailable && (
           <Sidebar

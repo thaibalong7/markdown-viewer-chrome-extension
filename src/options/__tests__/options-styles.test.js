@@ -68,6 +68,9 @@ describe('settings design-system styles', () => {
     )
     expect(optionsCss).toContain('.settings-theme-editor-page__nav')
     expect(optionsCss).toContain('.settings-theme-workbench')
+    expect(optionsCss).toMatch(
+      /\.settings-theme-editor__section-heading h3\s*\{[^}]*min-height: 22px;[^}]*margin: 0;[^}]*display: flex;[^}]*align-items: center;[^}]*line-height: 1\.25;/s
+    )
     expect(optionsCss).toContain('.settings-theme-identity-grid')
     expect(optionsCss).toContain('.settings-theme-base-control__palette')
     expect(optionsCss).toContain('.settings-theme-color-grid')

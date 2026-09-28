@@ -484,17 +484,26 @@ input[type='checkbox'] {
   color: var(--mdp-link);
   font-size: 9px;
   font-weight: 800;
+  line-height: 1;
   letter-spacing: 0.04em;
 }
 
+.settings-theme-editor__section-heading > div {
+  min-width: 0;
+}
+
 .settings-theme-editor__section-heading h3 {
-  margin: 1px 0 0;
+  min-height: 22px;
+  margin: 0;
+  display: flex;
+  align-items: center;
   color: var(--mdp-heading);
   font-size: 15px;
+  line-height: 1.25;
 }
 
 .settings-theme-editor__section-heading p {
-  margin: 4px 0 0;
+  margin: 3px 0 0;
   color: var(--mdp-muted);
   font-size: 11px;
   line-height: 1.5;

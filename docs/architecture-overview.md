@@ -172,9 +172,9 @@ Plugin ids/defaults live in `src/plugins/plugin-types.js`; registration and life
 
 Optional plugins are dynamically imported when enabled. Hooks can extend Markdown, preprocess source, postprocess HTML, and attach behavior after render. Plugin-produced article HTML remains inside the sanitizer path.
 
-Shiki uses explicit language and theme loaders from `src/viewer/core/shiki-config.js`. Reader theme keys in `src/theme/index.js` must stay aligned with Shiki mappings.
+Shiki uses explicit language and theme loaders from `src/viewer/core/shiki-config.js`. The curated syntax-theme catalog in `src/theme/syntax-themes.js` must stay aligned with those loaders.
 
-Each reader theme is a complete visual entity. `src/theme/index.js` owns built-in palettes and resolves `theme.activeId` across built-in and saved custom themes; every resolved theme includes semantic colors, a built-in/base theme id for Shiki, and a structured background descriptor. `src/theme/backgrounds.js` resolves the supported `none`, `solid`, `gradient`, and local `image` descriptor variants into trusted render data. `BackgroundScene` renders the active theme's background behind the Viewer grid while sidebar and content surfaces remain theme-colored overlays. Settings never accept arbitrary CSS or remote URLs.
+Each reader theme is a complete visual entity. `src/theme/index.js` owns built-in palettes and resolves `theme.activeId` across built-in and saved custom themes; every resolved theme includes semantic colors, a resolved bundled syntax-theme id, and a structured background descriptor. Custom themes may follow their built-in base's syntax theme or select another curated bundled theme. `src/theme/backgrounds.js` resolves the supported `none`, `solid`, `gradient`, and local `image` descriptor variants into trusted render data. `BackgroundScene` renders the active theme's background behind the Viewer grid while sidebar and content surfaces remain theme-colored overlays. Settings never accept arbitrary CSS, raw syntax-theme JSON, or remote URLs.
 
 For the complete theme schema, source map, custom-theme workflow, asset lifecycle, extension guidance, and test checklist, see [`theme-system.md`](./theme-system.md).
 

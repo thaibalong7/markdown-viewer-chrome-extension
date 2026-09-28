@@ -33,7 +33,8 @@ import {
   BUILT_IN_THEMES,
   DEFAULT_THEME_SETTINGS,
   EDITABLE_THEME_COLOR_FIELDS,
-  MAX_CUSTOM_THEMES
+  MAX_CUSTOM_THEMES,
+  isBundledSyntaxThemeId
 } from '../theme/index.js'
 import {
   DEFAULT_SCROLLBAR_VISIBILITY,
@@ -211,6 +212,17 @@ function normalizeCustomTheme(theme, index, invalidPolicy) {
   if (!Object.hasOwn(BUILT_IN_THEMES, theme.baseId) && invalidPolicy !== 'default') {
     throw new SettingsValidationError({ [`${path}.baseId`]: 'Choose a built-in base theme.' })
   }
+  const requestedSyntaxThemeId = theme.syntaxThemeId
+  const inheritsSyntaxTheme = requestedSyntaxThemeId === undefined ||
+    requestedSyntaxThemeId === null || requestedSyntaxThemeId === ''
+  if (!inheritsSyntaxTheme && !isBundledSyntaxThemeId(requestedSyntaxThemeId) && invalidPolicy !== 'default') {
+    throw new SettingsValidationError({
+      [`${path}.syntaxThemeId`]: 'Choose a bundled code highlighting theme.'
+    })
+  }
+  const syntaxThemeId = !inheritsSyntaxTheme && isBundledSyntaxThemeId(requestedSyntaxThemeId)
+    ? requestedSyntaxThemeId
+    : null
   const inputColors = isPlainObject(theme.colors) ? theme.colors : {}
   if (!isPlainObject(theme.colors) && invalidPolicy !== 'default') {
     throw new SettingsValidationError({ [`${path}.colors`]: 'Theme colors must be an object.' })
@@ -229,6 +241,7 @@ function normalizeCustomTheme(theme, index, invalidPolicy) {
     id,
     name,
     baseId,
+    syntaxThemeId,
     colors,
     background: normalizeBackgroundSettings(theme.background || DEFAULT_THEME_BACKGROUND, {
       invalid: invalidPolicy,

@@ -52,9 +52,11 @@ export function needsFullRender(previousSettings, nextSettings) {
   const nextTheme = resolveActiveTheme(nextSettings)
   const themeRenderChanged = JSON.stringify({
     baseId: previousTheme.baseId,
+    syntaxThemeId: previousTheme.syntaxThemeId,
     colors: previousTheme.colors
   }) !== JSON.stringify({
     baseId: nextTheme.baseId,
+    syntaxThemeId: nextTheme.syntaxThemeId,
     colors: nextTheme.colors
   })
   const noRenderPrefixes = [

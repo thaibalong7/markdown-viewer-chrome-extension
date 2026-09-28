@@ -519,6 +519,10 @@ input[type='checkbox'] {
   align-content: start;
 }
 
+.settings-theme-syntax-field {
+  max-width: 420px;
+}
+
 .settings-theme-identity-field .mdp-ui-field__label-row {
   justify-content: space-between;
 }
@@ -683,6 +687,14 @@ input[type='checkbox'] {
   color: var(--mdp-muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 9px;
+}
+
+.settings-theme-preview__badges {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
 }
 
 .settings-theme-preview__hint {
@@ -909,12 +921,57 @@ input[type='checkbox'] {
   color: var(--mdp-muted);
 }
 
-.settings-theme-preview__article pre {
+.settings-theme-preview__code {
   margin: 0 0 8px;
-  padding: 7px;
   overflow: hidden;
   border: 1px solid var(--mdp-border);
   border-radius: 5px;
+  background: var(--mdp-code-bg);
+}
+
+.settings-theme-preview__code-meta {
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 7px;
+  border-bottom: 1px solid var(--mdp-border);
+  background: var(--mdp-surface);
+  color: var(--mdp-muted);
+  font-size: 6px;
+  font-weight: 750;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.settings-theme-preview__code-copy {
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 70%, transparent);
+  border-radius: 3px;
+  background: var(--mdp-surface);
+  color: var(--mdp-muted);
+}
+
+.settings-theme-preview__code-copy svg {
+  width: 9px;
+  height: 9px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.settings-theme-preview__article pre {
+  margin: 0;
+  padding: 7px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
   background: var(--mdp-code-bg);
   color: var(--mdp-code-text);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -924,11 +981,6 @@ input[type='checkbox'] {
 
 .settings-theme-preview__article pre span {
   color: var(--mdp-link);
-}
-
-.settings-theme-preview__article pre strong {
-  color: var(--mdp-accent);
-  font-weight: 600;
 }
 
 .settings-theme-preview__table {

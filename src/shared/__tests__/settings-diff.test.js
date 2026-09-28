@@ -91,6 +91,56 @@ describe('needsFullRender', () => {
     ).toBe(false)
   })
 
+  it('re-renders when the active custom theme changes its syntax theme', () => {
+    const customTheme = {
+      id: 'custom:midnight-1234',
+      name: 'Midnight',
+      baseId: 'dark',
+      syntaxThemeId: null,
+      colors: { background: '#101827' },
+      background: { type: 'none' }
+    }
+    const theme = {
+      activeId: customTheme.id,
+      customThemes: [customTheme]
+    }
+
+    expect(needsFullRender(
+      { theme },
+      {
+        theme: {
+          ...theme,
+          customThemes: [{ ...customTheme, syntaxThemeId: 'dracula' }]
+        }
+      }
+    )).toBe(true)
+  })
+
+  it('does not re-render when only an inactive custom syntax theme changes', () => {
+    const customTheme = {
+      id: 'custom:midnight-1234',
+      name: 'Midnight',
+      baseId: 'dark',
+      syntaxThemeId: null,
+      colors: {},
+      background: { type: 'none' }
+    }
+    const theme = {
+      activeId: 'light',
+      customThemes: [customTheme]
+    }
+
+    expect(needsFullRender(
+      { theme },
+      {
+        theme: {
+          ...theme,
+          customThemes: [{ ...customTheme, syntaxThemeId: 'dracula' }]
+        }
+      }
+    )).toBe(false)
+  })
+
   it('keeps scrollbar visibility changes on the style-only path', () => {
     expect(
       needsFullRender(

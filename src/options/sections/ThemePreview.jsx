@@ -8,6 +8,7 @@ import {
   BUILT_IN_THEMES,
   EDITABLE_THEME_COLOR_FIELDS,
   createStyleVars,
+  getSyntaxThemeDefinition,
   resolveActiveTheme
 } from '../../theme/index.js'
 import { getThemeAsset } from '../../theme/theme-asset-client.js'
@@ -19,6 +20,7 @@ import {
 
 const VALID_HEX_COLOR = /^#[0-9a-f]{6}$/i
 const PREVIEW_THEME_ID = 'custom:preview-theme'
+const PREVIEW_CODE = "const theme = 'Markdown Plus'\npreview(theme)"
 
 function createPreviewSettings(settings, theme) {
   const baseColors = BUILT_IN_THEMES[theme.baseId] || BUILT_IN_THEMES.light
@@ -34,6 +36,7 @@ function createPreviewSettings(settings, theme) {
     id: PREVIEW_THEME_ID,
     name: theme.name,
     baseId: theme.baseId,
+    syntaxThemeId: theme.syntaxThemeId ?? null,
     colors,
     background: { ...theme.background }
   }
@@ -96,6 +99,69 @@ function usePreviewImage(scene, imageFile) {
   return image
 }
 
+function useSyntaxPreview(syntaxThemeId) {
+  const [highlighted, setHighlighted] = useState(null)
+
+  useEffect(() => {
+    let active = true
+    setHighlighted(null)
+
+    void import('../../viewer/core/shiki-theme-preview.js')
+      .then(({ highlightSyntaxThemePreview }) =>
+        highlightSyntaxThemePreview(PREVIEW_CODE, syntaxThemeId)
+      )
+      .then((result) => {
+        if (active) setHighlighted(result)
+      })
+      .catch((error) => {
+        if (!active) return
+        setHighlighted(null)
+        logger.warn('Could not render the syntax theme preview.', error)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [syntaxThemeId])
+
+  return highlighted
+}
+
+function getSyntaxTokenStyle(token) {
+  const fontStyle = Number(token.fontStyle) || 0
+  return {
+    color: token.color || undefined,
+    fontStyle: fontStyle & 1 ? 'italic' : undefined,
+    fontWeight: fontStyle & 2 ? 700 : undefined,
+    textDecoration: fontStyle & 4 ? 'underline' : undefined
+  }
+}
+
+function SyntaxPreview({ highlighted }) {
+  if (!highlighted?.tokens?.length) {
+    return (
+      <pre><code>{PREVIEW_CODE}</code></pre>
+    )
+  }
+
+  return (
+    <pre style={{ backgroundColor: highlighted.bg, color: highlighted.fg }}>
+      <code>
+        {highlighted.tokens.map((line, lineIndex) => (
+          <React.Fragment key={lineIndex}>
+            {line.map((token, tokenIndex) => (
+              <span key={`${lineIndex}-${tokenIndex}`} style={getSyntaxTokenStyle(token)}>
+                {token.content}
+              </span>
+            ))}
+            {lineIndex < highlighted.tokens.length - 1 ? '\n' : null}
+          </React.Fragment>
+        ))}
+      </code>
+    </pre>
+  )
+}
+
 function getSceneStyle(scene, imageUrl) {
   if (scene.kind === BACKGROUND_TYPES.SOLID) {
     return { backgroundColor: scene.color }
@@ -138,6 +204,8 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
     [imageFile, resolvedTheme.background]
   )
   const image = usePreviewImage(scene, imageFile)
+  const syntaxPreview = useSyntaxPreview(resolvedTheme.syntaxThemeId)
+  const syntaxTheme = getSyntaxThemeDefinition(resolvedTheme.syntaxThemeId)
   const allowImage = !(image?.animated && scene.motion === BACKGROUND_MOTION.OFF)
   const sceneClassName = [
     'settings-theme-preview__scene',
@@ -160,7 +228,12 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
           </span>
           <strong>{theme.name?.trim() || 'Untitled theme'}</strong>
         </div>
-        <span className="settings-theme-preview__base">Base: {resolvedTheme.baseId}</span>
+        <div className="settings-theme-preview__badges">
+          <span className="settings-theme-preview__base">Base: {resolvedTheme.baseId}</span>
+          <span className="settings-theme-preview__base">
+            Code: {syntaxTheme?.name || resolvedTheme.syntaxThemeId}
+          </span>
+        </div>
       </div>
       <p className="settings-theme-preview__hint">Every valid change appears here instantly. Saving is not required.</p>
 
@@ -214,7 +287,18 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
                   A calm reading space for ideas, snippets, and <span className="settings-theme-preview__link">useful links</span>.
                 </p>
                 <blockquote>“The smallest details make the biggest difference.”</blockquote>
-                <pre><code><span>const</span> theme = <strong>'{theme.name?.trim() || 'Untitled'}'</strong>{'\n'}preview(theme)</code></pre>
+                <div className="settings-theme-preview__code">
+                  <div className="settings-theme-preview__code-meta">
+                    <span>JavaScript</span>
+                    <span className="settings-theme-preview__code-copy">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <rect x="9" y="9" width="11" height="11" rx="2" />
+                        <rect x="4" y="4" width="11" height="11" rx="2" />
+                      </svg>
+                    </span>
+                  </div>
+                  <SyntaxPreview highlighted={syntaxPreview} />
+                </div>
                 <div className="settings-theme-preview__table">
                   <div><strong>Token</strong><strong>Role</strong></div>
                   <div><span>Accent</span><span>Focus</span></div>

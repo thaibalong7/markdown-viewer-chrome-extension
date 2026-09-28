@@ -1,11 +1,11 @@
 import { createHighlighterCore } from 'shiki/core'
 import { createOnigurumaEngine } from 'shiki/engine/oniguruma'
 import { logger } from '../../shared/logger.js'
+import { DEFAULT_SYNTAX_THEME_ID } from '../../theme/index.js'
 import {
   getShikiThemeIdForSettings,
   loadShikiLanguageModule,
   loadShikiThemeModule,
-  SHIKI_BUNDLED_THEME_IDS,
   SHIKI_CORE_LANG_IDS,
   resolveShikiLangId
 } from './shiki-config.js'
@@ -45,6 +45,7 @@ function normalizeShikiPreWhitespace(preEl) {
 let highlighterPromise = null
 let loadedLangIds = new Set(SHIKI_CORE_LANG_IDS)
 const langLoadPromises = new Map()
+const themeLoadPromises = new Map()
 
 function resolveModuleDefault(moduleValue) {
   if (!moduleValue || typeof moduleValue !== 'object') return moduleValue
@@ -141,16 +142,48 @@ async function ensureShikiLanguage(highlighter, rawLang) {
   }
 }
 
+async function ensureShikiTheme(highlighter, themeId) {
+  if (highlighter.getLoadedThemes().includes(themeId)) return themeId
+
+  if (!themeLoadPromises.has(themeId)) {
+    const themeModule = loadShikiThemeModule(themeId)
+    if (!themeModule) return DEFAULT_SYNTAX_THEME_ID
+
+    themeLoadPromises.set(
+      themeId,
+      Promise.resolve(themeModule)
+        .then((moduleValue) => {
+          const theme = resolveModuleDefault(moduleValue)
+          if (!theme) throw new Error(`Missing Shiki theme module for "${themeId}".`)
+          return highlighter.loadTheme(theme)
+        })
+        .then(() => {
+          themeLoadPromises.delete(themeId)
+        })
+        .catch((error) => {
+          themeLoadPromises.delete(themeId)
+          throw error
+        })
+    )
+  }
+
+  try {
+    await themeLoadPromises.get(themeId)
+    return themeId
+  } catch (error) {
+    logger.warn('Shiki theme load failed.', { theme: themeId, error })
+    return DEFAULT_SYNTAX_THEME_ID
+  }
+}
+
 export function getShikiHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = Promise.all([
-      Promise.all(
-        SHIKI_BUNDLED_THEME_IDS.map((themeId) =>
-          Promise.resolve(loadShikiThemeModule(themeId)).then((moduleValue) =>
-            resolveModuleDefault(moduleValue)
-          )
-        )
-      ),
+      Promise.resolve(loadShikiThemeModule(DEFAULT_SYNTAX_THEME_ID)).then((moduleValue) => {
+        const theme = resolveModuleDefault(moduleValue)
+        if (!theme) throw new Error(`Missing Shiki theme module for "${DEFAULT_SYNTAX_THEME_ID}".`)
+        return theme
+      }),
       Promise.all(
         SHIKI_CORE_LANG_IDS.map((langId) =>
           Promise.resolve(loadShikiLanguageModule(langId)).then((moduleValue) =>
@@ -159,9 +192,9 @@ export function getShikiHighlighter() {
         )
       )
     ])
-      .then(([themes, languages]) =>
+      .then(([theme, languages]) =>
         createHighlighterCore({
-          themes: themes.filter(Boolean),
+          themes: [theme],
           langs: languages.filter(Boolean),
           engine: createOnigurumaEngine(import('shiki/wasm'))
         })
@@ -174,6 +207,7 @@ export function getShikiHighlighter() {
         highlighterPromise = null
         loadedLangIds = new Set(SHIKI_CORE_LANG_IDS)
         langLoadPromises.clear()
+        themeLoadPromises.clear()
         logger.error('Shiki highlighter failed to initialize.', error)
         throw error
       })
@@ -192,11 +226,12 @@ export async function highlightCode(source, rawLang, settings = {}) {
 
   const langId = await ensureShikiLanguage(highlighter, rawLang)
   if (!langId) return null
+  const themeId = await ensureShikiTheme(highlighter, getShikiThemeIdForSettings(settings))
 
   try {
     const rendered = await highlighter.codeToHtml(String(source ?? ''), {
       lang: langId,
-      theme: getShikiThemeIdForSettings(settings)
+      theme: themeId
     })
     return normalizeShikiPreWhitespaceHtml(addDataLangToShikiPre(rendered.trim(), langId))
   } catch {
@@ -213,7 +248,6 @@ export async function applyShikiToFencedCode(html, settings = {}) {
     return html
   }
 
-  const theme = getShikiThemeIdForSettings(settings)
   const source = String(html || '')
   const matches = []
   let match
@@ -236,6 +270,7 @@ export async function applyShikiToFencedCode(html, settings = {}) {
   }
 
   if (!matches.length) return source
+  const theme = await ensureShikiTheme(highlighter, getShikiThemeIdForSettings(settings))
 
   await runWithConcurrency(
     matches.map((block) => async () => {

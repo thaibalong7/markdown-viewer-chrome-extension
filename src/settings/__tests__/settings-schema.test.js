@@ -219,6 +219,7 @@ describe('settings schema', () => {
         id: 'custom:midnight-1234',
         name: 'Midnight',
         baseId: 'dark',
+        syntaxThemeId: 'night-owl',
         colors: { background: '#101827', link: '#67e8f9' },
         background: {
           type: 'gradient',
@@ -233,10 +234,31 @@ describe('settings schema', () => {
     expect(theme.customThemes[0]).toMatchObject({
       name: 'Midnight',
       baseId: 'dark',
+      syntaxThemeId: 'night-owl',
       colors: { background: '#101827', link: '#67e8f9' },
       background: { type: 'gradient', angle: 145 }
     })
     expect(() => normalizeThemeSettings({ activeId: 'custom:missing', customThemes: [] }))
       .toThrow('Choose an available theme.')
+  })
+
+  it('supports inheriting a code theme and rejects non-bundled Shiki theme ids', () => {
+    const baseTheme = {
+      id: 'custom:midnight-1234',
+      name: 'Midnight',
+      baseId: 'dark',
+      colors: {},
+      background: { type: 'none' }
+    }
+
+    expect(normalizeThemeSettings({
+      activeId: baseTheme.id,
+      customThemes: [baseTheme]
+    }).customThemes[0].syntaxThemeId).toBeNull()
+
+    expect(() => normalizeThemeSettings({
+      activeId: baseTheme.id,
+      customThemes: [{ ...baseTheme, syntaxThemeId: 'remote-theme' }]
+    })).toThrow('Choose a bundled code highlighting theme.')
   })
 })

@@ -20,7 +20,7 @@ Một số nguyên tắc bất biến:
 - Background thuộc về từng theme, không phải một global appearance setting.
 - `theme.activeId` chỉ ra theme đang hoạt động.
 - Built-in theme và custom theme đi qua cùng một bước resolve trước khi Viewer sử dụng.
-- Custom theme kế thừa các token không cho chỉnh trực tiếp và Shiki theme từ một built-in `baseId`.
+- Custom theme kế thừa các token không cho chỉnh trực tiếp từ một built-in `baseId`; Shiki theme mặc định đi theo base nhưng có thể được override bằng một bundled syntax theme đã allowlist.
 - Dữ liệu settings có thể đồng bộ bằng `chrome.storage.sync`, nhưng binary image asset của custom theme chỉ được lưu trên thiết bị hiện tại trong IndexedDB.
 - Settings không nhận arbitrary CSS, inline SVG hoặc remote image URL.
 
@@ -29,6 +29,7 @@ Một số nguyên tắc bất biến:
 | Trách nhiệm | Source chính |
 | --- | --- |
 | Palette built-in, registry, resolve theme, CSS variables | `src/theme/index.js` |
+| Catalog syntax theme được phép chọn và mapping theo base | `src/theme/syntax-themes.js` |
 | Kiểu background và chuyển descriptor thành scene render | `src/theme/backgrounds.js` |
 | Client gọi background service để quản lý image asset | `src/theme/theme-asset-client.js` |
 | Default settings và settings version | `src/settings/default-settings.js` |
@@ -91,6 +92,7 @@ Mỗi custom theme có shape:
   id: 'custom:midnight-1234',
   name: 'Midnight',
   baseId: 'dark',
+  syntaxThemeId: null,
   colors: {
     background: '#101827',
     surface: '#172033',
@@ -122,11 +124,12 @@ Mỗi custom theme có shape:
 | --- | --- |
 | `id` | Identity ổn định dùng để select, update và delete theme. Không dùng `name` làm identity. |
 | `name` | Tên hiển thị do người dùng đặt, dài từ 1 đến 48 ký tự sau khi trim. |
-| `baseId` | Built-in theme cung cấp các token không override và Shiki theme. |
+| `baseId` | Built-in theme cung cấp các token không override và Shiki fallback khi không có syntax override. |
+| `syntaxThemeId` | `null` để theo Shiki mapping của `baseId`, hoặc id của một trong 30 bundled syntax themes. |
 | `colors` | Các semantic color override được phép chỉnh. Có thể sparse trong persisted data. |
 | `background` | Structured descriptor của background scene thuộc theme này. |
 
-Custom theme id phải match `^custom:[a-z0-9][a-z0-9-]{7,127}$`. `createCustomThemeDraft()` sinh id bằng `crypto.randomUUID()` khi có, hoặc fallback từ timestamp và random value.
+Custom theme id phải match `^custom:[a-z0-9][a-z0-9-]{7,127}$`. `createCustomThemeDraft()` sinh id bằng `crypto.randomUUID()` khi có, hoặc fallback từ timestamp và random value. Draft mới đặt `syntaxThemeId: null` để tiếp tục theo base; dữ liệu theme cũ không có field này cũng được normalize về cùng hành vi.
 
 Tối đa 32 custom theme được chấp nhận. Id phải duy nhất trong `customThemes`.
 
@@ -146,6 +149,7 @@ Shape resolve của một built-in theme:
   name: 'Aurora Glass',
   source: 'built-in',
   baseId: 'aurora-glass',
+  syntaxThemeId: 'night-owl',
   colors: { /* full semantic palette */ },
   background: {
     type: 'gradient',
@@ -268,7 +272,7 @@ Public helpers quan trọng trong `src/theme/index.js`:
 | `resolveThemeById(settings, id)` | Chuẩn hóa built-in hoặc custom thành một resolved theme đầy đủ. |
 | `resolveActiveTheme(settings)` | Resolve theme đang active. |
 | `getThemeColorsForSettings(settings)` | Lấy resolved colors cho Viewer/Mermaid. |
-| `getThemeBasePresetForSettings(settings)` | Lấy built-in base id cho Shiki. |
+| `getSyntaxThemeIdForSettings(settings)` | Lấy bundled syntax-theme id đã resolve, gồm custom override hoặc fallback theo base. |
 | `getThemeOptions(settings)` | Tạo hai danh sách option built-in/custom cho UI. |
 | `createCustomThemeDraft(baseId, name)` | Tạo draft custom theme mới từ built-in base. |
 | `createThemeAssetId()` | Sinh id riêng cho local image asset. |
@@ -501,7 +505,9 @@ Người dùng có thể:
 
 Khi nhấn “Add custom theme”, `resolveActiveTheme(settings).baseId` được dùng làm base. Điều này có nghĩa nếu active theme là custom, custom theme mới dùng cùng built-in base chứ không clone toàn bộ custom theme đang active.
 
-`createCustomThemeDraft()` copy giá trị hiện tại của 12 editable token từ built-in base. Khi đổi `baseId`, `rebaseCustomThemeDraft()` nạp lại toàn bộ 12 color input từ built-in base mới và cập nhật nguồn của non-editable tokens cùng Shiki mapping; helper text trong editor thông báo rõ hành vi thay thế này trước khi người dùng chọn.
+`createCustomThemeDraft()` copy giá trị hiện tại của 12 editable token từ built-in base. Khi đổi `baseId`, `rebaseCustomThemeDraft()` nạp lại toàn bộ 12 color input từ built-in base mới và cập nhật nguồn của non-editable tokens. Nếu code highlighting đang ở “Follow base theme”, Shiki mapping đổi theo base mới; một explicit syntax-theme override được giữ nguyên.
+
+Theme editor cho phép chọn “Follow base theme” hoặc một trong 30 syntax themes đã được bundle. Catalog ưu tiên các family phổ biến trong hệ VS Code và cộng đồng theme như GitHub, VS Code Plus, One, Dracula, Monokai, Tokyo Night, Catppuccin, Nord, Solarized, Material, Ayu, Gruvbox, Night Owl, Rosé Pine và Everforest. Selector chia các lựa chọn theo light/dark và live preview tokenizes sample code bằng chính Shiki theme đã resolve; preview dùng JavaScript regex engine riêng để không phụ thuộc quyền thực thi WASM trên extension Options page. Lựa chọn này áp dụng cho fenced code và standalone SQL; CodeMirror editor vẫn sở hữu highlighting riêng.
 
 Khi save thành công, custom theme vừa save trở thành active theme. Việc create/update được phân biệt bằng cách kiểm tra id của draft đã tồn tại trong `settings.theme.customThemes` hay chưa.
 
@@ -536,7 +542,7 @@ Popup hoặc Settings
 
 `MarkdownViewerApp.updateSettings()` cập nhật React state và CSS variables ngay, sau đó hỏi `needsFullRender()` có cần render lại Markdown hay không.
 
-Background-only change của active custom theme đi qua style-only path và không full-render Markdown. Palette hoặc `baseId` change của resolved active theme yêu cầu full render vì Shiki code colors được bake vào HTML và Mermaid có thể phụ thuộc theme colors.
+Background-only change của active custom theme đi qua style-only path và không full-render Markdown. Palette, `baseId`, hoặc resolved `syntaxThemeId` change của active theme yêu cầu full render vì Shiki code colors được bake vào HTML và Mermaid có thể phụ thuộc theme colors.
 
 Thay đổi một custom theme không active vẫn làm settings object đổi, nhưng `needsFullRender()` so sánh resolved active theme nên có thể bỏ qua full render nếu active palette/base không đổi.
 
@@ -544,7 +550,7 @@ Thay đổi một custom theme không active vẫn làm settings object đổi, 
 
 ### Shiki
 
-Shiki không dùng custom color token để tự tạo syntax theme. `getThemeBasePresetForSettings()` trả `baseId`, sau đó `src/viewer/core/shiki-config.js` map built-in/base id sang một bundled Shiki theme.
+Shiki không dùng custom color token để tự tạo syntax theme. Theme resolver ưu tiên custom `syntaxThemeId` khi có; nếu field là `null` hoặc vắng mặt, `src/theme/syntax-themes.js` map built-in/base id sang một bundled Shiki theme. `src/viewer/core/shiki-config.js` chỉ cho phép các id trong catalog allowlist; runtime highlighter khởi tạo với fallback `github-light` và chỉ tải thêm theme đang active khi cần.
 
 Ví dụ:
 
@@ -557,7 +563,7 @@ Ví dụ:
 | `vscode-dark` | `dark-plus` |
 | `aurora-glass` | `night-owl` |
 
-Mọi built-in id phải có mapping sang một Shiki theme đã nằm trong explicit loader allowlist. Nếu thêm Shiki theme mới, phải thêm static import loader; không dùng variable dynamic import vì Vite có thể kéo toàn bộ theme set vào bundle.
+Mọi built-in id phải có mapping sang một Shiki theme đã nằm trong explicit loader allowlist. Custom theme chỉ được lưu `null` hoặc một id trong cùng allowlist; raw theme JSON, CSS và remote theme URL không được chấp nhận. Nếu thêm Shiki theme mới, phải cập nhật cả catalog metadata lẫn static import loader; không dùng variable dynamic import vì Vite có thể kéo toàn bộ theme set vào bundle.
 
 ### Mermaid
 
@@ -580,6 +586,7 @@ Validation quan trọng:
 - Custom id đúng pattern và không trùng.
 - Name dài 1–48 ký tự.
 - `baseId` phải là built-in id có thật.
+- `syntaxThemeId` phải là `null`/vắng mặt hoặc một bundled syntax-theme id có trong allowlist.
 - Chỉ editable color keys được giữ lại; color phải là `#RRGGBB`.
 - Background type, motion, fit và position phải nằm trong allowlist.
 - Gradient angle từ 0 đến 360.

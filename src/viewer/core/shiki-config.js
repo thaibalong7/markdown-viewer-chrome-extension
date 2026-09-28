@@ -1,27 +1,9 @@
 /**
- * Shiki configuration for the reader. Keep preset keys aligned with
- * `BUILT_IN_THEMES` in `src/theme/index.js`.
+ * Shiki configuration for the reader. Keep explicit loaders aligned with
+ * `SYNTAX_THEME_DEFINITIONS` in `src/theme/syntax-themes.js`.
  */
 
-import { getThemeBasePresetForSettings } from '../../theme/index.js'
-
-/** Reader built-in/base theme id -> Shiki theme id. */
-const PRESET_TO_SHIKI_THEME_ID = {
-  light: 'github-light',
-  'high-contrast-light': 'github-light-high-contrast',
-  dark: 'github-dark',
-  'high-contrast-dark': 'github-dark-high-contrast',
-  sakura: 'rose-pine-dawn',
-  matcha: 'everforest-light',
-  'solarized-dark': 'solarized-dark',
-  'vscode-dark': 'dark-plus',
-  dracula: 'dracula',
-  gruvbox: 'gruvbox-dark-medium',
-  'night-owl': 'night-owl',
-  'min-dark': 'min-dark',
-  'aurora-glass': 'night-owl',
-  solarized: 'solarized-dark'
-}
+import { getSyntaxThemeIdForSettings } from '../../theme/index.js'
 
 /**
  * Explicit language module loaders to keep bundle size bounded.
@@ -73,23 +55,38 @@ const SHIKI_LANGUAGE_LOADERS = {
 const SHIKI_THEME_LOADERS = {
   'github-light': () => import('@shikijs/themes/github-light'),
   'github-light-high-contrast': () => import('@shikijs/themes/github-light-high-contrast'),
-  'github-dark': () => import('@shikijs/themes/github-dark'),
-  'github-dark-high-contrast': () => import('@shikijs/themes/github-dark-high-contrast'),
+  'light-plus': () => import('@shikijs/themes/light-plus'),
+  'solarized-light': () => import('@shikijs/themes/solarized-light'),
+  'catppuccin-latte': () => import('@shikijs/themes/catppuccin-latte'),
+  'ayu-light': () => import('@shikijs/themes/ayu-light'),
+  'one-light': () => import('@shikijs/themes/one-light'),
+  'night-owl-light': () => import('@shikijs/themes/night-owl-light'),
   'rose-pine-dawn': () => import('@shikijs/themes/rose-pine-dawn'),
   'everforest-light': () => import('@shikijs/themes/everforest-light'),
-  'solarized-dark': () => import('@shikijs/themes/solarized-dark'),
+  'gruvbox-light-medium': () => import('@shikijs/themes/gruvbox-light-medium'),
+  'github-dark': () => import('@shikijs/themes/github-dark'),
+  'github-dark-high-contrast': () => import('@shikijs/themes/github-dark-high-contrast'),
   'dark-plus': () => import('@shikijs/themes/dark-plus'),
+  'one-dark-pro': () => import('@shikijs/themes/one-dark-pro'),
   dracula: () => import('@shikijs/themes/dracula'),
+  monokai: () => import('@shikijs/themes/monokai'),
+  'tokyo-night': () => import('@shikijs/themes/tokyo-night'),
+  'catppuccin-mocha': () => import('@shikijs/themes/catppuccin-mocha'),
+  nord: () => import('@shikijs/themes/nord'),
+  'solarized-dark': () => import('@shikijs/themes/solarized-dark'),
+  'material-theme': () => import('@shikijs/themes/material-theme'),
+  'material-theme-palenight': () => import('@shikijs/themes/material-theme-palenight'),
+  'ayu-dark': () => import('@shikijs/themes/ayu-dark'),
+  'ayu-mirage': () => import('@shikijs/themes/ayu-mirage'),
   'gruvbox-dark-medium': () => import('@shikijs/themes/gruvbox-dark-medium'),
   'night-owl': () => import('@shikijs/themes/night-owl'),
+  'rose-pine-moon': () => import('@shikijs/themes/rose-pine-moon'),
+  'everforest-dark': () => import('@shikijs/themes/everforest-dark'),
   'min-dark': () => import('@shikijs/themes/min-dark')
 }
 
 /** Explicit allowlist of shipped Shiki language ids. */
 export const SHIKI_LANG_IDS = Object.keys(SHIKI_LANGUAGE_LOADERS)
-
-/** Theme ids shipped in the reader. */
-export const SHIKI_BUNDLED_THEME_IDS = Object.keys(SHIKI_THEME_LOADERS)
 
 /** Smaller startup set; remaining grammars are loaded on demand. */
 export const SHIKI_CORE_LANG_IDS = ['javascript', 'typescript', 'json', 'markdown', 'html', 'css', 'bash', 'python']
@@ -141,6 +138,5 @@ export function loadShikiThemeModule(themeId) {
 }
 
 export function getShikiThemeIdForSettings(settings = {}) {
-  const preset = getThemeBasePresetForSettings(settings)
-  return PRESET_TO_SHIKI_THEME_ID[preset] ?? 'github-light'
+  return getSyntaxThemeIdForSettings(settings)
 }

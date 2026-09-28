@@ -9,6 +9,7 @@ import { BACKGROUND_TYPES } from '../../theme/backgrounds.js'
 import { ThemeBackgroundFields } from './ThemeBackgroundFields.jsx'
 import { ThemeColorFields } from './ThemeColorFields.jsx'
 import { ThemePreview } from './ThemePreview.jsx'
+import { ThemeSyntaxFields } from './ThemeSyntaxFields.jsx'
 
 function cloneTheme(theme) {
   return {
@@ -138,7 +139,7 @@ export function ThemeEditor({ settings, initialTheme, busyAction, onCancel, onSa
                   </select>
                 </div>
                 <span id="theme-base-helper" className="mdp-ui-field__helper">
-                  Replaces the colors in section 02 and updates code highlighting.
+                  Replaces the colors in section 02. Code highlighting follows this base unless overridden below.
                 </span>
               </div>
             </div>
@@ -158,6 +159,18 @@ export function ThemeEditor({ settings, initialTheme, busyAction, onCancel, onSa
 
           <EditorSection
             number="03"
+            title="Code highlighting"
+            description="Choose the syntax colors used for rendered code blocks."
+          >
+            <ThemeSyntaxFields
+              draft={draft}
+              disabled={saving}
+              onChange={(syntaxThemeId) => updateDraft({ syntaxThemeId })}
+            />
+          </EditorSection>
+
+          <EditorSection
+            number="04"
             title="Background"
             description="Build the scene behind the Viewer and tune its readability."
           >

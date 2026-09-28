@@ -1,4 +1,17 @@
 import { AURORA_THEME_BACKGROUND, DEFAULT_THEME_BACKGROUND } from './backgrounds.js'
+import {
+  getSyntaxThemeIdForBaseTheme,
+  isBundledSyntaxThemeId
+} from './syntax-themes.js'
+
+export {
+  BUNDLED_SYNTAX_THEME_IDS,
+  DEFAULT_SYNTAX_THEME_ID,
+  SYNTAX_THEME_DEFINITIONS,
+  getSyntaxThemeDefinition,
+  getSyntaxThemeIdForBaseTheme,
+  isBundledSyntaxThemeId
+} from './syntax-themes.js'
 
 const LIGHT_THEME_COLORS = {
   colorScheme: 'light',
@@ -590,6 +603,7 @@ export function resolveThemeById(settings = {}, requestedId) {
       name: definition.name,
       source: 'built-in',
       baseId: themeId,
+      syntaxThemeId: getSyntaxThemeIdForBaseTheme(themeId),
       colors: { ...definition.colors },
       background: cloneBackground(definition.background)
     }
@@ -605,6 +619,9 @@ export function resolveThemeById(settings = {}, requestedId) {
       name: customTheme.name,
       source: 'custom',
       baseId,
+      syntaxThemeId: isBundledSyntaxThemeId(customTheme.syntaxThemeId)
+        ? customTheme.syntaxThemeId
+        : getSyntaxThemeIdForBaseTheme(baseId),
       colors: { ...BUILT_IN_THEMES[baseId], ...(customTheme.colors || {}) },
       background: cloneBackground(customTheme.background)
     }
@@ -621,8 +638,8 @@ export function getThemeColorsForSettings(settings = {}) {
   return resolveActiveTheme(settings).colors
 }
 
-export function getThemeBasePresetForSettings(settings = {}) {
-  return resolveActiveTheme(settings).baseId
+export function getSyntaxThemeIdForSettings(settings = {}) {
+  return resolveActiveTheme(settings).syntaxThemeId
 }
 
 export function getThemeOptions(settings = {}) {
@@ -663,6 +680,7 @@ export function createCustomThemeDraft(baseId = DEFAULT_THEME_SETTINGS.activeId,
     id: createRandomId('custom'),
     name,
     baseId: normalizedBaseId,
+    syntaxThemeId: null,
     colors,
     background
   }

@@ -81,7 +81,18 @@ describe('custom theme settings', () => {
     expect(html).toContain('8 / 48')
     expect(html).toContain('Shown in the theme picker and popup.')
     expect(html).toContain('Resets colors')
-    expect(html).toContain('Replaces the colors in section 02 and updates code highlighting.')
+    expect(html).toContain('Code highlighting follows this base unless overridden below.')
+    expect(html).toContain('Code highlighting')
+    expect(html).toContain('Rendered code theme')
+    expect(html).toContain('Follow base theme (GitHub Dark)')
+    expect(html).toContain('Light themes')
+    expect(html).toContain('Dark themes')
+    expect(html).toContain('Catppuccin Latte')
+    expect(html).toContain('One Dark Pro')
+    expect(html).toContain('The Markdown editor keeps its own highlighting.')
+    expect(html).toContain('Code: GitHub Dark')
+    expect(html).toContain('settings-theme-preview__code-copy')
+    expect(html).not.toContain('JavaScript · GitHub Dark')
     expect(html).toContain('background-color:#0d121b')
     expect(html).toContain('background-color:#151b26')
     expect(html).toContain('Background type')
@@ -94,6 +105,23 @@ describe('custom theme settings', () => {
     expect(html).toContain('Outline')
     expect(html).toContain('--mdp-heading:#ffffff')
     expect(html).toContain('linear-gradient(135deg, #101827, #312e81)')
+  })
+
+  it('shows an explicit code highlighting override in the live preview', () => {
+    const overriddenTheme = { ...customTheme, syntaxThemeId: 'dracula' }
+    const html = renderToStaticMarkup(
+      React.createElement(ThemeEditor, {
+        settings: {
+          theme: { activeId: overriddenTheme.id, customThemes: [overriddenTheme] }
+        },
+        initialTheme: overriddenTheme,
+        busyAction: '',
+        onCancel: () => {},
+        onSave: async () => null
+      })
+    )
+
+    expect(html).toContain('Code: Dracula')
   })
 
   it('shows an empty library state before a custom theme exists', () => {

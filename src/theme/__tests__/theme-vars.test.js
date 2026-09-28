@@ -6,6 +6,7 @@ import {
   createStyleVars,
   getBuiltInThemeBackground,
   getLightDarkThemeToggleTarget,
+  getSyntaxThemeIdForSettings,
   rebaseCustomThemeDraft
 } from '../index.js'
 
@@ -222,5 +223,22 @@ describe('rebaseCustomThemeDraft', () => {
     expect(rebased.colors.surface).toBe(BUILT_IN_THEMES.dark.surface)
     expect(rebased.background).toEqual(draft.background)
     expect(rebased.background).toBe(draft.background)
+  })
+
+  it('keeps an explicit syntax theme while rebasing and otherwise follows the new base', () => {
+    const inherited = rebaseCustomThemeDraft(createCustomThemeDraft('light'), 'dark')
+    const explicit = rebaseCustomThemeDraft({
+      ...createCustomThemeDraft('light'),
+      syntaxThemeId: 'dracula'
+    }, 'dark')
+
+    expect(inherited.syntaxThemeId).toBeNull()
+    expect(getSyntaxThemeIdForSettings({
+      theme: { activeId: inherited.id, customThemes: [inherited] }
+    })).toBe('github-dark')
+    expect(explicit.syntaxThemeId).toBe('dracula')
+    expect(getSyntaxThemeIdForSettings({
+      theme: { activeId: explicit.id, customThemes: [explicit] }
+    })).toBe('dracula')
   })
 })

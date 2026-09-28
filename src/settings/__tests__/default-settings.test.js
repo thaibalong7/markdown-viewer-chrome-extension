@@ -10,7 +10,7 @@ describe('DEFAULT_SETTINGS', () => {
     const { DEFAULT_SETTINGS } = await import('../default-settings.js')
 
     expect(DEFAULT_SETTINGS.enabled).toBe(true)
-    expect(DEFAULT_SETTINGS.plugins.mermaid.enabled).toBe(false)
+    expect(Object.values(DEFAULT_SETTINGS.plugins).every((plugin) => plugin.enabled)).toBe(true)
     expect(DEFAULT_SETTINGS.plugins.mermaid.renderer).toBe('official')
     expect(DEFAULT_SETTINGS.editor.enabled).toBe(false)
     expect(DEFAULT_SETTINGS.editor.wordWrap).toBe(true)

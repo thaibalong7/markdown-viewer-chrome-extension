@@ -170,7 +170,7 @@ Plugin ids/defaults live in `src/plugins/plugin-types.js`; registration and life
 - Core: code-highlight gating, task lists, heading anchors, table enhancement.
 - Optional: emoji, footnotes, Math/KaTeX, Mermaid.
 
-Optional plugins are dynamically imported when enabled. Hooks can extend Markdown, preprocess source, postprocess HTML, and attach behavior after render. Plugin-produced article HTML remains inside the sanitizer path.
+All registered plugins are enabled by default. Optional plugins are dynamically imported when enabled, so users can still disable specialized behavior and avoid loading its implementation. Hooks can extend Markdown, preprocess source, postprocess HTML, and attach behavior after render. Plugin-produced article HTML remains inside the sanitizer path.
 
 Shiki uses explicit language and theme loaders from `src/viewer/core/shiki-config.js`. The curated syntax-theme catalog in `src/theme/syntax-themes.js` must stay aligned with those loaders.
 

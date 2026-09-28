@@ -49,8 +49,8 @@ describe('createRenderSettingsHash', () => {
         tableEnhance: { enabled: true },
         emoji: { enabled: true },
         footnote: { enabled: true },
-        math: { enabled: false },
-        mermaid: { enabled: false, renderer: 'official' }
+        math: { enabled: true },
+        mermaid: { enabled: true, renderer: 'official' }
       }
     })
 

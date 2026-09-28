@@ -28,12 +28,12 @@ export const CORE_PLUGIN_DEFAULTS = {
   [PLUGIN_IDS.TABLE_ENHANCE]: { enabled: true }
 }
 
-/** Opt-in: heavier deps or diagrams; emoji/footnote stay on by default. */
+/** Optional plugins stay lazy-loaded, but all are enabled by default. */
 export const OPTIONAL_PLUGIN_DEFAULTS = {
   [PLUGIN_IDS.EMOJI]: { enabled: true },
   [PLUGIN_IDS.FOOTNOTE]: { enabled: true },
-  [PLUGIN_IDS.MATH]: { enabled: false },
-  [PLUGIN_IDS.MERMAID]: { enabled: false, renderer: MERMAID_RENDERERS.OFFICIAL }
+  [PLUGIN_IDS.MATH]: { enabled: true },
+  [PLUGIN_IDS.MERMAID]: { enabled: true, renderer: MERMAID_RENDERERS.OFFICIAL }
 }
 
 export function getDefaultPluginSettings() {

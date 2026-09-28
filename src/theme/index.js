@@ -557,8 +557,8 @@ export const EDITABLE_THEME_COLOR_FIELDS = Object.freeze([
   Object.freeze({ key: 'heading', label: 'Headings' }),
   Object.freeze({ key: 'muted', label: 'Muted text' }),
   Object.freeze({ key: 'border', label: 'Borders' }),
-  Object.freeze({ key: 'codeBg', label: 'Code background' }),
-  Object.freeze({ key: 'codeText', label: 'Code text' }),
+  Object.freeze({ key: 'codeBg', label: 'Inline/fallback code background' }),
+  Object.freeze({ key: 'codeText', label: 'Inline/fallback code text' }),
   Object.freeze({ key: 'link', label: 'Links' }),
   Object.freeze({ key: 'accent', label: 'Accent' })
 ])

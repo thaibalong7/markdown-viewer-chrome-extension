@@ -148,7 +148,7 @@ export function ThemeEditor({ settings, initialTheme, busyAction, onCancel, onSa
           <EditorSection
             number="02"
             title="Colors"
-            description="Tune semantic colors so the Viewer stays visually consistent."
+            description="Tune semantic colors so the Viewer stays visually consistent. Inline/fallback code colors do not replace the rendered syntax theme in section 03."
           >
             <ThemeColorFields
               draft={draft}

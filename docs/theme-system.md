@@ -220,6 +220,8 @@ Settings UI chỉ expose các token nằm trong `EDITABLE_THEME_COLOR_FIELDS`:
 - `link`
 - `accent`
 
+Trong Settings, `codeBg` và `codeText` được ghi nhãn là màu cho inline/fallback code để phân biệt với Shiki theme. Chúng áp dụng cho inline code, code fence không được Shiki highlight và các source/fallback view; màu của fenced code đã highlight được cấu hình riêng bằng `syntaxThemeId`.
+
 Các token còn lại được kế thừa từ `baseId`. `resolveThemeById()` merge theo thứ tự built-in base palette trước, sau đó custom `colors` override lên trên.
 
 Mọi màu custom phải là hexadecimal 6 chữ số theo dạng `#RRGGBB`. Alpha hex, named color, `rgb()`, CSS variable và CSS expression không được schema chấp nhận.

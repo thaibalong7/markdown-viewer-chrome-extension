@@ -112,4 +112,24 @@ describe('bootstrap direct-activation characterization', () => {
     }))
     expect(mocks.appInit).toHaveBeenCalledOnce()
   })
+
+  it('destroys an existing app before clearing its mount target during reinjection', async () => {
+    setLocation('file:', '/README.md')
+    const cleanupOrder = []
+    const root = {}
+    Object.defineProperty(root, 'innerHTML', {
+      set() {
+        cleanupOrder.push('clear')
+      }
+    })
+    mocks.createViewerRoot.mockReturnValue({ root })
+    const existingApp = {
+      destroy: vi.fn(() => cleanupOrder.push('destroy'))
+    }
+
+    await bootstrap({ ...STYLES, existingApp })
+
+    expect(existingApp.destroy).toHaveBeenCalledOnce()
+    expect(cleanupOrder).toEqual(['destroy', 'clear'])
+  })
 })

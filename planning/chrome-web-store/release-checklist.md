@@ -201,9 +201,9 @@ Tiêu chí hoàn thành:
 
 ### 10. Reinjection/HMR cleanup
 
-- [ ] Destroy app cũ trước khi `mountTarget.innerHTML = ''`.
-- [ ] Bảo đảm `SETTINGS_UPDATED` listener không bị duplicate khi reinject.
-- [ ] Test `destroy()` idempotent và không còn window/document listeners.
+- [x] Destroy app cũ trước khi `mountTarget.innerHTML = ''`.
+- [x] Bảo đảm `SETTINGS_UPDATED` listener không bị duplicate khi reinject.
+- [x] Test `destroy()` idempotent và không còn window/document listeners.
 
 ## P2 — Performance và polish, có thể làm sau launch
 

@@ -9,7 +9,15 @@ import { MarkdownViewerApp } from '../viewer/app.js'
 import { createDocumentIdentity } from '../viewer/documents/document-model.js'
 import { parseViewerRoute } from '../viewer/navigation/viewer-route.js'
 
-export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explorerCss, getViewerStyles }) {
+export async function bootstrap({
+  baseCss,
+  layoutCss,
+  contentCss,
+  tocCss,
+  explorerCss,
+  getViewerStyles,
+  existingApp = null
+}) {
   logger.info('Content bootstrap started.')
   // Product decision: MR view only applies to local opened Markdown files,
   // not remote web links that happen to serve markdown-like content.
@@ -89,6 +97,7 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
   const { root: mountTarget } = createViewerRoot()
   // If the content script runs again (extension reload/HMR), clear previous UI
   // to prevent duplicated DOM/style accumulation.
+  existingApp?.destroy()
   mountTarget.innerHTML = ''
 
   const initialRoute = parseViewerRoute(window.location.href)

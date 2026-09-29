@@ -88,12 +88,6 @@ export function createDocumentSessionController({
         cleanupLoadedDocument(payload)
         return false
       }
-      if (fileType.id === 'markdown' && !String(payload.text ?? '').trim()) {
-        showToast?.('Linked file is empty', { variant: 'warning' })
-        publish()
-        return false
-      }
-
       cleanupLoadedDocument(loadedDocument)
       currentDocument = nextDocument
       loadedDocument = { document: nextDocument, ...payload }

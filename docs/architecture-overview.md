@@ -52,7 +52,7 @@ src/content/index.js
 
 1. `content/index.js` performs a cheap `file:` and Markdown-family check using the shared file-type registry. Unsupported pages do not load the heavier Viewer bundle.
 2. `viewer-loader.js` imports Viewer SCSS as compiled strings and starts bootstrap. It also applies settings broadcasts and tears down the viewer when the extension is disabled.
-3. `bootstrap.js` confirms the page looks like Markdown, loads settings through background messaging, and extracts source from a single `<pre>` or the document body.
+3. `bootstrap.js` confirms the local Markdown-family URL, loads settings through background messaging, and extracts source from a single `<pre>` or the document body; registered empty and whitespace-only Markdown files still mount the Viewer.
 4. `page-overrider.js` creates `mdp-viewer-root` inside the body and hides the raw representation.
 5. `MarkdownViewerApp` mounts the React shell, creates its controllers, binds article interactions, and starts the initial render.
 
@@ -86,7 +86,7 @@ The lifecycle is `init()` -> `updateSettings()` -> `destroy()`. Destruction must
 - real images use normalized local URLs;
 - workspace images use session-owned object URLs revoked during replacement or teardown.
 
-`src/viewer/documents/renderer-registry.js` dynamically resolves Markdown, plain-text, SQL, Mermaid, and image renderers. A new format starts in the file-type registry, then adds a loader strategy and renderer. Viewer chrome should continue to consume capabilities rather than add format-specific URL checks.
+`src/viewer/documents/renderer-registry.js` dynamically resolves Markdown, plain-text, SQL, Mermaid, and image renderers. Empty Markdown documents render an explicit state while retaining normal Markdown edit capabilities. A new format starts in the file-type registry, then adds a loader strategy and renderer. Viewer chrome should continue to consume capabilities rather than add format-specific URL checks.
 
 ## Rendering and DOM ownership
 

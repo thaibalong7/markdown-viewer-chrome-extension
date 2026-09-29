@@ -89,6 +89,21 @@ describe('file-io', () => {
     expect(handle.read()).toBe('# Updated')
   })
 
+  it('connects an empty Markdown file and saves its first content', async () => {
+    const handle = createWritableHandle('empty.md', '')
+    vi.stubGlobal('window', {
+      showOpenFilePicker: vi.fn(async () => [handle])
+    })
+
+    await expect(
+      prepareFileForEditing('', { fileUrl: 'file:///tmp/empty.md' })
+    ).resolves.toMatchObject({ status: 'ready', reused: false })
+    await expect(
+      saveFile('# First note', { fileUrl: 'file:///tmp/empty.md' })
+    ).resolves.toBe('fsa')
+    expect(handle.read()).toBe('# First note')
+  })
+
   it('accepts equivalent content when the raw viewer normalized line endings', async () => {
     const handle = createWritableHandle('line-endings.md', '# Title\r\n\r\nBody\r\n')
     vi.stubGlobal('window', {

@@ -78,6 +78,33 @@ describe('document session controller', () => {
     expect(secondCleanup).toHaveBeenCalledOnce()
   })
 
+  it('opens and renders an empty linked Markdown document', async () => {
+    const render = vi.fn().mockResolvedValue(null)
+    const onDocumentLoaded = vi.fn()
+    const showToast = vi.fn()
+    const session = createSession({
+      loadDocument: vi.fn().mockResolvedValue({
+        text: '',
+        assetUrl: null,
+        revokeAssetUrl: null
+      }),
+      render,
+      onDocumentLoaded,
+      showToast
+    })
+
+    await expect(session.openDocument('file:///docs/empty.md')).resolves.toBe(true)
+
+    expect(session.getCurrentDocument()).toMatchObject({
+      href: 'file:///docs/empty.md',
+      fileTypeId: 'markdown'
+    })
+    expect(session.getLoadedDocument().text).toBe('')
+    expect(onDocumentLoaded).toHaveBeenCalledOnce()
+    expect(render).toHaveBeenCalledWith({ preserveScroll: false, honorHash: false })
+    expect(showToast).not.toHaveBeenCalled()
+  })
+
   it('publishes registry capabilities for the current document', () => {
     const session = createSession()
     expect(session.getUiState()).toMatchObject({

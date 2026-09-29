@@ -89,7 +89,10 @@ describe('bootstrap direct-activation characterization', () => {
     expect(mocks.appConstructor).not.toHaveBeenCalled()
   })
 
-  it('keeps an empty Markdown file unmounted', async () => {
+  it.each([
+    ['empty', ''],
+    ['whitespace-only', ' \n\t']
+  ])('mounts a %s Markdown file', async (_label, markdown) => {
     const emptyFixture = await readFile(
       fileURLToPath(
         new URL('../../../test/fixtures/multi-format-viewer/empty.md', import.meta.url)
@@ -97,10 +100,16 @@ describe('bootstrap direct-activation characterization', () => {
       'utf8'
     )
     setLocation('file:', '/empty.md')
-    mocks.extractRawMarkdown.mockReturnValue({ markdown: emptyFixture })
+    mocks.extractRawMarkdown.mockReturnValue({
+      markdown: markdown || emptyFixture
+    })
 
     await bootstrap(STYLES)
 
-    expect(mocks.appConstructor).not.toHaveBeenCalled()
+    expect(mocks.appConstructor).toHaveBeenCalledWith(expect.objectContaining({
+      markdown: markdown || emptyFixture,
+      initialDocument: expect.objectContaining({ fileTypeId: 'markdown' })
+    }))
+    expect(mocks.appInit).toHaveBeenCalledOnce()
   })
 })

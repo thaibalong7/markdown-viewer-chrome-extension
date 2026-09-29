@@ -1,12 +1,51 @@
 import { renderDocument, renderIntoElement } from '../../core/renderer.js'
 import { buildTocItems } from '../../core/toc-builder.js'
+import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
 
 function throwIfAborted(signal) {
   if (signal?.aborted) throw new DOMException('Document render was aborted.', 'AbortError')
 }
 
+function renderEmptyState(articleEl, { showEditHint = false } = {}) {
+  const ownerDocument = articleEl?.ownerDocument || globalThis.document
+  if (!ownerDocument?.createElement || typeof articleEl?.replaceChildren !== 'function') {
+    throw new Error('Missing render target document.')
+  }
+
+  const state = ownerDocument.createElement('section')
+  state.className = 'mdp-ui-state mdp-document-empty'
+  state.setAttribute('role', 'status')
+
+  const title = ownerDocument.createElement('strong')
+  title.className = 'mdp-ui-state__title'
+  title.textContent = 'Empty Markdown document'
+
+  state.append(title)
+  if (showEditHint) {
+    const message = ownerDocument.createElement('p')
+    message.className = 'mdp-ui-state__message'
+    message.textContent = 'Use Edit to start writing.'
+    state.append(message)
+  }
+  articleEl.replaceChildren(state)
+}
+
 export async function render({ loadedDocument, articleEl, settings, services, signal }) {
   const source = String(loadedDocument?.text ?? '')
+  if (!source.trim()) {
+    throwIfAborted(signal)
+    renderEmptyState(articleEl, {
+      showEditHint:
+        loadedDocument?.document?.sourceKind === 'file-url' && isEditorFeatureEnabled(settings)
+    })
+    return {
+      tocItems: [],
+      interactionProfile: 'markdown',
+      renderedText: source,
+      renderResult: { html: '', warnings: [] }
+    }
+  }
+
   const result = await renderDocument(source, settings, {
     injectViewerStyles: services.injectViewerStyles,
     renderContextCache: services.renderContextCache

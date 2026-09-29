@@ -169,18 +169,18 @@ Tiêu chí hoàn thành:
 
 ### 7. Hỗ trợ empty Markdown document
 
-Hiện empty `.md` không mount viewer; linked empty Markdown cũng bị từ chối. Điều này không phù hợp với inline editor vì người dùng không thể mở một note mới trống để bắt đầu viết.
+Trước thay đổi này, empty `.md` không mount viewer và linked empty Markdown cũng bị từ chối. Điều đó không phù hợp với inline editor vì người dùng không thể mở một note mới trống để bắt đầu viết.
 
-- [ ] Mount viewer cho empty direct-activation Markdown.
-- [ ] Hiển thị empty state rõ ràng thay vì blank/raw page.
-- [ ] Cho phép vào Edit mode và save nội dung mới.
-- [ ] Cho phép mở empty Markdown từ Files explorer.
-- [ ] Update characterization tests đang khóa behavior “empty file unmounted”.
+- [x] Mount viewer cho empty direct-activation Markdown.
+- [x] Hiển thị empty state rõ ràng thay vì blank/raw page.
+- [x] Cho phép vào Edit mode và save nội dung mới.
+- [x] Cho phép mở empty Markdown từ Files explorer.
+- [x] Update characterization tests đang khóa behavior “empty file unmounted”.
 
 Tiêu chí hoàn thành:
 
 - Mở một file `.md` 0 byte vẫn thấy viewer và nút Edit.
-- Save hoạt động với File System Access và download fallback.
+- Save hoạt động qua original file handle đã được xác minh bằng File System Access.
 
 ### 8. Làm HTML/Word Math export hoạt động offline
 

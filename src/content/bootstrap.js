@@ -70,10 +70,7 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
   }
   logger.debug('Extraction result:', extraction)
 
-  if (!extraction.markdown || !extraction.markdown.trim()) {
-    logger.warn('No markdown content extracted.')
-    return
-  }
+  const initialMarkdown = String(extraction?.markdown ?? '')
 
   const styles = baseCss && layoutCss && contentCss && tocCss && explorerCss
     ? { baseCss, layoutCss, contentCss, tocCss, explorerCss }
@@ -97,7 +94,7 @@ export async function bootstrap({ baseCss, layoutCss, contentCss, tocCss, explor
   const initialRoute = parseViewerRoute(window.location.href)
   const entryFileUrl = initialRoute?.entryFileUrl || window.location.href
   const app = new MarkdownViewerApp({
-    markdown: extraction.markdown,
+    markdown: initialMarkdown,
     initialDocument: createDocumentIdentity(entryFileUrl),
     initialRoute,
     settings,

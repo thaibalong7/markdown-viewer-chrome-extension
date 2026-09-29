@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
   renderDocument: vi.fn(),
@@ -13,7 +13,38 @@ vi.mock('../../../core/toc-builder.js', () => ({ buildTocItems: mocks.buildTocIt
 
 import { render } from '../markdown-document-renderer.js'
 
+function createElement(tagName) {
+  return {
+    tagName: tagName.toUpperCase(),
+    className: '',
+    textContent: '',
+    children: [],
+    attributes: {},
+    setAttribute(name, value) {
+      this.attributes[name] = value
+    },
+    append(...children) {
+      this.children.push(...children)
+    }
+  }
+}
+
+function createArticle() {
+  const ownerDocument = { createElement }
+  return {
+    ownerDocument,
+    children: [],
+    replaceChildren(...children) {
+      this.children = children
+    }
+  }
+}
+
 describe('Markdown document renderer', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('preserves the existing sanitized render and afterRender sequence', async () => {
     const afterRender = vi.fn().mockResolvedValue(undefined)
     const articleEl = {}
@@ -43,5 +74,52 @@ describe('Markdown document renderer', () => {
     expect(afterRender).toHaveBeenCalledWith(expect.objectContaining({ articleEl }))
     expect(services.prepareZoomableImages).toHaveBeenCalledOnce()
     expect(result).toMatchObject({ tocItems, interactionProfile: 'markdown', renderedText: '# Title' })
+  })
+
+  it.each(['', ' \n\t'])('renders an accessible empty state with an edit hint for %j', async (source) => {
+    const articleEl = createArticle()
+
+    const result = await render({
+      loadedDocument: { document: { sourceKind: 'file-url' }, text: source },
+      articleEl,
+      settings: { editor: { enabled: true } },
+      services: {},
+      signal: new AbortController().signal
+    })
+
+    expect(mocks.renderDocument).not.toHaveBeenCalled()
+    expect(articleEl.children[0]).toMatchObject({
+      tagName: 'SECTION',
+      className: 'mdp-ui-state mdp-document-empty',
+      attributes: { role: 'status' }
+    })
+    expect(articleEl.children[0].children).toEqual([
+      expect.objectContaining({ textContent: 'Empty Markdown document' }),
+      expect.objectContaining({ textContent: 'Use Edit to start writing.' })
+    ])
+    expect(result).toMatchObject({
+      tocItems: [],
+      interactionProfile: 'markdown',
+      renderedText: source
+    })
+  })
+
+  it.each([
+    ['workspace Markdown', 'workspace-file', true],
+    ['local Markdown while the editor is disabled', 'file-url', false]
+  ])('omits the edit hint for %s', async (_label, sourceKind, editorEnabled) => {
+    const articleEl = createArticle()
+
+    await render({
+      loadedDocument: { document: { sourceKind }, text: '' },
+      articleEl,
+      settings: { editor: { enabled: editorEnabled } },
+      services: {},
+      signal: new AbortController().signal
+    })
+
+    expect(articleEl.children[0].children).toEqual([
+      expect.objectContaining({ textContent: 'Empty Markdown document' })
+    ])
   })
 })

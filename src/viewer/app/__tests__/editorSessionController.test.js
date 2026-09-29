@@ -123,4 +123,17 @@ describe('editor file connection and save safety', () => {
     expect(getMarkdown()).toBe('# Original')
     controller.destroy()
   })
+
+  it('publishes saved content to reader chrome when edit mode closes', async () => {
+    fileIoMocks.saveFile.mockResolvedValue('fsa')
+    const { controller, reactHandle } = createController()
+    controller.setEditModeActive(true)
+    controller.handleEditorChange('# Saved update')
+
+    await controller.handleSave()
+    controller.setEditModeActive(false)
+
+    expect(reactHandle.updateMarkdown).toHaveBeenLastCalledWith('# Saved update')
+    controller.destroy()
+  })
 })

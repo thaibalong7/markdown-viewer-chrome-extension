@@ -161,6 +161,18 @@ export function useSettingsForm() {
     [persist]
   )
 
+  const setDocumentStatsVisible = useCallback(
+    (showDocumentStats) =>
+      persist(
+        () => saveSettings({ appearance: { showDocumentStats } }),
+        showDocumentStats
+          ? 'Document statistics will be shown.'
+          : 'Document statistics will be hidden.',
+        'documentStats'
+      ),
+    [persist]
+  )
+
   const setActiveTheme = useCallback(
     (activeId) => persist(
       () => saveSettings({ theme: { activeId } }),
@@ -414,6 +426,7 @@ export function useSettingsForm() {
     load,
     setEnabled,
     setScrollbarAutoHide,
+    setDocumentStatsVisible,
     setActiveTheme,
     saveCustomTheme,
     deleteCustomTheme,

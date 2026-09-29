@@ -1,0 +1,2 @@
+export const DEFAULT_SHOW_DOCUMENT_STATS = true
+export const READING_WORDS_PER_MINUTE = 200

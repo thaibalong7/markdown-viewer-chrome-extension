@@ -8,6 +8,7 @@
 @use 'background-scene';
 @use 'viewer-scrollbar';
 @use 'scroll-to-top';
+@use 'document-stats';
 
 .mdp-root {
   --mdp-sidebar-layer-background: var(--mdp-sidebar-surface, var(--mdp-bg));

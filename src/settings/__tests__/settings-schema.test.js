@@ -133,6 +133,7 @@ describe('settings schema', () => {
     expect(normalized.theme).toEqual(DEFAULT_SETTINGS.theme)
     expect(normalized.appearance).not.toHaveProperty('background')
     expect(normalized.appearance.scrollbarVisibility).toBe('auto')
+    expect(normalized.appearance.showDocumentStats).toBe(true)
     expect(
       normalizeSettings({ ...DEFAULT_SETTINGS, explorer: null }, { invalid: 'default' }).explorer
     ).toEqual(DEFAULT_SETTINGS.explorer)
@@ -210,6 +211,9 @@ describe('settings schema', () => {
     expect(() => normalizeSettings({
       appearance: { scrollbarVisibility: 'hover-only' }
     })).toThrow('Choose auto-hide or always-visible scrollbars.')
+    expect(() => normalizeSettings({
+      appearance: { showDocumentStats: 'yes' }
+    })).toThrow('Show document statistics must be true or false.')
   })
 
   it('normalizes named custom themes and requires the active id to exist', () => {

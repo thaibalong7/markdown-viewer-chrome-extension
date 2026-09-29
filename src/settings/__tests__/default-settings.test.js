@@ -19,6 +19,7 @@ describe('DEFAULT_SETTINGS', () => {
     expect(DEFAULT_SETTINGS.theme).toEqual({ activeId: 'light', customThemes: [] })
     expect(DEFAULT_SETTINGS.appearance).not.toHaveProperty('background')
     expect(DEFAULT_SETTINGS.appearance.scrollbarVisibility).toBe('auto')
+    expect(DEFAULT_SETTINGS.appearance.showDocumentStats).toBe(true)
     expect(DEFAULT_SETTINGS.version).toBe(2)
   })
 })

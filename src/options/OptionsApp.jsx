@@ -116,6 +116,7 @@ export function OptionsApp() {
                   saving={form.busyAction !== ''}
                   onEnabledChange={form.setEnabled}
                   onScrollbarAutoHideChange={form.setScrollbarAutoHide}
+                  onDocumentStatsVisibleChange={form.setDocumentStatsVisible}
                 />
               ) : null}
               {activeSection === 'explorer' ? (

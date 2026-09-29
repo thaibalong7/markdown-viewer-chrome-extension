@@ -141,6 +141,7 @@ export function createEditorSessionController({
    * @param {boolean} enabled
    */
   function setEditModeActive(enabled) {
+    const wasEditModeActive = editModeActive
     const nextActive = Boolean(enabled) && canEditCurrentDocument()
     const discardingChanges = editModeActive && !nextActive && editorDirty
     editModeActive = nextActive
@@ -153,6 +154,8 @@ export function createEditorSessionController({
       setMarkdown(editBaselineMarkdown)
       getReactHandle()?.updateMarkdown(editBaselineMarkdown)
       void render({ preserveScroll: true, honorHash: false })
+    } else if (wasEditModeActive) {
+      getReactHandle()?.updateMarkdown(getMarkdown())
     }
     setDirty(false)
     applyReaderStyles()

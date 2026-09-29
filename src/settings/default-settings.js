@@ -14,6 +14,7 @@ import {
 } from '../shared/constants/explorer.js'
 import { DEFAULT_THEME_SETTINGS } from '../theme/index.js'
 import { DEFAULT_SCROLLBAR_VISIBILITY } from '../shared/constants/scrollbar.js'
+import { DEFAULT_SHOW_DOCUMENT_STATS } from '../shared/constants/document-stats.js'
 
 export const DEFAULT_SETTINGS = {
   enabled: true,
@@ -27,7 +28,8 @@ export const DEFAULT_SETTINGS = {
     customThemes: []
   },
   appearance: {
-    scrollbarVisibility: DEFAULT_SCROLLBAR_VISIBILITY
+    scrollbarVisibility: DEFAULT_SCROLLBAR_VISIBILITY,
+    showDocumentStats: DEFAULT_SHOW_DOCUMENT_STATS
   },
   typography: {
     fontFamily: 'system-ui',

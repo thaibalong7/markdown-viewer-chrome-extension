@@ -6,7 +6,13 @@ import { openExtensionDetails } from '../../shared/file-scheme-access.js'
 import { useFileSchemeAccess } from '../../shared/react/useFileSchemeAccess.js'
 import { SCROLLBAR_VISIBILITY } from '../../shared/constants/scrollbar.js'
 
-export function GeneralSettings({ settings, saving, onEnabledChange, onScrollbarAutoHideChange }) {
+export function GeneralSettings({
+  settings,
+  saving,
+  onEnabledChange,
+  onScrollbarAutoHideChange,
+  onDocumentStatsVisibleChange
+}) {
   const fileAccess = useFileSchemeAccess()
   const [detailsError, setDetailsError] = useState('')
 
@@ -61,6 +67,22 @@ export function GeneralSettings({ settings, saving, onEnabledChange, onScrollbar
             checked={settings.appearance?.scrollbarVisibility !== SCROLLBAR_VISIBILITY.ALWAYS}
             disabled={saving}
             onChange={(event) => void onScrollbarAutoHideChange(event.target.checked)}
+          />
+        </div>
+
+        <div className="mdp-ui-divider" />
+
+        <div className="mdp-ui-setting-row settings-row--toggle">
+          <div>
+            <h3 className="mdp-ui-setting-row__title">Show document statistics</h3>
+            <p className="mdp-ui-setting-row__description">Show word count, character count (including spaces), and estimated reading time above Markdown documents.</p>
+          </div>
+          <Switch
+            id="general-document-stats"
+            label="Show document statistics"
+            checked={settings.appearance?.showDocumentStats !== false}
+            disabled={saving}
+            onChange={(event) => void onDocumentStatsVisibleChange(event.target.checked)}
           />
         </div>
 

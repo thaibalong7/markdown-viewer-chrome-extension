@@ -40,6 +40,7 @@ import {
   DEFAULT_SCROLLBAR_VISIBILITY,
   SCROLLBAR_VISIBILITY
 } from '../shared/constants/scrollbar.js'
+import { DEFAULT_SHOW_DOCUMENT_STATS } from '../shared/constants/document-stats.js'
 
 export const EXPLORER_LIMIT_FIELDS = Object.freeze({
   maxScanDepth: Object.freeze({
@@ -300,7 +301,10 @@ export function normalizeAppearanceSettings(appearance, options = {}) {
   const invalidPolicy = options.invalid || 'throw'
   if (!isPlainObject(appearance)) {
     if (invalidPolicy === 'default') {
-      return { scrollbarVisibility: DEFAULT_SCROLLBAR_VISIBILITY }
+      return {
+        scrollbarVisibility: DEFAULT_SCROLLBAR_VISIBILITY,
+        showDocumentStats: DEFAULT_SHOW_DOCUMENT_STATS
+      }
     }
     throw new SettingsValidationError({ appearance: 'Appearance settings must be an object.' })
   }
@@ -318,6 +322,21 @@ export function normalizeAppearanceSettings(appearance, options = {}) {
     } else {
       throw new SettingsValidationError({
         'appearance.scrollbarVisibility': 'Choose auto-hide or always-visible scrollbars.'
+      })
+    }
+  }
+  if (invalidPolicy === 'default' && appearance.showDocumentStats === undefined) {
+    normalized.showDocumentStats = DEFAULT_SHOW_DOCUMENT_STATS
+  }
+  if (
+    appearance.showDocumentStats !== undefined &&
+    typeof appearance.showDocumentStats !== 'boolean'
+  ) {
+    if (invalidPolicy === 'default') {
+      normalized.showDocumentStats = DEFAULT_SHOW_DOCUMENT_STATS
+    } else {
+      throw new SettingsValidationError({
+        'appearance.showDocumentStats': 'Show document statistics must be true or false.'
       })
     }
   }

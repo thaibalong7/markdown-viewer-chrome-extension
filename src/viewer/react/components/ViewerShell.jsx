@@ -12,6 +12,7 @@ import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
 import { BackgroundScene, resolveBackgroundSceneForSettings } from './BackgroundScene.jsx'
 import { ViewerScrollbar } from './ViewerScrollbar.jsx'
 import { ScrollToTopButton } from './ScrollToTopButton.jsx'
+import { DocumentStats } from './DocumentStats.jsx'
 
 export function ViewerShell({
   children,
@@ -164,6 +165,11 @@ export function ViewerShell({
     ? 'mdp-root mdp-root--has-visual-background'
     : 'mdp-root'
   const scrollbarVisibility = settings?.appearance?.scrollbarVisibility
+  const showDocumentStats =
+    settings?.appearance?.showDocumentStats !== false &&
+    documentUiState?.fileTypeId === 'markdown' &&
+    documentUiState?.loading !== true &&
+    !isEditMode
 
   return (
     <div className={rootClassName} ref={handleRootRef}>
@@ -227,6 +233,7 @@ export function ViewerShell({
               when you exit edit mode.
             </div>
           )}
+          {showDocumentStats ? <DocumentStats source={markdown} /> : null}
           <article className="mdp-markdown-body" ref={articleRef} />
         </main>
 

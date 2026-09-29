@@ -149,4 +149,13 @@ describe('needsFullRender', () => {
       )
     ).toBe(false)
   })
+
+  it('updates document-stat visibility without re-rendering Markdown', () => {
+    expect(
+      needsFullRender(
+        { appearance: { showDocumentStats: true } },
+        { appearance: { showDocumentStats: false } }
+      )
+    ).toBe(false)
+  })
 })

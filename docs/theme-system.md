@@ -627,8 +627,8 @@ Checklist tối thiểu:
 2. Thêm `id -> palette` vào `BUILT_IN_THEMES`.
 3. Thêm label vào `BUILT_IN_THEME_LABELS`.
 4. Cấu hình background descriptor trong `BUILT_IN_THEME_DEFINITIONS`. Khi số theme có background riêng tăng, nên thay ternary Aurora hiện tại bằng một explicit `BUILT_IN_THEME_BACKGROUNDS` map để registry dễ đọc.
-5. Thêm built-in/base id vào `PRESET_TO_SHIKI_THEME_ID` trong `src/viewer/core/shiki-config.js`.
-6. Nếu Shiki id mới chưa được bundle, thêm explicit loader vào `SHIKI_THEME_LOADERS` và đánh giá bundle size.
+5. Thêm built-in/base id vào `BASE_THEME_TO_SYNTAX_THEME_ID` trong `src/theme/syntax-themes.js`.
+6. Nếu Shiki id mới chưa được bundle, thêm catalog entry vào `SYNTAX_THEME_DEFINITIONS`, explicit loader tương ứng vào `SHIKI_THEME_LOADERS` trong `src/viewer/core/shiki-config.js`, rồi đánh giá bundle size.
 7. Xác nhận `getThemeOptions()` tự đưa theme mới vào Popup và Settings selector.
 8. Thêm/cập nhật test cho palette, contrast, background, Shiki mapping và option rendering.
 9. Chạy test, production build và size report nếu thêm Shiki asset hoặc runtime asset.

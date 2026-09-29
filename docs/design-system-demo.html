@@ -36,6 +36,7 @@
       --mdp-files-width: 264px;
       --mdp-toc-width: 280px;
       --mdp-actions-rail-width: 60px;
+      --mdp-files-gutter-width: 8px;
       --mdp-content-max-width: 980px;
       --mdp-font-family: system-ui;
       --mdp-font-size: 16px;
@@ -125,15 +126,14 @@
       background: var(--mdp-bg);
     }
 
-    .mdp-body--no-files {
-      --mdp-files-track: 0px;
+    .mdp-body--files-collapsed {
+      --mdp-files-track: var(--mdp-files-gutter-width);
     }
 
     .mdp-body--no-outline {
       --mdp-right-track: var(--mdp-actions-rail-width);
     }
 
-    .mdp-body--no-files .mdp-sidebar--files,
     .mdp-body--no-outline .mdp-sidebar-panel--outline {
       display: none;
     }
@@ -159,6 +159,26 @@
       border-right: 1px solid var(--mdp-border-strong);
     }
 
+    .mdp-sidebar--collapsed {
+      padding: 0;
+      border-right: 0;
+    }
+
+    .mdp-sidebar__panel-clip,
+    .mdp-right-rail__outline-clip {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .mdp-sidebar--collapsed .mdp-sidebar__panel-clip {
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+
     .mdp-right-rail {
       container: mdp-right-rail / inline-size;
       grid-column: 3;
@@ -169,6 +189,37 @@
     .mdp-right-rail--actions-only {
       align-items: center;
       padding: 10px 8px;
+    }
+
+    .mdp-panel-toggle {
+      position: absolute;
+      top: 16px;
+      z-index: 4;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid var(--mdp-border);
+      border-radius: 999px;
+      background: var(--mdp-surface);
+      color: var(--mdp-link);
+      box-shadow: var(--mdp-shadow-subtle);
+      cursor: pointer;
+    }
+
+    .mdp-panel-toggle--files {
+      left: max(0px, calc(100% - 11px));
+    }
+
+    .mdp-panel-toggle--outline {
+      left: -11px;
+    }
+
+    .mdp-panel-toggle svg {
+      width: 11px;
+      height: 11px;
     }
 
     .mdp-right-rail__actions-row {
@@ -471,6 +522,25 @@
       line-height: var(--mdp-line-height);
     }
 
+    .mdp-document-stats {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-width: var(--mdp-content-max-width);
+      margin: 0 auto;
+      padding: 8px clamp(20px, 3.5vw, 48px) 0;
+      color: var(--mdp-muted);
+      font-size: 12px;
+      font-weight: 560;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.4;
+    }
+
+    .mdp-document-stats__separator {
+      opacity: 0.62;
+    }
+
     .mdp-markdown-body > :first-child {
       margin-top: 0;
     }
@@ -678,6 +748,40 @@
       font-size: 12px;
     }
 
+    .mdp-scroll-to-top {
+      position: fixed;
+      right: calc(var(--mdp-right-track) + 24px);
+      bottom: 24px;
+      z-index: 13;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
+      color: var(--mdp-link);
+      box-shadow: var(--mdp-shadow-float);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px) scale(0.94);
+      transition: opacity 160ms ease, transform 180ms ease;
+    }
+
+    .mdp-scroll-to-top.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .mdp-scroll-to-top svg {
+      width: 19px;
+      height: 19px;
+    }
+
 
 
     @media (min-width: 1024px) and (max-width: 1279px) {
@@ -699,8 +803,9 @@
         box-shadow: var(--mdp-shadow-float);
       }
 
-      .mdp-body--no-files .mdp-sidebar--files {
-        display: none;
+      .mdp-sidebar--files.mdp-sidebar--collapsed {
+        width: var(--mdp-files-gutter-width);
+        box-shadow: none;
       }
     }
 
@@ -763,6 +868,15 @@
         min-height: calc(100vh - 24px);
         padding: 16px 14px 40px;
       }
+
+      .mdp-document-stats {
+        padding-inline: 14px;
+      }
+
+      .mdp-scroll-to-top {
+        right: 12px;
+        bottom: 80px;
+      }
     }
 
     @media (pointer: coarse) {
@@ -771,6 +885,16 @@
       .mdp-toc__link {
         min-width: 44px;
         min-height: 44px;
+      }
+
+      .mdp-panel-toggle {
+        width: 32px;
+        height: 32px;
+      }
+
+      .mdp-scroll-to-top {
+        width: 48px;
+        height: 48px;
       }
     }
 
@@ -790,6 +914,10 @@
   <div class="mdp-root">
     <div class="mdp-body" id="viewer-shell">
       <aside class="mdp-sidebar mdp-sidebar--files" aria-label="Files">
+        <button class="mdp-panel-toggle mdp-panel-toggle--files" type="button" aria-label="Hide Files panel" aria-expanded="true" id="files-toggle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 9 12l5.5 5.5"/></svg>
+        </button>
+        <div class="mdp-sidebar__panel-clip">
         <div class="mdp-sidebar-panel">
           <div class="mdp-explorer">
             <div class="mdp-panel-header">
@@ -848,9 +976,17 @@
             </ul>
           </div>
         </div>
+        </div>
       </aside>
 
       <main class="mdp-content-pane">
+        <aside class="mdp-document-stats" role="note" aria-label="Document statistics: 347 words, 2,418 characters, 2 min read">
+          <span>347 words</span>
+          <span class="mdp-document-stats__separator" aria-hidden="true">•</span>
+          <span>2,418 characters</span>
+          <span class="mdp-document-stats__separator" aria-hidden="true">•</span>
+          <span>2 min read</span>
+        </aside>
         <article class="mdp-markdown-body">
           <h1>Viewer-first design system</h1>
           <p>
@@ -879,7 +1015,8 @@
           <p>
             Read mode uses three tracks: Files, document content, and a right rail containing
             document actions plus Outline. The document article stays transparent inside the
-            surface-colored content pane instead of becoming a raised card.
+            surface-colored content pane instead of becoming a raised card. Optional document
+            statistics sit above Markdown without becoming part of exported or printed content.
           </p>
 
           <pre><code>.mdp-body {
@@ -904,6 +1041,7 @@
                 <tr><td>Action icon</td><td>34px</td><td>44px</td></tr>
                 <tr><td>Outline row</td><td>36px</td><td>44px</td></tr>
                 <tr><td>Text button</td><td>38px</td><td>44px</td></tr>
+                <tr><td>Edge panel toggle</td><td>22px</td><td>32px</td></tr>
               </tbody>
             </table>
           </div>
@@ -918,26 +1056,23 @@
           <div class="mdp-source-note">
             Source of truth: <code>src/theme/index.js</code>, <code>src/theme/backgrounds.js</code>,
             <code>src/shared/styles/**</code>, and <code>src/viewer/styles/**</code>. Use the controls
-            in the right rail to preview theme and rail states.
+            around the rails to preview theme and panel states.
           </div>
         </article>
       </main>
 
       <aside class="mdp-right-rail mdp-right-rail--outline-expanded" aria-label="Document actions and outline">
+        <button class="mdp-panel-toggle mdp-panel-toggle--outline" type="button" aria-label="Hide Outline panel" aria-expanded="true" id="outline-toggle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5 15 12l-5.5 5.5"/></svg>
+        </button>
         <div class="mdp-right-rail__actions-row">
           <span class="mdp-right-rail__actions-label" aria-hidden="true">Actions</span>
           <div class="mdp-floating-actions mdp-floating-actions--rail-strip" role="toolbar" aria-label="Document actions">
-          <button class="mdp-fab-btn is-active" type="button" aria-label="Toggle files panel" title="Toggle files panel" aria-pressed="true" id="files-toggle">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h10"/><path d="M4 19h16"/></svg>
-          </button>
           <button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" id="copy-button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>
           </button>
           <button class="mdp-fab-btn mdp-fab-btn--edit" type="button" aria-label="Edit Markdown" title="Edit Markdown">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16 4a2 2 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-          </button>
-          <button class="mdp-fab-btn" type="button" aria-label="Toggle outline" title="Toggle outline" aria-pressed="true" id="outline-toggle">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>
           </button>
           <button class="mdp-fab-btn" type="button" aria-label="Toggle light and dark theme" title="Toggle light and dark theme" id="theme-toggle">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7 9 9 0 1 1-9-7z"/></svg>
@@ -945,6 +1080,7 @@
           </div>
         </div>
 
+        <div class="mdp-right-rail__outline-clip">
         <div class="mdp-sidebar-panel mdp-sidebar-panel--outline">
           <div class="mdp-panel-header">
             <div class="mdp-panel-header__row">
@@ -963,7 +1099,11 @@
             </ul>
           </nav>
         </div>
+        </div>
       </aside>
+      <button class="mdp-scroll-to-top" type="button" aria-label="Back to top" title="Back to top" id="scroll-top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m6.5 10.5 5.5-5.5 5.5 5.5"/></svg>
+      </button>
     </div>
   </div>
 
@@ -974,20 +1114,23 @@
     const outlineToggle = document.getElementById('outline-toggle')
     const themeToggle = document.getElementById('theme-toggle')
     const copyButton = document.getElementById('copy-button')
+    const filesRail = document.querySelector('.mdp-sidebar--files')
     const rightRail = document.querySelector('.mdp-right-rail')
+    const scrollTopButton = document.getElementById('scroll-top')
 
     filesToggle.addEventListener('click', () => {
-      const hidden = shell.classList.toggle('mdp-body--no-files')
-      filesToggle.classList.toggle('is-active', !hidden)
-      filesToggle.setAttribute('aria-pressed', hidden ? 'false' : 'true')
+      const collapsed = shell.classList.toggle('mdp-body--files-collapsed')
+      filesRail.classList.toggle('mdp-sidebar--collapsed', collapsed)
+      filesToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true')
+      filesToggle.setAttribute('aria-label', collapsed ? 'Show Files panel' : 'Hide Files panel')
     })
 
     outlineToggle.addEventListener('click', () => {
       const hidden = shell.classList.toggle('mdp-body--no-outline')
       rightRail.classList.toggle('mdp-right-rail--actions-only', hidden)
       rightRail.classList.toggle('mdp-right-rail--outline-expanded', !hidden)
-      outlineToggle.classList.toggle('is-active', !hidden)
-      outlineToggle.setAttribute('aria-pressed', hidden ? 'false' : 'true')
+      outlineToggle.setAttribute('aria-expanded', hidden ? 'false' : 'true')
+      outlineToggle.setAttribute('aria-label', hidden ? 'Show Outline panel' : 'Hide Outline panel')
     })
 
     themeToggle.addEventListener('click', () => {
@@ -1004,6 +1147,22 @@
         copyButton.setAttribute('aria-label', 'Copy open file link')
       }, 1200)
     })
+
+    scrollTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+      })
+    })
+
+    function syncScrollTopButton() {
+      const revealAt = Math.max(320, window.innerHeight * 0.6)
+      scrollTopButton.classList.toggle('is-visible', window.scrollY >= revealAt)
+    }
+
+    window.addEventListener('scroll', syncScrollTopButton, { passive: true })
+    window.addEventListener('resize', syncScrollTopButton)
+    syncScrollTopButton()
   </script>
 </body>
 </html>

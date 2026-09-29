@@ -7,8 +7,9 @@ This directory documents the repository as it exists today. Runtime source remai
 - [`architecture-overview.md`](./architecture-overview.md) — product scope, runtime flows, subsystem ownership, security boundaries, and task-to-source guidance.
 - [`theme-system.md`](./theme-system.md) — complete built-in/custom theme model, semantic colors, theme-owned backgrounds, local image assets, authoring workflows, extension guidance, and tests.
 - [`design-system.md`](./design-system.md) — visual tokens, component contracts, and current UI conventions.
-- [`design-system-demo.html`](./design-system-demo.html) — static preview of the current Markdown Plus visual language.
-- [`gherkin-syntax.md`](./gherkin-syntax.md) — Gherkin syntax reference and Markdown code-fence example.
+- [`design-system-demo.html`](./design-system-demo.html) — standalone static preview of the current Viewer visual language; it is illustrative, not a runtime fixture.
+- [`gherkin-syntax.md`](./gherkin-syntax.md) — Gherkin syntax reference and the supported Markdown code-fence aliases; standalone `.feature` files are not Viewer document types.
+- [`../DEV.md`](../DEV.md) — local setup, entry points, scripts, verification matrix, manual smoke tests, and troubleshooting.
 
 ## Documentation policy
 
@@ -18,3 +19,4 @@ This directory documents the repository as it exists today. Runtime source remai
 - Prefer links to stable entry points and ownership boundaries over copied directory trees, dated build output, or phase-by-phase history.
 - Keep each prose paragraph on one physical source line. Markdown Plus renders source softbreaks as visible `<br>` elements.
 - Store reusable source artwork under [`../assets/`](../assets/); keep only runtime-packaged files under `public/`.
+- Treat `dist/` as generated output and document source/build behavior instead of generated filenames or chunk hashes.

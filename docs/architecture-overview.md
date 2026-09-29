@@ -13,6 +13,7 @@ Direct activation is limited to local `file:` URLs with `.md`, `.markdown`, `.md
 ## Technology and source boundaries
 
 - Chrome Extension Manifest V3
+- Chrome 109 or newer, as declared by `minimum_chrome_version`
 - Vite with `@crxjs/vite-plugin`
 - React 19 for Viewer chrome, Popup, and Settings
 - JavaScript modules for services, document orchestration, rendering, and plugins
@@ -35,7 +36,7 @@ Direct activation is limited to local `file:` URLs with `.md`, `.markdown`, `.md
 | `src/theme/` | Built-in themes, custom-theme resolution, theme-owned background descriptors, local theme-asset client, and runtime CSS variables |
 | `src/settings/` | Defaults, validation, persistence client, storage service |
 | `src/popup/` | Recent files, theme selection, and quick reader/editor/plugin controls |
-| `src/options/` | Full settings, custom-theme management, diagnostics, import/export, and reset workflows |
+| `src/options/` | Full settings, file-access status, custom-theme management, policy controls, import/export, and reset workflows |
 | `src/background/` | Message routing, local file reads, downloads, settings broadcasts, file history, and device-local theme assets |
 | `src/messaging/` | Shared message names and caller wrapper |
 | `src/shared/` | File registry, utilities, constants, React primitives, and shared styles |
@@ -115,6 +116,8 @@ Other renderers use narrower paths:
 
 Renderer event listeners and temporary resources belong to its cleanup lifecycle.
 
+`src/viewer/article-interactions.js` owns delegated article link, heading-anchor, code-copy, and zoomable-image behavior. Loaded, non-linked article images become keyboard-operable zoom targets; `src/viewer/image-lightbox.js` provides fit, pan, wheel/pinch zoom, keyboard shortcuts, focus return, and teardown for both Markdown images and standalone image documents.
+
 ## React shell and shared UI
 
 Viewer React code lives under `src/viewer/react/`. `mount.js` owns the React root and exposes an imperative handle to `MarkdownViewerApp`; `ViewerApp.jsx` composes the shell and context providers.
@@ -126,10 +129,15 @@ Major ownership:
 - `Sidebar.jsx` and `FilesPanel.jsx`: left Files panel;
 - `RightRail.jsx` and `OutlinePanel.jsx`: document actions and heading navigation;
 - `EditorPanel.jsx` and `StatusBar.jsx`: CodeMirror shell and editor state;
+- `DocumentStats.jsx`: opt-out Markdown word/character/reading-time summary derived from the original source;
+- `ViewerScrollbar.jsx`: keyboard- and pointer-operable overlay scrollbars for reading, preview, and editor scroll roots;
+- `ScrollToTopButton.jsx`: responsive, reduced-motion-aware return-to-top action in read mode;
 - `FloatingActions.jsx`: capability-driven document commands;
 - `src/viewer/react/hooks/useExplorer.js`: React composition around explorer workflows.
 
 Reusable application primitives and styles live under `src/shared/react/` and `src/shared/styles/`. Surface-specific layout remains local to Viewer, Popup, or Options.
+
+Files and Outline can collapse independently and retain a narrow interaction gutter or actions rail. Their drag widths, explorer mode, expanded folders, and editor split width are tab-session preferences in `sessionStorage`; the Outline width can fall back to `layout.tocWidth`, while Files falls back to its runtime default. Viewer scrollbars can auto-hide or remain visible. Document statistics are shown only for loaded Markdown in read mode, count Unicode code points including whitespace, estimate reading time at 200 words per minute, and can be disabled from Settings.
 
 ## Files explorer and workspace
 
@@ -192,6 +200,8 @@ Settings ownership:
 
 Preferences use `chrome.storage.sync` with local fallback. Recent local-file history is stored separately in `chrome.storage.local` and follows its privacy/retention policy.
 
+The current preference shape also owns Viewer activation, typography, TOC/content sizing, overlay-scrollbar visibility, Markdown document-stat visibility, plugin states, explorer policies and scan limits, recent-file policy, standalone text-file limits, and opt-in editor preferences. The Settings page owns the full policy/import/export/reset surface; the Popup owns quick Reader, Editor, Plugins, and Recent controls.
+
 Theme settings use `theme.activeId` plus `theme.customThemes`. The Settings page is the only authoring surface: it creates, names, edits, and deletes custom themes and configures their colors and background. The Popup is a selector only and lists built-in themes together with saved custom themes. Custom theme records are validated, bounded, and synchronized with settings; incompatible version-1 `theme.preset` data is migrated explicitly.
 
 Custom theme images are device-local assets. Settings validates supported raster and animated-image formats with a 5 MiB limit, then the background service persists each Blob in IndexedDB under an independent `assetId`; the synchronized theme descriptor stores only that reference, presentation settings, motion, dimming, and an asset revision. The Viewer requests the active theme asset through centralized messaging, creates a session object URL, and revokes it when the theme changes or the Viewer unmounts. Replacing or deleting a custom theme removes its superseded asset, and reset clears the complete theme-asset store.
@@ -223,6 +233,7 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 | Loading/session | `src/viewer/documents/document-loader.js`, `documentSessionController.js` |
 | Renderer behavior | `src/viewer/documents/renderer-registry.js`, `renderers/` |
 | Viewer lifecycle | `src/viewer/app.js`, `src/viewer/app/` |
+| Viewer chrome, stats, scrollbars | `src/viewer/react/components/ViewerShell.jsx`, `DocumentStats.jsx`, `ViewerScrollbar.jsx`, `ScrollToTopButton.jsx` |
 | Files/workspace | `src/viewer/explorer/`, `src/viewer/react/hooks/useExplorer.js` |
 | Links/history | `src/viewer/navigation/`, `explorer-navigation.js` |
 | Editor/save | `src/viewer/app/editorSessionController.js`, `src/viewer/editor/` |
@@ -231,6 +242,7 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 | Settings | `src/settings/`, `src/background/message-router.js` |
 | Popup/Options | `src/popup/`, `src/options/`, `src/shared/react/` |
 | Print/export | `src/viewer/actions/document-actions.js`, `src/shared/download.js` |
+| Article/image interactions | `src/viewer/article-interactions.js`, `src/viewer/image-lightbox.js` |
 
 ## Verification
 

@@ -6,7 +6,7 @@ trigger: always_on
 
 # Project Context
 
-- This project is a Chrome Extension MV3 Markdown viewer for local `file:` Markdown documents.
+- This project is a Chrome Extension MV3 local-document viewer: registered Markdown files are direct `file:` entry points, while the Files explorer can open the additional text, SQL, Mermaid, and image formats declared in `src/shared/file-types.js`.
 - Runtime truth is `src/**`, `manifest.json`, `vite.config.mjs`, and `package.json`.
 - Start architecture-sensitive work by reading `docs/architecture-overview.md`.
 - Treat `docs/**` as current-state documentation and `planning/**` as incomplete work, never as runtime truth.

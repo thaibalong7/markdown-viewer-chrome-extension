@@ -21,8 +21,8 @@ Thứ tự logic thường gặp (từ trên xuống):
 3. (Tuỳ chọn) **Thẻ (tags)** trước `Feature:`
 4. Dòng **`Feature:`** (bắt buộc ở cấp tệp chuẩn)
 5. (Tuỳ chọn) **Mô tả tự do** nhiều dòng dưới `Feature:`
-6. (Tuỳ chọn) **`Background:`** — các bước chung cho mọi kịch bản phía dưới
-7. Một hoặc nhiều: **`Rule:`**, **`Scenario:`**, hoặc **`Scenario Outline:`**
+6. (Tuỳ chọn) **`Background:`** ở cấp `Feature` — các bước chung cho mọi kịch bản phía dưới
+7. Một hoặc nhiều: **`Rule:`**, **`Scenario:`**, hoặc **`Scenario Outline:`**; mỗi `Rule` có thể có `Background` riêng
 8. Trong mỗi kịch bản: các **bước (steps)**; với *Outline* thêm khối **`Examples:`** có bảng
 
 ---
@@ -85,8 +85,8 @@ Scenario: Tình huống chưa xong
 
 ## 6. `Background`
 
-- Chứa các bước chạy **trước mỗi** `Scenario` (trong phạm vi cho phép — thường cùng `Feature` sau mô tả, trước các scenario).
-- Không dùng `Background` bên trong `Rule` ở một số cấu hình: tuỳ phiên bản/grammar; cách an toàn là đặt `Background` ngay dưới `Feature` theo tài liệu Cucumber cho phiên bản bạn dùng.
+- Chứa các bước chạy **trước mỗi** `Scenario` trong phạm vi của nó và sau các `Before` hook.
+- Có thể đặt một `Background` ở cấp `Feature` hoặc một `Background` bên trong mỗi `Rule`; khối này phải đứng trước `Scenario` / `Example` đầu tiên cùng cấp.
 
 ```gherkin
 Feature: Giỏ hàng
@@ -98,6 +98,21 @@ Feature: Giỏ hàng
   Scenario: Thêm sản phẩm
     When …
     Then …
+```
+
+Ví dụ ở cấp `Rule`:
+
+```gherkin
+Feature: Công việc quá hạn
+
+  Rule: Nhắc người dùng ở lần mở đầu ngày
+    Background:
+      Given tôi có công việc quá hạn
+
+    Scenario: Mở lần đầu hôm nay
+      Given lần mở trước là hôm qua
+      When tôi mở ứng dụng
+      Then tôi thấy thông báo quá hạn
 ```
 
 ---
@@ -186,7 +201,7 @@ Trong bảng **Examples**, dòng tiêu đề cột bắt buộc để ánh xạ 
 ## 11. Doc String (chuỗi nhiều dòng)
 
 - Dùng cho văn bản dài: JSON, XML, payload, mô tả nhiều dòng.
-- Mở/đóng bằng dấu `"""` hoặc ```` ``` ` (delimiter có thể cấu hình); mức thụt dòng phải thống nhất.
+- Mở/đóng bằng dấu `"""` hoặc ba backtick; phần thụt vào sâu hơn cột delimiter được giữ lại sau khi parser dedent nội dung.
 
 ```gherkin
 Given payload JSON:
@@ -201,8 +216,8 @@ Có thể thêm dòng mô tả kiểu nội dung (một số phiên bản hỗ t
 
 ## 12. Ghi chú (Comments)
 
-- Bất kỳ dòng nào bắt đầu bằng `#` (sau khoảng trắng tùy chọn) là ghi chú, kéo dài đến hết dòng.
-- Có thể đặt ở cuối dòng mã, nhưng nên tránh nếu dễ gây lỗi đọc.
+- Ghi chú chỉ hợp lệ ở đầu một dòng mới: không hoặc có khoảng trắng, sau đó là `#` và nội dung.
+- Gherkin không hỗ trợ block comment hoặc inline comment ở cuối một dòng cú pháp.
 
 ```gherkin
 # Tính năng cần test trước release
@@ -238,6 +253,7 @@ Feature: Báo cáo
 
 - Markdown Plus chỉ thực hiện syntax highlighting. Extension không kiểm tra tính hợp lệ, không tạo AST Gherkin và không chạy step definitions.
 - Nội dung code fence vẫn được hiển thị như source code, bao gồm thụt dòng và khoảng trắng.
+- `.feature` không nằm trong registry document hiện tại, nên không kích hoạt extension và cũng không xuất hiện như một file có thể mở trong Files explorer. Muốn đọc với Markdown Plus, hãy đặt nội dung vào code fence trong một tài liệu Markdown được hỗ trợ.
 
 ---
 

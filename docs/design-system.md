@@ -43,12 +43,17 @@ Viewer color values are owned by the resolved active built-in or custom theme in
 | `--mdp-muted` | Secondary text and idle icons |
 | `--mdp-border` | Standard borders and dividers |
 | `--mdp-border-strong` | Hover and structural borders |
+| `--mdp-code-bg`, `--mdp-code-text` | Inline code and non-Shiki fallback code |
 | `--mdp-link` | Links, focus, navigation, active state |
 | `--mdp-link-soft` | Selected/navigation surface |
 | `--mdp-accent` | Saved, copied, and positive state |
+| `--mdp-accent-soft` | Positive-state surface |
 | `--mdp-warning` | Editing, dirty state, and warnings |
+| `--mdp-warning-soft` | Warning/editing surface |
 | `--mdp-danger` | Errors and destructive actions |
-| `--mdp-code-bg` | Code and plain-text surface |
+| `--mdp-table-*` | Rendered table border, header, and alternating rows |
+| `--mdp-toast-*` | Info, success, warning, and error toast variants |
+| `--mdp-scrollbar-thumb*` | Overlay scrollbar idle and hover treatment |
 
 Use semantic variables instead of adding near-duplicate raw colors. Blue communicates navigation or selection, green successful completion, amber editing/warnings, and red errors or destructive actions.
 
@@ -81,7 +86,7 @@ Rendered document typography is user-configurable through `--mdp-font-family`, `
 - Every icon-only control needs an accessible name and tooltip.
 - Use a visible `2px` focus outline with offset for keyboard interaction.
 - Do not communicate active, dirty, success, or failure states through color alone.
-- Keep coarse-pointer targets at least `44px`; compact desktop controls may use the current `34px`–`38px` geometry.
+- Shared fields, buttons, primary Viewer actions, and rows use at least `44px` targets on coarse pointers. The current edge panel toggles and collapsed Files hit area use a compact `32px` coarse-pointer geometry; do not make new primary controls that small.
 - Honor reduced motion in skeletons, transitions, and overlays.
 - Menus and overlays must support Escape, outside dismissal, focus restoration, and cleanup.
 
@@ -92,7 +97,8 @@ Rendered document typography is user-configurable through `--mdp-font-family`, `
 - The Files panel is an independently resizable left rail.
 - The center pane owns the rendered document and editor layouts.
 - The right rail combines capability-driven document actions with the Outline.
-- Files and Outline widths use separate CSS variables and session preferences.
+- Files and Outline widths use separate CSS variables and tab-session preferences; collapsing Files preserves a narrow interaction gutter, while collapsing Outline preserves the actions rail.
+- Read mode can place a compact document-stat row above Markdown, an overlay scrollbar at the active scroll root, and a floating Back to top action after the user has scrolled far enough.
 - Responsive layouts collapse or hide supporting rails before constraining document readability.
 
 ### Settings
@@ -147,6 +153,9 @@ Shared SCSS under `src/shared/styles/` covers tokens, buttons, forms, containers
 - Loading states distinguish progress, empty content, and recoverable failure.
 - Skeletons approximate final geometry, are hidden from assistive technology, and respect reduced motion.
 - Viewer menus/tooltips use Viewer-specific implementations with root-aware dismissal and cleanup.
+- Document statistics use selectable muted text, hide for empty/non-Markdown/edit-mode content, and remain out of print output.
+- Overlay scrollbars support drag, track click, Arrow/Page/Home/End keys, auto-hide or always-visible policy, and a minimum thumb size.
+- Back to top appears only on a scrollable read surface after a distance threshold, uses smooth scrolling unless reduced motion is requested, and stays out of edit and print modes.
 
 ## Extending the system
 

@@ -80,6 +80,23 @@ Rendered document typography is user-configurable through `--mdp-font-family`, `
 - Reserve stronger elevation for menus, tooltips, toast, and full-screen overlays.
 - Interactive controls may use a subtle `translateY(1px)` pressed state without layout shift.
 
+## Control density
+
+Choose control geometry from its interaction context instead of applying page-form sizing to every surface.
+
+| Context | Fine pointer | Coarse pointer |
+| --- | --- | --- |
+| Dense editor or utility toolbar | `28px` | `44px` |
+| Compact icon action | `34px` | `44px` |
+| Shared page input or button | `36px`–`38px` | `44px` |
+| Navigation row | `36px`–`38px` | `44px` |
+
+- Transient editor and utility toolbars should use the dense tier on fine pointers. A focused workflow such as Find/Replace may use one right-anchored floating surface so it stays close to IDE conventions without turning the entire editor edge into a toolbar.
+- Choose toolbar rows by task hierarchy: cohesive utilities can adapt to available width, while paired workflows such as Find and Replace may keep one deliberate row per task even when more width is available. Move secondary modes into a quieter footer row instead of extending the primary task row.
+- On fine pointers, target at most `40px` for a single toolbar row and `80px` for two primary task rows, excluding an optional compact secondary-options footer.
+- Preserve `44px` targets for coarse pointers even when the same controls render more densely with a mouse or trackpad.
+- Floating editor utilities must remain inside the editor bounds, fall back toward full available width on narrow panes, and preserve pointer interaction only on the utility surface so the surrounding editor stays usable.
+
 ## Focus, motion, and accessibility
 
 - Preserve semantic landmarks and native buttons, links, labels, and form controls.

@@ -1,6 +1,8 @@
 import {
   EDITOR_GUTTER_MIN_WIDTH_PX,
   EDITOR_LINE_HEIGHT,
+  EDITOR_TOOLBAR_CONTROL_HEIGHT_PX,
+  EDITOR_TOOLBAR_TOUCH_TARGET_PX,
   normalizeEditorSettings
 } from '../../shared/constants/editor.js'
 
@@ -51,46 +53,76 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
       borderColor: 'var(--mdp-border)'
     },
     '.cm-panels-top': {
-      borderBottom: '1px solid var(--mdp-border)'
+      position: 'absolute',
+      top: '0',
+      right: '0',
+      left: '0',
+      zIndex: '20',
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-start',
+      padding: '8px',
+      borderBottom: '0',
+      background: 'transparent',
+      pointerEvents: 'none'
     },
     '.cm-panel.cm-search': {
+      position: 'relative',
       display: 'flex',
       flexWrap: 'wrap',
       alignItems: 'center',
-      columnGap: '6px',
-      rowGap: '8px',
-      margin: '10px',
-      padding: '10px 46px 10px 10px',
+      columnGap: '4px',
+      rowGap: '4px',
+      margin: '0',
+      width: 'min(500px, 100%)',
+      maxWidth: '100%',
+      padding: '8px 40px 8px 8px',
       border: '1px solid var(--mdp-border-strong)',
-      borderRadius: '12px',
-      background: 'color-mix(in srgb, var(--mdp-panel-bg) 88%, var(--mdp-surface))',
-      boxShadow: 'var(--mdp-shadow-raised)',
+      borderRadius: '10px',
+      background: 'color-mix(in srgb, var(--mdp-panel-bg) 92%, var(--mdp-surface))',
+      boxShadow: 'var(--mdp-shadow-float)',
       color: 'var(--mdp-text)',
       fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      fontSize: '12px'
+      fontSize: '11px',
+      pointerEvents: 'auto'
     },
     '.cm-panel.cm-search br': {
-      display: 'block',
+      display: 'none'
+    },
+    '.cm-panel.cm-search:has(input[name="replace"])::before': {
+      content: '""',
       flex: '0 0 100%',
-      width: '100%',
-      height: '0'
+      width: '0',
+      height: '0',
+      order: '1'
+    },
+    '.cm-panel.cm-search:has(input[name="replace"])::after': {
+      content: '""',
+      flex: '0 0 100%',
+      width: '0',
+      height: '0',
+      order: '3'
+    },
+    '.cm-panel.cm-search :is(input[name="replace"], button[name="replace"], button[name="replaceAll"])': {
+      order: '2'
     },
     '.cm-panel.cm-search > :is(input, button, label)': {
       margin: '0'
     },
     '.cm-panel.cm-search .cm-textfield': {
-      flex: '0 1 280px',
-      width: 'min(280px, 100%)',
-      minWidth: '160px',
-      height: '32px',
-      padding: '5px 10px',
+      flex: '0 1 240px',
+      width: 'min(240px, 100%)',
+      minWidth: '140px',
+      maxWidth: '240px',
+      height: `${EDITOR_TOOLBAR_CONTROL_HEIGHT_PX}px`,
+      padding: '3px 8px',
       border: '1px solid var(--mdp-border-strong)',
-      borderRadius: '8px',
-      background: 'var(--mdp-surface)',
+      borderRadius: '6px',
+      background: 'color-mix(in srgb, var(--mdp-surface) 82%, transparent)',
       color: 'var(--mdp-text)',
       font: 'inherit',
-      fontSize: '12px',
-      lineHeight: '20px',
+      fontSize: '11px',
+      lineHeight: '18px',
       boxShadow: 'inset 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent)',
       transition: 'border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease'
     },
@@ -108,18 +140,18 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     },
     '.cm-panel.cm-search .cm-button': {
       appearance: 'none',
-      height: '32px',
-      padding: '5px 10px',
+      height: `${EDITOR_TOOLBAR_CONTROL_HEIGHT_PX}px`,
+      padding: '3px 8px',
       border: '1px solid var(--mdp-border-strong)',
-      borderRadius: '8px',
+      borderRadius: '6px',
       background: 'var(--mdp-surface)',
       backgroundImage: 'none',
       color: 'var(--mdp-text)',
       font: 'inherit',
-      fontSize: '12px',
+      fontSize: '11px',
       fontWeight: '650',
-      lineHeight: '20px',
-      boxShadow: 'var(--mdp-shadow-subtle)',
+      lineHeight: '18px',
+      boxShadow: 'none',
       cursor: 'pointer',
       transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease'
     },
@@ -137,18 +169,19 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
       outlineOffset: '2px'
     },
     '.cm-panel.cm-search label': {
+      order: '4',
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '6px',
-      height: '32px',
-      padding: '0 8px',
+      gap: '4px',
+      height: `${EDITOR_TOOLBAR_CONTROL_HEIGHT_PX - 4}px`,
+      padding: '0 3px',
       border: '1px solid transparent',
-      borderRadius: '8px',
-      background: 'color-mix(in srgb, var(--mdp-surface) 52%, transparent)',
+      borderRadius: '6px',
+      background: 'transparent',
       color: 'var(--mdp-muted)',
-      fontSize: '11px',
+      fontSize: '10px',
       fontWeight: '600',
-      lineHeight: '20px',
+      lineHeight: '18px',
       cursor: 'pointer',
       transition: 'background-color 150ms ease, color 150ms ease',
       whiteSpace: 'nowrap'
@@ -159,15 +192,15 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     },
     '.cm-panel.cm-search input[type="checkbox"]': {
       appearance: 'none',
-      width: '14px',
-      height: '14px',
+      width: '13px',
+      height: '13px',
       margin: '0',
       border: '1px solid var(--mdp-border-strong)',
       borderRadius: '4px',
       backgroundColor: 'var(--mdp-surface)',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
-      backgroundSize: '10px 10px',
+      backgroundSize: '9px 9px',
       cursor: 'pointer',
       transition: 'background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease'
     },
@@ -182,17 +215,17 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     },
     '.cm-panel.cm-search button[name="close"]': {
       appearance: 'none',
-      top: '10px',
-      right: '10px',
-      width: '32px',
-      height: '32px',
+      top: '6px',
+      right: '6px',
+      width: `${EDITOR_TOOLBAR_CONTROL_HEIGHT_PX}px`,
+      height: `${EDITOR_TOOLBAR_CONTROL_HEIGHT_PX}px`,
       padding: '0',
       border: '1px solid transparent',
-      borderRadius: '8px',
+      borderRadius: '6px',
       background: 'transparent',
       color: 'var(--mdp-muted)',
-      fontSize: '18px',
-      lineHeight: '30px',
+      fontSize: '16px',
+      lineHeight: '26px',
       cursor: 'pointer',
       transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease'
     },
@@ -204,6 +237,26 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     '.cm-panel.cm-search button[name="close"]:focus-visible': {
       outline: '2px solid var(--mdp-focus-color)',
       outlineOffset: '2px'
+    },
+    '@media (pointer: coarse)': {
+      '.cm-panels-top': {
+        padding: '8px'
+      },
+      '.cm-panel.cm-search': {
+        columnGap: '6px',
+        rowGap: '6px',
+        padding: '8px 54px 8px 8px'
+      },
+      '.cm-panel.cm-search :is(.cm-textfield, .cm-button, label)': {
+        height: `${EDITOR_TOOLBAR_TOUCH_TARGET_PX}px`
+      },
+      '.cm-panel.cm-search button[name="close"]': {
+        top: '8px',
+        right: '8px',
+        width: `${EDITOR_TOOLBAR_TOUCH_TARGET_PX}px`,
+        height: `${EDITOR_TOOLBAR_TOUCH_TARGET_PX}px`,
+        lineHeight: `${EDITOR_TOOLBAR_TOUCH_TARGET_PX - 2}px`
+      }
     },
     '.cm-searchMatch': {
       backgroundColor: 'color-mix(in srgb, var(--mdp-link) 22%, transparent)'

@@ -6,6 +6,10 @@ export const DEFAULT_EDITOR_ENABLED = false
 export const EDITOR_LINE_HEIGHT = 1.5
 /** Matches `.cm-gutters` minWidth — status bar left padding aligns with this. */
 export const EDITOR_GUTTER_MIN_WIDTH_PX = 40
+/** Fine-pointer controls inside transient editor toolbars stay denser than page forms. */
+export const EDITOR_TOOLBAR_CONTROL_HEIGHT_PX = 28
+/** Coarse pointers keep an accessible target even when the visual toolbar is compact on desktop. */
+export const EDITOR_TOOLBAR_TOUCH_TARGET_PX = 44
 
 export const DEFAULT_EDITOR_SETTINGS = {
   enabled: DEFAULT_EDITOR_ENABLED,

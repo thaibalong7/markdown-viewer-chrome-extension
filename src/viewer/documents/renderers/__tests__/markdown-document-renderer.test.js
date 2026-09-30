@@ -53,7 +53,8 @@ describe('Markdown document renderer', () => {
       injectViewerStyles: vi.fn(),
       renderContextCache: new Map(),
       copyCodeWithToast: vi.fn(),
-      prepareZoomableImages: vi.fn()
+      prepareZoomableImages: vi.fn(),
+      showToast: vi.fn()
     }
     mocks.renderDocument.mockResolvedValue({ html: '<h1 id="title">Title</h1>', pluginManager: { afterRender } })
     mocks.buildTocItems.mockReturnValue(tocItems)
@@ -66,14 +67,58 @@ describe('Markdown document renderer', () => {
       signal: new AbortController().signal
     })
 
-    expect(mocks.renderDocument).toHaveBeenCalledWith('# Title', expect.any(Object), {
-      injectViewerStyles: services.injectViewerStyles,
-      renderContextCache: services.renderContextCache
-    })
+    expect(mocks.renderDocument).toHaveBeenCalledWith(
+      '# Title',
+      expect.any(Object),
+      expect.objectContaining({
+        injectViewerStyles: services.injectViewerStyles,
+        renderContextCache: services.renderContextCache,
+        onPluginWarning: expect.any(Function)
+      })
+    )
     expect(mocks.renderIntoElement).toHaveBeenCalledWith(articleEl, '<h1 id="title">Title</h1>')
     expect(afterRender).toHaveBeenCalledWith(expect.objectContaining({ articleEl }))
     expect(services.prepareZoomableImages).toHaveBeenCalledOnce()
     expect(result).toMatchObject({ tocItems, interactionProfile: 'markdown', renderedText: '# Title' })
+  })
+
+  it('surfaces one warning toast while continuing after plugin hook failures', async () => {
+    const afterRender = vi.fn(async ({ onPluginWarning }) => {
+      onPluginWarning({ pluginId: 'first', hook: 'afterRender' })
+      onPluginWarning({ pluginId: 'second', hook: 'afterRender' })
+    })
+    const services = {
+      injectViewerStyles: vi.fn(),
+      renderContextCache: new Map(),
+      copyCodeWithToast: vi.fn(),
+      prepareZoomableImages: vi.fn(),
+      showToast: vi.fn()
+    }
+    mocks.renderDocument.mockResolvedValue({
+      html: '<p>Basic Markdown</p>',
+      pluginManager: { afterRender },
+      warnings: []
+    })
+    mocks.buildTocItems.mockReturnValue([])
+
+    const result = await render({
+      loadedDocument: { text: 'Basic Markdown' },
+      articleEl: {},
+      settings: {},
+      services,
+      signal: new AbortController().signal
+    })
+
+    expect(mocks.renderIntoElement).toHaveBeenCalledWith({}, '<p>Basic Markdown</p>')
+    expect(services.showToast).toHaveBeenCalledOnce()
+    expect(services.showToast).toHaveBeenCalledWith(
+      'Some Markdown enhancements could not be applied. Basic Markdown is still available.',
+      { variant: 'warning' }
+    )
+    expect(result.renderResult.warnings).toEqual([
+      { pluginId: 'first', hook: 'afterRender' },
+      { pluginId: 'second', hook: 'afterRender' }
+    ])
   })
 
   it.each(['', ' \n\t'])('renders an accessible empty state with an edit hint for %j', async (source) => {

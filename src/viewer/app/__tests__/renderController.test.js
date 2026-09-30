@@ -41,7 +41,8 @@ function createHarness() {
   })
   const reactHandle = {
     setTocReady: vi.fn(),
-    updateChromeState: vi.fn()
+    updateChromeState: vi.fn(),
+    showToast: vi.fn()
   }
   const loadedDocument = {
     document: { fileTypeId: 'markdown' },
@@ -83,6 +84,20 @@ describe('document render controller', () => {
     controller.destroy()
     controller.destroy()
     expect(secondCleanup).toHaveBeenCalledOnce()
+  })
+
+  it('exposes the viewer toast bridge to document renderers', async () => {
+    renderer.render.mockImplementationOnce(({ services }) => {
+      services.showToast('Plugin fallback active', { variant: 'warning' })
+      return { tocItems: [], renderedText: '# Current' }
+    })
+    const { controller, reactHandle } = createHarness()
+
+    await controller.render()
+
+    expect(reactHandle.showToast).toHaveBeenCalledWith('Plugin fallback active', {
+      variant: 'warning'
+    })
   })
 
   it('aborts an older render before starting a newer one', async () => {

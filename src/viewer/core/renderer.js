@@ -61,7 +61,15 @@ export function renderIntoElement(element, html) {
 }
 
 export async function renderDocument(markdown, settings = {}, runtimeContext = {}) {
-  const renderContext = await createRenderContext(settings, runtimeContext)
+  const warnings = []
+  const reportPluginWarning = (warning) => {
+    warnings.push(warning)
+    runtimeContext?.onPluginWarning?.(warning)
+  }
+  const renderContext = await createRenderContext(settings, {
+    ...runtimeContext,
+    onPluginWarning: reportPluginWarning
+  })
   const { pluginManager, markdownEngine } = renderContext
   const nextMarkdown = pluginManager.preprocessMarkdown(markdown, renderContext.runtimeContext)
 
@@ -86,6 +94,6 @@ export async function renderDocument(markdown, settings = {}, runtimeContext = {
     metadata: {
       settingsHash: renderContext.settingsHash
     },
-    warnings: []
+    warnings
   }
 }

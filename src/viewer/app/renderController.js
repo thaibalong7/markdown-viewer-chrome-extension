@@ -182,7 +182,8 @@ export function createRenderController({
           renderContextCache,
           copyCodeWithToast: articleInteractions?.copyCodeWithToast.bind(articleInteractions),
           prepareZoomableImages: () => articleInteractions?.prepareZoomableImages(),
-          closeImageLightbox: () => articleInteractions?.closeImageLightbox()
+          closeImageLightbox: () => articleInteractions?.closeImageLightbox(),
+          showToast: (message, options) => getReactHandle()?.showToast?.(message, options)
         }
       })
       if (currentRenderToken !== renderToken || signal.aborted) {

@@ -60,10 +60,16 @@ export async function createRenderContext(settings = {}, runtimeContext = {}) {
   const cached = getCachedRenderContext(runtimeContext?.renderContextCache, settingsHash, context)
   if (cached) return cached
 
-  const pluginManager = await createPluginManager({ settings })
-  const markdownEngine = createMarkdownEngine()
-
-  await pluginManager.extendMarkdown(markdownEngine, context)
+  const pluginManager = await createPluginManager({
+    settings,
+    onPluginWarning: context.onPluginWarning
+  })
+  let markdownEngine
+  let extensionResult
+  do {
+    markdownEngine = createMarkdownEngine()
+    extensionResult = await pluginManager.extendMarkdown(markdownEngine, context)
+  } while (extensionResult.failedPluginCount > 0)
   injectSourceLineMapping(markdownEngine.instance)
 
   const nextContext = {

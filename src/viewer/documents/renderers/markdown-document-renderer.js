@@ -2,6 +2,9 @@ import { renderDocument, renderIntoElement } from '../../core/renderer.js'
 import { buildTocItems } from '../../core/toc-builder.js'
 import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
 
+const PLUGIN_WARNING_MESSAGE =
+  'Some Markdown enhancements could not be applied. Basic Markdown is still available.'
+
 function throwIfAborted(signal) {
   if (signal?.aborted) throw new DOMException('Document render was aborted.', 'AbortError')
 }
@@ -46,9 +49,18 @@ export async function render({ loadedDocument, articleEl, settings, services, si
     }
   }
 
+  const pluginWarnings = []
+  let pluginWarningShown = false
+  const onPluginWarning = (warning) => {
+    pluginWarnings.push(warning)
+    if (pluginWarningShown) return
+    pluginWarningShown = true
+    services.showToast?.(PLUGIN_WARNING_MESSAGE, { variant: 'warning' })
+  }
   const result = await renderDocument(source, settings, {
     injectViewerStyles: services.injectViewerStyles,
-    renderContextCache: services.renderContextCache
+    renderContextCache: services.renderContextCache,
+    onPluginWarning
   })
   throwIfAborted(signal)
 
@@ -59,7 +71,8 @@ export async function render({ loadedDocument, articleEl, settings, services, si
     articleEl,
     settings,
     copyCodeWithToast: services.copyCodeWithToast,
-    signal
+    signal,
+    onPluginWarning
   })
   if (signal?.aborted) {
     pluginCleanup?.()
@@ -72,6 +85,9 @@ export async function render({ loadedDocument, articleEl, settings, services, si
     interactionProfile: 'markdown',
     cleanup: typeof pluginCleanup === 'function' ? pluginCleanup : undefined,
     renderedText: source,
-    renderResult: result
+    renderResult: {
+      ...result,
+      warnings: pluginWarnings
+    }
   }
 }

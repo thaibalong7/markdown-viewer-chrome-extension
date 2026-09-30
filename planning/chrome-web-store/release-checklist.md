@@ -193,11 +193,11 @@ Tiêu chí hoàn thành:
 
 ### 9. Tăng khả năng chịu lỗi của plugin
 
-- [ ] Optional plugin import failure không được làm hỏng toàn viewer.
-- [ ] Một plugin hook throw không được ngăn Markdown cơ bản render.
-- [ ] Cleanup của plugin này throw không được ngăn cleanup của plugin khác.
-- [ ] Surface warning/toast phù hợp và log không chứa nội dung document.
-- [ ] Thêm tests cho dynamic import/hook failure.
+- [x] Optional plugin import failure không được làm hỏng toàn viewer.
+- [x] Một plugin hook throw không được ngăn Markdown cơ bản render.
+- [x] Cleanup của plugin này throw không được ngăn cleanup của plugin khác.
+- [x] Surface warning/toast phù hợp và log không chứa nội dung document.
+- [x] Thêm tests cho dynamic import/hook failure.
 
 ### 10. Reinjection/HMR cleanup
 

@@ -88,9 +88,6 @@ const SHIKI_THEME_LOADERS = {
 /** Explicit allowlist of shipped Shiki language ids. */
 export const SHIKI_LANG_IDS = Object.keys(SHIKI_LANGUAGE_LOADERS)
 
-/** Smaller startup set; remaining grammars are loaded on demand. */
-export const SHIKI_CORE_LANG_IDS = ['javascript', 'typescript', 'json', 'markdown', 'html', 'css', 'bash', 'python']
-
 const SHIKI_LANG_ALIAS_TO_ID = new Map([
   ['js', 'javascript'],
   ['mjs', 'javascript'],

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="0 0 1920 1200" role="img" aria-label="Aurora gradient background">
+  <defs>
+    <linearGradient id="night" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101f"/><stop offset=".5" stop-color="#102440"/><stop offset="1" stop-color="#111827"/></linearGradient>
+    <radialGradient id="cyan"><stop stop-color="#22d3ee" stop-opacity=".8"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+    <radialGradient id="violet"><stop stop-color="#a78bfa" stop-opacity=".72"/><stop offset="1" stop-color="#a78bfa" stop-opacity="0"/></radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="42"/></filter>
+  </defs>
+  <rect width="1920" height="1200" fill="url(#night)"/>
+  <ellipse cx="380" cy="220" rx="720" ry="290" fill="url(#cyan)" filter="url(#soft)" transform="rotate(-12 380 220)"/>
+  <ellipse cx="1510" cy="810" rx="760" ry="330" fill="url(#violet)" filter="url(#soft)" transform="rotate(18 1510 810)"/>
+  <ellipse cx="1010" cy="510" rx="580" ry="170" fill="url(#cyan)" opacity=".35" filter="url(#soft)" transform="rotate(-24 1010 510)"/>
+  <g fill="#f8fafc">
+    <circle cx="180" cy="760" r="2" opacity=".75"/><circle cx="330" cy="920" r="3" opacity=".45"/><circle cx="590" cy="670" r="2" opacity=".6"/><circle cx="830" cy="980" r="2" opacity=".7"/><circle cx="1100" cy="190" r="3" opacity=".4"/><circle cx="1410" cy="300" r="2" opacity=".6"/><circle cx="1670" cy="520" r="3" opacity=".55"/><circle cx="1780" cy="960" r="2" opacity=".7"/>
+  </g>
+</svg>

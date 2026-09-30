@@ -1,0 +1,8 @@
+flowchart TB
+  Files[Local workspace] --> Reader[Markdown reader]
+  Files --> Diagram[Diagram preview]
+  Files --> Images[Image preview]
+  Reader --> Editor[Live editor]
+  Reader --> Export[HTML & Word]
+  Diagram --> Assets[SVG & PNG]
+

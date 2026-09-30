@@ -1,0 +1,10 @@
+MARKDOWN PLUS — RELEASE NOTES
+
+• A polished local Markdown reader
+• Folder navigation across supported formats
+• Light, dark, high-contrast, and custom themes
+• Mermaid, Math, code highlighting, and export
+• Recent files and private local processing
+
+Everything in this demo workspace is fictional and safe for screenshots.
+

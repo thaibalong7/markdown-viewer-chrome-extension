@@ -1,0 +1,7 @@
+flowchart LR
+  Draft[Draft locally] --> Preview[Preview instantly]
+  Preview --> Review{Ready?}
+  Review -- Not yet --> Draft
+  Review -- Yes --> Export[Export & share]
+  Export --> Done[Done]
+

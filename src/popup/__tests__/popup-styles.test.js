@@ -118,4 +118,13 @@ describe('popup design-system styles', () => {
     expect(popupCss).toMatch(/@media \(prefers-color-scheme: dark\)/)
     expect(popupCss).toMatch(/@media \(prefers-reduced-motion: reduce\)/)
   })
+
+  it('keeps About and Settings actions grouped without shrinking status feedback', () => {
+    expect(popupCss).toMatch(
+      /\.popup-footer__actions\s*\{[^}]*flex: 0 0 auto;[^}]*display: flex;/s
+    )
+    expect(popupCss).toMatch(
+      /\.popup-footer \.mdp-ui-status\s*\{[^}]*min-width: 0;[^}]*text-overflow: ellipsis;/s
+    )
+  })
 })

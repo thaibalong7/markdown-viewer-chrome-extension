@@ -28,7 +28,7 @@ Markdown Plus is a Chrome Manifest V3 extension that turns local Markdown files 
 - Opens rendered images in a keyboard-accessible pan/zoom lightbox with fit, zoom, drag, wheel, and pinch interactions.
 - Exposes capability-driven actions: printing for every rendered document format, source/rendered switching for standalone Mermaid, and HTML or Word (`.doc`) export for Markdown. Chrome's print dialog can be used to save PDF.
 - Keeps recent local Markdown files in device-local extension storage, with Popup reopen/clear actions and configurable retention. Preferences use `chrome.storage.sync` with a local fallback.
-- Provides a full Settings page for activation, file-access status, document statistics, scrollbar behavior, theme authoring, explorer policy, history/privacy, text-file limits, JSON settings import/export, and reset workflows.
+- Provides a full Settings page for activation, file-access status, document statistics, scrollbar behavior, theme authoring, explorer policy, history/privacy, text-file limits, JSON settings import/export, reset workflows, and About/support information.
 
 ## Quick Start
 

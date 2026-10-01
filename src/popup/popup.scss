@@ -665,9 +665,29 @@ input[type='checkbox'] { cursor: pointer; }
 
 .popup-footer .mdp-ui-status { font-size: 11px; }
 
+.popup-footer .mdp-ui-status {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .popup-footer .mdp-ui-status__dot {
   width: 6px;
   height: 6px;
+}
+
+.popup-footer__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.popup-open-about {
+  min-height: 30px;
+  padding: 4px 7px;
+  white-space: nowrap;
 }
 
 .popup-loading,

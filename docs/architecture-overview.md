@@ -35,8 +35,8 @@ Direct activation is limited to local `file:` URLs with `.md`, `.markdown`, `.md
 | `src/plugins/` | Core and optional Markdown extensions |
 | `src/theme/` | Built-in themes, custom-theme resolution, theme-owned background descriptors, local theme-asset client, and runtime CSS variables |
 | `src/settings/` | Defaults, validation, persistence client, storage service |
-| `src/popup/` | Recent files, theme selection, and quick reader/editor/plugin controls |
-| `src/options/` | Full settings, file-access status, custom-theme management, policy controls, import/export, and reset workflows |
+| `src/popup/` | Recent files, theme selection, quick reader/editor/plugin controls, and Settings/About navigation |
+| `src/options/` | Full settings, file-access status, custom-theme management, policy controls, import/export, reset workflows, and About/support information |
 | `src/background/` | Message routing, local file reads, downloads, settings broadcasts, file history, and device-local theme assets |
 | `src/messaging/` | Shared message names and caller wrapper |
 | `src/shared/` | File registry, utilities, constants, React primitives, and shared styles |

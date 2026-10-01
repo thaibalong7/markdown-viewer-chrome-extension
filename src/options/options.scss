@@ -139,6 +139,18 @@ input[type='checkbox'] {
   display: none;
 }
 
+.settings-nav__item--meta {
+  margin-top: 13px;
+}
+
+.settings-nav__item--meta::after {
+  position: absolute;
+  inset: -10px 0 auto;
+  height: 1px;
+  background: var(--mdp-border);
+  content: '';
+}
+
 .settings-main {
   min-width: 0;
   padding: 44px clamp(32px, 4vw, 72px) 72px;
@@ -180,6 +192,198 @@ input[type='checkbox'] {
   color: var(--mdp-muted);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.settings-section--about {
+  width: min(960px, 100%);
+}
+
+.settings-about-hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+}
+
+.settings-about-hero__mark {
+  width: 72px;
+  height: 72px;
+  display: block;
+  object-fit: contain;
+}
+
+.settings-about-hero__copy {
+  min-width: 0;
+}
+
+.settings-about-hero__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.settings-about-hero__title-row h3 {
+  margin: 0;
+  color: var(--mdp-heading);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.settings-about-hero__copy > p {
+  margin: 7px 0 0;
+  color: var(--mdp-text);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.settings-about-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 18px;
+  margin: 12px 0 0;
+  padding: 0;
+  color: var(--mdp-muted);
+  font-size: 12px;
+  list-style: none;
+}
+
+.settings-about-hero__meta li + li {
+  position: relative;
+}
+
+.settings-about-hero__meta li + li::before {
+  position: absolute;
+  left: -11px;
+  color: var(--mdp-border-strong);
+  content: '•';
+}
+
+.settings-about-privacy {
+  margin-top: 18px;
+}
+
+.settings-about-privacy p {
+  margin: 4px 0 0;
+  max-width: 760px;
+  font-size: 13px;
+}
+
+.settings-about-privacy a,
+.settings-about-link {
+  text-decoration: none;
+}
+
+.settings-about-privacy a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  color: var(--mdp-link);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.settings-about-privacy a:hover,
+.settings-about-link:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.settings-about-privacy svg,
+.settings-about-link > svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.settings-about-block {
+  margin-top: 28px;
+}
+
+.settings-about-block > h3 {
+  margin: 0 0 12px;
+  color: var(--mdp-heading);
+  font-size: 16px;
+}
+
+.settings-about-features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.settings-about-feature {
+  padding: 18px;
+}
+
+.settings-about-feature strong {
+  color: var(--mdp-heading);
+  font-size: 14px;
+}
+
+.settings-about-feature p {
+  margin: 7px 0 0;
+  color: var(--mdp-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.settings-about-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.settings-about-link {
+  min-width: 0;
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 15px 18px;
+  color: var(--mdp-link);
+  border-bottom: 1px solid var(--mdp-border);
+}
+
+.settings-about-link:nth-child(odd) {
+  border-right: 1px solid var(--mdp-border);
+}
+
+.settings-about-link:last-child {
+  border-bottom: 0;
+}
+
+.settings-about-link:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  border-right: 0;
+}
+
+.settings-about-link:hover {
+  background: color-mix(in srgb, var(--mdp-link-soft) 45%, var(--mdp-surface));
+}
+
+.settings-about-link > span {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.settings-about-link strong {
+  color: var(--mdp-heading);
+  font-size: 13px;
+}
+
+.settings-about-link small {
+  color: var(--mdp-muted);
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .settings-card--secondary {
@@ -1149,6 +1353,26 @@ input[type='checkbox'] {
 
   .settings-main {
     padding: 30px 18px 48px;
+  }
+
+  .settings-about-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-about-features,
+  .settings-about-links {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-about-link,
+  .settings-about-link:nth-child(odd),
+  .settings-about-link:nth-last-child(-n + 2) {
+    border-right: 0;
+    border-bottom: 1px solid var(--mdp-border);
+  }
+
+  .settings-about-link:last-child {
+    border-bottom: 0;
   }
 
   .settings-row--toggle,

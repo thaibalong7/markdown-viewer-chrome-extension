@@ -27,11 +27,18 @@
       --mdp-warning: #b35c00;
       --mdp-warning-soft: #fff3dc;
       --mdp-danger: #c2413a;
+      --mdp-toast-warning-bg: #fffbeb;
+      --mdp-toast-warning-text: #92400e;
+      --mdp-toast-warning-border: #fde68a;
+      --mdp-toast-error-bg: #fef2f2;
+      --mdp-toast-error-text: #b91c1c;
+      --mdp-toast-error-border: #fecaca;
       --mdp-table-border: #dce2ea;
       --mdp-table-header-bg: #f2f5f8;
       --mdp-table-row-alt-bg: #fafbfc;
       --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
       --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
+      --mdp-overlay-scrim: rgb(3 7 18 / 58%);
       --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
       --mdp-files-width: 264px;
       --mdp-toc-width: 280px;
@@ -65,6 +72,12 @@
       --mdp-warning: #f4b24e;
       --mdp-warning-soft: #3b2a0e;
       --mdp-danger: #ff8d85;
+      --mdp-toast-warning-bg: #3b2a05;
+      --mdp-toast-warning-text: #fde68a;
+      --mdp-toast-warning-border: #b45309;
+      --mdp-toast-error-bg: #450a0a;
+      --mdp-toast-error-text: #fecaca;
+      --mdp-toast-error-border: #b91c1c;
       --mdp-table-border: #2d3848;
       --mdp-table-header-bg: #1a2330;
       --mdp-table-row-alt-bg: #111925;
@@ -908,6 +921,39 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    /* Derived from shared controls and Viewer _exit-edit-confirmation.scss. */
+    .mdp-ui-card { overflow: hidden; border: 1px solid var(--mdp-border); border-radius: 12px; background: var(--mdp-surface); }
+    .mdp-ui-button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      min-height: 36px; padding: 6px 11px; border: 1px solid var(--mdp-border); border-radius: 8px;
+      background: var(--mdp-surface); color: var(--mdp-text); cursor: pointer;
+      font-size: 13px; font-weight: 600; line-height: 1.25; box-shadow: var(--mdp-shadow-subtle);
+      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+    }
+    .mdp-ui-button:hover { border-color: var(--mdp-border-strong); background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-strong)); }
+    .mdp-ui-button:active { transform: translateY(1px); }
+    .mdp-ui-button--danger { border-color: color-mix(in srgb, var(--mdp-danger) 42%, var(--mdp-border)); color: var(--mdp-danger); }
+    .mdp-ui-button--danger:hover { border-color: var(--mdp-danger); background: color-mix(in srgb, var(--mdp-danger) 10%, var(--mdp-surface)); }
+    .mdp-ui-badge { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 10px; border: 1px solid var(--mdp-border); border-radius: 999px; background: var(--mdp-panel-bg); color: var(--mdp-muted); font-size: 12px; font-weight: 650; line-height: 1.3; white-space: nowrap; }
+    .mdp-ui-badge--warning { border-color: color-mix(in srgb, var(--mdp-warning) 32%, var(--mdp-border)); background: var(--mdp-warning-soft); color: var(--mdp-warning); }
+    .mdp-ui-action-footer { display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--mdp-border); background: color-mix(in srgb, var(--mdp-panel-bg) 48%, var(--mdp-surface)); }
+    .mdp-exit-edit-modal { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 16px; border: 0; overflow-y: auto; background: var(--mdp-overlay-scrim); color: var(--mdp-text); text-align: left; white-space: normal; }
+    .mdp-exit-edit-modal[open] { display: grid; place-items: center; }
+    .mdp-exit-edit-modal::backdrop { background: transparent; }
+    .mdp-exit-edit-confirmation { width: min(440px, 100%); box-shadow: var(--mdp-shadow-float); }
+    .mdp-exit-edit-confirmation .mdp-ui-badge--warning { background: var(--mdp-toast-warning-bg); color: var(--mdp-toast-warning-text); border-color: var(--mdp-toast-warning-border); }
+    .mdp-exit-edit-confirmation .mdp-ui-button--danger { background: var(--mdp-toast-error-bg); color: var(--mdp-toast-error-text); border-color: var(--mdp-toast-error-border); }
+    .mdp-exit-edit-confirmation .mdp-ui-button--danger:hover { border-color: var(--mdp-toast-error-text); }
+    .mdp-exit-edit-confirmation__content { padding: 24px; }
+    .mdp-exit-edit-confirmation h2 { margin: 12px 0 0; color: var(--mdp-heading); font-size: 18px; line-height: 1.35; }
+    .mdp-exit-edit-confirmation p { margin: 8px 0 0; color: var(--mdp-muted); font-size: 13px; line-height: 1.55; }
+    .mdp-exit-edit-confirmation__actions { padding: 16px 24px; }
+    @media (max-width: 767px) { .mdp-ui-action-footer { flex-direction: column; } .mdp-ui-action-footer .mdp-ui-button { width: 100%; } }
+    @media (max-width: 540px) { .mdp-exit-edit-confirmation__content { padding: 16px; } .mdp-exit-edit-confirmation__actions { padding: 12px 16px; } }
+    @media (pointer: coarse) { .mdp-ui-button { min-height: 44px; } }
+    @media (prefers-reduced-motion: reduce) { .mdp-ui-button { transition: none; } }
+    @media print { .mdp-exit-edit-modal, .mdp-exit-edit-modal::backdrop { display: none !important; } }
   </style>
 </head>
 <body data-theme="light">
@@ -1050,9 +1096,19 @@
 
           <h2 id="extension">Extending the system</h2>
           <p>
+            Unsaved editor changes use a compact confirmation with a warning badge, shared card
+            and action footer. Keep editing receives focus; Discard changes uses the danger treatment.
+            Escape and outside press cancel and return focus to the trigger.
+          </p>
+          <button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="exit-edit-preview">Preview unsaved changes dialog</button>
+          <p>
             Settings owns named custom-theme authoring, including colors and structured backgrounds;
             Popup only selects saved themes. Both surfaces derive shared controls from the same
-            application foundations without introducing alternate focus or status semantics.
+            application foundations without introducing alternate focus or status semantics. Document updates
+            uses the shared select treatment in Settings, with a bounded control column that stacks
+            on narrow layouts. Its Viewer popover uses compact title/mode typography, semantic
+            status indicators, a document-and-clock details icon that flips to a document-and-download action icon when a revision is ready,
+            a short-lived update speech bubble, and a bounded status card composed from the shared card, badge, notice, and button contracts. Change Review uses those same primitives together with shared status, action-footer, and empty/error-state treatments; only its diff table, changed-area navigation, and responsive two-pane layout remain Viewer-specific.
           </p>
 
           <div class="mdp-source-note">
@@ -1109,7 +1165,31 @@
     </div>
   </div>
 
+  <dialog class="mdp-exit-edit-modal" id="exit-edit-dialog" role="alertdialog" aria-modal="true" aria-labelledby="exit-edit-title" aria-describedby="exit-edit-description">
+    <div class="mdp-ui-card mdp-exit-edit-confirmation">
+      <div class="mdp-exit-edit-confirmation__content">
+        <span class="mdp-ui-badge mdp-ui-badge--warning">Unsaved changes</span>
+        <h2 id="exit-edit-title">Discard changes and exit edit mode?</h2>
+        <p id="exit-edit-description">Your unsaved changes will be lost. The saved file will stay unchanged.</p>
+      </div>
+      <div class="mdp-ui-action-footer mdp-ui-action-footer--end mdp-exit-edit-confirmation__actions">
+        <button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="exit-edit-cancel">Keep editing</button>
+        <button class="mdp-ui-button mdp-ui-button--danger" type="button" id="exit-edit-discard">Discard changes</button>
+      </div>
+    </div>
+  </dialog>
+
+
   <script>
+    const exitDialog = document.getElementById('exit-edit-dialog')
+    const exitPreview = document.getElementById('exit-edit-preview')
+    const exitCancel = document.getElementById('exit-edit-cancel')
+    const closeExitPreview = () => { exitDialog.close(); exitPreview.focus({ preventScroll: true }) }
+    exitPreview.addEventListener('click', () => { exitDialog.showModal(); exitCancel.focus({ preventScroll: true }) })
+    exitCancel.addEventListener('click', closeExitPreview)
+    document.getElementById('exit-edit-discard').addEventListener('click', closeExitPreview)
+    exitDialog.addEventListener('cancel', (event) => { event.preventDefault(); closeExitPreview() })
+    exitDialog.addEventListener('pointerdown', (event) => { if (event.target === exitDialog) closeExitPreview() })
     const body = document.body
     const shell = document.getElementById('viewer-shell')
     const filesToggle = document.getElementById('files-toggle')

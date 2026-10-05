@@ -2,6 +2,8 @@
 @use '../../shared/styles/loading';
 @use '../../shared/styles/feedback';
 @use '../../shared/styles/button' as shared-button;
+@use '../../shared/styles/containers';
+@use '../../shared/styles/status';
 @use 'floating-actions';
 @use 'editor';
 @use 'chrome-print';
@@ -9,6 +11,11 @@
 @use 'viewer-scrollbar';
 @use 'scroll-to-top';
 @use 'document-stats';
+@use 'watch-status';
+@use 'change-review';
+@use 'editor-update-confirmation';
+@use 'exit-edit-confirmation';
+@use 'update-feedback';
 
 .mdp-root {
   --mdp-sidebar-layer-background: var(--mdp-sidebar-surface, var(--mdp-bg));
@@ -239,6 +246,7 @@
 .mdp-right-rail__actions-row {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 12px;
   width: 100%;
   min-width: 0;
@@ -263,6 +271,15 @@
 
 .mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
   display: contents;
+}
+
+@media (min-width: 900px) {
+  .mdp-right-rail--outline-expanded .mdp-right-rail__actions-row > .mdp-floating-actions {
+    /* Let the toolbar fit the resized rail so its buttons can wrap. */
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 @container mdp-right-rail (max-width: 339px) {

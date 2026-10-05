@@ -109,7 +109,7 @@ export function createSiblingScanRunner(deps) {
           files = await scanSiblingFiles(urlForScan, { signal })
           throwIfAborted(signal)
         } catch (error) {
-          if (isAbortError(error, signal)) return
+          if (isAbortError(error, signal)) return false
           logger.warn('Sibling scan failed.', error)
         }
         resetSiblingRefs()
@@ -163,7 +163,7 @@ export function createSiblingScanRunner(deps) {
           preserveExpandedState: Boolean(opts.preserveExpandedState)
         })
       } catch (error) {
-        if (isAbortError(error, signal)) return
+        if (isAbortError(error, signal)) return false
         logger.warn('Deep sibling scan failed.', error)
         resetSiblingRefs()
 
@@ -172,7 +172,7 @@ export function createSiblingScanRunner(deps) {
           files = await scanSiblingFiles(urlForScan, { signal })
           throwIfAborted(signal)
         } catch (flatError) {
-          if (isAbortError(flatError, signal)) return
+          if (isAbortError(flatError, signal)) return false
           logger.warn('Flat sibling fallback failed.', flatError)
         }
 

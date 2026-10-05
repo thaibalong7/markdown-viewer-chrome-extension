@@ -55,6 +55,7 @@ Sau khi thay đổi entry point, manifest, service worker hoặc dependency, hã
 - **Markdown:** `src/viewer/core/` quản lý markdown engine, Shiki, sanitize và render; `src/plugins/` mở rộng parser và post-render behavior.
 - **Explorer/navigation:** `src/viewer/explorer/` quản lý scan/workspace/session; `src/viewer/navigation/` phân loại link và route thật `?f=`.
 - **Editor:** `src/viewer/editor/` chứa CodeMirror bundle, file handle và scroll sync; session policy nằm trong `src/viewer/app/editorSessionController.js`.
+- **Document updates và review:** `src/viewer/app/watchSessionController.js` điều phối polling/apply, `src/viewer/navigation/reading-position.js` giữ vị trí đọc, còn `src/viewer/review/` và các component `ChangeReview*` sở hữu diff cùng review UI. Contract đầy đủ nằm trong [`docs/document-updates-and-change-review.md`](docs/document-updates-and-change-review.md).
 - **Popup:** `src/popup/index.jsx` mount `PopupApp.jsx` với Recent, Reader, Editor và Plugins panels.
 - **Settings:** `src/options/index.jsx` mount `OptionsApp.jsx` với General, Themes, Files & Workspace, Privacy & Data và Advanced sections.
 - **Background:** `src/background/service-worker.js` bọc response envelope và chuyển route thường sang `message-router.js`; offscreen fetch wire messages được xử lý riêng.
@@ -107,6 +108,7 @@ npm run analyze
 | Runtime/package/manifest/entry/style | `npm test` và `npm run build` |
 | Shiki, Mermaid, Math, editor, plugin, dependency | Thêm `npm run size:report` |
 | Chrome API, file picker, history, Back/Forward, print/export | Load `dist/` và smoke-test thủ công |
+| Watch mode, Change Review, focus/keyboard và đọc file ngoài | `npm test`, `npm run build` và smoke-test extension unpacked |
 
 Checklist smoke test thường dùng:
 
@@ -114,6 +116,7 @@ Checklist smoke test thường dùng:
 - Mở sibling/workspace, refresh scan, điều hướng qua format, kiểm tra file có khoảng trắng/Unicode và Back/Forward cho route `?f=`.
 - Thử collapse/resize Files và Outline, overlay scrollbar, Back to top, document statistics và responsive layout.
 - Bật editor, chọn đúng/sai file gốc, sửa/live preview/save, kiểm tra dirty confirmation và external-change protection.
+- Thử Document Updates ở Ask/Automatic/Off, tab ẩn/hiện, update liên tục, file rỗng/mất/quá lớn, giữ vị trí đọc, edit clean/dirty và Save conflict; mở Change Review để kiểm tra diff, section, cặp review cố định, keyboard/focus và responsive layout.
 - Bật/tắt plugin, đổi Mermaid renderer, mở lightbox và thử export Mermaid.
 - Đổi built-in/custom theme, syntax theme và background; reload tab để kiểm tra persistence.
 - Print từng format phù hợp; export HTML/Word từ Markdown và kiểm tra file tải xuống.
@@ -128,6 +131,8 @@ Kiểm tra Chrome extension Details đã bật **Allow access to file URLs**, ex
 ### Thay đổi không xuất hiện
 
 Chờ Vite/CRXJS build xong, reload extension tại `chrome://extensions`, rồi reload tab local file. Với service worker, có thể cần đóng/mở lại Popup hoặc Settings sau reload.
+
+Nếu source của tài liệu đang mở không theo kịp file trên disk, kiểm tra **Settings → General → Document updates**. Chế độ Off chỉ đọc khi bấm **Check now**; workspace mở bằng fallback `webkitdirectory` cần được chọn lại vì chỉ giữ snapshot `File`, không có handle để live reread.
 
 ### Cảnh báo `rollupOptions` và `rolldownOptions`
 

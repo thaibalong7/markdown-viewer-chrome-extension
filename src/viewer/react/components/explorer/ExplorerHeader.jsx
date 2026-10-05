@@ -111,7 +111,7 @@ export function ExplorerHeader({
           <IconButton
             tooltip={refreshTooltip}
             className={`mdp-explorer__header-action-btn mdp-explorer__refresh-btn${isRefreshing ? ' is-refreshing' : ''}`}
-            aria-label={isRefreshing ? 'Refreshing open file and file list' : 'Refresh open file and file list'}
+            aria-label={isRefreshing ? 'Refreshing file list' : 'Refresh file list'}
             disabled={refreshDisabled || isRefreshing}
             onClick={() => onRefresh?.()}
           >

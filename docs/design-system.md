@@ -123,7 +123,7 @@ Choose control geometry from its interaction context instead of applying page-fo
 - Settings uses page-level side navigation and bordered content sections.
 - The Themes section is the sole authoring surface for named custom themes, their semantic colors, and their structured backgrounds.
 - Shared fields, buttons, switches, badges, notices, loading, and status primitives come from `src/shared/`.
-- Wide settings rows may use label/control columns; narrow layouts stack them.
+- Wide settings rows may use label/control columns; narrow layouts stack them. Document updates uses the shared `mdp-ui-select` in a 180–220px control column, with an associated label and description; it expands to available width when stacked.
 
 ### Popup
 
@@ -163,13 +163,16 @@ Shared SCSS under `src/shared/styles/` covers tokens, buttons, forms, containers
 ## Current component contracts
 
 - Buttons use shared variants and preserve accessible labels while busy.
+- Document update dialogs share a neutral `--mdp-overlay-scrim`; the scrim does not derive from text color, so dark themes keep a dark overlay. Change Review additions/removals and update badges/notices use the theme's paired status foreground/background colors, including custom themes, rather than mixing status text onto an unrelated surface. Modal cards retain opaque theme surfaces over image and gradient backgrounds.
+- Leaving a dirty editor uses a custom modal with the shared card, warning badge, and action footer. “Keep editing” receives initial focus; “Discard changes” uses the danger button. Escape and outside press cancel, focus returns to the edit action, and native dialog modality contains focus and blocks background interaction. Discard is disabled during Save; clean editors exit directly.
 - Number fields keep validation text associated with their inputs.
 - Switches are used for immediate boolean settings and include visible labels.
 - Badges identify category or state; they are not actions.
 - Notices present informational, warning, success, or error feedback with text.
 - Loading states distinguish progress, empty content, and recoverable failure.
 - Skeletons approximate final geometry, are hidden from assistive technology, and respect reduced motion.
-- Viewer menus/tooltips use Viewer-specific implementations with root-aware dismissal and cleanup.
+- Viewer menus/tooltips use Viewer-specific implementations with root-aware dismissal and cleanup. Document updates uses a document-and-clock icon while it opens status details, then flips to a document-and-download icon when one click will apply a pending revision in read mode. A short-lived, clickable speech bubble announces the first pending transition without repeating for continuous writes; edit mode keeps the protected panel flow. Its status card uses the shared card, badge, notice, and button contracts with a 320px bound, expanding to 336px for the protected editor flow. A dedicated sync icon runs the manual check from the header position nearest the trigger pointer, while only the primary pending-update action occupies the lower action row. The card closes through the trigger, outside press or `Escape`, so its header does not need a separate close control. Motion respects `prefers-reduced-motion`.
+- Change Review composes the shared card, badge, notice, status, button, and empty/error-state contracts inside a Viewer-owned two-pane comparison layout. Diff tables, source gutters, changed-area navigation, and responsive stacking remain Viewer-specific; modal focus and dismissal use the shared Viewer dialog. Loading a disk revision from edit mode uses the same shared warning/danger semantics and action footer in both the status popover and confirmation dialog.
 - Document statistics use selectable muted text, hide for empty/non-Markdown/edit-mode content, and remain out of print output.
 - Overlay scrollbars support drag, track click, Arrow/Page/Home/End keys, auto-hide or always-visible policy, and a minimum thumb size.
 - Back to top appears only on a scrollable read surface after a distance threshold, uses smooth scrolling unless reduced motion is requested, and stays out of edit and print modes.

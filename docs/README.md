@@ -5,6 +5,7 @@ This directory documents the repository as it exists today. Runtime source remai
 ## Start here
 
 - [`architecture-overview.md`](./architecture-overview.md) — product scope, runtime flows, subsystem ownership, security boundaries, and task-to-source guidance.
+- [`document-updates-and-change-review.md`](./document-updates-and-change-review.md) — current Watch modes, review workflow, editor safeguards, reading continuity, limits, and implementation map.
 - [`theme-system.md`](./theme-system.md) — complete built-in/custom theme model, semantic colors, theme-owned backgrounds, local image assets, authoring workflows, extension guidance, and tests.
 - [`design-system.md`](./design-system.md) — visual tokens, component contracts, and current UI conventions.
 - [`design-system-demo.html`](./design-system-demo.html) — standalone static preview of the current Viewer visual language; it is illustrative, not a runtime fixture.

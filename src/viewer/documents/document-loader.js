@@ -106,7 +106,8 @@ export async function loadDocument({
   fileType,
   workspaceReader,
   signal,
-  maxStandaloneTextFileSizeMiB
+  maxStandaloneTextFileSizeMiB,
+  maxWatchBytes
 }) {
   throwIfAborted(signal)
   if (!fileType) {
@@ -124,6 +125,7 @@ export async function loadDocument({
       ? workspaceReader
       : await workspaceReader.getFile()
     throwIfAborted(signal)
+    if (maxWatchBytes && file?.size > maxWatchBytes) throw new DocumentTooLargeError(maxWatchBytes)
     if (Number.isFinite(file?.size)) {
       enforceStandaloneTextLimit(fileType, file.size, maxStandaloneTextBytes)
     }
@@ -141,6 +143,8 @@ export async function loadDocument({
   }
 
   throwIfAborted(signal)
-  enforceStandaloneTextLimit(fileType, utf8ByteLength(text), maxStandaloneTextBytes)
+  const textBytes = utf8ByteLength(text)
+  if (maxWatchBytes && textBytes > maxWatchBytes) throw new DocumentTooLargeError(maxWatchBytes)
+  enforceStandaloneTextLimit(fileType, textBytes, maxStandaloneTextBytes)
   return { text: String(text ?? ''), assetUrl: null, revokeAssetUrl: null }
 }

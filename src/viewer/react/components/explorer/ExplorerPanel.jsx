@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { isWorkspaceVirtualHref, normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
+import { normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
+import { getFileListRefreshUnavailableReason } from '../../../explorer/explorer-list-refresh.js'
 import { getWorkspaceRootUrl } from '../../../explorer/explorer-state.js'
 import { buildCollapsedExpandedMap } from '../../../explorer/explorer-tree-utils.js'
 import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
@@ -45,12 +46,12 @@ export function ExplorerPanel({ bridge }) {
   const revealTimersRef = useRef({ afterScrollRaf: 0, raf: 0, timeouts: [] })
   const [scrollElement, setScrollElement] = useState(null)
   const activeNormalized = normalizeFileUrlForCompare(viewState.activeFileUrl || '')
-  const refreshDisabled =
-    !viewState.currentFileUrl ||
-    isWorkspaceVirtualHref(viewState.currentFileUrl) ||
-    (viewState.explorerMode === 'workspace' && !getWorkspaceRootUrl()) ||
-    actualBusy ||
-    loadingVisible
+  const refreshUnavailableReason = getFileListRefreshUnavailableReason({
+    mode: viewState.explorerMode,
+    currentFileUrl: viewState.currentFileUrl,
+    workspaceRootUrl: getWorkspaceRootUrl()
+  })
+  const refreshDisabled = Boolean(refreshUnavailableReason) || actualBusy || loadingVisible
   const isBusy = actualBusy || loadingVisible
   const showCollapseAllFolders = presentedView === 'tree'
   const collapseAllExpandedMap = useMemo(
@@ -65,13 +66,8 @@ export function ExplorerPanel({ bridge }) {
   )
   const canCollapseAllFolders = Array.from(viewState.expandedMap.values()).some(Boolean)
   const collapseKeepsOpenFilePath = Array.from(collapseAllExpandedMap.values()).some(Boolean)
-  const refreshTooltip = (() => {
-    if (isBusy) return 'Refresh is available after scanning finishes'
-    if (!viewState.currentFileUrl) return 'Open a supported file before refreshing'
-    if (isWorkspaceVirtualHref(viewState.currentFileUrl)) return 'Refresh is unavailable for virtual workspace files'
-    if (viewState.explorerMode === 'workspace' && !getWorkspaceRootUrl()) return 'Refresh is unavailable for virtual workspaces'
-    return state.isRefreshing ? 'Refreshing file and list' : 'Refresh open file and file list'
-  })()
+  const refreshTooltip = isBusy ? 'Refresh is available after scanning finishes'
+    : refreshUnavailableReason || (state.isRefreshing ? 'Refreshing file list' : 'Refresh file list')
   const treeRows = useMemo(
     () => flattenVisibleTree(viewState.tree?.children || [], viewState.expandedMap),
     [viewState.tree, viewState.expandedMap]

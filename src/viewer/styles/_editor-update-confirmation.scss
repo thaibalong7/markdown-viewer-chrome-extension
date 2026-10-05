@@ -1,0 +1,38 @@
+@use 'modal-dialog';
+
+.mdp-editor-update-warning {
+  margin: 8px 0;
+
+  p { margin: 4px 0 0; }
+
+  &--compact {
+    margin: 12px 0 0;
+    padding: 8px 12px;
+  }
+
+  &--compact strong { font-size: 12px; }
+  &--compact p { margin-top: 2px; font-size: 11px; line-height: 1.45; }
+}
+
+.mdp-editor-update-confirmation-backdrop {
+  @include modal-dialog.backdrop;
+}
+
+.mdp-editor-update-confirmation {
+  width: min(520px, 100%);
+  box-shadow: var(--mdp-shadow-float);
+  text-align: left;
+
+  &__content { padding: 24px; }
+  &__badge { min-height: 24px; padding: 2px 8px; font-size: 11px; }
+  h2 { margin: 12px 0 0; color: var(--mdp-heading); font-size: 19px; line-height: 1.3; }
+  &__content > p { margin: 8px 0 0; color: var(--mdp-text); font-size: 13px; line-height: 1.55; }
+  &__note { margin-top: 16px; }
+  &__actions { padding: 16px 24px; }
+}
+
+@media (max-width: 540px) {
+  .mdp-editor-update-confirmation-backdrop { padding: 12px; }
+  .mdp-editor-update-confirmation__content { padding: 16px; }
+  .mdp-editor-update-confirmation__actions { padding: 12px 16px; }
+}

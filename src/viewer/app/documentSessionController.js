@@ -31,6 +31,8 @@ export function createDocumentSessionController({
   beforeDocumentSwitch,
   onDocumentSwitchStart,
   onDocumentLoaded,
+  onRevisionApplied,
+  onDocumentLoadSettled,
   onCurrentDocumentChange,
   publishUiState,
   showToast
@@ -42,6 +44,11 @@ export function createDocumentSessionController({
     assetUrl: null,
     revokeAssetUrl: null
   }
+  let workspaceReader = null
+  let acceptedSource = String(initialText ?? '')
+  let revision = 0
+  let sourceRevision = 0
+  let previousRevision = null
   let loadController = null
   let navigationToken = 0
   let destroyed = false
@@ -91,6 +98,11 @@ export function createDocumentSessionController({
       cleanupLoadedDocument(loadedDocument)
       currentDocument = nextDocument
       loadedDocument = { document: nextDocument, ...payload }
+      workspaceReader = options.workspaceReader || null
+      acceptedSource = String(payload.text ?? '')
+      ++sourceRevision
+      previousRevision = null
+      ++revision
       onDocumentLoaded?.(loadedDocument)
       onCurrentDocumentChange?.(nextDocument)
       publish()
@@ -127,7 +139,10 @@ export function createDocumentSessionController({
       publish({ error: message })
       return false
     } finally {
-      if (token === navigationToken) loadController = null
+      if (token === navigationToken) {
+        loadController = null
+        onDocumentLoadSettled?.()
+      }
     }
   }
 
@@ -141,6 +156,9 @@ export function createDocumentSessionController({
     onDocumentSwitchStart?.()
     cleanupLoadedDocument(loadedDocument)
     currentDocument = null
+    workspaceReader = null
+    previousRevision = null
+    ++revision
     loadedDocument = {
       document: { fileTypeId: 'markdown', rendererId: 'markdown' },
       text: String(text ?? ''),
@@ -152,6 +170,62 @@ export function createDocumentSessionController({
     publish()
     await render?.({ preserveScroll: false, honorHash: false })
     return true
+  }
+
+  function getWatchTarget() {
+    if (destroyed || loadController || currentDocument?.fileTypeId !== 'markdown') return null
+    return {
+      document: currentDocument,
+      generation: navigationToken,
+      revision,
+      sourceRevision,
+      acceptedSource,
+      supported: currentDocument.sourceKind === 'file-url' || typeof workspaceReader?.getFile === 'function'
+    }
+  }
+
+  function updateWorkspaceReader(readers) {
+    if (destroyed || currentDocument?.sourceKind !== 'workspace-file') return
+    workspaceReader = readers?.get(currentDocument.href) || null
+    ++revision
+  }
+
+  function matchesWatchTarget(target) {
+    return !destroyed && !loadController && target?.document === currentDocument &&
+      target.generation === navigationToken && target.revision === revision
+  }
+
+  async function readCurrentRevision(target, signal) {
+    if (!matchesWatchTarget(target) || !target.supported) return null
+    const payload = await loadDocument({
+      href: currentDocument.href,
+      fileType: getFileTypeFromUrl(currentDocument.href),
+      workspaceReader,
+      signal,
+      maxWatchBytes: 5 * 1024 * 1024
+    })
+    return matchesWatchTarget(target) && !signal?.aborted ? String(payload.text ?? '') : null
+  }
+
+  async function applyCurrentRevision(target, text) {
+    if (!matchesWatchTarget(target)) return false
+    previousRevision = { source: acceptedSource, id: sourceRevision }
+    acceptedSource = text
+    ++sourceRevision
+    ++revision
+    loadedDocument = { ...loadedDocument, text }
+    onRevisionApplied?.(loadedDocument)
+    publish()
+    await render?.({ preserveScroll: true, honorHash: false })
+    return !destroyed && target.generation === navigationToken
+  }
+
+  function acceptSavedSource(text, document) {
+    if (destroyed || currentDocument !== document) return
+    acceptedSource = text
+    ++sourceRevision
+    previousRevision = null
+    ++revision
   }
 
   function updateText(text) {
@@ -192,10 +266,19 @@ export function createDocumentSessionController({
     cleanupLoadedDocument(loadedDocument)
     loadedDocument = null
     currentDocument = null
+    previousRevision = null
+    acceptedSource = ''
   }
 
   return {
     openDocument,
+    getWatchTarget,
+    getPreviousRevision: () => previousRevision,
+    updateWorkspaceReader,
+    matchesWatchTarget,
+    readCurrentRevision,
+    applyCurrentRevision,
+    acceptSavedSource,
     showPlaceholder,
     updateText,
     setViewMode,

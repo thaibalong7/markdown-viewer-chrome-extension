@@ -21,6 +21,10 @@ export function ViewerApp({
   explorerBridge,
   markdown,
   documentUiState,
+  watchState,
+  onWatchCheck,
+  onWatchApply,
+  onReviewSectionNavigate,
   onShellReady,
   getArticleEl,
   getSettings,
@@ -70,8 +74,13 @@ export function ViewerApp({
             getSettings={getSettings}
             getCurrentFileUrl={getCurrentFileUrl}
             documentUiState={documentUiState}
+            watchState={watchState}
+            onWatchCheck={onWatchCheck}
+            onWatchApply={onWatchApply}
+            onReviewSectionNavigate={onReviewSectionNavigate}
             onPrepareEdit={onPrepareEdit}
             onSave={onSave}
+            saveStatus={saveStatus}
             onViewModeChange={onViewModeChange}
             onThemeToggle={onThemeToggle}
           />

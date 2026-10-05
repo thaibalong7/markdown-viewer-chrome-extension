@@ -15,10 +15,9 @@ export function RefreshIcon({ className = '' }) {
       focusable="false"
       className={className}
     >
-      <path d="M20 11a8 8 0 0 0-14.2-5" />
-      <path d="M20 4v7h-7" />
-      <path d="M4 13a8 8 0 0 0 14.2 5" />
-      <path d="M4 20v-7h7" />
+      <path d="M4 6h14M4 10h9M4 14h6" />
+      <path d="M13.5 15a4 4 0 1 1 .5 4.5" />
+      <path d="M13.5 12v3h3" />
     </svg>
   )
 }

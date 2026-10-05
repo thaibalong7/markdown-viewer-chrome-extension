@@ -65,6 +65,7 @@ The Viewer intentionally uses light DOM. This keeps document text visible to bro
 - `documentSessionController.js` owns current-document identity, loading, cancellation, capability publication, dirty-editor checks, and loaded-resource cleanup.
 - `renderController.js` selects a renderer, cancels stale renders, runs renderer cleanup, publishes busy/TOC state, preserves scroll, and presents recoverable render errors.
 - `editorSessionController.js` owns edit mode, dirty/save state, debounced preview, and save errors.
+- `watchSessionController.js` owns visible-tab Markdown polling, stable-change confirmation, pending updates, retries, and coordination with editor/save state. `readingActivityGuard.js` owns the input/selection guard and cleans up its listeners with the watch lifecycle.
 - `splitScrollSync.js` owns editor-to-preview scroll synchronization and cleanup.
 - `viewerStyles.js` applies theme/layout variables and runtime style elements.
 - `globalViewerListeners.js` owns `beforeunload`, save shortcuts, and view-mode keyboard behavior.
@@ -171,6 +172,30 @@ The editor reuses the sanitized Markdown pipeline for debounced previews. It sup
 
 Before edit mode opens, the user-facing safety gate shows the current local path and requires the original existing file to be selected through the File System Access API. `src/viewer/editor/file-io.js` verifies the exact filename and loaded content, requests write permission, persists the verified handle in IndexedDB, and records an in-memory disk baseline. Save writes only through that connected handle and blocks when the file changed externally; it never falls back to downloading a copy, and failures keep the editor dirty. Session policy remains in `editorSessionController.js`.
 
+## File list refresh
+
+The Files rail Refresh file list command only rescans the current folder/workspace. `explorer-list-refresh.js` owns the command and availability policy; `useExplorer` only wires refs, progress and the action. It does not reload the document, enter navigation, discard drafts, reset the route, or fall back to the entry document. Expanded folders and tree scroll are retained. File-URL workspace rescans use `openWorkspaceFolder({ listOnly: true, keepCurrentDocumentOnMissing: true })`; failure retains the previous list without changing the article. Handle/snapshot workspaces currently require selecting the folder again to rescan the list. Document updates owns Markdown source checks and revision application independently; non-Markdown live refresh remains outside Watch's scope.
+
+## Markdown watch mode
+
+`settings.watch.mode` supports `ask` (default), `auto`, and `off`, configured in General settings. Viewer chrome exposes a compact Document updates control in the action rail, including while editing. Its popover contains mode/status, Check now and the pending-update action; a static dot and a deduplicated live announcement indicate pending changes or errors without opening an overlay or moving focus. Watch checks only the active Markdown document while the tab is visible, about every two seconds; a changed source must match a second read after 400 ms for manual/Ask checks, or 1.5 seconds for automatic checks. Automatic replacement is limited to once per five seconds and deferred during scroll/input activity, a held pointer, article text selection or link focus, and while the Watch popover is open. Input must be idle for 1.5 seconds before resuming; each eventual apply uses newly read source. Continuous writes retain a stable pending indicator. Manual actions stay enabled during background polling; a manual request cancels a background stability check and runs after its I/O settles, without overlapping reads. Automatic applies do not emit success toasts, and in-place renders retain the existing outline until the replacement outline is ready. Errors back off up to 30 seconds and keep current content. Watch reads have a 5 MiB source limit and reuse the document loader and existing background/offscreen route without additional permissions.
+
+The document session retains the current workspace reader and a disk baseline independent of the editor draft. File URLs and fresh `getFile()` handles support watch; snapshot-only workspace `File` objects explain that the workspace must be selected again. Explorer reader replacement invalidates pending reads and updates the current workspace reader. Navigation, settings changes, visibility changes, Save, and teardown invalidate stale work; reads do not overlap.
+
+Automatic updates apply only in read mode. Edit mode, edit preparation, dirty drafts, and Save block automatic replacement. Loading a pending revision rereads disk and always requires explicit confirmation that edit mode will close; a dirty draft receives a destructive warning that it will be permanently discarded. Existing save-time disk conflict checks remain authoritative; successful writes advance the disk baseline with the exact saved source, while typing during Save remains dirty. Watch updates bypass navigation/history and explorer rescans.
+
+`navigation/reading-position.js` preserves heading/text, section offset, and ratio fallback through render. Render lifecycle owns user-input listeners and a short ResizeObserver window for late layout changes; user navigation cancels restoration. Revision sources stay in tab memory.
+
+## Change Review
+
+The document session assigns source revision ids independently of reader invalidation and keeps only the previous accepted source from the most recent external apply. Navigation and successful internal Save clear that previous snapshot. Ask/Off review accepted source against pending disk source, retaining the latest applied comparison when no update is pending. Auto opens the comparison from the most recent apply, even when a newer disk revision is deferred; that pending comparison is offered separately through Review latest version. Edit protection selects only accepted baseline against pending disk source. Editor preview text never becomes a review baseline.
+
+`react/components/ChangeReview.jsx` exposes View changes in the document action rail and lazily imports `ChangeReviewPanel.jsx` on demand. `review/review-pair.js` owns explicit pair selection: polling cannot replace a pinned comparison; Review latest version selects the available pair, and document navigation closes the review. While review is open, the existing reading guard defers automatic article replacement, but disk checks continue. Loading the latest disk version still uses Watch’s fresh-read and dirty-draft confirmation path, and can load a version newer than the pinned comparison.
+
+`review/line-diff.js` computes a bounded Myers source-line diff with old/new line numbers, exact line endings, counts and three lines of context per region. `review/change-review.js` derives affected sections from Markdown parser heading tokens and source ranges, including Setext headings and duplicate names, excluding fenced/indented code. It maps surviving old headings through unchanged lines; deleted headings retain their old names without a destination. Limits are 512 Ki UTF-16 code units per source, 20,000 lines per source, one million diff work steps, an 80 ms cooperative computation budget, and 2,000 output rows. Size/work/output excess or a time-budget overrun produces an explicit fallback to external diff tools; parsing is bounded by source size and checked after completion rather than preempted.
+
+React renders review text safely without inserting source HTML or reconciling the article. Change Review and editor confirmations share `react/components/common/ModalDialog.jsx`, `useModalDialog.js`, and `_modal-dialog.scss`; native dialog modality makes the background inert, contains focus, and handles nested confirmations. The shared hook owns Escape/outside dismissal and focus return without scrolling; `useReviewNavigation.js` owns region focus and Alt+Up/Down navigation. `review/review-navigation.js` allows section navigation only for existing article headings when the current generation, accepted source and completed render match the reviewed new source in read mode. No source history is persisted, and review does not merge drafts or bypass Save conflict checks. User behavior, limits, and the implementation map are documented in [`document-updates-and-change-review.md`](./document-updates-and-change-review.md).
+
 ## Plugins, Mermaid, and code highlighting
 
 Plugin ids/defaults live in `src/plugins/plugin-types.js`; registration and lifecycle hooks live in `src/plugins/plugin-manager.js`.
@@ -202,7 +227,7 @@ Settings ownership:
 
 Preferences use `chrome.storage.sync` with local fallback. Recent local-file history is stored separately in `chrome.storage.local` and follows its privacy/retention policy.
 
-The current preference shape also owns Viewer activation, typography, TOC/content sizing, overlay-scrollbar visibility, Markdown document-stat visibility, plugin states, explorer policies and scan limits, recent-file policy, standalone text-file limits, and opt-in editor preferences. The Settings page owns the full policy/import/export/reset surface; the Popup owns quick Reader, Editor, Plugins, and Recent controls.
+The current preference shape also owns Viewer activation, typography, TOC/content sizing, overlay-scrollbar visibility, Markdown document-stat visibility, the Document Updates mode, plugin states, explorer policies and scan limits, recent-file policy, standalone text-file limits, and opt-in editor preferences. The Settings page owns the full policy/import/export/reset surface; the Popup owns quick Reader, Editor, Plugins, and Recent controls.
 
 Theme settings use `theme.activeId` plus `theme.customThemes`. The Settings page is the only authoring surface: it creates, names, edits, and deletes custom themes and configures their colors and background. The Popup is a selector only and lists built-in themes together with saved custom themes. Custom theme records are validated, bounded, and synchronized with settings; incompatible version-1 `theme.preset` data is migrated explicitly.
 
@@ -239,6 +264,7 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 | Files/workspace | `src/viewer/explorer/`, `src/viewer/react/hooks/useExplorer.js` |
 | Links/history | `src/viewer/navigation/`, `explorer-navigation.js` |
 | Editor/save | `src/viewer/app/editorSessionController.js`, `src/viewer/editor/` |
+| Document updates/review | [`docs/document-updates-and-change-review.md`](./document-updates-and-change-review.md), `src/viewer/app/watchSessionController.js`, `src/viewer/review/` |
 | Plugins | `src/plugins/plugin-manager.js`, `src/plugins/core/`, `src/plugins/optional/` |
 | Theme/background/Shiki | [`docs/theme-system.md`](./theme-system.md), `src/theme/index.js`, `src/theme/backgrounds.js`, `ThemeSettings.jsx`, `BackgroundScene.jsx`, `src/viewer/core/shiki-config.js` |
 | Settings | `src/settings/`, `src/background/message-router.js` |
@@ -256,4 +282,4 @@ npm run build
 npm run size:report
 ```
 
-Run tests for behavior changes, add a production build for packaged/runtime changes, and use the size report for bundle-sensitive changes. Chrome-only flows—file access, workspace selection, Back/Forward, editing, and exports—still require an unpacked-extension smoke test from `dist/`.
+Run tests for behavior changes, add a production build for packaged/runtime changes, and use the size report for bundle-sensitive changes. Chrome-only flows—file access, workspace selection, Back/Forward, document watching/review, editing, and exports—still require an unpacked-extension smoke test from `dist/`.

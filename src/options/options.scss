@@ -194,6 +194,15 @@ input[type='checkbox'] {
   line-height: 1.6;
 }
 
+// Match the control column used by shared page fields; stack on narrow screens.
+.settings-row--select {
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+}
+
+@media (max-width: 767px) {
+  .settings-row--select { grid-template-columns: minmax(0, 1fr); }
+}
+
 .settings-section--about {
   width: min(960px, 100%);
 }

@@ -4,7 +4,7 @@ export function createExplorerActions({
   navigateToFileRef,
   pickAndOpenAnotherWorkspaceFolder,
   exitWorkspace,
-  refreshCurrentFileAndList,
+  refreshFileList,
   backActionRef,
   workspaceScanSession,
   siblingScanSession,
@@ -21,7 +21,7 @@ export function createExplorerActions({
       void exitWorkspace()
     },
     onRefresh: () => {
-      void refreshCurrentFileAndList()
+      void refreshFileList()
     },
     onBack: () => {
       backActionRef.current?.()
@@ -43,7 +43,7 @@ export function useExplorerActions({
   navigateToFileRef,
   pickAndOpenAnotherWorkspaceFolder,
   exitWorkspace,
-  refreshCurrentFileAndList,
+  refreshFileList,
   backActionRef,
   workspaceScanSession,
   siblingScanSession,
@@ -55,7 +55,7 @@ export function useExplorerActions({
         navigateToFileRef,
         pickAndOpenAnotherWorkspaceFolder,
         exitWorkspace,
-        refreshCurrentFileAndList,
+        refreshFileList,
         backActionRef,
         workspaceScanSession,
         siblingScanSession,
@@ -67,7 +67,7 @@ export function useExplorerActions({
       exitWorkspace,
       navigateToFileRef,
       pickAndOpenAnotherWorkspaceFolder,
-      refreshCurrentFileAndList,
+      refreshFileList,
       siblingScanSession,
       workspaceScanSession
     ]

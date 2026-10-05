@@ -31,7 +31,8 @@ export function getWatchMessage(state, isEditMode) {
 
 export function getWatchTriggerPresentation(state, isEditMode) {
   const appliesOnClick = Boolean(
-    state.supported && state.pending && !state.error && !isEditMode && state.mode !== 'auto'
+    state.supported && state.pending && !state.error && !isEditMode &&
+    (state.mode !== 'auto' || state.deferred)
   )
   if (appliesOnClick) return { action: 'apply', label: 'Update document' }
   if (state.error) return { action: 'details', label: 'Document updates: check failed' }

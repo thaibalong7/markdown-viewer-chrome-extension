@@ -1,7 +1,7 @@
 const IDLE_MS = 1500
 
-/** Keep automatic article replacement away from scrolling, selection and focused links. */
-export function createReadingActivityGuard({ eventTarget, getArticleEl, getInteractionRoot }) {
+/** Keep automatic article replacement away from active reading input without creating persistent locks. */
+export function createReadingActivityGuard({ eventTarget }) {
   let lastInput = -Infinity
   let pointerDown = false
   const activity = () => { lastInput = Date.now() }
@@ -19,13 +19,7 @@ export function createReadingActivityGuard({ eventTarget, getArticleEl, getInter
       eventTarget?.defaultView?.addEventListener?.('blur', release)
     },
     isActive() {
-      if (pointerDown || Date.now() - lastInput < IDLE_MS) return true
-      const article = getArticleEl?.()
-      const selection = eventTarget?.getSelection?.()
-      if (selection && !selection.isCollapsed &&
-        (article?.contains?.(selection.anchorNode) || article?.contains?.(selection.focusNode))) return true
-      if (article?.contains?.(eventTarget?.activeElement)) return true
-      return Boolean(getInteractionRoot?.()?.querySelector?.('[data-mdp-watch-open="true"]'))
+      return pointerDown || Date.now() - lastInput < IDLE_MS
     },
     destroy() {
       for (const [name, listener] of events) eventTarget?.removeEventListener?.(name, listener, { capture: true })

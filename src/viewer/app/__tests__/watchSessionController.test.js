@@ -318,6 +318,20 @@ describe('continuous changes while reading', () => {
     h.watch.destroy()
   })
 
+  it('does not leave an automatic update pending because article selection or focus persists', async () => {
+    const h = harness()
+    const selectedNode = {}
+    h.mode('auto')
+    h.visibility.getSelection = () => ({ isCollapsed: false, anchorNode: selectedNode })
+    h.visibility.activeElement = selectedNode
+    h.disk('new')
+    h.watch.start()
+    await vi.advanceTimersByTimeAsync(1500)
+    expect(h.session.applyCurrentRevision).toHaveBeenCalledOnce()
+    expect(h.state()).toMatchObject({ pending: false, deferred: false })
+    h.watch.destroy()
+  })
+
   it('allows an explicit update during an automatic cooldown', async () => {
     const h = harness()
     h.mode('auto')

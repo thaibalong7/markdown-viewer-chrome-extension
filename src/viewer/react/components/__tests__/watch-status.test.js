@@ -57,17 +57,18 @@ it('keeps idle state and checking out of the announcement and attention badge', 
   expect(html).toContain('aria-atomic="true"></span>')
 })
 
-it('keeps deferred automatic updates informational until the user opens details', () => {
+it('makes a deferred automatic update available as a one-click fallback', () => {
   const state = { available: true, supported: true, pending: true, deferred: true, mode: 'auto' }
   expect(getWatchMessage(state, false)).toContain('stop interacting')
   expect(getWatchMessage(state, true)).toContain('leave edit mode')
+  expect(getWatchTriggerPresentation(state, false)).toEqual({ action: 'apply', label: 'Update document' })
   const html = renderToStaticMarkup(React.createElement(WatchStatus, { state }))
   expect(html).toContain('trigger--attention')
-  expect(html).toContain('data-mdp-watch-action="details"')
-  expect(html).toContain('aria-label="Document updates"')
-  expect(html).toContain('aria-haspopup="dialog"')
+  expect(html).toContain('data-mdp-watch-action="apply"')
+  expect(html).toContain('aria-label="Update document"')
   expect(html).toContain('Update now')
-  expect(html).not.toContain('mdp-watch-status__notice')
+  expect(html).toContain('mdp-watch-status__notice')
+  expect(html).not.toContain('aria-haspopup="dialog"')
 })
 
 it('does not prompt while a stable automatic update is being applied', () => {

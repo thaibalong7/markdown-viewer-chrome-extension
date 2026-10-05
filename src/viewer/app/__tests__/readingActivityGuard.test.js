@@ -22,22 +22,17 @@ it('protects a held pointer, then releases after idle and removes listeners on t
   expect(guard.isActive()).toBe(false)
 })
 
-it('protects article selection, focused links and an open update panel', () => {
+it('does not let persistent selection, focus or update chrome block an idle automatic apply', () => {
+  vi.useFakeTimers()
   const selectedNode = {}
-  const unrelatedNode = {}
-  const eventTarget = { getSelection: () => ({ isCollapsed: false, anchorNode: selectedNode }) }
-  const article = { contains: (node) => node === selectedNode }
-  let open = false
-  const guard = createReadingActivityGuard({
-    eventTarget, getArticleEl: () => article,
-    getInteractionRoot: () => ({ querySelector: () => open })
-  })
-  expect(guard.isActive()).toBe(true)
-  eventTarget.getSelection = () => ({ isCollapsed: false, anchorNode: unrelatedNode })
-  expect(guard.isActive()).toBe(false)
+  const eventTarget = new EventTarget()
+  eventTarget.getSelection = () => ({ isCollapsed: false, anchorNode: selectedNode })
   eventTarget.activeElement = selectedNode
+  const guard = createReadingActivityGuard({ eventTarget })
+  guard.start()
+  eventTarget.dispatchEvent(new Event('pointerup'))
   expect(guard.isActive()).toBe(true)
-  eventTarget.activeElement = null
-  open = true
-  expect(guard.isActive()).toBe(true)
+  vi.advanceTimersByTime(1500)
+  expect(guard.isActive()).toBe(false)
+  guard.destroy()
 })

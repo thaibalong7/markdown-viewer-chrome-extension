@@ -17,14 +17,14 @@ Open **Settings → General → Document updates** and choose one of these modes
 | Mode | Behavior |
 | --- | --- |
 | **Ask before updating** | Default. Markdown Plus checks the active document and keeps the current article until you choose **Update document**. A dot and a short-lived **New version available** bubble announce the first pending revision. |
-| **Update automatically** | Applies a stable revision in read mode after reading activity stops. Automatic replacement is deferred while you scroll, type, hold a pointer, select article text, focus an article link, keep Document Updates open, edit, or save. |
+| **Update automatically** | Applies a stable revision in read mode after recent reading input stops. Automatic replacement is deferred while you scroll, type, hold a pointer, edit, or save. A persistent text selection, article focus, or open Document Updates panel does not block an otherwise idle update indefinitely. |
 | **Off** | Stops background polling. **Check now** remains available for an explicit one-time check and can still produce a reviewable pending revision. |
 
 Background checks normally run about every two seconds. Ask/manual checks confirm a changed source with another read after about 400 ms. Automatic checks use a longer 1.5-second confirmation, wait for 1.5 seconds of reading inactivity, and limit automatic article replacement to once every five seconds. These checks reduce partially written renders but cannot prove that an external writer has completed a transaction.
 
 ## Check and apply a revision
 
-The **Document updates** action is in the Viewer action rail. In its normal state, the document-and-clock icon opens a status panel with the current mode and **Check now**. When Ask or a manual Off check finds a revision in read mode, the control becomes a one-click **Update document** action and uses a document-and-download icon.
+The **Document updates** action is in the Viewer action rail. In its normal state, the document-and-clock icon opens a status panel with the current mode and **Check now**. When Ask or a manual Off check finds a revision in read mode, or when an automatic update has been deferred by recent activity, the control becomes a one-click **Update document** action and uses a document-and-download icon.
 
 Applying a revision rereads the current disk source instead of trusting an older notification. It updates the article in place without navigating, changing browser history, rescanning Files, or replacing the document identity. Automatic applies do not show a success toast; an explicit update does.
 

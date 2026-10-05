@@ -28,8 +28,6 @@ export function createWatchSessionController({
   prepareToApply,
   publish,
   showToast,
-  getArticleEl,
-  getInteractionRoot,
   visibility = globalThis.document
 }) {
   let timer = null
@@ -41,7 +39,7 @@ export function createWatchSessionController({
   let started = false
   let lastApplied = -Infinity
   let pendingId = 0
-  const reading = createReadingActivityGuard({ eventTarget: visibility, getArticleEl, getInteractionRoot })
+  const reading = createReadingActivityGuard({ eventTarget: visibility })
   let state = { manualChecking: false, pending: false, error: null, supported: false }
 
   const visible = () => visibility?.visibilityState !== 'hidden'

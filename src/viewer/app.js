@@ -154,8 +154,6 @@ export class MarkdownViewerApp {
     })
     this._watchSession = createWatchSessionController({
       session: this._documentSession,
-      getArticleEl: () => this._articleEl,
-      getInteractionRoot: () => this.container,
       getMode: () => this.settings?.watch?.mode || 'ask',
       isEditorProtected: () => this._editorSession.isEditModeActive() ||
         this._editorSession.isPreparingEdit() || this._editorSession.isDirty(),

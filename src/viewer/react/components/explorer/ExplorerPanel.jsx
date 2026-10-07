@@ -16,8 +16,15 @@ import {
   revealActiveExplorerRow
 } from './explorer-reveal.js'
 import { FileRow } from './FileRow.jsx'
-import { flattenVisibleTree } from './FileTree.jsx'
+import { buildTreeMotionPlan, flattenVisibleTree, getTreeRowKey } from './FileTree.jsx'
 import { FolderRow } from './FolderRow.jsx'
+
+const TREE_MOTION_DURATION_MS = 180
+const EMPTY_TREE_MOTION = Object.freeze({
+  active: false,
+  enteringKeys: new Set(),
+  exitingRows: []
+})
 
 export function ExplorerPanel({ bridge }) {
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
@@ -44,9 +51,11 @@ export function ExplorerPanel({ bridge }) {
     viewState.view === 'progress' && !viewState.showProgressCancel ? 'loading' : viewState.view
   const pendingRefreshTreeScrollRef = useRef(null)
   const restoreScrollRafRef = useRef(0)
+  const treeMotionTimerRef = useRef(0)
   const suppressNextAutoRevealRef = useRef('')
   const revealTimersRef = useRef({ afterScrollRaf: 0, raf: 0, timeouts: [] })
   const [scrollElement, setScrollElement] = useState(null)
+  const [treeMotion, setTreeMotion] = useState(EMPTY_TREE_MOTION)
   const rowHeight = useExplorerViewportLayout(scrollElement)
   const activeNormalized = normalizeFileUrlForCompare(viewState.activeFileUrl || '')
   const refreshUnavailableReason = getFileListRefreshUnavailableReason({
@@ -120,6 +129,7 @@ export function ExplorerPanel({ bridge }) {
 
   useEffect(() => () => {
     if (restoreScrollRafRef.current) cancelAnimationFrame(restoreScrollRafRef.current)
+    if (treeMotionTimerRef.current) clearTimeout(treeMotionTimerRef.current)
     clearRevealTimers()
   }, [clearRevealTimers])
 
@@ -234,8 +244,28 @@ export function ExplorerPanel({ bridge }) {
     actions.onNavigate(href)
   }
 
+  const stageTreeMotion = (nextRows) => {
+    const view = scrollElement?.ownerDocument?.defaultView
+    if (view?.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      setTreeMotion(EMPTY_TREE_MOTION)
+      return
+    }
+
+    const plan = buildTreeMotionPlan(treeRows, nextRows, treeVirtualItems)
+    if (!plan.active) return
+    setTreeMotion(plan)
+    if (treeMotionTimerRef.current) clearTimeout(treeMotionTimerRef.current)
+    treeMotionTimerRef.current = setTimeout(() => {
+      treeMotionTimerRef.current = 0
+      setTreeMotion(EMPTY_TREE_MOTION)
+    }, TREE_MOTION_DURATION_MS)
+  }
+
   const onToggleFolderFromExplorer = (href) => {
     suppressNextAutoRevealRef.current = activeNormalized
+    const nextExpandedMap = new Map(viewState.expandedMap)
+    nextExpandedMap.set(href, nextExpandedMap.get(href) !== true)
+    stageTreeMotion(flattenVisibleTree(viewState.tree?.children || [], nextExpandedMap))
     actions.onToggleFolder(href)
   }
 
@@ -249,6 +279,9 @@ export function ExplorerPanel({ bridge }) {
 
   const onCollapseAllFoldersFromExplorer = () => {
     suppressNextAutoRevealRef.current = activeNormalized
+    stageTreeMotion(
+      flattenVisibleTree(viewState.tree?.children || [], collapseAllExpandedMap)
+    )
     actions.onCollapseAllFolders()
   }
 
@@ -277,6 +310,8 @@ export function ExplorerPanel({ bridge }) {
 
       <ExplorerToolbar
         summaryFileCount={viewState.summaryFileCount}
+        summaryDirectoryLabel={viewState.summaryDirectoryLabel}
+        isBusy={isBusy}
         isRefreshing={state.isRefreshing}
         refreshDisabled={refreshDisabled}
         refreshTooltip={refreshTooltip}
@@ -335,7 +370,7 @@ export function ExplorerPanel({ bridge }) {
         </ul>
 
         <ul
-          className="mdp-explorer__list mdp-explorer__list--virtual"
+          className={`mdp-explorer__list mdp-explorer__list--virtual mdp-explorer__list--tree${treeMotion.active ? ' is-tree-animating' : ''}`}
           role="tree"
           aria-label={viewState.listAriaLabel || 'Workspace files'}
           hidden={presentedView !== 'tree'}
@@ -344,13 +379,16 @@ export function ExplorerPanel({ bridge }) {
           {treeVirtualItems.map((virtualItem) => {
             const row = treeRows[virtualItem.index]
             if (!row?.node) return null
+            const rowKey = getTreeRowKey(row)
+            const motionState = treeMotion.enteringKeys.has(rowKey) ? 'entering' : ''
             if (row.type === 'folder') {
               return (
                 <FolderRow
-                  key={virtualItem.key}
+                  key={rowKey}
                   node={row.node}
                   depth={row.depth}
                   expanded={row.expanded}
+                  motionState={motionState}
                   rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
                   onToggleFolder={onToggleFolderFromExplorer}
                 />
@@ -358,16 +396,44 @@ export function ExplorerPanel({ bridge }) {
             }
             return (
               <FileRow
-                key={virtualItem.key}
+                key={rowKey}
                 file={{
                   displayName: row.node.name,
                   href: row.node.href,
                   fileTypeId: row.node.fileTypeId
                 }}
                 depth={row.depth}
+                motionState={motionState}
                 rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
                 isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
                 onPick={onPickFileFromExplorer}
+              />
+            )
+          })}
+          {treeMotion.exitingRows.map(({ key, row, start }) => {
+            if (row.type === 'folder') {
+              return (
+                <FolderRow
+                  key={`exiting:${key}`}
+                  node={row.node}
+                  depth={row.depth}
+                  expanded={row.expanded}
+                  motionState="exiting"
+                  rowStyle={{ transform: `translateY(${start}px)` }}
+                />
+              )
+            }
+            return (
+              <FileRow
+                key={`exiting:${key}`}
+                file={{
+                  displayName: row.node.name,
+                  href: row.node.href,
+                  fileTypeId: row.node.fileTypeId
+                }}
+                depth={row.depth}
+                motionState="exiting"
+                rowStyle={{ transform: `translateY(${start}px)` }}
               />
             )
           })}

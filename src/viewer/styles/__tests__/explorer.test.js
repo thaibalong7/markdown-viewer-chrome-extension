@@ -14,7 +14,7 @@ describe('explorer interaction styles', () => {
     expect(explorerCss).toMatch(/\.mdp-explorer__context\s*\{[^}]*padding: var\(--mdp-explorer-context-padding\);/s)
     expect(explorerCss).not.toMatch(/\.mdp-explorer__context\s*\{[^}]*padding-inline(?:-start|-end)?:/s)
     expect(explorerCss).not.toMatch(/\.mdp-explorer__(?:context|details-content)\s*\{[^}]*margin-inline:/s)
-    expect(explorerCss).toMatch(/\.mdp-explorer__header\s*\{[^}]*padding: 2px 0 12px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__header\s*\{[^}]*padding: 2px 0 0;/s)
     expect(explorerCss).toMatch(/\.mdp-explorer__row-actions\s*\{[^}]*right: var\(--mdp-explorer-row-action-inset\);/s)
   })
 
@@ -24,8 +24,22 @@ describe('explorer interaction styles', () => {
     expect(explorerCss).toMatch(/\.mdp-explorer__details-content\s*\{[^}]*visibility: hidden;[^}]*opacity: 0;[^}]*transition: opacity 160ms ease;/s)
     expect(explorerCss).not.toMatch(/visibility 0s linear/)
     expect(explorerCss).toMatch(/\.mdp-explorer__details-clip\s*\{[^}]*min-height: 0;[^}]*overflow: hidden;/s)
-    expect(explorerCss).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.mdp-explorer__details,\s*\.mdp-explorer__details-content,\s*\.mdp-explorer__details-chevron\s*\{\s*transition: none;/s)
+    expect(explorerCss).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.mdp-explorer__details,\s*\.mdp-explorer__details-content,\s*\.mdp-explorer__details-icon \[data-icon-part=chevron\]\s*\{\s*transition: none;/s)
     expect(explorerCss).toMatch(/@media \(pointer: coarse\)\s*\{\s*\.mdp-explorer\s*\{[^}]*--mdp-explorer-action-size: 44px;/s)
+  })
+
+  it('stages compact header actions when details collapse and disables that motion when requested', () => {
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__context-commands > \*\s*\{[^}]*animation: mdp-explorer-context-command-in 180ms cubic-bezier\(0\.2, 0\.8, 0\.2, 1\) both;/s
+    )
+    expect(explorerCss).toMatch(/\.mdp-explorer__context-commands > :nth-last-child\(2\)\s*\{[^}]*animation-delay: 25ms;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__context-commands > :nth-last-child\(3\)\s*\{[^}]*animation-delay: 50ms;/s)
+    expect(explorerCss).toMatch(
+      /@keyframes mdp-explorer-context-command-in\s*\{\s*from\s*\{[^}]*opacity: 0;[^}]*transform: translateX\(6px\) scale\(0\.92\);[^}]*\}\s*to\s*\{[^}]*opacity: 1;[^}]*transform: none;/s
+    )
+    expect(explorerCss).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.mdp-explorer__context-commands > \*\s*\{[^}]*animation: none;/
+    )
   })
 
   it('rotates only the refresh arrow around its own center and honors reduced motion', () => {
@@ -54,6 +68,33 @@ describe('explorer interaction styles', () => {
   it('gives the active file action button visible hover, focus, and open feedback', () => {
     expect(explorerCss).toMatch(
       /\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn:hover,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn:focus-visible,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn\.is-open\s*\{[^}]*background:\s*var\(--mdp-link-soft\);[^}]*color:\s*var\(--mdp-link\);[^}]*opacity:\s*1;/s
+    )
+  })
+
+  it('replaces the Files copy-link icon with a checkmark while copied feedback is active', () => {
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__context-command\.is-copied\s*\{[^}]*color:\s*var\(--mdp-accent\);[^}]*background:\s*var\(--mdp-accent-soft\);[^}]*pointer-events:\s*none;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__context-command\.is-copied \.mdp-explorer__context-command-icon\s*\{[^}]*display:\s*none;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__context-command\.is-copied::after\s*\{[^}]*content:\s*"✓";/s
+    )
+  })
+
+  it('keeps the overflow menu inside the rendered Files and viewport bounds', () => {
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__header\s*\{[^}]*container-type:\s*inline-size;[^}]*z-index:\s*11;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__row-menu\.mdp-explorer__context-menu\s*\{[^}]*right:\s*calc\(-1 \* \(var\(--mdp-explorer-action-size\) \+ var\(--mdp-explorer-action-gap\)\)\);[^}]*width:\s*240px;[^}]*max-width:\s*calc\(100cqw - 2 \* var\(--mdp-explorer-action-inset\)\);/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__row-menu\.mdp-explorer__context-menu\s*\{[^}]*max-height:\s*calc\(100dvh - 72px\);[^}]*overflow-y:\s*auto;[^}]*overscroll-behavior:\s*contain;/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__row-menu\.mdp-explorer__context-menu \.mdp-explorer__row-menu-item:disabled:hover\s*\{[^}]*background:\s*transparent;/s
     )
   })
 
@@ -93,6 +134,26 @@ describe('explorer interaction styles', () => {
     )
     expect(explorerCss).toMatch(
       /\.mdp-explorer__tree-chevron\s*\{[^}]*width:\s*10px;/s
+    )
+  })
+
+  it('animates virtual tree row entry, exit, layout shifts, and the folder chevron', () => {
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__list--tree\s*\{[^}]*transition:\s*height 180ms cubic-bezier\(0\.2, 0\.8, 0\.2, 1\);/s
+    )
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__list--tree > \.mdp-explorer__node,[^{]*\.mdp-explorer__list--tree > \.mdp-explorer__tree-folder\s*\{[^}]*transition:\s*transform 180ms/s
+    )
+    expect(explorerCss).toMatch(/@keyframes mdp-explorer-tree-row-in\s*\{[^@]*translate:\s*0 -6px;/s)
+    expect(explorerCss).toMatch(/@keyframes mdp-explorer-tree-row-out\s*\{[^@]*opacity:\s*0;/s)
+    expect(explorerCss).toMatch(
+      /\.mdp-explorer__tree-folder-row\.is-expanded \.mdp-explorer__tree-chevron svg\s*\{[^}]*transform:\s*rotate\(90deg\);/s
+    )
+    expect(explorerCss).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.mdp-explorer__tree-chevron svg\s*\{[^}]*transition:\s*none;/s
+    )
+    expect(explorerCss).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.mdp-explorer__list--tree > \.is-tree-entering,[^{]*\.mdp-explorer__list--tree > \.is-tree-exiting\s*\{[^}]*animation:\s*none;/s
     )
   })
 })

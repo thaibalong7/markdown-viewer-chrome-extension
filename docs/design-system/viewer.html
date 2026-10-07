@@ -839,22 +839,25 @@
 }
 
 .mdp-explorer__header {
+  container-type: inline-size;
   position: relative;
+  z-index: 11;
   flex-shrink: 0;
   border-bottom: 0;
   gap: 0;
-  padding: 2px 0 12px;
-}
-.mdp-explorer__header > :not(.mdp-explorer__context) {
-  margin-inline: var(--mdp-explorer-header-inset);
+  padding: 2px 0 0;
 }
 .mdp-explorer__header .mdp-panel-header__row {
-  min-height: 34px;
+  min-height: 36px;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  padding-inline: var(--mdp-explorer-header-inset) var(--mdp-explorer-action-inset);
 }
 .mdp-explorer__header .mdp-panel-header__heading-main {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
 }
 .mdp-explorer__header .mdp-panel-header__heading {
   color: var(--mdp-heading);
@@ -864,10 +867,8 @@
   text-transform: none;
 }
 
-.mdp-explorer__details-toggle,
 .mdp-explorer__context-command,
 .mdp-explorer__toolbar-btn,
-.mdp-explorer__copy-link-btn,
 .mdp-explorer__row-action-btn {
   display: inline-flex;
   align-items: center;
@@ -878,16 +879,13 @@
   padding: 0;
   border-radius: 6px;
 }
-.mdp-explorer__details-toggle:focus-visible,
 .mdp-explorer__context-command:focus-visible,
 .mdp-explorer__toolbar-btn:focus-visible,
-.mdp-explorer__copy-link-btn:focus-visible,
 .mdp-explorer__row-action-btn:focus-visible {
   outline: 2px solid var(--mdp-link);
   outline-offset: -2px;
 }
 
-.mdp-explorer__details-toggle,
 .mdp-explorer__context-command {
   min-height: var(--mdp-explorer-action-size);
   border: 1px solid transparent;
@@ -898,25 +896,33 @@
   white-space: nowrap;
   cursor: pointer;
 }
-.mdp-explorer__details-toggle:hover,
 .mdp-explorer__context-command:hover {
   border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
   background: var(--mdp-link-soft);
   color: var(--mdp-link);
 }
-.mdp-explorer__details-toggle:disabled,
 .mdp-explorer__context-command:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
-.mdp-explorer__details-toggle.is-open,
 .mdp-explorer__context-command.is-open {
   background: var(--mdp-link-soft);
   color: var(--mdp-link);
 }
-.mdp-explorer__details-toggle.is-copied,
 .mdp-explorer__context-command.is-copied {
   color: var(--mdp-accent);
+  border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
+  pointer-events: none;
+}
+.mdp-explorer__context-command.is-copied .mdp-explorer__context-command-icon {
+  display: none;
+}
+.mdp-explorer__context-command.is-copied::after {
+  content: "✓";
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .mdp-explorer__context-commands {
@@ -925,6 +931,48 @@
   flex-shrink: 0;
   gap: var(--mdp-explorer-action-gap);
   margin-inline-start: auto;
+}
+.mdp-explorer__context-commands > * {
+  animation: mdp-explorer-context-command-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.mdp-explorer__context-commands > :nth-last-child(2) {
+  animation-delay: 25ms;
+}
+.mdp-explorer__context-commands > :nth-last-child(3) {
+  animation-delay: 50ms;
+}
+
+.mdp-explorer__header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--mdp-explorer-action-gap);
+  margin-inline-start: auto;
+}
+
+.mdp-explorer__details-toggle[aria-expanded=true]:not(:hover) {
+  color: var(--mdp-text);
+  background: var(--mdp-panel-bg);
+}
+
+.mdp-explorer__menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.mdp-explorer__context-menu .mdp-explorer__row-menu-item > span:last-child {
+  min-width: 0;
+  flex: 1;
+  text-align: start;
+}
+
+.mdp-explorer__context-menu .mdp-action-menu__tooltip-anchor {
+  display: block;
+  width: 100%;
 }
 
 .mdp-explorer__context-command-icon {
@@ -939,17 +987,31 @@
 
 .mdp-explorer__row-menu.mdp-explorer__context-menu {
   z-index: 20;
-  right: calc(-1 * (var(--mdp-explorer-action-gap) + var(--mdp-explorer-action-size)));
-  width: 192px;
+  right: calc(-1 * (var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap)));
+  box-sizing: border-box;
+  width: 240px;
   min-width: 0;
-  max-width: calc(var(--mdp-files-width, 280px) - 44px);
+  max-width: calc(100cqw - 2 * var(--mdp-explorer-action-inset));
+  max-height: calc(100dvh - 72px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.mdp-explorer__row-menu.mdp-explorer__context-menu .mdp-explorer__row-menu-item:disabled:hover {
+  color: var(--mdp-text);
+  background: transparent;
 }
 
-.mdp-explorer__details-chevron {
+.mdp-explorer__details-icon {
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
+}
+.mdp-explorer__details-icon [data-icon-part=chevron] {
+  transform-box: view-box;
+  transform-origin: 12px 15.5px;
   transition: transform 200ms ease;
 }
-[aria-expanded=true] .mdp-explorer__details-chevron {
+.mdp-explorer__details-icon.is-expanded [data-icon-part=chevron] {
   transform: rotate(180deg);
 }
 
@@ -979,10 +1041,6 @@
 .is-expanded > .mdp-explorer__details-clip > .mdp-explorer__details-content {
   visibility: visible;
   opacity: 1;
-}
-.mdp-explorer__details-content--actions {
-  gap: 10px;
-  padding-top: 10px;
 }
 
 .mdp-explorer__persistent-notice {
@@ -1024,21 +1082,25 @@
   min-width: 0;
   min-height: 40px;
   padding: 3px var(--mdp-explorer-action-inset) 3px var(--mdp-explorer-header-inset);
-  border-block: 1px solid var(--mdp-border);
+  border-bottom: 1px solid var(--mdp-border);
 }
 
 .mdp-explorer__toolbar-summary {
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 2px 8px;
+  align-items: center;
+  flex: 1;
+  gap: 6px;
   min-width: 0;
 }
 
-.mdp-explorer__toolbar-label {
+.mdp-explorer__toolbar-location {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--mdp-muted);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 550;
   line-height: 1.4;
 }
 
@@ -1048,6 +1110,7 @@
   font-variant-numeric: tabular-nums;
   line-height: 1.4;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .mdp-explorer__toolbar-actions {
@@ -1099,37 +1162,46 @@
     transform: rotate(360deg);
   }
 }
+@keyframes mdp-explorer-context-command-in {
+  from {
+    opacity: 0;
+    transform: translateX(6px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 .mdp-explorer__context {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  gap: 0;
+  margin: 0 var(--mdp-explorer-header-inset);
   padding: var(--mdp-explorer-context-padding);
   border: 1px solid color-mix(in srgb, var(--mdp-border) 86%, transparent);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-bg));
-  transition: padding 200ms ease;
-}
-.mdp-explorer__context[data-details-expanded=false] {
-  padding-block: 4px;
-}
-
-.mdp-explorer__context-summary {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  min-height: var(--mdp-explorer-action-size);
+  background: var(--mdp-surface);
 }
 
 .mdp-explorer__context-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
+.mdp-explorer__detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--mdp-border);
+}
+
 .mdp-explorer__badge {
-  flex-shrink: 1;
+  flex-shrink: 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1155,79 +1227,28 @@
 
 .mdp-explorer__context-current {
   display: grid;
-  gap: 1px;
   flex: 1;
   min-width: 0;
 }
 
 .mdp-explorer__context-label {
+  margin-bottom: 4px;
   color: var(--mdp-muted);
   font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.035em;
+  font-weight: 500;
   line-height: 1.3;
-  text-transform: uppercase;
 }
 
 .mdp-explorer__context-file {
   display: -webkit-box;
   overflow: hidden;
   color: var(--mdp-text);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 650;
   line-height: 1.35;
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-}
-
-.mdp-explorer__copy-link-btn {
-  border: 1px solid var(--mdp-border);
-  background: var(--mdp-surface);
-  color: var(--mdp-muted);
-  cursor: pointer;
-  transition: color 120ms ease, background 120ms ease, border-color 120ms ease;
-}
-.mdp-explorer__copy-link-btn:hover {
-  color: var(--mdp-link);
-  border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
-  background: var(--mdp-link-soft);
-}
-.mdp-explorer__copy-link-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-.mdp-explorer__copy-link-btn.is-copied {
-  color: var(--mdp-accent);
-  border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
-  background: var(--mdp-accent-soft);
-  pointer-events: none;
-}
-.mdp-explorer__copy-link-btn.is-copied .mdp-explorer__copy-link-icon {
-  display: none;
-}
-.mdp-explorer__copy-link-btn.is-copied::after {
-  content: "✓";
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.mdp-explorer__copy-link-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
-
-.mdp-explorer__context-status {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  font-size: 11px;
-  line-height: 1.35;
-  color: var(--mdp-muted);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .mdp-explorer__context-warning {
@@ -1243,54 +1264,76 @@
 .mdp-explorer__path {
   display: flex;
   align-items: center;
-  gap: 6px;
+  margin-top: 5px;
   min-width: 0;
-  padding-top: 8px;
-  border-top: 1px solid color-mix(in srgb, var(--mdp-border) 78%, transparent);
   color: color-mix(in srgb, var(--mdp-muted) 88%, var(--mdp-text));
-  font-size: 10.5px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
   line-height: 1.4;
-}
-
-.mdp-explorer__path-icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  color: var(--mdp-muted);
 }
 
 .mdp-explorer__path-label {
   min-width: 0;
   overflow: hidden;
-  font-weight: 550;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.mdp-explorer__copy-link-btn {
+  border-color: var(--mdp-border);
+  background: var(--mdp-surface);
+}
+
+.mdp-explorer__folder-btn,
 .mdp-explorer__back-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   min-width: 0;
   min-height: 32px;
-  text-align: left;
-  padding: 5px 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 6px;
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 550;
+  line-height: 1.4;
+  text-align: start;
+  cursor: pointer;
 }
-
-.mdp-explorer__back-icon {
-  flex-shrink: 0;
-  color: var(--mdp-muted);
-  font-size: 14px;
-  line-height: 1;
+.mdp-explorer__folder-btn:hover:not(:disabled),
+.mdp-explorer__back-btn:hover:not(:disabled) {
+  border-color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+}
+.mdp-explorer__folder-btn:focus-visible,
+.mdp-explorer__back-btn:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: -2px;
+}
+.mdp-explorer__folder-btn:disabled,
+.mdp-explorer__back-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .mdp-explorer__back-label {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.mdp-explorer__back-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .mdp-explorer__loading {
@@ -1339,6 +1382,43 @@
   top: 0;
   left: 0;
   width: 100%;
+}
+
+.mdp-explorer__list--tree {
+  transition: height 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mdp-explorer__list--tree > .mdp-explorer__node,
+.mdp-explorer__list--tree > .mdp-explorer__tree-folder {
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mdp-explorer__list--tree > .is-tree-entering {
+  animation: mdp-explorer-tree-row-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.mdp-explorer__list--tree > .is-tree-exiting {
+  z-index: 2;
+  pointer-events: none;
+  animation: mdp-explorer-tree-row-out 180ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes mdp-explorer-tree-row-in {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+@keyframes mdp-explorer-tree-row-out {
+  from {
+    opacity: 1;
+    translate: none;
+  }
+  to {
+    opacity: 0;
+    translate: 0 -6px;
+  }
 }
 
 .mdp-explorer__node {
@@ -1520,47 +1600,6 @@
   flex-shrink: 0;
 }
 
-.mdp-explorer__actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.mdp-explorer__action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  min-height: 32px;
-  padding: 5px 9px;
-  border-color: color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
-  background: color-mix(in srgb, var(--mdp-link-soft) 58%, var(--mdp-surface));
-  color: color-mix(in srgb, var(--mdp-link) 86%, var(--mdp-text));
-  text-align: center;
-}
-.mdp-explorer__action-btn:hover {
-  border-color: color-mix(in srgb, var(--mdp-link) 38%, var(--mdp-border));
-  background: var(--mdp-link-soft);
-}
-
-.mdp-explorer__action-btn--secondary {
-  border-color: var(--mdp-border-strong);
-  background: var(--mdp-surface);
-  color: var(--mdp-text);
-}
-.mdp-explorer__action-btn--secondary:hover {
-  border-color: var(--mdp-border-strong);
-  background: color-mix(in srgb, var(--mdp-surface) 72%, transparent);
-  color: var(--mdp-text);
-}
-
-.mdp-explorer__action-icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-}
-
 .mdp-explorer__depth-notice {
   font-size: 11px;
   line-height: 1.4;
@@ -1589,10 +1628,7 @@
 .mdp-explorer__loading[hidden],
 .mdp-explorer__progress[hidden],
 .mdp-explorer__empty[hidden],
-.mdp-explorer__list[hidden],
-.mdp-explorer__actions[hidden],
-.mdp-explorer__action-btn[hidden],
-.mdp-explorer__back-btn[hidden] {
+.mdp-explorer__list[hidden] {
   display: none !important;
 }
 
@@ -1666,11 +1702,11 @@
 @media (prefers-reduced-motion: reduce) {
   .mdp-explorer__details,
   .mdp-explorer__details-content,
-  .mdp-explorer__details-chevron {
+  .mdp-explorer__details-icon [data-icon-part=chevron] {
     transition: none;
   }
-  .mdp-explorer__context {
-    transition: none;
+  .mdp-explorer__context-commands > * {
+    animation: none;
   }
   .mdp-explorer__toolbar-btn.is-refreshing .mdp-explorer__refresh-icon [data-icon-part=arrow] {
     animation: none;
@@ -1678,6 +1714,15 @@
   .mdp-explorer__loading,
   .mdp-explorer__busy-view {
     transition: none;
+  }
+  .mdp-explorer__list--tree,
+  .mdp-explorer__list--tree > .mdp-explorer__node,
+  .mdp-explorer__list--tree > .mdp-explorer__tree-folder {
+    transition: none;
+  }
+  .mdp-explorer__list--tree > .is-tree-entering,
+  .mdp-explorer__list--tree > .is-tree-exiting {
+    animation: none;
   }
 }
 .mdp-explorer__tree-chevron {
@@ -1693,6 +1738,15 @@
 .mdp-explorer__tree-chevron svg {
   width: 10px;
   height: 12px;
+  transition: transform 160ms ease;
+}
+.mdp-explorer__tree-folder-row.is-expanded .mdp-explorer__tree-chevron svg {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-explorer__tree-chevron svg {
+    transition: none;
+  }
 }
 
 .mdp-explorer__tree-folder-icon {
@@ -1733,6 +1787,10 @@
   .mdp-explorer {
     --mdp-explorer-action-size: 44px;
   }
+  .mdp-explorer__folder-btn,
+  .mdp-explorer__back-btn {
+    min-height: 44px;
+  }
   .mdp-explorer__node-btn,
   .mdp-explorer__tree-folder-row {
     min-height: 44px;
@@ -1747,7 +1805,7 @@
     min-height: 44px;
   }
 }
-</style>
+  </style>
 <style>
 
     /* Documentation navigation only; keep this standalone shell in sync across the four previews. */
@@ -1784,36 +1842,34 @@
         <div class="mdp-sidebar-panel">
           <div class="mdp-explorer">
             <div class="mdp-panel-header mdp-explorer__header">
-              <div class="mdp-panel-header__row"><div class="mdp-panel-header__heading-main"><strong class="mdp-panel-header__heading">Files</strong></div></div>
-              <div class="mdp-explorer__context" data-details-expanded="true" aria-label="Files location and status">
-                <div class="mdp-explorer__context-summary" id="files-context-summary">
-                  <span class="mdp-explorer__badge mdp-explorer__badge--workspace" id="files-context-badge">Workspace</span>
-                  <span class="mdp-explorer__context-status" id="files-context-status">Selected workspace</span>
+              <div class="mdp-panel-header__row" id="files-context-summary">
+                <div class="mdp-panel-header__heading-main" id="files-heading-label"><strong class="mdp-panel-header__heading">Files</strong><span class="mdp-explorer__badge mdp-explorer__badge--workspace">Workspace</span></div>
+                <div class="mdp-explorer__header-actions" id="files-header-actions">
                   <div class="mdp-explorer__context-commands" id="files-context-commands">
-                    <button class="mdp-explorer__context-command" id="files-compact-copy" type="button" aria-label="Copy open file link" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg><span class="preview-command-label" hidden>Copy open file link</span></button>
-                    <button class="mdp-explorer__context-command" id="files-compact-open" type="button" aria-label="Switch folder…" hidden><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" class="mdp-explorer__context-command-icon" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg><span class="preview-command-label" hidden>Switch folder…</span></button>
-                    <button class="mdp-explorer__context-command" id="files-compact-leave" type="button" aria-label="Leave workspace" hidden><span class="mdp-explorer__back-icon" aria-hidden="true">←</span><span class="preview-command-label" hidden>Leave workspace</span></button>
-                    <div class="mdp-explorer__context-overflow" id="files-context-overflow" hidden>
-                      <button class="mdp-explorer__context-command" id="files-context-more" type="button" aria-label="More file actions" aria-haspopup="menu" aria-expanded="false" aria-controls="files-context-menu" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button>
+                    <button class="mdp-explorer__context-command" id="files-compact-open" type="button" aria-label="Switch folder…" title="Switch folder…"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-select" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M2.5 8V5a2 2 0 0 1 2-2h5l2 2H18a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2Z" stroke="#D6A34A" fill="#D6A34A" fill-opacity=".22"></path><path d="M2.5 8H20" stroke="#D6A34A"></path><circle cx="18" cy="17" r="6" fill="var(--mdp-surface, #ffffff)" stroke="none"></circle><path d="M14 17h9 m-3.5-3.5 3.5 3.5-3.5 3.5" stroke="var(--mdp-link, #2563eb)"></path></svg><span class="preview-command-label" hidden>Switch folder…</span></button>
+<button class="mdp-explorer__context-command" id="files-compact-copy" type="button" aria-label="Copy link unavailable for workspace virtual files" title="Copy link unavailable for workspace virtual files" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg><span class="preview-command-label" hidden>Copy link</span></button>
+                    <div class="mdp-explorer__context-overflow" id="files-context-overflow">
+                      <button class="mdp-explorer__context-command" id="files-context-more" type="button" aria-label="More file actions" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button>
                       <div class="mdp-explorer__row-menu mdp-explorer__context-menu" id="files-context-menu" role="menu" aria-label="File details actions" hidden></div>
                     </div>
-                    <button class="mdp-explorer__details-toggle" id="files-details-toggle" type="button" aria-expanded="true" aria-controls="files-details files-details-actions" aria-label="Minimize file details" title="Minimize file details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" class="mdp-explorer__details-chevron" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg></button>
+                  </div>
+                  <button class="mdp-explorer__context-command mdp-explorer__details-toggle" id="files-details-toggle" type="button" aria-label="Show file details" aria-expanded="false" aria-controls="files-details" title="Show file details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="file-details" class="mdp-explorer__details-icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M7 7h10 M7 10h6"></path><path data-icon-part="chevron" d="m9 14 3 3 3-3"></path></svg></button>
+                </div>
+              </div>
+              <div class="mdp-explorer__details" id="files-details" aria-hidden="true" inert><div class="mdp-explorer__details-clip"><div class="mdp-explorer__details-content">
+                <div class="mdp-explorer__context" aria-label="Open file details">
+                  <span class="mdp-explorer__context-label">Open file</span>
+                  <div class="mdp-explorer__context-row" id="files-identity-row"><div class="mdp-explorer__context-current"><strong class="mdp-explorer__context-file">README.md</strong></div></div>
+                  <div class="mdp-explorer__path" title="/Users/you/Documents/markdown-plus" aria-label="Workspace root: /Users/you/Documents/markdown-plus"><span class="mdp-explorer__path-label">…/Documents/markdown-plus</span></div>
+                  <div class="mdp-explorer__detail-actions" id="files-detail-actions">
+              <button class="mdp-explorer__back-btn mdp-button" id="files-compact-leave" type="button" aria-label="Leave workspace"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="leave-workspace" class="mdp-explorer__back-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M9 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9 M9 9h12"></path><circle cx="12" cy="6.5" r="0.65" fill="currentColor" stroke="none"></circle><path d="M13 15H3 m4-4-4 4 4 4"></path></svg><span class="mdp-explorer__back-label preview-command-label">Leave workspace</span></button>
                   </div>
                 </div>
-                <div class="mdp-explorer__details is-expanded" id="files-details" aria-hidden="false"><div class="mdp-explorer__details-clip"><div class="mdp-explorer__details-content">
-                  <div class="mdp-explorer__context-row">
-                    <div class="mdp-explorer__context-current"><span class="mdp-explorer__context-label">Current file</span><strong class="mdp-explorer__context-file">README.md</strong></div>
-                    <button class="mdp-explorer__copy-link-btn" id="files-expanded-copy" type="button" aria-label="Copy open file link" title="Copy open file link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-explorer__copy-link-icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg></button>
-                  </div>
-                  <div class="mdp-explorer__path"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder" data-mdp-family="filetype" class="mdp-explorer__path-icon" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 5V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 13 14H3a1.5 1.5 0 0 1-1.5-1.5Z" fill="#D6A34A" fill-opacity=".22"></path><path d="M1.5 6h13"></path></svg><span class="mdp-explorer__path-label">…/markdown-plus/docs</span></div>
-                </div></div></div>
-              </div>
-              <div class="mdp-explorer__details is-expanded" id="files-details-actions" aria-hidden="false"><div class="mdp-explorer__details-clip"><div class="mdp-explorer__details-content mdp-explorer__details-content--actions">
-                <div class="mdp-explorer__actions"><button class="mdp-explorer__action-btn mdp-button" id="files-expanded-open" type="button"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" class="mdp-explorer__action-icon" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg><span>Switch folder…</span></button><button class="mdp-explorer__action-btn mdp-explorer__action-btn--secondary mdp-button" id="files-expanded-leave" type="button">Leave workspace</button></div>
               </div></div></div>
+
             </div>
             <div class="mdp-explorer__toolbar" role="group" aria-label="File list controls">
-              <div class="mdp-explorer__toolbar-summary"><strong class="mdp-explorer__toolbar-label">Folder tree</strong><span class="mdp-explorer__toolbar-count">6 files</span></div>
+              <div class="mdp-explorer__toolbar-summary"><span class="mdp-explorer__toolbar-location" title="/Users/you/Documents/markdown-plus">markdown-plus</span><span class="mdp-explorer__toolbar-count">· 6 files</span></div>
                 <div class="mdp-explorer__toolbar-actions">
                   <button class="mdp-explorer__toolbar-btn" type="button" aria-label="Collapse folders" title="Collapse folders">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="collapse" style="stroke:currentColor;stroke-width:1.8"><path d="M8 4H5a2 2 0 0 0-2 2v10"></path><rect x="7" y="8" width="14" height="13" rx="2"></rect><path d="M11 14.5h6"></path></svg>
@@ -1887,7 +1943,7 @@
     var(--mdp-toc-width);
 }</code></pre>
 
-          <p>Files uses aligned 28px actions with 4px gaps, or 44px targets on coarse pointers. All contextual commands remain direct when they fit; overflow appears only when needed. Tree labels share a compact 35px root inset and 10px depth steps. The action axis accounts for the native scrollbar gutter. Files Details starts expanded and remembers its state for this tab. Its chevron shares the existing card status row. Minimize to retain the mode badge and compact contextual commands, with overflow when space is limited. Expanded body commands become invisible and inert immediately during the 200ms height transition; the tree toolbar stays below the section. Reduced motion disables transitions. Source: <a href="../../src/viewer/react/components/explorer/ExplorerHeader.jsx">ExplorerHeader</a> and <a href="../../src/viewer/styles/explorer.scss">explorer.scss</a>.</p>
+          <p>The location/count row uses plain text without a leading folder icon. Open/Switch folder uses a gold folder with a blue opening arrow to highlight workspace selection. Files keeps its title and the green Workspace badge in workspace mode. The details disclosure stays separate and uses an information-card glyph with metadata lines; only its small chevron turns when expanded, distinguishing it from folder-tree arrows. At rest, the closed control is muted on a transparent background; when expanded it uses primary text on a neutral panel background. Blue remains reserved for shared hover feedback and the focus ring. When closed, Open/Switch folder, Copy and Back/Leave are direct icon buttons and overflow only when space runs out. When expanded, Copy sits beside the filename. Open/Switch folder and Back/Leave workspace are separate full-width labeled buttons stacked inside the same card footer with a 6px gap. The entire card collapses with details and navigation returns to the compact header actions. The metadata label, filename and path share one left edge; both footer buttons share their left and right edges. Full paths remain available through the title and accessible label. Menu icons and labels use fixed columns. Details remembers the tab preference and respects reduced motion; text actions stay at least 32px, or 44px on coarse pointers. This composition is Files-local. Source: <a href="../../src/viewer/react/components/explorer/ExplorerHeader.jsx">ExplorerHeader</a> and <a href="../../src/viewer/styles/explorer.scss">explorer.scss</a>.</p>
 
           <h2 id="states">Interaction states</h2>
           <p>
@@ -2011,37 +2067,32 @@
     const copyButton = document.getElementById('copy-button')
     const refreshButton = document.getElementById('refresh-files')
     // Runtime command-fit policy snapshot: explorer-details-layout.js
-// Reserve space for the badge, disclosure and (when needed) overflow trigger.
-// Unknown commands start in overflow, so future actions cannot lengthen this row.
-function partitionDetailsCommands(commands, { width, badgeWidth, coarse }) {
+// Keep as many commands direct as fit, reserving one target for overflow.
+// Header measurements include the title/badge and a separate details toggle.
+function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, reservedCount = 0 }) {
   const size = coarse ? 44 : 28
-  const available = width - badgeWidth - 6
-  const priority = ['open-folder', 'navigate', 'copy-link']
-  const directKeys = priority.filter(key => commands.some(command => command.key === key))
-  const required = () => {
-    const hasOverflow = directKeys.length < commands.length
-    const count = directKeys.length + 1 + (hasOverflow ? 1 : 0)
-    return count * size + (count - 1) * 4
-  }
-  while (directKeys.length && required() > available) directKeys.pop()
+  const available = width - (badgeWidth ? badgeWidth + 8 : 0) - reservedCount * (size + 4)
+  const slots = Math.max(0, Math.floor((available + 4) / (size + 4)))
+  const directCount = slots >= commands.length ? commands.length : Math.max(0, slots - 1)
   return {
-    direct: commands.filter(command => directKeys.includes(command.key)),
-    overflow: commands.filter(command => !directKeys.includes(command.key))
+    direct: commands.slice(0, directCount),
+    overflow: commands.slice(directCount)
   }
 }
 
     const detailsToggle = document.getElementById('files-details-toggle')
-    const detailRegions = ['files-details', 'files-details-actions'].map(id => document.getElementById(id))
+    const detailRegions = [document.getElementById('files-details')]
     const contextSummary = document.getElementById('files-context-summary')
-    const contextBadge = document.getElementById('files-context-badge')
-    const contextStatus = document.getElementById('files-context-status')
+    const contextBadge = document.getElementById('files-heading-label')
     const contextCommands = document.getElementById('files-context-commands')
+    const detailActions = document.getElementById('files-detail-actions')
+    const fileIdentityRow = document.getElementById('files-identity-row')
     const contextOverflow = document.getElementById('files-context-overflow')
     const contextMore = document.getElementById('files-context-more')
     const contextMenu = document.getElementById('files-context-menu')
     const compactCommands = [
-      { key: 'copy-link', node: document.getElementById('files-compact-copy') },
       { key: 'open-folder', node: document.getElementById('files-compact-open') },
+      { key: 'copy-link', node: document.getElementById('files-compact-copy') },
       { key: 'navigate', node: document.getElementById('files-compact-leave') }
     ]
     const coarsePointer = matchMedia('(pointer: coarse)')
@@ -2056,17 +2107,37 @@ function partitionDetailsCommands(commands, { width, badgeWidth, coarse }) {
     const treeChildren = document.getElementById('preview-tree-children')
     const collapseFolders = document.querySelector('[aria-label="Collapse folders"]')
     function setPreviewFolder(expanded) {
+      treeChildren.getAnimations().forEach(animation => animation.cancel())
       treeFolder.setAttribute('aria-expanded', String(expanded))
       treeFolder.classList.toggle('is-expanded', expanded)
-      treeChildren.hidden = !expanded
       collapseFolders.disabled = !expanded
-      const chevron = document.getElementById('preview-glyphs').content.querySelector(`[data-mdp-icon="${expanded ? 'chevron-down' : 'chevron-right'}"]`).cloneNode(true)
+      const chevron = document.getElementById('preview-glyphs').content.querySelector('[data-mdp-icon="chevron-right"]').cloneNode(true)
       treeFolder.querySelector('.mdp-explorer__tree-chevron').replaceChildren(chevron)
       const folderIcon = document.getElementById('preview-glyphs').content.querySelector(`[data-mdp-icon="${expanded ? 'folder-open' : 'folder'}"]`).cloneNode(true)
       treeFolder.querySelector('.mdp-explorer__tree-folder-icon').replaceChildren(folderIcon)
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        treeChildren.hidden = !expanded
+        return
+      }
+      if (expanded) {
+        treeChildren.hidden = false
+        treeChildren.animate(
+          [{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 180, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+        )
+        return
+      }
+      const animation = treeChildren.animate(
+        [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-6px)' }],
+        { duration: 180, easing: 'cubic-bezier(0.4, 0, 1, 1)' }
+      )
+      animation.addEventListener('finish', () => {
+        if (treeFolder.getAttribute('aria-expanded') !== 'true') treeChildren.hidden = true
+      }, { once: true })
     }
     treeFolder.addEventListener('click', () => setPreviewFolder(treeFolder.getAttribute('aria-expanded') !== 'true'))
     collapseFolders.addEventListener('click', () => setPreviewFolder(false))
+    setPreviewFolder(true)
     const rowActions = [...document.querySelectorAll('.mdp-explorer__row-actions')]
     function closeRowMenus(restore = false) {
       for (const actions of rowActions) {
@@ -2103,7 +2174,7 @@ function partitionDetailsCommands(commands, { width, badgeWidth, coarse }) {
       for (const item of menu.querySelectorAll('button')) item.addEventListener('click', () => { alert(`${item.textContent} preview only.`); closeRowMenus(true) })
     }
     document.addEventListener('pointerdown', event => { if (!event.target.closest('.mdp-explorer__row-actions')) closeRowMenus() })
-    let detailsExpanded = true
+    let detailsExpanded = false
     function closeContextMenu(restore = false) {
       const hadFocus = contextMenu.contains(document.activeElement)
       contextMenu.hidden = true
@@ -2112,48 +2183,69 @@ function partitionDetailsCommands(commands, { width, badgeWidth, coarse }) {
     }
     function applyDetails(expanded) {
       detailsExpanded = expanded
-      contextSummary.parentElement.dataset.detailsExpanded = String(expanded)
-      const menuHadFocus = contextMenu.contains(document.activeElement)
-      closeContextMenu()
-      detailsToggle.setAttribute('aria-expanded', String(expanded))
-      const label = expanded ? 'Minimize file details' : 'Expand file details'
+      const label = expanded ? 'Hide file details' : 'Show file details'
       detailsToggle.setAttribute('aria-label', label)
-      detailsToggle.title = label
+      detailsToggle.setAttribute('title', label)
+      detailsToggle.setAttribute('aria-expanded', String(expanded))
+      detailsToggle.querySelector('svg').classList.toggle('is-expanded', expanded)
       for (const region of detailRegions) {
         region.classList.toggle('is-expanded', expanded)
         region.setAttribute('aria-hidden', String(!expanded))
         region.inert = !expanded
       }
-      contextStatus.hidden = !expanded
-      const { direct, overflow } = partitionDetailsCommands(compactCommands, {
-        width: contextSummary.getBoundingClientRect().width,
+      applyCommandLayout()
+    }
+    function applyCommandLayout() {
+      const rowStyle = getComputedStyle(contextSummary)
+      const inset = (parseFloat(rowStyle.paddingLeft) || 0) + (parseFloat(rowStyle.paddingRight) || 0)
+      const overflow = detailsExpanded ? [] : partitionDetailsCommands(compactCommands, {
+        width: contextSummary.getBoundingClientRect().width - inset,
         badgeWidth: Math.max(contextBadge.getBoundingClientRect().width, contextBadge.scrollWidth + 2),
+        reservedCount: 1,
         coarse: coarsePointer.matches
-      })
+      }).overflow
+      const hadFocus = contextMenu.contains(document.activeElement)
+      closeContextMenu()
       for (const command of compactCommands) {
+        const copied = command.node.classList.contains('is-copied')
         const inMenu = overflow.includes(command)
-        const parent = inMenu ? contextMenu : contextCommands
+        const folder = command.key === 'open-folder'
+        const navigate = command.key === 'navigate'
+        const parent = detailsExpanded ? (folder || navigate ? detailActions : fileIdentityRow) : inMenu ? contextMenu : contextCommands
         if (command.node.parentElement !== parent) {
-          if (inMenu) parent.append(command.node)
-          else parent.insertBefore(command.node, contextOverflow)
+          if (parent === contextCommands) parent.insertBefore(command.node, contextOverflow)
+          else parent.append(command.node)
         }
-        command.node.hidden = expanded
-        command.node.className = inMenu ? 'mdp-explorer__row-menu-item' : 'mdp-explorer__context-command'
-        command.node.querySelector('.preview-command-label').hidden = !inMenu
+        command.node.className = detailsExpanded
+          ? (folder ? 'mdp-explorer__folder-btn mdp-button' : navigate ? 'mdp-explorer__back-btn mdp-button' : 'mdp-explorer__context-command mdp-explorer__copy-link-btn')
+          : inMenu ? 'mdp-explorer__row-menu-item' : 'mdp-explorer__context-command'
+        command.node.classList.toggle('is-copied', copied)
+        command.node.querySelector('.preview-command-label').hidden = !inMenu && !(detailsExpanded && (folder || navigate))
+        let artwork = command.node.querySelector('.mdp-explorer__menu-icon')
+        if (inMenu && !artwork) {
+          artwork = document.createElement('span')
+          artwork.className = 'mdp-explorer__menu-icon'
+          command.node.insertBefore(artwork, command.node.firstChild)
+          artwork.append(artwork.nextSibling)
+        } else if (!inMenu && artwork) artwork.replaceWith(...artwork.childNodes)
         if (inMenu) command.node.setAttribute('role', 'menuitem')
         else command.node.removeAttribute('role')
-        command.node.title = command.node.getAttribute('aria-label')
       }
-      contextOverflow.hidden = expanded || !overflow.length
-      if (menuHadFocus) detailsToggle.focus()
+      contextCommands.hidden = detailsExpanded
+      contextOverflow.hidden = detailsExpanded || !overflow.length
+      if (hadFocus) (overflow.length ? contextMore : compactCommands[0]?.node || detailsToggle).focus()
     }
-    try { applyDetails(sessionStorage.getItem('mdp:preview:detailsExpanded') !== 'false') } catch { applyDetails(true) }
+    try { applyDetails(sessionStorage.getItem('mdp:preview:detailsExpanded') === 'true') } catch { applyDetails(false) }
     detailsToggle.addEventListener('click', () => {
       applyDetails(!detailsExpanded)
-      try { sessionStorage.setItem('mdp:preview:detailsExpanded', String(detailsExpanded)) } catch { /* Preview still works without storage. */ }
+      closeContextMenu(true)
+      try { sessionStorage.setItem('mdp:preview:detailsExpanded', String(detailsExpanded)) } catch { /* Preview works without storage. */ }
     })
-    new ResizeObserver(() => applyDetails(detailsExpanded)).observe(contextSummary)
-    coarsePointer.addEventListener('change', () => applyDetails(detailsExpanded))
+    const commandObserver = new ResizeObserver(applyCommandLayout)
+    commandObserver.observe(contextSummary)
+    commandObserver.observe(contextBadge)
+    coarsePointer.addEventListener('change', applyCommandLayout)
+    applyCommandLayout()
     contextMore.addEventListener('click', () => {
       const open = contextMenu.hidden
       contextMenu.hidden = !open
@@ -2165,15 +2257,26 @@ function partitionDetailsCommands(commands, { width, badgeWidth, coarse }) {
       else if (event.key === 'Tab') closeContextMenu()
       else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
         event.preventDefault()
-        const items = [...contextMenu.querySelectorAll('button')]
+        const items = [...contextMenu.querySelectorAll('button:not(:disabled)')]
         const index = items.indexOf(document.activeElement)
         const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowUp' ? -1 : 1) + items.length) % items.length
         items[next]?.focus()
       }
     })
     document.addEventListener('pointerdown', event => { if (!contextOverflow.contains(event.target)) closeContextMenu() })
-    for (const command of compactCommands) command.node.addEventListener('click', () => { alert(`${command.node.getAttribute('aria-label')} preview only.`); closeContextMenu(true) })
-    for (const id of ['files-expanded-copy', 'files-expanded-open', 'files-expanded-leave']) document.getElementById(id).addEventListener('click', () => alert('Context action preview only.'))
+    for (const command of compactCommands) command.node.addEventListener('click', () => {
+      if (command.key === 'copy-link') {
+        command.node.classList.add('is-copied')
+        command.node.title = 'Copied'
+        command.node.setAttribute('aria-label', 'Copied')
+        window.setTimeout(() => {
+          command.node.classList.remove('is-copied')
+          command.node.title = 'Copy open file link'
+          command.node.setAttribute('aria-label', 'Copy open file link')
+        }, 1200)
+      } else alert(`${command.node.getAttribute('aria-label')} preview only.`)
+      closeContextMenu(true)
+    })
     const filesRail = document.querySelector('.mdp-sidebar--files')
     const rightRail = document.querySelector('.mdp-right-rail')
     const scrollTopButton = document.getElementById('scroll-top')

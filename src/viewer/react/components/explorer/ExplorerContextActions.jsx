@@ -5,12 +5,13 @@ import { IconButton } from '../common/IconButton.jsx'
 import { MoreIcon } from '../icons/MoreIcon.jsx'
 import { partitionDetailsCommands } from './explorer-details-layout.js'
 
-export function ExplorerContextActions({ commands, layout, disclosureRef, children }) {
+export function ExplorerContextActions({ commands, layout, fallbackFocusRef }) {
   const { direct, overflow } = partitionDetailsCommands(commands, layout)
-  const signature = commands.map(command => `${command.key}:${overflow.includes(command)}`).join('|')
+  const signature = commands.map(command => `${command.key}:${command.label}:${overflow.includes(command)}`).join('|')
   const [menuState, setMenuState] = useState({ signature: '', open: false })
   const menuRef = useRef(null)
   const menuTriggerRef = useRef(null)
+  const firstCommandRef = useRef(null)
   const open = menuState.open && menuState.signature === signature
   const closeMenu = useCallback(() => setMenuState(current => ({ ...current, open: false })), [])
 
@@ -18,18 +19,23 @@ export function ExplorerContextActions({ commands, layout, disclosureRef, childr
 
   useEffect(() => {
     if (!menuState.open || open) return
-    disclosureRef.current?.focus()
+    const firstCommand = firstCommandRef.current
+    const target = menuTriggerRef.current || (firstCommand?.disabled ? null : firstCommand) || fallbackFocusRef?.current
+    const active = target?.getRootNode()?.activeElement
+    // Restore removed menu focus without stealing focus from a resize/control elsewhere.
+    if (!active || active === target?.ownerDocument.body || menuRef.current?.contains(active)) target?.focus()
     closeMenu()
-  }, [closeMenu, disclosureRef, menuState.open, open])
+  }, [closeMenu, fallbackFocusRef, menuState.open, open])
 
   return (
     <div className="mdp-explorer__context-commands">
-      {direct.map(command => (
+      {direct.map((command, index) => (
         <IconButton
           key={command.key}
+          ref={index === 0 ? firstCommandRef : undefined}
           className="mdp-explorer__context-command"
           tooltip={command.tooltip || command.label}
-          aria-label={command.label}
+          aria-label={command.ariaLabel || command.label}
           disabled={command.disabled}
           copied={command.copied}
           copiedClassName="is-copied"
@@ -53,10 +59,13 @@ export function ExplorerContextActions({ commands, layout, disclosureRef, childr
           menuLabel="File details actions"
           itemClassName="mdp-explorer__row-menu-item"
           onToggle={() => setMenuState({ signature, open: !open })}
-          items={overflow.map(command => ({ ...command, onClick: () => { closeMenu(); command.onClick?.() } }))}
+          items={overflow.map(command => ({
+            ...command,
+            icon: <span className="mdp-explorer__menu-icon">{command.icon}</span>,
+            onClick: () => { closeMenu(); command.onClick?.() }
+          }))}
         />
       ) : null}
-      {children}
     </div>
   )
 }

@@ -5,7 +5,7 @@
   --mdp-explorer-action-gap: 4px;
   --mdp-explorer-header-inset: 2px;
   --mdp-explorer-context-padding: 10px;
-  // Follow the context card padding and its 1px border.
+  // Keep header, toolbar and row actions on the existing trailing axis.
   --mdp-explorer-action-inset: calc(var(--mdp-explorer-context-padding) + 1px);
   --mdp-explorer-row-action-inset: max(0px, var(--mdp-explorer-action-inset) - var(--mdp-explorer-scrollbar-width, 0px));
   position: relative;
@@ -17,25 +17,26 @@
 }
 
 .mdp-explorer__header {
+  container-type: inline-size;
   position: relative;
+  z-index: 11;
   flex-shrink: 0;
   border-bottom: 0;
   gap: 0;
-  padding: 2px 0 12px;
-
-  // The card spans the panel; heading, expanded actions and notices keep their inset.
-  > :not(.mdp-explorer__context) {
-    margin-inline: var(--mdp-explorer-header-inset);
-  }
+  padding: 2px 0 0;
 
   .mdp-panel-header__row {
-    min-height: 34px;
+    min-height: 36px;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    padding-inline: var(--mdp-explorer-header-inset) var(--mdp-explorer-action-inset);
   }
 
   .mdp-panel-header__heading-main {
     display: flex;
-    align-items: baseline;
-    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 6px;
   }
 
   .mdp-panel-header__heading {
@@ -48,10 +49,8 @@
 }
 
 // Files icon actions share geometry; visual states stay with each control below.
-.mdp-explorer__details-toggle,
 .mdp-explorer__context-command,
 .mdp-explorer__toolbar-btn,
-.mdp-explorer__copy-link-btn,
 .mdp-explorer__row-action-btn {
   display: inline-flex;
   align-items: center;
@@ -68,7 +67,6 @@
   }
 }
 
-.mdp-explorer__details-toggle,
 .mdp-explorer__context-command {
   min-height: var(--mdp-explorer-action-size);
   border: 1px solid transparent;
@@ -97,6 +95,20 @@
 
   &.is-copied {
     color: var(--mdp-accent);
+    border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+    background: var(--mdp-accent-soft);
+    pointer-events: none;
+
+    .mdp-explorer__context-command-icon {
+      display: none;
+    }
+
+    &::after {
+      content: '✓';
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
   }
 }
 
@@ -106,6 +118,53 @@
   flex-shrink: 0;
   gap: var(--mdp-explorer-action-gap);
   margin-inline-start: auto;
+
+  // Reveal compact actions from the disclosure edge as the detail card collapses.
+  > * {
+    animation: mdp-explorer-context-command-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  > :nth-last-child(2) {
+    animation-delay: 25ms;
+  }
+
+  > :nth-last-child(3) {
+    animation-delay: 50ms;
+  }
+}
+
+.mdp-explorer__header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--mdp-explorer-action-gap);
+  margin-inline-start: auto;
+}
+
+.mdp-explorer__details-toggle[aria-expanded='true']:not(:hover) {
+  // Files disclosure stays neutral at rest; retain shared command hover/focus feedback.
+  color: var(--mdp-text);
+  background: var(--mdp-panel-bg);
+}
+
+.mdp-explorer__menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.mdp-explorer__context-menu .mdp-explorer__row-menu-item > span:last-child {
+  min-width: 0;
+  flex: 1;
+  text-align: start;
+}
+
+.mdp-explorer__context-menu .mdp-action-menu__tooltip-anchor {
+  display: block;
+  width: 100%;
 }
 
 .mdp-explorer__context-command-icon {
@@ -120,17 +179,34 @@
 
 .mdp-explorer__row-menu.mdp-explorer__context-menu {
   z-index: 20;
-  right: calc(-1 * (var(--mdp-explorer-action-gap) + var(--mdp-explorer-action-size)));
-  width: 192px;
+  right: calc(-1 * (var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap)));
+  box-sizing: border-box;
+  width: 240px;
   min-width: 0;
-  max-width: calc(var(--mdp-files-width, 280px) - 44px);
+  max-width: calc(100cqw - 2 * var(--mdp-explorer-action-inset));
+  max-height: calc(100dvh - 72px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  .mdp-explorer__row-menu-item:disabled:hover {
+    color: var(--mdp-text);
+    background: transparent;
+  }
 }
 
-.mdp-explorer__details-chevron {
+.mdp-explorer__details-icon {
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
-  transition: transform 200ms ease;
 
-  [aria-expanded='true'] & {
+  // Keep the information card upright; only its disclosure indicator turns.
+  [data-icon-part='chevron'] {
+    transform-box: view-box;
+    transform-origin: 12px 15.5px;
+    transition: transform 200ms ease;
+  }
+
+  &.is-expanded [data-icon-part='chevron'] {
     transform: rotate(180deg);
   }
 }
@@ -156,7 +232,7 @@
   gap: 9px;
   // Keep spacing inside the clipped grid so closing releases all of its height.
   padding: 9px 0 2px;
-  // Hide immediately on minimize: compact commands must never duplicate visible body commands.
+  // Hide metadata immediately while the closing height animation finishes.
   visibility: hidden;
   opacity: 0;
   transition: opacity 160ms ease;
@@ -164,11 +240,6 @@
   .is-expanded > .mdp-explorer__details-clip > & {
     visibility: visible;
     opacity: 1;
-  }
-
-  &--actions {
-    gap: 10px;
-    padding-top: 10px;
   }
 }
 
@@ -194,21 +265,25 @@
   min-width: 0;
   min-height: 40px;
   padding: 3px var(--mdp-explorer-action-inset) 3px var(--mdp-explorer-header-inset);
-  border-block: 1px solid var(--mdp-border);
+  border-bottom: 1px solid var(--mdp-border);
 }
 
 .mdp-explorer__toolbar-summary {
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 2px 8px;
+  align-items: center;
+  flex: 1;
+  gap: 6px;
   min-width: 0;
 }
 
-.mdp-explorer__toolbar-label {
+.mdp-explorer__toolbar-location {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--mdp-muted);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 550;
   line-height: 1.4;
 }
 
@@ -218,6 +293,7 @@
   font-variant-numeric: tabular-nums;
   line-height: 1.4;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .mdp-explorer__toolbar-actions {
@@ -279,38 +355,48 @@
   }
 }
 
-.mdp-explorer__context {
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
-  padding: var(--mdp-explorer-context-padding);
-  border: 1px solid color-mix(in srgb, var(--mdp-border) 86%, transparent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-bg));
-  transition: padding 200ms ease;
+@keyframes mdp-explorer-context-command-in {
+  from {
+    opacity: 0;
+    transform: translateX(6px) scale(0.92);
+  }
 
-  &[data-details-expanded='false'] {
-    padding-block: 4px;
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
-.mdp-explorer__context-summary {
+.mdp-explorer__context {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  min-height: var(--mdp-explorer-action-size);
+  flex-direction: column;
+  gap: 0;
+  margin: 0 var(--mdp-explorer-header-inset);
+  padding: var(--mdp-explorer-context-padding);
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 86%, transparent);
+  border-radius: 10px;
+  background: var(--mdp-surface);
 }
 
 .mdp-explorer__context-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
+.mdp-explorer__detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--mdp-border);
+}
+
 .mdp-explorer__badge {
-  flex-shrink: 1;
+  flex-shrink: 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -336,87 +422,28 @@
 
 .mdp-explorer__context-current {
   display: grid;
-  gap: 1px;
   flex: 1;
   min-width: 0;
 }
 
 .mdp-explorer__context-label {
+  margin-bottom: 4px;
   color: var(--mdp-muted);
   font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.035em;
+  font-weight: 500;
   line-height: 1.3;
-  text-transform: uppercase;
 }
 
 .mdp-explorer__context-file {
   display: -webkit-box;
   overflow: hidden;
   color: var(--mdp-text);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 650;
   line-height: 1.35;
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-}
-
-.mdp-explorer__copy-link-btn {
-  border: 1px solid var(--mdp-border);
-  background: var(--mdp-surface);
-  color: var(--mdp-muted);
-  cursor: pointer;
-  transition:
-    color 120ms ease,
-    background 120ms ease,
-    border-color 120ms ease;
-
-  &:hover {
-    color: var(--mdp-link);
-    border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
-    background: var(--mdp-link-soft);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.45;
-  }
-
-  &.is-copied {
-    color: var(--mdp-accent);
-    border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
-    background: var(--mdp-accent-soft);
-    pointer-events: none;
-
-    .mdp-explorer__copy-link-icon {
-      display: none;
-    }
-
-    &::after {
-      content: '✓';
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1;
-    }
-  }
-}
-
-.mdp-explorer__copy-link-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
-
-.mdp-explorer__context-status {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  font-size: 11px;
-  line-height: 1.35;
-  color: var(--mdp-muted);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .mdp-explorer__context-warning {
@@ -432,54 +459,77 @@
 .mdp-explorer__path {
   display: flex;
   align-items: center;
-  gap: 6px;
+  margin-top: 5px;
   min-width: 0;
-  padding-top: 8px;
-  border-top: 1px solid color-mix(in srgb, var(--mdp-border) 78%, transparent);
   color: color-mix(in srgb, var(--mdp-muted) 88%, var(--mdp-text));
-  font-size: 10.5px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
   line-height: 1.4;
-}
-
-.mdp-explorer__path-icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  color: var(--mdp-muted);
 }
 
 .mdp-explorer__path-label {
   min-width: 0;
   overflow: hidden;
-  font-weight: 550;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.mdp-explorer__copy-link-btn {
+  border-color: var(--mdp-border);
+  background: var(--mdp-surface);
+}
+
+// These are explicit text actions, separate from the compact header icon group.
+.mdp-explorer__folder-btn,
 .mdp-explorer__back-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   min-width: 0;
   min-height: 32px;
-  text-align: left;
-  padding: 5px 8px;
-}
+  padding: 6px 8px;
+  border: 1px solid var(--mdp-border);
+  border-radius: v.$radius-tiny;
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 550;
+  line-height: 1.4;
+  text-align: start;
+  cursor: pointer;
 
-.mdp-explorer__back-icon {
-  flex-shrink: 0;
-  color: var(--mdp-muted);
-  font-size: 14px;
-  line-height: 1;
+  &:hover:not(:disabled) {
+    border-color: var(--mdp-link);
+    background: var(--mdp-link-soft);
+    color: var(--mdp-link);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }
 
 .mdp-explorer__back-label {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.mdp-explorer__back-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .mdp-explorer__loading {
@@ -528,6 +578,49 @@
   top: 0;
   left: 0;
   width: 100%;
+}
+
+.mdp-explorer__list--tree {
+  transition: height 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  > .mdp-explorer__node,
+  > .mdp-explorer__tree-folder {
+    transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  > .is-tree-entering {
+    animation: mdp-explorer-tree-row-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  > .is-tree-exiting {
+    z-index: 2;
+    pointer-events: none;
+    animation: mdp-explorer-tree-row-out 180ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+}
+
+@keyframes mdp-explorer-tree-row-in {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@keyframes mdp-explorer-tree-row-out {
+  from {
+    opacity: 1;
+    translate: none;
+  }
+
+  to {
+    opacity: 0;
+    translate: 0 -6px;
+  }
 }
 
 .mdp-explorer__node {
@@ -742,49 +835,6 @@
   flex-shrink: 0;
 }
 
-.mdp-explorer__actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.mdp-explorer__action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  min-height: 32px;
-  padding: 5px 9px;
-  border-color: color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
-  background: color-mix(in srgb, var(--mdp-link-soft) 58%, var(--mdp-surface));
-  color: color-mix(in srgb, var(--mdp-link) 86%, var(--mdp-text));
-  text-align: center;
-
-  &:hover {
-    border-color: color-mix(in srgb, var(--mdp-link) 38%, var(--mdp-border));
-    background: var(--mdp-link-soft);
-  }
-}
-
-.mdp-explorer__action-btn--secondary {
-  border-color: var(--mdp-border-strong);
-  background: var(--mdp-surface);
-  color: var(--mdp-text);
-
-  &:hover {
-    border-color: var(--mdp-border-strong);
-    background: color-mix(in srgb, var(--mdp-surface) 72%, transparent);
-    color: var(--mdp-text);
-  }
-}
-
-.mdp-explorer__action-icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-}
-
 .mdp-explorer__depth-notice {
   font-size: 11px;
   line-height: 1.4;
@@ -816,10 +866,7 @@
 .mdp-explorer__loading[hidden],
 .mdp-explorer__progress[hidden],
 .mdp-explorer__empty[hidden],
-.mdp-explorer__list[hidden],
-.mdp-explorer__actions[hidden],
-.mdp-explorer__action-btn[hidden],
-.mdp-explorer__back-btn[hidden] {
+.mdp-explorer__list[hidden] {
   display: none !important;
 }
 
@@ -895,12 +942,12 @@
 @media (prefers-reduced-motion: reduce) {
   .mdp-explorer__details,
   .mdp-explorer__details-content,
-  .mdp-explorer__details-chevron {
+  .mdp-explorer__details-icon [data-icon-part='chevron'] {
     transition: none;
   }
 
-  .mdp-explorer__context {
-    transition: none;
+  .mdp-explorer__context-commands > * {
+    animation: none;
   }
 
   .mdp-explorer__toolbar-btn.is-refreshing .mdp-explorer__refresh-icon [data-icon-part='arrow'] {
@@ -910,6 +957,17 @@
   .mdp-explorer__loading,
   .mdp-explorer__busy-view {
     transition: none;
+  }
+
+  .mdp-explorer__list--tree,
+  .mdp-explorer__list--tree > .mdp-explorer__node,
+  .mdp-explorer__list--tree > .mdp-explorer__tree-folder {
+    transition: none;
+  }
+
+  .mdp-explorer__list--tree > .is-tree-entering,
+  .mdp-explorer__list--tree > .is-tree-exiting {
+    animation: none;
   }
 }
 
@@ -926,6 +984,17 @@
   svg {
     width: 10px;
     height: 12px;
+    transition: transform 160ms ease;
+  }
+}
+
+.mdp-explorer__tree-folder-row.is-expanded .mdp-explorer__tree-chevron svg {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-explorer__tree-chevron svg {
+    transition: none;
   }
 }
 
@@ -968,6 +1037,11 @@
 @media (pointer: coarse) {
   .mdp-explorer {
     --mdp-explorer-action-size: 44px;
+  }
+
+  .mdp-explorer__folder-btn,
+  .mdp-explorer__back-btn {
+    min-height: 44px;
   }
 
   .mdp-explorer__node-btn,

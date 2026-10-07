@@ -1,18 +1,12 @@
-// Reserve space for the badge, disclosure and (when needed) overflow trigger.
-// Unknown commands start in overflow, so future actions cannot lengthen this row.
-export function partitionDetailsCommands(commands, { width, badgeWidth, coarse }) {
+// Keep as many commands direct as fit, reserving one target for overflow.
+// Header measurements include the title/badge and a separate details toggle.
+export function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, reservedCount = 0 }) {
   const size = coarse ? 44 : 28
-  const available = width - badgeWidth - 6
-  const priority = ['open-folder', 'navigate', 'copy-link']
-  const directKeys = priority.filter(key => commands.some(command => command.key === key))
-  const required = () => {
-    const hasOverflow = directKeys.length < commands.length
-    const count = directKeys.length + 1 + (hasOverflow ? 1 : 0)
-    return count * size + (count - 1) * 4
-  }
-  while (directKeys.length && required() > available) directKeys.pop()
+  const available = width - (badgeWidth ? badgeWidth + 8 : 0) - reservedCount * (size + 4)
+  const slots = Math.max(0, Math.floor((available + 4) / (size + 4)))
+  const directCount = slots >= commands.length ? commands.length : Math.max(0, slots - 1)
   return {
-    direct: commands.filter(command => directKeys.includes(command.key)),
-    overflow: commands.filter(command => !directKeys.includes(command.key))
+    direct: commands.slice(0, directCount),
+    overflow: commands.slice(directCount)
   }
 }

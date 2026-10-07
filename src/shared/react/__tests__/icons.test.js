@@ -30,7 +30,7 @@ describe('shared icon integration', () => {
     expect(render(FileTypeIcon, { name: '__proto__' })).toBe(render(FileTypeIcon, { name: 'text' }))
   })
 
-  it.each(['copy', 'expand', 'zoom-in', 'recenter', 'close', 'refresh'])('keeps React and DOM artwork identical for %s', name => {
+  it.each(['copy', 'expand', 'zoom-in', 'recenter', 'close', 'refresh', 'folder-select', 'file-details', 'back-to-file', 'leave-workspace'])('keeps React and DOM artwork identical for %s', name => {
     vi.stubGlobal('document', { createElementNS: (_, tag) => svgElement(tag) })
     const dom = createAppIconSvg(name, { width: 14, height: 14, className: 'toolbar-icon' })
     expect(children(dom.serialize())).toBe(children(render(AppIcon, { name })))

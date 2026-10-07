@@ -5,8 +5,8 @@ import { ToastProvider } from '../../../contexts/ToastContext.jsx'
 import { ExplorerHeader } from '../ExplorerHeader.jsx'
 import { FilesPanel } from '../../FilesPanel.jsx'
 
-const layout = vi.hoisted(() => ({ width: 240, badgeWidth: 60, coarse: false }))
-vi.mock('../../../hooks/explorer/useExplorerDetailsLayout.js', () => ({ useExplorerDetailsLayout: () => layout }))
+const layout = vi.hoisted(() => ({ width: 240, badgeWidth: 120, coarse: false }))
+vi.mock('../../../hooks/explorer/useExplorerDetailsLayout.js', () => ({ useExplorerDetailsLayout: (_row, badge) => badge ? layout : { ...layout, badgeWidth: 0 } }))
 vi.mock('../../../hooks/useExplorer.js', () => ({
   useExplorer: () => ({
     state: {
@@ -16,109 +16,146 @@ vi.mock('../../../hooks/useExplorer.js', () => ({
     actions: { onOpenAnotherFolder: vi.fn() }
   })
 }))
-
 const render = props => renderToStaticMarkup(React.createElement(ToastProvider, null,
   React.createElement(ExplorerHeader, {
-    actionsMode: 'sibling',
+    actionsMode: 'sibling', summaryDirectoryLabel: '/project/docs',
     filesContext: { currentLine: 'README.md', currentFileUrl: 'file:///docs/README.md', statusLine: 'This file’s folder' },
     ...props
   })
 ))
-const summary = html => {
-  const start = html.indexOf('class="mdp-explorer__context-summary"')
-  return html.slice(start, html.indexOf('<div id=', start))
-}
+const heading = html => html.slice(0, html.indexOf('<div id='))
 
 afterEach(() => {
   vi.unstubAllGlobals()
-  Object.assign(layout, { width: 240, badgeWidth: 60, coarse: false })
+  Object.assign(layout, { width: 240, badgeWidth: 120, coarse: false })
 })
 
-describe('Files details disclosure', () => {
-  it('uses the original card status row without adding a heading row or duplicating file identity', () => {
+describe('Files heading and details', () => {
+  it('keeps Files, omits the Folder badge and redundant status, and starts details closed', () => {
     const html = render()
-    expect(html).toContain('aria-label="Minimize file details" aria-expanded="true"')
-    expect(html.indexOf('class="mdp-explorer__context"')).toBeLessThan(html.indexOf('class="mdp-explorer__details-toggle"'))
-    expect(summary(html)).toContain('This file’s folder')
-    expect(summary(html)).not.toContain('README.md')
-    expect(summary(html)).not.toContain('mdp-explorer__context-command"')
-    expect(html).not.toContain('>Details</span>')
-    expect(html.match(/class="mdp-explorer__context"/g)).toHaveLength(1)
-    const ids = html.match(/aria-controls="([^"]+)"/)[1].split(' ')
-    expect(ids).toHaveLength(2)
-    for (const id of ids) expect(html).toContain(`id="${id}" class="mdp-explorer__details is-expanded" aria-hidden="false"`)
-    expect(html).not.toContain('inert=""')
-    expect(html).toContain('Open folder…')
+    expect(heading(html)).toContain('>Files</strong>')
+    expect(html).not.toContain('mdp-explorer__badge')
+    expect(html).not.toContain('This file’s folder')
+    expect(heading(html)).not.toContain('README.md')
+    expect(html).toContain('class="mdp-explorer__details" aria-hidden="true" inert=""')
+    expect(html).toContain('Show file details')
+    expect(html).toContain('mdp-explorer__details-toggle')
+    expect(html).toContain('aria-expanded="false" aria-controls=')
+    expect(html).toContain('aria-label="Open folder…"')
   })
 
-  it.each(['sibling', 'workspace'])('keeps commands in the minimized row in %s mode, with hidden body and persistent warnings', actionsMode => {
-    vi.stubGlobal('sessionStorage', { getItem: () => 'false' })
-    const html = render({
-      actionsMode,
-      filesContext: { currentLine: 'README.md', currentFileUrl: 'file:///docs/README.md', warningLine: 'Current file is outside the workspace.' },
-      depthNotice: 'Some folders were not scanned.'
-    })
-    expect(summary(html)).toContain('aria-label="Expand file details" aria-expanded="false"')
-    expect(summary(html)).toContain('aria-label="Copy open file link"')
-    expect(summary(html)).toContain(`aria-label="${actionsMode === 'workspace' ? 'Switch folder…' : 'Open folder…'}"`)
-    expect(summary(html)).toContain(`aria-label="${actionsMode === 'workspace' ? 'Leave workspace' : 'Back to original file'}"`)
-    expect(summary(html)).not.toContain('README.md')
-    expect(html.match(/class="mdp-explorer__details" aria-hidden="true" inert=""/g)).toHaveLength(2)
-    const lastRegion = html.lastIndexOf('aria-hidden="true" inert=""')
-    expect(html.indexOf('class="mdp-explorer__context-warning')).toBeGreaterThan(lastRegion)
-    expect(html.indexOf('class="mdp-explorer__depth-notice')).toBeGreaterThan(lastRegion)
-    expect(html).toContain('Current file is outside the workspace.')
+  it.each(['false', 'true'])('keeps the Workspace badge and commands visible with stored details=%s', preference => {
+    vi.stubGlobal('sessionStorage', { getItem: () => preference })
+    const html = render({ actionsMode: 'workspace' })
+    expect(heading(html)).toContain('class="mdp-explorer__badge mdp-explorer__badge--workspace">Workspace</span>')
+    expect(preference === 'true' ? html.slice(html.indexOf('<div id=')) : heading(html)).toContain('aria-label="Switch folder…"')
+    expect(html).toContain('Leave workspace')
+    if (preference === 'true') expect(heading(html)).not.toContain('Switch folder…')
+    expect(heading(html)).not.toContain('Back to original file')
+    expect(html).toContain('aria-label="Workspace root: /project/docs"')
+    expect(html).toContain(preference === 'true' ? 'Hide file details' : 'Show file details')
+    expect(html).toContain(`aria-hidden="${preference !== 'true'}"`)
+    expect(html.match(/aria-label="Copy link"/g)).toHaveLength(1)
+    expect(html.match(/aria-label="Switch folder…"/g)).toHaveLength(1)
+  })
+
+  it('shows all commands directly when they fit, with a separate disclosure', () => {
+    Object.assign(layout, { width: 500 })
+    const html = heading(render({ showBack: true }))
+    expect(html.match(/aria-label="(?:Open folder…|Copy link|Back to original file)"/g)).toHaveLength(3)
+    expect(render({ showBack: true })).not.toContain('class="mdp-explorer__back-btn mdp-button"')
+    expect(html).not.toContain('role="menuitem"')
+    expect(html).not.toContain('More file actions')
+    expect(html).toContain('mdp-explorer__details-toggle')
+  })
+
+  it('overflows commands on narrow touch layouts without hiding the separate disclosure or Workspace badge', () => {
+    Object.assign(layout, { width: 176, badgeWidth: 120, coarse: true })
+    const html = heading(render({ actionsMode: 'workspace' }))
+    expect(html).toContain('>Workspace</span>')
+    expect(html.match(/role="menuitem"/g)).toHaveLength(3)
+    expect(html).toContain('Leave workspace')
+    expect(render({ actionsMode: 'workspace' })).not.toContain('class="mdp-explorer__back-btn mdp-button"')
+    expect(html).toContain('aria-label="Show file details" aria-expanded="false"')
+    expect(html).toContain('mdp-explorer__menu-icon')
+  })
+
+  it('keeps the unavailable Copy menu title short and moves its reason into a tooltip', () => {
+    Object.assign(layout, { width: 176, badgeWidth: 120, coarse: true })
+    const html = heading(render({ actionsMode: 'workspace', filesContext: { currentFileUrl: 'mdp-ws-file:virtual' } }))
+    expect(html).toMatch(/class="mdp-action-menu__tooltip-anchor"><button[^>]*aria-label="Copy link unavailable for workspace virtual files"[^>]*disabled=""[^>]*>[\s\S]*?<span>Copy link<\/span><\/button>/)
+    expect(html).not.toContain('mdp-explorer__menu-description')
+  })
+
+  it('moves actions into the expanded card and shortens long paths without losing their full value', () => {
+    vi.stubGlobal('sessionStorage', { getItem: () => 'true' })
+    Object.assign(layout, { width: 500 })
+    const html = render({ summaryDirectoryLabel: '/Users/person/Documents/projects/markdown-plus' })
+    expect(heading(html)).not.toContain('Copy link')
+    expect(html).toContain('mdp-explorer__copy-link-btn')
+    expect(html).toContain('mdp-explorer__folder-btn mdp-button')
+    expect(html.indexOf('mdp-explorer__copy-link-btn')).toBeLessThan(html.indexOf('mdp-explorer__path'))
+    expect(html.indexOf('mdp-explorer__back-btn')).toBeGreaterThan(html.indexOf('mdp-explorer__folder-btn'))
+    expect(html).not.toContain('mdp-explorer__context-file-icon')
+    expect(html).toContain('>…/projects/markdown-plus</span>')
+    expect(html).toContain('title="/Users/person/Documents/projects/markdown-plus"')
+    expect(html.match(/Copy link/g)).toHaveLength(1)
+  })
+
+  it('disables Copy for virtual files and navigation during scans while keeping details available', () => {
+    Object.assign(layout, { width: 500 })
+    const html = render({ actionsDisabled: true, actionsMode: 'workspace', filesContext: { currentFileUrl: 'mdp-ws-file:virtual' } })
+    expect(html).toMatch(/aria-label="Copy link unavailable for workspace virtual files"[^>]*disabled=""/)
+    expect(html).toMatch(/aria-label="Switch folder…"[^>]*disabled=""/)
+    expect(html).toMatch(/aria-label="Leave workspace"[^>]*disabled=""/)
+    expect(html).toMatch(/aria-label="Show file details" aria-expanded="false"[^>]*>/)
+  })
+
+  it('keeps warnings and scan-limit recovery outside the closed details region', () => {
+    const html = render({ filesContext: { warningLine: 'Open file is outside the workspace.' }, depthNotice: 'Scan limit reached.' })
+    const details = html.indexOf('aria-hidden="true" inert=""')
+    expect(html.indexOf('class="mdp-explorer__context-warning')).toBeGreaterThan(details)
+    expect(html.indexOf('class="mdp-explorer__depth-notice')).toBeGreaterThan(details)
+    expect(html).toContain('Open file is outside the workspace.')
     expect(html).toContain('Adjust scan limits in Settings')
   })
 
-  it('moves narrow touch commands into overflow without repeating them as direct icons', () => {
-    vi.stubGlobal('sessionStorage', { getItem: () => 'false' })
-    Object.assign(layout, { width: 176, badgeWidth: 80, coarse: true })
-    const row = summary(render({ actionsMode: 'workspace' }))
-    expect(row).toContain('aria-label="More file actions"')
-    expect(row.match(/role="menuitem"/g)).toHaveLength(3)
-    expect(row.match(/class="mdp-explorer__context-command"/g)).toHaveLength(1) // Overflow trigger only.
-    expect(row.match(/Switch folder…/g)).toHaveLength(1)
-    expect(row.match(/Leave workspace/g)).toHaveLength(1)
+  it('keeps Back disabled at the entry file and omits location commands in hidden mode', () => {
+    Object.assign(layout, { width: 500 })
+    expect(render({ showBack: false })).toMatch(/aria-label="Back to original file"[^>]*disabled=""/)
+    const html = heading(render({ actionsMode: 'hidden' }))
+    expect(html).not.toContain('Open folder')
+    expect(html).not.toContain('Back to original file')
+    expect(html).toContain('Show file details')
   })
 
-  it.each([false, true])('keeps the full command row when it fits, with coarse=%s', coarse => {
+  it.each(['sibling', 'workspace'])('collapses the labeled navigation row with details in %s mode', actionsMode => {
+    Object.assign(layout, { width: 500 })
+    const label = actionsMode === 'workspace' ? 'Leave workspace' : 'Back to original file'
+    const iconPath = actionsMode === 'workspace' ? 'M13 15H3' : 'M13 12H3'
     vi.stubGlobal('sessionStorage', { getItem: () => 'false' })
-    Object.assign(layout, { width: 320, badgeWidth: 80, coarse })
-    const row = summary(render({ actionsMode: 'workspace' }))
-    expect(row).not.toContain('More file actions')
-    expect(row.match(/class="mdp-explorer__context-command"/g)).toHaveLength(3)
-    expect(row).toContain('aria-label="Copy open file link"')
-    expect(row).toContain('aria-label="Switch folder…"')
-    expect(row).toContain('aria-label="Leave workspace"')
+    const collapsed = render({ actionsMode, showBack: true })
+    expect(collapsed).not.toContain('mdp-explorer__back-btn')
+    expect(heading(collapsed)).toContain(`aria-label="${label}"`)
+    expect(heading(collapsed)).toContain(iconPath)
+    expect(collapsed.match(new RegExp(`aria-label="${label}"`, 'g'))).toHaveLength(1)
+
+    vi.stubGlobal('sessionStorage', { getItem: () => 'true' })
+    const expanded = render({ actionsMode, showBack: true })
+    expect(heading(expanded)).not.toContain(label)
+    expect(expanded).toContain(`class="mdp-explorer__back-btn mdp-button" aria-label="${label}"`)
+    expect(expanded).toContain(iconPath)
+    expect(expanded).not.toContain('>←</')
+    expect(expanded).toMatch(/class="mdp-explorer__detail-actions"><button[^>]*class="mdp-explorer__folder-btn mdp-button"[\s\S]*?<\/button><button[^>]*class="mdp-explorer__back-btn mdp-button"[\s\S]*?<\/button><\/div><\/div>/)
+    expect(expanded.match(new RegExp(`aria-label="${label}"`, 'g'))).toHaveLength(1)
   })
 
-  it('retains capability and busy states while the disclosure remains usable', () => {
-    vi.stubGlobal('sessionStorage', { getItem: () => 'false' })
-    const row = summary(render({ actionsDisabled: true, filesContext: { currentFileUrl: 'mdp-ws-file:virtual' } }))
-    expect(row).toMatch(/aria-label="Copy open file link"[^>]*disabled=""/)
-    expect(row).toMatch(/aria-label="Open folder…"[^>]*disabled=""/)
-    expect(row.match(/<button[^>]*class="mdp-explorer__details-toggle"[^>]*>/)[0]).not.toContain('disabled')
-  })
-
-  it('keeps Back disabled at the entry file, and omits location commands in hidden mode', () => {
-    vi.stubGlobal('sessionStorage', { getItem: () => 'false' })
-    expect(summary(render({ showBack: false }))).toMatch(/aria-label="Back to original file"[^>]*disabled=""/)
-    expect(summary(render({ showBack: true }))).not.toMatch(/aria-label="Back to original file"[^>]*disabled/)
-    const row = summary(render({ actionsMode: 'hidden' }))
-    expect(row).not.toContain('Open folder')
-    expect(row).not.toContain('Back to original file')
-  })
-
-  it('keeps folder recovery in the minimized card and avoids an extra empty-list action', () => {
-    vi.stubGlobal('sessionStorage', { getItem: () => 'false' })
-    const html = renderToStaticMarkup(React.createElement(ToastProvider, null,
-      React.createElement(FilesPanel, { explorerBridge: {} })
-    ))
+  it('keeps empty-folder recovery in the header and tree controls available', () => {
+    const html = renderToStaticMarkup(React.createElement(ToastProvider, null, React.createElement(FilesPanel, { explorerBridge: {} })))
     expect(html).toContain('id="mdp-panel-files"><div class="mdp-explorer"')
-    expect(summary(html)).toContain('aria-label="Open folder…"')
-    expect(html).toContain('class="mdp-explorer__empty">No supported files found in this directory.</div>')
+    expect(heading(html)).toContain('Open folder…')
+    expect(html).toContain('No supported files found in this directory.')
     expect(html).toContain('aria-label="Refresh file list"')
-    expect(html).toContain('aria-label="File list controls"')
+    expect(html).not.toContain('Folder files')
   })
 })

@@ -17,9 +17,11 @@ import {
  */
 export function createExplorerViewActions({ stateRef, safePatch, setBackNavigation, currentFileUrlRef }) {
   const showLoading = ({ filesContext, actionsMode } = {}) => {
+    const mode = filesContext?.modeBadge
     safePatch({
       view: 'loading',
-      actionsMode: actionsMode ?? stateRef.current.actionsMode,
+      actionsMode: actionsMode ?? (mode ? mode === 'workspace' ? 'workspace' : 'sibling' : stateRef.current.actionsMode),
+      ...(mode === 'folder' ? { summaryDirectoryLabel: getDirectoryLabelFromUrl(currentFileUrlRef.current) } : {}),
       depthNotice: '',
       files: [],
       tree: null,
@@ -45,6 +47,10 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
     const cur = payload.currentFolder ? `\n${shortenPath(payload.currentFolder)}` : ''
     safePatch({
       view: 'progress',
+      ...(payload.filesContext?.modeBadge ? {
+        actionsMode: payload.filesContext.modeBadge === 'workspace' ? 'workspace' : 'sibling'
+      } : {}),
+      ...(payload.currentFolder ? { summaryDirectoryLabel: shortenPath(payload.currentFolder) } : {}),
       depthNotice: '',
       files: [],
       tree: null,
@@ -124,7 +130,9 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
         ? buildPreservedExpandedMap(children, previousExpandedMap)
         : buildInitialExpandedMap(children),
       filesContext: ctx.filesContext || stateRef.current.filesContext,
-      summaryDirectoryLabel: ctx.workspaceLabel || tree?.name || 'Workspace',
+      summaryDirectoryLabel: tree?.href?.startsWith('file:')
+        ? getDirectoryLabelFromUrl(`${tree.href.replace(/\/$/, '')}/_`)
+        : ctx.workspaceLabel || tree?.name || 'Workspace',
       summaryFileCount: count,
       depthNotice,
       activeFileUrl: currentFileUrlRef.current

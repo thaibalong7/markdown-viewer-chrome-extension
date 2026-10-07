@@ -12,12 +12,12 @@ const KEY_FILES_DETAILS_EXPANDED = 'mdp:explorer:detailsExpanded'
 
 /** @typedef {'sibling' | 'workspace'} ExplorerMode */
 
-/** Details start open; the preference follows file navigation and reloads in this tab. */
+/** Details start closed; the preference follows file navigation and reloads in this tab. */
 export function getFilesDetailsExpanded() {
   try {
-    return sessionStorage.getItem(KEY_FILES_DETAILS_EXPANDED) !== 'false'
+    return sessionStorage.getItem(KEY_FILES_DETAILS_EXPANDED) === 'true'
   } catch {
-    return true
+    return false
   }
 }
 

@@ -5,6 +5,8 @@ import { RefreshIcon } from '../icons/RefreshIcon.jsx'
 
 export function ExplorerToolbar({
   summaryFileCount,
+  summaryDirectoryLabel,
+  isBusy = false,
   isRefreshing,
   refreshDisabled,
   refreshTooltip,
@@ -14,14 +16,14 @@ export function ExplorerToolbar({
   onRefresh,
   onCollapseAllFolders
 }) {
+  const directoryLabel = String(summaryDirectoryLabel || '').trim() || 'Current folder'
+  const directoryName = directoryLabel.split(/[\\/]+/).filter(Boolean).pop() || directoryLabel
   return (
     <div className="mdp-explorer__toolbar" role="group" aria-label="File list controls">
       <div className="mdp-explorer__toolbar-summary">
-        <span className="mdp-explorer__toolbar-label">
-          {showCollapseAllFolders ? 'Folder tree' : 'Folder files'}
-        </span>
+        <span className="mdp-explorer__toolbar-location" title={directoryLabel}>{directoryName}</span>
         <span className="mdp-explorer__toolbar-count">
-          {summaryFileCount} {summaryFileCount === 1 ? 'file' : 'files'}
+          {isBusy ? 'Scanning…' : `· ${summaryFileCount} ${summaryFileCount === 1 ? 'file' : 'files'}`}
         </span>
       </div>
       <div className="mdp-explorer__toolbar-actions">

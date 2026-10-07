@@ -76,8 +76,8 @@ describe('explorer expanded folder state', () => {
     expect(getSidebarWidthPx()).toBe(368)
   })
 
-  it('starts with Details open and retains both choices independently of widths and folders', () => {
-    expect(getFilesDetailsExpanded()).toBe(true)
+  it('starts with Details closed and retains both choices independently of widths and folders', () => {
+    expect(getFilesDetailsExpanded()).toBe(false)
     setFilesDetailsExpanded(false)
     setFilesWidthPx(312)
     setExplorerExpandedMap('workspace', 'file:///docs/', new Map([['file:///docs/guide/', true]]))
@@ -88,11 +88,11 @@ describe('explorer expanded folder state', () => {
     expect(getFilesDetailsExpanded()).toBe(true)
   })
 
-  it('defaults open for an invalid or unavailable preference', () => {
+  it('defaults closed for an invalid or unavailable preference', () => {
     sessionStorage.setItem('mdp:explorer:detailsExpanded', 'invalid')
-    expect(getFilesDetailsExpanded()).toBe(true)
+    expect(getFilesDetailsExpanded()).toBe(false)
     sessionStorage.getItem.mockImplementation(() => { throw new Error('Storage unavailable') })
-    expect(getFilesDetailsExpanded()).toBe(true)
+    expect(getFilesDetailsExpanded()).toBe(false)
   })
 
   it('keeps a storage failure from breaking the disclosure action', () => {

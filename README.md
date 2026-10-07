@@ -22,13 +22,15 @@ Markdown Plus is a Chrome Manifest V3 extension that turns local Markdown files 
 - Provides independently collapsible and resizable Files and Outline rails, configurable auto-hiding overlay scrollbars, responsive actions, a reduced-motion-aware Back to top control, and optional Markdown statistics for words, Unicode characters including spaces, and estimated reading time.
 - Browses supported sibling files or recursively scans a selected workspace with configurable depth/file/folder limits, nested `.gitignore` handling, progress and cancellation, directory-picker fallback, per-folder expand/collapse, active-file reveal, refresh, and file-row actions.
 - Keeps internal document navigation inside the Viewer. Real-file routes preserve the original Markdown entry URL using `?f=relative/path`; browser refresh and Back/Forward restore the selected real file and heading. Virtual workspace navigation remains in memory and intentionally leaves the browser URL unchanged.
+- Watches the active Markdown document for external edits with Ask, Automatic, and Off modes. Stable revisions can be applied in place without reloading the page, while preserving reading position and protecting active editor drafts.
+- Reviews pending or recently applied revisions with a bounded, keyboard-accessible source diff, added/removed counts, affected Markdown sections, and navigation between changed areas. An open comparison stays pinned until Review latest is chosen, even when Automatic mode applies a newer revision.
 - Offers an experimental, opt-in Markdown editor for local files. A session starts only after the user selects and verifies the exact original file; CodeMirror 6 is loaded lazily and provides split/focus modes, live sanitized preview, editor-to-preview scroll sync, Outline-to-source navigation, search/replace, persisted preferences, save shortcuts, dirty-state protection, and external-change detection.
 - Includes built-in and user-authored themes with semantic colors, selectable bundled syntax themes, and theme-owned `none`, solid, gradient, static-image, or animated-image backgrounds. Settings owns theme authoring; the Popup selects existing themes.
 - Renders fenced and standalone Mermaid through either the official Mermaid renderer or the alternative Beautiful Mermaid renderer. Fenced diagrams render when they approach the viewport; rendered diagrams support source copying, a pan/zoom lightbox, and SVG or PNG export at `1x`–`4x`.
 - Opens rendered images in a keyboard-accessible pan/zoom lightbox with fit, zoom, drag, wheel, and pinch interactions.
 - Exposes capability-driven actions: printing for every rendered document format, source/rendered switching for standalone Mermaid, and HTML or Word (`.doc`) export for Markdown. Chrome's print dialog can be used to save PDF.
 - Keeps recent local Markdown files in device-local extension storage, with Popup reopen/clear actions and configurable retention. Preferences use `chrome.storage.sync` with a local fallback.
-- Provides a full Settings page for activation, file-access status, document statistics, scrollbar behavior, theme authoring, explorer policy, history/privacy, text-file limits, JSON settings import/export, and reset workflows.
+- Provides a full Settings page for activation, file-access status, document statistics, scrollbar behavior, theme authoring, explorer policy, history/privacy, text-file limits, JSON settings import/export, reset workflows, and About/support information.
 
 ## Quick Start
 
@@ -96,9 +98,9 @@ See [DEV.md](DEV.md) for the development loop, architecture entry points, verifi
 
 - [Documentation index](docs/README.md) — entry point for current project documentation.
 - [Architecture Overview](docs/architecture-overview.md) — runtime flows, subsystem ownership, security boundaries, and task-to-source guidance.
+- [Document Updates and Change Review](docs/document-updates-and-change-review.md) — update modes, review workflow, editor safety, limits, and implementation ownership.
 - [Theme System](docs/theme-system.md) — theme schema, built-in/custom behavior, backgrounds, assets, extension workflows, and tests.
-- [Design System](docs/design-system.md) — visual tokens, layout contracts, reusable components, and interaction conventions.
-- [Design System Demo](docs/design-system-demo.html) — standalone static preview derived from the current Viewer language.
+- [Design System](docs/design-system/README.md) — implementation guide and [visual reference](docs/design-system/index.html) covering foundations, components, current icons, and the Viewer preview.
 - [Gherkin Syntax](docs/gherkin-syntax.md) — Cucumber/Gherkin reference plus the Markdown fence integration supported by Markdown Plus.
 
 ## Privacy

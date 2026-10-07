@@ -65,6 +65,7 @@ export function needsFullRender(previousSettings, nextSettings) {
     'layout.showToc',
     'layout.tocWidth',
     'editor.',
+    'watch',
     'appearance.scrollbarVisibility',
     'appearance.showDocumentStats',
     'explorer.',

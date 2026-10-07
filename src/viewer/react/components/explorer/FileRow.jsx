@@ -17,7 +17,7 @@ import { OpenNewTabIcon } from '../icons/OpenNewTabIcon.jsx'
 import { FileIcon } from '../icons/FileIcon.jsx'
 import { getFileTypeById } from '../../../../shared/file-types.js'
 
-export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
+export function FileRow({ file, depth, isActive, onPick, rowStyle, motionState = '' }) {
   const linkRef = useRef(null)
   const menuRef = useRef(null)
   const { showToast } = useToast()
@@ -91,9 +91,11 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle }) {
 
   return (
     <li
-      className={`mdp-explorer__node mdp-explorer__tree-file${isActive ? ' is-active' : ''}${menuOpen ? ' is-menu-open' : ''}`}
+      className={`mdp-explorer__node mdp-explorer__tree-file${isActive ? ' is-active' : ''}${menuOpen ? ' is-menu-open' : ''}${motionState ? ` is-tree-${motionState}` : ''}`}
       role="treeitem"
       aria-level={String(Math.max(1, depth))}
+      aria-hidden={motionState === 'exiting' ? 'true' : undefined}
+      inert={motionState === 'exiting' ? true : undefined}
       style={rowStyle}
     >
       <a

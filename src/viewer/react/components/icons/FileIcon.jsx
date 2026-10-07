@@ -1,25 +1,11 @@
 import React from 'react'
-import {
-  Database,
-  Document,
-  Drawio,
-  Image,
-  Markdown,
-  SVG as Svg,
-  Text
-} from '@react-symbols/icons/files'
+import { FileTypeIcon } from '../../../../shared/react/FileTypeIcon.jsx'
 
 const FILE_ICONS = {
-  database: Database,
-  diagram: Drawio,
-  document: Markdown,
-  image: Image,
-  text: Text,
-  'vector-image': Svg
+  database: 'database', diagram: 'diagram', document: 'markdown',
+  image: 'image', text: 'text', 'vector-image': 'vector'
 }
 
-export function FileIcon({ className = '', kind = 'document' }) {
-  const Icon = FILE_ICONS[kind] || Document
-
-  return <Icon className={className} aria-hidden="true" focusable="false" />
+export function FileIcon({ kind = 'document', ...props }) {
+  return <FileTypeIcon name={FILE_ICONS[kind] || 'text'} {...props} />
 }

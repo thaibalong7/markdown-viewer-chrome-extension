@@ -574,6 +574,15 @@ export function normalizeSettings(settings, options = {}) {
     }
   }
 
+  if (Object.hasOwn(normalized, 'watch')) {
+    const valid = isPlainObject(normalized.watch) &&
+      (normalized.watch.mode === undefined || ['auto', 'ask', 'off'].includes(normalized.watch.mode))
+    if (!valid && invalidPolicy !== 'default') {
+      throw new SettingsValidationError({ 'watch.mode': 'Choose automatic, ask before updating, or off.' })
+    }
+    normalized.watch = { mode: valid ? normalized.watch.mode ?? 'ask' : 'ask' }
+  }
+
   if (Object.hasOwn(normalized, 'theme')) {
     normalized.theme = normalizeThemeSettings(normalized.theme, { invalid: invalidPolicy })
   }

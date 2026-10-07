@@ -29,6 +29,8 @@ vi.mock('../app/editorSessionController.js', () => ({
     destroy: mocks.editorDestroy,
     primeFileConnection: vi.fn().mockResolvedValue(undefined),
     isDirty: () => false,
+    isPreparingEdit: () => false,
+    isSaving: () => false,
     isEditModeActive: () => false
   })
 }))
@@ -41,6 +43,7 @@ vi.mock('../app/documentSessionController.js', () => ({
       return opened
     },
     getLoadedDocument: () => null,
+    getWatchTarget: () => null,
     getUiState: () => ({ capabilities: { edit: true }, sourceKind: 'file-url' }),
     updateText: vi.fn()
   })

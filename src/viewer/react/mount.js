@@ -24,7 +24,10 @@ export function mountViewerReact(container, options = {}) {
     onPrepareEdit,
     onSave,
     onViewModeChange,
-    onThemeToggle
+    onThemeToggle,
+    onWatchCheck,
+    onWatchApply,
+    onReviewSectionNavigate
   } = options
   const root = createRoot(container)
   let shellReadyResolve = () => { }
@@ -57,6 +60,10 @@ export function mountViewerReact(container, options = {}) {
     onSave,
     onViewModeChange,
     onThemeToggle,
+    onWatchCheck,
+    onWatchApply,
+    onReviewSectionNavigate,
+    watchState: {},
     dirty: false,
     saveStatus: 'saved',
     exitEditRequest: 0,
@@ -80,6 +87,10 @@ export function mountViewerReact(container, options = {}) {
 
   return {
     partsPromise,
+    updateWatchState(watchState) {
+      nextProps = { ...nextProps, watchState }
+      render()
+    },
     updateSettings(nextSettings) {
       nextProps = { ...nextProps, settings: nextSettings || {} }
       render()

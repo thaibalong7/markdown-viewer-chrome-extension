@@ -112,6 +112,7 @@ export function createExplorerWorkspaceSession(deps) {
       })
       throwIfAborted(signal)
       refs.workspaceVirtualReadersRef.current = readers
+      bridge?.updateWorkspaceReaders?.(readers)
       await finalizeWorkspaceTree(tree, stats, {
         maxScanDepth,
         workspaceLabelOverride: dirHandle.name || 'Workspace'
@@ -150,6 +151,7 @@ export function createExplorerWorkspaceSession(deps) {
       })
       throwIfAborted(signal)
       refs.workspaceVirtualReadersRef.current = readers
+      bridge?.updateWorkspaceReaders?.(readers)
       await finalizeWorkspaceTree(tree, stats, {
         maxScanDepth,
         workspaceLabelOverride: tree.name || 'Workspace'
@@ -168,10 +170,12 @@ export function createExplorerWorkspaceSession(deps) {
     const { restore = false } = opts
     if (!dirUrl) return
     const normalized = normalizeDirectoryUrl(dirUrl)
-    bridge?.resetBrowserRoute?.()
+    const previousState = stateRef?.current
+    const previousTree = refs.workspaceTreeRef.current
+    if (!opts.listOnly) bridge?.resetBrowserRoute?.()
     siblingScanSession?.abort?.()
     resetSiblingRefsForWorkspace()
-    clearWorkspaceVirtualReaders()
+    if (!opts.listOnly) clearWorkspaceVirtualReaders()
     const signal = workspaceScanSession.start()
     const { maxScanDepth, maxFiles, maxFolders, respectGitignore } = getScanLimits()
 
@@ -214,8 +218,18 @@ export function createExplorerWorkspaceSession(deps) {
         preserveExpandedState: Boolean(opts.preserveExpandedState),
         keepCurrentDocumentOnMissing: Boolean(opts.keepCurrentDocumentOnMissing)
       })
+      return true
     } catch (error) {
       const aborted = isAbortError(error, signal)
+      if (opts.listOnly) {
+        const activeSignal = workspaceScanSession.currentSignal()
+        if ((!activeSignal || activeSignal === signal) && refs.explorerModeRef.current === 'workspace' &&
+          getWorkspaceRootUrl() === normalized && refs.workspaceTreeRef.current === previousTree && previousState) {
+          safePatch(previousState)
+        }
+        if (aborted) return false
+        throw error
+      }
       logger.warn('Workspace folder scan failed.', error)
       if (aborted) await failWorkspaceToSibling('')
       else await failWorkspaceToSibling(restore ? 'Could not restore workspace' : 'Could not scan folder')

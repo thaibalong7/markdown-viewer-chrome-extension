@@ -7,9 +7,7 @@ export function FilesPanel({ explorerBridge }) {
       className="mdp-sidebar-panel mdp-sidebar-panel--files"
       id="mdp-panel-files"
     >
-      <div className="mdp-explorer-container">
-        <ExplorerPanel bridge={explorerBridge} />
-      </div>
+      <ExplorerPanel bridge={explorerBridge} />
     </div>
   )
 }

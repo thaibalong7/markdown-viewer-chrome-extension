@@ -10,3 +10,4 @@ This directory contains active work that is not yet part of the documented produ
 Current active work:
 
 - [`chrome-web-store/`](./chrome-web-store/)
+- [`product-feature-roadmap/`](./product-feature-roadmap/) — remaining product opportunities, validation questions, and the [Document Updates browser checklist](./product-feature-roadmap/document-updates-manual-test.md); shipped Watch/Change Review behavior is documented under [`docs/`](../docs/document-updates-and-change-review.md).

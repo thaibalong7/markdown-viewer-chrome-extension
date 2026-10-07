@@ -57,6 +57,21 @@ describe('settings design-system styles', () => {
     )
   })
 
+  it('lays out About content responsively with a separated navigation item', () => {
+    expect(optionsCss).toMatch(
+      /\.settings-nav__item--meta\s*\{[^}]*margin-top: 13px;/s
+    )
+    expect(optionsCss).toMatch(
+      /\.settings-nav__item--meta::after\s*\{[^}]*inset: -10px 0 auto;/s
+    )
+    expect(optionsCss).toMatch(
+      /\.settings-about-features\s*\{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s
+    )
+    expect(optionsCss).toMatch(
+      /@media \(max-width: 767px\)[\s\S]*\.settings-about-features,[^{]*\.settings-about-links\s*\{[^}]*grid-template-columns: 1fr;/s
+    )
+  })
+
   it('lays out the custom theme library, editor, and color controls', () => {
     expect(optionsCss).toContain('.settings-theme-list')
     expect(optionsCss).toContain('.settings-theme-card__actions')

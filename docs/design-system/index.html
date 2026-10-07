@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown Plus — Design system</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --mdp-color-scheme: light;
+      --mdp-bg: #f6f8fb;
+      --mdp-surface: #ffffff;
+      --mdp-text: #172033;
+      --mdp-body-text: #273043;
+      --mdp-heading: #111827;
+      --mdp-border: #dce2ea;
+      --mdp-border-strong: #c5ced9;
+      --mdp-muted: #667085;
+      --mdp-code-bg: #f2f5f8;
+      --mdp-code-text: #172033;
+      --mdp-panel-bg: #eef2f6;
+      --mdp-panel-strong: #e3e9f0;
+      --mdp-link: #2563eb;
+      --mdp-link-soft: #eaf2ff;
+      --mdp-accent: #16815c;
+      --mdp-accent-soft: #e8f6ef;
+      --mdp-warning: #b35c00;
+      --mdp-warning-soft: #fff3dc;
+      --mdp-danger: #c2413a;
+      --mdp-toast-warning-bg: #fffbeb;
+      --mdp-toast-warning-text: #92400e;
+      --mdp-toast-warning-border: #fde68a;
+      --mdp-toast-error-bg: #fef2f2;
+      --mdp-toast-error-text: #b91c1c;
+      --mdp-toast-error-border: #fecaca;
+      --mdp-table-border: #dce2ea;
+      --mdp-table-header-bg: #f2f5f8;
+      --mdp-table-row-alt-bg: #fafbfc;
+      --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+      --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
+      --mdp-overlay-scrim: rgb(3 7 18 / 58%);
+      --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+      --mdp-files-width: 264px;
+      --mdp-toc-width: 280px;
+      --mdp-actions-rail-width: 60px;
+      --mdp-files-gutter-width: 8px;
+      --mdp-content-max-width: 980px;
+      --mdp-font-family: system-ui;
+      --mdp-font-size: 16px;
+      --mdp-line-height: 1.7;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --mdp-color-scheme: dark;
+      --mdp-bg: #0d121b;
+      --mdp-surface: #151b26;
+      --mdp-text: #edf2f7;
+      --mdp-body-text: #dce4ee;
+      --mdp-heading: #f8fafc;
+      --mdp-border: #2d3848;
+      --mdp-border-strong: #465469;
+      --mdp-muted: #9ba9bb;
+      --mdp-code-bg: #0b111a;
+      --mdp-code-text: #e6edf3;
+      --mdp-panel-bg: #101722;
+      --mdp-panel-strong: #1d2735;
+      --mdp-link: #7ab7ff;
+      --mdp-link-soft: #122b4d;
+      --mdp-accent: #56d39a;
+      --mdp-accent-soft: #123529;
+      --mdp-warning: #f4b24e;
+      --mdp-warning-soft: #3b2a0e;
+      --mdp-danger: #ff8d85;
+      --mdp-toast-warning-bg: #3b2a05;
+      --mdp-toast-warning-text: #fde68a;
+      --mdp-toast-warning-border: #b45309;
+      --mdp-toast-error-bg: #450a0a;
+      --mdp-toast-error-text: #fecaca;
+      --mdp-toast-error-border: #b91c1c;
+      --mdp-table-border: #2d3848;
+      --mdp-table-header-bg: #1a2330;
+      --mdp-table-row-alt-bg: #111925;
+      --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+    }
+
+
+    /* Documentation navigation only; keep this standalone shell in sync across the four previews. */
+    :root { --ds-nav-height: 64px; }
+    html { scroll-padding-top: calc(var(--ds-nav-height) + 24px); }
+    .ds-nav { position: sticky; top: 0; z-index: 100; height: var(--ds-nav-height); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 32px; border-bottom: 1px solid var(--mdp-border); background: var(--mdp-surface); color: var(--mdp-text); font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .ds-brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; white-space: nowrap; font-weight: 700; }
+    .ds-brand span { color: var(--mdp-muted); font-weight: 400; }
+    .ds-links { display: flex; align-items: center; gap: 4px; min-width: 0; overflow-x: auto; }
+    .ds-links a { padding: 8px 11px; border-radius: 6px; color: var(--mdp-muted); text-decoration: none; white-space: nowrap; }
+    .ds-links a:hover { background: var(--mdp-panel-bg); color: var(--mdp-text); }
+    .ds-links a[aria-current="page"] { background: var(--mdp-link-soft); color: var(--mdp-link); font-weight: 650; }
+    .ds-nav a:focus-visible { outline: 2px solid var(--mdp-link); outline-offset: 2px; }
+    .ds-viewer .mdp-sidebar, .ds-viewer .mdp-right-rail { top: var(--ds-nav-height); height: calc(100vh - var(--ds-nav-height)); }
+    .ds-viewer .mdp-root, .ds-viewer .mdp-body { min-height: calc(100vh - var(--ds-nav-height)); }
+    @media (max-width: 760px) {
+      :root { --ds-nav-height: 104px; }
+      .ds-nav { align-items: stretch; flex-direction: column; justify-content: center; gap: 8px; padding: 10px 16px; }
+      .ds-links { flex-shrink: 0; }
+      .ds-links a { padding: 7px 10px; }
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--mdp-bg); color: var(--mdp-text); font: 14px/1.6 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    a { color: var(--mdp-link); }
+    button, input, select { font: inherit; }
+    button, select, input { border: 1px solid var(--mdp-border); border-radius: 6px; background: var(--mdp-surface); color: var(--mdp-text); padding: 8px 12px; }
+    button { cursor: pointer; }
+    button:hover { background: var(--mdp-panel-bg); border-color: var(--mdp-border-strong); }
+    :is(a, button, input, select):focus-visible { outline: 2px solid var(--mdp-link); outline-offset: 3px; }
+    .ds-page { max-width: 1160px; padding: 48px 32px 80px; margin: auto; }
+    .ds-page h1 { font-size: 38px; line-height: 1.15; letter-spacing: -.04em; font-weight: 650; margin: 12px 0 18px; color: var(--mdp-heading); }
+    .ds-eyebrow { color: var(--mdp-link); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin: 0; }
+    .ds-lead { color: var(--mdp-muted); max-width: 690px; font-size: 16px; }
+    .ds-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 24px 0 32px; color: var(--mdp-muted); font-size: 12px; }
+    .ds-tag { border: 1px solid var(--mdp-border); background: var(--mdp-surface); padding: 4px 9px; border-radius: 5px; }
+    .ds-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px 0; border-block: 1px solid var(--mdp-border); margin: 28px 0; }
+    .ds-toolbar label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--mdp-muted); }
+    .ds-toolbar button { margin-left: auto; }
+    .ds-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .ds-card { display: block; min-width: 0; padding: 24px; background: var(--mdp-surface); border: 1px solid var(--mdp-border); border-radius: 10px; text-decoration: none; color: var(--mdp-text); }
+    a.ds-card:hover { border-color: var(--mdp-link); }
+    .ds-card h2, .ds-card h3 { margin: 8px 0; font-size: 18px; font-weight: 650; }
+    .ds-card p { color: var(--mdp-muted); font-size: 13px; margin-bottom: 0; }
+    .ds-card .ds-arrow { color: var(--mdp-link); display: block; margin-top: 24px; font-size: 12px; }
+    .ds-foundations { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 40px; margin-top: 56px; }
+    .ds-side { align-self: start; position: sticky; top: calc(var(--ds-nav-height) + 28px); }
+    .ds-side strong { display: block; margin-bottom: 12px; font-size: 12px; }
+    .ds-side a { display: block; text-decoration: none; color: var(--mdp-muted); font-size: 13px; padding: 6px 0; }
+    .ds-side a:hover { color: var(--mdp-link); }
+    .ds-section { margin-bottom: 44px; }
+    .ds-section > h2 { font-size: 23px; letter-spacing: -.025em; margin: 0 0 8px; font-weight: 650; }
+    .ds-section > p { color: var(--mdp-muted); font-size: 13px; margin: 0 0 20px; }
+    .ds-swatches { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .ds-swatch { background: var(--mdp-surface); border: 1px solid var(--mdp-border); border-radius: 8px; overflow: hidden; }
+    .ds-swatch > div { height: 56px; background: var(--swatch); border-bottom: 1px solid var(--mdp-border); }
+    .ds-swatch strong, .ds-swatch code { display: block; padding: 10px 10px 0; font-size: 12px; }
+    .ds-swatch code { padding-top: 2px; padding-bottom: 10px; font-size: 10px; color: var(--mdp-muted); overflow-wrap: anywhere; }
+    .ds-sample { padding: 24px; border: 1px solid var(--mdp-border); border-radius: 8px; background: var(--mdp-surface); }
+    .ds-type-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--mdp-border); }
+    .ds-type-row:last-child { border: 0; }
+    .ds-type-row code { color: var(--mdp-muted); font-size: 11px; text-align: right; }
+    .ds-measures { display: flex; align-items: end; flex-wrap: wrap; gap: 28px; }
+    .ds-measure div { height: 8px; width: var(--space); background: var(--mdp-link); border-radius: 2px; margin-bottom: 12px; }
+    .ds-measure small { color: var(--mdp-muted); }
+    .ds-notice { padding: 16px 20px; background: var(--mdp-panel-bg); border: 1px solid var(--mdp-border); border-radius: 8px; color: var(--mdp-muted); font-size: 13px; }
+    .ds-states { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ds-states span { padding: 5px 10px; border: 1px solid var(--mdp-border); border-radius: 5px; font-size: 12px; background: var(--mdp-surface); }
+    .ds-footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--mdp-border); font-size: 12px; color: var(--mdp-muted); }
+    .ds-footer a { margin-right: 18px; }
+    .ds-icon-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; }
+    .ds-icon-tile { min-width: 0; padding: 20px 12px 14px; border: 1px solid var(--mdp-border); border-radius: 8px; background: var(--mdp-surface); }
+    .ds-icon-tile svg { width: var(--icon-size,20px); height: var(--icon-size,20px); display: block; margin-bottom: 20px; color: var(--mdp-muted); }
+    .ds-icon-tile strong { display: block; font-size: 12px; font-weight: 600; }
+    .ds-icon-tile a { display: block; margin-top: 5px; color: var(--mdp-muted); font-size: 10px; overflow-wrap: anywhere; text-decoration: none; }
+    .ds-icon-tile a:hover { color: var(--mdp-link); text-decoration: underline; }
+    .ds-icon-tile small { color: var(--mdp-muted); font-size: 10px; }
+    .ds-icon-tile[hidden], .ds-section[hidden] { display: none; }
+    #icon-count { color: var(--mdp-muted); font-size: 12px; }
+    @media (max-width: 900px) { .ds-icon-grid { grid-template-columns: repeat(4,minmax(0,1fr)); } .ds-swatches { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 640px) { .ds-page { padding: 32px 20px 56px; } .ds-page h1 { font-size: 30px; } .ds-grid { grid-template-columns: 1fr; } .ds-card { padding: 20px; } .ds-foundations { grid-template-columns: 1fr; gap: 24px; margin-top: 36px; } .ds-side { position: static; } .ds-side a { display: inline-block; margin-right: 12px; } .ds-icon-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .ds-toolbar { align-items: stretch; } .ds-toolbar label:first-child { width: 100%; } .ds-toolbar input { min-width: 0; flex: 1; } .ds-toolbar button { margin-left: 0; } }
+    @media (pointer: coarse) { button, select, input, .ds-links a { min-height: 44px; } }
+  </style>
+</head>
+<body data-theme="light">
+<header class="ds-nav"><a class="ds-brand" href="./index.html">Markdown Plus <span>/ Design system</span></a><nav class="ds-links" aria-label="Design system"><a href="./index.html" aria-current="page">Overview</a><a href="./components.html">Components</a><a href="./icons.html">Icons</a><a href="./viewer.html">Viewer preview</a></nav></header>
+<main class="ds-page">
+<p class="ds-eyebrow">Reference / Current implementation</p>
+<h1>One language.<br>Across every surface.</h1>
+<p class="ds-lead">The visual foundations and reusable UI of Markdown Plus. Start with a component, inspect an icon, or explore the complete Viewer composition.</p>
+<div class="ds-meta"><span class="ds-tag">Viewer · Settings · Popup</span><span class="ds-tag">Standalone previews</span><a href="README.md">Read the implementation guide ↗</a></div>
+<div class="ds-grid"><a class="ds-card" href="components.html"><span class="ds-eyebrow">01 / Building blocks</span><h2>Components</h2><p>Shared controls, feedback, containers, and surface patterns. Try their implemented states.</p><span class="ds-arrow">Explore components →</span></a><a class="ds-card" href="icons.html"><span class="ds-eyebrow">02 / Visual language</span><h2>Icons</h2><p>43 application outlines and 8 colored explorer identities, drawn from the shared runtime definitions.</p><span class="ds-arrow">Browse current icons →</span></a><a class="ds-card" href="viewer.html"><span class="ds-eyebrow">03 / Composition</span><h2>Viewer preview</h2><p>See Files, document actions, Outline, and shared dialog treatments together.</p><span class="ds-arrow">Open the Viewer →</span></a></div>
+<div class="ds-foundations"><aside class="ds-side"><strong>Foundations</strong><a href="#principles">Principles</a><a href="#colors">Semantic colors</a><a href="#typography">Typography</a><a href="#geometry">Spacing &amp; density</a><a href="#interaction">Interaction</a><a href="#icon-language">Icon language</a></aside><div>
+<section class="ds-section" id="principles"><h2>Quiet chrome. Clear content.</h2><p>Content leads; navigation stays compact. Borders and surface contrast provide structure. Elevation is reserved for floating layers.</p><div class="ds-notice">These pages document implemented contracts. Runtime source is canonical. Theme colors shown here are illustrative semantic values; user-selected reader themes resolve their own values.</div></section>
+<section class="ds-section" id="colors"><h2>Semantic colors</h2><p>Choose tokens by role. Navigation, success, editing, and errors each have a consistent meaning.</p><div class="ds-swatches"><div class="ds-swatch"><div style="--swatch:var(--mdp-bg)"></div><strong>Canvas</strong><code>--mdp-bg</code></div><div class="ds-swatch"><div style="--swatch:var(--mdp-surface)"></div><strong>Surface</strong><code>--mdp-surface</code></div><div class="ds-swatch"><div style="--swatch:var(--mdp-text)"></div><strong>Primary text</strong><code>--mdp-text</code></div><div class="ds-swatch"><div style="--swatch:var(--mdp-border)"></div><strong>Border</strong><code>--mdp-border</code></div><div class="ds-swatch"><div style="--swatch:var(--mdp-link)"></div><strong>Navigation</strong><code>--mdp-link</code></div><div class="ds-swatch"><div style="--swatch:var(--mdp-accent)"></div><strong>Success</strong><code>--mdp-accent</code></div><div class="ds-swatch"><div style="--swatch:var(--mdp-warning)"></div><strong>Warning / edit</strong><code>--mdp-warning</code></div><div class="ds-swatch"><div style="--swatch:var(--mdp-danger)"></div><strong>Error / danger</strong><code>--mdp-danger</code></div></div><div class="ds-toolbar"><span>Preview the same roles in both themes.</span><button id="ds-theme" type="button" aria-pressed="false">Dark mode</button></div></section>
+<section class="ds-section" id="typography"><h2>System typography</h2><p>The application uses the platform font stack. Document typography remains reader-configurable.</p><div class="ds-sample"><div class="ds-type-row"><strong style="font-size:15px">Files</strong><code>15px / Files heading</code></div><div class="ds-type-row"><strong style="font-size:12px">DOCUMENT UPDATES</strong><code>12px / panel title</code></div><div class="ds-type-row"><span style="font-size:14px">Choose a reading theme</span><code>13–14px / controls &amp; rows</code></div><div class="ds-type-row"><span style="font-size:11px;color:var(--mdp-muted)">420 words · 2 min read</span><code>10–12px / metadata</code></div></div></section>
+<section class="ds-section" id="geometry"><h2>Spacing &amp; density</h2><p>Use a compact scale in chrome and more room inside document content. Controls have 6–8px radii; larger surfaces use 10–12px.</p><div class="ds-sample"><div class="ds-measures"><div class="ds-measure"><div style="--space:4px"></div><small>4px</small></div><div class="ds-measure"><div style="--space:8px"></div><small>8px</small></div><div class="ds-measure"><div style="--space:12px"></div><small>12px</small></div><div class="ds-measure"><div style="--space:16px"></div><small>16px</small></div><div class="ds-measure"><div style="--space:24px"></div><small>24px</small></div></div></div><p style="margin-top:16px">Fine pointer: 28px dense utility tools · 34px icon actions · 36–38px page controls. Shared primary controls expand to 44px for coarse pointers; existing edge toggles retain their documented compact geometry.</p></section>
+<section class="ds-section" id="interaction"><h2>Meaningful states</h2><p>Keep focus visible. Pair color with labels, icons, or other cues. Respect reduced motion and restore focus after a dialog closes.</p><div class="ds-states"><span>Default</span><span>Hover</span><span>Pressed</span><span>Focus-visible</span><span>Selected</span><span>Disabled</span><span>Busy</span><span>Invalid</span><span>Success</span></div><p style="margin-top:16px"><a href="components.html">Try the states in the component catalog →</a></p></section>
+<section class="ds-section" id="icon-language"><h2>Two families. One visual language.</h2><p>Application icons use a 24px grid, 1.8 stroke, and rounded joins. Explorer identities use their own native 16px grid, fixed colors, and 1.25 stroke. Shared source definitions keep React, DOM toolbars, and these previews aligned.</p><a class="ds-card" href="icons.html#icon-rules"><span class="ds-eyebrow">Implemented / 51 icons</span><h3>The Markdown Plus icon set</h3><p>Compact outlines for actions; colored silhouettes for file recognition. Collapse folders uses overlapping layers with a minus.</p><span class="ds-arrow">Browse icons &amp; usage rules →</span></a></section>
+</div></div><footer class="ds-footer"><a href="README.md">Implementation &amp; maintenance</a><a href="../theme-system.md">Theme system</a><a href="../README.md">Documentation index</a><p>Source: src/theme/ · src/shared/ · src/viewer/styles/ · surface-specific styles. All previews work without a build or external assets.</p></footer>
+</main>
+<script>
+
+    const themeButton = document.getElementById('ds-theme');
+    themeButton.addEventListener('click', () => {
+      const dark = document.body.dataset.theme !== 'dark';
+      document.body.dataset.theme = dark ? 'dark' : 'light';
+      themeButton.setAttribute('aria-pressed', String(dark));
+      themeButton.textContent = dark ? 'Light mode' : 'Dark mode';
+    });
+
+</script>
+</body>
+</html>

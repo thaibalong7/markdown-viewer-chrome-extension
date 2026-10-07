@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../shared/react/Button.jsx'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { useSettingsForm } from './hooks/useSettingsForm.js'
+import { AboutSettings } from './sections/AboutSettings.jsx'
 import { AdvancedSettings } from './sections/AdvancedSettings.jsx'
 import { ExplorerSettings } from './sections/ExplorerSettings.jsx'
 import { GeneralSettings } from './sections/GeneralSettings.jsx'
@@ -13,7 +14,8 @@ const SECTIONS = [
   { id: 'themes', label: 'Themes', description: 'Colors and backgrounds' },
   { id: 'explorer', label: 'Files & Workspace', description: 'Folder scan limits' },
   { id: 'privacy', label: 'Privacy & Data', description: 'Recent local files' },
-  { id: 'advanced', label: 'Advanced', description: 'Limits, backup, and reset' }
+  { id: 'advanced', label: 'Advanced', description: 'Limits, backup, and reset' },
+  { id: 'about', label: 'About', description: 'Version, privacy, and support', meta: true }
 ]
 
 export function resolveSettingsSection(hash) {
@@ -27,6 +29,33 @@ export function OptionsApp() {
   )
   const form = useSettingsForm()
   const statusVariant = form.status.type === 'idle' ? 'info' : form.status.type
+
+  useEffect(() => {
+    function handleHashChange() {
+      setActiveSection(resolveSettingsSection(globalThis.location?.hash))
+    }
+
+    globalThis.addEventListener?.('hashchange', handleHashChange)
+    return () => globalThis.removeEventListener?.('hashchange', handleHashChange)
+  }, [])
+
+  useEffect(() => {
+    if (globalThis.document) {
+      globalThis.document.title = activeSection === 'about'
+        ? 'About Markdown Plus'
+        : 'Markdown Plus Settings'
+    }
+  }, [activeSection])
+
+  function navigateToSection(sectionId) {
+    const nextSection = resolveSettingsSection(`#${sectionId}`)
+    const nextHash = `#${nextSection}`
+    if (globalThis.location?.hash === nextHash) {
+      setActiveSection(nextSection)
+      return
+    }
+    if (globalThis.location) globalThis.location.hash = nextSection
+  }
 
   return (
     <div className="settings-app">
@@ -47,14 +76,16 @@ export function OptionsApp() {
               <span className="settings-brand__page">Settings</span>
             </div>
           </div>
-          <div
-            className={`mdp-ui-status mdp-ui-status--${statusVariant} settings-status`}
-            role="status"
-            aria-live="polite"
-          >
-            <span className="mdp-ui-status__dot" aria-hidden="true" />
-            {form.status.message}
-          </div>
+          {activeSection !== 'about' ? (
+            <div
+              className={`mdp-ui-status mdp-ui-status--${statusVariant} settings-status`}
+              role="status"
+              aria-live="polite"
+            >
+              <span className="mdp-ui-status__dot" aria-hidden="true" />
+              {form.status.message}
+            </div>
+          ) : null}
         </div>
       </header>
 
@@ -66,7 +97,7 @@ export function OptionsApp() {
               id="settings-section-select"
               className="mdp-ui-select"
               value={activeSection}
-              onChange={(event) => setActiveSection(event.target.value)}
+              onChange={(event) => navigateToSection(event.target.value)}
             >
               {SECTIONS.map((section) => (
                 <option key={section.id} value={section.id}>{section.label}</option>
@@ -79,9 +110,9 @@ export function OptionsApp() {
               <button
                 key={section.id}
                 type="button"
-                className={`mdp-ui-side-nav__item${activeSection === section.id ? ' is-active' : ''}`}
+                className={`mdp-ui-side-nav__item${section.meta ? ' settings-nav__item--meta' : ''}${activeSection === section.id ? ' is-active' : ''}`}
                 aria-current={activeSection === section.id ? 'page' : undefined}
-                onClick={() => setActiveSection(section.id)}
+                onClick={() => navigateToSection(section.id)}
               >
                 <strong>{section.label}</strong>
                 <small>{section.description}</small>
@@ -91,7 +122,9 @@ export function OptionsApp() {
         </aside>
 
         <main className="settings-main">
-          {form.loading ? (
+          {activeSection === 'about' ? (
+            <AboutSettings />
+          ) : form.loading ? (
             <div className="mdp-ui-card settings-loading" aria-label="Loading settings" aria-busy="true">
               <SkeletonBlock
                 lines={5}
@@ -117,6 +150,7 @@ export function OptionsApp() {
                   onEnabledChange={form.setEnabled}
                   onScrollbarAutoHideChange={form.setScrollbarAutoHide}
                   onDocumentStatsVisibleChange={form.setDocumentStatsVisible}
+                  onWatchModeChange={form.setWatchMode}
                 />
               ) : null}
               {activeSection === 'explorer' ? (

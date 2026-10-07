@@ -1,0 +1,29 @@
+// Keep semantic foreground/background pairs together across built-in and custom
+// palettes. Mixing warning/error text onto an arbitrary surface loses contrast.
+.mdp-watch-status,
+.mdp-change-review,
+.mdp-editor-update-confirmation,
+.mdp-exit-edit-confirmation {
+  @each $variant, $palette in (info: info, success: success, warning: warning, danger: error) {
+    $notice-suffix: '--#{$variant}';
+    @if $variant == info { $notice-suffix: ''; }
+    .mdp-ui-badge--#{$variant},
+    .mdp-ui-notice#{$notice-suffix} {
+      --mdp-ui-notice-color: var(--mdp-toast-#{$palette}-text);
+      background: var(--mdp-toast-#{$palette}-bg);
+      color: var(--mdp-toast-#{$palette}-text);
+      border-color: var(--mdp-toast-#{$palette}-border);
+    }
+  }
+
+  .mdp-ui-button--danger {
+    background: var(--mdp-toast-error-bg);
+    color: var(--mdp-toast-error-text);
+    border-color: var(--mdp-toast-error-border);
+
+    &:hover:not(:disabled) {
+      background: var(--mdp-toast-error-bg);
+      border-color: var(--mdp-toast-error-text);
+    }
+  }
+}

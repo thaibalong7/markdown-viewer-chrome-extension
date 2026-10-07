@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { MESSAGE_TYPES } from '../../messaging/index.js'
 import { createMessageRouter } from '../message-router.js'
+import { broadcastSettingsUpdated } from '../settings-broadcast-service.js'
 
 function createRouterHarness() {
   const settingsService = {
@@ -77,6 +78,45 @@ describe('message router settings routes', () => {
     expect(settingsBroadcastService.broadcastSettingsUpdated).toHaveBeenCalledWith(result)
     expect(result).toEqual({ enabled: true, reset: true })
   })
+
+  it.each([MESSAGE_TYPES.SAVE_SETTINGS, MESSAGE_TYPES.RESET_SETTINGS])(
+    'responds to %s after persistence without waiting for tab replies',
+    async (type) => {
+      const { routeMessage, settingsService, settingsBroadcastService } = createRouterHarness()
+      const runtimeApi = { lastError: undefined }
+      const tabsApi = {
+        query: vi.fn(async () => [{ id: 1 }, { id: 2 }]),
+        sendMessage: vi.fn((_tabId, _message, callback) => {
+          if (callback) return undefined
+          return new Promise(() => {})
+        })
+      }
+      settingsBroadcastService.broadcastSettingsUpdated.mockImplementation((settings) => (
+        broadcastSettingsUpdated(settings, { tabsApi, runtimeApi })
+      ))
+      const persisted = { plugins: { mermaid: { renderer: 'beautiful' } } }
+      let finishPersistence
+      const persist = type === MESSAGE_TYPES.SAVE_SETTINGS
+        ? settingsService.saveSettings
+        : settingsService.resetSettings
+      persist.mockReturnValueOnce(new Promise((resolve) => { finishPersistence = resolve }))
+      const completed = vi.fn()
+      const operation = routeMessage({ type, payload: persisted }).then(completed)
+
+      expect(completed).not.toHaveBeenCalled()
+      expect(tabsApi.sendMessage).not.toHaveBeenCalled()
+      finishPersistence(persisted)
+      await vi.waitFor(() => {
+        expect(completed).toHaveBeenCalledWith(persisted)
+      }, { timeout: 100 })
+      await operation
+      expect(tabsApi.sendMessage).toHaveBeenCalledTimes(2)
+      expect(tabsApi.sendMessage).toHaveBeenCalledWith(1, {
+        type: MESSAGE_TYPES.SETTINGS_UPDATED,
+        payload: persisted
+      }, expect.any(Function))
+    }
+  )
 
   it('routes theme assets through the local asset service', async () => {
     const { routeMessage, themeAssetService } = createRouterHarness()

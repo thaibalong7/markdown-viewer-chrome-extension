@@ -167,3 +167,13 @@ describe('document render controller', () => {
     }
   })
 })
+
+
+it('keeps the outline ready throughout an in-place refresh', async () => {
+  renderer.render.mockResolvedValueOnce({ tocItems: [], renderedText: '# Updated' })
+  const { controller, reactHandle } = createHarness()
+  await controller.render({ preserveScroll: true, honorHash: false })
+  expect(reactHandle.setTocReady).not.toHaveBeenCalledWith(false)
+  expect(reactHandle.setTocReady).toHaveBeenCalledWith(true)
+  controller.destroy()
+})

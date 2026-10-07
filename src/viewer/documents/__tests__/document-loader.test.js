@@ -26,6 +26,19 @@ const SVG_TYPE = {
 beforeEach(() => vi.clearAllMocks())
 
 describe('document loader', () => {
+  it('bounds watch reads before reading workspace source and after real-file reads', async () => {
+    const text = vi.fn()
+    await expect(loadDocument({
+      fileType: MARKDOWN_TYPE, maxWatchBytes: 4,
+      workspaceReader: { getFile: async () => ({ size: 5, text }) }
+    })).rejects.toMatchObject({ code: 'document-too-large' })
+    expect(text).not.toHaveBeenCalled()
+    mocks.sendMessage.mockResolvedValue({ ok: true, data: { text: 'hello' } })
+    await expect(loadDocument({
+      href: 'file:///docs/README.md', fileType: MARKDOWN_TYPE, maxWatchBytes: 4
+    })).rejects.toMatchObject({ code: 'document-too-large' })
+  })
+
   it('loads a real text document through the background route', async () => {
     mocks.sendMessage.mockResolvedValue({ ok: true, data: { text: '# Loaded' } })
 

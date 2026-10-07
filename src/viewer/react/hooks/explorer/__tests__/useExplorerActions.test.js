@@ -6,7 +6,7 @@ function createActions(overrides = {}) {
     navigateToFileRef: { current: vi.fn() },
     pickAndOpenAnotherWorkspaceFolder: vi.fn(),
     exitWorkspace: vi.fn(),
-    refreshCurrentFileAndList: vi.fn(),
+    refreshFileList: vi.fn(),
     backActionRef: { current: vi.fn() },
     workspaceScanSession: { abort: vi.fn() },
     siblingScanSession: { abort: vi.fn() },
@@ -38,4 +38,11 @@ describe('createExplorerActions', () => {
 
     expect(dispatch).toHaveBeenCalledWith({ type: 'COLLAPSE_ALL_FOLDERS' })
   })
+})
+
+
+it('routes Files refresh to the list-only command', () => {
+  const refreshFileList = vi.fn()
+  createActions({ refreshFileList }).onRefresh()
+  expect(refreshFileList).toHaveBeenCalledOnce()
 })

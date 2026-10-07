@@ -2,7 +2,8 @@ import { exportMermaidPng, exportMermaidSvg } from './mermaid-export.js'
 import { createMermaidLightboxButton, openMermaidLightbox } from './mermaid-lightbox.js'
 import { logger } from '../../shared/logger.js'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../shared/constants/tooltip.js'
-import { createCopyIconSvg, SVG_NS } from '../../viewer/icons.js'
+import { createCopyIconSvg } from '../../viewer/icons.js'
+import { createAppIconSvg } from '../../shared/icons/create-app-icon.js'
 import { attachTooltip } from '../../viewer/dom-tooltip.js'
 
 function ensureMermaidToolbar(containerEl) {
@@ -88,26 +89,6 @@ export function attachMermaidLightboxButton(containerEl) {
   }
 }
 
-function createIconDots() {
-  const icon = document.createElementNS(SVG_NS, 'svg')
-  icon.setAttribute('viewBox', '0 0 24 24')
-  icon.setAttribute('width', '14')
-  icon.setAttribute('height', '14')
-  icon.setAttribute('aria-hidden', 'true')
-  icon.setAttribute('focusable', 'false')
-
-  for (const y of [6, 12, 18]) {
-    const dot = document.createElementNS(SVG_NS, 'circle')
-    dot.setAttribute('cx', '12')
-    dot.setAttribute('cy', String(y))
-    dot.setAttribute('r', '1.8')
-    dot.setAttribute('fill', 'currentColor')
-    icon.appendChild(dot)
-  }
-
-  return icon
-}
-
 function createMenuButton({ label, action, scale }) {
   const button = document.createElement('button')
   button.type = 'button'
@@ -170,7 +151,7 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   trigger.setAttribute('aria-label', 'Mermaid chart actions')
   trigger.setAttribute('aria-haspopup', 'menu')
   trigger.setAttribute('aria-expanded', 'false')
-  trigger.appendChild(createIconDots())
+  trigger.appendChild(createAppIconSvg('more', { width: 14, height: 14 }))
 
   const menu = document.createElement('div')
   menu.className = 'mdp-mermaid-actions__menu'

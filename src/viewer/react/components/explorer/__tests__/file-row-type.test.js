@@ -31,7 +31,7 @@ describe('explorer file type presentation', () => {
     expect(renderFile(file, 2)).toContain('style="padding-left:12px"')
   })
 
-  it('renders Markdown with its recognizable M and down-arrow mark', () => {
+  it('renders Markdown with its fixed identity color at its native grid size', () => {
     const html = renderFile({
       displayName: 'notes.md',
       href: 'file:///docs/notes.md',
@@ -40,10 +40,10 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="markdown"')
     expect(html).toContain('fill="#60A5FA"')
-    expect(html).toContain('d="M3 15.714V8h2.323')
+    expect(html).toContain('viewBox="0 0 16 16"')
   })
 
-  it('renders plain text with strong horizontal text lines', () => {
+  it('renders plain text with its own fixed identity color', () => {
     const html = renderFile({
       displayName: 'notes.txt',
       href: 'file:///docs/notes.txt',
@@ -51,7 +51,7 @@ describe('explorer file type presentation', () => {
     })
 
     expect(html).toContain('data-file-type="text"')
-    expect(html).toContain('<rect width="16" height="2" x="4" y="6" fill="#64748B" rx="1"></rect>')
+    expect(html).toContain('stroke:#64748B;stroke-width:1.25')
   })
 
   it('renders SQL with its own database icon and label', () => {
@@ -63,7 +63,7 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="sql"')
     expect(html).toContain('title="schema.sql — SQL document"')
-    expect(html).toContain('d="M4.8 6.6c0-.62.28-1.16.7-1.6')
+    expect(html).toContain('stroke:#F472B6;stroke-width:1.25')
   })
 
   it('marks raster rows and renders the image-specific icon and label', () => {
@@ -75,7 +75,7 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="raster-image"')
     expect(html).toContain('title="photo.png — Image"')
-    expect(html).toContain('<circle cx="15" cy="9" r="2" fill="#C084FC"></circle>')
+    expect(html).toContain('stroke:#C084FC;stroke-width:1.25')
   })
 
   it('marks SVG rows as a distinct type with a vector-specific icon', () => {
@@ -87,7 +87,7 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="svg-image"')
     expect(html).toContain('title="diagram.svg — SVG image"')
-    expect(html).toContain('<rect width="4" height="4" x="3" y="3" fill="#F472B6" rx="1"></rect>')
+    expect(html).toContain('stroke:#F472B6;stroke-width:1.25')
   })
 
   it('uses the diagram presentation for standalone Mermaid files', () => {
@@ -99,6 +99,6 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="mermaid"')
     expect(html).toContain('title="chart.mermaid — Mermaid diagram"')
-    expect(html).toContain('<rect width="8" height="6" x="8" y="3.5" fill="#F59E0B" rx="1"></rect>')
+    expect(html).toContain('stroke:#F59E0B;stroke-width:1.25')
   })
 })

@@ -51,6 +51,7 @@ export const DEFAULT_SETTINGS = {
   documents: {
     maxStandaloneTextFileSizeMiB: DEFAULT_STANDALONE_TEXT_FILE_SIZE_LIMIT_MIB
   },
+  watch: { mode: 'ask' },
   editor: { ...DEFAULT_EDITOR_SETTINGS },
   version: 2
 }

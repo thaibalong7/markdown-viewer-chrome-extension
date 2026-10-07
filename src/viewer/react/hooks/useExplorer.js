@@ -34,6 +34,7 @@ import {
   createSiblingBackNavigationForUrl,
   navigateFromBrowserHistory
 } from '../../explorer/explorer-navigation.js'
+import { refreshExplorerFileList } from '../../explorer/explorer-list-refresh.js'
 import { createExplorerWorkspaceSession } from '../../explorer/explorer-workspace-session.js'
 import {
   fileUrlIsUnderDirectoryUrl,
@@ -190,7 +191,8 @@ export function useExplorer({ bridge }) {
 
   const clearWorkspaceVirtualReaders = useCallback(() => {
     workspaceVirtualReadersRef.current = null
-  }, [])
+    bridge?.updateWorkspaceReaders?.(null)
+  }, [bridge])
 
   const setBackNavigation = useCallback(
     ({ showBack = false, backLabel = 'Back to original file', onBack = null } = {}) => {
@@ -438,81 +440,38 @@ export function useExplorer({ bridge }) {
     workspaceSession
   ])
 
-  const refreshCurrentFileAndList = useCallback(async () => {
-    const currentFileUrl = currentFileUrlRef.current || ''
-    if (isWorkspaceVirtualHref(currentFileUrl)) {
-      bridge?.showToast?.('Refresh is unavailable for virtual workspace files', { variant: 'warning' })
-      return
-    }
-
-    const mode = explorerModeRef.current
-    const workspaceRootUrl = getWorkspaceRootUrl()
-    if (mode === 'workspace' && !workspaceRootUrl) {
-      bridge?.showToast?.('Refresh is unavailable for virtual workspaces', { variant: 'warning' })
-      return
-    }
-
+  const refreshInFlightRef = useRef(false)
+  const refreshFileList = useCallback(async () => {
+    if (refreshInFlightRef.current) return
+    refreshInFlightRef.current = true
     safePatch({ isRefreshing: true })
     try {
-      let restoredOriginalAfterMissingCurrent = false
-      if (currentFileUrl.startsWith('file:')) {
-        const refreshedCurrentFile = await navigator.navigateToFile(currentFileUrl, {
-          replaceHistory: true,
-          forceReload: true,
-          syncExplorer: false
-        })
-        if (refreshedCurrentFile === false) {
-          const originalFileUrl = getOriginalFileUrl()
-          if (originalFileUrl && originalFileUrl !== currentFileUrl) {
-            const restoredOriginal = await navigator.navigateToFile(originalFileUrl, {
-              replaceHistory: true,
-              forceReload: true,
-              syncExplorer: false
-            })
-            if (restoredOriginal !== false) {
-              restoredOriginalAfterMissingCurrent = true
-            }
-          }
-        }
-      }
-
-      const refreshedFileUrl = currentFileUrlRef.current || currentFileUrl
-      if (mode === 'workspace') {
-        await workspaceSession.openWorkspaceFolder(workspaceRootUrl, {
-          restore: true,
+      await refreshExplorerFileList({
+        currentFileUrl: currentFileUrlRef.current || '',
+        mode: explorerModeRef.current,
+        workspaceRootUrl: getWorkspaceRootUrl(),
+        siblingScanOptions: getSiblingRefreshScanOptions({
+          currentFileUrl: currentFileUrlRef.current || '',
+          originalFileUrl: getOriginalFileUrl(),
+          siblingScanRootUrl: siblingScanRootUrlRef.current,
+          siblingFolderLabel: siblingFolderLabelRef.current,
           preserveExpandedState: true
-        })
-      } else {
-        await runSiblingScan(
-          refreshedFileUrl,
-          getSiblingRefreshScanOptions({
-            currentFileUrl: refreshedFileUrl,
-            originalFileUrl: getOriginalFileUrl(),
-            siblingScanRootUrl: siblingScanRootUrlRef.current,
-            siblingFolderLabel: siblingFolderLabelRef.current,
-            preserveExpandedState: true
-          })
-        )
-      }
-      bridge?.showToast?.(
-        restoredOriginalAfterMissingCurrent
-          ? 'Current file was removed; returned to original file'
-          : 'Refreshed file and list',
-        { variant: restoredOriginalAfterMissingCurrent ? 'warning' : 'success' }
-      )
-    } catch (error) {
-      logger.warn('Failed to refresh current file and explorer list.', error)
-      bridge?.showToast?.('Could not refresh file and list', { variant: 'error' })
+        }),
+        workspaceSession,
+        runSiblingScan,
+        showToast: bridge?.showToast
+      })
     } finally {
+      refreshInFlightRef.current = false
       safePatch({ isRefreshing: false })
     }
-  }, [bridge, navigator, runSiblingScan, safePatch, workspaceSession])
+  }, [bridge, runSiblingScan, safePatch, workspaceSession])
 
   const actions = useExplorerActions({
     navigateToFileRef,
     pickAndOpenAnotherWorkspaceFolder: workspaceSession.pickAndOpenAnotherWorkspaceFolder,
     exitWorkspace: workspaceSession.exitWorkspace,
-    refreshCurrentFileAndList,
+    refreshFileList,
     backActionRef,
     workspaceScanSession,
     siblingScanSession,

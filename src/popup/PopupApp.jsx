@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { mergePluginSettings } from '../plugins/plugin-types.js'
 import { openExtensionDetails } from '../shared/file-scheme-access.js'
+import { AppIcon } from '../shared/react/AppIcon.jsx'
 import { Button } from '../shared/react/Button.jsx'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { useFileSchemeAccess } from '../shared/react/useFileSchemeAccess.js'
@@ -14,6 +15,7 @@ import { EditorSettingsPanel } from './panels/EditorSettingsPanel.jsx'
 import { PluginsPanel } from './panels/PluginsPanel.jsx'
 import { FileHistoryPanel } from './panels/FileHistoryPanel.jsx'
 import { openOptionsPage } from './actions/open-options-page.js'
+import { openOptionsSection } from './actions/open-options-section.js'
 
 export function PopupApp() {
   const {
@@ -44,6 +46,16 @@ export function PopupApp() {
       window.close()
     } catch (error) {
       setOptionsError(error instanceof Error ? error.message : 'Could not open Settings.')
+    }
+  }
+
+  async function handleOpenAbout() {
+    setOptionsError('')
+    try {
+      await openOptionsSection('about')
+      window.close()
+    } catch (error) {
+      setOptionsError(error instanceof Error ? error.message : 'Could not open About.')
     }
   }
 
@@ -201,18 +213,23 @@ export function PopupApp() {
               <span className="mdp-ui-status__dot" aria-hidden="true" />
               {errorMessage || optionsError || (saving ? 'Saving changes…' : 'Settings saved')}
             </span>
-            <Button
-              variant="quiet"
-              className="popup-open-settings"
-              onClick={() => void handleOpenSettings()}
-            >
-              All settings
-              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-                <path d="M7 4h9v9" />
-                <path d="m16 4-9.5 9.5" />
-                <path d="M13 10v6H4V7h6" />
-              </svg>
-            </Button>
+            <div className="popup-footer__actions">
+              <Button
+                variant="quiet"
+                className="popup-open-about"
+                onClick={() => void handleOpenAbout()}
+              >
+                About
+              </Button>
+              <Button
+                variant="quiet"
+                className="popup-open-settings"
+                onClick={() => void handleOpenSettings()}
+              >
+                All settings
+                <AppIcon name="external" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { forwardRef, useCallback, useEffect, useRef } from 'react'
+import { Tooltip } from '../Tooltip.jsx'
 import { IconButton } from './IconButton.jsx'
 
 function assignRef(ref, value) {
@@ -91,22 +92,31 @@ export const ActionMenu = forwardRef(function ActionMenu(
         aria-label={menuLabel}
         onKeyDown={onMenuKeyDown}
       >
-        {items.map((item) => (
-          <button
-            key={item.key || item.label}
-            type="button"
-            className={itemClassName}
-            role="menuitem"
-            disabled={item.disabled}
-            onClick={(event) => {
-              item.onClick?.(event)
-              queueMicrotask(() => localTriggerRef.current?.focus?.())
-            }}
-          >
-            {item.icon}
-            {item.icon ? <span>{item.label}</span> : item.label}
-          </button>
-        ))}
+        {items.map((item) => {
+          const key = item.key || item.label
+          const button = (
+            <button
+              type="button"
+              className={itemClassName}
+              role="menuitem"
+              aria-label={item.ariaLabel}
+              disabled={item.disabled}
+              onClick={(event) => {
+                item.onClick?.(event)
+                queueMicrotask(() => localTriggerRef.current?.focus?.())
+              }}
+            >
+              {item.icon}
+              {item.icon ? <span>{item.label}</span> : item.label}
+            </button>
+          )
+          if (!item.tooltip) return React.cloneElement(button, { key })
+          return (
+            <Tooltip key={key} content={item.tooltip}>
+              <span className="mdp-action-menu__tooltip-anchor">{button}</span>
+            </Tooltip>
+          )
+        })}
       </div>
     </div>
   )

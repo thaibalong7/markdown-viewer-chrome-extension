@@ -173,6 +173,11 @@ export function useSettingsForm() {
     [persist]
   )
 
+  const setWatchMode = useCallback(
+    (mode) => persist(() => saveSettings({ watch: { mode } }), 'Watch mode updated.', 'watchMode'),
+    [persist]
+  )
+
   const setActiveTheme = useCallback(
     (activeId) => persist(
       () => saveSettings({ theme: { activeId } }),
@@ -427,6 +432,7 @@ export function useSettingsForm() {
     setEnabled,
     setScrollbarAutoHide,
     setDocumentStatsVisible,
+    setWatchMode,
     setActiveTheme,
     saveCustomTheme,
     deleteCustomTheme,

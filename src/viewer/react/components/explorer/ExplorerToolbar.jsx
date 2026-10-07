@@ -46,6 +46,7 @@ export function ExplorerToolbar({
           tooltip={refreshTooltip}
           className={`mdp-explorer__toolbar-btn mdp-explorer__refresh-btn${isRefreshing ? ' is-refreshing' : ''}`}
           aria-label={isRefreshing ? 'Refreshing file list' : 'Refresh file list'}
+          aria-busy={isRefreshing}
           disabled={refreshDisabled || isRefreshing}
           onClick={() => onRefresh?.()}
         >

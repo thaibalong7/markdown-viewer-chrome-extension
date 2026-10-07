@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { AppIcon } from '../../shared/react/AppIcon.jsx'
+import { FileTypeIcon } from '../../shared/react/FileTypeIcon.jsx'
 import { logger } from '../../shared/logger.js'
 import {
   isAnimatedImageBlob,
@@ -258,23 +260,23 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
             <div className="settings-theme-preview__files">
               <div className="settings-theme-preview__panel-title">
                 <span>Files</span>
-                <span className="settings-theme-preview__panel-action">+</span>
+                <AppIcon name="collapse" className="settings-theme-preview__panel-action" size={14} />
               </div>
               <div className="settings-theme-preview__workspace">MY NOTES</div>
               <div className="settings-theme-preview__tree-row">
-                <span>⌄</span>
+                <FileTypeIcon name="folder-open" />
                 <strong>docs</strong>
               </div>
               <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--active">
-                <span>◆</span>
+                <FileTypeIcon name="markdown" />
                 <strong>guide.md</strong>
               </div>
               <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--nested">
-                <span>◇</span>
+                <FileTypeIcon name="markdown" />
                 <strong>notes.md</strong>
               </div>
               <div className="settings-theme-preview__tree-row">
-                <span>◇</span>
+                <FileTypeIcon name="markdown" />
                 <strong>README.md</strong>
               </div>
             </div>
@@ -291,10 +293,7 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
                   <div className="settings-theme-preview__code-meta">
                     <span>JavaScript</span>
                     <span className="settings-theme-preview__code-copy">
-                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <rect x="9" y="9" width="11" height="11" rx="2" />
-                        <rect x="4" y="4" width="11" height="11" rx="2" />
-                      </svg>
+                      <AppIcon name="copy" />
                     </span>
                   </div>
                   <SyntaxPreview highlighted={syntaxPreview} />

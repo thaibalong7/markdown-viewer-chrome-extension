@@ -136,7 +136,13 @@
     opacity: 0.52;
   }
 
-  &.is-refreshing .mdp-explorer__refresh-icon {
+  &:disabled.is-refreshing {
+    color: var(--mdp-link);
+    cursor: progress;
+    opacity: 1;
+  }
+
+  &.is-refreshing .mdp-explorer__refresh-icon [data-icon-part='arrow'] {
     animation: mdp-explorer-refresh-spin 900ms linear infinite;
   }
 }
@@ -146,6 +152,12 @@
   width: 17px;
   height: 17px;
   flex-shrink: 0;
+}
+
+.mdp-explorer__refresh-icon [data-icon-part='arrow'] {
+  // Rotate around the circular arrow's center in the shared 24px viewBox.
+  transform-box: view-box;
+  transform-origin: 17px 17px;
 }
 
 @keyframes mdp-explorer-refresh-spin {
@@ -515,8 +527,11 @@
   flex-shrink: 0;
 
   svg {
-    width: 18px;
-    height: 18px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    // Match the optical center of the 13px filename glyphs, above the line-box center.
+    transform: translateY(-1px);
   }
 }
 
@@ -777,13 +792,13 @@
     outline: 2px solid var(--mdp-link);
     outline-offset: 1px;
   }
-
-  &.is-expanded .mdp-explorer__tree-chevron::before {
-    transform: translateY(-0.75px) rotate(45deg);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .mdp-explorer__toolbar-btn.is-refreshing .mdp-explorer__refresh-icon [data-icon-part='arrow'] {
+    animation: none;
+  }
+
   .mdp-explorer__loading,
   .mdp-explorer__busy-view {
     transition: none;
@@ -799,14 +814,9 @@
   flex-shrink: 0;
   color: var(--mdp-muted);
 
-  &::before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border: solid currentColor;
-    border-width: 0 1.5px 1.5px 0;
-    transform: translateY(0.5px) rotate(-45deg);
-    transition: transform 0.12s ease;
+  svg {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -817,11 +827,12 @@
   width: 19px;
   height: 19px;
   flex-shrink: 0;
-  color: color-mix(in srgb, var(--mdp-warning) 72%, var(--mdp-muted));
 
   svg {
-    width: 18px;
-    height: 18px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    // Match the optical center of the 13px filename glyphs, above the line-box center.
     transform: translateY(-1px);
   }
 }

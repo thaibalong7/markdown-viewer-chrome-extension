@@ -1,0 +1,2472 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown Plus Component Catalog</title>
+  <!-- Component CSS snapshot compiled from src/shared/styles and the Viewer/Popup
+       sources cited below. Refresh the snapshot when those visual contracts change.
+       Layout rules under catalog-* / mdp-ui-catalog / mdp-ui-demo-* are preview-only. -->
+  <style id="runtime-component-styles">
+@charset "UTF-8";
+.mdp-ui-button {
+  border: 1px solid var(--mdp-border);
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  min-height: 36px;
+  padding: 6px 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  box-shadow: var(--mdp-shadow-subtle);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.mdp-ui-button:hover:not(:disabled) {
+  border-color: var(--mdp-border-strong);
+  background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-strong));
+}
+.mdp-ui-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.mdp-ui-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  box-shadow: none;
+}
+.mdp-ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.mdp-ui-button--primary {
+  border-color: color-mix(in srgb, var(--mdp-link) 82%, var(--mdp-text));
+  background: var(--mdp-link);
+  color: var(--mdp-surface);
+}
+.mdp-ui-button--primary:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--mdp-link) 72%, var(--mdp-text));
+  background: color-mix(in srgb, var(--mdp-link) 88%, var(--mdp-text));
+}
+.mdp-ui-button--quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--mdp-muted);
+  box-shadow: none;
+}
+.mdp-ui-button--quiet:hover:not(:disabled) {
+  border-color: transparent;
+  background: var(--mdp-panel-bg);
+  color: var(--mdp-text);
+}
+.mdp-ui-button--danger {
+  border-color: color-mix(in srgb, var(--mdp-danger) 42%, var(--mdp-border));
+  color: var(--mdp-danger);
+}
+.mdp-ui-button--danger:hover:not(:disabled) {
+  border-color: var(--mdp-danger);
+  background: color-mix(in srgb, var(--mdp-danger) 10%, var(--mdp-surface));
+}
+.mdp-ui-button[aria-busy=true] {
+  cursor: wait;
+}
+
+@media (pointer: coarse) {
+  .mdp-ui-button {
+    min-height: 44px;
+  }
+}
+.mdp-ui-field {
+  display: grid;
+  gap: 6px;
+}
+
+.mdp-ui-field__label {
+  color: var(--mdp-heading);
+  font-size: 14px;
+  font-weight: 680;
+  line-height: 1.4;
+}
+
+.mdp-ui-field__label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mdp-ui-field__helper,
+.mdp-ui-field__error,
+.mdp-ui-field__meta {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mdp-ui-field__helper {
+  margin: 0;
+  color: var(--mdp-muted);
+}
+
+.mdp-ui-field__error {
+  color: var(--mdp-danger);
+}
+
+.mdp-ui-field__meta {
+  color: var(--mdp-muted);
+  white-space: nowrap;
+}
+
+.mdp-ui-input,
+.mdp-ui-select {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--mdp-border-strong);
+  border-radius: 8px;
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  font-size: 13px;
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+.mdp-ui-input:hover:not(:disabled),
+.mdp-ui-select:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--mdp-link) 34%, var(--mdp-border-strong));
+}
+.mdp-ui-input[aria-invalid=true],
+.mdp-ui-select[aria-invalid=true] {
+  border-color: var(--mdp-danger);
+}
+.mdp-ui-input:disabled,
+.mdp-ui-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  background: var(--mdp-panel-bg);
+}
+
+.mdp-ui-input--technical {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.mdp-ui-number-field {
+  min-height: 92px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+}
+
+.mdp-ui-number-field__control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.mdp-ui-number-field__control .mdp-ui-field__error {
+  grid-column: 1/-1;
+}
+
+.mdp-ui-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  cursor: pointer;
+}
+
+.mdp-ui-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.mdp-ui-switch__track {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  flex: 0 0 auto;
+  border: 1px solid var(--mdp-border-strong);
+  border-radius: 999px;
+  background: var(--mdp-panel-strong);
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.mdp-ui-switch__track::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-subtle);
+  content: "";
+  transition: transform 150ms ease;
+}
+
+.mdp-ui-switch input:checked + .mdp-ui-switch__track {
+  border-color: var(--mdp-link);
+  background: var(--mdp-link);
+}
+
+.mdp-ui-switch input:checked + .mdp-ui-switch__track::after {
+  transform: translateX(16px);
+}
+
+.mdp-ui-switch input:focus-visible + .mdp-ui-switch__track {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+}
+
+.mdp-ui-switch input:focus-visible {
+  outline: none;
+}
+
+.mdp-ui-switch input:disabled + .mdp-ui-switch__track {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.mdp-ui-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 767px) {
+  .mdp-ui-number-field {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+@media (pointer: coarse) {
+  .mdp-ui-input,
+  .mdp-ui-select,
+  .mdp-ui-switch {
+    min-height: 44px;
+  }
+}
+.mdp-ui-card {
+  overflow: hidden;
+  border: 1px solid var(--mdp-border);
+  border-radius: 12px;
+  background: var(--mdp-surface);
+}
+
+.mdp-ui-setting-row {
+  min-height: 88px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+}
+
+.mdp-ui-setting-row__title {
+  margin: 0;
+  color: var(--mdp-heading);
+  font-size: 14px;
+  font-weight: 680;
+  line-height: 1.4;
+}
+
+.mdp-ui-setting-row__description {
+  margin: 6px 0 0;
+  color: var(--mdp-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.mdp-ui-divider {
+  height: 1px;
+  margin: 0 24px;
+  background: var(--mdp-border);
+}
+
+.mdp-ui-action-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 24px;
+  border-top: 1px solid var(--mdp-border);
+  background: color-mix(in srgb, var(--mdp-panel-bg) 48%, var(--mdp-surface));
+}
+
+.mdp-ui-action-footer--end {
+  justify-content: flex-end;
+}
+
+.mdp-ui-action-footer > .mdp-ui-button--primary {
+  order: 2;
+}
+
+.mdp-ui-action-footer > .mdp-ui-button--quiet {
+  order: 1;
+}
+
+.mdp-ui-side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mdp-ui-side-nav__item {
+  position: relative;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mdp-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.mdp-ui-side-nav__item:hover {
+  background: var(--mdp-panel-bg);
+}
+
+.mdp-ui-side-nav__item.is-active {
+  border-color: color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+  color: var(--mdp-heading);
+}
+
+.mdp-ui-side-nav__item.is-active::before {
+  position: absolute;
+  inset: 13px auto 13px -1px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--mdp-link);
+  content: "";
+}
+
+.mdp-ui-side-nav__item strong {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.mdp-ui-side-nav__item small {
+  color: var(--mdp-muted);
+  font-size: 11px;
+}
+
+@media (max-width: 767px) {
+  .mdp-ui-setting-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .mdp-ui-action-footer {
+    flex-direction: column;
+  }
+  .mdp-ui-action-footer > .mdp-ui-button--primary {
+    order: 1;
+  }
+  .mdp-ui-action-footer > .mdp-ui-button--quiet {
+    order: 2;
+  }
+  .mdp-ui-action-footer .mdp-ui-button {
+    width: 100%;
+  }
+}
+.mdp-ui-status {
+  --mdp-ui-status-color: var(--mdp-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mdp-ui-status-color);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.mdp-ui-status__dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.mdp-ui-status--info {
+  --mdp-ui-status-color: var(--mdp-link);
+}
+
+.mdp-ui-status--success {
+  --mdp-ui-status-color: var(--mdp-accent);
+}
+
+.mdp-ui-status--warning {
+  --mdp-ui-status-color: var(--mdp-warning);
+}
+
+.mdp-ui-status--error {
+  --mdp-ui-status-color: var(--mdp-danger);
+}
+
+.mdp-ui-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 999px;
+  background: var(--mdp-panel-bg);
+  color: var(--mdp-muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.mdp-ui-badge--info {
+  border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+}
+
+.mdp-ui-badge--success {
+  border-color: color-mix(in srgb, var(--mdp-accent) 30%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
+  color: var(--mdp-accent);
+}
+
+.mdp-ui-badge--warning {
+  border-color: color-mix(in srgb, var(--mdp-warning) 32%, var(--mdp-border));
+  background: var(--mdp-warning-soft);
+  color: var(--mdp-warning);
+}
+
+.mdp-ui-badge--danger {
+  border-color: color-mix(in srgb, var(--mdp-danger) 32%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-danger) 10%, var(--mdp-surface));
+  color: var(--mdp-danger);
+}
+
+.mdp-ui-notice {
+  --mdp-ui-notice-color: var(--mdp-link);
+  --mdp-ui-notice-bg: var(--mdp-link-soft);
+  padding: 13px 15px;
+  border: 1px solid color-mix(in srgb, var(--mdp-ui-notice-color) 28%, var(--mdp-border));
+  border-left: 3px solid var(--mdp-ui-notice-color);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mdp-ui-notice-bg) 72%, var(--mdp-surface));
+  color: var(--mdp-text);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.mdp-ui-notice strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--mdp-ui-notice-color);
+  font-size: 12px;
+}
+
+.mdp-ui-notice--success {
+  --mdp-ui-notice-color: var(--mdp-accent);
+  --mdp-ui-notice-bg: var(--mdp-accent-soft);
+}
+
+.mdp-ui-notice--warning {
+  --mdp-ui-notice-color: var(--mdp-warning);
+  --mdp-ui-notice-bg: var(--mdp-warning-soft);
+}
+
+.mdp-ui-notice--danger {
+  --mdp-ui-notice-color: var(--mdp-danger);
+  --mdp-ui-notice-bg: color-mix(in srgb, var(--mdp-danger) 12%, var(--mdp-surface));
+}
+
+.mdp-ui-state {
+  padding: 18px;
+  border: 1px dashed var(--mdp-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mdp-panel-bg) 52%, transparent);
+  color: var(--mdp-text);
+  text-align: center;
+}
+
+.mdp-ui-state--error {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--mdp-danger) 38%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-danger) 8%, var(--mdp-surface));
+}
+
+.mdp-ui-state__title {
+  display: block;
+  color: var(--mdp-heading);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.mdp-ui-state--error .mdp-ui-state__title {
+  color: var(--mdp-danger);
+}
+
+.mdp-ui-state__message {
+  margin: 6px 0 0;
+  color: var(--mdp-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.mdp-ui-state__action {
+  margin-top: 12px;
+}
+
+@keyframes mdp-ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mdp-ui-spinner {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: mdp-ui-spin 750ms linear infinite;
+}
+
+.mdp-ui-loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 72px;
+  padding: 14px 16px;
+  color: var(--mdp-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-ui-spinner {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}
+@keyframes mdp-skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.mdp-skeleton {
+  display: flex;
+  flex-direction: column;
+}
+
+.mdp-skeleton-line {
+  position: relative;
+  display: block;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--mdp-border) 70%, transparent);
+  overflow: hidden;
+}
+.mdp-skeleton-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--mdp-muted) 18%, transparent) 45%, transparent 100%);
+  animation: mdp-skeleton-shimmer 1.25s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-skeleton-line::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}
+/* Document controls hosted by the right-side rail. */
+.mdp-floating-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 6px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
+  box-shadow: var(--mdp-shadow-subtle);
+}
+.mdp-floating-actions[hidden] {
+  display: none;
+}
+
+.mdp-floating-actions.mdp-floating-actions--rail-strip {
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.mdp-right-rail--actions-only .mdp-floating-actions--rail-strip {
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.mdp-floating-actions--rail-strip .mdp-fab-btn:not(.mdp-fab-btn--theme) {
+  border-color: transparent;
+}
+
+.mdp-fab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--mdp-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mdp-muted);
+  cursor: pointer;
+  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+.mdp-fab-btn:hover {
+  color: var(--mdp-link);
+  border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+}
+.mdp-fab-btn:active {
+  transform: translateY(1px);
+}
+.mdp-fab-btn:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: 2px;
+}
+.mdp-fab-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.mdp-fab-btn.is-copied {
+  color: var(--mdp-accent);
+  border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
+  pointer-events: none;
+}
+.mdp-fab-btn.is-copied .mdp-fab-btn__icon {
+  display: none;
+}
+.mdp-fab-btn.is-copied::after {
+  content: "✓";
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mdp-fab-btn__icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.mdp-fab-btn--theme {
+  --mdp-theme-action-color: var(--mdp-link);
+  --mdp-theme-action-soft: var(--mdp-link-soft);
+  color: var(--mdp-theme-action-color);
+  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 44%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-theme-action-soft) 88%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--mdp-theme-action-color) 18%, transparent);
+}
+.mdp-fab-btn--theme:hover {
+  color: var(--mdp-theme-action-color);
+  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 68%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-theme-action-soft) 76%, var(--mdp-theme-action-color) 10%);
+  box-shadow: 0 3px 11px color-mix(in srgb, var(--mdp-theme-action-color) 25%, transparent);
+}
+.mdp-fab-btn--theme[aria-pressed=true] {
+  --mdp-theme-action-color: var(--mdp-warning);
+  --mdp-theme-action-soft: var(--mdp-warning-soft);
+}
+
+.mdp-fab-btn__theme-icon {
+  transition: transform 180ms ease;
+}
+
+.mdp-fab-btn__theme-icon--dark path,
+.mdp-fab-btn__theme-icon--light circle {
+  fill: currentColor;
+  fill-opacity: 0.16;
+}
+
+.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--dark {
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--light {
+  transform: rotate(18deg) scale(1.08);
+}
+
+.mdp-fab-export {
+  position: relative;
+}
+
+.mdp-fab-export__menu {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 6px);
+  z-index: 30;
+  min-width: 172px;
+  padding: 5px;
+  border-radius: 12px;
+  border: 1px solid var(--mdp-border);
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-float);
+}
+
+.mdp-fab-export__menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 38px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mdp-text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.mdp-fab-export__menu-item:hover, .mdp-fab-export__menu-item:focus-visible {
+  color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+}
+.mdp-fab-export__menu-item:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: -1px;
+}
+
+@media (max-width: 899px) {
+  .mdp-floating-actions {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 5px;
+    background: var(--mdp-surface);
+  }
+}
+@media (max-width: 639px) {
+  .mdp-floating-actions,
+  .mdp-right-rail--actions-only .mdp-floating-actions {
+    flex-direction: row;
+    padding: 4px;
+  }
+  .mdp-floating-actions.mdp-floating-actions--rail-strip {
+    padding: 0;
+  }
+  .mdp-fab-export__menu {
+    inset: auto 0 calc(100% + 8px) auto;
+  }
+}
+@media (pointer: coarse) {
+  .mdp-fab-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+.mdp-watch-status {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+}
+.mdp-watch-status__trigger {
+  position: relative;
+  --mdp-watch-indicator: var(--mdp-link);
+}
+.mdp-watch-status__trigger--error {
+  --mdp-watch-indicator: var(--mdp-danger);
+}
+.mdp-watch-status__trigger--warning {
+  --mdp-watch-indicator: var(--mdp-warning);
+}
+.mdp-watch-status__trigger--attention::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mdp-watch-indicator);
+  border: 1px solid var(--mdp-surface);
+}
+.mdp-watch-status__icon-swap {
+  position: relative;
+  perspective: 60px;
+}
+.mdp-watch-status__icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+}
+.mdp-watch-status__icon--details {
+  transform: rotateY(0deg);
+}
+.mdp-watch-status__icon--apply {
+  transform: rotateY(180deg);
+  opacity: 0;
+}
+.mdp-watch-status__icon-swap.is-apply .mdp-watch-status__icon--details {
+  transform: rotateY(-180deg);
+  opacity: 0;
+}
+.mdp-watch-status__icon-swap.is-apply .mdp-watch-status__icon--apply {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+.mdp-watch-status__notice {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 11px);
+  z-index: 59;
+  display: grid;
+  gap: 1px;
+  width: max-content;
+  max-width: min(210px, 100vw - 88px);
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  border-radius: 12px;
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  box-shadow: var(--mdp-shadow-float);
+  font: inherit;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transform-origin: right center;
+  animation: mdp-watch-notice-pop 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.mdp-watch-status__notice::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  border-right: 1px solid color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  background: var(--mdp-surface);
+  transform: translateY(-50%) rotate(45deg);
+}
+.mdp-watch-status__notice strong, .mdp-watch-status__notice span {
+  position: relative;
+  z-index: 1;
+}
+.mdp-watch-status__notice strong {
+  color: var(--mdp-heading);
+  font-size: 12px;
+  font-weight: 650;
+}
+.mdp-watch-status__notice span {
+  color: var(--mdp-link);
+  font-size: 11px;
+  font-weight: 600;
+}
+.mdp-watch-status__notice:hover {
+  border-color: color-mix(in srgb, var(--mdp-link) 68%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-link-soft) 46%, var(--mdp-surface));
+}
+.mdp-watch-status__notice:focus-visible {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+}
+.mdp-watch-status__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  box-sizing: border-box;
+  width: min(320px, 100vw - 24px);
+  padding: 12px;
+  overflow: visible;
+  color: var(--mdp-text);
+  box-shadow: var(--mdp-shadow-raised);
+  font-size: 12.5px;
+  line-height: 1.45;
+  text-align: left;
+  white-space: normal;
+}
+.mdp-watch-status__panel::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 20px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid var(--mdp-border);
+  border-left: 1px solid var(--mdp-border);
+  background: var(--mdp-surface);
+  transform: rotate(45deg);
+}
+.mdp-watch-status__panel[hidden] {
+  display: none;
+}
+.mdp-watch-status__panel:focus-visible {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+}
+.mdp-watch-status__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mdp-border) 72%, transparent);
+}
+.mdp-watch-status__header-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 4px;
+  margin-right: -4px;
+}
+.mdp-watch-status__heading {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+.mdp-watch-status__heading h3 {
+  margin: 0;
+  color: var(--mdp-heading);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.mdp-watch-status__mode {
+  min-height: 20px;
+  padding: 2px 8px;
+  font-size: 10px;
+}
+.mdp-watch-status__message {
+  margin: 12px 0 0;
+  color: var(--mdp-muted);
+}
+.mdp-watch-status__message.mdp-ui-notice {
+  padding: 8px 12px;
+  color: var(--mdp-text);
+}
+.mdp-watch-status__panel--has-actions .mdp-watch-status__message {
+  margin-bottom: 9px;
+}
+.mdp-watch-status__panel--editor-update {
+  width: min(336px, 100vw - 24px);
+}
+.mdp-watch-status__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 30px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mdp-watch-status__panel--editor-update .mdp-watch-status__actions {
+  display: grid;
+  margin-top: 12px;
+}
+.mdp-watch-status__panel--editor-update .mdp-watch-status__actions .mdp-ui-button {
+  width: 100%;
+  min-height: 38px;
+}
+.mdp-watch-status__check {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-color: color-mix(in srgb, var(--mdp-link) 20%, transparent);
+  color: var(--mdp-link);
+  background: color-mix(in srgb, var(--mdp-link-soft) 72%, transparent);
+}
+.mdp-watch-status__check:hover {
+  border-color: color-mix(in srgb, var(--mdp-link) 38%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+}
+.mdp-watch-status__check--error {
+  color: var(--mdp-danger);
+  border-color: color-mix(in srgb, var(--mdp-danger) 24%, transparent);
+  background: color-mix(in srgb, var(--mdp-danger) 9%, transparent);
+}
+.mdp-watch-status__announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes mdp-watch-notice-pop {
+  from {
+    opacity: 0;
+    transform: translate(8px, -50%) scale(0.86) rotate(1deg);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-2px, -50%) scale(1.02) rotate(-0.5deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1) rotate(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-watch-status__icon {
+    transition: none;
+  }
+  .mdp-watch-status__notice {
+    animation: none;
+    transform: translateY(-50%);
+  }
+}
+@media (pointer: coarse) {
+  .mdp-watch-status__check {
+    width: 44px;
+    height: 44px;
+  }
+  .mdp-watch-status__actions .mdp-ui-button {
+    min-height: 44px;
+  }
+}
+@media print {
+  .mdp-watch-status {
+    display: none !important;
+  }
+}
+.mdp-exit-edit-modal {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  overflow-y: auto;
+  background: var(--mdp-overlay-scrim);
+  color: var(--mdp-text);
+  text-align: left;
+  white-space: normal;
+}
+.mdp-exit-edit-modal[open] {
+  display: grid;
+  place-items: center;
+}
+.mdp-exit-edit-modal::backdrop {
+  background: transparent;
+}
+@media print {
+  .mdp-exit-edit-modal, .mdp-exit-edit-modal::backdrop {
+    display: none !important;
+  }
+}
+.mdp-exit-edit-modal {
+  padding: 16px;
+}
+
+.mdp-exit-edit-confirmation {
+  width: min(440px, 100%);
+  box-shadow: var(--mdp-shadow-float);
+}
+.mdp-exit-edit-confirmation__content {
+  padding: 24px;
+}
+.mdp-exit-edit-confirmation h2 {
+  margin: 12px 0 0;
+  color: var(--mdp-heading);
+  font-size: 18px;
+  line-height: 1.35;
+}
+.mdp-exit-edit-confirmation p {
+  margin: 8px 0 0;
+  color: var(--mdp-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.mdp-exit-edit-confirmation__actions {
+  padding: 16px 24px;
+}
+
+@media (max-width: 540px) {
+  .mdp-exit-edit-confirmation__content {
+    padding: 16px;
+  }
+  .mdp-exit-edit-confirmation__actions {
+    padding: 12px 16px;
+  }
+}
+.mdp-document-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: var(--mdp-content-max-width);
+  margin: 0 auto;
+  padding: 8px clamp(20px, 3.5vw, 48px) 0;
+  color: var(--mdp-muted);
+  font-size: 12px;
+  font-weight: 560;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  user-select: text;
+}
+
+.mdp-document-stats__separator {
+  color: color-mix(in srgb, var(--mdp-muted) 62%, transparent);
+  user-select: none;
+}
+
+.mdp-document-stats__reading {
+  color: color-mix(in srgb, var(--mdp-body-text) 72%, var(--mdp-muted));
+}
+
+@media (max-width: 639px) {
+  .mdp-document-stats {
+    gap: 5px;
+    padding: 8px clamp(20px, 3.5vw, 48px) 0;
+    font-size: 11px;
+  }
+}
+.mdp-change-review-trigger {
+  color: var(--mdp-link);
+}
+
+.mdp-change-review-backdrop {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  overflow-y: auto;
+  background: var(--mdp-overlay-scrim);
+  color: var(--mdp-text);
+  text-align: left;
+  white-space: normal;
+}
+.mdp-change-review-backdrop[open] {
+  display: grid;
+  place-items: center;
+}
+.mdp-change-review-backdrop::backdrop {
+  background: transparent;
+}
+@media print {
+  .mdp-change-review-backdrop, .mdp-change-review-backdrop::backdrop {
+    display: none !important;
+  }
+}
+.mdp-change-review-backdrop {
+  padding: 20px;
+}
+
+.mdp-change-review {
+  --mdp-review-added-bg: var(--mdp-toast-success-bg);
+  --mdp-review-added-text: var(--mdp-toast-success-text);
+  --mdp-review-removed-bg: var(--mdp-toast-error-bg);
+  --mdp-review-removed-text: var(--mdp-toast-error-text);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: min(1180px, 100%);
+  height: min(860px, 100dvh - 40px);
+  overflow: hidden;
+  box-shadow: var(--mdp-shadow-float);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+}
+.mdp-change-review:focus-visible, .mdp-change-review__hunk:focus-visible {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+}
+.mdp-change-review__topbar {
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 84px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--mdp-border);
+  background: var(--mdp-surface);
+}
+.mdp-change-review__title {
+  min-width: 0;
+}
+.mdp-change-review__title > div, .mdp-change-review__top-actions, .mdp-change-review__newer, .mdp-change-review__navigation, .mdp-change-review__navigation-buttons, .mdp-change-review__hunk-header {
+  display: flex;
+  align-items: center;
+}
+.mdp-change-review__title > div {
+  gap: 8px;
+}
+.mdp-change-review__title h2 {
+  margin: 0;
+  color: var(--mdp-heading);
+  font-size: 19px;
+  line-height: 1.2;
+}
+.mdp-change-review__title p {
+  margin: 4px 0 0;
+  color: var(--mdp-muted);
+}
+.mdp-change-review__top-actions {
+  flex: 0 0 auto;
+  gap: 8px;
+}
+.mdp-change-review__state {
+  min-height: 24px;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+.mdp-change-review__messages {
+  display: grid;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 12px 24px;
+  background: var(--mdp-surface);
+}
+.mdp-change-review__messages .mdp-editor-update-warning {
+  margin: 0;
+}
+.mdp-change-review__message, .mdp-change-review__source-note {
+  margin: 0;
+}
+.mdp-change-review__source-note {
+  padding: 4px 0;
+  font-size: 12px;
+}
+.mdp-change-review__newer {
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  padding: 8px 12px;
+}
+.mdp-change-review__workspace {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid var(--mdp-border);
+}
+.mdp-change-review__overview {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px 12px 12px;
+  overflow-y: auto;
+  border-right: 1px solid var(--mdp-border);
+  background: color-mix(in srgb, var(--mdp-panel-bg) 70%, var(--mdp-surface));
+}
+.mdp-change-review__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.mdp-change-review__metric {
+  min-width: 0;
+  padding: 8px;
+}
+.mdp-change-review__metric dt {
+  color: var(--mdp-muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.mdp-change-review__metric dd {
+  margin: 2px 0 0;
+  color: var(--mdp-heading);
+  font-size: 17px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+.mdp-change-review__metric--added {
+  background: var(--mdp-review-added-bg);
+}
+.mdp-change-review__metric--removed {
+  background: var(--mdp-review-removed-bg);
+}
+.mdp-change-review__metric--added dt, .mdp-change-review__metric--added dd {
+  color: var(--mdp-review-added-text);
+}
+.mdp-change-review__metric--removed dt, .mdp-change-review__metric--removed dd {
+  color: var(--mdp-review-removed-text);
+}
+.mdp-change-review__sections {
+  min-height: 0;
+}
+.mdp-change-review__sections h3 {
+  margin: 0 8px 8px;
+  color: var(--mdp-muted);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.mdp-change-review__sections ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mdp-change-review__sections li {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.mdp-change-review__sections li.is-active {
+  border-color: color-mix(in srgb, var(--mdp-link) 28%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+}
+.mdp-change-review__section-jump, .mdp-change-review__section-open {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.mdp-change-review__section-jump {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px;
+}
+.mdp-change-review__section-jump:hover {
+  background: color-mix(in srgb, var(--mdp-link-soft) 66%, transparent);
+}
+.mdp-change-review__section-name {
+  overflow: hidden;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mdp-change-review__section-region {
+  color: var(--mdp-muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.mdp-change-review__deleted-badge {
+  min-height: 20px;
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.mdp-change-review__section-open {
+  padding: 0 8px 8px;
+  color: var(--mdp-link);
+  font-size: 11px;
+  font-weight: 650;
+}
+.mdp-change-review__section-open:hover {
+  text-decoration: underline;
+}
+.mdp-change-review__shortcut {
+  margin: auto 8px 0;
+  padding-top: 16px;
+  color: var(--mdp-muted);
+  font-size: 11px;
+}
+.mdp-change-review__shortcut kbd {
+  padding: 1px 4px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 4px;
+  background: var(--mdp-surface);
+  box-shadow: 0 1px 0 var(--mdp-border);
+  font: inherit;
+}
+.mdp-change-review__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.mdp-change-review__navigation {
+  z-index: 1;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 60px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--mdp-border);
+  background: var(--mdp-surface);
+}
+.mdp-change-review__navigation > div:first-child {
+  display: grid;
+}
+.mdp-change-review__navigation > div:first-child span {
+  color: var(--mdp-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mdp-change-review__navigation > div:first-child strong {
+  color: var(--mdp-heading);
+  font-size: 14px;
+}
+.mdp-change-review__navigation-buttons {
+  gap: 8px;
+}
+.mdp-change-review__diff {
+  flex: 1;
+  min-height: 0;
+  padding: 16px 16px 24px;
+  overflow: auto;
+  background: color-mix(in srgb, var(--mdp-panel-bg) 32%, var(--mdp-surface));
+}
+.mdp-change-review__hunk {
+  margin: 0 0 16px;
+  overflow: auto;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.mdp-change-review__hunk.is-active {
+  border-color: color-mix(in srgb, var(--mdp-link) 44%, var(--mdp-border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mdp-link) 9%, transparent);
+}
+.mdp-change-review__hunk-header {
+  position: sticky;
+  left: 0;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: max-content;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--mdp-border);
+  background: var(--mdp-panel-bg);
+  color: var(--mdp-muted);
+  font: 600 11px/1.4 system-ui, sans-serif;
+}
+.mdp-change-review__hunk-header span:first-child {
+  color: var(--mdp-heading);
+}
+.mdp-change-review table {
+  width: 100%;
+  min-width: max-content;
+  border-collapse: collapse;
+  font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.mdp-change-review td {
+  height: 21px;
+  padding: 0;
+  vertical-align: top;
+}
+.mdp-change-review__line-number {
+  width: 42px;
+  padding-inline: 7px !important;
+  border-right: 1px solid color-mix(in srgb, var(--mdp-border) 70%, transparent);
+  background: color-mix(in srgb, var(--mdp-panel-bg) 62%, var(--mdp-surface));
+  color: var(--mdp-text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+.mdp-change-review__marker {
+  width: 28px;
+  padding-inline: 8px !important;
+  color: var(--mdp-muted);
+  text-align: center;
+  font-weight: 800;
+  user-select: none;
+}
+.mdp-change-review__source {
+  min-width: 420px;
+  padding-right: 12px !important;
+  white-space: pre;
+  tab-size: 4;
+}
+.mdp-change-review code {
+  color: inherit;
+  font: inherit;
+}
+.mdp-change-review small {
+  color: inherit;
+}
+.mdp-change-review__row--added {
+  background: var(--mdp-review-added-bg);
+  color: var(--mdp-review-added-text);
+}
+.mdp-change-review__row--removed {
+  background: var(--mdp-review-removed-bg);
+  color: var(--mdp-review-removed-text);
+}
+.mdp-change-review__row--added .mdp-change-review__marker, .mdp-change-review__row--removed .mdp-change-review__marker {
+  color: inherit;
+}
+.mdp-change-review__notice {
+  margin: auto;
+  max-width: 560px;
+  color: var(--mdp-muted);
+  text-align: center;
+}
+.mdp-change-review__visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 820px) {
+  .mdp-change-review-backdrop {
+    padding: 8px;
+  }
+  .mdp-change-review {
+    height: calc(100dvh - 16px);
+    border-radius: 12px;
+  }
+  .mdp-change-review__topbar {
+    align-items: flex-start;
+    padding: 12px;
+  }
+  .mdp-change-review__top-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .mdp-change-review__messages {
+    padding-inline: 12px;
+  }
+  .mdp-change-review__workspace {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  .mdp-change-review__overview {
+    max-height: 240px;
+    border-right: 0;
+    border-bottom: 1px solid var(--mdp-border);
+  }
+  .mdp-change-review__shortcut {
+    display: none;
+  }
+  .mdp-change-review__main {
+    min-height: 480px;
+  }
+}
+@media (max-width: 540px) {
+  .mdp-change-review__topbar {
+    display: grid;
+  }
+  .mdp-change-review__top-actions {
+    justify-content: flex-start;
+  }
+  .mdp-change-review__title > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .mdp-change-review__metrics {
+    margin-bottom: 12px;
+  }
+  .mdp-change-review__navigation {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+@media print {
+  .mdp-change-review-trigger {
+    display: none !important;
+  }
+}
+.mdp-watch-status .mdp-ui-badge--info,
+.mdp-watch-status .mdp-ui-notice,
+.mdp-change-review .mdp-ui-badge--info,
+.mdp-change-review .mdp-ui-notice,
+.mdp-editor-update-confirmation .mdp-ui-badge--info,
+.mdp-editor-update-confirmation .mdp-ui-notice,
+.mdp-exit-edit-confirmation .mdp-ui-badge--info,
+.mdp-exit-edit-confirmation .mdp-ui-notice {
+  --mdp-ui-notice-color: var(--mdp-toast-info-text);
+  background: var(--mdp-toast-info-bg);
+  color: var(--mdp-toast-info-text);
+  border-color: var(--mdp-toast-info-border);
+}
+.mdp-watch-status .mdp-ui-badge--success,
+.mdp-watch-status .mdp-ui-notice--success,
+.mdp-change-review .mdp-ui-badge--success,
+.mdp-change-review .mdp-ui-notice--success,
+.mdp-editor-update-confirmation .mdp-ui-badge--success,
+.mdp-editor-update-confirmation .mdp-ui-notice--success,
+.mdp-exit-edit-confirmation .mdp-ui-badge--success,
+.mdp-exit-edit-confirmation .mdp-ui-notice--success {
+  --mdp-ui-notice-color: var(--mdp-toast-success-text);
+  background: var(--mdp-toast-success-bg);
+  color: var(--mdp-toast-success-text);
+  border-color: var(--mdp-toast-success-border);
+}
+.mdp-watch-status .mdp-ui-badge--warning,
+.mdp-watch-status .mdp-ui-notice--warning,
+.mdp-change-review .mdp-ui-badge--warning,
+.mdp-change-review .mdp-ui-notice--warning,
+.mdp-editor-update-confirmation .mdp-ui-badge--warning,
+.mdp-editor-update-confirmation .mdp-ui-notice--warning,
+.mdp-exit-edit-confirmation .mdp-ui-badge--warning,
+.mdp-exit-edit-confirmation .mdp-ui-notice--warning {
+  --mdp-ui-notice-color: var(--mdp-toast-warning-text);
+  background: var(--mdp-toast-warning-bg);
+  color: var(--mdp-toast-warning-text);
+  border-color: var(--mdp-toast-warning-border);
+}
+.mdp-watch-status .mdp-ui-badge--danger,
+.mdp-watch-status .mdp-ui-notice--danger,
+.mdp-change-review .mdp-ui-badge--danger,
+.mdp-change-review .mdp-ui-notice--danger,
+.mdp-editor-update-confirmation .mdp-ui-badge--danger,
+.mdp-editor-update-confirmation .mdp-ui-notice--danger,
+.mdp-exit-edit-confirmation .mdp-ui-badge--danger,
+.mdp-exit-edit-confirmation .mdp-ui-notice--danger {
+  --mdp-ui-notice-color: var(--mdp-toast-error-text);
+  background: var(--mdp-toast-error-bg);
+  color: var(--mdp-toast-error-text);
+  border-color: var(--mdp-toast-error-border);
+}
+.mdp-watch-status .mdp-ui-button--danger,
+.mdp-change-review .mdp-ui-button--danger,
+.mdp-editor-update-confirmation .mdp-ui-button--danger,
+.mdp-exit-edit-confirmation .mdp-ui-button--danger {
+  background: var(--mdp-toast-error-bg);
+  color: var(--mdp-toast-error-text);
+  border-color: var(--mdp-toast-error-border);
+}
+.mdp-watch-status .mdp-ui-button--danger:hover:not(:disabled),
+.mdp-change-review .mdp-ui-button--danger:hover:not(:disabled),
+.mdp-editor-update-confirmation .mdp-ui-button--danger:hover:not(:disabled),
+.mdp-exit-edit-confirmation .mdp-ui-button--danger:hover:not(:disabled) {
+  background: var(--mdp-toast-error-bg);
+  border-color: var(--mdp-toast-error-text);
+}
+
+:root {
+  --mdp-color-scheme: light;
+  --mdp-bg: #f6f8fb;
+  --mdp-surface: #ffffff;
+  --mdp-text: #172033;
+  --mdp-body-text: #273043;
+  --mdp-heading: #111827;
+  --mdp-border: #dce2ea;
+  --mdp-border-strong: #c5ced9;
+  --mdp-muted: #667085;
+  --mdp-code-bg: #f2f5f8;
+  --mdp-code-text: #172033;
+  --mdp-panel-bg: #eef2f6;
+  --mdp-panel-strong: #e3e9f0;
+  --mdp-link: #2563eb;
+  --mdp-link-soft: #eaf2ff;
+  --mdp-panel-toggle-bg: #edf3fc;
+  --mdp-panel-toggle-text: #58709a;
+  --mdp-panel-toggle-border: #d4dfec;
+  --mdp-panel-toggle-hover-bg: #e2ecfb;
+  --mdp-panel-toggle-hover-text: #315ea8;
+  --mdp-panel-toggle-shadow: 0 1px 4px rgb(23 32 51 / 12%);
+  --mdp-panel-toggle-hover-shadow: 0 2px 6px rgb(23 32 51 / 17%);
+  --mdp-accent: #16815c;
+  --mdp-accent-soft: #e8f6ef;
+  --mdp-warning: #b35c00;
+  --mdp-warning-soft: #fff3dc;
+  --mdp-danger: #c2413a;
+  --mdp-table-border: #dce2ea;
+  --mdp-table-header-bg: #f2f5f8;
+  --mdp-table-row-alt-bg: #fafbfc;
+  --mdp-toast-info-bg: #eff6ff;
+  --mdp-toast-info-text: #1d4ed8;
+  --mdp-toast-info-border: #bfdbfe;
+  --mdp-toast-success-bg: #ecfdf5;
+  --mdp-toast-success-text: #047857;
+  --mdp-toast-success-border: #a7f3d0;
+  --mdp-toast-warning-bg: #fffbeb;
+  --mdp-toast-warning-text: #92400e;
+  --mdp-toast-warning-border: #fde68a;
+  --mdp-toast-error-bg: #fef2f2;
+  --mdp-toast-error-text: #b91c1c;
+  --mdp-toast-error-border: #fecaca;
+  --mdp-overlay-scrim: rgb(3 7 18 / 58%);
+  --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+  --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
+  --mdp-shadow-raised:
+    0 1px 2px color-mix(in srgb, var(--mdp-text) 3%, transparent),
+    0 4px 12px color-mix(in srgb, var(--mdp-text) 4%, transparent);
+  --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+  --mdp-content-max-width: 980px;
+  color-scheme: light;
+}
+
+[data-theme=dark] {
+  --mdp-color-scheme: dark;
+  --mdp-bg: #0d121b;
+  --mdp-surface: #151b26;
+  --mdp-text: #edf2f7;
+  --mdp-body-text: #dce4ee;
+  --mdp-heading: #f8fafc;
+  --mdp-border: #2d3848;
+  --mdp-border-strong: #465469;
+  --mdp-muted: #9ba9bb;
+  --mdp-code-bg: #0b111a;
+  --mdp-code-text: #e6edf3;
+  --mdp-panel-bg: #101722;
+  --mdp-panel-strong: #1d2735;
+  --mdp-link: #7ab7ff;
+  --mdp-link-soft: #122b4d;
+  --mdp-panel-toggle-bg: #1d2735;
+  --mdp-panel-toggle-text: #9ba9bb;
+  --mdp-panel-toggle-border: #3a475a;
+  --mdp-panel-toggle-hover-bg: #26374d;
+  --mdp-panel-toggle-hover-text: #b9d8fb;
+  --mdp-panel-toggle-shadow: 0 1px 5px rgb(0 0 0 / 24%);
+  --mdp-panel-toggle-hover-shadow: 0 2px 7px rgb(0 0 0 / 32%);
+  --mdp-accent: #56d39a;
+  --mdp-accent-soft: #123529;
+  --mdp-warning: #f4b24e;
+  --mdp-warning-soft: #3b2a0e;
+  --mdp-danger: #ff8d85;
+  --mdp-table-border: #2d3848;
+  --mdp-table-header-bg: #1a2330;
+  --mdp-table-row-alt-bg: #111925;
+  --mdp-toast-info-bg: #0c2d6b;
+  --mdp-toast-info-text: #bfdbfe;
+  --mdp-toast-info-border: #1d4ed8;
+  --mdp-toast-success-bg: #063f2c;
+  --mdp-toast-success-text: #bbf7d0;
+  --mdp-toast-success-border: #047857;
+  --mdp-toast-warning-bg: #3b2a05;
+  --mdp-toast-warning-text: #fde68a;
+  --mdp-toast-warning-border: #b45309;
+  --mdp-toast-error-bg: #450a0a;
+  --mdp-toast-error-text: #fecaca;
+  --mdp-toast-error-border: #b91c1c;
+  color-scheme: dark;
+}
+
+.popup-settings-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--mdp-border);
+  background: color-mix(in srgb, var(--mdp-panel-bg) 42%, var(--mdp-surface));
+}
+
+.popup-settings-tab {
+  min-width: 0;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mdp-muted);
+  font-size: 11px;
+  font-weight: 650;
+  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+.popup-settings-tab svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.popup-settings-tab:hover {
+  color: var(--mdp-text);
+  background: var(--mdp-panel-strong);
+}
+
+.popup-settings-tab.is-active {
+  border-color: color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+  box-shadow: var(--mdp-shadow-subtle);
+}
+
+.mdp-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  z-index: 20;
+  max-width: min(420px, 100vw - 32px);
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mdp-toast-text, var(--mdp-text));
+  background: var(--mdp-toast-bg, var(--mdp-panel-bg));
+  border: 1px solid var(--mdp-toast-border, var(--mdp-border));
+  box-shadow: var(--mdp-shadow-float);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.mdp-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.mdp-toast--info {
+  --mdp-toast-bg: var(--mdp-toast-info-bg);
+  --mdp-toast-text: var(--mdp-toast-info-text);
+  --mdp-toast-border: var(--mdp-toast-info-border);
+}
+.mdp-toast--success {
+  --mdp-toast-bg: var(--mdp-toast-success-bg);
+  --mdp-toast-text: var(--mdp-toast-success-text);
+  --mdp-toast-border: var(--mdp-toast-success-border);
+}
+.mdp-toast--warning {
+  --mdp-toast-bg: var(--mdp-toast-warning-bg);
+  --mdp-toast-text: var(--mdp-toast-warning-text);
+  --mdp-toast-border: var(--mdp-toast-warning-border);
+}
+.mdp-toast--error {
+  --mdp-toast-bg: var(--mdp-toast-error-bg);
+  --mdp-toast-text: var(--mdp-toast-error-text);
+  --mdp-toast-border: var(--mdp-toast-error-border);
+}
+  </style>
+  <style id="catalog-layout-styles">
+.mdp-tooltip {
+  box-sizing: border-box;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--mdp-surface, #fff);
+  background: color-mix(in srgb, var(--mdp-text, #172033) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mdp-surface, #fff) 12%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--mdp-text, #172033) 18%, transparent);
+  pointer-events: none;
+  text-align: left;
+}
+
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: var(--mdp-bg);
+      color: var(--mdp-text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+      outline: 2px solid var(--mdp-focus-color);
+      outline-offset: 2px;
+    }
+
+    svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+    .mdp-ui-catalog {
+      padding: clamp(28px, 5vw, 64px) clamp(16px, 4vw, 48px) 80px;
+      border-top: 1px solid var(--mdp-border-strong);
+      background: var(--mdp-bg);
+    }
+
+    .mdp-ui-catalog__inner {
+      width: min(1160px, 100%);
+      margin: 0 auto;
+    }
+
+    .mdp-ui-catalog__header {
+      max-width: 760px;
+      margin-bottom: 28px;
+    }
+
+    .mdp-ui-catalog__eyebrow {
+      margin: 0 0 6px;
+      color: var(--mdp-link);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    .mdp-ui-catalog h1,
+    .mdp-ui-catalog h2,
+    .mdp-ui-catalog h3,
+    .mdp-ui-catalog p {
+      margin-top: 0;
+    }
+
+    .mdp-ui-catalog__header h1 {
+      margin-bottom: 8px;
+      color: var(--mdp-heading);
+      font-size: clamp(24px, 4vw, 32px);
+      letter-spacing: -0.025em;
+    }
+
+    .mdp-ui-catalog__header p,
+    .mdp-ui-section__header p {
+      color: var(--mdp-muted);
+      line-height: 1.55;
+    }
+
+    .mdp-ui-section {
+      margin-top: 18px;
+      padding: clamp(18px, 3vw, 28px);
+      border: 1px solid var(--mdp-border);
+      border-radius: 12px;
+      background: var(--mdp-surface);
+    }
+
+    .mdp-ui-section__header {
+      max-width: 740px;
+      margin-bottom: 20px;
+    }
+
+    .mdp-ui-section__header h2 {
+      margin-bottom: 5px;
+      color: var(--mdp-heading);
+      font-size: 18px;
+    }
+
+    .mdp-ui-section__header p {
+      margin-bottom: 0;
+      font-size: 13px;
+    }
+
+    .mdp-ui-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .mdp-ui-grid--three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mdp-ui-demo-group {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--mdp-panel-bg) 52%, var(--mdp-surface));
+    }
+
+    .mdp-ui-demo-group__title {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--mdp-heading);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.035em;
+      text-transform: uppercase;
+    }
+
+    .mdp-ui-demo-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mdp-ui-demo-stack {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .mdp-ui-metadata {
+      display: grid;
+      grid-template-columns: max-content minmax(0, 1fr);
+      gap: 7px 12px;
+      margin: 0;
+      font-size: 12px;
+    }
+
+    .mdp-ui-metadata dt {
+      color: var(--mdp-muted);
+    }
+
+    .mdp-ui-metadata dd {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: var(--mdp-text);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mdp-ui-code-value {
+      display: inline-flex;
+      max-width: 100%;
+      padding: 3px 6px;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--mdp-border) 72%, transparent);
+      border-radius: 6px;
+      background: var(--mdp-code-bg);
+      color: var(--mdp-code-text);
+      font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mdp-ui-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--mdp-border);
+      border-radius: 8px;
+    }
+
+    .mdp-ui-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .mdp-ui-table th,
+    .mdp-ui-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--mdp-border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .mdp-ui-table th {
+      background: var(--mdp-table-header-bg);
+      color: var(--mdp-heading);
+      font-size: 12px;
+    }
+
+    .mdp-ui-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .mdp-ui-table td:last-child,
+    .mdp-ui-table th:last-child {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mdp-ui-file-input {
+      display: none;
+    }
+
+
+    .mdp-ui-catalog__actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 899px) {
+      .mdp-ui-grid,
+      .mdp-ui-grid--three {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+
+    a { color: var(--mdp-link); }
+    a.mdp-ui-button { text-decoration: none; }
+    .mdp-ui-catalog__header { max-width: 850px; }
+    .catalog-index { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; font-size: 13px; }
+    .catalog-note { color: var(--mdp-muted); font-size: 12px; line-height: 1.55; }
+    .catalog-source { margin: 16px 0 0; color: var(--mdp-muted); font: 11px/1.6 ui-monospace, monospace; overflow-wrap: anywhere; }
+    .catalog-field { min-width: 0; }
+    .catalog-number { padding: 0; }
+    .catalog-number .mdp-ui-number-field__control { grid-template-columns: minmax(0, 1fr); }
+    .catalog-state-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .catalog-tabs { border: 1px solid var(--mdp-border); border-radius: 8px; }
+    .catalog-watch { display: block; }
+    .catalog-watch .mdp-watch-status__panel { position: relative; top: auto; right: auto; max-width: 100%; margin: 12px 0 0; }
+    .catalog-watch .mdp-watch-status__panel::before { display: none; }
+    .catalog-watch .mdp-watch-status__heading h3 { font-size: 14px; }
+    .catalog-watch .mdp-watch-status__message { margin-top: 12px; }
+    .catalog-watch .mdp-watch-status__check { display: inline-flex; align-items: center; justify-content: center; padding: 0; border-width: 1px; border-style: solid; border-radius: 8px; cursor: pointer; }
+    .catalog-watch .mdp-watch-status__actions[hidden] { display: none; }
+    .catalog-stats { padding: 8px 0; }
+    .catalog-review { width: 100%; height: auto; }
+    .catalog-review .mdp-change-review__hunk { margin: 0; overflow-x: auto; }
+    .catalog-toast-stage { min-height: 100px; display: grid; place-items: end center; padding: 16px; border: 1px dashed var(--mdp-border); border-radius: 8px; }
+    .catalog-toast-stage .mdp-toast { position: static; max-width: 100%; transform: none; }
+    .catalog-page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .catalog-page-header h4 { margin: 0 0 5px; color: var(--mdp-heading); font-size: 18px; }
+    .catalog-page-header p { margin: 0; color: var(--mdp-muted); font-size: 13px; }
+    .catalog-select-row { grid-template-columns: minmax(0, 1fr) minmax(180px, 220px); }
+    .catalog-menu { position: static; width: min(220px, 100%); }
+    @media (max-width: 767px) { .catalog-select-row, .catalog-number { grid-template-columns: minmax(0, 1fr); } }
+    @media (pointer: coarse) { .popup-settings-tab { min-height: 44px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
+
+  </style>
+<style>
+    .catalog-index { position: sticky; top: var(--ds-nav-height); z-index: 20; margin: 0 0 32px; padding: 12px 16px; border: 1px solid var(--mdp-border); border-radius: 8px; background: var(--mdp-surface); }
+    .catalog-index a { color: var(--mdp-muted); text-decoration: none; padding: 4px 0; }
+    .catalog-index a:hover { color: var(--mdp-link); }
+    .catalog-group { margin-bottom: 56px; scroll-margin-top: 80px; }
+    .catalog-group-heading { margin-bottom: 20px; }
+    .catalog-group-heading h2 { color: var(--mdp-heading); font-size: 24px; margin: 0 0 8px; letter-spacing: -.025em; }
+    .catalog-group-heading p { color: var(--mdp-muted); font-size: 13px; }
+    .ds-eyebrow { color: var(--mdp-link) !important; font-size: 11px !important; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    .mdp-ui-section__header h3 { margin: 0 0 5px; color: var(--mdp-heading); font-size: 18px; }
+    .mdp-ui-catalog { padding-top: 40px; }
+    .mdp-ui-catalog__header { margin-bottom: 24px; }
+    @media (max-width: 600px) { .catalog-index { gap: 8px 12px; font-size: 12px; } }
+  </style>
+<style>
+
+    /* Documentation navigation only; keep this standalone shell in sync across the four previews. */
+    :root { --ds-nav-height: 64px; }
+    html { scroll-padding-top: calc(var(--ds-nav-height) + 24px); }
+    .ds-nav { position: sticky; top: 0; z-index: 100; height: var(--ds-nav-height); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 32px; border-bottom: 1px solid var(--mdp-border); background: var(--mdp-surface); color: var(--mdp-text); font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .ds-brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; white-space: nowrap; font-weight: 700; }
+    .ds-brand span { color: var(--mdp-muted); font-weight: 400; }
+    .ds-links { display: flex; align-items: center; gap: 4px; min-width: 0; overflow-x: auto; }
+    .ds-links a { padding: 8px 11px; border-radius: 6px; color: var(--mdp-muted); text-decoration: none; white-space: nowrap; }
+    .ds-links a:hover { background: var(--mdp-panel-bg); color: var(--mdp-text); }
+    .ds-links a[aria-current="page"] { background: var(--mdp-link-soft); color: var(--mdp-link); font-weight: 650; }
+    .ds-nav a:focus-visible { outline: 2px solid var(--mdp-link); outline-offset: 2px; }
+    .ds-viewer .mdp-sidebar, .ds-viewer .mdp-right-rail { top: var(--ds-nav-height); height: calc(100vh - var(--ds-nav-height)); }
+    .ds-viewer .mdp-root, .ds-viewer .mdp-body { min-height: calc(100vh - var(--ds-nav-height)); }
+    @media (max-width: 760px) {
+      :root { --ds-nav-height: 104px; }
+      .ds-nav { align-items: stretch; flex-direction: column; justify-content: center; gap: 8px; padding: 10px 16px; }
+      .ds-links { flex-shrink: 0; }
+      .ds-links a { padding: 7px 10px; }
+    }
+
+</style>
+</head>
+<body data-theme="light">
+  <header class="ds-nav"><a class="ds-brand" href="./index.html">Markdown Plus <span>/ Design system</span></a><nav class="ds-links" aria-label="Design system"><a href="./index.html">Overview</a><a href="./components.html" aria-current="page">Components</a><a href="./icons.html">Icons</a><a href="./viewer.html">Viewer preview</a></nav></header>
+  <section class="mdp-ui-catalog" aria-labelledby="component-catalog-title">
+    <div class="mdp-ui-catalog__inner">
+      <header class="mdp-ui-catalog__header">
+        <p class="mdp-ui-catalog__eyebrow">Markdown Plus · UI reference</p>
+        <h1 id="component-catalog-title">Component catalog</h1>
+        <p>Individual components used by Settings, Popup, and Viewer. Shared styles are embedded from the current runtime source so this catalog opens directly as a standalone HTML file. Examples change only this preview.</p><p class="catalog-note">Current implementation · Embedded styles are source snapshots. Each section includes states, usage notes, and runtime source paths.</p>
+        <div class="mdp-ui-catalog__actions">
+          <a class="mdp-ui-button" href="./viewer.html">Open Viewer preview</a>
+          <button class="mdp-ui-button" id="catalog-theme-toggle" type="button" aria-pressed="false">Dark mode</button>
+        </div>
+      </header>
+      <nav class="catalog-index" aria-label="Component groups"><a href="#controls">01 Controls</a><a href="#feedback">02 Feedback &amp; containers</a><a href="#patterns">03 Patterns</a></nav>
+
+<section class="catalog-group" id="controls" aria-labelledby="controls-title"><header class="catalog-group-heading"><p class="ds-eyebrow">01 / Controls</p><h2 id="controls-title">Actions and form inputs</h2><p>Buttons, fields, selects, switches, and validation.</p></header>
+<section class="mdp-ui-section" aria-labelledby="actions-title">
+        <header class="mdp-ui-section__header">
+          <h3 id="actions-title">Actions</h3>
+          <p>Buttons preserve Viewer density while providing complete application-level variants.</p>
+        </header>
+        <div class="mdp-ui-grid">
+          <div class="mdp-ui-demo-group">
+            <span class="mdp-ui-demo-group__title">Variants</span>
+            <div class="mdp-ui-demo-row">
+              <button class="mdp-ui-button mdp-ui-button--primary" type="button">Save changes</button>
+              <button class="mdp-ui-button" type="button">Secondary</button>
+              <button class="mdp-ui-button mdp-ui-button--quiet" type="button">Quiet</button>
+              <button class="mdp-ui-button mdp-ui-button--danger" type="button">Delete data</button>
+            </div>
+          </div>
+          <div class="mdp-ui-demo-group">
+            <span class="mdp-ui-demo-group__title">Size and state</span>
+            <div class="mdp-ui-demo-row">
+              <button class="mdp-ui-button mdp-ui-button--secondary" type="button">Default · 36px</button>
+              <button class="mdp-ui-button mdp-ui-button--secondary" type="button">Secondary</button>
+              <button class="mdp-ui-button" type="button" aria-busy="true" disabled>
+                <span class="mdp-ui-spinner" aria-hidden="true"></span>
+                Saving…
+              </button>
+              <button class="mdp-ui-button" type="button" disabled>Disabled</button>
+            </div>
+          </div>
+          <div class="mdp-ui-demo-group">
+            <span class="mdp-ui-demo-group__title">Viewer icon actions · 34px</span>
+            <div class="mdp-ui-demo-row" id="catalog-icon-actions"><button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" data-catalog-feedback="Copy open file link preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Edit Markdown" title="Edit Markdown" data-catalog-feedback="Edit Markdown preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Document updates" title="Document updates" data-catalog-feedback="Document updates preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Update document" title="Update document" data-catalog-feedback="Update document preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Review changes" title="Review changes" data-catalog-feedback="Review changes preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg></button></div>
+            <p class="catalog-note">Current runtime SVGs; 44px targets on coarse pointers. Activate an action to preview feedback.</p>
+          </div>
+          <div class="mdp-ui-demo-group">
+            <span class="mdp-ui-demo-group__title">File picker action</span>
+            <input class="mdp-ui-file-input" id="catalog-file-input" type="file" accept="application/json,.json">
+            <button class="mdp-ui-button" id="catalog-file-button" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="source" class="mdp-ui-button__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m8 6-6 6 6 6 m8-12 6 6-6 6 M14 3l-4 18"></path></svg>
+              Choose JSON
+            </button>
+          </div>
+        </div>
+      </section>
+<section class="mdp-ui-section" aria-labelledby="forms-title">
+        <header class="mdp-ui-section__header"><h3 id="forms-title">Forms</h3><p>Associated labels, descriptions, validation, and native controls from the shared form layer.</p></header>
+        <div class="mdp-ui-grid">
+          <div class="mdp-ui-demo-group mdp-ui-demo-stack">
+            <span class="mdp-ui-demo-group__title">Text and select fields</span>
+            <label class="mdp-ui-field" for="catalog-name"><span class="mdp-ui-field__label">Theme name</span><input class="mdp-ui-input" id="catalog-name" type="text" placeholder="My reading theme" aria-describedby="catalog-name-help"><span class="mdp-ui-field__helper" id="catalog-name-help">A name for your saved custom theme.</span></label>
+            <label class="mdp-ui-field" for="catalog-theme"><span class="mdp-ui-field__label">Reader theme</span><select class="mdp-ui-select" id="catalog-theme"><option value="light">Light</option><option value="dark">Dark</option></select></label>
+            <label class="mdp-ui-field" for="catalog-disabled"><span class="mdp-ui-field__label">Disabled field</span><input class="mdp-ui-input" id="catalog-disabled" value="Saving settings…" disabled></label>
+          </div>
+          <div class="mdp-ui-demo-group mdp-ui-demo-stack">
+            <span class="mdp-ui-demo-group__title">NumberField · invalid state</span>
+            <div class="mdp-ui-number-field catalog-number">
+              <div class="mdp-ui-field"><label class="mdp-ui-field__label" for="catalog-limit">Maximum indexed files</label><p class="mdp-ui-field__helper" id="catalog-limit-helper">Maximum files to index in a workspace.</p></div>
+              <div class="mdp-ui-number-field__control"><input id="catalog-limit" type="number" inputmode="numeric" class="mdp-ui-input mdp-ui-input--technical" value="50000" min="10" max="20000" aria-invalid="true" aria-describedby="catalog-limit-helper catalog-limit-error"><span class="mdp-ui-field__meta">10–20,000</span><span class="mdp-ui-field__error" id="catalog-limit-error">Enter a value from 10 to 20,000.</span></div>
+            </div>
+            <div class="mdp-ui-setting-row" style="padding: 0"><div><h3 class="mdp-ui-setting-row__title">Enable Markdown Plus</h3><p class="mdp-ui-setting-row__description">Open supported local Markdown files in the viewer.</p></div><label class="mdp-ui-switch" for="catalog-enabled"><span class="mdp-ui-visually-hidden">Enable Markdown Plus</span><input id="catalog-enabled" type="checkbox" checked><span class="mdp-ui-switch__track" aria-hidden="true"></span></label></div>
+          </div>
+        </div>
+        <p class="catalog-source">src/shared/react/NumberField.jsx · Switch.jsx · src/shared/styles/_forms.scss</p>
+      </section>
+</section>
+<section class="catalog-group" id="feedback" aria-labelledby="feedback-group-title"><header class="catalog-group-heading"><p class="ds-eyebrow">02 / Feedback & containers</p><h2 id="feedback-group-title">Status, structure, and overlays</h2><p>Cards, badges, notices, loading, tables, menus, and dialogs.</p></header>
+<section class="mdp-ui-section" aria-labelledby="containers-title">
+        <header class="mdp-ui-section__header"><h3 id="containers-title">Page structure and containers</h3><p>Current General settings composition, plus the shared save/reset footer used by editable settings sections.</p></header>
+        <div class="mdp-ui-demo-stack">
+          <div class="catalog-page-header"><div><h4>General</h4><p>Control Markdown Plus activation and viewer behavior.</p></div><span class="mdp-ui-status mdp-ui-status--success"><span class="mdp-ui-status__dot" aria-hidden="true"></span>Settings saved</span></div>
+          <div class="mdp-ui-card">
+            <div class="mdp-ui-setting-row"><div><h3 class="mdp-ui-setting-row__title">Show document statistics</h3><p class="mdp-ui-setting-row__description">Show word count, character count, and estimated reading time above Markdown documents.</p></div><label class="mdp-ui-switch" for="catalog-stats-visible"><span class="mdp-ui-visually-hidden">Show document statistics</span><input id="catalog-stats-visible" type="checkbox" checked><span class="mdp-ui-switch__track" aria-hidden="true"></span></label></div>
+            <div class="mdp-ui-divider"></div>
+            <div class="mdp-ui-setting-row catalog-select-row"><div><label class="mdp-ui-setting-row__title" for="catalog-watch-mode">Document updates</label><p id="catalog-watch-description" class="mdp-ui-setting-row__description">Choose how to handle changes to the open Markdown file. Updates never replace an active editor.</p></div><select id="catalog-watch-mode" class="mdp-ui-select" aria-describedby="catalog-watch-description"><option value="ask">Ask before updating</option><option value="auto">Update automatically</option><option value="off">Off</option></select></div>
+          </div>
+          <div class="mdp-ui-card"><footer class="mdp-ui-action-footer"><button class="mdp-ui-button mdp-ui-button--quiet" type="button" data-catalog-feedback="Section defaults previewed.">Reset section</button><button class="mdp-ui-button mdp-ui-button--primary" type="button" data-catalog-feedback="Settings saved in this preview.">Save changes</button></footer></div>
+        </div><p class="catalog-source">src/options/sections/GeneralSettings.jsx · src/shared/styles/_containers.scss</p>
+      </section>
+<section class="mdp-ui-section" aria-labelledby="data-title">
+        <header class="mdp-ui-section__header">
+          <h3 id="data-title">Badges, status, and tables</h3>
+          <p>Compact data display uses semantic roles and preserves readable contrast.</p>
+        </header>
+        <div class="mdp-ui-grid mdp-ui-grid--three">
+          <div class="mdp-ui-demo-group">
+            <span class="mdp-ui-demo-group__title">Badges and status</span>
+            <div class="mdp-ui-demo-row">
+              <span class="mdp-ui-badge">Default</span>
+              <span class="mdp-ui-badge mdp-ui-badge--info">Active</span>
+              <span class="mdp-ui-badge mdp-ui-badge--success">Allowed</span>
+              <span class="mdp-ui-badge mdp-ui-badge--warning">Limited</span>
+              <span class="mdp-ui-badge mdp-ui-badge--danger">Blocked</span>
+              <span class="mdp-ui-status mdp-ui-status--success"><span class="mdp-ui-status__dot" aria-hidden="true"></span>Saved</span>
+            </div>
+          </div>
+          <div class="mdp-ui-demo-group">
+            <span class="mdp-ui-demo-group__title">Metadata and values</span>
+            <dl class="mdp-ui-metadata">
+              <dt>Storage</dt><dd>Local device</dd>
+              <dt>Workspace</dt><dd><span class="mdp-ui-code-value" title="/Users/me/projects/markdown-plus">/Users/me/projects/markdown-plus</span></dd>
+              <dt>Version</dt><dd><span class="mdp-ui-code-value">0.1.0</span></dd>
+            </dl>
+          </div>
+          <div class="mdp-ui-demo-group">
+            <span class="mdp-ui-demo-group__title">Comparable data</span>
+            <div class="mdp-ui-table-wrap">
+              <table class="mdp-ui-table">
+                <thead><tr><th>Limit</th><th>Value</th></tr></thead>
+                <tbody>
+                  <tr><td>Folder depth</td><td>4</td></tr>
+                  <tr><td>Indexed files</td><td>2,000</td></tr>
+                  <tr><td>Scanned folders</td><td>500</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+<section class="mdp-ui-section" aria-labelledby="feedback-title">
+        <header class="mdp-ui-section__header">
+          <h3 id="feedback-title">Feedback and loading</h3>
+          <p>State is communicated with text and structure in addition to semantic color.</p>
+        </header>
+        <div class="mdp-ui-grid">
+          <div class="mdp-ui-demo-group mdp-ui-demo-stack">
+            <span class="mdp-ui-demo-group__title">Inline notices</span>
+            <div class="mdp-ui-notice"><strong>Information</strong>Changes apply to the next workspace scan.</div>
+            <div class="mdp-ui-notice mdp-ui-notice--success"><strong>Saved</strong>Your settings are up to date.</div>
+            <div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Large scan</strong>Higher limits can use more memory.</div>
+            <div class="mdp-ui-notice mdp-ui-notice--danger" role="alert"><strong>Import failed</strong>The selected JSON file is not valid.</div>
+          </div>
+          <div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">LoadingState and toast</span><div class="mdp-ui-loading-state" role="status" aria-busy="true"><span class="mdp-ui-spinner" aria-hidden="true"></span><span>Loading settings…</span></div><div class="catalog-toast-stage" role="group" aria-label="Bottom-center toast placement preview"><div class="mdp-toast mdp-toast--success is-visible" role="status">Settings exported successfully.</div></div></div>
+          <div class="mdp-ui-demo-group mdp-ui-demo-stack">
+            <span class="mdp-ui-demo-group__title">Skeleton</span>
+            <div class="mdp-skeleton" aria-hidden="true" style="gap: 10px">
+              <span class="mdp-skeleton-line" style="width: 38%; height: 14px" aria-hidden="true"></span>
+              <span class="mdp-skeleton-line" style="width: 92%; height: 14px" aria-hidden="true"></span>
+              <span class="mdp-skeleton-line" style="width: 72%; height: 14px" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="mdp-ui-demo-group mdp-ui-demo-stack">
+            <span class="mdp-ui-demo-group__title">Empty and error states</span>
+            <div class="mdp-ui-state">
+              <strong class="mdp-ui-state__title">No recent files</strong>
+              <p class="mdp-ui-state__message">Documents opened in the Viewer will appear here.</p>
+              
+            </div>
+            <div class="mdp-ui-state mdp-ui-state--error">
+              <strong class="mdp-ui-state__title">Settings could not be loaded</strong>
+              <p class="mdp-ui-state__message">Check the extension connection and try again.</p>
+              <button class="mdp-ui-button mdp-ui-button--danger mdp-ui-state__action" type="button" data-catalog-feedback="Retry requested in this preview.">Try again</button>
+            </div>
+          </div>
+        </div>
+      </section>
+<section class="mdp-ui-section" aria-labelledby="overlays-title"><header class="mdp-ui-section__header"><h3 id="overlays-title">Overlays</h3><p>The current dirty-editor confirmation uses native dialog modality, a shared card, warning badge, and danger action.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Tooltip appearance</span><div class="mdp-tooltip" role="tooltip">Copy the current local file link</div><p class="catalog-note">Static appearance sample; runtime tooltips follow pointer/focus placement.</p></div><div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Export menu</span><div class="mdp-fab-export__menu catalog-menu" role="group" aria-label="Export menu appearance"><button class="mdp-fab-export__menu-item" type="button" data-catalog-feedback="Export HTML preview.">Export HTML</button><button class="mdp-fab-export__menu-item" type="button" data-catalog-feedback="Export Word preview.">Export Word (.doc)</button></div><p class="catalog-note">Static menu layout. Actions display preview feedback.</p></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Exit edit confirmation</span><button class="mdp-ui-button" id="catalog-dialog-open" type="button">Preview unsaved changes dialog</button><p class="catalog-note">Keep editing receives initial focus. Escape or clicking the scrim cancels; focus returns to the trigger. Discard changes affects this preview only.</p></div><p class="catalog-source">src/viewer/react/components/ExitEditConfirmation.jsx · src/viewer/styles/_exit-edit-confirmation.scss · _floating-actions.scss · layout.scss</p></section>
+</section>
+<section class="catalog-group" id="patterns" aria-labelledby="patterns-title"><header class="catalog-group-heading"><p class="ds-eyebrow">03 / Patterns</p><h2 id="patterns-title">Components in context</h2><p>Settings navigation, Popup tabs, document updates, and Change Review.</p></header>
+<section class="mdp-ui-section" aria-labelledby="navigation-title">
+        <header class="mdp-ui-section__header"><h3 id="navigation-title">Navigation</h3><p>Settings section navigation and the four current Popup tabs.</p></header>
+        <div class="mdp-ui-grid">
+          <div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Settings side navigation</span><nav class="mdp-ui-side-nav" aria-label="Settings sections example"><button class="mdp-ui-side-nav__item is-active" type="button" aria-current="page"><strong>General</strong><small>Activation and access</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Themes</strong><small>Colors and backgrounds</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Files &amp; Workspace</strong><small>Folder scan limits</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Privacy &amp; Data</strong><small>Recent local files</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Advanced</strong><small>Limits, backup, and reset</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>About</strong><small>Version, privacy, and support</small></button></nav></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Popup tabs</span><div class="popup-settings-tabs catalog-tabs" role="tablist" aria-label="Quick control sections example"><button class="popup-settings-tab is-active" id="catalog-tab-reader" type="button" role="tab" aria-selected="true" aria-controls="catalog-tab-panel" tabindex="0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="reader" style="stroke:currentColor;stroke-width:1.8"><path d="M12 5v16 M12 5C9 3 6 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1"></path></svg><span>Reader</span></button><button class="popup-settings-tab" id="catalog-tab-editor" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="editor" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg><span>Editor</span></button><button class="popup-settings-tab" id="catalog-tab-plugins" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="plugins" style="stroke:currentColor;stroke-width:1.8"><path d="M8 3v5 M16 3v5 M5 8h14v2a7 7 0 0 1-14 0Z M12 17v4"></path></svg><span>Plugins</span></button><button class="popup-settings-tab" id="catalog-tab-recent" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="history" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5v5h5 M3.7 9a8.5 8.5 0 1 1-.2 5 M12 7v5l3 2"></path></svg><span>Recent</span></button></div><div id="catalog-tab-panel" role="tabpanel" aria-labelledby="catalog-tab-reader" tabindex="0"><span class="mdp-ui-status"><span class="mdp-ui-status__dot" aria-hidden="true"></span><span id="catalog-tab-label">Reading appearance</span></span></div><p class="catalog-note">Use Left/Right, Home, and End to move between tabs. Tab contents are represented by a label in this preview.</p></div></div><p class="catalog-source">src/shared/styles/_containers.scss · src/options/OptionsApp.jsx · src/popup/popup.scss</p></section>
+<section class="mdp-ui-section" aria-labelledby="viewer-title"><header class="mdp-ui-section__header"><h3 id="viewer-title">Viewer components</h3><p>Document statistics, update feedback, and source comparison now share the same application primitives.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document updates · Ask mode</span><label class="mdp-ui-field" for="catalog-update-state"><span class="mdp-ui-field__label">Preview state</span><select class="mdp-ui-select" id="catalog-update-state"><option value="pending">New version available</option><option value="current">Up to date</option><option value="error">Check failed</option></select></label><div class="mdp-watch-status catalog-watch"><section class="mdp-ui-card mdp-watch-status__panel mdp-watch-status__panel--has-actions" aria-label="Document updates preview"><header class="mdp-watch-status__header"><div class="mdp-watch-status__heading"><h3>Document updates</h3><span class="mdp-ui-badge mdp-ui-badge--info mdp-watch-status__mode">Ask</span></div><div class="mdp-watch-status__header-actions"><button class="mdp-watch-status__check" type="button" aria-label="Check now" title="Check now" id="catalog-check-update"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></button></div></header><p class="mdp-watch-status__message" id="catalog-update-message" role="status">A newer version of this document is ready.</p><div class="mdp-watch-status__actions" id="catalog-update-actions"><button class="mdp-ui-button mdp-ui-button--primary" type="button" id="catalog-apply-update">Update document</button></div></section></div></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document statistics</span><aside class="mdp-document-stats catalog-stats" role="note" aria-label="Document statistics: 420 words, 2,450 characters, 2 min read"><span aria-hidden="true">420 words</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span aria-hidden="true">2,450 characters</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span class="mdp-document-stats__reading" aria-hidden="true">2 min read</span></aside><p class="catalog-note">Selectable metadata above Markdown in read mode. Hidden for empty documents, edit mode, and print output.</p><div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Editor protection</strong>Updates never replace an active editor. Loading a disk revision requires confirmation before leaving edit mode.</div></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · source lines</span><div class="mdp-change-review catalog-review"><section class="mdp-ui-card mdp-change-review__hunk is-active" aria-label="Changed area 1" tabindex="0"><div class="mdp-change-review__hunk-header"><span>Changed area 1</span><span>1 added · 1 removed</span></div><table><caption class="mdp-change-review__visually-hidden">Source lines in changed area 1</caption><thead class="mdp-change-review__visually-hidden"><tr><th>Old line</th><th>New line</th><th>Change</th><th>Source</th></tr></thead><tbody><tr class="mdp-change-review__row--equal"><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__marker"><span aria-label="Unchanged"> </span></td><td class="mdp-change-review__source"><code># Reading notes</code></td></tr><tr class="mdp-change-review__row--removed"><td class="mdp-change-review__line-number">2</td><td></td><td class="mdp-change-review__marker"><span aria-label="Removed">−</span></td><td class="mdp-change-review__source"><code>Check for changes manually.</code></td></tr><tr class="mdp-change-review__row--added"><td></td><td class="mdp-change-review__line-number">2</td><td class="mdp-change-review__marker"><span aria-label="Added">+</span></td><td class="mdp-change-review__source"><code>Choose how document updates are applied.</code></td></tr></tbody></table></section></div><p class="catalog-note">Excerpt from the Viewer comparison. Source gutters and diff layout remain Viewer-specific; added and removed lines use paired theme colors.</p></div><p class="catalog-source">src/viewer/styles/_watch-status.scss · _document-stats.scss · _change-review.scss · _update-feedback.scss</p></section>
+</section>
+    </div>
+  </section>
+
+  <dialog class="mdp-exit-edit-modal" id="catalog-dialog" role="alertdialog" aria-labelledby="catalog-dialog-title" aria-describedby="catalog-dialog-description">
+    <div class="mdp-ui-card mdp-exit-edit-confirmation"><div class="mdp-exit-edit-confirmation__content"><span class="mdp-ui-badge mdp-ui-badge--warning">Unsaved changes</span><h2 id="catalog-dialog-title">Discard changes and exit edit mode?</h2><p id="catalog-dialog-description">Your unsaved changes will be lost. The saved file will stay unchanged.</p></div><div class="mdp-ui-action-footer mdp-ui-action-footer--end mdp-exit-edit-confirmation__actions"><button class="mdp-ui-button mdp-ui-button--secondary" id="catalog-dialog-cancel" type="button" autofocus>Keep editing</button><button class="mdp-ui-button mdp-ui-button--danger" id="catalog-dialog-confirm" type="button">Discard changes</button></div></div>
+  </dialog><div class="mdp-toast mdp-toast--success" id="catalog-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script>
+
+    const body = document.body
+    const themeToggle = document.getElementById('catalog-theme-toggle')
+    const themeSelect = document.getElementById('catalog-theme')
+    function setTheme(theme) {
+      body.dataset.theme = theme
+      themeSelect.value = theme
+      themeToggle.setAttribute('aria-pressed', String(theme === 'dark'))
+      themeToggle.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode'
+    }
+    themeToggle.addEventListener('click', () => setTheme(body.dataset.theme === 'dark' ? 'light' : 'dark'))
+    themeSelect.addEventListener('change', () => setTheme(themeSelect.value))
+    let toastTimer
+    function feedback(message) {
+      const toast = document.getElementById('catalog-toast')
+      clearTimeout(toastTimer)
+      toast.textContent = message
+      toast.classList.add('is-visible')
+      toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2400)
+    }
+    document.querySelectorAll('[data-catalog-feedback]').forEach(button => {
+      button.addEventListener('click', () => feedback(button.dataset.catalogFeedback))
+    })
+    const fileInput = document.getElementById('catalog-file-input')
+    document.getElementById('catalog-file-button').addEventListener('click', () => fileInput.click())
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) feedback(`Selected ${fileInput.files[0].name}. Preview only.`) })
+    const limit = document.getElementById('catalog-limit')
+    limit.addEventListener('input', () => {
+      const invalid = limit.value === '' || !limit.validity.valid
+      limit.setAttribute('aria-invalid', String(invalid))
+      document.getElementById('catalog-limit-error').hidden = !invalid
+    })
+    const tabs = [...document.querySelectorAll('[role="tab"]')]
+    const tabLabels = ['Reading appearance', 'Editor preferences', 'Markdown features', 'Recent files']
+    function selectTab(tab) {
+      tabs.forEach(candidate => {
+        const selected = candidate === tab
+        candidate.setAttribute('aria-selected', String(selected))
+        candidate.classList.toggle('is-active', selected)
+        candidate.tabIndex = selected ? 0 : -1
+      })
+      document.getElementById('catalog-tab-panel').setAttribute('aria-labelledby', tab.id)
+      document.getElementById('catalog-tab-label').textContent = tabLabels[tabs.indexOf(tab)]
+    }
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectTab(tab))
+      tab.addEventListener('keydown', event => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
+        event.preventDefault()
+        const next = event.key === 'Home' ? tabs[0] : event.key === 'End' ? tabs.at(-1) : tabs[(index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length]
+        selectTab(next)
+        next.focus()
+      })
+    })
+    const navItems = [...document.querySelectorAll('.mdp-ui-side-nav__item')]
+    navItems.forEach(item => item.addEventListener('click', () => {
+      navItems.forEach(candidate => {
+        candidate.classList.toggle('is-active', candidate === item)
+        if (candidate === item) candidate.setAttribute('aria-current', 'page')
+        else candidate.removeAttribute('aria-current')
+      })
+    }))
+    const stateSelect = document.getElementById('catalog-update-state')
+    function setUpdateState(state) {
+      stateSelect.value = state
+      const message = document.getElementById('catalog-update-message')
+      message.className = 'mdp-watch-status__message' + (state === 'error' ? ' mdp-ui-notice mdp-ui-notice--danger' : '')
+      message.textContent = state === 'pending' ? 'A newer version of this document is ready.' : state === 'error' ? 'Update check failed. Try checking again.' : 'New versions wait until you choose to update.'
+      document.getElementById('catalog-update-actions').hidden = state !== 'pending'
+    }
+    stateSelect.addEventListener('change', () => setUpdateState(stateSelect.value))
+    document.getElementById('catalog-apply-update').addEventListener('click', () => { setUpdateState('current'); feedback('Document updated in this preview.') })
+    document.getElementById('catalog-check-update').addEventListener('click', () => { setUpdateState('pending'); feedback('Update check preview: a new version is available.') })
+    const dialog = document.getElementById('catalog-dialog')
+    const dialogTrigger = document.getElementById('catalog-dialog-open')
+    dialogTrigger.addEventListener('click', () => { dialog.showModal(); document.getElementById('catalog-dialog-cancel').focus() })
+    document.getElementById('catalog-dialog-cancel').addEventListener('click', () => dialog.close('cancel'))
+    document.getElementById('catalog-dialog-confirm').addEventListener('click', () => { dialog.close('discard'); feedback('Changes discarded in this preview.') })
+    let scrimPointerDown = false
+    dialog.addEventListener('pointerdown', event => { scrimPointerDown = event.target === dialog })
+    dialog.addEventListener('click', event => { if (scrimPointerDown && event.target === dialog) dialog.close('cancel'); scrimPointerDown = false })
+    dialog.addEventListener('close', () => dialogTrigger.focus())
+  </script>
+</body>
+</html>

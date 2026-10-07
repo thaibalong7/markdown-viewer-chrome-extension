@@ -1,8 +1,21 @@
 # Markdown Plus Design System
 
-This document records the visual contracts currently implemented by Markdown Plus. Runtime source is canonical; this document and `design-system-demo.html` are derived references.
+This directory records the visual contracts currently implemented by Markdown Plus. Runtime source is canonical; this guide and its standalone HTML previews are derived references.
 
-For the persisted theme schema, built-in/custom resolution, background descriptors, local asset lifecycle, and theme extension workflow, see [`theme-system.md`](./theme-system.md).
+## Browse the system
+
+Open [Overview & foundations](./index.html) in a browser as the common entry point. All HTML pages are standalone, embed their styles and scripts, and work without a build or external assets. Their navigation links the same four destinations.
+
+| Page | Purpose |
+| --- | --- |
+| [Overview](./index.html) | Entry point, principles, semantic colors, typography, spacing, and interaction states |
+| [Components](./components.html) | Controls, feedback and containers, then patterns; states, usage notes, source paths, and simulated interactions |
+| [Icons](./icons.html) | Current application glyphs and a separate explorer/file-type family, with search, theme, and size previews |
+| [Viewer preview](./viewer.html) | Current Viewer composition, rail toggles, theme, and dirty-editor dialog; actions simulate feedback |
+
+The component catalog embeds CSS snapshots from the shared, Popup, and Viewer SCSS sources cited in each section. The icon inventory and other preview glyphs are generated from `src/shared/icons/application-icons.js` and `file-type-icons.js` by `node scripts/sync-design-system-icons.mjs`. Preview layout and simulated actions are documentation-only; they do not read or write workspace files.
+
+For the persisted theme schema, built-in/custom resolution, background descriptors, local asset lifecycle, and theme extension workflow, see [`theme-system.md`](../theme-system.md).
 
 ## Source of truth
 
@@ -12,7 +25,7 @@ Use these sources in order when values disagree:
 2. `src/shared/react/**` and `src/shared/styles/**` for reusable application primitives.
 3. `src/viewer/styles/**` for Viewer foundations, layout, document typography, and components.
 4. `src/options/options.scss` and `src/popup/popup.scss` for surface-specific layout.
-5. This document and `design-system-demo.html` for explanation and preview only.
+5. This guide and the HTML pages in this directory for explanation and preview only.
 
 ## Product character
 
@@ -56,6 +69,23 @@ Viewer color values are owned by the resolved active built-in or custom theme in
 | `--mdp-scrollbar-thumb*` | Overlay scrollbar idle and hover treatment |
 
 Use semantic variables instead of adding near-duplicate raw colors. Blue communicates navigation or selection, green successful completion, amber editing/warnings, and red errors or destructive actions.
+
+## Icon system
+
+The approved set contains 43 application glyphs and 8 explorer identities. `src/shared/icons/application-icons.js` owns 24px monochrome geometry with 1.8 stroke, round caps and joins; `file-type-icons.js` owns the separate native 16px family with fixed colors and 1.25 stroke. `AppIcon` and `FileTypeIcon` render these definitions declaratively in React. `createAppIconSvg` renders the same trusted definitions through DOM APIs for code blocks, diagrams, and image lightboxes. Viewer icon components remain small compatibility adapters.
+
+Use 16px artwork in explorer lists, 18–20px for application actions, and 24px for larger specimens. The enclosing control owns target size, accessible name, tooltip, and interaction state. Application glyphs use `currentColor`; file identities preserve their colors in selected rows and dark themes. Expanded folders use the open-folder variant; Collapse folders uses overlapping layers and a minus rather than directional chevrons.
+
+| Explorer identity | Fixed color |
+| --- | --- |
+| Folder / open folder | `#D6A34A` |
+| Markdown | `#60A5FA` |
+| Plain text | `#64748B` |
+| SQL / SVG | `#F472B6` |
+| Mermaid | `#F59E0B` |
+| Raster image | `#C084FC` |
+
+Keep SVG geometry in these local definitions. Do not introduce per-surface copies, icon fonts, or external icon assets. After a glyph changes, run `node scripts/sync-design-system-icons.mjs`, then verify the standalone references. The script refreshes icon galleries and marked SVGs in the component and Viewer previews from runtime source.
 
 ## Typography
 
@@ -163,6 +193,7 @@ Shared SCSS under `src/shared/styles/` covers tokens, buttons, forms, containers
 ## Current component contracts
 
 - Buttons use shared variants and preserve accessible labels while busy.
+- File list refresh keeps its list strokes stationary while only the circular arrow rotates around its own center. Busy controls retain the link color, expose `aria-busy`, and prevent repeat activation; reduced motion keeps the arrow static.
 - Document update dialogs share a neutral `--mdp-overlay-scrim`; the scrim does not derive from text color, so dark themes keep a dark overlay. Change Review additions/removals and update badges/notices use the theme's paired status foreground/background colors, including custom themes, rather than mixing status text onto an unrelated surface. Modal cards retain opaque theme surfaces over image and gradient backgrounds.
 - Leaving a dirty editor uses a custom modal with the shared card, warning badge, and action footer. “Keep editing” receives initial focus; “Discard changes” uses the danger button. Escape and outside press cancel, focus returns to the edit action, and native dialog modality contains focus and blocks background interaction. Discard is disabled during Save; clean editors exit directly.
 - Number fields keep validation text associated with their inputs.
@@ -185,6 +216,15 @@ When adding a UI element:
 2. Keep surface-specific layout local.
 3. Promote a component or style to `src/shared/` only when multiple surfaces share the contract.
 4. Preserve keyboard behavior, accessible naming, light/dark behavior, and reduced motion.
-5. Update this document and the demo after the runtime implementation changes.
+5. Update this guide and the affected current-state HTML pages after the runtime implementation changes. Refresh embedded component CSS and SVG snapshots from the cited sources when their visual contracts change.
 
-The design documentation describes implemented contracts. Future component ideas belong in an active plan, not in this document or the demo.
+The design documentation describes implemented contracts. Future component ideas belong under `planning/design-system/` until implemented. Completed proposal material is removed after the current references are refreshed.
+
+## Maintaining the previews
+
+- Keep these HTML references self-contained. No preview framework, CDN, or runtime dependency is required.
+- Preserve the common navigation and its current-page marker across all four reference pages. The small duplicated shell is documentation-only; update it together when navigation changes.
+- Keep component names, previews, states, usage notes, and source paths together. Group examples by Controls, Feedback & containers, and Patterns instead of creating a page for every primitive.
+- Preserve file-type colors independently of application icon emphasis. Document existing grid and stroke differences accurately; future proposals stay under `planning/`.
+- Verify local links and anchors, inline script syntax, light/dark appearance, keyboard interaction, and narrow layouts after restructuring previews.
+- When an experiment is implemented, refresh the current references from runtime source and remove completed proposal material. Git history remains the archive.

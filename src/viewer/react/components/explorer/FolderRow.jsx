@@ -1,5 +1,6 @@
 import React from 'react'
 import { Tooltip } from '../Tooltip.jsx'
+import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
 import { FolderIcon } from '../icons/FolderIcon.jsx'
 
 export function FolderRow({ node, expandedMap, onToggleFolder, children, expanded, depth, rowStyle }) {
@@ -23,9 +24,9 @@ export function FolderRow({ node, expandedMap, onToggleFolder, children, expande
           style={{ paddingLeft: `${2 + Math.max(0, resolvedDepth - 1) * 10}px` }}
           onClick={() => onToggleFolder?.(node.href)}
         >
-          <span className="mdp-explorer__tree-chevron" aria-hidden="true" />
+          <span className="mdp-explorer__tree-chevron" aria-hidden="true"><AppIcon name={resolvedExpanded ? 'chevron-down' : 'chevron-right'} size={12} /></span>
           <span className="mdp-explorer__tree-folder-icon" aria-hidden="true">
-            <FolderIcon />
+            <FolderIcon expanded={resolvedExpanded} />
           </span>
           <span className="mdp-explorer__tree-folder-label">{node.name}</span>
         </button>

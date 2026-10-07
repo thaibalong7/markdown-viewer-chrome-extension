@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { mergePluginSettings } from '../plugins/plugin-types.js'
 import { openExtensionDetails } from '../shared/file-scheme-access.js'
+import { AppIcon } from '../shared/react/AppIcon.jsx'
 import { Button } from '../shared/react/Button.jsx'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { useFileSchemeAccess } from '../shared/react/useFileSchemeAccess.js'
@@ -226,11 +227,7 @@ export function PopupApp() {
                 onClick={() => void handleOpenSettings()}
               >
                 All settings
-                <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-                  <path d="M7 4h9v9" />
-                  <path d="m16 4-9.5 9.5" />
-                  <path d="M13 10v6H4V7h6" />
-                </svg>
+                <AppIcon name="external" />
               </Button>
             </div>
           </div>

@@ -100,8 +100,7 @@ See [DEV.md](DEV.md) for the development loop, architecture entry points, verifi
 - [Architecture Overview](docs/architecture-overview.md) — runtime flows, subsystem ownership, security boundaries, and task-to-source guidance.
 - [Document Updates and Change Review](docs/document-updates-and-change-review.md) — update modes, review workflow, editor safety, limits, and implementation ownership.
 - [Theme System](docs/theme-system.md) — theme schema, built-in/custom behavior, backgrounds, assets, extension workflows, and tests.
-- [Design System](docs/design-system.md) — visual tokens, layout contracts, reusable components, and interaction conventions.
-- [Design System Demo](docs/design-system-demo.html) — standalone static preview derived from the current Viewer language.
+- [Design System](docs/design-system/README.md) — implementation guide and [visual reference](docs/design-system/index.html) covering foundations, components, current icons, and the Viewer preview.
 - [Gherkin Syntax](docs/gherkin-syntax.md) — Cucumber/Gherkin reference plus the Markdown fence integration supported by Markdown Plus.
 
 ## Privacy

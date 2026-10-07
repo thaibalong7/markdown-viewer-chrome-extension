@@ -136,7 +136,7 @@ Major ownership:
 - `FloatingActions.jsx`: capability-driven document commands;
 - `src/viewer/react/hooks/useExplorer.js`: React composition around explorer workflows.
 
-Reusable application primitives and styles live under `src/shared/react/` and `src/shared/styles/`. Surface-specific layout remains local to Viewer, Popup, or Options.
+Reusable application primitives and styles live under `src/shared/react/` and `src/shared/styles/`. Shared icon geometry lives in `src/shared/icons/`: the application family uses a 24px grid and 1.8 stroke, while explorer identities use a separate native 16px grid, fixed colors, and 1.25 stroke. React adapters (`AppIcon`, `FileTypeIcon`) and the imperative `createAppIconSvg` helper consume the same trusted definitions; Viewer compatibility components contain no separate geometry. Surface-specific layout remains local to Viewer, Popup, or Options.
 
 Files and Outline can collapse independently and retain a narrow interaction gutter or actions rail. Their drag widths, explorer mode, expanded folders, and editor split width are tab-session preferences in `sessionStorage`; the Outline width can fall back to `layout.tocWidth`, while Files falls back to its runtime default. Viewer scrollbars can auto-hide or remain visible. Document statistics are shown only for loaded Markdown in read mode, count Unicode code points including whitespace, estimate reading time at 200 words per minute, and can be disabled from Settings.
 

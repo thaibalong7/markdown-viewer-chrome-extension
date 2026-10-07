@@ -61,8 +61,9 @@ describe('sidebar scrollbar layout', () => {
       /\.mdp-floating-actions\.mdp-floating-actions--rail-strip\s*\{[^}]*gap:\s*4px;[^}]*padding:\s*0;[^}]*border:\s*0;[^}]*background:\s*transparent;[^}]*box-shadow:\s*none;/s
     )
     expect(layoutCss).toMatch(
-      /\.mdp-right-rail--outline-expanded > \.mdp-panel-toggle--outline\s*\{[^}]*top:\s*25px;/s
+      /\.mdp-panel-toggle\s*\{[^}]*top:\s*16px;/s
     )
+    expect(layoutCss).not.toMatch(/\.mdp-panel-toggle--(?:files|outline)\s*\{[^}]*top:/s)
     expect(layoutCss).toMatch(
       /\.mdp-right-rail__actions-row\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*min-height:\s*44px;[^}]*padding:\s*0 2px 8px;[^}]*border-bottom:/s
     )

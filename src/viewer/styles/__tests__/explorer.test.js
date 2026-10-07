@@ -5,6 +5,14 @@ import { describe, expect, it } from 'vitest'
 const explorerCss = compile(fileURLToPath(new URL('../explorer.scss', import.meta.url))).css
 
 describe('explorer interaction styles', () => {
+  it('rotates only the refresh arrow around its own center and honors reduced motion', () => {
+    const arrow = String.raw`\.mdp-explorer__refresh-icon \[data-icon-part=arrow\]`
+    expect(explorerCss).toMatch(new RegExp(`${arrow}\\s*\\{[^}]*transform-box:\\s*view-box;[^}]*transform-origin:\\s*17px 17px;`))
+    expect(explorerCss).toMatch(new RegExp(`\\.is-refreshing ${arrow}\\s*\\{[^}]*animation:\\s*mdp-explorer-refresh-spin`))
+    expect(explorerCss).not.toMatch(/\.is-refreshing \.mdp-explorer__refresh-icon\s*\{[^}]*animation:/)
+    expect(explorerCss).toMatch(new RegExp(`@media \\(prefers-reduced-motion: reduce\\)\\s*\\{[^@]*${arrow}\\s*\\{[^}]*animation:\\s*none;`))
+  })
+
   it('keeps the scan-limit Settings action flowing with the notice text', () => {
     expect(explorerCss).toMatch(
       /\.mdp-explorer__depth-notice \.mdp-explorer__settings-link\s*\{[^}]*display:\s*inline;[^}]*white-space:\s*normal;/s
@@ -35,18 +43,18 @@ describe('explorer interaction styles', () => {
     )
   })
 
-  it('keeps tree icons consistently sized and optically aligns folder artwork', () => {
+  it('keeps file and folder artwork at the native 16px size inside stable row slots', () => {
     expect(explorerCss).toMatch(
       /\.mdp-explorer__node-icon\s*\{[^}]*width:\s*19px;[^}]*height:\s*19px;/s
     )
     expect(explorerCss).toMatch(
-      /\.mdp-explorer__node-icon svg\s*\{[^}]*width:\s*18px;[^}]*height:\s*18px;/s
+      /\.mdp-explorer__node-icon svg\s*\{[^}]*width:\s*16px;[^}]*height:\s*16px;/s
     )
     expect(explorerCss).toMatch(
       /\.mdp-explorer__tree-folder-icon\s*\{[^}]*width:\s*19px;[^}]*height:\s*19px;/s
     )
     expect(explorerCss).toMatch(
-      /\.mdp-explorer__tree-folder-icon svg\s*\{[^}]*width:\s*18px;[^}]*height:\s*18px;[^}]*transform:\s*translateY\(-1px\);/s
+      /\.mdp-explorer__tree-folder-icon svg\s*\{[^}]*width:\s*16px;[^}]*height:\s*16px;/s
     )
   })
 

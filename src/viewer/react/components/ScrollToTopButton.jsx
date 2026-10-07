@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
 import { cancelViewerAnchorLock } from '../../scroll-utils.js'
+import { AppIcon } from '../../../shared/react/AppIcon.jsx'
 import { IconButton } from './common/IconButton.jsx'
 
 const MIN_REVEAL_DISTANCE_PX = 320
@@ -21,24 +22,6 @@ export function shouldShowScrollToTop({
 
 function prefersReducedMotion() {
   return globalThis.window?.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true
-}
-
-function ArrowUpIcon() {
-  return (
-    <svg
-      className="mdp-scroll-to-top__icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 19V5" />
-      <path d="m6.5 10.5 5.5-5.5 5.5 5.5" />
-    </svg>
-  )
 }
 
 export function ScrollToTopButton({ scrollElement }) {
@@ -107,7 +90,7 @@ export function ScrollToTopButton({ scrollElement }) {
       tabIndex={visible ? 0 : -1}
       onClick={handleClick}
     >
-      <ArrowUpIcon />
+      <AppIcon name="arrow-up" className="mdp-scroll-to-top__icon" />
     </IconButton>
   )
 }

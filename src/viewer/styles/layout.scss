@@ -239,10 +239,6 @@
   }
 }
 
-.mdp-right-rail--outline-expanded > .mdp-panel-toggle--outline {
-  top: 25px;
-}
-
 .mdp-right-rail__actions-row {
   display: flex;
   align-items: center;
@@ -548,10 +544,6 @@
 
   .mdp-panel-toggle--outline {
     left: -16px;
-  }
-
-  .mdp-right-rail--outline-expanded > .mdp-panel-toggle--outline {
-    top: 20px;
   }
 
   .mdp-sidebar__collapsed-hit-area {

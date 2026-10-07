@@ -6,6 +6,7 @@ import { getWorkspaceRootUrl } from '../../../explorer/explorer-state.js'
 import { buildCollapsedExpandedMap } from '../../../explorer/explorer-tree-utils.js'
 import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
 import { useExplorer } from '../../hooks/useExplorer.js'
+import { useExplorerViewportLayout } from '../../hooks/explorer/useExplorerViewportLayout.js'
 import { useDelayedBusyState } from '../../hooks/useDelayedBusyState.js'
 import { ExplorerHeader } from './ExplorerHeader.jsx'
 import { ExplorerToolbar } from './ExplorerToolbar.jsx'
@@ -46,6 +47,7 @@ export function ExplorerPanel({ bridge }) {
   const suppressNextAutoRevealRef = useRef('')
   const revealTimersRef = useRef({ afterScrollRaf: 0, raf: 0, timeouts: [] })
   const [scrollElement, setScrollElement] = useState(null)
+  const rowHeight = useExplorerViewportLayout(scrollElement)
   const activeNormalized = normalizeFileUrlForCompare(viewState.activeFileUrl || '')
   const refreshUnavailableReason = getFileListRefreshUnavailableReason({
     mode: viewState.explorerMode,
@@ -130,15 +132,20 @@ export function ExplorerPanel({ bridge }) {
   const fileVirtualizer = useVirtualizer({
     count: viewState.files.length,
     getScrollElement: () => scrollElement,
-    estimateSize: () => 36,
+    estimateSize: () => rowHeight,
     overscan: 10
   })
   const treeVirtualizer = useVirtualizer({
     count: treeRows.length,
     getScrollElement: () => scrollElement,
-    estimateSize: () => 36,
+    estimateSize: () => rowHeight,
     overscan: 12
   })
+
+  useEffect(() => {
+    fileVirtualizer.measure()
+    treeVirtualizer.measure()
+  }, [fileVirtualizer, treeVirtualizer, rowHeight])
 
   const revealActiveRow = useCallback((virtualizer, activeIndex) => {
     const timers = revealTimersRef.current

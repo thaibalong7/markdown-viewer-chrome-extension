@@ -1,23 +1,13 @@
 @use 'variables' as v;
 
-.mdp-sidebar-panel {
-  min-height: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.mdp-explorer-container {
-  min-height: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding-inline-end: 3px;
-}
-
 .mdp-explorer {
+  --mdp-explorer-action-size: 28px;
+  --mdp-explorer-action-gap: 4px;
+  --mdp-explorer-header-inset: 2px;
+  --mdp-explorer-context-padding: 10px;
+  // Follow the context card padding and its 1px border.
+  --mdp-explorer-action-inset: calc(var(--mdp-explorer-context-padding) + 1px);
+  --mdp-explorer-row-action-inset: max(0px, var(--mdp-explorer-action-inset) - var(--mdp-explorer-scrollbar-width, 0px));
   position: relative;
   display: flex;
   flex: 1;
@@ -30,6 +20,13 @@
   position: relative;
   flex-shrink: 0;
   border-bottom: 0;
+  gap: 0;
+  padding: 2px 0 12px;
+
+  // The card spans the panel; heading, expanded actions and notices keep their inset.
+  > :not(.mdp-explorer__context) {
+    margin-inline: var(--mdp-explorer-header-inset);
+  }
 
   .mdp-panel-header__row {
     min-height: 34px;
@@ -50,6 +47,135 @@
   }
 }
 
+// Files icon actions share geometry; visual states stay with each control below.
+.mdp-explorer__details-toggle,
+.mdp-explorer__context-command,
+.mdp-explorer__toolbar-btn,
+.mdp-explorer__copy-link-btn,
+.mdp-explorer__row-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--mdp-explorer-action-size);
+  height: var(--mdp-explorer-action-size);
+  padding: 0;
+  border-radius: v.$radius-tiny;
+
+  &:focus-visible {
+    outline: 2px solid var(--mdp-link);
+    outline-offset: -2px;
+  }
+}
+
+.mdp-explorer__details-toggle,
+.mdp-explorer__context-command {
+  min-height: var(--mdp-explorer-action-size);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mdp-muted);
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+    background: var(--mdp-link-soft);
+    color: var(--mdp-link);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  &.is-open {
+    background: var(--mdp-link-soft);
+    color: var(--mdp-link);
+  }
+
+  &.is-copied {
+    color: var(--mdp-accent);
+  }
+}
+
+.mdp-explorer__context-commands {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--mdp-explorer-action-gap);
+  margin-inline-start: auto;
+}
+
+.mdp-explorer__context-command-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__context-overflow {
+  position: relative;
+}
+
+.mdp-explorer__row-menu.mdp-explorer__context-menu {
+  z-index: 20;
+  right: calc(-1 * (var(--mdp-explorer-action-gap) + var(--mdp-explorer-action-size)));
+  width: 192px;
+  min-width: 0;
+  max-width: calc(var(--mdp-files-width, 280px) - 44px);
+}
+
+.mdp-explorer__details-chevron {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+
+  [aria-expanded='true'] & {
+    transform: rotate(180deg);
+  }
+}
+
+.mdp-explorer__details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms ease;
+
+  &.is-expanded {
+    grid-template-rows: 1fr;
+  }
+}
+
+.mdp-explorer__details-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mdp-explorer__details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  // Keep spacing inside the clipped grid so closing releases all of its height.
+  padding: 9px 0 2px;
+  // Hide immediately on minimize: compact commands must never duplicate visible body commands.
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 160ms ease;
+
+  .is-expanded > .mdp-explorer__details-clip > & {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &--actions {
+    gap: 10px;
+    padding-top: 10px;
+  }
+}
+
+.mdp-explorer__persistent-notice {
+  margin-top: 10px;
+}
+
 .mdp-explorer__scroll-region {
   min-height: 0;
   flex: 1;
@@ -67,7 +193,7 @@
   gap: 8px;
   min-width: 0;
   min-height: 40px;
-  padding: 3px 2px;
+  padding: 3px var(--mdp-explorer-action-inset) 3px var(--mdp-explorer-header-inset);
   border-block: 1px solid var(--mdp-border);
 }
 
@@ -97,20 +223,12 @@
 .mdp-explorer__toolbar-actions {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--mdp-explorer-action-gap);
   flex-shrink: 0;
 }
 
 .mdp-explorer__toolbar-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  padding: 0;
   border: 1px solid transparent;
-  border-radius: v.$radius-small;
   background: transparent;
   color: var(--mdp-muted);
   cursor: pointer;
@@ -124,11 +242,6 @@
     color: var(--mdp-link);
     border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
     background: var(--mdp-link-soft);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--mdp-link);
-    outline-offset: 2px;
   }
 
   &:disabled {
@@ -149,8 +262,8 @@
 
 .mdp-explorer__toolbar-icon,
 .mdp-explorer__refresh-icon {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
@@ -169,18 +282,24 @@
 .mdp-explorer__context {
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  padding: 10px;
+  margin-top: 10px;
+  padding: var(--mdp-explorer-context-padding);
   border: 1px solid color-mix(in srgb, var(--mdp-border) 86%, transparent);
   border-radius: 10px;
   background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-bg));
+  transition: padding 200ms ease;
+
+  &[data-details-expanded='false'] {
+    padding-block: 4px;
+  }
 }
 
 .mdp-explorer__context-summary {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   min-width: 0;
+  min-height: var(--mdp-explorer-action-size);
 }
 
 .mdp-explorer__context-row {
@@ -191,8 +310,10 @@
 }
 
 .mdp-explorer__badge {
-  flex-shrink: 0;
-  max-width: 46%;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding: 2px 7px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--mdp-link) 22%, var(--mdp-border));
@@ -204,7 +325,7 @@
   line-height: 1.35;
   text-align: center;
   text-transform: uppercase;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
 .mdp-explorer__badge--workspace {
@@ -242,15 +363,7 @@
 }
 
 .mdp-explorer__copy-link-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  padding: 0;
   border: 1px solid var(--mdp-border);
-  border-radius: v.$radius-small;
   background: var(--mdp-surface);
   color: var(--mdp-muted);
   cursor: pointer;
@@ -263,11 +376,6 @@
     color: var(--mdp-link);
     border-color: color-mix(in srgb, var(--mdp-link) 35%, var(--mdp-border));
     background: var(--mdp-link-soft);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--mdp-link);
-    outline-offset: 2px;
   }
 
   &:disabled {
@@ -295,12 +403,13 @@
 }
 
 .mdp-explorer__copy-link-icon {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
 .mdp-explorer__context-status {
+  flex: 1;
   min-width: 0;
   overflow: hidden;
   font-size: 11px;
@@ -451,7 +560,7 @@
   &:focus-within .mdp-explorer__node-btn,
   &.is-active .mdp-explorer__node-btn,
   &.is-menu-open .mdp-explorer__node-btn {
-    padding-right: 38px;
+    padding-right: calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap));
   }
 
   &.is-menu-open {
@@ -463,7 +572,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   width: 100%;
   text-align: left;
   min-height: 38px;
@@ -475,7 +584,7 @@
   text-decoration: none;
   line-height: 1.25;
   padding: 8px 6px;
-  border-radius: v.$radius-small;
+  border-radius: v.$radius-tiny;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -513,8 +622,9 @@
 }
 
 .mdp-explorer__node-depth {
-  width: 14px;
+  width: 10px;
   height: 16px;
+  margin-inline-end: -2px;
   flex-shrink: 0;
 }
 
@@ -522,7 +632,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 19px;
+  width: 16px;
   height: 19px;
   flex-shrink: 0;
 
@@ -545,20 +655,13 @@
 .mdp-explorer__row-actions {
   position: absolute;
   top: 50%;
-  right: 4px;
+  right: var(--mdp-explorer-row-action-inset);
   z-index: 2;
   transform: translateY(-50%);
 }
 
 .mdp-explorer__row-action-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
   border: none;
-  border-radius: v.$radius-tiny;
   background: transparent;
   color: var(--mdp-muted);
   cursor: pointer;
@@ -575,16 +678,11 @@
     color: var(--mdp-link);
     background: var(--mdp-link-soft);
   }
-
-  &:focus-visible {
-    outline: 2px solid var(--mdp-link);
-    outline-offset: 1px;
-  }
 }
 
 .mdp-explorer__row-action-icon {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
 }
 
 .mdp-explorer__row-menu {
@@ -769,7 +867,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   width: 100%;
   text-align: left;
   min-height: 38px;
@@ -780,7 +878,7 @@
   font-size: 13px;
   line-height: 1.25;
   padding: 8px 6px 8px 2px;
-  border-radius: v.$radius-small;
+  border-radius: v.$radius-tiny;
   cursor: pointer;
 
   &:hover {
@@ -795,6 +893,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .mdp-explorer__details,
+  .mdp-explorer__details-content,
+  .mdp-explorer__details-chevron {
+    transition: none;
+  }
+
+  .mdp-explorer__context {
+    transition: none;
+  }
+
   .mdp-explorer__toolbar-btn.is-refreshing .mdp-explorer__refresh-icon [data-icon-part='arrow'] {
     animation: none;
   }
@@ -809,13 +917,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
+  width: 10px;
   height: 16px;
+  margin-inline-end: -2px;
   flex-shrink: 0;
   color: var(--mdp-muted);
 
   svg {
-    width: 12px;
+    width: 10px;
     height: 12px;
   }
 }
@@ -824,7 +933,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 19px;
+  width: 16px;
   height: 19px;
   flex-shrink: 0;
 
@@ -857,9 +966,23 @@
 }
 
 @media (pointer: coarse) {
-  .mdp-explorer__toolbar-btn,
-  .mdp-explorer__copy-link-btn {
-    width: 44px;
-    height: 44px;
+  .mdp-explorer {
+    --mdp-explorer-action-size: 44px;
+  }
+
+  .mdp-explorer__node-btn,
+  .mdp-explorer__tree-folder-row {
+    min-height: 44px;
+  }
+
+  .mdp-explorer__node .mdp-explorer__node-btn {
+    padding-right: calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap));
+  }
+
+  .mdp-explorer__row-action-btn {
+    opacity: 1;
+  }
+  .mdp-explorer__context-menu .mdp-explorer__row-menu-item {
+    min-height: 44px;
   }
 }

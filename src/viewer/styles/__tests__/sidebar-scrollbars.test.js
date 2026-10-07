@@ -7,15 +7,19 @@ const layoutCss = compile(fileURLToPath(new URL('../layout.scss', import.meta.ur
 const tocCss = compile(fileURLToPath(new URL('../toc.scss', import.meta.url))).css
 
 describe('sidebar scrollbar layout', () => {
-  it('reserves a stable scrollbar gutter in Files', () => {
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer-container\s*\{[^}]*overflow:\s*hidden;[^}]*padding-inline-end:\s*3px;/s
-    )
+  it('keeps Files outer padding symmetric and its scrollbar consistent with Outline', () => {
+    expect(layoutCss).toMatch(/\.mdp-sidebar-panel\s*\{[^}]*min-height: 0;[^}]*flex: 1;[^}]*overflow: hidden;/s)
+    expect(explorerCss).not.toContain('.mdp-explorer-container')
     expect(explorerCss).toMatch(
       /\.mdp-explorer__scroll-region\s*\{[^}]*overflow-y:\s*auto;[^}]*scrollbar-gutter:\s*stable;/s
     )
+    const filesScroll = explorerCss.match(/\.mdp-explorer__scroll-region\s*\{([^}]*)\}/s)[1]
+    const outlineScroll = tocCss.match(/\.mdp-sidebar-panel--outline \.mdp-toc\s*\{([^}]*)\}/s)[1]
+    expect(filesScroll.match(/scrollbar-width:[^;]+;/g)).toEqual(['scrollbar-width: thin;'])
+    expect(outlineScroll.match(/scrollbar-width:[^;]+;/g)).toEqual(['scrollbar-width: thin;'])
+    expect(layoutCss).not.toMatch(/\.mdp-sidebar--files\s*\{[^}]*--mdp-explorer-scrollbar-width/s)
     expect(layoutCss).toMatch(
-      /\.mdp-sidebar--files\s*\{[^}]*padding-inline-start:\s*8px;[^}]*padding-inline-end:\s*5px;/s
+      /\.mdp-sidebar--files\s*\{[^}]*padding-inline:\s*8px;/s
     )
   })
 

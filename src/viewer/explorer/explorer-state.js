@@ -1,4 +1,5 @@
 import { normalizeDirectoryUrl, normalizeFileUrlForCompare } from './url-utils.js'
+import { logger } from '../../shared/logger.js'
 
 const KEY_ORIGINAL = 'mdp:explorer:originalFile'
 const KEY_SIDEBAR_WIDTH = 'mdp:sidebar:width'
@@ -7,8 +8,26 @@ const KEY_EDITOR_SPLIT_WIDTH = 'mdp:editor:splitWidth'
 const KEY_WORKSPACE_ROOT = 'mdp:explorer:workspaceRoot'
 const KEY_EXPLORER_MODE = 'mdp:explorer:mode'
 const KEY_EXPANDED_FOLDERS = 'mdp:explorer:expandedFolders'
+const KEY_FILES_DETAILS_EXPANDED = 'mdp:explorer:detailsExpanded'
 
 /** @typedef {'sibling' | 'workspace'} ExplorerMode */
+
+/** Details start open; the preference follows file navigation and reloads in this tab. */
+export function getFilesDetailsExpanded() {
+  try {
+    return sessionStorage.getItem(KEY_FILES_DETAILS_EXPANDED) !== 'false'
+  } catch {
+    return true
+  }
+}
+
+export function setFilesDetailsExpanded(expanded) {
+  try {
+    sessionStorage.setItem(KEY_FILES_DETAILS_EXPANDED, String(Boolean(expanded)))
+  } catch {
+    logger.warn('Could not save Files details preference for this tab')
+  }
+}
 
 /**
  * @returns {string | null}

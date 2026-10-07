@@ -8,6 +8,7 @@ import { SkeletonBlock } from '../../../../shared/react/Skeleton.jsx'
 import { useExplorer } from '../../hooks/useExplorer.js'
 import { useDelayedBusyState } from '../../hooks/useDelayedBusyState.js'
 import { ExplorerHeader } from './ExplorerHeader.jsx'
+import { ExplorerToolbar } from './ExplorerToolbar.jsx'
 import { ExplorerProgress } from './ExplorerProgress.jsx'
 import {
   getActiveExplorerRowRevealState,
@@ -257,23 +258,26 @@ export function ExplorerPanel({ bridge }) {
       <ExplorerHeader
         filesContext={viewState.filesContext}
         summaryDirectoryLabel={viewState.summaryDirectoryLabel}
-        summaryFileCount={viewState.summaryFileCount}
         depthNotice={viewState.depthNotice}
         actionsMode={viewState.actionsMode}
         showBack={viewState.showBack}
         backLabel={viewState.backLabel}
+        actionsDisabled={isBusy}
+        onBack={actions.onBack}
+        onOpenAnotherFolder={actions.onOpenAnotherFolder}
+        onExitWorkspace={actions.onExitWorkspace}
+      />
+
+      <ExplorerToolbar
+        summaryFileCount={viewState.summaryFileCount}
         isRefreshing={state.isRefreshing}
         refreshDisabled={refreshDisabled}
         refreshTooltip={refreshTooltip}
         showCollapseAllFolders={showCollapseAllFolders}
         collapseAllFoldersDisabled={!canCollapseAllFolders}
         collapseKeepsOpenFilePath={collapseKeepsOpenFilePath}
-        actionsDisabled={isBusy}
-        onBack={actions.onBack}
         onRefresh={onRefreshFromExplorer}
         onCollapseAllFolders={onCollapseAllFoldersFromExplorer}
-        onOpenAnotherFolder={actions.onOpenAnotherFolder}
-        onExitWorkspace={actions.onExitWorkspace}
       />
 
       <div className="mdp-explorer__scroll-region" ref={handleScrollElementRef}>

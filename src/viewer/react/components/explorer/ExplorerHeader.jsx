@@ -8,9 +8,7 @@ import { IconButton } from '../common/IconButton.jsx'
 import { PanelHeader } from '../common/PanelHeader.jsx'
 import { Tooltip } from '../Tooltip.jsx'
 import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
-import { CollapseAllIcon } from '../icons/CollapseAllIcon.jsx'
 import { FolderIcon } from '../icons/FolderIcon.jsx'
-import { RefreshIcon } from '../icons/RefreshIcon.jsx'
 import { getExplorerHeaderButtonState } from './explorer-header-state.js'
 
 function getCurrentFileName(currentLine) {
@@ -27,21 +25,12 @@ function getDirectoryDisplayLabel(directoryLabel) {
 export function ExplorerHeader({
   filesContext,
   summaryDirectoryLabel,
-  summaryFileCount,
   depthNotice,
   actionsMode,
   showBack,
   backLabel,
-  isRefreshing,
-  refreshDisabled,
-  refreshTooltip,
-  showCollapseAllFolders,
-  collapseAllFoldersDisabled,
-  collapseKeepsOpenFilePath,
   actionsDisabled,
   onBack,
-  onRefresh,
-  onCollapseAllFolders,
   onOpenAnotherFolder,
   onExitWorkspace
 }) {
@@ -88,37 +77,6 @@ export function ExplorerHeader({
     <PanelHeader
       className="mdp-explorer__header"
       title="Files"
-      meta={`${summaryFileCount} ${summaryFileCount === 1 ? 'file' : 'files'}`}
-      action={
-        <div className="mdp-explorer__header-actions">
-          {showCollapseAllFolders ? (
-            <IconButton
-              tooltip={
-                collapseAllFoldersDisabled
-                  ? 'All folders are collapsed'
-                  : collapseKeepsOpenFilePath
-                    ? 'Collapse folders outside the open file path'
-                    : 'Collapse all folders'
-              }
-              className="mdp-explorer__header-action-btn"
-              aria-label="Collapse all folders"
-              disabled={collapseAllFoldersDisabled}
-              onClick={() => onCollapseAllFolders?.()}
-            >
-              <CollapseAllIcon className="mdp-explorer__header-action-icon" />
-            </IconButton>
-          ) : null}
-          <IconButton
-            tooltip={refreshTooltip}
-            className={`mdp-explorer__header-action-btn mdp-explorer__refresh-btn${isRefreshing ? ' is-refreshing' : ''}`}
-            aria-label={isRefreshing ? 'Refreshing file list' : 'Refresh file list'}
-            disabled={refreshDisabled || isRefreshing}
-            onClick={() => onRefresh?.()}
-          >
-            <RefreshIcon className="mdp-explorer__refresh-icon" />
-          </IconButton>
-        </div>
-      }
     >
       <div className="mdp-explorer__context" aria-label="Files location and status">
         <div className="mdp-explorer__context-summary">

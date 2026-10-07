@@ -2,6 +2,23 @@
 
 This directory records the visual contracts currently implemented by Markdown Plus. Runtime source is canonical; this guide and its standalone HTML previews are derived references.
 
+## Find the relevant contract
+
+For UI tasks, start with this map and read only the relevant sections and source files. Agent design review, planning, approval, and migration decisions are governed by the shared [UI design rule](../../.agents/rules/25-ui-design-system.md).
+
+| Task | Read here / preview | Runtime lookup |
+| --- | --- | --- |
+| Colors, spacing, typography, density, focus, or states | [Semantic tokens](#semantic-tokens) through [Interaction states](#interaction-states); select the relevant subsection. [Foundations](./index.html#colors), [geometry](./index.html#geometry), [interaction](./index.html#interaction) | `src/shared/styles/_tokens.scss` and the affected shared style; `src/viewer/styles/_variables.scss`; theme values in `src/theme/index.js` |
+| Buttons, fields, switches, badges, notices, loading | [Implemented shared primitives](#implemented-shared-primitives), [Current component contracts](#current-component-contracts); [Controls](./components.html#controls), [Feedback & containers](./components.html#feedback) | The matching file in `src/shared/react/` and `src/shared/styles/`; follow the specimen's source notes |
+| Dialogs, menus, tooltips, or a composed workflow | [Focus, motion, and accessibility](#focus-motion-and-accessibility), [Current component contracts](#current-component-contracts); [Overlays](./components.html#overlays-title), [Patterns](./components.html#patterns) | `src/viewer/react/components/common/`, `src/viewer/react/hooks/useDismissableLayer.js`, `useModalDialog.js`, and the owning surface's component/style |
+| Viewer rails, editor, document surface, or responsive composition | [Layout contracts](#layout-contracts); [Viewer preview](./viewer.html) | `src/viewer/react/components/` and the relevant `src/viewer/styles/` partial; document typography lives under `src/viewer/styles/content/` |
+| Settings or Popup layout | [Layout contracts](#layout-contracts); [Patterns](./components.html#patterns) | `src/options/` or `src/popup/`, with shared primitives/styles for controls |
+| Icons or file identities | [Icon system](#icon-system); [Application icons](./icons.html#application-icons), [File-type icons](./icons.html#file-type-icons) | `src/shared/icons/application-icons.js`, `file-type-icons.js`, `create-app-icon.js`; React adapters under `src/shared/react/` |
+| Reader themes, semantic-color mapping, backgrounds, or syntax themes | [Semantic tokens](#semantic-tokens), then the matching section of [Theme system](../theme-system.md) | `src/theme/`; use the ownership map in the theme guide for settings and asset lifecycle |
+| Approved changes to this reference set | [Extending the system](#extending-the-system), [Maintaining the previews](#maintaining-the-previews) | Source notes in the affected specimen; icon snapshots use `scripts/sync-design-system-icons.mjs` |
+
+The README is the text contract and lookup map; `index.html` visualizes foundations, `components.html` catalogs primitives and patterns, `icons.html` inventories glyphs, and `viewer.html` shows composition. These are references, not runtime component implementations. Search for the relevant heading, component name, selector, or token before reading a large HTML page. Inspect the owning implementation and its consumers to verify the contract; expand to other pages only when the change crosses their boundaries.
+
 ## Browse the system
 
 Open [Overview & foundations](./index.html) in a browser as the common entry point. All HTML pages are standalone, embed their styles and scripts, and work without a build or external assets. Their navigation links the same four destinations.
@@ -210,15 +227,7 @@ Shared SCSS under `src/shared/styles/` covers tokens, buttons, forms, containers
 
 ## Extending the system
 
-When adding a UI element:
-
-1. Start with existing semantic tokens and interaction states.
-2. Keep surface-specific layout local.
-3. Promote a component or style to `src/shared/` only when multiple surfaces share the contract.
-4. Preserve keyboard behavior, accessible naming, light/dark behavior, and reduced motion.
-5. Update this guide and the affected current-state HTML pages after the runtime implementation changes. Refresh embedded component CSS and SVG snapshots from the cited sources when their visual contracts change.
-
-The design documentation describes implemented contracts. Future component ideas belong under `planning/design-system/` until implemented. Completed proposal material is removed after the current references are refreshed.
+Use the shared [UI design rule](../../.agents/rules/25-ui-design-system.md) for the lookup, proposal, scope decision, implementation, and reference-update workflow. This directory describes implemented contracts; proposed designs stay under `planning/` until implemented. Use the source notes in the affected preview to refresh its embedded component CSS and SVG snapshots when the accepted runtime contract changes.
 
 ## Maintaining the previews
 

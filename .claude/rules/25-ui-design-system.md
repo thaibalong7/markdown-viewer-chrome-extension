@@ -1,0 +1,1 @@
+../../.agents/rules/25-ui-design-system.md

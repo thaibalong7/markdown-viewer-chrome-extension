@@ -117,6 +117,7 @@ Checklist smoke test thường dùng:
 - Thử collapse/resize Files và Outline, overlay scrollbar, Back to top, document statistics và responsive layout.
 - Bật editor, chọn đúng/sai file gốc, sửa/live preview/save, kiểm tra dirty confirmation và external-change protection.
 - Thử Document Updates ở Ask/Automatic/Off, tab ẩn/hiện, update liên tục, file rỗng/mất/quá lớn, giữ vị trí đọc, edit clean/dirty và Save conflict; mở Change Review để kiểm tra diff, section, cặp review cố định, keyboard/focus và responsive layout.
+- Dùng [checklist Document Updates](planning/product-feature-roadmap/document-updates-manual-test.md) cho fixture, các ca Chrome chưa xác minh và lỗi kết nối cold-start cần tái hiện. Khi review đang mở, Auto vẫn có thể cập nhật article sau input idle; diff đã pin chỉ đổi khi chọn Review latest.
 - Bật/tắt plugin, đổi Mermaid renderer, mở lightbox và thử export Mermaid.
 - Đổi built-in/custom theme, syntax theme và background; reload tab để kiểm tra persistence.
 - Print từng format phù hợp; export HTML/Word từ Markdown và kiểm tra file tải xuống.

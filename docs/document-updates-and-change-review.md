@@ -40,9 +40,11 @@ When a comparison is available, **View changes** appears beside Document Updates
 - **Previous area** and **Next area** controls; `Alt+↑` and `Alt+↓` move between changed areas in the current comparison.
 - **Open document** for a surviving section only when the reviewed new source is the source currently rendered in read mode.
 
-Ask and Off compare the accepted article source with the pending disk source. Automatic mode keeps the before/after pair from the most recent applied external update. Edit mode compares the accepted disk baseline with the pending disk source and deliberately excludes the editor draft.
+Ask and Off compare the accepted article source with the pending disk source, retaining the most recent applied comparison when no update is pending. Automatic mode opens the before/after pair from the most recent applied external update; a newer pending comparison is available through **Review latest**. Edit mode compares the accepted disk baseline with the pending disk source and deliberately excludes the editor draft. Navigation and successful internal Save clear the previous accepted-source snapshot.
 
 Opening the panel pins its comparison. Later disk writes do not silently replace the diff; the panel reports that a newer comparison is ready and waits for **Review latest**. **Update document** still performs a fresh disk read, so the applied source can be newer than the pinned comparison.
+
+An open review dialog does not pause Automatic mode by itself. Once recent input stops and the stability/cooldown checks pass, Auto can update the article behind the dialog while the displayed diff stays pinned. Section links are available only while the reviewed new source matches the completed article render. Choose Ask or Off when you want explicit control over applying revisions during review.
 
 Review source is rendered as text by React rather than inserted as HTML. Closing with **Close**, `Escape`, or an outside press returns focus to **View changes**. The dialog contains keyboard focus while open, and reduced-motion preferences disable decorative motion.
 
@@ -80,4 +82,4 @@ Document Updates and Change Review do not provide three-way merge, draft-versus-
 | Mode defaults and validation | `src/settings/default-settings.js`, `settings-schema.js` |
 | General settings control | `src/options/sections/GeneralSettings.jsx` |
 
-Architecture and ownership details live in [Architecture Overview](./architecture-overview.md). The current browser checklist for the not-yet-completed Change Review UI smoke test remains in [`planning/product-feature-roadmap/watch-mode-change-review-manual-test.md`](../planning/product-feature-roadmap/watch-mode-change-review-manual-test.md).
+Architecture and ownership details live in [Architecture Overview](./architecture-overview.md). The automated suite covers Watch lifecycle/races, editor and Save coordination, reading-position restoration, diff limits and parser-based sections, pinned pairs, safe review text, and modal lifecycle helpers. Native Chrome focus, layout, file-access integration, and the remaining browser scenarios require the [Document Updates manual checklist](../planning/product-feature-roadmap/document-updates-manual-test.md).

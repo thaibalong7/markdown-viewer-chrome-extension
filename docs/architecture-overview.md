@@ -235,7 +235,7 @@ Custom theme images are device-local assets. Settings validates supported raster
 
 Message names are centralized in `src/messaging/index.js`. UI/content callers use `sendMessage()`; background services own browser APIs. Normal responses use `{ ok: true, data }` or `{ ok: false, error }`.
 
-`src/background/message-router.js` routes settings, history, local reads, downloads, and theme-asset lifecycle calls. Offscreen fetch wire messages bypass that router. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown.
+`src/background/message-router.js` routes settings, history, local reads, downloads, and theme-asset lifecycle calls. Offscreen fetch wire messages bypass that router. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown. The response confirms persistence after dispatching these notifications, without waiting for tab replies or Viewer rendering.
 
 ## Security and privacy boundaries
 

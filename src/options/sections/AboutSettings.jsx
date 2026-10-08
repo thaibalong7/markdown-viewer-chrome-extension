@@ -1,4 +1,5 @@
 import React from 'react'
+import { AppIcon } from '../../shared/react/AppIcon.jsx'
 import { Badge } from '../../shared/react/Badge.jsx'
 import { Notice } from '../../shared/react/Notice.jsx'
 import { ABOUT_LINKS, getExtensionMetadata } from '../about-metadata.js'
@@ -17,16 +18,6 @@ const FEATURES = Object.freeze([
     description: 'Opt in to editing with exact-file verification and safe saves.'
   })
 ])
-
-function ExternalLinkIcon() {
-  return (
-    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <path d="M7 4h9v9" />
-      <path d="m16 4-9.5 9.5" />
-      <path d="M13 10v6H4V7h6" />
-    </svg>
-  )
-}
 
 export function AboutSettings({ metadata = getExtensionMetadata() }) {
   const platformLabels = [metadata.manifestLabel, metadata.minimumChromeLabel, 'Open source']
@@ -69,7 +60,7 @@ export function AboutSettings({ metadata = getExtensionMetadata() }) {
         </p>
         <a href={ABOUT_LINKS.find(({ id }) => id === 'privacy').href} target="_blank" rel="noreferrer">
           Read the privacy policy
-          <ExternalLinkIcon />
+          <AppIcon name="external" />
         </a>
       </Notice>
 
@@ -100,7 +91,7 @@ export function AboutSettings({ metadata = getExtensionMetadata() }) {
                 <strong>{link.label}</strong>
                 <small>{link.description}</small>
               </span>
-              <ExternalLinkIcon />
+              <AppIcon name="external" />
             </a>
           ))}
         </div>

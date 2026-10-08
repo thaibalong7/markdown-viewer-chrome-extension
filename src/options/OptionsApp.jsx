@@ -150,6 +150,7 @@ export function OptionsApp() {
                   onEnabledChange={form.setEnabled}
                   onScrollbarAutoHideChange={form.setScrollbarAutoHide}
                   onDocumentStatsVisibleChange={form.setDocumentStatsVisible}
+                  onWatchModeChange={form.setWatchMode}
                 />
               ) : null}
               {activeSection === 'explorer' ? (

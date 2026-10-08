@@ -1,0 +1,2364 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown Plus — Viewer preview</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --mdp-color-scheme: light;
+      --mdp-bg: #f6f8fb;
+      --mdp-surface: #ffffff;
+      --mdp-text: #172033;
+      --mdp-body-text: #273043;
+      --mdp-heading: #111827;
+      --mdp-border: #dce2ea;
+      --mdp-border-strong: #c5ced9;
+      --mdp-muted: #667085;
+      --mdp-code-bg: #f2f5f8;
+      --mdp-code-text: #172033;
+      --mdp-panel-bg: #eef2f6;
+      --mdp-panel-strong: #e3e9f0;
+      --mdp-link: #2563eb;
+      --mdp-link-soft: #eaf2ff;
+      --mdp-accent: #16815c;
+      --mdp-accent-soft: #e8f6ef;
+      --mdp-warning: #b35c00;
+      --mdp-warning-soft: #fff3dc;
+      --mdp-danger: #c2413a;
+      --mdp-toast-warning-bg: #fffbeb;
+      --mdp-toast-warning-text: #92400e;
+      --mdp-toast-warning-border: #fde68a;
+      --mdp-toast-error-bg: #fef2f2;
+      --mdp-toast-error-text: #b91c1c;
+      --mdp-toast-error-border: #fecaca;
+      --mdp-table-border: #dce2ea;
+      --mdp-table-header-bg: #f2f5f8;
+      --mdp-table-row-alt-bg: #fafbfc;
+      --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+      --mdp-shadow-subtle: 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent);
+      --mdp-overlay-scrim: rgb(3 7 18 / 58%);
+      --mdp-shadow-float: 0 16px 40px color-mix(in srgb, var(--mdp-text) 14%, transparent);
+      --mdp-files-width: 264px;
+      --mdp-toc-width: 280px;
+      --mdp-actions-rail-width: 60px;
+      --mdp-files-gutter-width: 8px;
+      --mdp-content-max-width: 980px;
+      --mdp-font-family: system-ui;
+      --mdp-font-size: 16px;
+      --mdp-line-height: 1.7;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --mdp-color-scheme: dark;
+      --mdp-bg: #0d121b;
+      --mdp-surface: #151b26;
+      --mdp-text: #edf2f7;
+      --mdp-body-text: #dce4ee;
+      --mdp-heading: #f8fafc;
+      --mdp-border: #2d3848;
+      --mdp-border-strong: #465469;
+      --mdp-muted: #9ba9bb;
+      --mdp-code-bg: #0b111a;
+      --mdp-code-text: #e6edf3;
+      --mdp-panel-bg: #101722;
+      --mdp-panel-strong: #1d2735;
+      --mdp-link: #7ab7ff;
+      --mdp-link-soft: #122b4d;
+      --mdp-accent: #56d39a;
+      --mdp-accent-soft: #123529;
+      --mdp-warning: #f4b24e;
+      --mdp-warning-soft: #3b2a0e;
+      --mdp-danger: #ff8d85;
+      --mdp-toast-warning-bg: #3b2a05;
+      --mdp-toast-warning-text: #fde68a;
+      --mdp-toast-warning-border: #b45309;
+      --mdp-toast-error-bg: #450a0a;
+      --mdp-toast-error-text: #fecaca;
+      --mdp-toast-error-border: #b91c1c;
+      --mdp-table-border: #2d3848;
+      --mdp-table-header-bg: #1a2330;
+      --mdp-table-row-alt-bg: #111925;
+      --mdp-focus-color: color-mix(in srgb, var(--mdp-link) 78%, white);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background: var(--mdp-bg);
+      color: var(--mdp-text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+      outline: 2px solid var(--mdp-focus-color);
+      outline-offset: 2px;
+    }
+
+    svg {
+      display: block;
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .mdp-root {
+      min-height: 100vh;
+      overflow-x: clip;
+      background: var(--mdp-bg);
+      color: var(--mdp-text);
+    }
+
+    .mdp-body {
+      --mdp-files-track: var(--mdp-files-width);
+      --mdp-right-track: var(--mdp-toc-width);
+      display: grid;
+      grid-template-columns: var(--mdp-files-track) minmax(0, 1fr) var(--mdp-right-track);
+      min-height: 100vh;
+      background: var(--mdp-bg);
+    }
+
+    .mdp-body--files-collapsed {
+      --mdp-files-track: var(--mdp-files-gutter-width);
+    }
+
+    .mdp-body--no-outline {
+      --mdp-right-track: var(--mdp-actions-rail-width);
+    }
+
+    .mdp-body--no-outline .mdp-sidebar-panel--outline {
+      display: none;
+    }
+
+    .mdp-sidebar,
+    .mdp-right-rail {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      height: 100vh;
+      overflow: hidden;
+      gap: 4px;
+      padding: 14px;
+      background: var(--mdp-bg);
+    }
+
+    .mdp-sidebar {
+      overflow: visible;
+      grid-column: 1;
+      border-right: 1px solid var(--mdp-border-strong);
+    }
+
+    /* Files inset snapshot: src/viewer/styles/layout.scss */
+    .mdp-sidebar--files {
+      padding-inline: 8px;
+    }
+
+    .mdp-sidebar--collapsed {
+      padding: 0;
+      border-right: 0;
+    }
+
+    .mdp-sidebar__panel-clip,
+    .mdp-right-rail__outline-clip {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .mdp-sidebar--collapsed .mdp-sidebar__panel-clip {
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .mdp-right-rail {
+      container: mdp-right-rail / inline-size;
+      grid-column: 3;
+      overflow: visible;
+      border-left: 1px solid var(--mdp-border-strong);
+    }
+
+    .mdp-right-rail--actions-only {
+      align-items: center;
+      padding: 10px 8px;
+    }
+
+    .mdp-panel-toggle {
+      position: absolute;
+      top: 16px;
+      z-index: 4;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid var(--mdp-border);
+      border-radius: 999px;
+      background: var(--mdp-surface);
+      color: var(--mdp-link);
+      box-shadow: var(--mdp-shadow-subtle);
+      cursor: pointer;
+    }
+
+    .mdp-panel-toggle--files {
+      left: max(0px, calc(100% - 11px));
+    }
+
+    .mdp-panel-toggle--outline {
+      left: -11px;
+    }
+
+    .mdp-panel-toggle svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    .mdp-right-rail__actions-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      padding: 0 2px 8px;
+      border-bottom: 1px solid var(--mdp-border);
+    }
+
+    .mdp-right-rail__actions-label {
+      color: var(--mdp-muted);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 0.065em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .mdp-right-rail__actions-row > .mdp-floating-actions {
+      margin-left: auto;
+    }
+
+    .mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
+      display: contents;
+    }
+
+    @container mdp-right-rail (max-width: 339px) {
+      .mdp-right-rail__actions-row {
+        justify-content: center;
+      }
+
+      .mdp-right-rail__actions-label {
+        display: none;
+      }
+
+      .mdp-right-rail__actions-row > .mdp-floating-actions {
+        margin-inline: auto;
+      }
+    }
+
+    .mdp-sidebar-panel {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .mdp-panel-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+      padding: 2px 2px 12px;
+      border-bottom: 1px solid var(--mdp-border);
+    }
+
+    .mdp-panel-header__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .mdp-panel-header__heading-main {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .mdp-panel-header__heading {
+      color: var(--mdp-text);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.055em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .mdp-panel-header__meta {
+      color: var(--mdp-muted);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.35;
+    }
+
+    .mdp-toc__list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mdp-toc__link {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--mdp-muted);
+      font-size: 13px;
+      line-height: 1.25;
+      text-align: left;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+    }
+
+    .mdp-toc__link:hover {
+      border-color: var(--mdp-border);
+      background: color-mix(in srgb, var(--mdp-surface) 68%, transparent);
+      color: var(--mdp-text);
+    }
+
+    .mdp-toc__link.is-active {
+      background: var(--mdp-link-soft);
+      color: var(--mdp-text);
+      font-weight: 600;
+    }
+
+    .mdp-toc__link.is-active::before {
+      content: '';
+      position: absolute;
+      inset: 7px auto 7px -1px;
+      width: 3px;
+      border-radius: 999px;
+      background: var(--mdp-link);
+    }
+
+    .mdp-content-pane {
+      grid-column: 2;
+      min-width: 0;
+      padding: clamp(12px, 1.5vw, 20px) clamp(16px, 2.5vw, 36px) 48px;
+      background: var(--mdp-surface);
+    }
+
+    .mdp-markdown-body {
+      position: relative;
+      max-width: var(--mdp-content-max-width);
+      min-height: calc(100vh - clamp(40px, 6vw, 88px));
+      margin: 0 auto;
+      padding: clamp(16px, 2vw, 28px) clamp(20px, 3.5vw, 48px) clamp(36px, 5vw, 64px);
+      background: transparent;
+      color: var(--mdp-body-text);
+      font-family: var(--mdp-font-family);
+      font-size: var(--mdp-font-size);
+      line-height: var(--mdp-line-height);
+    }
+
+    .mdp-document-stats {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-width: var(--mdp-content-max-width);
+      margin: 0 auto;
+      padding: 8px clamp(20px, 3.5vw, 48px) 0;
+      color: var(--mdp-muted);
+      font-size: 12px;
+      font-weight: 560;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.4;
+    }
+
+    .mdp-document-stats__separator {
+      opacity: 0.62;
+    }
+
+    .mdp-markdown-body > :first-child {
+      margin-top: 0;
+    }
+
+    .mdp-markdown-body :is(h1, h2, h3) {
+      margin-top: 1.65em;
+      margin-bottom: 0.65em;
+      color: var(--mdp-heading);
+      font-weight: 720;
+      letter-spacing: -0.018em;
+      line-height: 1.22;
+      text-wrap: balance;
+    }
+
+    .mdp-markdown-body h1 {
+      margin-bottom: 0.8em;
+      padding-bottom: 0.42em;
+      border-bottom: 1px solid var(--mdp-border);
+      font-size: clamp(1.9em, 4vw, 2.35em);
+      letter-spacing: -0.035em;
+    }
+
+    .mdp-markdown-body h2 {
+      padding-bottom: 0.32em;
+      border-bottom: 1px solid color-mix(in srgb, var(--mdp-border) 76%, transparent);
+      font-size: 1.55em;
+    }
+
+    .mdp-markdown-body h3 {
+      font-size: 1.25em;
+    }
+
+    .mdp-markdown-body :is(p, ul, ol, blockquote, pre) {
+      margin: 0 0 1em;
+    }
+
+    .mdp-markdown-body a {
+      color: var(--mdp-link);
+      text-decoration-color: color-mix(in srgb, var(--mdp-link) 48%, transparent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.18em;
+    }
+
+    .mdp-markdown-body :not(pre) > code {
+      padding: 0.16em 0.38em;
+      border: 1px solid color-mix(in srgb, var(--mdp-border) 72%, transparent);
+      border-radius: 5px;
+      background: color-mix(in srgb, var(--mdp-code-bg) 95%, var(--mdp-body-text));
+      color: var(--mdp-code-text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    .mdp-markdown-body pre {
+      overflow: auto;
+      padding: 16px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 12px;
+      background: var(--mdp-code-bg);
+      color: var(--mdp-code-text);
+      font: 0.875em/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .mdp-markdown-body blockquote {
+      margin-left: 0;
+      padding: 0.75em 1em;
+      border-left: 3px solid var(--mdp-link);
+      border-radius: 0 8px 8px 0;
+      background: color-mix(in srgb, var(--mdp-link-soft) 66%, transparent);
+      color: var(--mdp-muted);
+    }
+
+    .mdp-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1em;
+    }
+
+    .mdp-markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+    }
+
+    .mdp-markdown-body th,
+    .mdp-markdown-body td {
+      padding: 8px 10px;
+      border: 1px solid var(--mdp-table-border);
+      text-align: left;
+    }
+
+    .mdp-markdown-body th {
+      background: var(--mdp-table-header-bg);
+      color: var(--mdp-heading);
+    }
+
+    .mdp-markdown-body tbody tr:nth-child(even) {
+      background: var(--mdp-table-row-alt-bg);
+    }
+
+    .mdp-floating-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      flex-shrink: 0;
+      padding: 6px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
+      box-shadow: var(--mdp-shadow-subtle);
+    }
+
+    .mdp-floating-actions.mdp-floating-actions--rail-strip {
+      gap: 4px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .mdp-right-rail--actions-only .mdp-floating-actions--rail-strip {
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+
+    .mdp-floating-actions--rail-strip .mdp-fab-btn:not(.mdp-fab-btn--theme) {
+      border-color: transparent;
+    }
+
+    .mdp-fab-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid var(--mdp-border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--mdp-muted);
+      cursor: pointer;
+      transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+    }
+
+    .mdp-fab-btn:hover {
+      border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
+      background: var(--mdp-link-soft);
+      color: var(--mdp-link);
+    }
+
+    .mdp-fab-btn:active {
+      transform: translateY(1px);
+    }
+
+    .mdp-fab-btn.is-active {
+      border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+      background: var(--mdp-link-soft);
+      color: var(--mdp-link);
+    }
+
+    .mdp-fab-btn--edit:not(.is-active) {
+      color: var(--mdp-warning);
+    }
+
+    .mdp-fab-btn.is-copied {
+      border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+      background: var(--mdp-accent-soft);
+      color: var(--mdp-accent);
+    }
+
+    .mdp-sidebar-panel--outline {
+      flex: 1;
+      min-height: 0;
+      padding-top: 12px;
+    }
+
+    .mdp-toc {
+      min-height: 0;
+      overflow-y: auto;
+      padding-top: 8px;
+    }
+
+    .mdp-toc__link {
+      display: block;
+      min-height: 36px;
+    }
+
+    .mdp-toc__link--h2 {
+      padding-left: 19px;
+    }
+
+    .mdp-toc__link--h3 {
+      padding-left: 28px;
+    }
+
+    .mdp-source-note {
+      margin-top: 2em;
+      padding: 10px 12px;
+      border: 1px solid var(--mdp-border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--mdp-panel-bg) 74%, var(--mdp-surface));
+      color: var(--mdp-muted);
+      font-size: 12px;
+    }
+
+    .mdp-scroll-to-top {
+      position: fixed;
+      right: calc(var(--mdp-right-track) + 24px);
+      bottom: 24px;
+      z-index: 13;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--mdp-surface) 90%, transparent);
+      color: var(--mdp-link);
+      box-shadow: var(--mdp-shadow-float);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px) scale(0.94);
+      transition: opacity 160ms ease, transform 180ms ease;
+    }
+
+    .mdp-scroll-to-top.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .mdp-scroll-to-top svg {
+      width: 19px;
+      height: 19px;
+    }
+
+
+
+    @media (min-width: 1024px) and (max-width: 1279px) {
+      .mdp-body:not(.mdp-body--no-outline) {
+        --mdp-right-track: min(var(--mdp-toc-width), 224px);
+      }
+    }
+
+    @media (max-width: 1023px) {
+      .mdp-body {
+        --mdp-files-track: 0px;
+      }
+
+      .mdp-sidebar--files {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 15;
+        width: min(var(--mdp-files-width), calc(100vw - 72px));
+        box-shadow: var(--mdp-shadow-float);
+      }
+
+      .mdp-sidebar--files.mdp-sidebar--collapsed {
+        width: var(--mdp-files-gutter-width);
+        box-shadow: none;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .mdp-body {
+        --mdp-right-track: var(--mdp-actions-rail-width);
+      }
+
+      .mdp-right-rail {
+        align-items: center;
+        padding: 10px 8px;
+      }
+
+      .mdp-sidebar-panel--outline {
+        display: none;
+      }
+
+      .mdp-floating-actions {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        padding: 5px;
+        background: var(--mdp-surface);
+      }
+
+      .mdp-content-pane {
+        padding-inline: clamp(16px, 4vw, 32px);
+      }
+    }
+
+    @media (max-width: 639px) {
+      .mdp-body {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .mdp-right-rail {
+        position: fixed;
+        inset: auto 12px 12px auto;
+        z-index: 14;
+        width: auto;
+        height: auto;
+        padding: 5px;
+        border: 1px solid var(--mdp-border);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+        box-shadow: var(--mdp-shadow-float);
+        backdrop-filter: blur(14px);
+      }
+
+      .mdp-floating-actions {
+        flex-direction: row;
+        padding: 4px;
+      }
+
+      .mdp-content-pane {
+        grid-column: 1;
+        padding: 8px 10px 64px;
+      }
+
+      .mdp-markdown-body {
+        min-height: calc(100vh - 24px);
+        padding: 16px 14px 40px;
+      }
+
+      .mdp-document-stats {
+        padding-inline: 14px;
+      }
+
+      .mdp-scroll-to-top {
+        right: 12px;
+        bottom: 80px;
+      }
+    }
+
+    @media (pointer: coarse) {
+      .mdp-fab-btn,
+      .mdp-toc__link {
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .mdp-panel-toggle {
+        width: 32px;
+        height: 32px;
+      }
+
+      .mdp-scroll-to-top {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Derived from shared controls and Viewer _exit-edit-confirmation.scss. */
+    .mdp-ui-card { overflow: hidden; border: 1px solid var(--mdp-border); border-radius: 12px; background: var(--mdp-surface); }
+    .mdp-ui-button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      min-height: 36px; padding: 6px 11px; border: 1px solid var(--mdp-border); border-radius: 8px;
+      background: var(--mdp-surface); color: var(--mdp-text); cursor: pointer;
+      font-size: 13px; font-weight: 600; line-height: 1.25; box-shadow: var(--mdp-shadow-subtle);
+      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+    }
+    .mdp-ui-button:hover { border-color: var(--mdp-border-strong); background: color-mix(in srgb, var(--mdp-surface) 82%, var(--mdp-panel-strong)); }
+    .mdp-ui-button:active { transform: translateY(1px); }
+    .mdp-ui-button--danger { border-color: color-mix(in srgb, var(--mdp-danger) 42%, var(--mdp-border)); color: var(--mdp-danger); }
+    .mdp-ui-button--danger:hover { border-color: var(--mdp-danger); background: color-mix(in srgb, var(--mdp-danger) 10%, var(--mdp-surface)); }
+    .mdp-ui-badge { display: inline-flex; align-items: center; min-height: 28px; padding: 4px 10px; border: 1px solid var(--mdp-border); border-radius: 999px; background: var(--mdp-panel-bg); color: var(--mdp-muted); font-size: 12px; font-weight: 650; line-height: 1.3; white-space: nowrap; }
+    .mdp-ui-badge--warning { border-color: color-mix(in srgb, var(--mdp-warning) 32%, var(--mdp-border)); background: var(--mdp-warning-soft); color: var(--mdp-warning); }
+    .mdp-ui-action-footer { display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--mdp-border); background: color-mix(in srgb, var(--mdp-panel-bg) 48%, var(--mdp-surface)); }
+    .mdp-exit-edit-modal { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 16px; border: 0; overflow-y: auto; background: var(--mdp-overlay-scrim); color: var(--mdp-text); text-align: left; white-space: normal; }
+    .mdp-exit-edit-modal[open] { display: grid; place-items: center; }
+    .mdp-exit-edit-modal::backdrop { background: transparent; }
+    .mdp-exit-edit-confirmation { width: min(440px, 100%); box-shadow: var(--mdp-shadow-float); }
+    .mdp-exit-edit-confirmation .mdp-ui-badge--warning { background: var(--mdp-toast-warning-bg); color: var(--mdp-toast-warning-text); border-color: var(--mdp-toast-warning-border); }
+    .mdp-exit-edit-confirmation .mdp-ui-button--danger { background: var(--mdp-toast-error-bg); color: var(--mdp-toast-error-text); border-color: var(--mdp-toast-error-border); }
+    .mdp-exit-edit-confirmation .mdp-ui-button--danger:hover { border-color: var(--mdp-toast-error-text); }
+    .mdp-exit-edit-confirmation__content { padding: 24px; }
+    .mdp-exit-edit-confirmation h2 { margin: 12px 0 0; color: var(--mdp-heading); font-size: 18px; line-height: 1.35; }
+    .mdp-exit-edit-confirmation p { margin: 8px 0 0; color: var(--mdp-muted); font-size: 13px; line-height: 1.55; }
+    .mdp-exit-edit-confirmation__actions { padding: 16px 24px; }
+    @media (max-width: 767px) { .mdp-ui-action-footer { flex-direction: column; } .mdp-ui-action-footer .mdp-ui-button { width: 100%; } }
+    @media (max-width: 540px) { .mdp-exit-edit-confirmation__content { padding: 16px; } .mdp-exit-edit-confirmation__actions { padding: 12px 16px; } }
+    @media (pointer: coarse) { .mdp-ui-button { min-height: 44px; } }
+    @media (prefers-reduced-motion: reduce) { .mdp-ui-button { transition: none; } }
+    @media print { .mdp-exit-edit-modal, .mdp-exit-edit-modal::backdrop { display: none !important; } }
+
+  /* Files layout snapshot: src/viewer/styles/explorer.scss */
+@charset "UTF-8";
+.mdp-explorer {
+  --mdp-explorer-action-size: 28px;
+  --mdp-explorer-action-gap: 4px;
+  --mdp-explorer-header-inset: 2px;
+  --mdp-explorer-context-padding: 10px;
+  --mdp-explorer-action-inset: calc(var(--mdp-explorer-context-padding) + 1px);
+  --mdp-explorer-row-action-inset: max(0px, var(--mdp-explorer-action-inset) - var(--mdp-explorer-scrollbar-width, 0px));
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+}
+
+.mdp-explorer__header {
+  container-type: inline-size;
+  position: relative;
+  z-index: 11;
+  flex-shrink: 0;
+  border-bottom: 0;
+  gap: 0;
+  padding: 2px 0 0;
+}
+.mdp-explorer__header .mdp-panel-header__row {
+  min-height: 36px;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  padding-inline: var(--mdp-explorer-header-inset) var(--mdp-explorer-action-inset);
+}
+.mdp-explorer__header .mdp-panel-header__heading-main {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+}
+.mdp-explorer__header .mdp-panel-header__heading {
+  color: var(--mdp-heading);
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.mdp-explorer__context-command,
+.mdp-explorer__toolbar-btn,
+.mdp-explorer__row-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--mdp-explorer-action-size);
+  height: var(--mdp-explorer-action-size);
+  padding: 0;
+  border-radius: 6px;
+}
+.mdp-explorer__context-command:focus-visible,
+.mdp-explorer__toolbar-btn:focus-visible,
+.mdp-explorer__row-action-btn:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: -2px;
+}
+
+.mdp-explorer__context-command {
+  min-height: var(--mdp-explorer-action-size);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mdp-muted);
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.mdp-explorer__context-command:hover {
+  border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+}
+.mdp-explorer__context-command:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.mdp-explorer__context-command.is-open {
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+}
+.mdp-explorer__context-command.is-copied {
+  color: var(--mdp-accent);
+  border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
+  pointer-events: none;
+}
+.mdp-explorer__context-command.is-copied .mdp-explorer__context-command-icon {
+  display: none;
+}
+.mdp-explorer__context-command.is-copied::after {
+  content: "✓";
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mdp-explorer__context-commands {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--mdp-explorer-action-gap);
+  margin-inline-start: auto;
+}
+.mdp-explorer__context-commands > * {
+  animation: mdp-explorer-context-command-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.mdp-explorer__context-commands > :nth-last-child(2) {
+  animation-delay: 25ms;
+}
+.mdp-explorer__context-commands > :nth-last-child(3) {
+  animation-delay: 50ms;
+}
+
+.mdp-explorer__header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--mdp-explorer-action-gap);
+  margin-inline-start: auto;
+}
+
+.mdp-explorer__details-toggle[aria-expanded=true]:not(:hover) {
+  color: var(--mdp-text);
+  background: var(--mdp-panel-bg);
+}
+
+.mdp-explorer__menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.mdp-explorer__context-menu .mdp-explorer__row-menu-item > span:last-child {
+  min-width: 0;
+  flex: 1;
+  text-align: start;
+}
+
+.mdp-explorer__context-menu .mdp-action-menu__tooltip-anchor {
+  display: block;
+  width: 100%;
+}
+
+.mdp-explorer__context-command-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__context-overflow {
+  position: relative;
+}
+
+.mdp-explorer__row-menu.mdp-explorer__context-menu {
+  z-index: 20;
+  right: calc(-1 * (var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap)));
+  box-sizing: border-box;
+  width: 240px;
+  min-width: 0;
+  max-width: calc(100cqw - 2 * var(--mdp-explorer-action-inset));
+  max-height: calc(100dvh - 72px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.mdp-explorer__row-menu.mdp-explorer__context-menu .mdp-explorer__row-menu-item:disabled:hover {
+  color: var(--mdp-text);
+  background: transparent;
+}
+
+.mdp-explorer__details-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.mdp-explorer__details-icon [data-icon-part=chevron] {
+  transform-box: view-box;
+  transform-origin: 12px 15.5px;
+  transition: transform 200ms ease;
+}
+.mdp-explorer__details-icon.is-expanded [data-icon-part=chevron] {
+  transform: rotate(180deg);
+}
+
+.mdp-explorer__details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms ease;
+}
+.mdp-explorer__details.is-expanded {
+  grid-template-rows: 1fr;
+}
+
+.mdp-explorer__details-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mdp-explorer__details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 9px 0 2px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.is-expanded > .mdp-explorer__details-clip > .mdp-explorer__details-content {
+  visibility: visible;
+  opacity: 1;
+}
+
+.mdp-explorer__persistent-notice {
+  margin-top: 10px;
+}
+
+.mdp-explorer__scroll-region {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mdp-scrollbar-thumb) transparent;
+}
+.mdp-explorer__scroll-region::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.mdp-explorer__scroll-region::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mdp-explorer__scroll-region::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--mdp-scrollbar-thumb);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+.mdp-explorer__scroll-region::-webkit-scrollbar-thumb:hover {
+  background: var(--mdp-scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+.mdp-explorer__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  gap: 8px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 3px var(--mdp-explorer-action-inset) 3px var(--mdp-explorer-header-inset);
+  border-bottom: 1px solid var(--mdp-border);
+}
+
+.mdp-explorer__toolbar-summary {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mdp-explorer__toolbar-location {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mdp-muted);
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.4;
+}
+
+.mdp-explorer__toolbar-count {
+  color: var(--mdp-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__toolbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--mdp-explorer-action-gap);
+  flex-shrink: 0;
+}
+
+.mdp-explorer__toolbar-btn {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mdp-muted);
+  cursor: pointer;
+  transition: color 120ms ease, background 120ms ease, border-color 120ms ease, opacity 120ms ease;
+}
+.mdp-explorer__toolbar-btn:hover {
+  color: var(--mdp-link);
+  border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+}
+.mdp-explorer__toolbar-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+.mdp-explorer__toolbar-btn:disabled.is-refreshing {
+  color: var(--mdp-link);
+  cursor: progress;
+  opacity: 1;
+}
+.mdp-explorer__toolbar-btn.is-refreshing .mdp-explorer__refresh-icon [data-icon-part=arrow] {
+  animation: mdp-explorer-refresh-spin 900ms linear infinite;
+}
+
+.mdp-explorer__toolbar-icon,
+.mdp-explorer__refresh-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__refresh-icon [data-icon-part=arrow] {
+  transform-box: view-box;
+  transform-origin: 17px 17px;
+}
+
+@keyframes mdp-explorer-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes mdp-explorer-context-command-in {
+  from {
+    opacity: 0;
+    transform: translateX(6px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mdp-explorer__context {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 var(--mdp-explorer-header-inset);
+  padding: var(--mdp-explorer-context-padding);
+  border: 1px solid color-mix(in srgb, var(--mdp-border) 86%, transparent);
+  border-radius: 10px;
+  background: var(--mdp-surface);
+}
+
+.mdp-explorer__context-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mdp-explorer__detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--mdp-border);
+}
+
+.mdp-explorer__badge {
+  flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--mdp-link) 22%, var(--mdp-border));
+  color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.055em;
+  line-height: 1.35;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.mdp-explorer__badge--workspace {
+  color: var(--mdp-accent);
+  border-color: color-mix(in srgb, var(--mdp-accent) 26%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
+}
+
+.mdp-explorer__context-current {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.mdp-explorer__context-label {
+  margin-bottom: 4px;
+  color: var(--mdp-muted);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.mdp-explorer__context-file {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--mdp-text);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.mdp-explorer__context-warning {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--mdp-warning);
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--mdp-warning) 30%, var(--mdp-border));
+  background: var(--mdp-warning-soft);
+}
+
+.mdp-explorer__path {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  min-width: 0;
+  color: color-mix(in srgb, var(--mdp-muted) 88%, var(--mdp-text));
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.mdp-explorer__path-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mdp-explorer__copy-link-btn {
+  border-color: var(--mdp-border);
+  background: var(--mdp-surface);
+}
+
+.mdp-explorer__folder-btn,
+.mdp-explorer__back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 6px 8px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 6px;
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 550;
+  line-height: 1.4;
+  text-align: start;
+  cursor: pointer;
+}
+.mdp-explorer__folder-btn:hover:not(:disabled),
+.mdp-explorer__back-btn:hover:not(:disabled) {
+  border-color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+}
+.mdp-explorer__folder-btn:focus-visible,
+.mdp-explorer__back-btn:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: -2px;
+}
+.mdp-explorer__folder-btn:disabled,
+.mdp-explorer__back-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.mdp-explorer__back-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mdp-explorer__back-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.mdp-explorer__loading {
+  padding: 8px 6px 4px;
+  background: transparent;
+}
+
+.mdp-explorer__empty {
+  color: var(--mdp-muted);
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 14px 12px;
+  border: 1px dashed var(--mdp-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mdp-surface) 52%, transparent);
+}
+
+.mdp-explorer__loading,
+.mdp-explorer__busy-view {
+  opacity: 1;
+  transition: opacity 120ms ease;
+}
+.mdp-explorer__loading.is-pending,
+.mdp-explorer__busy-view.is-pending {
+  opacity: 0;
+}
+
+.mdp-explorer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mdp-explorer__list--virtual {
+  position: relative;
+  min-height: 0;
+  gap: 0;
+}
+
+.mdp-explorer__list--virtual > .mdp-explorer__node,
+.mdp-explorer__list--virtual > .mdp-explorer__tree-folder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.mdp-explorer__list--tree {
+  transition: height 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mdp-explorer__list--tree > .mdp-explorer__node,
+.mdp-explorer__list--tree > .mdp-explorer__tree-folder {
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mdp-explorer__list--tree > .is-tree-entering {
+  animation: mdp-explorer-tree-row-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.mdp-explorer__list--tree > .is-tree-exiting {
+  z-index: 2;
+  pointer-events: none;
+  animation: mdp-explorer-tree-row-out 180ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes mdp-explorer-tree-row-in {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+@keyframes mdp-explorer-tree-row-out {
+  from {
+    opacity: 1;
+    translate: none;
+  }
+  to {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+.mdp-explorer__node {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+.mdp-explorer__node:hover .mdp-explorer__row-action-btn, .mdp-explorer__node:focus-within .mdp-explorer__row-action-btn {
+  background: color-mix(in srgb, var(--mdp-surface) 94%, var(--mdp-panel-bg));
+  opacity: 1;
+}
+.mdp-explorer__node.is-active .mdp-explorer__row-action-btn {
+  background: color-mix(in srgb, var(--mdp-link-soft) 88%, var(--mdp-surface));
+  opacity: 0.58;
+}
+.mdp-explorer__node.is-active .mdp-explorer__row-action-btn:hover, .mdp-explorer__node.is-active .mdp-explorer__row-action-btn:focus-visible, .mdp-explorer__node.is-active .mdp-explorer__row-action-btn.is-open {
+  background: var(--mdp-link-soft);
+  color: var(--mdp-link);
+  opacity: 1;
+}
+.mdp-explorer__node:hover .mdp-explorer__node-btn, .mdp-explorer__node:focus-within .mdp-explorer__node-btn, .mdp-explorer__node.is-active .mdp-explorer__node-btn, .mdp-explorer__node.is-menu-open .mdp-explorer__node-btn {
+  padding-right: calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap));
+}
+.mdp-explorer__node.is-menu-open {
+  z-index: 10;
+}
+
+.mdp-explorer__node-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  min-height: 38px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mdp-muted);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: none;
+  line-height: 1.25;
+  padding: 8px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+.mdp-explorer__node-btn:hover {
+  background: color-mix(in srgb, var(--mdp-surface) 76%, transparent);
+  color: var(--mdp-text);
+}
+.mdp-explorer__node-btn.is-active {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--mdp-link-soft) 94%, var(--mdp-surface));
+  color: var(--mdp-text);
+  font-weight: 600;
+}
+.mdp-explorer__node-btn.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 7px auto 7px 0;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--mdp-link);
+}
+.mdp-explorer__node-btn:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: 1px;
+}
+
+.mdp-explorer__node-depth {
+  width: 10px;
+  height: 16px;
+  margin-inline-end: -2px;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__node-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 19px;
+  flex-shrink: 0;
+}
+.mdp-explorer__node-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-1px);
+}
+
+.mdp-explorer__node-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mdp-explorer__row-actions {
+  position: absolute;
+  top: 50%;
+  right: var(--mdp-explorer-row-action-inset);
+  z-index: 2;
+  transform: translateY(-50%);
+}
+
+.mdp-explorer__row-action-btn {
+  border: none;
+  background: transparent;
+  color: var(--mdp-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+.mdp-explorer__row-action-btn:hover, .mdp-explorer__row-action-btn:focus-visible, .mdp-explorer__row-action-btn.is-open {
+  opacity: 1;
+  color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+}
+
+.mdp-explorer__row-action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.mdp-explorer__row-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 5;
+  min-width: 164px;
+  padding: 4px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 8px;
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-float);
+}
+.mdp-explorer__row-menu[hidden] {
+  display: none !important;
+}
+
+.mdp-explorer__row-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mdp-text);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+}
+.mdp-explorer__row-menu-item:hover, .mdp-explorer__row-menu-item:focus-visible {
+  color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+}
+.mdp-explorer__row-menu-item:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: 1px;
+}
+.mdp-explorer__row-menu-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.mdp-explorer__row-menu-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.mdp-explorer__depth-notice {
+  font-size: 11px;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--mdp-warning) 82%, var(--mdp-text));
+  padding: 1px 2px;
+}
+.mdp-explorer__depth-notice .mdp-explorer__settings-link {
+  display: inline;
+  white-space: normal;
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.mdp-explorer__depth-notice .mdp-explorer__settings-link:hover {
+  color: var(--mdp-text);
+}
+.mdp-explorer__depth-notice .mdp-explorer__settings-link:focus-visible {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Author `display: flex` beats the default `[hidden]` rule in some engines — force hide when hidden. */
+.mdp-explorer__loading[hidden],
+.mdp-explorer__progress[hidden],
+.mdp-explorer__empty[hidden],
+.mdp-explorer__list[hidden] {
+  display: none !important;
+}
+
+.mdp-explorer__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mdp-surface) 68%, transparent);
+}
+
+.mdp-explorer__progress-headline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--mdp-text);
+}
+
+.mdp-explorer__progress-text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--mdp-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.mdp-explorer__progress-cancel {
+  align-self: flex-start;
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.mdp-explorer__tree-folder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mdp-explorer__tree-folder-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  min-height: 38px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mdp-muted);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.25;
+  padding: 8px 6px 8px 2px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.mdp-explorer__tree-folder-row:hover {
+  background: color-mix(in srgb, var(--mdp-surface) 76%, transparent);
+  color: var(--mdp-text);
+}
+.mdp-explorer__tree-folder-row:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-explorer__details,
+  .mdp-explorer__details-content,
+  .mdp-explorer__details-icon [data-icon-part=chevron] {
+    transition: none;
+  }
+  .mdp-explorer__context-commands > * {
+    animation: none;
+  }
+  .mdp-explorer__toolbar-btn.is-refreshing .mdp-explorer__refresh-icon [data-icon-part=arrow] {
+    animation: none;
+  }
+  .mdp-explorer__loading,
+  .mdp-explorer__busy-view {
+    transition: none;
+  }
+  .mdp-explorer__list--tree,
+  .mdp-explorer__list--tree > .mdp-explorer__node,
+  .mdp-explorer__list--tree > .mdp-explorer__tree-folder {
+    transition: none;
+  }
+  .mdp-explorer__list--tree > .is-tree-entering,
+  .mdp-explorer__list--tree > .is-tree-exiting {
+    animation: none;
+  }
+}
+.mdp-explorer__tree-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 16px;
+  margin-inline-end: -2px;
+  flex-shrink: 0;
+  color: var(--mdp-muted);
+}
+.mdp-explorer__tree-chevron svg {
+  width: 10px;
+  height: 12px;
+  transition: transform 160ms ease;
+}
+.mdp-explorer__tree-folder-row.is-expanded .mdp-explorer__tree-chevron svg {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-explorer__tree-chevron svg {
+    transition: none;
+  }
+}
+
+.mdp-explorer__tree-folder-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 19px;
+  flex-shrink: 0;
+}
+.mdp-explorer__tree-folder-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-1px);
+}
+
+.mdp-explorer__tree-folder-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mdp-explorer__tree-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mdp-explorer__tree-file {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (pointer: coarse) {
+  .mdp-explorer {
+    --mdp-explorer-action-size: 44px;
+  }
+  .mdp-explorer__folder-btn,
+  .mdp-explorer__back-btn {
+    min-height: 44px;
+  }
+  .mdp-explorer__node-btn,
+  .mdp-explorer__tree-folder-row {
+    min-height: 44px;
+  }
+  .mdp-explorer__node .mdp-explorer__node-btn {
+    padding-right: calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap));
+  }
+  .mdp-explorer__row-action-btn {
+    opacity: 1;
+  }
+  .mdp-explorer__context-menu .mdp-explorer__row-menu-item {
+    min-height: 44px;
+  }
+}
+  </style>
+<style>
+
+    /* Documentation navigation only; keep this standalone shell in sync across the four previews. */
+    :root { --ds-nav-height: 64px; }
+    html { scroll-padding-top: calc(var(--ds-nav-height) + 24px); }
+    .ds-nav { position: sticky; top: 0; z-index: 100; height: var(--ds-nav-height); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 32px; border-bottom: 1px solid var(--mdp-border); background: var(--mdp-surface); color: var(--mdp-text); font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .ds-brand { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; white-space: nowrap; font-weight: 700; }
+    .ds-brand span { color: var(--mdp-muted); font-weight: 400; }
+    .ds-links { display: flex; align-items: center; gap: 4px; min-width: 0; overflow-x: auto; }
+    .ds-links a { padding: 8px 11px; border-radius: 6px; color: var(--mdp-muted); text-decoration: none; white-space: nowrap; }
+    .ds-links a:hover { background: var(--mdp-panel-bg); color: var(--mdp-text); }
+    .ds-links a[aria-current="page"] { background: var(--mdp-link-soft); color: var(--mdp-link); font-weight: 650; }
+    .ds-nav a:focus-visible { outline: 2px solid var(--mdp-link); outline-offset: 2px; }
+    .ds-viewer .mdp-sidebar, .ds-viewer .mdp-right-rail { top: var(--ds-nav-height); height: calc(100vh - var(--ds-nav-height)); }
+    .ds-viewer .mdp-root, .ds-viewer .mdp-body { min-height: calc(100vh - var(--ds-nav-height)); }
+    @media (max-width: 760px) {
+      :root { --ds-nav-height: 104px; }
+      .ds-nav { align-items: stretch; flex-direction: column; justify-content: center; gap: 8px; padding: 10px 16px; }
+      .ds-links { flex-shrink: 0; }
+      .ds-links a { padding: 7px 10px; }
+    }
+
+</style>
+</head>
+<body data-theme="light" class="ds-viewer">
+  <header class="ds-nav"><a class="ds-brand" href="./index.html">Markdown Plus <span>/ Design system</span></a><nav class="ds-links" aria-label="Design system"><a href="./index.html">Overview</a><a href="./components.html">Components</a><a href="./icons.html">Icons</a><a href="./viewer.html" aria-current="page">Viewer preview</a></nav></header>
+  <div class="mdp-root">
+    <div class="mdp-body" id="viewer-shell">
+      <aside class="mdp-sidebar mdp-sidebar--files" aria-label="Files">
+        <button class="mdp-panel-toggle mdp-panel-toggle--files" type="button" aria-label="Hide Files panel" aria-expanded="true" id="files-toggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"></path></svg>
+        </button>
+        <div class="mdp-sidebar__panel-clip">
+        <div class="mdp-sidebar-panel">
+          <div class="mdp-explorer">
+            <div class="mdp-panel-header mdp-explorer__header">
+              <div class="mdp-panel-header__row" id="files-context-summary">
+                <div class="mdp-panel-header__heading-main" id="files-heading-label"><strong class="mdp-panel-header__heading">Files</strong><span class="mdp-explorer__badge mdp-explorer__badge--workspace">Workspace</span></div>
+                <div class="mdp-explorer__header-actions" id="files-header-actions">
+                  <div class="mdp-explorer__context-commands" id="files-context-commands">
+                    <button class="mdp-explorer__context-command" id="files-compact-open" type="button" aria-label="Switch folder…" title="Switch folder…"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-select" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M2.5 8V5a2 2 0 0 1 2-2h5l2 2H18a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2Z" stroke="#D6A34A" fill="#D6A34A" fill-opacity=".22"></path><path d="M2.5 8H20" stroke="#D6A34A"></path><circle cx="18" cy="17" r="6" fill="var(--mdp-surface, #ffffff)" stroke="none"></circle><path d="M14 17h9 m-3.5-3.5 3.5 3.5-3.5 3.5" stroke="var(--mdp-link, #2563eb)"></path></svg><span class="preview-command-label" hidden>Switch folder…</span></button>
+<button class="mdp-explorer__context-command" id="files-compact-copy" type="button" aria-label="Copy link unavailable for workspace virtual files" title="Copy link unavailable for workspace virtual files" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg><span class="preview-command-label" hidden>Copy link</span></button>
+                    <div class="mdp-explorer__context-overflow" id="files-context-overflow">
+                      <button class="mdp-explorer__context-command" id="files-context-more" type="button" aria-label="More file actions" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button>
+                      <div class="mdp-explorer__row-menu mdp-explorer__context-menu" id="files-context-menu" role="menu" aria-label="File details actions" hidden></div>
+                    </div>
+                  </div>
+                  <button class="mdp-explorer__context-command mdp-explorer__details-toggle" id="files-details-toggle" type="button" aria-label="Show file details" aria-expanded="false" aria-controls="files-details" title="Show file details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="file-details" class="mdp-explorer__details-icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M7 7h10 M7 10h6"></path><path data-icon-part="chevron" d="m9 14 3 3 3-3"></path></svg></button>
+                </div>
+              </div>
+              <div class="mdp-explorer__details" id="files-details" aria-hidden="true" inert><div class="mdp-explorer__details-clip"><div class="mdp-explorer__details-content">
+                <div class="mdp-explorer__context" aria-label="Open file details">
+                  <span class="mdp-explorer__context-label">Open file</span>
+                  <div class="mdp-explorer__context-row" id="files-identity-row"><div class="mdp-explorer__context-current"><strong class="mdp-explorer__context-file">README.md</strong></div></div>
+                  <div class="mdp-explorer__path" title="/Users/you/Documents/markdown-plus" aria-label="Workspace root: /Users/you/Documents/markdown-plus"><span class="mdp-explorer__path-label">…/Documents/markdown-plus</span></div>
+                  <div class="mdp-explorer__detail-actions" id="files-detail-actions">
+              <button class="mdp-explorer__back-btn mdp-button" id="files-compact-leave" type="button" aria-label="Leave workspace"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="leave-workspace" class="mdp-explorer__back-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M9 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9 M9 9h12"></path><circle cx="12" cy="6.5" r="0.65" fill="currentColor" stroke="none"></circle><path d="M13 15H3 m4-4-4 4 4 4"></path></svg><span class="mdp-explorer__back-label preview-command-label">Leave workspace</span></button>
+                  </div>
+                </div>
+              </div></div></div>
+
+            </div>
+            <div class="mdp-explorer__toolbar" role="group" aria-label="File list controls">
+              <div class="mdp-explorer__toolbar-summary"><span class="mdp-explorer__toolbar-location" title="/Users/you/Documents/markdown-plus">markdown-plus</span><span class="mdp-explorer__toolbar-count">· 6 files</span></div>
+                <div class="mdp-explorer__toolbar-actions">
+                  <button class="mdp-explorer__toolbar-btn" type="button" aria-label="Collapse folders" title="Collapse folders">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="collapse" style="stroke:currentColor;stroke-width:1.8"><path d="M8 4H5a2 2 0 0 0-2 2v10"></path><rect x="7" y="8" width="14" height="13" rx="2"></rect><path d="M11 14.5h6"></path></svg>
+                  </button>
+                  <button class="mdp-explorer__toolbar-btn mdp-explorer__refresh-btn" id="refresh-files" type="button" aria-label="Refresh file list" aria-busy="false" title="Refresh file list">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="refresh" class="mdp-explorer__refresh-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5h15 M3 10h8 M3 15h5"></path><path data-icon-part="arrow" d="M17 13a4 4 0 1 1-4 4 M13 20v-3h3"></path></svg>
+                  </button>
+                </div>
+            </div>
+            <div class="mdp-explorer__scroll-region">
+            <ul class="mdp-explorer__list" aria-label="Workspace files">
+<li class="mdp-explorer__node mdp-explorer__tree-file is-active"><button class="mdp-explorer__node-btn is-active" type="button" style="padding-left:2px" aria-current="true" title="README.md"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#60A5FA" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="markdown" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#60A5FA;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#60A5FA" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M4.5 11.5V8L6.25 10 8 8v3.5 M11 8v3.5 m-1.25-1.25L11 11.5l1.25-1.25"></path></svg></span><span class="mdp-explorer__node-label">README.md</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for README.md" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:2px" title="notes.txt"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#64748B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="text" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#64748B;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#64748B" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M5 8h6 M5 10.5h6 M5 13h3.5"></path></svg></span><span class="mdp-explorer__node-label">notes.txt</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for notes.txt" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__tree-folder"><button class="mdp-explorer__tree-folder-row is-expanded" id="preview-tree-folder" type="button" aria-expanded="true" aria-controls="preview-tree-children" style="padding-left:2px"><span class="mdp-explorer__tree-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" class="mdp-explorer__details-chevron" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg></span><span class="mdp-explorer__tree-folder-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg></span><span class="mdp-explorer__tree-folder-label">assets</span></button><ul class="mdp-explorer__tree-children" id="preview-tree-children">
+<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="queries.sql"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="database" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M2.5 4v8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5V4" fill="#F472B6" fill-opacity=".12"></path><ellipse cx="8" cy="4" rx="5.5" ry="2.5" fill="#F472B6" fill-opacity=".2"></ellipse><path d="M2.5 8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5"></path></svg></span><span class="mdp-explorer__node-label">queries.sql</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for queries.sql" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="flow.mermaid"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F59E0B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="diagram" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F59E0B;stroke-width:1.25"><path d="M8 5v3 M3.5 10V8h9v2"></path><path d="M6 1.5h4a1 1 0 0 1 1 1V5H5V2.5a1 1 0 0 1 1-1Z M1 10h5v4.5H1Z M10 10h5v4.5h-5Z" fill="#F59E0B" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">flow.mermaid</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for flow.mermaid" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="sidebar-alignment-preview.png"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#C084FC" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="image" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#C084FC;stroke-width:1.25"><rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#C084FC" fill-opacity=".12"></rect><circle cx="10.5" cy="5" r="1.4" fill="#C084FC" stroke="none"></circle><path d="M2 12.5 6 8l3 3 2-2 3 3.5V14H2Z" fill="#C084FC" fill-opacity=".65" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">sidebar-alignment-preview.png</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for sidebar-alignment-preview.png" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="diagram.svg"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="vector" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M3 3h10v10H3Z"></path><path d="M1.5 1.5h3v3h-3Z M11.5 1.5h3v3h-3Z M11.5 11.5h3v3h-3Z M1.5 11.5h3v3h-3Z" fill="#F472B6" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">diagram.svg</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for diagram.svg" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+</ul></li>
+</ul>
+            </div>
+          </div>
+        </div>
+        </div>
+      </aside>
+
+      <main class="mdp-content-pane">
+        <aside class="mdp-document-stats" role="note" aria-label="Viewer composition preview">
+          <span>Design system</span>
+          <span class="mdp-document-stats__separator" aria-hidden="true">•</span>
+          <span>Viewer composition</span>
+          <span class="mdp-document-stats__separator" aria-hidden="true">•</span>
+          <span>Preview only</span>
+        </aside>
+        <article class="mdp-markdown-body">
+          <h1>Viewer-first design system</h1>
+          <p>
+            The running Viewer is the canonical visual reference for Markdown Plus. New surfaces
+            reuse its semantic colors, system typography, radii, focus treatment, and state language.
+          </p>
+
+          <blockquote>
+            Documentation follows runtime source. It does not introduce a second visual direction.
+          </blockquote>
+
+          <h2 id="foundation">Foundation</h2>
+          <p>
+            The interface uses a neutral blue-gray canvas, a white reading surface, compact rails,
+            and <a href="#states">semantic interaction states</a>. Normal structure is separated by
+            borders; shadows are reserved for temporary floating layers.
+          </p>
+          <ul>
+            <li>Blue communicates navigation, focus, and active selection.</li>
+            <li>Green communicates successful completion and saved state.</li>
+            <li>Amber communicates editing, dirty state, and warnings.</li>
+            <li>Red communicates failure and destructive actions.</li>
+          </ul>
+
+          <h2 id="layout">Runtime layout</h2>
+          <p>
+            Read mode uses three tracks: Files, document content, and a right rail containing
+            document actions plus Outline. The document article stays transparent inside the
+            surface-colored content pane instead of becoming a raised card. Optional document
+            statistics sit above Markdown without becoming part of exported or printed content.
+          </p>
+
+          <pre><code>.mdp-body {
+  grid-template-columns:
+    var(--mdp-files-width)
+    minmax(0, 1fr)
+    var(--mdp-toc-width);
+}</code></pre>
+
+          <p>The location/count row uses plain text without a leading folder icon. Open/Switch folder uses a gold folder with a blue opening arrow to highlight workspace selection. Files keeps its title and the green Workspace badge in workspace mode. The details disclosure stays separate and uses an information-card glyph with metadata lines; only its small chevron turns when expanded, distinguishing it from folder-tree arrows. At rest, the closed control is muted on a transparent background; when expanded it uses primary text on a neutral panel background. Blue remains reserved for shared hover feedback and the focus ring. When closed, Open/Switch folder, Copy and Back/Leave are direct icon buttons and overflow only when space runs out. When expanded, Copy sits beside the filename. Open/Switch folder and Back/Leave workspace are separate full-width labeled buttons stacked inside the same card footer with a 6px gap. The entire card collapses with details and navigation returns to the compact header actions. The metadata label, filename and path share one left edge; both footer buttons share their left and right edges. Full paths remain available through the title and accessible label. Menu icons and labels use fixed columns. Details remembers the tab preference and respects reduced motion; text actions stay at least 32px, or 44px on coarse pointers. This composition is Files-local. Source: <a href="../../src/viewer/react/components/explorer/ExplorerHeader.jsx">ExplorerHeader</a> and <a href="../../src/viewer/styles/explorer.scss">explorer.scss</a>.</p>
+
+          <h2 id="states">Interaction states</h2>
+          <p>
+            Active rows use a soft blue fill and leading accent rail. Dense utility controls stay
+            smaller than page forms on fine pointers, while interactive targets expand to 44px on
+            coarse pointers. Focus always remains visible.
+          </p>
+
+          <div class="mdp-table-wrap">
+            <table>
+              <thead>
+                <tr><th>Element</th><th>Fine pointer</th><th>Coarse pointer</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Dense utility toolbar</td><td>28px</td><td>44px</td></tr>
+                <tr><td>Action icon</td><td>34px</td><td>44px</td></tr>
+                <tr><td>Outline row</td><td>36px</td><td>44px</td></tr>
+                <tr><td>Text button</td><td>38px</td><td>44px</td></tr>
+                <tr><td>Edge panel toggle</td><td>22px</td><td>32px</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="extension">Extending the system</h2>
+          <p>
+            Unsaved editor changes use a compact confirmation with a warning badge, shared card
+            and action footer. Keep editing receives focus; Discard changes uses the danger treatment.
+            Escape and outside press cancel and return focus to the trigger.
+          </p>
+          <button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="exit-edit-preview">Preview unsaved changes dialog</button>
+          <p>
+            Settings owns named custom-theme authoring, including colors and structured backgrounds;
+            Popup only selects saved themes. Both surfaces derive shared controls from the same
+            application foundations without introducing alternate focus or status semantics. Document updates
+            uses the shared select treatment in Settings, with a bounded control column that stacks
+            on narrow layouts. Its Viewer popover uses compact title/mode typography, semantic
+            status indicators, a document-and-clock details icon that flips to a document-and-download action icon when a revision is ready,
+            a short-lived update speech bubble, and a bounded status card composed from the shared card, badge, notice, and button contracts. Change Review uses those same primitives together with shared status, action-footer, and empty/error-state treatments; only its diff table, changed-area navigation, and responsive two-pane layout remain Viewer-specific.
+          </p>
+
+          <div class="mdp-source-note">
+            Source of truth: <code>src/theme/index.js</code>, <code>src/theme/backgrounds.js</code>,
+            <code>src/shared/styles/**</code>, and <code>src/viewer/styles/**</code>. Use the controls
+            around the rails to preview theme and panel states. Actions simulate their feedback; this page does not read or write local files.
+          </div>
+        </article>
+      </main>
+
+      <aside class="mdp-right-rail mdp-right-rail--outline-expanded" aria-label="Document actions and outline">
+        <button class="mdp-panel-toggle mdp-panel-toggle--outline" type="button" aria-label="Hide Outline panel" aria-expanded="true" id="outline-toggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+        </button>
+        <div class="mdp-right-rail__actions-row">
+          <span class="mdp-right-rail__actions-label" aria-hidden="true">Actions</span>
+          <div class="mdp-floating-actions mdp-floating-actions--rail-strip" role="toolbar" aria-label="Document actions">
+          <button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" id="copy-button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg>
+          </button>
+          <button class="mdp-fab-btn mdp-fab-btn--edit" type="button" aria-label="Edit Markdown" title="Edit Markdown">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg>
+          </button>
+          <button class="mdp-fab-btn" type="button" aria-label="Toggle light and dark theme" title="Toggle light and dark theme" id="theme-toggle" aria-pressed="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg>
+          </button>
+          </div>
+        </div>
+
+        <div class="mdp-right-rail__outline-clip">
+        <div class="mdp-sidebar-panel mdp-sidebar-panel--outline">
+          <div class="mdp-panel-header">
+            <div class="mdp-panel-header__row">
+              <div class="mdp-panel-header__heading-main">
+                <strong class="mdp-panel-header__heading">Outline</strong>
+                <span class="mdp-panel-header__meta">4 headings</span>
+              </div>
+            </div>
+          </div>
+          <nav class="mdp-toc" aria-label="Document outline">
+            <ul class="mdp-toc__list"><li><a class="mdp-toc__link" href="#foundation">Foundation</a></li><li><a class="mdp-toc__link" href="#layout">Runtime layout</a></li><li><a class="mdp-toc__link" href="#states">Interaction states</a></li><li><a class="mdp-toc__link" href="#extension">Extending the system</a></li></ul>
+          </nav>
+        </div>
+        </div>
+      </aside>
+      <button class="mdp-scroll-to-top" type="button" aria-label="Back to top" title="Back to top" id="scroll-top">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="arrow-up" style="stroke:currentColor;stroke-width:1.8"><path d="M12 20V4 m-6 6 6-6 6 6"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <dialog class="mdp-exit-edit-modal" id="exit-edit-dialog" role="alertdialog" aria-modal="true" aria-labelledby="exit-edit-title" aria-describedby="exit-edit-description">
+    <div class="mdp-ui-card mdp-exit-edit-confirmation">
+      <div class="mdp-exit-edit-confirmation__content">
+        <span class="mdp-ui-badge mdp-ui-badge--warning">Unsaved changes</span>
+        <h2 id="exit-edit-title">Discard changes and exit edit mode?</h2>
+        <p id="exit-edit-description">Your unsaved changes will be lost. The saved file will stay unchanged.</p>
+      </div>
+      <div class="mdp-ui-action-footer mdp-ui-action-footer--end mdp-exit-edit-confirmation__actions">
+        <button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="exit-edit-cancel">Keep editing</button>
+        <button class="mdp-ui-button mdp-ui-button--danger" type="button" id="exit-edit-discard">Discard changes</button>
+      </div>
+    </div>
+  </dialog>
+
+
+  <template id="preview-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 5V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 13 14H3a1.5 1.5 0 0 1-1.5-1.5Z" fill="#D6A34A" fill-opacity=".22"></path><path d="M1.5 6h13"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sun" style="stroke:currentColor;stroke-width:1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2 m-16-8 1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"></path></svg></template>
+  <script>
+    const exitDialog = document.getElementById('exit-edit-dialog')
+    const exitPreview = document.getElementById('exit-edit-preview')
+    const exitCancel = document.getElementById('exit-edit-cancel')
+    const closeExitPreview = () => { exitDialog.close(); exitPreview.focus({ preventScroll: true }) }
+    exitPreview.addEventListener('click', () => { exitDialog.showModal(); exitCancel.focus({ preventScroll: true }) })
+    exitCancel.addEventListener('click', closeExitPreview)
+    document.getElementById('exit-edit-discard').addEventListener('click', closeExitPreview)
+    exitDialog.addEventListener('cancel', (event) => { event.preventDefault(); closeExitPreview() })
+    exitDialog.addEventListener('pointerdown', (event) => { if (event.target === exitDialog) closeExitPreview() })
+    const body = document.body
+    const shell = document.getElementById('viewer-shell')
+    const filesToggle = document.getElementById('files-toggle')
+    const outlineToggle = document.getElementById('outline-toggle')
+    const themeToggle = document.getElementById('theme-toggle')
+    const copyButton = document.getElementById('copy-button')
+    const refreshButton = document.getElementById('refresh-files')
+    // Runtime command-fit policy snapshot: explorer-details-layout.js
+// Keep as many commands direct as fit, reserving one target for overflow.
+// Header measurements include the title/badge and a separate details toggle.
+function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, reservedCount = 0 }) {
+  const size = coarse ? 44 : 28
+  const available = width - (badgeWidth ? badgeWidth + 8 : 0) - reservedCount * (size + 4)
+  const slots = Math.max(0, Math.floor((available + 4) / (size + 4)))
+  const directCount = slots >= commands.length ? commands.length : Math.max(0, slots - 1)
+  return {
+    direct: commands.slice(0, directCount),
+    overflow: commands.slice(directCount)
+  }
+}
+
+    const detailsToggle = document.getElementById('files-details-toggle')
+    const detailRegions = [document.getElementById('files-details')]
+    const contextSummary = document.getElementById('files-context-summary')
+    const contextBadge = document.getElementById('files-heading-label')
+    const contextCommands = document.getElementById('files-context-commands')
+    const detailActions = document.getElementById('files-detail-actions')
+    const fileIdentityRow = document.getElementById('files-identity-row')
+    const contextOverflow = document.getElementById('files-context-overflow')
+    const contextMore = document.getElementById('files-context-more')
+    const contextMenu = document.getElementById('files-context-menu')
+    const compactCommands = [
+      { key: 'open-folder', node: document.getElementById('files-compact-open') },
+      { key: 'copy-link', node: document.getElementById('files-compact-copy') },
+      { key: 'navigate', node: document.getElementById('files-compact-leave') }
+    ]
+    const coarsePointer = matchMedia('(pointer: coarse)')
+    const filesViewport = document.querySelector('.mdp-explorer__scroll-region')
+    function alignFilesActions() {
+      if (!filesViewport.offsetWidth) return
+      filesViewport.closest('.mdp-explorer').style.setProperty('--mdp-explorer-scrollbar-width', `${Math.max(0, filesViewport.offsetWidth - filesViewport.clientWidth)}px`)
+    }
+    new ResizeObserver(alignFilesActions).observe(filesViewport)
+    alignFilesActions()
+    const treeFolder = document.getElementById('preview-tree-folder')
+    const treeChildren = document.getElementById('preview-tree-children')
+    const collapseFolders = document.querySelector('[aria-label="Collapse folders"]')
+    function setPreviewFolder(expanded) {
+      treeChildren.getAnimations().forEach(animation => animation.cancel())
+      treeFolder.setAttribute('aria-expanded', String(expanded))
+      treeFolder.classList.toggle('is-expanded', expanded)
+      collapseFolders.disabled = !expanded
+      const chevron = document.getElementById('preview-glyphs').content.querySelector('[data-mdp-icon="chevron-right"]').cloneNode(true)
+      treeFolder.querySelector('.mdp-explorer__tree-chevron').replaceChildren(chevron)
+      const folderIcon = document.getElementById('preview-glyphs').content.querySelector(`[data-mdp-icon="${expanded ? 'folder-open' : 'folder'}"]`).cloneNode(true)
+      treeFolder.querySelector('.mdp-explorer__tree-folder-icon').replaceChildren(folderIcon)
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        treeChildren.hidden = !expanded
+        return
+      }
+      if (expanded) {
+        treeChildren.hidden = false
+        treeChildren.animate(
+          [{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 180, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' }
+        )
+        return
+      }
+      const animation = treeChildren.animate(
+        [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-6px)' }],
+        { duration: 180, easing: 'cubic-bezier(0.4, 0, 1, 1)' }
+      )
+      animation.addEventListener('finish', () => {
+        if (treeFolder.getAttribute('aria-expanded') !== 'true') treeChildren.hidden = true
+      }, { once: true })
+    }
+    treeFolder.addEventListener('click', () => setPreviewFolder(treeFolder.getAttribute('aria-expanded') !== 'true'))
+    collapseFolders.addEventListener('click', () => setPreviewFolder(false))
+    setPreviewFolder(true)
+    const rowActions = [...document.querySelectorAll('.mdp-explorer__row-actions')]
+    function closeRowMenus(restore = false) {
+      for (const actions of rowActions) {
+        const trigger = actions.querySelector('button')
+        const menu = actions.querySelector('[role="menu"]')
+        if (restore && menu.contains(document.activeElement)) trigger.focus()
+        menu.hidden = true
+        trigger.setAttribute('aria-expanded', 'false')
+        actions.closest('.mdp-explorer__node').classList.remove('is-menu-open')
+      }
+    }
+    for (const actions of rowActions) {
+      const trigger = actions.querySelector('button')
+      const menu = actions.querySelector('[role="menu"]')
+      trigger.addEventListener('click', () => {
+        const open = menu.hidden
+        closeRowMenus()
+        menu.hidden = !open
+        trigger.setAttribute('aria-expanded', String(open))
+        actions.closest('.mdp-explorer__node').classList.toggle('is-menu-open', open)
+        if (open) menu.querySelector('button').focus()
+      })
+      menu.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); closeRowMenus(true) }
+        else if (event.key === 'Tab') closeRowMenus()
+        else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+          event.preventDefault()
+          const items = [...menu.querySelectorAll('button')]
+          const index = items.indexOf(document.activeElement)
+          const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowUp' ? -1 : 1) + items.length) % items.length
+          items[next]?.focus()
+        }
+      })
+      for (const item of menu.querySelectorAll('button')) item.addEventListener('click', () => { alert(`${item.textContent} preview only.`); closeRowMenus(true) })
+    }
+    document.addEventListener('pointerdown', event => { if (!event.target.closest('.mdp-explorer__row-actions')) closeRowMenus() })
+    let detailsExpanded = false
+    function closeContextMenu(restore = false) {
+      const hadFocus = contextMenu.contains(document.activeElement)
+      contextMenu.hidden = true
+      contextMore.setAttribute('aria-expanded', 'false')
+      if (restore && hadFocus) contextMore.focus()
+    }
+    function applyDetails(expanded) {
+      detailsExpanded = expanded
+      const label = expanded ? 'Hide file details' : 'Show file details'
+      detailsToggle.setAttribute('aria-label', label)
+      detailsToggle.setAttribute('title', label)
+      detailsToggle.setAttribute('aria-expanded', String(expanded))
+      detailsToggle.querySelector('svg').classList.toggle('is-expanded', expanded)
+      for (const region of detailRegions) {
+        region.classList.toggle('is-expanded', expanded)
+        region.setAttribute('aria-hidden', String(!expanded))
+        region.inert = !expanded
+      }
+      applyCommandLayout()
+    }
+    function applyCommandLayout() {
+      const rowStyle = getComputedStyle(contextSummary)
+      const inset = (parseFloat(rowStyle.paddingLeft) || 0) + (parseFloat(rowStyle.paddingRight) || 0)
+      const overflow = detailsExpanded ? [] : partitionDetailsCommands(compactCommands, {
+        width: contextSummary.getBoundingClientRect().width - inset,
+        badgeWidth: Math.max(contextBadge.getBoundingClientRect().width, contextBadge.scrollWidth + 2),
+        reservedCount: 1,
+        coarse: coarsePointer.matches
+      }).overflow
+      const hadFocus = contextMenu.contains(document.activeElement)
+      closeContextMenu()
+      for (const command of compactCommands) {
+        const copied = command.node.classList.contains('is-copied')
+        const inMenu = overflow.includes(command)
+        const folder = command.key === 'open-folder'
+        const navigate = command.key === 'navigate'
+        const parent = detailsExpanded ? (folder || navigate ? detailActions : fileIdentityRow) : inMenu ? contextMenu : contextCommands
+        if (command.node.parentElement !== parent) {
+          if (parent === contextCommands) parent.insertBefore(command.node, contextOverflow)
+          else parent.append(command.node)
+        }
+        command.node.className = detailsExpanded
+          ? (folder ? 'mdp-explorer__folder-btn mdp-button' : navigate ? 'mdp-explorer__back-btn mdp-button' : 'mdp-explorer__context-command mdp-explorer__copy-link-btn')
+          : inMenu ? 'mdp-explorer__row-menu-item' : 'mdp-explorer__context-command'
+        command.node.classList.toggle('is-copied', copied)
+        command.node.querySelector('.preview-command-label').hidden = !inMenu && !(detailsExpanded && (folder || navigate))
+        let artwork = command.node.querySelector('.mdp-explorer__menu-icon')
+        if (inMenu && !artwork) {
+          artwork = document.createElement('span')
+          artwork.className = 'mdp-explorer__menu-icon'
+          command.node.insertBefore(artwork, command.node.firstChild)
+          artwork.append(artwork.nextSibling)
+        } else if (!inMenu && artwork) artwork.replaceWith(...artwork.childNodes)
+        if (inMenu) command.node.setAttribute('role', 'menuitem')
+        else command.node.removeAttribute('role')
+      }
+      contextCommands.hidden = detailsExpanded
+      contextOverflow.hidden = detailsExpanded || !overflow.length
+      if (hadFocus) (overflow.length ? contextMore : compactCommands[0]?.node || detailsToggle).focus()
+    }
+    try { applyDetails(sessionStorage.getItem('mdp:preview:detailsExpanded') === 'true') } catch { applyDetails(false) }
+    detailsToggle.addEventListener('click', () => {
+      applyDetails(!detailsExpanded)
+      closeContextMenu(true)
+      try { sessionStorage.setItem('mdp:preview:detailsExpanded', String(detailsExpanded)) } catch { /* Preview works without storage. */ }
+    })
+    const commandObserver = new ResizeObserver(applyCommandLayout)
+    commandObserver.observe(contextSummary)
+    commandObserver.observe(contextBadge)
+    coarsePointer.addEventListener('change', applyCommandLayout)
+    applyCommandLayout()
+    contextMore.addEventListener('click', () => {
+      const open = contextMenu.hidden
+      contextMenu.hidden = !open
+      contextMore.setAttribute('aria-expanded', String(open))
+      if (open) contextMenu.querySelector('button')?.focus()
+    })
+    contextMenu.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); closeContextMenu(true) }
+      else if (event.key === 'Tab') closeContextMenu()
+      else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault()
+        const items = [...contextMenu.querySelectorAll('button:not(:disabled)')]
+        const index = items.indexOf(document.activeElement)
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowUp' ? -1 : 1) + items.length) % items.length
+        items[next]?.focus()
+      }
+    })
+    document.addEventListener('pointerdown', event => { if (!contextOverflow.contains(event.target)) closeContextMenu() })
+    for (const command of compactCommands) command.node.addEventListener('click', () => {
+      if (command.key === 'copy-link') {
+        command.node.classList.add('is-copied')
+        command.node.title = 'Copied'
+        command.node.setAttribute('aria-label', 'Copied')
+        window.setTimeout(() => {
+          command.node.classList.remove('is-copied')
+          command.node.title = 'Copy open file link'
+          command.node.setAttribute('aria-label', 'Copy open file link')
+        }, 1200)
+      } else alert(`${command.node.getAttribute('aria-label')} preview only.`)
+      closeContextMenu(true)
+    })
+    const filesRail = document.querySelector('.mdp-sidebar--files')
+    const rightRail = document.querySelector('.mdp-right-rail')
+    const scrollTopButton = document.getElementById('scroll-top')
+
+    // Start narrow screens with the Files overlay closed.
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      shell.classList.add('mdp-body--files-collapsed')
+      filesRail.classList.add('mdp-sidebar--collapsed')
+      filesToggle.setAttribute('aria-expanded', 'false')
+      filesToggle.setAttribute('aria-label', 'Show Files panel')
+    }
+
+    const replaceGlyph = (button, name) => {
+      const replacement = document.getElementById('preview-glyphs').content.querySelector(`[data-mdp-icon="${name}"]`).cloneNode(true)
+      button.querySelector('svg').replaceWith(replacement)
+    }
+
+    if (filesToggle.getAttribute('aria-expanded') === 'false') replaceGlyph(filesToggle, 'chevron-right')
+    filesToggle.addEventListener('click', () => {
+      const collapsed = shell.classList.toggle('mdp-body--files-collapsed')
+      filesRail.classList.toggle('mdp-sidebar--collapsed', collapsed)
+      filesToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true')
+      filesToggle.setAttribute('aria-label', collapsed ? 'Show Files panel' : 'Hide Files panel')
+      replaceGlyph(filesToggle, collapsed ? 'chevron-right' : 'chevron-left')
+    })
+
+    outlineToggle.addEventListener('click', () => {
+      const hidden = shell.classList.toggle('mdp-body--no-outline')
+      rightRail.classList.toggle('mdp-right-rail--actions-only', hidden)
+      rightRail.classList.toggle('mdp-right-rail--outline-expanded', !hidden)
+      outlineToggle.setAttribute('aria-expanded', hidden ? 'false' : 'true')
+      outlineToggle.setAttribute('aria-label', hidden ? 'Show Outline panel' : 'Hide Outline panel')
+      replaceGlyph(outlineToggle, hidden ? 'chevron-left' : 'chevron-right')
+    })
+
+    themeToggle.addEventListener('click', () => {
+      body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark'
+      themeToggle.setAttribute('aria-pressed', String(body.dataset.theme === 'dark'))
+      replaceGlyph(themeToggle, body.dataset.theme === 'dark' ? 'sun' : 'moon')
+    })
+
+    copyButton.addEventListener('click', () => {
+      copyButton.classList.add('is-copied')
+      copyButton.title = 'Copied'
+      copyButton.setAttribute('aria-label', 'Copied')
+      window.setTimeout(() => {
+        copyButton.classList.remove('is-copied')
+        copyButton.title = 'Copy open file link'
+        copyButton.setAttribute('aria-label', 'Copy open file link')
+      }, 1200)
+    })
+
+    refreshButton.addEventListener('click', () => {
+      refreshButton.disabled = true
+      refreshButton.classList.add('is-refreshing')
+      refreshButton.setAttribute('aria-busy', 'true')
+      refreshButton.setAttribute('aria-label', 'Refreshing file list')
+      refreshButton.title = 'Refreshing file list'
+      window.setTimeout(() => {
+        refreshButton.disabled = false
+        refreshButton.classList.remove('is-refreshing')
+        refreshButton.setAttribute('aria-busy', 'false')
+        refreshButton.setAttribute('aria-label', 'Refresh file list')
+        refreshButton.title = 'Refresh file list'
+      }, 1800)
+    })
+
+    scrollTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+      })
+    })
+
+    function syncScrollTopButton() {
+      const revealAt = Math.max(320, window.innerHeight * 0.6)
+      scrollTopButton.classList.toggle('is-visible', window.scrollY >= revealAt)
+    }
+
+    window.addEventListener('scroll', syncScrollTopButton, { passive: true })
+    window.addEventListener('resize', syncScrollTopButton)
+    syncScrollTopButton()
+  </script>
+</body>
+</html>

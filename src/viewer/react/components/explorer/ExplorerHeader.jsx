@@ -1,60 +1,73 @@
-import React from 'react'
-import { explorerModeBadgeLabel } from '../../../explorer/explorer-files-context.js'
+import React, { useId, useRef, useState } from 'react'
+import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
+import { getFilesDetailsExpanded, setFilesDetailsExpanded } from '../../../explorer/explorer-state.js'
 import { canCopyCurrentFileLink, copyCurrentFileLink } from '../../../actions/file-link-actions.js'
 import { openExplorerSettings } from '../../../actions/explorer-settings-actions.js'
 import { useToast } from '../../contexts/ToastContext.jsx'
 import { useCopyFeedback } from '../../hooks/useCopyFeedback.js'
-import { IconButton } from '../common/IconButton.jsx'
-import { PanelHeader } from '../common/PanelHeader.jsx'
-import { Tooltip } from '../Tooltip.jsx'
+import { useExplorerDetailsLayout } from '../../hooks/explorer/useExplorerDetailsLayout.js'
 import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
-import { CollapseAllIcon } from '../icons/CollapseAllIcon.jsx'
-import { FolderIcon } from '../icons/FolderIcon.jsx'
-import { RefreshIcon } from '../icons/RefreshIcon.jsx'
+import { IconButton } from '../common/IconButton.jsx'
+import { ExplorerContextActions } from './ExplorerContextActions.jsx'
 import { getExplorerHeaderButtonState } from './explorer-header-state.js'
 
 function getCurrentFileName(currentLine) {
   return String(currentLine || '').trim() || 'No file selected'
 }
 
-function getDirectoryDisplayLabel(directoryLabel) {
-  const value = String(directoryLabel || '').trim() || 'Current folder'
-  const segments = value.split(/[\\/]+/).filter(Boolean)
-  if (segments.length <= 2) return value
-  return `…/${segments.slice(-2).join('/')}`
+function DetailsRegion({ id, expanded, children }) {
+  return (
+    <div id={id} className={`mdp-explorer__details${expanded ? ' is-expanded' : ''}`} aria-hidden={!expanded} inert={!expanded}>
+      <div className="mdp-explorer__details-clip">
+        <div className="mdp-explorer__details-content">
+          {children}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function ExplorerHeader({
   filesContext,
   summaryDirectoryLabel,
-  summaryFileCount,
   depthNotice,
   actionsMode,
   showBack,
   backLabel,
-  isRefreshing,
-  refreshDisabled,
-  refreshTooltip,
-  showCollapseAllFolders,
-  collapseAllFoldersDisabled,
-  collapseKeepsOpenFilePath,
   actionsDisabled,
   onBack,
-  onRefresh,
-  onCollapseAllFolders,
   onOpenAnotherFolder,
   onExitWorkspace
 }) {
   const { showToast } = useToast()
+  const [detailsExpanded, setDetailsExpanded] = useState(getFilesDetailsExpanded)
+  const detailsId = useId()
+  const summaryRef = useRef(null)
+  const badgeRef = useRef(null)
+  const disclosureRef = useRef(null)
+  const layout = useExplorerDetailsLayout(summaryRef, badgeRef)
+  const detailsLabel = detailsExpanded ? 'Hide file details' : 'Show file details'
   const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
-  const modeBadge = filesContext?.modeBadge || 'folder'
+  const isWorkspace = actionsMode === 'workspace' || (actionsMode === 'hidden' && filesContext?.modeBadge === 'workspace')
   const canCopyCurrentFile = canCopyCurrentFileLink(filesContext?.currentFileUrl)
   const currentFileName = getCurrentFileName(filesContext?.currentLine)
-  const contextStatus = filesContext?.statusLine || ''
-  const directoryLabel = summaryDirectoryLabel || 'Current folder'
-  const directoryDisplayLabel = getDirectoryDisplayLabel(directoryLabel)
+  const directoryLabel = summaryDirectoryLabel || (isWorkspace ? 'Workspace' : 'Current folder')
+  const directoryParts = directoryLabel.split(/[\\/]/).filter(Boolean)
+  const directoryDisplay = directoryParts.length > 3 ? `…/${directoryParts.slice(-2).join('/')}` : directoryLabel
   const openFolderLabel = actionsMode === 'workspace' ? 'Switch folder…' : 'Open folder…'
   const buttonState = getExplorerHeaderButtonState({ actionsMode, showBack, actionsDisabled })
+  const copyLabel = copyLinkCopied ? 'Copied' : 'Copy link'
+  const copyUnavailableReason = canCopyCurrentFile ? '' : 'Unavailable for workspace virtual files'
+  const copyTooltip = copyUnavailableReason ? 'Copy link unavailable for workspace virtual files' : copyLabel
+  const navigationLabel = actionsMode === 'workspace' ? 'Leave workspace' : backLabel || 'Back to original file'
+  const navigationIcon = actionsMode === 'workspace' ? 'leave-workspace' : 'back-to-file'
+  const navigationDisabled = actionsMode === 'workspace' ? buttonState.leaveWorkspaceDisabled : buttonState.backDisabled
+
+  const onToggleDetails = () => {
+    const expanded = !detailsExpanded
+    setDetailsExpanded(expanded)
+    setFilesDetailsExpanded(expanded)
+  }
 
   const onCopyCurrentFile = () => {
     void (async () => {
@@ -84,136 +97,101 @@ export function ExplorerHeader({
     onOpenExplorerSettings()
   }
 
+  const onContextNavigate = () => {
+    if (navigationDisabled) return
+    if (actionsMode === 'workspace') onExitWorkspace?.()
+    else onBack?.()
+  }
+
+  const commands = [
+    ...(actionsMode !== 'hidden' ? [{
+      key: 'open-folder', label: openFolderLabel, disabled: buttonState.openFolderDisabled,
+      icon: <AppIcon name="folder-select" size={16} className="mdp-explorer__context-command-icon" />,
+      onClick: () => onOpenAnotherFolder?.()
+    }] : []),
+    {
+      key: 'copy-link', label: copyLabel, ariaLabel: copyTooltip,
+      tooltip: copyUnavailableReason ? copyTooltip : undefined, disabled: !canCopyCurrentFile,
+      copied: copyLinkCopied, icon: <CopyLinkIcon className="mdp-explorer__context-command-icon" />,
+      onClick: onCopyCurrentFile
+    },
+    ...(!buttonState.leaveWorkspaceHidden || !buttonState.backHidden ? [{
+      key: 'navigate', label: navigationLabel, disabled: navigationDisabled,
+      icon: <AppIcon name={navigationIcon} size={16} className="mdp-explorer__back-icon" />,
+      onClick: onContextNavigate
+    }] : [])
+  ]
+
   return (
-    <PanelHeader
-      className="mdp-explorer__header"
-      title="Files"
-      meta={`${summaryFileCount} ${summaryFileCount === 1 ? 'file' : 'files'}`}
-      action={
+    <div className="mdp-panel-header mdp-explorer__header">
+      <div className="mdp-panel-header__row" ref={summaryRef}>
+        <div className="mdp-panel-header__heading-main" ref={badgeRef}>
+          <strong className="mdp-panel-header__heading">Files</strong>
+          {isWorkspace ? <span className="mdp-explorer__badge mdp-explorer__badge--workspace">Workspace</span> : null}
+        </div>
         <div className="mdp-explorer__header-actions">
-          {showCollapseAllFolders ? (
-            <IconButton
-              tooltip={
-                collapseAllFoldersDisabled
-                  ? 'All folders are collapsed'
-                  : collapseKeepsOpenFilePath
-                    ? 'Collapse folders outside the open file path'
-                    : 'Collapse all folders'
-              }
-              className="mdp-explorer__header-action-btn"
-              aria-label="Collapse all folders"
-              disabled={collapseAllFoldersDisabled}
-              onClick={() => onCollapseAllFolders?.()}
-            >
-              <CollapseAllIcon className="mdp-explorer__header-action-icon" />
-            </IconButton>
-          ) : null}
+          {!detailsExpanded ? <ExplorerContextActions commands={commands} layout={{ ...layout, reservedCount: 1 }} fallbackFocusRef={disclosureRef} /> : null}
           <IconButton
-            tooltip={refreshTooltip}
-            className={`mdp-explorer__header-action-btn mdp-explorer__refresh-btn${isRefreshing ? ' is-refreshing' : ''}`}
-            aria-label={isRefreshing ? 'Refreshing open file and file list' : 'Refresh open file and file list'}
-            disabled={refreshDisabled || isRefreshing}
-            onClick={() => onRefresh?.()}
+            ref={disclosureRef}
+            className="mdp-explorer__context-command mdp-explorer__details-toggle"
+            tooltip={detailsLabel}
+            aria-label={detailsLabel}
+            aria-expanded={detailsExpanded}
+            aria-controls={detailsId}
+            onClick={onToggleDetails}
           >
-            <RefreshIcon className="mdp-explorer__refresh-icon" />
+            <AppIcon name="file-details" size={16} className={`mdp-explorer__details-icon${detailsExpanded ? ' is-expanded' : ''}`} />
           </IconButton>
         </div>
-      }
-    >
-      <div className="mdp-explorer__context" aria-label="Files location and status">
-        <div className="mdp-explorer__context-summary">
-          <span className={`mdp-explorer__badge mdp-explorer__badge--${modeBadge}`}>
-            {explorerModeBadgeLabel(modeBadge)}
-          </span>
-          {contextStatus ? <span className="mdp-explorer__context-status">{contextStatus}</span> : null}
-        </div>
-
-        <div className="mdp-explorer__context-row">
-          <div className="mdp-explorer__context-current" title={currentFileName}>
-            <span className="mdp-explorer__context-label">Current file</span>
-            <strong className="mdp-explorer__context-file">{currentFileName}</strong>
+      </div>
+      <DetailsRegion id={detailsId} expanded={detailsExpanded}>
+        <div className="mdp-explorer__context" aria-label="Open file details">
+          <span className="mdp-explorer__context-label">Open file</span>
+          <div className="mdp-explorer__context-row">
+            <div className="mdp-explorer__context-current" title={currentFileName}>
+              <strong className="mdp-explorer__context-file">{currentFileName}</strong>
+            </div>
+            {detailsExpanded ? (
+              <IconButton className="mdp-explorer__context-command mdp-explorer__copy-link-btn"
+                tooltip={copyTooltip} aria-label={copyTooltip} disabled={!canCopyCurrentFile}
+                copied={copyLinkCopied} copiedClassName="is-copied" onClick={onCopyCurrentFile}>
+                <CopyLinkIcon className="mdp-explorer__context-command-icon" />
+              </IconButton>
+            ) : null}
           </div>
-          <IconButton
-            tooltip={
-              canCopyCurrentFile
-                ? copyLinkCopied
-                  ? 'Copied'
-                  : 'Copy open file link'
-                : 'Copy link unavailable for workspace virtual files'
-            }
-            className="mdp-explorer__copy-link-btn"
-            copiedClassName="is-copied"
-            copied={copyLinkCopied}
-            aria-label={copyLinkCopied ? 'Copied' : 'Copy open file link'}
-            disabled={!canCopyCurrentFile}
-            onClick={onCopyCurrentFile}
-          >
-            <CopyLinkIcon className="mdp-explorer__copy-link-icon" />
-          </IconButton>
+          <div className="mdp-explorer__path" title={directoryLabel} aria-label={`${isWorkspace ? 'Workspace root' : 'Current folder'}: ${directoryLabel}`}>
+            <span className="mdp-explorer__path-label">{directoryDisplay}</span>
+          </div>
+          {detailsExpanded && actionsMode !== 'hidden' ? (
+            <div className="mdp-explorer__detail-actions">
+              <button type="button" className="mdp-explorer__folder-btn mdp-button" aria-label={openFolderLabel}
+                disabled={buttonState.openFolderDisabled} onClick={() => onOpenAnotherFolder?.()}>
+                <AppIcon name="folder-select" size={16} className="mdp-explorer__context-command-icon" />
+                <span>{openFolderLabel}</span>
+              </button>
+              {!buttonState.leaveWorkspaceHidden || !buttonState.backHidden ? (
+                <button type="button" className="mdp-explorer__back-btn mdp-button" aria-label={navigationLabel}
+                  disabled={navigationDisabled} onClick={onContextNavigate}>
+                  <AppIcon name={navigationIcon} size={16} className="mdp-explorer__back-icon" />
+                  <span className="mdp-explorer__back-label">{navigationLabel}</span>
+                </button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
-
-        <div className="mdp-explorer__path" title={directoryLabel}>
-          <FolderIcon className="mdp-explorer__path-icon" />
-          <span className="mdp-explorer__path-label">{directoryDisplayLabel}</span>
-        </div>
-
-        <div className="mdp-explorer__context-warning" hidden={!filesContext?.warningLine} role="note">
-          {filesContext?.warningLine || ''}
-        </div>
-      </div>
-
-      <div className="mdp-explorer__actions" hidden={actionsMode === 'hidden'}>
-        <button
-          type="button"
-          className="mdp-explorer__action-btn mdp-button"
-          disabled={buttonState.openFolderDisabled}
-          onClick={() => onOpenAnotherFolder?.()}
-        >
-          <FolderIcon className="mdp-explorer__action-icon" />
-          <span>{openFolderLabel}</span>
-        </button>
-        <Tooltip content="Leave workspace mode and return to the file list for the current folder. The original file is restored when needed.">
-          <button
-            type="button"
-            className="mdp-explorer__action-btn mdp-explorer__action-btn--secondary mdp-button"
-            hidden={buttonState.leaveWorkspaceHidden}
-            disabled={buttonState.leaveWorkspaceDisabled}
-            onClick={() => onExitWorkspace?.()}
-          >
-            Leave workspace
-          </button>
-        </Tooltip>
-      </div>
-
-      <button
-        type="button"
-        className="mdp-explorer__back-btn mdp-button"
-        hidden={buttonState.backHidden}
-        disabled={buttonState.backDisabled}
-        title={backLabel || 'Back to original file'}
-        onClick={() => {
-          if (!buttonState.backDisabled) onBack?.()
-        }}
-      >
-        <span className="mdp-explorer__back-icon" aria-hidden="true">←</span>
-        <span className="mdp-explorer__back-label">{backLabel || 'Back to original file'}</span>
-      </button>
-
+      </DetailsRegion>
+      {filesContext?.warningLine ? (
+        <div className="mdp-explorer__context-warning mdp-explorer__persistent-notice" role="note">{filesContext.warningLine}</div>
+      ) : null}
       {depthNotice ? (
-        <div className="mdp-explorer__depth-notice" role="note">
+        <div className="mdp-explorer__depth-notice mdp-explorer__persistent-notice" role="note">
           <span>{depthNotice}</span>{' '}
-          <span
-            role="link"
-            tabIndex={0}
-            className="mdp-explorer__settings-link"
-            onClick={onOpenExplorerSettings}
-            onKeyDown={onExplorerSettingsKeyDown}
-          >
+          <span role="link" tabIndex={0} className="mdp-explorer__settings-link" onClick={onOpenExplorerSettings} onKeyDown={onExplorerSettingsKeyDown}>
             Adjust scan limits in Settings
           </span>
           , then refresh.
         </div>
       ) : null}
-    </PanelHeader>
+    </div>
   )
 }

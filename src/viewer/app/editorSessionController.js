@@ -35,13 +35,17 @@ export function createEditorSessionController({
   applyReaderStyles,
   getArticleEl,
   getSettings,
-  canEditCurrentDocument = () => true
+  canEditCurrentDocument = () => true,
+  getCurrentDocument,
+  onSaveSucceeded
 }) {
   /** @type {ReturnType<typeof setTimeout> | null} */
   let editorDebounceTimer = null
   let editModeActive = false
   let editorDirty = false
   let saveInFlight = false
+  let preparingEdit = false
+  let editPrepared = false
   let editBaselineMarkdown = getMarkdown()
   /** @type {'saved' | 'modified' | 'saving'} */
   let saveStatus = 'saved'
@@ -78,6 +82,8 @@ export function createEditorSessionController({
   }
 
   function prepareForDocumentSwitch() {
+    if (saveInFlight) return false
+    editPrepared = false
     if (!editorDirty) {
       clearDebounce()
       return true
@@ -108,12 +114,15 @@ export function createEditorSessionController({
   }
 
   async function prepareForEditing() {
-    if (isDestroyed() || !canEditCurrentDocument()) return false
+    if (isDestroyed() || !canEditCurrentDocument() || preparingEdit) return false
+    preparingEdit = true
+    const document = getCurrentDocument?.()
     try {
       const fileUrl = getCurrentFileUrl() || window.location.href
       const result = await prepareFileForEditing(getMarkdown(), { fileUrl })
-      if (result.status === 'cancelled') return false
+      if (result.status === 'cancelled' || isDestroyed() || document !== getCurrentDocument?.()) return false
       editBaselineMarkdown = getMarkdown()
+      editPrepared = true
       showToast(
         result.reused
           ? `Verified save target: ${result.filename}`
@@ -128,6 +137,8 @@ export function createEditorSessionController({
       })
       showToast(message || 'Could not connect the original file.', { variant: 'error' })
       return false
+    } finally {
+      preparingEdit = false
     }
   }
 
@@ -141,6 +152,7 @@ export function createEditorSessionController({
    * @param {boolean} enabled
    */
   function setEditModeActive(enabled) {
+    editPrepared = false
     const wasEditModeActive = editModeActive
     const nextActive = Boolean(enabled) && canEditCurrentDocument()
     const discardingChanges = editModeActive && !nextActive && editorDirty
@@ -166,14 +178,17 @@ export function createEditorSessionController({
     if (!editModeActive || !canEditCurrentDocument()) return
 
     saveInFlight = true
+    const document = getCurrentDocument?.()
     syncSaveStatus()
     try {
       const content = getMarkdown()
       const fileUrl = getCurrentFileUrl() || window.location.href
       await saveFile(content, { fileUrl })
 
+      if (isDestroyed() || document !== getCurrentDocument?.()) return
       editBaselineMarkdown = content
-      setDirty(false)
+      onSaveSucceeded?.(content, document)
+      setDirty(getMarkdown() !== content)
       showToast('Saved to the connected original file', { variant: 'success' })
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
@@ -199,6 +214,8 @@ export function createEditorSessionController({
     handleSave,
     destroy,
     isDirty: () => editorDirty,
+    isSaving: () => saveInFlight,
+    isPreparingEdit: () => preparingEdit || editPrepared,
     isEditModeActive: () => editModeActive
   }
 }

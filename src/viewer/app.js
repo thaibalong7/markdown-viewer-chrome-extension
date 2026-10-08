@@ -13,8 +13,10 @@ import { createRenderController } from './app/renderController.js'
 import { createSplitScrollSync } from './app/splitScrollSync.js'
 import { applyReaderStyles, createStyleElement } from './app/viewerStyles.js'
 import { createGlobalViewerListeners } from './app/globalViewerListeners.js'
+import { createWatchSessionController } from './app/watchSessionController.js'
 import { createDocumentSessionController } from './app/documentSessionController.js'
 import { createDocumentIdentity } from './documents/document-model.js'
+import { navigateReviewSection } from './review/review-navigation.js'
 import { getLightDarkThemeToggleTarget } from '../theme/index.js'
 import { saveSettings } from '../settings/settings-client.js'
 import { getExplorerMode } from './explorer/explorer-state.js'
@@ -99,6 +101,11 @@ export class MarkdownViewerApp {
       applyReaderStyles: () => this.applyReaderStyles(),
       getArticleEl: () => this._articleEl,
       getSettings: () => this.settings,
+      getCurrentDocument: () => this._documentSession?.getCurrentDocument(),
+      onSaveSucceeded: (text, document) => {
+        this._documentSession?.acceptSavedSource(text, document)
+        this._watchSession?.reset()
+      },
       canEditCurrentDocument: () => {
         const state = this._documentSession?.getUiState()
         const supportsEditing =
@@ -116,7 +123,16 @@ export class MarkdownViewerApp {
       getSettings: () => this.settings,
       render: (opts) => this.render(opts),
       beforeDocumentSwitch: () => this._editorSession.prepareForDocumentSwitch(),
-      onDocumentSwitchStart: () => this._articleInteractions?.closeImageLightbox(),
+      onDocumentSwitchStart: () => {
+        this._watchSession?.reset()
+        this._articleInteractions?.closeImageLightbox()
+      },
+      onDocumentLoadSettled: () => this._watchSession?.documentReady(),
+      onRevisionApplied: (loadedDocument) => {
+        this._editorSession.setExternalMarkdown(loadedDocument.text)
+        this._editorSession.setEditModeActive(false)
+        this._reactHandle?.exitEditMode?.()
+      },
       onDocumentLoaded: (loadedDocument) => {
         this.markdown = String(loadedDocument?.text ?? '')
         this._editorSession.setExternalMarkdown(this.markdown)
@@ -127,12 +143,32 @@ export class MarkdownViewerApp {
         if (document) this._recordCurrentFileInHistory()
         void this._editorSession.primeFileConnection()
         this._reactHandle?.bumpChrome()
+        this._watchSession?.reset()
       },
       publishUiState: (documentUiState) => {
         if (documentUiState?.loading) this._articleEl?.setAttribute('aria-busy', 'true')
         else this._articleEl?.removeAttribute('aria-busy')
         this._reactHandle?.updateDocumentUiState?.(documentUiState)
       },
+      showToast: (message, options) => this.showToast(message, options)
+    })
+    this._watchSession = createWatchSessionController({
+      session: this._documentSession,
+      getMode: () => this.settings?.watch?.mode || 'ask',
+      isEditorProtected: () => this._editorSession.isEditModeActive() ||
+        this._editorSession.isPreparingEdit() || this._editorSession.isDirty(),
+      isSaving: () => this._editorSession.isSaving(),
+      prepareToApply: ({ editorExitConfirmed = false } = {}) => {
+        if (this._editorSession.isSaving() || this._editorSession.isPreparingEdit()) return false
+        if (this._editorSession.isEditModeActive() && !editorExitConfirmed) {
+          const message = this._editorSession.isDirty()
+            ? 'Your unsaved draft will be permanently discarded and edit mode will close. Load the latest version from disk?'
+            : 'Edit mode will close and the latest version from disk will be loaded. Continue?'
+          if (!window.confirm(message)) return false
+        }
+        return true
+      },
+      publish: (state) => this._reactHandle?.updateWatchState?.(state),
       showToast: (message, options) => this.showToast(message, options)
     })
     this._splitScrollSync = createSplitScrollSync({
@@ -181,6 +217,10 @@ export class MarkdownViewerApp {
       getCurrentFileUrl: () => this._currentFileUrl,
       getEntryFileUrl: () => this._entryFileUrl,
       resetBrowserRoute: () => this._resetBrowserRoute(),
+      updateWorkspaceReaders: (readers) => {
+        this._documentSession.updateWorkspaceReader(readers)
+        this._watchSession.reset()
+      },
       updateCurrentFileUrl: (nextUrl) => {
         const url = typeof nextUrl === 'string' ? nextUrl : ''
         if (url === this._currentFileUrl) return
@@ -223,6 +263,7 @@ export class MarkdownViewerApp {
       },
       onEditModeChange: (enabled) => {
         this._editorSession.setEditModeActive(enabled)
+        this._watchSession.documentReady()
       },
       onPrepareEdit: () => this._editorSession.prepareForEditing(),
       onSave: () => {
@@ -231,6 +272,13 @@ export class MarkdownViewerApp {
       onViewModeChange: (viewMode) => {
         void this._documentSession.setViewMode(viewMode)
       },
+      onWatchCheck: () => { void this._watchSession.check() },
+      onWatchApply: (options) => { void this._watchSession.applyPending(options) },
+      onReviewSectionNavigate: (pair, section) => navigateReviewSection({
+        session: this._documentSession, pair, section, article: this._articleEl,
+        editorProtected: this._editorSession.isEditModeActive() || this._editorSession.isPreparingEdit() ||
+          this._renderController.getLastSuccessfulRenderMarkdown() !== pair.after
+      }),
       onThemeToggle: () => {
         return this._toggleLightDarkTheme()
       }
@@ -265,6 +313,7 @@ export class MarkdownViewerApp {
     void this.render()
     this._articleInteractions.bind()
     this._globalListeners.bind()
+    this._watchSession.start()
     if (this._initialRouteWarning) {
       this.showToast(this._initialRouteWarning, { variant: 'warning' })
       this._initialRouteWarning = null
@@ -379,6 +428,7 @@ export class MarkdownViewerApp {
     const prevSettings = this.settings
     this.settings = nextSettings
     this._reactHandle?.updateSettings(nextSettings)
+    this._watchSession.settingsChanged()
     this.applyReaderStyles()
     if (!needsFullRender(prevSettings, nextSettings)) {
       this.syncTocItems()
@@ -431,6 +481,7 @@ export class MarkdownViewerApp {
   destroy() {
     if (this._destroyed) return
     this._destroyed = true
+    this._watchSession.destroy()
     this._globalListeners.unbind()
     this._splitScrollSync.destroy()
     this._editorSession.destroy()

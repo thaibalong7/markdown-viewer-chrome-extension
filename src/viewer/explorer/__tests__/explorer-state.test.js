@@ -3,8 +3,10 @@ import {
   getExplorerExpandedMap,
   getExplorerExpandedStateRoot,
   getFilesWidthPx,
+  getFilesDetailsExpanded,
   getSidebarWidthPx,
   setFilesWidthPx,
+  setFilesDetailsExpanded,
   setSidebarWidthPx,
   setExplorerExpandedMap
 } from '../explorer-state.js'
@@ -72,5 +74,32 @@ describe('explorer expanded folder state', () => {
 
     expect(getFilesWidthPx()).toBe(312)
     expect(getSidebarWidthPx()).toBe(368)
+  })
+
+  it('starts with Details closed and retains both choices independently of widths and folders', () => {
+    expect(getFilesDetailsExpanded()).toBe(false)
+    setFilesDetailsExpanded(false)
+    setFilesWidthPx(312)
+    setExplorerExpandedMap('workspace', 'file:///docs/', new Map([['file:///docs/guide/', true]]))
+    expect(getFilesDetailsExpanded()).toBe(false)
+    expect(getFilesWidthPx()).toBe(312)
+    expect(getExplorerExpandedMap('workspace', 'file:///docs/')?.get('file:///docs/guide/')).toBe(true)
+    setFilesDetailsExpanded(true)
+    expect(getFilesDetailsExpanded()).toBe(true)
+  })
+
+  it('defaults closed for an invalid or unavailable preference', () => {
+    sessionStorage.setItem('mdp:explorer:detailsExpanded', 'invalid')
+    expect(getFilesDetailsExpanded()).toBe(false)
+    sessionStorage.getItem.mockImplementation(() => { throw new Error('Storage unavailable') })
+    expect(getFilesDetailsExpanded()).toBe(false)
+  })
+
+  it('keeps a storage failure from breaking the disclosure action', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    sessionStorage.setItem.mockImplementation(() => { throw new Error('Storage unavailable') })
+    expect(() => setFilesDetailsExpanded(false)).not.toThrow()
+    expect(warn).toHaveBeenCalledWith(expect.any(String), 'Could not save Files details preference for this tab')
+    warn.mockRestore()
   })
 })

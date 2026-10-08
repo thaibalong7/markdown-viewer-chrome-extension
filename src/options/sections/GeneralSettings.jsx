@@ -11,7 +11,8 @@ export function GeneralSettings({
   saving,
   onEnabledChange,
   onScrollbarAutoHideChange,
-  onDocumentStatsVisibleChange
+  onDocumentStatsVisibleChange,
+  onWatchModeChange
 }) {
   const fileAccess = useFileSchemeAccess()
   const [detailsError, setDetailsError] = useState('')
@@ -86,6 +87,26 @@ export function GeneralSettings({
           />
         </div>
 
+        <div className="mdp-ui-divider" />
+
+        <div className="mdp-ui-setting-row settings-row--select">
+          <div>
+            <label htmlFor="general-watch-mode" className="mdp-ui-setting-row__title">Document updates</label>
+            <p id="general-watch-description" className="mdp-ui-setting-row__description">Choose how to handle changes to the open Markdown file. Updates never replace an active editor.</p>
+          </div>
+          <select
+            id="general-watch-mode"
+            className="mdp-ui-select"
+            aria-describedby="general-watch-description"
+            value={settings.watch?.mode || 'ask'}
+            disabled={saving}
+            onChange={(event) => void onWatchModeChange(event.target.value)}
+          >
+            <option value="ask">Ask before updating</option>
+            <option value="auto">Update automatically</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
         <div className="mdp-ui-divider" />
 
         <div className="mdp-ui-setting-row settings-row--access">

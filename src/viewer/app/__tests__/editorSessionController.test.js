@@ -14,7 +14,7 @@ afterEach(() => {
   vi.clearAllMocks()
 })
 
-function createController() {
+function createController(options = {}) {
   let markdown = '# Original'
   const reactHandle = {
     setDirty: vi.fn(),
@@ -34,7 +34,8 @@ function createController() {
     applyReaderStyles: vi.fn(),
     getArticleEl: () => null,
     getSettings: () => ({}),
-    canEditCurrentDocument: () => true
+    canEditCurrentDocument: () => true,
+    ...options
   })
   return { controller, reactHandle, showToast, getMarkdown: () => markdown }
 }
@@ -134,6 +135,44 @@ describe('editor file connection and save safety', () => {
     controller.setEditModeActive(false)
 
     expect(reactHandle.updateMarkdown).toHaveBeenLastCalledWith('# Saved update')
+    controller.destroy()
+  })
+})
+
+
+describe('editor save revision coordination', () => {
+  it('keeps text typed during Save dirty and accepts only the written baseline', async () => {
+    let finish
+    fileIoMocks.saveFile.mockReturnValueOnce(new Promise((resolve) => { finish = resolve }))
+    const onSaveSucceeded = vi.fn()
+    const { controller } = createController({ onSaveSucceeded })
+    controller.setEditModeActive(true)
+    controller.handleEditorChange('# Written')
+    const save = controller.handleSave()
+    expect(controller.isSaving()).toBe(true)
+    controller.handleEditorChange('# Typed during save')
+    finish('fsa')
+    await save
+    expect(onSaveSucceeded).toHaveBeenCalledWith('# Written', undefined)
+    expect(controller.isDirty()).toBe(true)
+    controller.setEditModeActive(false)
+    controller.destroy()
+  })
+
+  it('ignores Save completion after the document identity changes', async () => {
+    let finish
+    let document = {}
+    const onSaveSucceeded = vi.fn()
+    fileIoMocks.saveFile.mockReturnValueOnce(new Promise((resolve) => { finish = resolve }))
+    const { controller } = createController({ onSaveSucceeded, getCurrentDocument: () => document })
+    controller.setEditModeActive(true)
+    controller.handleEditorChange('# Written')
+    const save = controller.handleSave()
+    document = {}
+    controller.setExternalMarkdown('# Next')
+    finish('fsa')
+    await save
+    expect(onSaveSucceeded).not.toHaveBeenCalled()
     controller.destroy()
   })
 })

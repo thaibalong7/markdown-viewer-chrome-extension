@@ -7,15 +7,19 @@ const layoutCss = compile(fileURLToPath(new URL('../layout.scss', import.meta.ur
 const tocCss = compile(fileURLToPath(new URL('../toc.scss', import.meta.url))).css
 
 describe('sidebar scrollbar layout', () => {
-  it('reserves a stable scrollbar gutter in Files', () => {
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer-container\s*\{[^}]*overflow:\s*hidden;[^}]*padding-inline-end:\s*3px;/s
-    )
+  it('keeps Files outer padding symmetric and its scrollbar consistent with Outline', () => {
+    expect(layoutCss).toMatch(/\.mdp-sidebar-panel\s*\{[^}]*min-height: 0;[^}]*flex: 1;[^}]*overflow: hidden;/s)
+    expect(explorerCss).not.toContain('.mdp-explorer-container')
     expect(explorerCss).toMatch(
       /\.mdp-explorer__scroll-region\s*\{[^}]*overflow-y:\s*auto;[^}]*scrollbar-gutter:\s*stable;/s
     )
+    const filesScroll = explorerCss.match(/\.mdp-explorer__scroll-region\s*\{([^}]*)\}/s)[1]
+    const outlineScroll = tocCss.match(/\.mdp-sidebar-panel--outline \.mdp-toc\s*\{([^}]*)\}/s)[1]
+    expect(filesScroll.match(/scrollbar-width:[^;]+;/g)).toEqual(['scrollbar-width: thin;'])
+    expect(outlineScroll.match(/scrollbar-width:[^;]+;/g)).toEqual(['scrollbar-width: thin;'])
+    expect(layoutCss).not.toMatch(/\.mdp-sidebar--files\s*\{[^}]*--mdp-explorer-scrollbar-width/s)
     expect(layoutCss).toMatch(
-      /\.mdp-sidebar--files\s*\{[^}]*padding-inline-start:\s*8px;[^}]*padding-inline-end:\s*5px;/s
+      /\.mdp-sidebar--files\s*\{[^}]*padding-inline:\s*8px;/s
     )
   })
 
@@ -61,8 +65,9 @@ describe('sidebar scrollbar layout', () => {
       /\.mdp-floating-actions\.mdp-floating-actions--rail-strip\s*\{[^}]*gap:\s*4px;[^}]*padding:\s*0;[^}]*border:\s*0;[^}]*background:\s*transparent;[^}]*box-shadow:\s*none;/s
     )
     expect(layoutCss).toMatch(
-      /\.mdp-right-rail--outline-expanded > \.mdp-panel-toggle--outline\s*\{[^}]*top:\s*25px;/s
+      /\.mdp-panel-toggle\s*\{[^}]*top:\s*16px;/s
     )
+    expect(layoutCss).not.toMatch(/\.mdp-panel-toggle--(?:files|outline)\s*\{[^}]*top:/s)
     expect(layoutCss).toMatch(
       /\.mdp-right-rail__actions-row\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*min-height:\s*44px;[^}]*padding:\s*0 2px 8px;[^}]*border-bottom:/s
     )

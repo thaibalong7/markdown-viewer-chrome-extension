@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createAbortableScanSession } from '../explorer-scan-session.js'
 
 const scanFolderRecursive = vi.hoisted(() => vi.fn())
@@ -27,7 +27,7 @@ function tree(href = 'mdp-ws-dir:Workspace%2F') {
   return { type: 'folder', name: 'Workspace', href, depth: 0, children: [] }
 }
 
-function createSession() {
+function createSession(overrides = {}) {
   const refs = {
     explorerModeRef: { current: 'sibling' },
     currentFileUrlRef: { current: '' },
@@ -63,7 +63,9 @@ function createSession() {
     runSiblingScan: vi.fn(),
     safePatch: vi.fn(),
     stateRef: { current: { expandedMap: new Map() } },
-    viewActions
+    viewActions,
+    ...overrides,
+    refs: { ...refs, ...overrides.refs }
   })
 }
 
@@ -123,4 +125,40 @@ describe('explorer workspace behavior settings', () => {
       expect.objectContaining({ respectGitignore: false })
     )
   })
+})
+
+
+afterEach(() => vi.unstubAllGlobals())
+
+it('refreshes only the workspace list without changing the route or discarding a missing document', async () => {
+  const bridge = { resetBrowserRoute: vi.fn(), showToast: vi.fn() }
+  const resetViewerToPickWorkspaceFile = vi.fn()
+  const clearWorkspaceVirtualReaders = vi.fn()
+  const session = createSession({
+    bridge, resetViewerToPickWorkspaceFile, clearWorkspaceVirtualReaders,
+    refs: { currentFileUrlRef: { current: 'file:///outside/current.md' } }
+  })
+  await session.openWorkspaceFolder('file:///workspace/', {
+    listOnly: true, keepCurrentDocumentOnMissing: true, preserveExpandedState: true
+  })
+  expect(bridge.resetBrowserRoute).not.toHaveBeenCalled()
+  expect(clearWorkspaceVirtualReaders).not.toHaveBeenCalled()
+  expect(resetViewerToPickWorkspaceFile).not.toHaveBeenCalled()
+})
+
+it('retains the previous workspace list on refresh failure instead of falling back to another document', async () => {
+  const storage = new Map()
+  vi.stubGlobal('sessionStorage', { getItem: (key) => storage.get(key), setItem: (key, value) => storage.set(key, value) })
+  const previousState = { view: 'tree', expandedMap: new Map() }
+  const previousTree = tree('file:///workspace/')
+  const safePatch = vi.fn()
+  const failWorkspaceToSibling = vi.fn()
+  const session = createSession({
+    stateRef: { current: previousState }, safePatch, failWorkspaceToSibling,
+    refs: { workspaceTreeRef: { current: previousTree } }
+  })
+  scanFolderRecursive.mockRejectedValueOnce(new Error('no access'))
+  await expect(session.openWorkspaceFolder('file:///workspace/', { listOnly: true })).rejects.toThrow('no access')
+  expect(safePatch).toHaveBeenLastCalledWith(previousState)
+  expect(failWorkspaceToSibling).not.toHaveBeenCalled()
 })

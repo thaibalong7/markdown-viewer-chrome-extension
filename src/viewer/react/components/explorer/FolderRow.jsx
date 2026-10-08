@@ -1,17 +1,29 @@
 import React from 'react'
 import { Tooltip } from '../Tooltip.jsx'
+import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
 import { FolderIcon } from '../icons/FolderIcon.jsx'
 
-export function FolderRow({ node, expandedMap, onToggleFolder, children, expanded, depth, rowStyle }) {
+export function FolderRow({
+  node,
+  expandedMap,
+  onToggleFolder,
+  children,
+  expanded,
+  depth,
+  rowStyle,
+  motionState = ''
+}) {
   const resolvedExpanded =
     typeof expanded === 'boolean' ? expanded : expandedMap?.get?.(node?.href) === true
   const resolvedDepth = Math.max(1, Number(depth ?? node?.depth) || 1)
 
   return (
     <li
-      className="mdp-explorer__tree-folder"
+      className={`mdp-explorer__tree-folder${motionState ? ` is-tree-${motionState}` : ''}`}
       role="treeitem"
       aria-level={String(resolvedDepth)}
+      aria-hidden={motionState === 'exiting' ? 'true' : undefined}
+      inert={motionState === 'exiting' ? true : undefined}
       data-folder-href={node.href}
       style={rowStyle}
     >
@@ -23,9 +35,9 @@ export function FolderRow({ node, expandedMap, onToggleFolder, children, expande
           style={{ paddingLeft: `${2 + Math.max(0, resolvedDepth - 1) * 10}px` }}
           onClick={() => onToggleFolder?.(node.href)}
         >
-          <span className="mdp-explorer__tree-chevron" aria-hidden="true" />
+          <span className="mdp-explorer__tree-chevron" aria-hidden="true"><AppIcon name="chevron-right" size={12} /></span>
           <span className="mdp-explorer__tree-folder-icon" aria-hidden="true">
-            <FolderIcon />
+            <FolderIcon expanded={resolvedExpanded} />
           </span>
           <span className="mdp-explorer__tree-folder-label">{node.name}</span>
         </button>

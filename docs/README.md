@@ -5,9 +5,9 @@ This directory documents the repository as it exists today. Runtime source remai
 ## Start here
 
 - [`architecture-overview.md`](./architecture-overview.md) — product scope, runtime flows, subsystem ownership, security boundaries, and task-to-source guidance.
+- [`document-updates-and-change-review.md`](./document-updates-and-change-review.md) — current Watch modes, review workflow, editor safeguards, reading continuity, limits, and implementation map.
 - [`theme-system.md`](./theme-system.md) — complete built-in/custom theme model, semantic colors, theme-owned backgrounds, local image assets, authoring workflows, extension guidance, and tests.
-- [`design-system.md`](./design-system.md) — visual tokens, component contracts, and current UI conventions.
-- [`design-system-demo.html`](./design-system-demo.html) — standalone static preview of the current Viewer visual language; it is illustrative, not a runtime fixture.
+- [`design-system/`](./design-system/README.md) — current visual contracts and maintenance guide. Open [Overview](./design-system/index.html) in a browser to browse foundations, [Components](./design-system/components.html), [Icons](./design-system/icons.html), and the [Viewer preview](./design-system/viewer.html).
 - [`gherkin-syntax.md`](./gherkin-syntax.md) — Gherkin syntax reference and the supported Markdown code-fence aliases; standalone `.feature` files are not Viewer document types.
 - [`../DEV.md`](../DEV.md) — local setup, entry points, scripts, verification matrix, manual smoke tests, and troubleshooting.
 

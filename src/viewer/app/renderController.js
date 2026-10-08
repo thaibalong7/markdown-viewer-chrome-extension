@@ -1,3 +1,4 @@
+import { captureReadingPosition, restoreReadingPosition } from '../navigation/reading-position.js'
 import { logger } from '../../shared/logger.js'
 import { getFileTypeById } from '../../shared/file-types.js'
 import { getDocumentRenderer } from '../documents/renderer-registry.js'
@@ -30,6 +31,7 @@ export function createRenderController({
   let lastTocItems = []
   let activeRendererCleanup = null
   let activeRenderController = null
+  let readingCleanup = null
   const renderContextCache = new Map()
   const runtimeStyleElements = new Map()
 
@@ -45,17 +47,29 @@ export function createRenderController({
   }
 
   function captureScrollPosition() {
-    const scrollRoot = getScrollRoot()
-    if (!scrollRoot) return null
-    return { scrollRoot, top: scrollRoot.scrollTop }
+    return captureReadingPosition(getScrollRoot(), getArticleEl())
   }
 
   function restoreScrollPosition(snapshot) {
-    if (!snapshot?.scrollRoot) return
-    const { scrollRoot, top } = snapshot
-    const maxTop = Math.max(0, scrollRoot.scrollHeight - scrollRoot.clientHeight)
-    const nextTop = Math.min(Math.max(0, Number(top) || 0), maxTop)
-    scrollRoot.scrollTo({ top: nextTop, behavior: 'auto' })
+    restoreReadingPosition(snapshot, getArticleEl())
+  }
+
+  function settleReadingPosition(snapshot, article) {
+    if (!snapshot) return
+    restoreScrollPosition(snapshot)
+    let observer = null
+    const cleanup = () => {
+      clearTimeout(timer)
+      observer?.disconnect()
+      snapshot.dispose?.()
+      if (readingCleanup === cleanup) readingCleanup = null
+    }
+    const timer = setTimeout(cleanup, 1500)
+    if (typeof ResizeObserver === 'function') {
+      observer = new ResizeObserver(() => restoreScrollPosition(snapshot))
+      observer.observe(article)
+    }
+    readingCleanup = cleanup
   }
 
   function syncTocItems() {
@@ -153,14 +167,18 @@ export function createRenderController({
 
   async function render({ preserveScroll = false, honorHash = true } = {}) {
     const reactHandle = getReactHandle()
-    reactHandle?.setTocReady?.(false)
+    // Retain the current outline during an in-place update instead of flashing a skeleton.
+    if (!preserveScroll) reactHandle?.setTocReady?.(false)
+    readingCleanup?.()
     const currentRenderToken = ++renderToken
     activeRenderController?.abort()
     cleanupActiveRenderer()
     activeRenderController = new AbortController()
     const signal = activeRenderController.signal
     const scrollSnapshot = preserveScroll ? captureScrollPosition() : null
+    if (scrollSnapshot) signal.addEventListener('abort', scrollSnapshot.dispose, { once: true })
     const article = getArticleEl()
+    let scrollSettled = false
     const clearInitialSkeleton = scheduleInitialSkeleton(article)
     setArticleBusy(true)
     try {
@@ -195,7 +213,8 @@ export function createRenderController({
 
       syncTocItems()
       if (scrollSnapshot) {
-        restoreScrollPosition(scrollSnapshot)
+        settleReadingPosition(scrollSnapshot, article)
+        scrollSettled = true
       } else if (honorHash) {
         const behavior = smoothInitialHashScroll && window.location.hash ? 'smooth' : 'auto'
         articleInteractions?.scrollToHash({ behavior })
@@ -214,12 +233,15 @@ export function createRenderController({
       showRenderError(article)
       return null
     } finally {
+      if (scrollSnapshot) signal.removeEventListener('abort', scrollSnapshot.dispose)
+      if (!scrollSettled) scrollSnapshot?.dispose?.()
       clearInitialSkeleton()
       if (currentRenderToken === renderToken) setArticleBusy(false)
     }
   }
 
   function destroy() {
+    readingCleanup?.()
     ++renderToken
     activeRenderController?.abort()
     activeRenderController = null

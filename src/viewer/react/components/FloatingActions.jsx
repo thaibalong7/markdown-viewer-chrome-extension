@@ -23,20 +23,29 @@ import { CopyLinkIcon } from './icons/CopyLinkIcon.jsx'
 import { ThemeToggleIcon } from './icons/ThemeToggleIcon.jsx'
 import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
 import { getDisplayPathFromFileUrl } from '../../editor/file-io.js'
+import { WatchStatus } from './WatchStatus.jsx'
+import { ChangeReview } from './ChangeReview.jsx'
 import { EditFileConnectDialog } from './EditFileConnectDialog.jsx'
+import { ExitEditConfirmation } from './ExitEditConfirmation.jsx'
 
 export function FloatingActions({
   getArticleEl,
   getSettings,
   getCurrentFileUrl,
   documentUiState,
+  watchState,
+  onWatchCheck,
+  onWatchApply,
+  onReviewSectionNavigate,
   onPrepareEdit,
   onSave,
+  saveStatus = 'saved',
   onViewModeChange,
   onThemeToggle
 }) {
   const exportBtnRef = useRef(null)
   const exportWrapRef = useRef(null)
+  const editButtonRef = useRef(null)
   const { showToast } = useToast()
   const editorState = useEditorState()
   const editorDispatch = useEditorDispatch()
@@ -44,6 +53,7 @@ export function FloatingActions({
   const [themeSaving, setThemeSaving] = useState(false)
   const [connectDialogOpen, setConnectDialogOpen] = useState(false)
   const [connectingFile, setConnectingFile] = useState(false)
+  const [exitDialogOpen, setExitDialogOpen] = useState(false)
   const { copied: copyLinkCopied, flashCopied: flashCopyLinkCopied } = useCopyFeedback()
   const currentFileUrl = getCurrentFileUrl?.() || ''
   const capabilities = documentUiState?.capabilities || {}
@@ -72,6 +82,10 @@ export function FloatingActions({
   useEffect(() => {
     if (editorState.enabled) setMenuOpen(false)
   }, [editorState.enabled])
+
+  useEffect(() => {
+    if (!editorState.enabled || !editorState.dirty || isLoading) setExitDialogOpen(false)
+  }, [editorState.enabled, editorState.dirty, isLoading])
 
   useEffect(() => {
     if (editorState.enabled && (!supportsEditing || (!editorFeatureEnabled && !editorState.dirty))) {
@@ -132,16 +146,23 @@ export function FloatingActions({
   }
 
   const onEditClick = () => {
+    if (saveStatus === 'saving') return
     setMenuOpen(false)
     if (editorState.enabled && editorState.dirty) {
-      const leave = window.confirm('You have unsaved changes. Exit edit mode without saving?')
-      if (!leave) return
+      setExitDialogOpen(true)
+      return
     }
     if (editorState.enabled) {
       editorDispatch({ type: 'TOGGLE_EDIT' })
       return
     }
     if (canStartEdit) setConnectDialogOpen(true)
+  }
+
+  const onDiscardChanges = () => {
+    if (saveStatus === 'saving' || isLoading || !editorState.enabled) return
+    setExitDialogOpen(false)
+    editorDispatch({ type: 'EXIT_EDIT' })
   }
 
   const onConnectConfirm = () => {
@@ -211,6 +232,8 @@ export function FloatingActions({
       hidden={!visible}
       aria-hidden={visible ? 'false' : 'true'}
     >
+      <WatchStatus state={watchState} isEditMode={editorState.enabled} editorDirty={editorState.dirty} onCheck={onWatchCheck} onApply={onWatchApply} />
+      <ChangeReview state={watchState} isEditMode={editorState.enabled} editorDirty={editorState.dirty} onApply={onWatchApply} onCheck={onWatchCheck} onSectionNavigate={onReviewSectionNavigate} />
       {canToggleTheme && (
         <IconButton
           tooltip={themeSaving
@@ -268,13 +291,14 @@ export function FloatingActions({
 
       {canEdit && (
         <IconButton
+          ref={editButtonRef}
           tooltip={editorState.enabled ? 'Exit edit mode' : 'Edit markdown'}
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
           className={`mdp-fab-btn mdp-fab-btn--edit${editorState.dirty ? ' mdp-fab-btn--dirty-dot' : ''}`}
           activeClassName="mdp-fab-btn--active"
           aria-label={editorState.enabled ? 'Exit edit mode' : 'Edit markdown'}
           pressed={editorState.enabled}
-          disabled={isLoading}
+          disabled={isLoading || saveStatus === 'saving'}
           onClick={onEditClick}
         >
           <EditIcon className="mdp-fab-btn__icon" />
@@ -287,6 +311,7 @@ export function FloatingActions({
           showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
           className={`mdp-fab-btn mdp-fab-btn--save${editorState.dirty ? ' is-dirty' : ''}`}
           aria-label="Save markdown file"
+          disabled={saveStatus === 'saving'}
           onClick={onSaveClick}
         >
           <SaveIcon className="mdp-fab-btn__icon" />
@@ -347,6 +372,13 @@ export function FloatingActions({
         />
       )}
       </div>
+      <ExitEditConfirmation
+        open={exitDialogOpen && editorState.enabled && editorState.dirty && !isLoading}
+        busy={saveStatus === 'saving'}
+        returnFocusRef={editButtonRef}
+        onCancel={() => setExitDialogOpen(false)}
+        onConfirm={onDiscardChanges}
+      />
       <EditFileConnectDialog
         open={connectDialogOpen}
         busy={connectingFile}

@@ -2,95 +2,81 @@ import { compile } from 'sass'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-const explorerCss = compile(fileURLToPath(new URL('../explorer.scss', import.meta.url))).css
-const layoutCss = compile(fileURLToPath(new URL('../layout.scss', import.meta.url))).css
-const tocCss = compile(fileURLToPath(new URL('../toc.scss', import.meta.url))).css
+const css = name => compile(fileURLToPath(new URL(`../${name}.scss`, import.meta.url))).css
+const explorerCss = css('explorer')
+const layoutCss = css('layout')
+const tocCss = css('toc')
+const rules = (source, selector) => {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return [...source.matchAll(new RegExp('(?:^|\\n)\\s*' + escaped + '\\s*\\{([^}]*)\\}', 'g'))].map(match => match[1])
+}
 
-describe('sidebar scrollbar layout', () => {
-  it('keeps Files outer padding symmetric and its scrollbar consistent with Outline', () => {
-    expect(layoutCss).toMatch(/\.mdp-sidebar-panel\s*\{[^}]*min-height: 0;[^}]*flex: 1;[^}]*overflow: hidden;/s)
+describe('accepted Viewer sidebar layout', () => {
+  it('preserves Files padding and a stable native gutter underneath the shared overlay thumb', () => {
+    expect(rules(layoutCss, '.mdp-sidebar--files')[0]).toContain('padding-inline: 8px;')
     expect(explorerCss).not.toContain('.mdp-explorer-container')
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__scroll-region\s*\{[^}]*overflow-y:\s*auto;[^}]*scrollbar-gutter:\s*stable;/s
-    )
-    const filesScroll = explorerCss.match(/\.mdp-explorer__scroll-region\s*\{([^}]*)\}/s)[1]
-    const outlineScroll = tocCss.match(/\.mdp-sidebar-panel--outline \.mdp-toc\s*\{([^}]*)\}/s)[1]
-    expect(filesScroll.match(/scrollbar-width:[^;]+;/g)).toEqual(['scrollbar-width: thin;'])
-    expect(outlineScroll.match(/scrollbar-width:[^;]+;/g)).toEqual(['scrollbar-width: thin;'])
-    expect(layoutCss).not.toMatch(/\.mdp-sidebar--files\s*\{[^}]*--mdp-explorer-scrollbar-width/s)
-    expect(layoutCss).toMatch(
-      /\.mdp-sidebar--files\s*\{[^}]*padding-inline:\s*8px;/s
-    )
+    for (const body of [rules(explorerCss, '.mdp-explorer__scroll-region')[0], rules(tocCss, '.mdp-sidebar-panel--outline .mdp-toc')[0]]) {
+      expect(body).toContain('overflow-y: auto;')
+      expect(body).toContain('scrollbar-gutter: stable;')
+      expect(body).toContain('scrollbar-color: transparent transparent;')
+    }
+    expect(rules(layoutCss, '.mdp-viewer-scrollbar--sidebar')[0]).toContain('width: 8px;')
+    expect(rules(layoutCss, '.mdp-viewer-scrollbar--sidebar .mdp-viewer-scrollbar__thumb')[0]).toContain('width: 6px;')
+    expect(layoutCss).toMatch(/\.mdp-viewer-scrollbar__thumb\s*\{[^}]*--mdp-scrollbar-thumb/s)
+    expect(tocCss).toContain('@media (forced-colors: active)')
   })
 
-  it('reserves a stable scrollbar gutter in Outline', () => {
-    expect(tocCss).toMatch(
-      /\.mdp-sidebar-panel--outline \.mdp-toc\s*\{[^}]*overflow-y:\s*auto;[^}]*scrollbar-gutter:\s*stable;/s
-    )
-    expect(layoutCss).toMatch(
-      /\.mdp-right-rail\s*\{[^}]*padding-inline-start:\s*8px;[^}]*padding-inline-end:\s*14px;/s
-    )
+  it('keeps heading names on one line with the established hierarchy and pointer targets', () => {
+    expect(rules(tocCss, '.mdp-toc__link')[0]).toContain('white-space: nowrap;')
+    expect(rules(tocCss, '.mdp-toc__link--h1')[0]).toContain('padding-left: 10px;')
+    expect(rules(tocCss, '.mdp-toc__link--h6')[0]).toContain('padding-left: 50px;')
+    expect(rules(tocCss, '.mdp-toc__link').at(-1)).toContain('min-height: 44px;')
   })
 
-  it('uses compact hierarchy spacing while keeping heading names on one line', () => {
-    expect(tocCss).toMatch(
-      /\.mdp-toc__link\s*\{[^}]*padding:\s*8px 6px;[^}]*white-space:\s*nowrap;/s
-    )
-    expect(tocCss).toMatch(/\.mdp-toc__link--h1\s*\{[^}]*padding-left:\s*10px;/s)
-    expect(tocCss).toMatch(/\.mdp-toc__link--h2\s*\{[^}]*padding-left:\s*18px;/s)
-    expect(tocCss).toMatch(/\.mdp-toc__link--h6\s*\{[^}]*padding-left:\s*50px;/s)
-    expect(tocCss).not.toMatch(/\.mdp-toc__link--h\d\.is-active\s*\{[^}]*padding-left:/s)
+  it('allocates toolbar width independently of the fixed Outline label', () => {
+    expect(rules(layoutCss, '.mdp-right-rail__commands')[0]).toMatch(/flex: 1;[\s\S]*min-width: 0;/)
+    expect(rules(layoutCss, '.mdp-right-rail__title')[0]).toContain('flex: 0 0 60px;')
+    expect(rules(layoutCss, '.mdp-floating-actions')[0]).toContain('flex-wrap: nowrap;')
+    expect(layoutCss).not.toContain('mdp-right-rail__restore')
   })
 
-  it('shares theme scrollbar colors between native panels and the viewer overlay', () => {
-    expect(tocCss).toMatch(
-      /\.mdp-sidebar-panel--outline \.mdp-toc\s*\{[^}]*scrollbar-color:\s*var\(--mdp-scrollbar-thumb\) transparent;/s
-    )
-    expect(tocCss).toMatch(
-      /\.mdp-sidebar-panel--outline \.mdp-toc::-webkit-scrollbar-thumb\s*\{[^}]*background:\s*var\(--mdp-scrollbar-thumb\);/s
-    )
-    expect(tocCss).toMatch(
-      /\.mdp-sidebar-panel--outline \.mdp-toc::-webkit-scrollbar-thumb:hover\s*\{[^}]*background:\s*var\(--mdp-scrollbar-thumb-hover\);/s
-    )
-    expect(layoutCss).toMatch(
-      /\.mdp-viewer-scrollbar__thumb\s*\{[^}]*background:\s*var\(\s*--mdp-scrollbar-thumb,/s
-    )
+  it('aligns both secondary rows and list starts while retaining the Files UI', () => {
+    const metrics = rules(layoutCss, '.mdp-body').find(body => body.includes('--mdp-sidebar-top-inset'))
+    expect(metrics).toContain('--mdp-sidebar-primary-row-height: 36px;')
+    expect(metrics).toContain('--mdp-sidebar-secondary-row-height: 44px;')
+    expect(metrics).toContain('--mdp-sidebar-content-gap: 12px;')
+    const files = rules(explorerCss, '.mdp-explorer__toolbar')[0]
+    const outline = rules(tocCss, '.mdp-sidebar-panel--outline .mdp-outline__header')[0]
+    for (const body of [files, outline]) {
+      expect(body).toContain('min-height: var(--mdp-sidebar-secondary-row-height);')
+      expect(body).toContain('border-bottom: 1px solid var(--mdp-border);')
+    }
+    expect(rules(explorerCss, '.mdp-explorer__scroll-region')[0]).toContain('margin-top: var(--mdp-sidebar-content-gap);')
+    expect(outline).toContain('margin-bottom: var(--mdp-sidebar-content-gap);')
+    expect(explorerCss).toContain('min-height: 86px;')
+    expect(layoutCss).toContain('min-height: 86px;')
   })
 
-  it('adapts expanded document actions to the resized right rail', () => {
-    expect(layoutCss).toMatch(
-      /\.mdp-right-rail\s*\{[^}]*container:\s*mdp-right-rail\s*\/\s*inline-size;/s
-    )
-    expect(layoutCss).toMatch(
-      /\.mdp-floating-actions\.mdp-floating-actions--rail-strip\s*\{[^}]*gap:\s*4px;[^}]*padding:\s*0;[^}]*border:\s*0;[^}]*background:\s*transparent;[^}]*box-shadow:\s*none;/s
-    )
-    expect(layoutCss).toMatch(
-      /\.mdp-panel-toggle\s*\{[^}]*top:\s*16px;/s
-    )
-    expect(layoutCss).not.toMatch(/\.mdp-panel-toggle--(?:files|outline)\s*\{[^}]*top:/s)
-    expect(layoutCss).toMatch(
-      /\.mdp-right-rail__actions-row\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*min-height:\s*44px;[^}]*padding:\s*0 2px 8px;[^}]*border-bottom:/s
-    )
-    expect(layoutCss).toMatch(
-      /@container mdp-right-rail \(max-width: 339px\)[\s\S]*\.mdp-right-rail__actions-label\s*\{[^}]*display:\s*none;/s
-    )
-    expect(layoutCss).toMatch(
-      /\.mdp-right-rail--actions-only > \.mdp-right-rail__actions-row\s*\{[^}]*display:\s*contents;/s
-    )
-    expect(tocCss).toMatch(
-      /\.mdp-sidebar-panel--outline\s*\{[^}]*padding-top:\s*12px;/s
-    )
+  it('separates the #22 face from mouse and touch hit areas and gates motion', () => {
+    const target = rules(layoutCss, '.mdp-panel-toggle')[0]
+    expect(target).toContain('width: 24px;')
+    expect(target).toContain('height: 44px;')
+    const face = rules(layoutCss, '.mdp-panel-toggle__face')[0]
+    expect(face).toContain('width: 12px;')
+    expect(face).toContain('height: 26px;')
+    expect(rules(layoutCss, '.mdp-panel-toggle').at(-1)).toContain('width: 44px;')
+    expect(layoutCss).toContain('@media (prefers-reduced-motion: no-preference)')
+    expect(layoutCss).toContain('animation: mdp-sidebar-light-pass 580ms')
+    expect(rules(layoutCss, '.mdp-panel-toggle__chevron')[0]).not.toContain('animation:')
   })
 
-  it('keeps collapsed actions visually consistent with the expanded utility strip', () => {
-    expect(layoutCss).toMatch(
-      /\.mdp-right-rail--actions-only \.mdp-floating-actions--rail-strip\s*\{[^}]*flex-direction:\s*column;[^}]*flex-wrap:\s*nowrap;/s
-    )
-    expect(layoutCss).toMatch(
-      /\.mdp-floating-actions--rail-strip \.mdp-fab-btn:not\(\.mdp-fab-btn--theme\)\s*\{[^}]*border-color:\s*transparent;/s
-    )
-    expect(layoutCss).toMatch(
-      /\.mdp-right-rail--outline-collapsed \.mdp-floating-actions\s*\{[^}]*margin-top:\s*0;/s
-    )
+  it('fits collapsed actions using their actual divider spacing and keeps responsive docks', () => {
+    const collapsed = '.mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed'
+    expect(rules(layoutCss, collapsed)[0]).toContain('padding-top: 57.5px;')
+    expect(rules(layoutCss, collapsed + ' .mdp-floating-actions')[0]).toContain('--mdp-action-divider-size: 21px;')
+    expect(rules(layoutCss, collapsed + ' .mdp-document-actions__divider')[0]).toContain('margin-block: 8px;')
+    expect(layoutCss).toContain('padding-top: 103.5px;')
+    expect(layoutCss).toContain('@media (max-width: 639px)')
+    expect(layoutCss).toContain('width: min(360px, 100vw - 24px);')
   })
 })

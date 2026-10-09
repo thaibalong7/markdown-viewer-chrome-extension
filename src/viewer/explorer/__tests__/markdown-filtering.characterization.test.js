@@ -158,6 +158,48 @@ describe('supported-document explorer filtering', () => {
     expect([...readers.keys()].every((href) => href.startsWith('mdp-ws-file:'))).toBe(true)
   })
 
+  it('places directory-handle folders above files regardless of their names', async () => {
+    const root = directoryHandle('Project', [
+      ['alpha.md', fileHandle('alpha.md')],
+      ['Zulu', directoryHandle('Zulu', [['nested.md', fileHandle('nested.md')]])]
+    ])
+
+    const { tree } = await scanWorkspaceFromDirectoryHandle(root, {
+      respectGitignore: false
+    })
+
+    expect(tree.children.map((node) => `${node.type}:${node.name}`)).toEqual([
+      'folder:Zulu',
+      'file:alpha.md'
+    ])
+  })
+
+  it('keeps file URL folders above files while scanning root siblings first', async () => {
+    sendMessage.mockImplementation(async ({ payload }) => ({
+      ok: true,
+      data: {
+        text: payload.url === 'file:///fixtures/Zulu/'
+          ? '<script>addRow("nested.md", "nested.md", false, 1);</script>'
+          : [
+              '<script>',
+              'addRow("alpha.md", "alpha.md", false, 1);',
+              'addRow("Zulu", "Zulu/", true, 1);',
+              '</script>'
+            ].join('\n')
+      }
+    }))
+
+    const { tree } = await scanFolderRecursive('file:///fixtures/', {
+      respectGitignore: false,
+      siblingsFirstAtRoot: true
+    })
+
+    expect(tree.children.map((node) => `${node.type}:${node.name}`)).toEqual([
+      'folder:Zulu',
+      'file:alpha.md'
+    ])
+  })
+
   it('applies the same supported-file allowlist to recursive file URL scans', async () => {
     sendMessage.mockResolvedValue({
       ok: true,

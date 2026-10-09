@@ -71,3 +71,9 @@
     display: none !important;
   }
 }
+
+.mdp-viewer-scrollbar--sidebar {
+  width: 8px;
+  .mdp-viewer-scrollbar__thumb { width: 6px; box-shadow: none; }
+  &:hover .mdp-viewer-scrollbar__thumb, &:focus-visible .mdp-viewer-scrollbar__thumb { width: 6px; }
+}

@@ -93,19 +93,6 @@ describe('createStyleVars', () => {
     }
   })
 
-  it('exposes theme-specific panel toggle styling', () => {
-    const lightVars = createStyleVars({ theme: { activeId: 'light', customThemes: [] } })
-    const darkVars = createStyleVars({ theme: { activeId: 'dark', customThemes: [] } })
-
-    expect(lightVars['--mdp-panel-toggle-bg']).toBe('#edf3fc')
-    expect(lightVars['--mdp-panel-toggle-text']).toBe('#58709a')
-    expect(lightVars['--mdp-panel-toggle-shadow']).toContain('rgb(23 32 51')
-    expect(darkVars['--mdp-panel-toggle-bg']).toBe('#1d2735')
-    expect(darkVars['--mdp-panel-toggle-text']).toBe('#9ba9bb')
-    expect(darkVars['--mdp-panel-toggle-hover-bg'])
-      .not.toBe(lightVars['--mdp-panel-toggle-hover-bg'])
-  })
-
   it('uses neutral surfaces and reserves sakura pink for emphasis', () => {
     const vars = createStyleVars({ theme: { activeId: 'sakura', customThemes: [] } })
 

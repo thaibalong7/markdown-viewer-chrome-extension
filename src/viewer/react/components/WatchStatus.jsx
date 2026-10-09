@@ -41,7 +41,7 @@ export function getWatchTriggerPresentation(state, isEditMode) {
   return { action: 'details', label: 'Document updates' }
 }
 
-export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onApply }) {
+export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onApply, disabled = false, dismissSignal }) {
   const [open, setOpen] = useState(false)
   const [confirmingApply, setConfirmingApply] = useState(false)
   const presentation = getWatchTriggerPresentation(state, isEditMode)
@@ -56,10 +56,13 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
   const panelId = useId()
   const editorWarningId = useId()
   const close = useCallback(() => setOpen(false), [])
-  useDismissableLayer({ open: open && !confirmingApply, layerRef: wrapRef, onDismiss: close, restoreFocusRef: triggerRef, preventEscapeDefault: true })
+  useDismissableLayer({ open: open && !confirmingApply, layerRef: wrapRef, onDismiss: close, restoreFocusRef: triggerRef, preventEscapeDefault: true, dismissOnFocusOutside: true })
   useEffect(() => {
     if (!state.available) setOpen(false)
   }, [state.available])
+  useEffect(() => {
+    if (disabled || dismissSignal) setOpen(false)
+  }, [disabled, dismissSignal])
   useEffect(() => {
     if (!isEditMode || !state.pending) setConfirmingApply(false)
   }, [isEditMode, state.pending])
@@ -117,7 +120,7 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
         aria-expanded={appliesOnClick ? undefined : open}
         aria-controls={appliesOnClick ? undefined : panelId}
         data-mdp-watch-action={presentation.action}
-        disabled={appliesOnClick && state.manualChecking}
+        disabled={disabled || (appliesOnClick && state.manualChecking)}
         onClick={handleTriggerClick}
       >
         <span className={`mdp-fab-btn__icon mdp-watch-status__icon-swap${appliesOnClick ? ' is-apply' : ''}`}>
@@ -125,7 +128,7 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
           <DocumentApplyIcon className="mdp-watch-status__icon mdp-watch-status__icon--apply" />
         </span>
       </IconButton>
-      {noticeVisible && (
+      {noticeVisible && !disabled && (
         <button
           type="button"
           className="mdp-watch-status__notice"

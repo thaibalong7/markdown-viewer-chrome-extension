@@ -237,7 +237,8 @@
 .mdp-fab-btn--edit:not(.mdp-fab-btn--active) {
   color: var(--mdp-warning);
 
-  &:hover {
+  &:hover:not(:disabled) {
+    color: var(--mdp-warning);
     border-color: color-mix(in srgb, var(--mdp-warning) 36%, var(--mdp-border));
     background: var(--mdp-warning-soft);
   }
@@ -396,7 +397,7 @@
       inset: 12px 12px auto auto;
       z-index: 16;
       display: block;
-      width: auto;
+      width: min(360px, calc(100vw - 24px));
       height: auto;
       padding: 5px;
       border: 1px solid var(--mdp-border);
@@ -419,7 +420,7 @@
       position: fixed;
       inset: 12px 12px auto auto;
       z-index: 16;
-      width: auto;
+      width: min(360px, calc(100vw - 24px));
       height: auto;
       padding: 5px;
       border: 1px solid var(--mdp-border);
@@ -428,5 +429,12 @@
       box-shadow: var(--mdp-shadow-float);
       backdrop-filter: blur(14px);
     }
+  }
+
+  .mdp-body.mdp-body--edit-split,
+  .mdp-body.mdp-body--edit-focus {
+    .mdp-floating-actions { flex-direction: row; height: auto; }
+    .mdp-document-actions__divider { width: 1px; height: 16px; margin: 0 1.5px; }
+    .mdp-right-rail__actions-row { flex: none; min-height: 0; }
   }
 }

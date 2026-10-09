@@ -73,10 +73,10 @@ describe('current document-action visibility assumptions', () => {
   it('shows Markdown edit, print, export, and copy-link actions for a local file', () => {
     const html = renderActions('file:///fixtures/navigation/index.md')
 
-    expect(html).toContain('mdp-floating-actions--rail-strip')
+    expect(html).toContain('role="group" aria-label="Document actions"')
     expect(html).toContain('aria-label="Edit markdown"')
-    expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
-    expect(html).toContain('aria-label="Download — HTML or Word (.doc)."')
+    expect(html).toContain('aria-label="Print / Save as PDF"')
+    expect(html).toContain('aria-label="Export document"')
     expect(html).toContain('aria-label="Copy open file link"')
     expect(html).not.toContain('files panel')
   })
@@ -85,8 +85,8 @@ describe('current document-action visibility assumptions', () => {
     const html = renderActions(`${MDP_WS_FILE}${encodeURIComponent('Dự án/README.md')}`)
 
     expect(html).not.toContain('aria-label="Edit markdown"')
-    expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
-    expect(html).toContain('aria-label="Download — HTML or Word (.doc)."')
+    expect(html).toContain('aria-label="Print / Save as PDF"')
+    expect(html).toContain('aria-label="Export document"')
     expect(html).toMatch(/<button[^>]*aria-label="Copy open file link"[^>]*disabled=""/)
   })
 
@@ -102,15 +102,15 @@ describe('current document-action visibility assumptions', () => {
     )
 
     expect(html).not.toContain('aria-label="Edit markdown"')
-    expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
+    expect(html).toContain('aria-label="Print / Save as PDF"')
   })
 
   it('shows only generic and print actions for a plain text document', () => {
     const html = renderActions('file:///fixtures/notes.txt', 'text')
 
     expect(html).not.toContain('aria-label="Edit markdown"')
-    expect(html).not.toContain('aria-label="Download — HTML or Word (.doc)."')
-    expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
+    expect(html).not.toContain('aria-label="Export document"')
+    expect(html).toContain('aria-label="Print / Save as PDF"')
     expect(html).toContain('aria-label="Copy open file link"')
     expect(html).not.toContain('files panel')
   })
@@ -119,8 +119,8 @@ describe('current document-action visibility assumptions', () => {
     const html = renderActions('file:///fixtures/photo.png', 'raster-image')
 
     expect(html).not.toContain('aria-label="Edit markdown"')
-    expect(html).not.toContain('aria-label="Download — HTML or Word (.doc)."')
-    expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
+    expect(html).not.toContain('aria-label="Export document"')
+    expect(html).toContain('aria-label="Print / Save as PDF"')
     expect(html).toContain('aria-label="Copy open file link"')
     expect(html).not.toContain('files panel')
   })
@@ -129,9 +129,9 @@ describe('current document-action visibility assumptions', () => {
     const html = renderActions('file:///fixtures/diagram.svg', 'svg-image')
 
     expect(html).not.toContain('aria-label="Edit markdown"')
-    expect(html).not.toContain('aria-label="Download — HTML or Word (.doc)."')
+    expect(html).not.toContain('aria-label="Export document"')
     expect(html).not.toContain('View source')
-    expect(html).toContain('aria-label="Print — use Save as PDF in the print dialog."')
+    expect(html).toContain('aria-label="Print / Save as PDF"')
     expect(html).toContain('aria-label="Copy open file link"')
     expect(html).not.toContain('files panel')
   })
@@ -141,7 +141,7 @@ describe('current document-action visibility assumptions', () => {
     expect(rendered).toContain('aria-label="View source"')
     expect(rendered).toContain('aria-pressed="false"')
     expect(rendered).not.toContain('aria-label="Edit markdown"')
-    expect(rendered).not.toContain('aria-label="Download — HTML or Word (.doc)."')
+    expect(rendered).not.toContain('aria-label="Export document"')
 
     const raw = renderActions('file:///fixtures/chart.mermaid', 'mermaid', 'raw')
     expect(raw).toContain('aria-label="View diagram"')
@@ -155,7 +155,7 @@ describe('current document-action visibility assumptions', () => {
 
     expect(html).toMatch(/<button[^>]*aria-label="View source"[^>]*disabled=""/)
     expect(html).toMatch(/<button[^>]*aria-label="Copy open file link"[^>]*disabled=""/)
-    expect(html).toMatch(/<button[^>]*aria-label="Print — use Save as PDF in the print dialog\."[^>]*disabled=""/)
+    expect(html).toMatch(/<button[^>]*aria-label="Print \/ Save as PDF"[^>]*disabled=""/)
   })
 
   it('offers a fixed light/dark theme toggle without absorbing future presets', () => {

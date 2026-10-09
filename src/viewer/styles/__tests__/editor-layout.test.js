@@ -72,14 +72,16 @@ describe('editor layout styles', () => {
     )
   })
 
-  it('gives the light/dark quick toggle distinct theme-aware emphasis', () => {
+  it('keeps default icons quiet and restores semantic colors without changing targets', () => {
     expect(layoutCss).toMatch(
-      /\.mdp-fab-btn--theme\s*\{[^}]*--mdp-theme-action-color:\s*var\(--mdp-link\);[^}]*box-shadow:/s
+      /\.mdp-fab-btn\s*\{[^}]*border:\s*1px solid transparent;[^}]*background:\s*transparent;[^}]*color:\s*var\(--mdp-muted\);/s
     )
     expect(layoutCss).toMatch(
-      /\.mdp-fab-btn--theme\[aria-pressed=true\]\s*\{[^}]*--mdp-theme-action-color:\s*var\(--mdp-warning\);/s
+      /\.mdp-floating-actions\s*\{[^}]*--mdp-action-size:\s*44px;/s
     )
-    expect(layoutCss).toContain('.mdp-fab-btn__theme-icon--light')
-    expect(layoutCss).toContain('.mdp-fab-btn__theme-icon--dark')
+    expect(layoutCss).toContain('--mdp-theme-action-color: var(--mdp-link)')
+    expect(layoutCss).toMatch(/\.mdp-fab-btn--theme:has\(\.mdp-fab-btn__theme-icon--light\)\s*\{[^}]*--mdp-theme-action-color: var\(--mdp-warning\)/s)
+    expect(layoutCss).toMatch(/\.mdp-fab-btn--edit:not\(\.mdp-fab-btn--active\)\s*\{[^}]*color: var\(--mdp-warning\)/s)
+    expect(layoutCss).toMatch(/\.mdp-fab-btn:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--mdp-link\)/s)
   })
 })

@@ -13,6 +13,7 @@ import {
 } from './sibling-scanner.js'
 import { normalizeDirectoryUrl, normalizeFileUrlForCompare } from './url-utils.js'
 import { createGitignoreMatcher, pruneExplorerFoldersWithoutViewableFiles } from './gitignore-matcher.js'
+import { compareExplorerTreeNodes } from './explorer-tree-utils.js'
 
 /**
  * @typedef {object} ExplorerTreeNode
@@ -284,6 +285,8 @@ export async function scanFolderRecursive(rootDirUrl, options = {}) {
 
       if (!pushSupportedFile(entry)) break
     }
+
+    children.sort(compareExplorerTreeNodes)
 
     return {
       type: 'folder',

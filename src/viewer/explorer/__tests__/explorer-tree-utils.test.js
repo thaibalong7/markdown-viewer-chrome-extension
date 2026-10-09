@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import {
   buildCollapsedExpandedMap,
   buildInitialExpandedMap,
-  buildPreservedExpandedMap
+  buildPreservedExpandedMap,
+  compareExplorerTreeNodes
 } from '../explorer-tree-utils.js'
 import { normalizeFileUrlForCompare } from '../url-utils.js'
 
@@ -94,5 +95,23 @@ describe('explorer tree expanded state', () => {
     )
 
     expect(Array.from(map.values())).toEqual([false, false])
+  })
+})
+
+describe('explorer tree ordering', () => {
+  it('places folders before files and sorts each group by name', () => {
+    const nodes = [
+      { type: 'file', name: 'alpha.md' },
+      { type: 'folder', name: 'Zulu' },
+      { type: 'file', name: 'Beta.md' },
+      { type: 'folder', name: 'assets' }
+    ]
+
+    expect(nodes.sort(compareExplorerTreeNodes).map((node) => `${node.type}:${node.name}`)).toEqual([
+      'folder:assets',
+      'folder:Zulu',
+      'file:alpha.md',
+      'file:Beta.md'
+    ])
   })
 })

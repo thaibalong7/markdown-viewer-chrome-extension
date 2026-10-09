@@ -1,219 +1,167 @@
 @use 'variables' as v;
 
-/* Document controls hosted by the right-side rail. */
+// Viewer-local Direct icons. Geometry is also read by useDocumentActionsLayout.
 .mdp-floating-actions {
+  --mdp-action-size: 28px;
   display: flex;
+  flex: none;
+  flex-wrap: nowrap;
   align-items: center;
-  flex-wrap: wrap;
   gap: 4px;
-  flex-shrink: 0;
-  padding: 6px;
-  border: 1px solid var(--mdp-border);
-  border-radius: v.$radius-default;
-  background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
-  box-shadow: var(--mdp-shadow-subtle);
-
-  &[hidden] {
-    display: none;
-  }
-}
-
-.mdp-floating-actions.mdp-floating-actions--rail-strip {
-  gap: 4px;
+  min-width: 0;
   padding: 0;
   border: 0;
-  border-radius: 0;
   background: transparent;
   box-shadow: none;
+
+  &[hidden] { display: none; }
 }
 
-.mdp-right-rail--actions-only .mdp-floating-actions--rail-strip {
+.mdp-document-actions__slot {
+  position: relative;
+  flex: none;
+  width: var(--mdp-action-size);
+  height: var(--mdp-action-size);
+}
+
+.mdp-document-actions__divider {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 16px;
+  margin: 0 1.5px;
+  background: var(--mdp-border);
+  pointer-events: none;
+}
+
+.mdp-right-rail--actions-only .mdp-floating-actions {
   flex-direction: column;
-  flex-wrap: nowrap;
-}
-
-.mdp-floating-actions--rail-strip .mdp-fab-btn:not(.mdp-fab-btn--theme) {
-  border-color: transparent;
+  height: 100%;
 }
 
 .mdp-fab-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  flex: none;
+  width: var(--mdp-action-size, 34px);
+  height: var(--mdp-action-size, 34px);
   padding: 0;
-  border: 1px solid var(--mdp-border);
+  border: 1px solid transparent;
   border-radius: v.$radius-small;
   background: transparent;
   color: var(--mdp-muted);
   cursor: pointer;
-  transition:
-    color 140ms ease,
-    background-color 140ms ease,
-    border-color 140ms ease,
-    box-shadow 140ms ease,
-    transform 140ms ease;
+  transition: color 140ms ease, background-color 140ms ease;
 
-  &:hover {
+  &:hover:where(:not(:disabled)) {
     color: var(--mdp-link);
-    border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
     background: var(--mdp-link-soft);
   }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
   &:focus-visible {
     outline: 2px solid var(--mdp-link);
     outline-offset: 2px;
   }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.45;
-    pointer-events: none;
-  }
-
-  &.is-copied {
-    color: var(--mdp-accent);
-    border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
-    background: var(--mdp-accent-soft);
-    pointer-events: none;
-
-    .mdp-fab-btn__icon {
-      display: none;
-    }
-
-    &::after {
-      content: '✓';
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1;
-    }
-  }
+  &:disabled { cursor: not-allowed; opacity: .45; }
+  &.is-copied { color: var(--mdp-accent); }
 }
 
-.mdp-fab-btn__icon {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
-}
-
+// Retain the original blue moon / amber sun treatment in the new direct row.
 .mdp-fab-btn--theme {
   --mdp-theme-action-color: var(--mdp-link);
   --mdp-theme-action-soft: var(--mdp-link-soft);
 
-  color: var(--mdp-theme-action-color);
-  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 44%, var(--mdp-border));
-  background: color-mix(in srgb, var(--mdp-theme-action-soft) 88%, transparent);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--mdp-theme-action-color) 18%, transparent);
-
-  &:hover {
-    color: var(--mdp-theme-action-color);
-    border-color: color-mix(in srgb, var(--mdp-theme-action-color) 68%, var(--mdp-border));
-    background: color-mix(in srgb, var(--mdp-theme-action-soft) 76%, var(--mdp-theme-action-color) 10%);
-    box-shadow: 0 3px 11px color-mix(in srgb, var(--mdp-theme-action-color) 25%, transparent);
-  }
-
-  &[aria-pressed='true'] {
+  &:has(.mdp-fab-btn__theme-icon--light) {
     --mdp-theme-action-color: var(--mdp-warning);
     --mdp-theme-action-soft: var(--mdp-warning-soft);
   }
-}
 
-.mdp-fab-btn__theme-icon {
-  transition: transform 180ms ease;
+  &, &:hover:not(:disabled) {
+    color: var(--mdp-theme-action-color);
+    border-color: color-mix(in srgb, var(--mdp-theme-action-color) 44%, var(--mdp-border));
+    background: color-mix(in srgb, var(--mdp-theme-action-soft) 88%, transparent);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--mdp-theme-action-color);
+    background: var(--mdp-theme-action-soft);
+  }
 }
 
 .mdp-fab-btn__theme-icon--dark path,
 .mdp-fab-btn__theme-icon--light circle {
   fill: currentColor;
-  fill-opacity: 0.16;
+  fill-opacity: .16;
 }
 
-.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--dark {
-  transform: rotate(-12deg) scale(1.08);
-}
-
-.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--light {
-  transform: rotate(18deg) scale(1.08);
-}
-
-.mdp-fab-export {
-  position: relative;
-}
-
-.mdp-fab-export__menu {
+.mdp-fab-btn__icon { width: 18px; height: 18px; flex: none; }
+.mdp-document-actions-menu { position: relative; }
+.mdp-document-actions-menu__panel {
   position: absolute;
-  top: 0;
-  right: calc(100% + 6px);
   z-index: 30;
-  min-width: 172px;
+  width: min(240px, calc(100vw - 16px));
   padding: 5px;
-  border-radius: v.$radius-default;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--mdp-border);
+  border-radius: v.$radius-default;
   background: var(--mdp-surface);
   box-shadow: var(--mdp-shadow-float);
+  &[hidden] { display: none; }
+  .mdp-action-menu__tooltip-anchor { display: block; }
 }
-
-.mdp-fab-export__menu-item {
+.mdp-document-actions-menu__item {
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 38px;
-  margin: 0;
-  padding: 8px 10px;
+  min-height: 34px;
+  gap: 10px;
+  padding: 6px 10px;
   border: 0;
-  border-radius: v.$radius-tiny;
+  border-radius: 4px;
   background: transparent;
   color: var(--mdp-text);
   font: inherit;
-  font-size: 14px;
+  font-size: 12px;
   text-align: left;
   cursor: pointer;
-
-  &:hover,
-  &:focus-visible {
-    color: var(--mdp-link);
-    background: var(--mdp-link-soft);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--mdp-link);
-    outline-offset: -1px;
-  }
+  &:hover:not(:disabled), &:focus-visible { background: var(--mdp-panel-strong); }
+  &:focus-visible { outline: 2px solid var(--mdp-link); outline-offset: -2px; }
+  &:disabled { opacity: .45; cursor: not-allowed; }
+}
+.mdp-document-actions-menu__icon { width: 16px; height: 16px; flex: none; }
+.mdp-document-actions-menu .mdp-action-menu__group-label {
+  padding: 8px 10px 5px;
+  color: var(--mdp-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+.mdp-document-actions-menu .mdp-action-menu__separator {
+  height: 1px;
+  margin: 5px 4px;
+  background: var(--mdp-border);
 }
 
-@media (max-width: 899px) {
-  .mdp-floating-actions {
-    flex-direction: column;
-    flex-wrap: nowrap;
-    padding: 5px;
-    background: var(--mdp-surface);
+@media (min-width: 640px) {
+  .mdp-right-rail--actions-only .mdp-document-actions__divider {
+    width: 20px;
+    height: 1px;
+    margin: 1.5px 0;
   }
 }
-
+@media (min-width: 640px) and (max-width: 899px) {
+  .mdp-floating-actions { flex-direction: column; height: 100%; }
+  .mdp-document-actions__divider { width: 20px; height: 1px; margin: 1.5px 0; }
+}
 @media (max-width: 639px) {
   .mdp-floating-actions,
-  .mdp-right-rail--actions-only .mdp-floating-actions {
-    flex-direction: row;
-    padding: 4px;
-  }
-
-  .mdp-floating-actions.mdp-floating-actions--rail-strip {
-    padding: 0;
-  }
-
-  .mdp-fab-export__menu {
-    inset: auto 0 calc(100% + 8px) auto;
-  }
+  .mdp-right-rail--actions-only .mdp-floating-actions { flex-direction: row; height: auto; }
 }
-
 @media (pointer: coarse) {
-  .mdp-fab-btn {
-    width: 44px;
-    height: 44px;
-  }
+  .mdp-floating-actions { --mdp-action-size: 44px; }
+  .mdp-fab-btn { width: 44px; height: 44px; }
+  .mdp-document-actions-menu__item { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-fab-btn { transition: none; }
 }

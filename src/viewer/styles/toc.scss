@@ -1,11 +1,22 @@
 @use 'variables' as v;
 
 .mdp-sidebar-panel--outline {
-  padding-top: 12px;
+  padding-top: 0;
 
   .mdp-outline__header {
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: none;
+    gap: 8px;
+    min-height: var(--mdp-sidebar-secondary-row-height);
+    padding: 4px 2px 8px;
+    margin-bottom: var(--mdp-sidebar-content-gap);
+    border-bottom: 1px solid var(--mdp-border);
+    color: var(--mdp-muted);
+    font-size: 11px;
   }
+  .mdp-outline__count { flex: none; font-variant-numeric: tabular-nums; }
 
   .mdp-toc {
     flex: 1;
@@ -13,7 +24,7 @@
     overflow-y: auto;
     scrollbar-gutter: stable;
     contain: content;
-    @include v.scrollbar-thin;
+    @include v.sidebar-scrollbar;
   }
 }
 

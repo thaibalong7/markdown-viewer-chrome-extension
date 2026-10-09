@@ -151,7 +151,7 @@ KiB. Do not duplicate complete rule bodies there.
 `.claude/CLAUDE.md` is a thin Claude-specific pointer. It lists always-on rule
 names and routes agent-config lifecycle work without copying their bodies.
 
-UI design requests, including proposals before files exist, are routed by `00-project-context.md` to [`25-ui-design-system.md`](.agents/rules/25-ui-design-system.md). That scoped rule owns the design review workflow and uses the [design-system lookup map](docs/design-system/README.md#find-the-relevant-contract) for selective reference reading.
+UI design requests, including proposals before files exist, are routed by `00-project-context.md` to [`25-ui-design-system.md`](.agents/rules/25-ui-design-system.md). That scoped rule owns the design review workflow and uses the [design-system lookup map](docs/design-system/README.md#find-the-relevant-contract) for selective reference reading. Its scope also includes [Document actions](docs/document-actions.md), the Viewer integration guide; visual dimensions remain in the design-system contracts rather than being duplicated in rules.
 
 A project `GEMINI.md` is unnecessary unless Antigravity needs a deliberate
 override that should not affect the other agents.

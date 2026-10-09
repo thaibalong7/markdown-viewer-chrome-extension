@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { FilesPanel } from './FilesPanel.jsx'
 import { PanelToggleButton } from './PanelToggleButton.jsx'
 import { ResizeHandle } from './ResizeHandle.jsx'
@@ -7,27 +7,20 @@ export function Sidebar({ explorerBridge, rootEl, settings, expanded, onToggle }
   const [sidebarEl, setSidebarEl] = useState(null)
   const [handleEl, setHandleEl] = useState(null)
 
-  const handleSidebarRef = useCallback((node) => {
-    setSidebarEl(node)
-  }, [])
-
-  const handleResizeRef = useCallback((node) => {
-    setHandleEl(node)
-  }, [])
-
   return (
     <aside
       className={`mdp-sidebar mdp-sidebar--files ${
         expanded ? 'mdp-sidebar--expanded' : 'mdp-sidebar--collapsed'
       }`}
       aria-label="Files"
-      ref={handleSidebarRef}
+      ref={setSidebarEl}
     >
       <div
         className="mdp-sidebar__panel-clip"
         aria-hidden={expanded ? 'false' : 'true'}
       >
-        <FilesPanel explorerBridge={explorerBridge} />
+        <FilesPanel explorerBridge={explorerBridge} expanded={expanded}
+          scrollbarVisibility={settings?.appearance?.scrollbarVisibility} />
       </div>
       <PanelToggleButton
         panel="files"
@@ -49,7 +42,7 @@ export function Sidebar({ explorerBridge, rootEl, settings, expanded, onToggle }
           rootEl={rootEl}
           sidebarEl={sidebarEl}
           handleEl={handleEl}
-          setHandleEl={handleResizeRef}
+          setHandleEl={setHandleEl}
           settings={settings}
           side="left"
           panel="files"

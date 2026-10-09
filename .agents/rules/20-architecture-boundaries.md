@@ -49,6 +49,8 @@ trigger: glob
 - React must not reconcile rendered Markdown under `.mdp-markdown-body`; that subtree is owned by the render pipeline and plugin `afterRender` hooks.
 - Preserve stable shell class names and hierarchy (`mdp-root`, `mdp-sidebar`, `mdp-markdown-body`) unless migrating SCSS and scroll math in the same change.
 - Prefer shared chrome primitives in `src/viewer/react/components/common/` and `src/viewer/react/hooks/useDismissableLayer.js`.
+- Keep document command definitions, grouping, and overflow order in `document-actions-model.js`; bind capability-driven handlers through `FloatingActions.jsx`. Measure the allocated command wrapper with `useDocumentActionsLayout.js`, excluding the Outline title and accounting for divider spacing, rather than measuring rendered commands.
+- Files and Outline reuse `PanelToggleButton.jsx` and `ViewerScrollbar.jsx`; preserve accessible toggle/focus behavior, the shared scrollbar appearance setting, virtual-content measurement, and observer/interaction cleanup when panels collapse. Keep Files layout in `explorer.scss` and Outline composition in `RightRail.jsx`, `OutlinePanel.jsx`, `layout.scss`, and `toc.scss`. Consult the [Viewer contracts](../../docs/design-system/README.md#viewer) and [integration guide](../../docs/document-actions.md) before changing these boundaries.
 - Dismiss/escape behavior must be Shadow DOM-safe and cleaned up from React effects.
 - Prefer `src/shared/react/Skeleton.jsx` and `src/shared/styles/_skeleton.scss` for loading placeholders.
 

@@ -30,7 +30,8 @@ export function useDismissableLayer({
   layerRef,
   onDismiss,
   restoreFocusRef,
-  preventEscapeDefault = false
+  preventEscapeDefault = false,
+  dismissOnFocusOutside = false
 }) {
   useEffect(() => {
     if (!open) return undefined
@@ -57,16 +58,22 @@ export function useDismissableLayer({
       restoreFocusRef?.current?.focus?.()
     }
 
+    const onFocusIn = (event) => {
+      if (!eventIncludesNode(event, layer)) dismiss(event)
+    }
+
     targets.forEach((target) => {
       target.addEventListener('pointerdown', onPointerDown, true)
       target.addEventListener('keydown', onKeyDown, true)
+      if (dismissOnFocusOutside) target.addEventListener('focusin', onFocusIn, true)
     })
 
     return () => {
       targets.forEach((target) => {
         target.removeEventListener('pointerdown', onPointerDown, true)
         target.removeEventListener('keydown', onKeyDown, true)
+        if (dismissOnFocusOutside) target.removeEventListener('focusin', onFocusIn, true)
       })
     }
-  }, [layerRef, onDismiss, open, preventEscapeDefault, restoreFocusRef])
+  }, [dismissOnFocusOutside, layerRef, onDismiss, open, preventEscapeDefault, restoreFocusRef])
 }

@@ -10,11 +10,11 @@ describe('explorer interaction styles', () => {
     expect(explorerCss).not.toContain('--mdp-explorer-action-end')
     expect(explorerCss).toMatch(/\.mdp-explorer__scroll-region\s*\{[^}]*overflow-y: auto;/s)
     expect(explorerCss).not.toMatch(/\.mdp-explorer__scroll-region\s*\{[^}]*margin-inline-end:/s)
-    expect(explorerCss).toMatch(/\.mdp-explorer__toolbar\s*\{[^}]*padding: 3px var\(--mdp-explorer-action-inset\) 3px var\(--mdp-explorer-header-inset\);/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__toolbar\s*\{[^}]*padding: 4px var\(--mdp-explorer-action-inset\) 8px var\(--mdp-explorer-header-inset\);/s)
     expect(explorerCss).toMatch(/\.mdp-explorer__context\s*\{[^}]*padding: var\(--mdp-explorer-context-padding\);/s)
     expect(explorerCss).not.toMatch(/\.mdp-explorer__context\s*\{[^}]*padding-inline(?:-start|-end)?:/s)
     expect(explorerCss).not.toMatch(/\.mdp-explorer__(?:context|details-content)\s*\{[^}]*margin-inline:/s)
-    expect(explorerCss).toMatch(/\.mdp-explorer__header\s*\{[^}]*padding: 2px 0 0;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__header\s*\{[^}]*padding: var\(--mdp-sidebar-header-inset\) 0 0;/s)
     expect(explorerCss).toMatch(/\.mdp-explorer__row-actions\s*\{[^}]*right: var\(--mdp-explorer-row-action-inset\);/s)
   })
 

@@ -28,6 +28,8 @@ export const APPLICATION_ICONS = {
   "outline": {"label": "Outline","elements": [["path",{"d": "M9 5h12 M9 12h9 M9 19h12"}],["circle",{"cx": "3","cy": "5","r": "1","fill": "currentColor","stroke": "none"}],["circle",{"cx": "3","cy": "12","r": "1","fill": "currentColor","stroke": "none"}],["circle",{"cx": "3","cy": "19","r": "1","fill": "currentColor","stroke": "none"}]]},
   "chevron-left": {"label": "Chevron left","elements": [["path",{"d": "m14.5 6.5-5.5 5.5 5.5 5.5"}]]},
   "chevron-right": {"label": "Chevron right","elements": [["path",{"d": "m9.5 6.5 5.5 5.5-5.5 5.5"}]]},
+  "sidebar-chevron-left": {"label": "Sidebar chevron left","elements": [["path",{"d": "m15 6-6 6 6 6"}]]},
+  "sidebar-chevron-right": {"label": "Sidebar chevron right","elements": [["path",{"d": "m9 6 6 6-6 6"}]]},
   "chevron-down": {"label": "Chevron down","elements": [["path",{"d": "m6.5 9.5 5.5 5.5 5.5-5.5"}]]},
   "file-details": {"label": "Show or hide file details","elements": [["rect",{"x": "3","y": "3","width": "18","height": "18","rx": "2"}],["path",{"d": "M7 7h10 M7 10h6"}],["path",{"data-icon-part": "chevron","d": "m9 14 3 3 3-3"}]]},
   "arrow-up": {"label": "Back to top","elements": [["path",{"d": "M12 20V4 m-6 6 6-6 6 6"}]]},

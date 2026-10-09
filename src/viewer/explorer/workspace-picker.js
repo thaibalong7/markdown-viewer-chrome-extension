@@ -9,6 +9,7 @@ import {
 import { logger } from '../../shared/logger.js'
 import { getFileTypeFromName, isExplorerSupportedFile } from '../../shared/file-types.js'
 import { createGitignoreMatcher, pruneExplorerFoldersWithoutViewableFiles } from './gitignore-matcher.js'
+import { compareExplorerTreeNodes } from './explorer-tree-utils.js'
 import { pathInputToFileDirectoryUrl } from './url-utils.js'
 
 /** @typedef {import('./folder-scanner.js').ExplorerTreeNode} ExplorerTreeNode */
@@ -355,6 +356,8 @@ export async function scanWorkspaceFromDirectoryHandle(rootHandle, options = {})
       emitProgress(workspaceVirtualDirHref(dirPrefix))
     }
 
+    children.sort(compareExplorerTreeNodes)
+
     return {
       type: 'folder',
       name: relParts.length ? relParts[relParts.length - 1] : rootName,
@@ -551,10 +554,7 @@ export async function scanWorkspaceFromWebkitFileList(files, options = {}) {
 
   function sortTree(node) {
     if (!node.children?.length) return
-    node.children.sort((a, b) => {
-      if (a.type !== b.type) return a.type === 'folder' ? -1 : 1
-      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
-    })
+    node.children.sort(compareExplorerTreeNodes)
     for (const c of node.children) {
       if (c.type === 'folder') sortTree(c)
     }

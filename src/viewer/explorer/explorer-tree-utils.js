@@ -50,6 +50,17 @@ export function countViewableFilesInTree(node) {
 }
 
 /**
+ * Sort folders before files, then sort names case-insensitively within each group.
+ * @param {import('./folder-scanner.js').ExplorerTreeNode} a
+ * @param {import('./folder-scanner.js').ExplorerTreeNode} b
+ * @returns {number}
+ */
+export function compareExplorerTreeNodes(a, b) {
+  if (a.type !== b.type) return a.type === 'folder' ? -1 : 1
+  return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+}
+
+/**
  * @param {import('./folder-scanner.js').ScanFolderStats} stats
  * @param {number} [maxScanDepth]
  * @returns {string}

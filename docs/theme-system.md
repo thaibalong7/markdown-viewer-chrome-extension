@@ -196,7 +196,6 @@ Palette dùng semantic names thay vì đặt tên theo component cụ thể. M�
 | Border | `border`, `borderStrong` |
 | Code | `codeBg`, `codeText` |
 | Link và accent | `link`, `linkSoft`, `accent`, `accentSoft` |
-| Panel toggle | `panelToggleBg`, `panelToggleText`, `panelToggleBorder`, `panelToggleHoverBg`, `panelToggleHoverText`, `panelToggleShadow`, `panelToggleHoverShadow` |
 | Warning và danger | `warning`, `warningSoft`, `danger` |
 | Table | `tableBorder`, `tableHeaderBg`, `tableRowAltBg` |
 | Toast info | `toastInfoBg`, `toastInfoText`, `toastInfoBorder` |
@@ -204,6 +203,10 @@ Palette dùng semantic names thay vì đặt tên theo component cụ thể. M�
 | Toast warning | `toastWarningBg`, `toastWarningText`, `toastWarningBorder` |
 | Toast error | `toastErrorBg`, `toastErrorText`, `toastErrorBorder` |
 | Scrollbar tùy chọn | `scrollbarThumb`, `scrollbarThumbHover` |
+
+Porcelain #22 của Files/Outline dùng trực tiếp `--mdp-surface`, `--mdp-muted`, `--mdp-border`, `--mdp-link` và `--mdp-link-soft` trong `src/viewer/styles/layout.scss`. Không có palette/token riêng cho panel toggle; custom theme kế thừa cùng semantic mapping, không thay schema hay migration. Xem [contract panel toggle](./design-system/README.md#panel-toggles).
+
+Scrollbar của Files/Outline dùng chung `ViewerScrollbar` và các màu `scrollbarThumb` / `scrollbarThumbHover` với viewer; variant sidebar chỉ đổi geometry. Tùy chọn auto-hide/always-visible hiện có điều khiển cả hai danh sách, không thêm preference riêng. Xem [contract sidebar scrolling](./design-system/README.md#sidebar-scrolling).
 
 Settings UI chỉ expose các token nằm trong `EDITABLE_THEME_COLOR_FIELDS`:
 

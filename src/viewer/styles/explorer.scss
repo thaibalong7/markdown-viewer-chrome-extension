@@ -23,10 +23,10 @@
   flex-shrink: 0;
   border-bottom: 0;
   gap: 0;
-  padding: 2px 0 0;
+  padding: var(--mdp-sidebar-header-inset) 0 0;
 
   .mdp-panel-header__row {
-    min-height: 36px;
+    min-height: var(--mdp-sidebar-primary-row-height);
     flex-wrap: wrap;
     gap: 4px 8px;
     padding-inline: var(--mdp-explorer-header-inset) var(--mdp-explorer-action-inset);
@@ -250,9 +250,10 @@
 .mdp-explorer__scroll-region {
   min-height: 0;
   flex: 1;
+  margin-top: var(--mdp-sidebar-content-gap);
   overflow-y: auto;
   scrollbar-gutter: stable;
-  @include v.scrollbar-thin;
+  @include v.sidebar-scrollbar;
 }
 
 // Keep tree commands outside the virtualized scroll viewport so rows never pass underneath.
@@ -263,8 +264,9 @@
   flex: 0 0 auto;
   gap: 8px;
   min-width: 0;
-  min-height: 40px;
-  padding: 3px var(--mdp-explorer-action-inset) 3px var(--mdp-explorer-header-inset);
+  height: var(--mdp-sidebar-secondary-row-height);
+  min-height: var(--mdp-sidebar-secondary-row-height);
+  padding: 4px var(--mdp-explorer-action-inset) 8px var(--mdp-explorer-header-inset);
   border-bottom: 1px solid var(--mdp-border);
 }
 
@@ -514,6 +516,13 @@
     opacity: 0.45;
     cursor: not-allowed;
   }
+}
+
+// Keep navigation accents in compact commands, details, and overflow alike.
+.mdp-explorer__back-icon,
+.mdp-explorer__folder-btn,
+.mdp-explorer__back-btn {
+  color: var(--mdp-link);
 }
 
 .mdp-explorer__back-label {
@@ -1058,5 +1067,17 @@
   }
   .mdp-explorer__context-menu .mdp-explorer__row-menu-item {
     min-height: 44px;
+  }
+}
+
+// Keep the Files structure and match Outline's touch rhythm at narrow widths.
+@media (min-width: 900px) and (pointer: coarse) {
+  @container (max-width: 263px) {
+    .mdp-explorer__header .mdp-panel-header__row {
+      min-height: 86px;
+      gap: 0;
+      .mdp-panel-header__heading-main { width: 100%; min-height: 34px; }
+      .mdp-explorer__header-actions { min-height: 52px; margin-left: auto; }
+    }
   }
 }

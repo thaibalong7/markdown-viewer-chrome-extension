@@ -151,21 +151,6 @@
       display: none;
     }
 
-    .mdp-sidebar,
-    .mdp-right-rail {
-      position: sticky;
-      top: 0;
-      align-self: start;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      min-height: 0;
-      height: 100vh;
-      overflow: hidden;
-      gap: 4px;
-      padding: 14px;
-      background: var(--mdp-bg);
-    }
 
     .mdp-sidebar {
       overflow: visible;
@@ -183,14 +168,6 @@
       border-right: 0;
     }
 
-    .mdp-sidebar__panel-clip,
-    .mdp-right-rail__outline-clip {
-      display: flex;
-      flex: 1;
-      min-width: 0;
-      min-height: 0;
-      overflow: hidden;
-    }
 
     .mdp-sidebar--collapsed .mdp-sidebar__panel-clip {
       pointer-events: none;
@@ -198,91 +175,16 @@
       visibility: hidden;
     }
 
-    .mdp-right-rail {
-      container: mdp-right-rail / inline-size;
-      grid-column: 3;
-      overflow: visible;
-      border-left: 1px solid var(--mdp-border-strong);
-    }
 
-    .mdp-right-rail--actions-only {
-      align-items: center;
-      padding: 10px 8px;
-    }
 
-    .mdp-panel-toggle {
-      position: absolute;
-      top: 16px;
-      z-index: 4;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      padding: 0;
-      border: 1px solid var(--mdp-border);
-      border-radius: 999px;
-      background: var(--mdp-surface);
-      color: var(--mdp-link);
-      box-shadow: var(--mdp-shadow-subtle);
-      cursor: pointer;
-    }
 
-    .mdp-panel-toggle--files {
-      left: max(0px, calc(100% - 11px));
-    }
 
-    .mdp-panel-toggle--outline {
-      left: -11px;
-    }
 
-    .mdp-panel-toggle svg {
-      width: 11px;
-      height: 11px;
-    }
 
-    .mdp-right-rail__actions-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      min-width: 0;
-      min-height: 44px;
-      padding: 0 2px 8px;
-      border-bottom: 1px solid var(--mdp-border);
-    }
 
-    .mdp-right-rail__actions-label {
-      color: var(--mdp-muted);
-      font-size: 10px;
-      font-weight: 750;
-      letter-spacing: 0.065em;
-      line-height: 1;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
 
-    .mdp-right-rail__actions-row > .mdp-floating-actions {
-      margin-left: auto;
-    }
 
-    .mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
-      display: contents;
-    }
 
-    @container mdp-right-rail (max-width: 339px) {
-      .mdp-right-rail__actions-row {
-        justify-content: center;
-      }
-
-      .mdp-right-rail__actions-label {
-        display: none;
-      }
-
-      .mdp-right-rail__actions-row > .mdp-floating-actions {
-        margin-inline: auto;
-      }
-    }
 
     .mdp-sidebar-panel {
       min-height: 0;
@@ -520,78 +422,15 @@
       background: var(--mdp-table-row-alt-bg);
     }
 
-    .mdp-floating-actions {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 4px;
-      flex-shrink: 0;
-      padding: 6px;
-      border: 1px solid var(--mdp-border);
-      border-radius: 12px;
-      background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
-      box-shadow: var(--mdp-shadow-subtle);
-    }
 
-    .mdp-floating-actions.mdp-floating-actions--rail-strip {
-      gap: 4px;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-    }
 
-    .mdp-right-rail--actions-only .mdp-floating-actions--rail-strip {
-      flex-direction: column;
-      flex-wrap: nowrap;
-    }
 
-    .mdp-floating-actions--rail-strip .mdp-fab-btn:not(.mdp-fab-btn--theme) {
-      border-color: transparent;
-    }
 
-    .mdp-fab-btn {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      padding: 0;
-      border: 1px solid var(--mdp-border);
-      border-radius: 8px;
-      background: transparent;
-      color: var(--mdp-muted);
-      cursor: pointer;
-      transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
-    }
 
-    .mdp-fab-btn:hover {
-      border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
-      background: var(--mdp-link-soft);
-      color: var(--mdp-link);
-    }
 
-    .mdp-fab-btn:active {
-      transform: translateY(1px);
-    }
 
-    .mdp-fab-btn.is-active {
-      border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
-      background: var(--mdp-link-soft);
-      color: var(--mdp-link);
-    }
 
-    .mdp-fab-btn--edit:not(.is-active) {
-      color: var(--mdp-warning);
-    }
 
-    .mdp-fab-btn.is-copied {
-      border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
-      background: var(--mdp-accent-soft);
-      color: var(--mdp-accent);
-    }
 
     .mdp-sidebar-panel--outline {
       flex: 1;
@@ -601,8 +440,8 @@
 
     .mdp-toc {
       min-height: 0;
+      flex: 1;
       overflow-y: auto;
-      padding-top: 8px;
     }
 
     .mdp-toc__link {
@@ -694,21 +533,11 @@
         --mdp-right-track: var(--mdp-actions-rail-width);
       }
 
-      .mdp-right-rail {
-        align-items: center;
-        padding: 10px 8px;
-      }
 
       .mdp-sidebar-panel--outline {
         display: none;
       }
 
-      .mdp-floating-actions {
-        flex-direction: column;
-        flex-wrap: nowrap;
-        padding: 5px;
-        background: var(--mdp-surface);
-      }
 
       .mdp-content-pane {
         padding-inline: clamp(16px, 4vw, 32px);
@@ -720,24 +549,7 @@
         grid-template-columns: minmax(0, 1fr);
       }
 
-      .mdp-right-rail {
-        position: fixed;
-        inset: auto 12px 12px auto;
-        z-index: 14;
-        width: auto;
-        height: auto;
-        padding: 5px;
-        border: 1px solid var(--mdp-border);
-        border-radius: 14px;
-        background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
-        box-shadow: var(--mdp-shadow-float);
-        backdrop-filter: blur(14px);
-      }
 
-      .mdp-floating-actions {
-        flex-direction: row;
-        padding: 4px;
-      }
 
       .mdp-content-pane {
         grid-column: 1;
@@ -760,16 +572,7 @@
     }
 
     @media (pointer: coarse) {
-      .mdp-fab-btn,
-      .mdp-toc__link {
-        min-width: 44px;
-        min-height: 44px;
-      }
 
-      .mdp-panel-toggle {
-        width: 32px;
-        height: 32px;
-      }
 
       .mdp-scroll-to-top {
         width: 48px;
@@ -845,10 +648,10 @@
   flex-shrink: 0;
   border-bottom: 0;
   gap: 0;
-  padding: 2px 0 0;
+  padding: var(--mdp-sidebar-header-inset) 0 0;
 }
 .mdp-explorer__header .mdp-panel-header__row {
-  min-height: 36px;
+  min-height: var(--mdp-sidebar-primary-row-height);
   flex-wrap: wrap;
   gap: 4px 8px;
   padding-inline: var(--mdp-explorer-header-inset) var(--mdp-explorer-action-inset);
@@ -1050,27 +853,41 @@
 .mdp-explorer__scroll-region {
   min-height: 0;
   flex: 1;
+  margin-top: var(--mdp-sidebar-content-gap);
   overflow-y: auto;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: var(--mdp-scrollbar-thumb) transparent;
+  scrollbar-color: transparent transparent;
 }
 .mdp-explorer__scroll-region::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-.mdp-explorer__scroll-region::-webkit-scrollbar-track {
+.mdp-explorer__scroll-region::-webkit-scrollbar-track, .mdp-explorer__scroll-region::-webkit-scrollbar-thumb {
   background: transparent;
 }
-.mdp-explorer__scroll-region::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: var(--mdp-scrollbar-thumb);
-  border: 1px solid transparent;
-  background-clip: padding-box;
-}
-.mdp-explorer__scroll-region::-webkit-scrollbar-thumb:hover {
-  background: var(--mdp-scrollbar-thumb-hover);
-  background-clip: padding-box;
+@media (forced-colors: active) {
+  .mdp-explorer__scroll-region {
+    scrollbar-width: thin;
+    scrollbar-color: var(--mdp-scrollbar-thumb) transparent;
+  }
+  .mdp-explorer__scroll-region::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .mdp-explorer__scroll-region::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .mdp-explorer__scroll-region::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--mdp-scrollbar-thumb);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  .mdp-explorer__scroll-region::-webkit-scrollbar-thumb:hover {
+    background: var(--mdp-scrollbar-thumb-hover);
+    background-clip: padding-box;
+  }
 }
 
 .mdp-explorer__toolbar {
@@ -1080,8 +897,9 @@
   flex: 0 0 auto;
   gap: 8px;
   min-width: 0;
-  min-height: 40px;
-  padding: 3px var(--mdp-explorer-action-inset) 3px var(--mdp-explorer-header-inset);
+  height: var(--mdp-sidebar-secondary-row-height);
+  min-height: var(--mdp-sidebar-secondary-row-height);
+  padding: 4px var(--mdp-explorer-action-inset) 8px var(--mdp-explorer-header-inset);
   border-bottom: 1px solid var(--mdp-border);
 }
 
@@ -1320,6 +1138,12 @@
   cursor: not-allowed;
 }
 
+.mdp-explorer__back-icon,
+.mdp-explorer__folder-btn,
+.mdp-explorer__back-btn {
+  color: var(--mdp-link);
+}
+
 .mdp-explorer__back-label {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -1420,7 +1244,6 @@
     translate: 0 -6px;
   }
 }
-
 .mdp-explorer__node {
   position: relative;
   margin: 0;
@@ -1740,15 +1563,16 @@
   height: 12px;
   transition: transform 160ms ease;
 }
+
 .mdp-explorer__tree-folder-row.is-expanded .mdp-explorer__tree-chevron svg {
   transform: rotate(90deg);
 }
+
 @media (prefers-reduced-motion: reduce) {
   .mdp-explorer__tree-chevron svg {
     transition: none;
   }
 }
-
 .mdp-explorer__tree-folder-icon {
   display: inline-flex;
   align-items: center;
@@ -1805,7 +1629,1071 @@
     min-height: 44px;
   }
 }
-  </style>
+@media (min-width: 900px) and (pointer: coarse) {
+  @container (max-width: 263px) {
+    .mdp-explorer__header .mdp-panel-header__row {
+      min-height: 86px;
+      gap: 0;
+    }
+    .mdp-explorer__header .mdp-panel-header__row .mdp-panel-header__heading-main {
+      width: 100%;
+      min-height: 34px;
+    }
+    .mdp-explorer__header .mdp-panel-header__row .mdp-explorer__header-actions {
+      min-height: 52px;
+      margin-left: auto;
+    }
+  }
+}
+</style>
+<style id="document-actions-runtime-css">
+.mdp-floating-actions {
+  --mdp-action-size: 28px;
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.mdp-floating-actions[hidden] {
+  display: none;
+}
+
+.mdp-document-actions__slot {
+  position: relative;
+  flex: none;
+  width: var(--mdp-action-size);
+  height: var(--mdp-action-size);
+}
+
+.mdp-document-actions__divider {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 16px;
+  margin: 0 1.5px;
+  background: var(--mdp-border);
+  pointer-events: none;
+}
+
+.mdp-right-rail--actions-only .mdp-floating-actions {
+  flex-direction: column;
+  height: 100%;
+}
+
+.mdp-fab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--mdp-action-size, 34px);
+  height: var(--mdp-action-size, 34px);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mdp-muted);
+  cursor: pointer;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+.mdp-fab-btn:hover:where(:not(:disabled)) {
+  color: var(--mdp-link);
+  background: var(--mdp-link-soft);
+}
+.mdp-fab-btn:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: 2px;
+}
+.mdp-fab-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.mdp-fab-btn.is-copied {
+  color: var(--mdp-accent);
+}
+
+.mdp-fab-btn--theme {
+  --mdp-theme-action-color: var(--mdp-link);
+  --mdp-theme-action-soft: var(--mdp-link-soft);
+}
+.mdp-fab-btn--theme:has(.mdp-fab-btn__theme-icon--light) {
+  --mdp-theme-action-color: var(--mdp-warning);
+  --mdp-theme-action-soft: var(--mdp-warning-soft);
+}
+.mdp-fab-btn--theme, .mdp-fab-btn--theme:hover:not(:disabled) {
+  color: var(--mdp-theme-action-color);
+  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 44%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-theme-action-soft) 88%, transparent);
+}
+.mdp-fab-btn--theme:hover:not(:disabled) {
+  border-color: var(--mdp-theme-action-color);
+  background: var(--mdp-theme-action-soft);
+}
+
+.mdp-fab-btn__theme-icon--dark path,
+.mdp-fab-btn__theme-icon--light circle {
+  fill: currentColor;
+  fill-opacity: 0.16;
+}
+
+.mdp-fab-btn__icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.mdp-document-actions-menu {
+  position: relative;
+}
+
+.mdp-document-actions-menu__panel {
+  position: absolute;
+  z-index: 30;
+  width: min(240px, 100vw - 16px);
+  padding: 5px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--mdp-border);
+  border-radius: 12px;
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-float);
+}
+.mdp-document-actions-menu__panel[hidden] {
+  display: none;
+}
+.mdp-document-actions-menu__panel .mdp-action-menu__tooltip-anchor {
+  display: block;
+}
+
+.mdp-document-actions-menu__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 34px;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--mdp-text);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.mdp-document-actions-menu__item:hover:not(:disabled), .mdp-document-actions-menu__item:focus-visible {
+  background: var(--mdp-panel-strong);
+}
+.mdp-document-actions-menu__item:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: -2px;
+}
+.mdp-document-actions-menu__item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.mdp-document-actions-menu__icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.mdp-document-actions-menu .mdp-action-menu__group-label {
+  padding: 8px 10px 5px;
+  color: var(--mdp-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.mdp-document-actions-menu .mdp-action-menu__separator {
+  height: 1px;
+  margin: 5px 4px;
+  background: var(--mdp-border);
+}
+
+@media (min-width: 640px) {
+  .mdp-right-rail--actions-only .mdp-document-actions__divider {
+    width: 20px;
+    height: 1px;
+    margin: 1.5px 0;
+  }
+}
+@media (min-width: 640px) and (max-width: 899px) {
+  .mdp-floating-actions {
+    flex-direction: column;
+    height: 100%;
+  }
+  .mdp-document-actions__divider {
+    width: 20px;
+    height: 1px;
+    margin: 1.5px 0;
+  }
+}
+@media (max-width: 639px) {
+  .mdp-floating-actions,
+  .mdp-right-rail--actions-only .mdp-floating-actions {
+    flex-direction: row;
+    height: auto;
+  }
+}
+@media (pointer: coarse) {
+  .mdp-floating-actions {
+    --mdp-action-size: 44px;
+  }
+  .mdp-fab-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .mdp-document-actions-menu__item {
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-fab-btn {
+    transition: none;
+  }
+}
+.mdp-body.mdp-body--edit-split > .mdp-right-rail {
+  grid-column: 4;
+  grid-row: 1/-1;
+}
+.mdp-body.mdp-body--edit-focus > .mdp-right-rail {
+  grid-column: 2;
+  grid-row: 1/-1;
+}
+
+.mdp-fab-btn--active {
+  background: var(--mdp-link-soft);
+  border-color: color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  color: var(--mdp-link);
+}
+
+.mdp-fab-btn--edit:not(.mdp-fab-btn--active) {
+  color: var(--mdp-warning);
+}
+.mdp-fab-btn--edit:not(.mdp-fab-btn--active):hover:not(:disabled) {
+  color: var(--mdp-warning);
+  border-color: color-mix(in srgb, var(--mdp-warning) 36%, var(--mdp-border));
+  background: var(--mdp-warning-soft);
+}
+
+.mdp-fab-btn--save.is-dirty {
+  color: var(--mdp-accent);
+  border-color: color-mix(in srgb, var(--mdp-accent) 34%, var(--mdp-border));
+  background: var(--mdp-accent-soft);
+}
+
+.mdp-fab-btn--dirty-dot {
+  position: relative;
+}
+.mdp-fab-btn--dirty-dot::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mdp-warning);
+  box-shadow: 0 0 0 2px var(--mdp-surface);
+  animation: mdp-dirty-pulse 2s ease-in-out infinite;
+}
+
+@media (max-width: 899px) {
+  .mdp-body.mdp-body--edit-split > .mdp-right-rail {
+    position: fixed;
+    inset: 12px 12px auto auto;
+    z-index: 16;
+    display: block;
+    width: min(360px, 100vw - 24px);
+    height: auto;
+    padding: 5px;
+    border: 1px solid var(--mdp-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+    box-shadow: var(--mdp-shadow-float);
+    backdrop-filter: blur(14px);
+  }
+  .mdp-body.mdp-body--edit-focus > .mdp-right-rail {
+    position: fixed;
+    inset: 12px 12px auto auto;
+    z-index: 16;
+    width: min(360px, 100vw - 24px);
+    height: auto;
+    padding: 5px;
+    border: 1px solid var(--mdp-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+    box-shadow: var(--mdp-shadow-float);
+    backdrop-filter: blur(14px);
+  }
+  .mdp-body.mdp-body--edit-split .mdp-floating-actions,
+  .mdp-body.mdp-body--edit-focus .mdp-floating-actions {
+    flex-direction: row;
+    height: auto;
+  }
+  .mdp-body.mdp-body--edit-split .mdp-document-actions__divider,
+  .mdp-body.mdp-body--edit-focus .mdp-document-actions__divider {
+    width: 1px;
+    height: 16px;
+    margin: 0 1.5px;
+  }
+  .mdp-body.mdp-body--edit-split .mdp-right-rail__actions-row,
+  .mdp-body.mdp-body--edit-focus .mdp-right-rail__actions-row {
+    flex: none;
+    min-height: 0;
+  }
+}
+@media print {
+  .mdp-floating-actions,
+  .mdp-sidebar,
+  .mdp-right-rail,
+  .mdp-sidebar__resize-handle,
+  .mdp-editor-split__resize-handle,
+  .mdp-document-stats,
+  .mdp-toast {
+    display: none !important;
+  }
+}
+
+/* Accepted sidebar composition: layout.scss, toc.scss and _viewer-scrollbar.scss. */
+
+.mdp-body {
+  --mdp-sidebar-top-inset: 14px;
+  --mdp-sidebar-header-inset: 2px;
+  --mdp-sidebar-primary-row-height: 36px;
+  --mdp-sidebar-secondary-row-height: 44px;
+  --mdp-sidebar-content-gap: 12px;
+  --mdp-files-track: var(--mdp-files-width);
+  --mdp-right-track: var(--mdp-toc-width);
+  display: grid;
+  grid-template-columns: var(--mdp-files-track) minmax(0, 1fr) var(--mdp-right-track);
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  transition: grid-template-columns 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mdp-body--no-files {
+  --mdp-files-track: 0px;
+}
+.mdp-body--files-collapsed {
+  --mdp-files-track: var(--mdp-files-gutter-width);
+}
+.mdp-body--no-outline {
+  --mdp-right-track: var(--mdp-actions-rail-width);
+}
+
+.mdp-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100vh;
+  overflow: hidden;
+  border-right: 1px solid var(--mdp-border-strong);
+  background: var(--mdp-sidebar-layer-background);
+  backdrop-filter: var(--mdp-layer-backdrop-filter);
+  padding: 14px;
+  transition: padding 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mdp-sidebar-panel {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mdp-panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 2px 2px 12px;
+  border-bottom: 1px solid var(--mdp-border);
+}
+
+.mdp-panel-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mdp-panel-header__heading-main {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mdp-panel-header__heading {
+  margin: 0;
+  color: var(--mdp-text);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.055em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.mdp-panel-header__meta {
+  color: var(--mdp-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+}
+
+.mdp-sidebar--files {
+  grid-column: 1;
+  grid-row: 1;
+  overflow: visible;
+  min-width: 0;
+  padding-inline: 8px;
+  padding-top: var(--mdp-sidebar-top-inset);
+}
+.mdp-sidebar--files.mdp-sidebar--collapsed {
+  padding: 0;
+  border-right: 0;
+}
+
+.mdp-sidebar__panel-clip,
+.mdp-right-rail__outline-clip {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+  transition: opacity 140ms ease, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear;
+}
+
+.mdp-sidebar--collapsed .mdp-sidebar__panel-clip {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-10px);
+  visibility: hidden;
+  transition: opacity 100ms ease, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 180ms;
+}
+
+.mdp-sidebar__collapsed-hit-area {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 3;
+  width: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mdp-sidebar__collapsed-hit-area::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 calc(var(--mdp-files-gutter-width) - 1px);
+  width: 1px;
+  background: var(--mdp-border-strong);
+  opacity: 1;
+  transition: left 140ms ease, width 140ms ease, opacity 140ms ease, background-color 140ms ease;
+}
+.mdp-sidebar__collapsed-hit-area:hover::after, .mdp-sidebar__collapsed-hit-area:active::after {
+  left: calc(var(--mdp-files-gutter-width) - 2px);
+  width: 3px;
+  opacity: 0.9;
+  background: var(--mdp-link);
+}
+.mdp-sidebar__collapsed-hit-area:active::after {
+  opacity: 1;
+}
+
+.mdp-right-rail {
+  container: mdp-right-rail/inline-size;
+  grid-column: 3;
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow: visible;
+  gap: 0;
+  padding: 14px;
+  padding-inline-start: 8px;
+  /* Reserve the viewer's 12px overlay scrollbar plus its 2px viewport inset. */
+  padding-inline-end: 14px;
+  border-left: 1px solid var(--mdp-border-strong);
+  background: var(--mdp-sidebar-layer-background);
+  backdrop-filter: var(--mdp-layer-backdrop-filter);
+  transition: padding 200ms cubic-bezier(0.2, 0.8, 0.2, 1), gap 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mdp-right-rail--actions-only {
+  align-items: center;
+  padding: 10px 7px;
+}
+
+.mdp-right-rail__actions-row {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--mdp-sidebar-primary-row-height);
+  padding: 0 2px;
+}
+
+.mdp-right-rail__commands {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.mdp-right-rail__commands > .mdp-floating-actions {
+  width: 100%;
+  min-width: 0;
+}
+
+.mdp-right-rail__title {
+  flex: 0 0 60px;
+  text-align: right;
+  color: var(--mdp-text);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.055em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  align-items: stretch;
+  border: 0;
+}
+
+.mdp-right-rail--outline-collapsed .mdp-right-rail__outline-clip {
+  display: none;
+}
+
+.mdp-panel-toggle {
+  position: absolute;
+  top: 12px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mdp-muted);
+  cursor: pointer;
+}
+.mdp-panel-toggle[aria-expanded=false], .mdp-panel-toggle:hover, .mdp-panel-toggle:focus-visible {
+  color: var(--mdp-link);
+}
+.mdp-panel-toggle[aria-expanded=false] .mdp-panel-toggle__skin {
+  background: var(--mdp-link-soft);
+  border-color: color-mix(in srgb, var(--mdp-link) 50%, var(--mdp-border));
+}
+.mdp-panel-toggle:hover .mdp-panel-toggle__skin, .mdp-panel-toggle:focus-visible .mdp-panel-toggle__skin {
+  border-color: var(--mdp-link);
+}
+.mdp-panel-toggle:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: -2px;
+}
+
+.mdp-panel-toggle--files {
+  left: 100%;
+}
+
+.mdp-panel-toggle--outline {
+  left: -24px;
+}
+
+.mdp-panel-toggle__face {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 26px;
+  overflow: hidden;
+  border-radius: 0 6px 6px 0;
+  pointer-events: none;
+}
+
+.mdp-panel-toggle--outline .mdp-panel-toggle__face {
+  left: auto;
+  right: 0;
+  border-radius: 6px 0 0 6px;
+}
+
+.mdp-panel-toggle__skin {
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--mdp-muted) 42%, var(--mdp-border));
+  border-left-width: 0;
+  border-radius: inherit;
+  background: var(--mdp-surface);
+}
+
+.mdp-panel-toggle--outline .mdp-panel-toggle__skin {
+  border-left-width: 1px;
+  border-right: 0;
+}
+
+.mdp-panel-toggle__mark {
+  position: absolute;
+  top: 4px;
+  left: calc(50% + var(--mdp-toggle-direction) * 1.75px);
+  width: 2.1px;
+  height: 2.1px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--mdp-link);
+  opacity: 0.6;
+}
+
+.mdp-panel-toggle__chevron {
+  position: relative;
+  z-index: 2;
+  width: 12px;
+  height: 16px;
+}
+
+.mdp-panel-toggle__sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  background: linear-gradient(115deg, transparent 22%, color-mix(in srgb, var(--mdp-link) 38%, transparent) 50%, transparent 78%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-panel-toggle__skin {
+    transition: background-color 160ms, border-color 160ms;
+  }
+  .mdp-panel-toggle:is(:hover, :focus-visible, .is-switching) .mdp-panel-toggle__sweep {
+    animation: mdp-sidebar-light-pass 580ms cubic-bezier(0.2, 0.65, 0.3, 1);
+  }
+}
+@keyframes mdp-sidebar-light-pass {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  30%, 60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    --mdp-right-track: min(var(--mdp-toc-width), 224px);
+  }
+}
+@media (max-width: 1023px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    --mdp-files-track: 0px;
+  }
+  .mdp-sidebar--files {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 15;
+    width: min(var(--mdp-files-width), 100vw - 72px);
+    box-shadow: var(--mdp-shadow-float);
+  }
+  .mdp-sidebar--files.mdp-sidebar--collapsed {
+    width: var(--mdp-files-gutter-width);
+    box-shadow: none;
+  }
+}
+@media (pointer: coarse) {
+  .mdp-body {
+    --mdp-sidebar-primary-row-height: 44px;
+    --mdp-sidebar-secondary-row-height: 52px;
+  }
+}
+@media (min-width: 900px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-expanded {
+    padding-top: calc(var(--mdp-sidebar-top-inset) + var(--mdp-sidebar-header-inset));
+  }
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
+    padding-top: 57.5px;
+    padding-bottom: 16px;
+  }
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed .mdp-floating-actions {
+    --mdp-action-divider-size: 21px;
+  }
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed .mdp-document-actions__divider {
+    margin-block: 8px;
+  }
+}
+@media (min-width: 900px) and (pointer: coarse) {
+  .mdp-body {
+    --mdp-sidebar-primary-row-height: 52px;
+  }
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
+    padding-top: 69.5px;
+  }
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed[data-compact-header=true] {
+    padding-top: 103.5px;
+  }
+  @container mdp-right-rail (max-width: 257px) {
+    .mdp-right-rail--outline-expanded > .mdp-right-rail__actions-row {
+      flex-wrap: wrap;
+      gap: 0;
+      min-height: 86px;
+    }
+    .mdp-right-rail--outline-expanded > .mdp-right-rail__actions-row .mdp-right-rail__title {
+      order: -1;
+      flex-basis: 100%;
+      min-height: 34px;
+      padding-block: 4px;
+    }
+    .mdp-right-rail--outline-expanded > .mdp-right-rail__actions-row .mdp-right-rail__commands {
+      flex-basis: 100%;
+      min-height: 52px;
+    }
+  }
+}
+@media (max-width: 899px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    --mdp-right-track: var(--mdp-actions-rail-width);
+  }
+  .mdp-right-rail:not(.mdp-right-rail--actions-only) {
+    align-items: center;
+    padding: 10px 7px;
+  }
+  .mdp-right-rail__actions-row {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+    align-items: stretch;
+    border: 0;
+  }
+  .mdp-right-rail .mdp-sidebar-panel--outline,
+  .mdp-right-rail .mdp-sidebar__resize-handle,
+  .mdp-right-rail__outline-clip,
+  .mdp-right-rail__title,
+  .mdp-panel-toggle--outline {
+    display: none;
+  }
+  .mdp-content-pane {
+    padding-inline: clamp(16px, 4vw, 32px);
+  }
+}
+@media (max-width: 639px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mdp-right-rail {
+    position: fixed;
+    inset: auto 12px 12px auto;
+    z-index: 14;
+    width: min(360px, 100vw - 24px);
+    height: auto;
+    padding: 5px;
+    border: 1px solid var(--mdp-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
+    box-shadow: var(--mdp-shadow-float);
+    backdrop-filter: blur(14px);
+  }
+  .mdp-right-rail__actions-row,
+  .mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
+    flex: none;
+  }
+  .mdp-content-pane {
+    grid-column: 1;
+    padding: 8px 10px 64px;
+  }
+}
+@media (pointer: coarse) {
+  .mdp-button {
+    min-height: 44px;
+  }
+  .mdp-panel-toggle {
+    width: 44px;
+    height: 44px;
+  }
+  .mdp-panel-toggle--files {
+    left: 100%;
+  }
+  .mdp-panel-toggle--outline {
+    left: -44px;
+  }
+  .mdp-sidebar__collapsed-hit-area {
+    width: 32px;
+  }
+}
+.mdp-sidebar-panel--outline {
+  padding-top: 0;
+}
+.mdp-sidebar-panel--outline .mdp-outline__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: 8px;
+  min-height: var(--mdp-sidebar-secondary-row-height);
+  padding: 4px 2px 8px;
+  margin-bottom: var(--mdp-sidebar-content-gap);
+  border-bottom: 1px solid var(--mdp-border);
+  color: var(--mdp-muted);
+  font-size: 11px;
+}
+.mdp-sidebar-panel--outline .mdp-outline__count {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.mdp-sidebar-panel--outline .mdp-toc {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  contain: content;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.mdp-sidebar-panel--outline .mdp-toc::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.mdp-sidebar-panel--outline .mdp-toc::-webkit-scrollbar-track, .mdp-sidebar-panel--outline .mdp-toc::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+@media (forced-colors: active) {
+  .mdp-sidebar-panel--outline .mdp-toc {
+    scrollbar-width: thin;
+    scrollbar-color: var(--mdp-scrollbar-thumb) transparent;
+  }
+  .mdp-sidebar-panel--outline .mdp-toc::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .mdp-sidebar-panel--outline .mdp-toc::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .mdp-sidebar-panel--outline .mdp-toc::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--mdp-scrollbar-thumb);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  .mdp-sidebar-panel--outline .mdp-toc::-webkit-scrollbar-thumb:hover {
+    background: var(--mdp-scrollbar-thumb-hover);
+    background-clip: padding-box;
+  }
+}
+
+.mdp-toc {
+  width: 100%;
+}
+.mdp-toc__skeleton {
+  padding: 8px 6px 4px;
+  opacity: 1;
+  transition: opacity 120ms ease;
+}
+.mdp-toc__skeleton.is-pending {
+  opacity: 0;
+}
+.mdp-toc__empty {
+  color: var(--mdp-muted);
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 4px;
+  padding: 14px 12px;
+  border: 1px dashed var(--mdp-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mdp-surface) 52%, transparent);
+}
+.mdp-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.mdp-toc__list--virtual {
+  position: relative;
+  min-height: 0;
+  gap: 0;
+}
+.mdp-toc__item {
+  margin: 0;
+  padding: 0;
+}
+.mdp-toc__item--virtual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.mdp-toc__link {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: var(--mdp-muted);
+  min-height: 36px;
+  padding: 8px 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+.mdp-toc__link:hover {
+  border-color: var(--mdp-border);
+  background: color-mix(in srgb, var(--mdp-surface) 68%, transparent);
+  color: var(--mdp-text);
+}
+.mdp-toc__link.is-active {
+  border-color: color-mix(in srgb, var(--mdp-link) 24%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+  color: var(--mdp-text);
+  font-weight: 600;
+}
+.mdp-toc__link.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 7px auto 7px -1px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--mdp-link);
+}
+.mdp-toc__link:focus-visible {
+  outline: 2px solid var(--mdp-link);
+  outline-offset: 1px;
+}
+.mdp-toc__link--h1 {
+  padding-left: 10px;
+}
+.mdp-toc__link--h2 {
+  padding-left: 18px;
+}
+.mdp-toc__link--h3 {
+  padding-left: 26px;
+}
+.mdp-toc__link--h4 {
+  padding-left: 34px;
+}
+.mdp-toc__link--h5 {
+  padding-left: 42px;
+}
+.mdp-toc__link--h6 {
+  padding-left: 50px;
+}
+
+@media (pointer: coarse) {
+  .mdp-toc__link {
+    min-height: 44px;
+    padding-block: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-toc__skeleton {
+    transition: none;
+  }
+}
+.mdp-viewer-scrollbar {
+  position: fixed;
+  z-index: 12;
+  width: 12px;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+}
+.mdp-viewer-scrollbar .mdp-viewer-scrollbar__thumb {
+  opacity: 0;
+}
+.mdp-viewer-scrollbar.is-active .mdp-viewer-scrollbar__thumb, .mdp-viewer-scrollbar:hover .mdp-viewer-scrollbar__thumb, .mdp-viewer-scrollbar:focus-visible .mdp-viewer-scrollbar__thumb {
+  opacity: 1;
+}
+.mdp-viewer-scrollbar:hover, .mdp-viewer-scrollbar:focus-visible {
+  background: color-mix(in srgb, var(--mdp-sidebar-surface) 24%, transparent);
+  outline: none;
+}
+
+.mdp-viewer-scrollbar__thumb {
+  width: 7px;
+  margin-inline: auto;
+  border-radius: 999px;
+  background: var(--mdp-scrollbar-thumb, color-mix(in srgb, var(--mdp-muted) 32%, transparent));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdp-bg) 52%, transparent);
+  cursor: grab;
+  transition: opacity 160ms ease, width 120ms ease, background-color 120ms ease;
+}
+.mdp-viewer-scrollbar__thumb:hover, .mdp-viewer-scrollbar:focus-visible .mdp-viewer-scrollbar__thumb {
+  width: 9px;
+  background: var(--mdp-scrollbar-thumb-hover, color-mix(in srgb, var(--mdp-muted) 52%, transparent));
+}
+.mdp-viewer-scrollbar__thumb:active {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-viewer-scrollbar__thumb {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .mdp-viewer-scrollbar__thumb {
+    opacity: 1;
+    forced-color-adjust: auto;
+  }
+}
+@media print {
+  .mdp-viewer-scrollbar {
+    display: none !important;
+  }
+}
+.mdp-viewer-scrollbar--sidebar {
+  width: 8px;
+}
+.mdp-viewer-scrollbar--sidebar .mdp-viewer-scrollbar__thumb {
+  width: 6px;
+  box-shadow: none;
+}
+.mdp-viewer-scrollbar--sidebar:hover .mdp-viewer-scrollbar__thumb, .mdp-viewer-scrollbar--sidebar:focus-visible .mdp-viewer-scrollbar__thumb {
+  width: 6px;
+}
+/* Standalone simulation: runtime uses ViewerScrollbar for these lists. */
+.mdp-explorer__scroll-region.is-scroll-active, .mdp-toc.is-scroll-active,
+.mdp-explorer__scroll-region:hover, .mdp-toc:hover,
+.mdp-explorer__scroll-region:focus-within, .mdp-toc:focus-within {
+  scrollbar-color: var(--mdp-scrollbar-thumb) transparent;
+}
+.mdp-explorer__scroll-region:is(.is-scroll-active,:hover,:focus-within)::-webkit-scrollbar-thumb,
+.mdp-toc:is(.is-scroll-active,:hover,:focus-within)::-webkit-scrollbar-thumb { background: var(--mdp-scrollbar-thumb); }
+</style>
 <style>
 
     /* Documentation navigation only; keep this standalone shell in sync across the four previews. */
@@ -1835,11 +2723,9 @@
   <div class="mdp-root">
     <div class="mdp-body" id="viewer-shell">
       <aside class="mdp-sidebar mdp-sidebar--files" aria-label="Files">
-        <button class="mdp-panel-toggle mdp-panel-toggle--files" type="button" aria-label="Hide Files panel" aria-expanded="true" id="files-toggle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"></path></svg>
-        </button>
+        <button class="mdp-panel-toggle mdp-panel-toggle--files" type="button" aria-label="Hide Files panel" aria-expanded="true" id="files-toggle" aria-controls="mdp-panel-files" style="--mdp-toggle-direction:-1"><span class="mdp-panel-toggle__face" aria-hidden="true"><span class="mdp-panel-toggle__skin"></span><span class="mdp-panel-toggle__mark"></span><span class="mdp-panel-toggle__sweep"></span><svg width="12" height="16" viewBox="3 0 18 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="mdp-panel-toggle__chevron"><path d="m15 6-6 6 6 6"></path></svg></span></button>
         <div class="mdp-sidebar__panel-clip">
-        <div class="mdp-sidebar-panel">
+        <div class="mdp-sidebar-panel" id="mdp-panel-files">
           <div class="mdp-explorer">
             <div class="mdp-panel-header mdp-explorer__header">
               <div class="mdp-panel-header__row" id="files-context-summary">
@@ -1945,7 +2831,11 @@
 
           <p>The location/count row uses plain text without a leading folder icon. Open/Switch folder uses a gold folder with a blue opening arrow to highlight workspace selection. Files keeps its title and the green Workspace badge in workspace mode. The details disclosure stays separate and uses an information-card glyph with metadata lines; only its small chevron turns when expanded, distinguishing it from folder-tree arrows. At rest, the closed control is muted on a transparent background; when expanded it uses primary text on a neutral panel background. Blue remains reserved for shared hover feedback and the focus ring. When closed, Open/Switch folder, Copy and Back/Leave are direct icon buttons and overflow only when space runs out. When expanded, Copy sits beside the filename. Open/Switch folder and Back/Leave workspace are separate full-width labeled buttons stacked inside the same card footer with a 6px gap. The entire card collapses with details and navigation returns to the compact header actions. The metadata label, filename and path share one left edge; both footer buttons share their left and right edges. Full paths remain available through the title and accessible label. Menu icons and labels use fixed columns. Details remembers the tab preference and respects reduced motion; text actions stay at least 32px, or 44px on coarse pointers. This composition is Files-local. Source: <a href="../../src/viewer/react/components/explorer/ExplorerHeader.jsx">ExplorerHeader</a> and <a href="../../src/viewer/styles/explorer.scss">explorer.scss</a>.</p>
 
+          <p>Expanded desktop sidebars share a two-row rhythm: Files keeps its existing UI structure; document actions and OUTLINE share the first row, followed by On this page and heading count. Fine-pointer rows are 36px / 44px with 12px before the lists; touch uses 52px rows and a separate label/action row on narrow panels. Porcelain #22 replaces both edge toggles. Existing mobile docks and editor policy remain.</p>
+          <p>Current geometry and state contracts are recorded in <a href="./README.md#sidebar-composition">Sidebar composition</a>, <a href="./README.md#panel-toggles">Panel toggles</a>, and <a href="./README.md#sidebar-scrolling">Sidebar scrolling</a>. The standalone lists simulate auto-hide with native scrollbars; runtime uses the shared React overlay.</p>
           <h2 id="states">Interaction states</h2>
+          <p>Document actions use Direct icons: Quick access (Updates, Theme), Document (View changes, Edit, Copy), and Output (Print, Export), separated by two quiet dividers. A measured prefix remains direct; the suffix moves into More in the same order. Theme retains blue moon / amber sun colors; Edit is amber and Save/copied feedback is green. Both sidebars use the Porcelain #22 tab: a 12 × 26px face, centered 12 × 16px chevron, mirrored accent dot, and one 580ms light pass on interaction. Hit areas are 24 × 44px or 44 × 44px on touch. The collapsed action rail remains 60px, with its first icon aligned with Files Refresh. This fixture simulates commands only; runtime capability and editor policies are documented in <a href="../document-actions.md">Document actions</a>.</p>
+          <p><label><input id="document-pending" type="checkbox"> Preview pending update (View changes appears in the Document group)</label></p>
           <p>
             Active rows use a soft blue fill and leading accent rail. Dense utility controls stay
             smaller than page forms on fine pointers, while interactive targets expand to 44px on
@@ -1959,10 +2849,13 @@
               </thead>
               <tbody>
                 <tr><td>Dense utility toolbar</td><td>28px</td><td>44px</td></tr>
-                <tr><td>Action icon</td><td>34px</td><td>44px</td></tr>
+                <tr><td>Document action</td><td>28px</td><td>44px</td></tr>
+                <tr><td>Files row</td><td>38px</td><td>44px</td></tr>
                 <tr><td>Outline row</td><td>36px</td><td>44px</td></tr>
                 <tr><td>Text button</td><td>38px</td><td>44px</td></tr>
-                <tr><td>Edge panel toggle</td><td>22px</td><td>32px</td></tr>
+                <tr><td>Sidebar first / second row</td><td>36px / 44px</td><td>52px / 52px; narrow first row 86px</td></tr>
+                <tr><td>Porcelain toggle face</td><td>12 × 26px</td><td>12 × 26px</td></tr>
+                <tr><td>Files / Outline toggle hit area</td><td>24 × 44px</td><td>44 × 44px</td></tr>
               </tbody>
             </table>
           </div>
@@ -1993,34 +2886,22 @@
       </main>
 
       <aside class="mdp-right-rail mdp-right-rail--outline-expanded" aria-label="Document actions and outline">
-        <button class="mdp-panel-toggle mdp-panel-toggle--outline" type="button" aria-label="Hide Outline panel" aria-expanded="true" id="outline-toggle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
-        </button>
-        <div class="mdp-right-rail__actions-row">
-          <span class="mdp-right-rail__actions-label" aria-hidden="true">Actions</span>
-          <div class="mdp-floating-actions mdp-floating-actions--rail-strip" role="toolbar" aria-label="Document actions">
-          <button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" id="copy-button">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg>
-          </button>
-          <button class="mdp-fab-btn mdp-fab-btn--edit" type="button" aria-label="Edit Markdown" title="Edit Markdown">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg>
-          </button>
-          <button class="mdp-fab-btn" type="button" aria-label="Toggle light and dark theme" title="Toggle light and dark theme" id="theme-toggle" aria-pressed="false">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg>
-          </button>
-          </div>
-        </div>
-
-        <div class="mdp-right-rail__outline-clip">
-        <div class="mdp-sidebar-panel mdp-sidebar-panel--outline">
-          <div class="mdp-panel-header">
-            <div class="mdp-panel-header__row">
-              <div class="mdp-panel-header__heading-main">
-                <strong class="mdp-panel-header__heading">Outline</strong>
-                <span class="mdp-panel-header__meta">4 headings</span>
-              </div>
-            </div>
-          </div>
+<button class="mdp-panel-toggle mdp-panel-toggle--outline" type="button" aria-label="Hide Outline panel" aria-expanded="true" id="outline-toggle" aria-controls="mdp-panel-outline" style="--mdp-toggle-direction:1"><span class="mdp-panel-toggle__face" aria-hidden="true"><span class="mdp-panel-toggle__skin"></span><span class="mdp-panel-toggle__mark"></span><span class="mdp-panel-toggle__sweep"></span><svg width="12" height="16" viewBox="3 0 18 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="mdp-panel-toggle__chevron"><path d="m9 6 6 6-6 6"></path></svg></span></button>
+<div class="mdp-right-rail__actions-row">
+<div class="mdp-right-rail__commands"><div class="mdp-floating-actions" id="document-actions" role="group" aria-label="Document actions">
+<div class="mdp-document-actions__slot" data-mdp-action="updates"><button class="mdp-fab-btn" type="button" id="updates-button" aria-label="Document updates" title="Document updates" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="theme"><button class="mdp-fab-btn mdp-fab-btn--theme" type="button" id="theme-toggle" aria-label="Switch to dark theme" title="Switch to dark theme" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="review"><button class="mdp-fab-btn" type="button" id="review-button" aria-label="View changes" title="View changes" aria-haspopup="dialog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="edit"><button class="mdp-fab-btn mdp-fab-btn--edit" type="button" id="edit-button" aria-label="Edit markdown" title="Edit markdown" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="copy"><button class="mdp-fab-btn" type="button" id="copy-button" aria-label="Copy open file link" title="Copy open file link" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="print"><button class="mdp-fab-btn" type="button" id="print-button" aria-label="Print / Save as PDF" title="Print / Save as PDF" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="print" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M7 8V3h10v5 M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="7" y="14" width="10" height="7" rx="1"></rect><circle cx="17.5" cy="11" r="0.85" fill="currentColor" stroke="none"></circle></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="export"><button class="mdp-fab-btn" type="button" id="export-button" aria-label="Export document" title="Export document" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="export" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="more"><button class="mdp-fab-btn" type="button" id="actions-more" aria-label="More document actions" title="More document actions" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button></div>
+</div></div><strong class="mdp-right-rail__title">Outline</strong>
+</div>
+        <div class="mdp-right-rail__outline-clip" aria-hidden="false">
+        <div class="mdp-sidebar-panel mdp-sidebar-panel--outline" id="mdp-panel-outline">
+          <div class="mdp-outline__header"><span>On this page</span><span class="mdp-outline__count">4 headings</span></div>
           <nav class="mdp-toc" aria-label="Document outline">
             <ul class="mdp-toc__list"><li><a class="mdp-toc__link" href="#foundation">Foundation</a></li><li><a class="mdp-toc__link" href="#layout">Runtime layout</a></li><li><a class="mdp-toc__link" href="#states">Interaction states</a></li><li><a class="mdp-toc__link" href="#extension">Extending the system</a></li></ul>
           </nav>
@@ -2048,8 +2929,26 @@
   </dialog>
 
 
-  <template id="preview-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 5V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 13 14H3a1.5 1.5 0 0 1-1.5-1.5Z" fill="#D6A34A" fill-opacity=".22"></path><path d="M1.5 6h13"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sun" style="stroke:currentColor;stroke-width:1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2 m-16-8 1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"></path></svg></template>
+  <template id="preview-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m15 6-6 6 6 6"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9 6 6 6-6 6"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 5V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 13 14H3a1.5 1.5 0 0 1-1.5-1.5Z" fill="#D6A34A" fill-opacity=".22"></path><path d="M1.5 6h13"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sun" style="stroke:currentColor;stroke-width:1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2 m-16-8 1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"></path></svg></template>
+  <template id="document-action-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="print" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M7 8V3h10v5 M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="7" y="14" width="10" height="7" rx="1"></rect><circle cx="17.5" cy="11" r="0.85" fill="currentColor" stroke="none"></circle></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="export" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m5 12 4 4L19 6"></path></svg></template>
   <script>
+    // Trusted application glyph snapshots, not document content.
+    document.getElementById('preview-glyphs').content.append(document.getElementById('document-action-glyphs').content)
+    // Snapshot of document-actions-model.js; capability fixture below is documentation-only.
+function getDocumentActionsSize(actions, { controlSize = 28, gap = 4, dividerSize = 8 } = {}) {
+  return actions.reduce((size, action, index) => size + controlSize + (index ? gap + (action.group && action.group !== actions[index - 1].group ? dividerSize : 0) : 0), 0)
+}
+function partitionDocumentActions(actions, metrics = {}) {
+  const pinnedCount = actions.reduce((count, action, index) => action.pinned ? index + 1 : count, 0)
+  let count = actions.length
+  const availableSize = Math.max(0, metrics.availableSize ?? Infinity)
+  while (count > pinnedCount) {
+    const row = [...actions.slice(0, count), ...(count < actions.length ? [{ id: 'more' }] : [])]
+    if (getDocumentActionsSize(row, metrics) <= availableSize) break
+    count--
+  }
+  return { direct: actions.slice(0, count), overflow: actions.slice(count) }
+}
     const exitDialog = document.getElementById('exit-edit-dialog')
     const exitPreview = document.getElementById('exit-edit-preview')
     const exitCancel = document.getElementById('exit-edit-cancel')
@@ -2277,8 +3176,155 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
       } else alert(`${command.node.getAttribute('aria-label')} preview only.`)
       closeContextMenu(true)
     })
+    for (const region of document.querySelectorAll('.mdp-explorer__scroll-region, .mdp-toc')) {
+      let timer
+      region.addEventListener('scroll', () => {
+        region.classList.add('is-scroll-active'); clearTimeout(timer)
+        timer = setTimeout(() => region.classList.remove('is-scroll-active'), 1000)
+      }, { passive: true })
+    }
     const filesRail = document.querySelector('.mdp-sidebar--files')
     const rightRail = document.querySelector('.mdp-right-rail')
+
+    // Same prefix budget as runtime; fixture commands do not execute file operations.
+    const documentActions = document.getElementById('document-actions')
+    const documentPending = document.getElementById('document-pending')
+    const documentMore = document.getElementById('actions-more').parentElement
+    const documentCommands = [
+      { id: 'updates', group: 'quick', pinned: true, label: 'Document updates', node: document.getElementById('updates-button').parentElement },
+      { id: 'theme', group: 'quick', pinned: true, label: 'Theme', node: themeToggle.parentElement },
+      { id: 'review', group: 'document', pinned: true, label: 'View changes', node: document.getElementById('review-button').parentElement },
+      { id: 'edit', group: 'document', label: 'Edit markdown', node: document.getElementById('edit-button').parentElement },
+      { id: 'copy', group: 'document', label: 'Copy open file link', node: copyButton.parentElement },
+      { id: 'print', group: 'output', label: 'Print / Save as PDF', node: document.getElementById('print-button').parentElement },
+      { id: 'export', group: 'output', label: 'Export document', node: document.getElementById('export-button').parentElement }
+    ]
+    let documentOverflow = []
+    let documentMenu = null
+    let documentMenuTrigger = null
+    function closeDocumentMenu(restore = false) {
+      documentMenu?.remove()
+      documentMenuTrigger?.parentElement.classList.remove('mdp-document-actions-menu')
+      documentMenu = null
+      documentMenuTrigger?.setAttribute('aria-expanded', 'false')
+      if (restore) documentMenuTrigger?.focus()
+      documentMenuTrigger = null
+    }
+    function openDocumentMenu(anchor, commands) {
+      if (documentMenuTrigger === anchor) { closeDocumentMenu(true); return }
+      closeDocumentMenu()
+      const menu = document.createElement('div')
+      menu.className = 'mdp-document-actions-menu__panel'
+      menu.setAttribute('role', 'menu')
+      menu.setAttribute('aria-label', anchor.getAttribute('aria-label'))
+      menu.style.width = Math.min(240, innerWidth - 16) + 'px'
+      menu.style.maxHeight = Math.max(44, innerHeight - 16) + 'px'
+      let group = ''
+      const choices = commands.flatMap(command => command.id === 'export'
+        ? [{ id: 'html', group: command.group, label: 'Export HTML' }, { id: 'word', group: command.group, label: 'Export Word (.doc)' }]
+        : [command])
+      for (const command of choices) {
+        if (command.group !== group) {
+          if (group) { const rule = document.createElement('div'); rule.className = 'mdp-action-menu__separator'; rule.setAttribute('role', 'separator'); menu.append(rule) }
+          const label = document.createElement('div')
+          label.className = 'mdp-action-menu__group-label'
+          label.textContent = command.group === 'output' ? 'Output' : 'Document'
+          menu.append(label)
+          group = command.group
+        }
+        const button = document.createElement('button')
+        button.type = 'button'; button.className = 'mdp-document-actions-menu__item'
+        button.setAttribute('role', 'menuitem')
+        const icon = command.node?.querySelector('svg')
+          || document.getElementById('preview-glyphs').content.querySelector('[data-mdp-icon="export"]')
+        const menuIcon = icon.cloneNode(true)
+        menuIcon.setAttribute('class', 'mdp-document-actions-menu__icon')
+        button.append(menuIcon)
+        const label = document.createElement('span'); label.textContent = command.label; button.append(label)
+        button.addEventListener('click', () => {
+          closeDocumentMenu(true)
+          if (command.node) command.node.querySelector('button').click()
+          else alert(command.label + ' preview only. No file is exported.')
+        })
+        menu.append(button)
+      }
+      anchor.parentElement.classList.add('mdp-document-actions-menu')
+      anchor.parentElement.append(menu)
+      const rect = anchor.getBoundingClientRect()
+      const parent = anchor.parentElement.getBoundingClientRect()
+      const width = menu.getBoundingClientRect().width
+      const height = menu.getBoundingClientRect().height
+      menu.style.left = Math.max(8, Math.min(rect.right - width, innerWidth - width - 8)) - parent.left + 'px'
+      menu.style.top = (rect.bottom + height + 6 <= innerHeight - 8 ? rect.bottom + 6 : Math.max(8, rect.top - height - 6)) - parent.top + 'px'
+      documentMenu = menu; documentMenuTrigger = anchor
+      anchor.setAttribute('aria-expanded', 'true')
+      menu.querySelector('button')?.focus()
+      menu.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); closeDocumentMenu(true) }
+        else if (event.key === 'Tab') closeDocumentMenu(true)
+        else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+          event.preventDefault()
+          const buttons = [...menu.querySelectorAll('button:not(:disabled)')]
+          const index = buttons.indexOf(document.activeElement)
+          const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (index + (event.key === 'ArrowUp' ? -1 : 1) + buttons.length) % buttons.length
+          buttons[next]?.focus()
+        }
+      })
+    }
+    function fitDocumentActions() {
+      const focused = documentActions.contains(document.activeElement) ? document.activeElement.closest('[data-mdp-action]')?.dataset.mdpAction : null
+      closeDocumentMenu()
+      const bound = documentActions.parentElement
+      const style = getComputedStyle(bound)
+      const vertical = getComputedStyle(documentActions).flexDirection === 'column'
+      const availableSize = vertical
+        ? bound.clientHeight - (parseFloat(style.paddingTop) || 0) - (parseFloat(style.paddingBottom) || 0)
+        : bound.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0)
+      if (availableSize <= 0) return
+      const commands = documentCommands.filter(command => command.id !== 'review' || documentPending.checked)
+      const controlSize = parseFloat(getComputedStyle(documentActions).getPropertyValue('--mdp-action-size')) || 28
+      const dividerSize = parseFloat(getComputedStyle(documentActions).getPropertyValue('--mdp-action-divider-size')) || 8
+      const { direct, overflow } = partitionDocumentActions(commands, { availableSize, controlSize, dividerSize })
+      documentOverflow = overflow
+      const nodes = []
+      direct.forEach((command, index) => {
+        if (index && command.group !== direct[index - 1].group) {
+          const divider = document.createElement('span'); divider.className = 'mdp-document-actions__divider'; divider.setAttribute('aria-hidden', 'true'); nodes.push(divider)
+        }
+        nodes.push(command.node)
+      })
+      if (overflow.length) nodes.push(documentMore)
+      documentActions.replaceChildren(...nodes)
+      if (focused) (documentActions.querySelector('[data-mdp-action="' + focused + '"] button')
+        || documentActions.querySelector('[data-mdp-action="more"] button')
+        || documentActions.querySelector('button'))?.focus({ preventScroll: true })
+    }
+    document.getElementById('actions-more').addEventListener('click', event => openDocumentMenu(event.currentTarget, documentOverflow))
+    document.getElementById('export-button').addEventListener('click', event => openDocumentMenu(event.currentTarget, documentCommands.filter(command => command.id === 'export')))
+    document.getElementById('edit-button').addEventListener('click', () => exitPreview.click())
+    document.getElementById('print-button').addEventListener('click', () => alert('Print / Save as PDF preview only.'))
+    document.getElementById('review-button').addEventListener('click', () => alert('Change Review preview only. The running Viewer opens the full comparison dialog.'))
+    function syncDocumentPending() {
+      const button = document.getElementById('updates-button')
+      button.setAttribute('aria-label', documentPending.checked ? 'Update document' : 'Document updates')
+      button.title = button.getAttribute('aria-label')
+      replaceGlyph(button, documentPending.checked ? 'apply' : 'updates')
+      fitDocumentActions()
+    }
+    documentPending.addEventListener('change', syncDocumentPending)
+    document.getElementById('updates-button').addEventListener('click', () => {
+      if (!documentPending.checked) { alert('Document updates preview. Use Preview pending update to simulate a revision.'); return }
+      documentPending.checked = false
+      syncDocumentPending()
+    })
+    document.addEventListener('pointerdown', event => { if (documentMenu && !documentMenuTrigger.parentElement.contains(event.target)) closeDocumentMenu() })
+    new ResizeObserver(fitDocumentActions).observe(documentActions.parentElement)
+    coarsePointer.addEventListener('change', fitDocumentActions)
+    window.addEventListener('resize', fitDocumentActions)
+    function syncCompactRail() {
+      if (rightRail.classList.contains('mdp-right-rail--outline-expanded')) rightRail.dataset.compactHeader = String(rightRail.getBoundingClientRect().width <= 280)
+    }
+    new ResizeObserver(syncCompactRail).observe(rightRail); syncCompactRail()
     const scrollTopButton = document.getElementById('scroll-top')
 
     // Start narrow screens with the Files overlay closed.
@@ -2291,8 +3337,19 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
 
     const replaceGlyph = (button, name) => {
       const replacement = document.getElementById('preview-glyphs').content.querySelector(`[data-mdp-icon="${name}"]`).cloneNode(true)
-      button.querySelector('svg').replaceWith(replacement)
+      if (button.classList.contains('mdp-panel-toggle')) {
+        const sideName = 'sidebar-' + name
+        const icon = document.getElementById('preview-glyphs').content.querySelector('[data-mdp-icon="' + sideName + '"]').cloneNode(true)
+        icon.setAttribute('viewBox', '3 0 18 24'); icon.setAttribute('stroke-width', '2.25'); icon.setAttribute('style', 'stroke:currentColor;stroke-width:2.25')
+        icon.classList.add('mdp-panel-toggle__chevron')
+        button.style.setProperty('--mdp-toggle-direction', name === 'chevron-left' ? '-1' : '1')
+        button.querySelector('svg').replaceWith(icon)
+        button.classList.remove('is-switching'); void button.offsetWidth; button.classList.add('is-switching')
+        setTimeout(() => button.classList.remove('is-switching'), 600)
+      } else button.querySelector('svg').replaceWith(replacement)
     }
+
+    themeToggle.querySelector('svg').classList.add('mdp-fab-btn__theme-icon--dark')
 
     if (filesToggle.getAttribute('aria-expanded') === 'false') replaceGlyph(filesToggle, 'chevron-right')
     filesToggle.addEventListener('click', () => {
@@ -2307,23 +3364,34 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
       const hidden = shell.classList.toggle('mdp-body--no-outline')
       rightRail.classList.toggle('mdp-right-rail--actions-only', hidden)
       rightRail.classList.toggle('mdp-right-rail--outline-expanded', !hidden)
+      rightRail.classList.toggle('mdp-right-rail--outline-collapsed', hidden)
+      rightRail.querySelector('.mdp-right-rail__title').hidden = hidden
+      const clip = rightRail.querySelector('.mdp-right-rail__outline-clip')
+      clip.inert = hidden
+      clip.setAttribute('aria-hidden', String(hidden))
       outlineToggle.setAttribute('aria-expanded', hidden ? 'false' : 'true')
       outlineToggle.setAttribute('aria-label', hidden ? 'Show Outline panel' : 'Hide Outline panel')
       replaceGlyph(outlineToggle, hidden ? 'chevron-left' : 'chevron-right')
+      fitDocumentActions()
+      outlineToggle.focus({ preventScroll: true })
     })
 
     themeToggle.addEventListener('click', () => {
       body.dataset.theme = body.dataset.theme === 'dark' ? 'light' : 'dark'
-      themeToggle.setAttribute('aria-pressed', String(body.dataset.theme === 'dark'))
+      themeToggle.setAttribute('aria-label', body.dataset.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme')
+      themeToggle.title = themeToggle.getAttribute('aria-label')
       replaceGlyph(themeToggle, body.dataset.theme === 'dark' ? 'sun' : 'moon')
+      themeToggle.querySelector('svg').classList.add(body.dataset.theme === 'dark' ? 'mdp-fab-btn__theme-icon--light' : 'mdp-fab-btn__theme-icon--dark')
     })
 
     copyButton.addEventListener('click', () => {
+      replaceGlyph(copyButton, 'check')
       copyButton.classList.add('is-copied')
       copyButton.title = 'Copied'
       copyButton.setAttribute('aria-label', 'Copied')
       window.setTimeout(() => {
         copyButton.classList.remove('is-copied')
+        replaceGlyph(copyButton, 'link')
         copyButton.title = 'Copy open file link'
         copyButton.setAttribute('aria-label', 'Copy open file link')
       }, 1200)
@@ -2359,6 +3427,7 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
     window.addEventListener('scroll', syncScrollTopButton, { passive: true })
     window.addEventListener('resize', syncScrollTopButton)
     syncScrollTopButton()
+    fitDocumentActions()
   </script>
 </body>
 </html>

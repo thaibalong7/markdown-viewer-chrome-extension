@@ -2,6 +2,7 @@ import React from 'react'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { FloatingActions } from '../FloatingActions.jsx'
 import { ExitEditConfirmation } from '../ExitEditConfirmation.jsx'
+import { ChangeReview } from '../ChangeReview.jsx'
 
 const mocks = vi.hoisted(() => ({
   state: { enabled: true, dirty: true },
@@ -38,8 +39,9 @@ function actions(saveStatus = 'saved') {
     documentUiState: { capabilities: { edit: true } },
     saveStatus
   })
+  const toolbar = find(tree, node => node.type === ChangeReview).props.renderTrigger(null)
   return {
-    edit: find(tree, (node) => node.props['aria-label'] === 'Exit edit mode'),
+    edit: { props: toolbar.props.actions.find(action => action.id === 'edit') },
     confirmation: find(tree, (node) => node.type === ExitEditConfirmation)
   }
 }

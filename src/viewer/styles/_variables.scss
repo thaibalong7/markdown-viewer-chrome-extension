@@ -33,3 +33,12 @@ $code-padding: 16px;
     background-clip: padding-box;
   }
 }
+
+// Preserve the existing six-pixel list gutter; ViewerScrollbar owns the thumb.
+@mixin sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  &::-webkit-scrollbar { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-track, &::-webkit-scrollbar-thumb { background: transparent; }
+  @media (forced-colors: active) { @include scrollbar-thin; }
+}

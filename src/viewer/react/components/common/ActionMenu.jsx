@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useRef } from 'react'
+import React, { forwardRef, useCallback, useEffect, useId, useRef } from 'react'
 import { Tooltip } from '../Tooltip.jsx'
 import { IconButton } from './IconButton.jsx'
 
@@ -20,6 +20,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
     triggerShowDelayMs,
     triggerDisabled = false,
     menuClassName,
+    menuStyle,
     menuLabel,
     itemClassName,
     items,
@@ -29,6 +30,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
 ) {
   const localTriggerRef = useRef(null)
   const menuRef = useRef(null)
+  const menuId = useId()
   const setTriggerRef = useCallback((node) => {
     localTriggerRef.current = node
     assignRef(triggerRef, node)
@@ -37,7 +39,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
   useEffect(() => {
     if (!open) return undefined
     const frame = requestAnimationFrame(() => {
-      menuRef.current?.querySelector?.('[role="menuitem"]:not(:disabled)')?.focus?.()
+      menuRef.current?.querySelector?.('[role^="menuitem"]:not(:disabled)')?.focus?.()
     })
     return () => cancelAnimationFrame(frame)
   }, [open])
@@ -48,13 +50,14 @@ export const ActionMenu = forwardRef(function ActionMenu(
       return
     }
     if (event.key === 'Tab') {
+      localTriggerRef.current?.focus?.({ preventScroll: true })
       onToggle?.(event)
       return
     }
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
 
     const enabledItems = Array.from(
-      menuRef.current?.querySelectorAll?.('[role="menuitem"]:not(:disabled)') || []
+      menuRef.current?.querySelectorAll?.('[role^="menuitem"]:not(:disabled)') || []
     )
     if (!enabledItems.length) return
     event.preventDefault()
@@ -79,6 +82,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
         aria-label={triggerLabel}
         aria-haspopup="menu"
         aria-expanded={open ? 'true' : 'false'}
+        aria-controls={menuId}
         disabled={triggerDisabled}
         onClick={onToggle}
       >
@@ -87,35 +91,46 @@ export const ActionMenu = forwardRef(function ActionMenu(
       <div
         ref={menuRef}
         className={menuClassName}
+        id={menuId}
+        style={menuStyle}
         hidden={!open}
         role="menu"
         aria-label={menuLabel}
         onKeyDown={onMenuKeyDown}
       >
-        {items.map((item) => {
+        {items.map((item, index) => {
           const key = item.key || item.label
           const button = (
             <button
               type="button"
               className={itemClassName}
-              role="menuitem"
+              role={item.pressed === undefined ? 'menuitem' : 'menuitemcheckbox'}
               aria-label={item.ariaLabel}
               disabled={item.disabled}
+              aria-busy={item.busy || undefined}
+              aria-checked={item.pressed === undefined ? undefined : Boolean(item.pressed)}
               onClick={(event) => {
                 item.onClick?.(event)
-                queueMicrotask(() => localTriggerRef.current?.focus?.())
+                if (item.restoreFocus !== false) queueMicrotask(() => localTriggerRef.current?.focus?.())
               }}
             >
               {item.icon}
               {item.icon ? <span>{item.label}</span> : item.label}
             </button>
           )
-          if (!item.tooltip) return React.cloneElement(button, { key })
-          return (
-            <Tooltip key={key} content={item.tooltip}>
+          const content = item.tooltip ? (
+            <Tooltip content={item.tooltip}>
               <span className="mdp-action-menu__tooltip-anchor">{button}</span>
             </Tooltip>
-          )
+          ) : button
+          const startsGroup = item.groupLabel && item.groupLabel !== items[index - 1]?.groupLabel
+          return <React.Fragment key={key}>
+            {startsGroup && <>
+              {index > 0 && <div className="mdp-action-menu__separator" role="separator" />}
+              <div className="mdp-action-menu__group-label" aria-hidden="true">{item.groupLabel}</div>
+            </>}
+            {content}
+          </React.Fragment>
         })}
       </div>
     </div>

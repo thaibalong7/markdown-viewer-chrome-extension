@@ -45,6 +45,12 @@
 }
 
 .mdp-body {
+  // Shared rhythm for Files and the expanded Outline header.
+  --mdp-sidebar-top-inset: 14px;
+  --mdp-sidebar-header-inset: 2px;
+  --mdp-sidebar-primary-row-height: 36px;
+  --mdp-sidebar-secondary-row-height: 44px;
+  --mdp-sidebar-content-gap: 12px;
   --mdp-files-track: var(--mdp-files-width);
   --mdp-right-track: var(--mdp-toc-width);
   display: grid;
@@ -82,11 +88,6 @@
   backdrop-filter: var(--mdp-layer-backdrop-filter);
   padding: 14px;
   transition: padding 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
-
-  &__placeholder {
-    color: var(--mdp-muted);
-    font-size: 14px;
-  }
 }
 
 .mdp-sidebar-panel {
@@ -142,6 +143,7 @@
   overflow: visible;
   min-width: 0;
   padding-inline: 8px;
+  padding-top: var(--mdp-sidebar-top-inset);
 
   &.mdp-sidebar--collapsed {
     padding: 0;
@@ -227,7 +229,7 @@
   min-width: 0;
   height: 100vh;
   overflow: visible;
-  gap: 4px;
+  gap: 0;
   padding: 14px;
   padding-inline-start: 8px;
   /* Reserve the viewer's 12px overlay scrollbar plus its 2px viewport inset. */
@@ -241,132 +243,138 @@
 
   &--actions-only {
     align-items: center;
-    padding: 10px 8px;
+    padding: 10px 7px;
   }
 }
 
+// The command wrapper owns only the width left after the Outline label.
 .mdp-right-rail__actions-row {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   min-width: 0;
-  min-height: 44px;
-  padding: 0 2px 8px;
-  border-bottom: 1px solid var(--mdp-border);
+  min-height: var(--mdp-sidebar-primary-row-height);
+  padding: 0 2px;
 }
 
-.mdp-right-rail__actions-label {
-  color: var(--mdp-muted);
-  font-size: 10px;
+.mdp-right-rail__commands {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  > .mdp-floating-actions { width: 100%; min-width: 0; }
+}
+
+.mdp-right-rail__title {
+  flex: 0 0 60px;
+  text-align: right;
+  color: var(--mdp-text);
+  font-size: 12px;
   font-weight: 750;
-  letter-spacing: 0.065em;
-  line-height: 1;
+  letter-spacing: .055em;
+  line-height: 1.25;
   text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.mdp-right-rail__actions-row > .mdp-floating-actions {
-  margin-left: auto;
 }
 
 .mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
-  display: contents;
-}
-
-@media (min-width: 900px) {
-  .mdp-right-rail--outline-expanded .mdp-right-rail__actions-row > .mdp-floating-actions {
-    /* Let the toolbar fit the resized rail so its buttons can wrap. */
-    flex-shrink: 1;
-    min-width: 0;
-    max-width: 100%;
-  }
-}
-
-@container mdp-right-rail (max-width: 339px) {
-  .mdp-right-rail__actions-row {
-    justify-content: center;
-  }
-
-  .mdp-right-rail__actions-label {
-    display: none;
-  }
-
-  .mdp-right-rail__actions-row > .mdp-floating-actions {
-    margin-inline: auto;
-  }
-}
-
-.mdp-right-rail--outline-collapsed .mdp-floating-actions {
-  margin-top: 0;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  align-items: stretch;
+  border: 0;
 }
 
 .mdp-right-rail--outline-collapsed .mdp-right-rail__outline-clip {
-  pointer-events: none;
-  opacity: 0;
-  transform: translateX(10px);
-  visibility: hidden;
-  transition:
-    opacity 100ms ease,
-    transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    visibility 0s linear 180ms;
+  display: none;
 }
 
+// Viewer-local Porcelain #22. The small face and full hit target are separate.
 .mdp-panel-toggle {
   position: absolute;
-  top: 16px;
+  top: 12px;
   z-index: 4;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 44px;
   padding: 0;
-  border: 1px solid var(--mdp-panel-toggle-border);
-  border-radius: 999px;
-  background: var(--mdp-panel-toggle-bg);
-  color: var(--mdp-panel-toggle-text);
-  box-shadow: var(--mdp-panel-toggle-shadow);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mdp-muted);
   cursor: pointer;
-  transition:
-    color 140ms ease,
-    background-color 140ms ease,
-    border-color 140ms ease,
-    box-shadow 140ms ease,
-    transform 140ms ease;
 
-  &:hover {
-    color: var(--mdp-panel-toggle-hover-text);
-    border-color: var(--mdp-panel-toggle-border);
-    background: var(--mdp-panel-toggle-hover-bg);
-    box-shadow: var(--mdp-panel-toggle-hover-shadow);
-    transform: scale(1.08);
+  &[aria-expanded='false'], &:hover, &:focus-visible { color: var(--mdp-link); }
+  &[aria-expanded='false'] .mdp-panel-toggle__skin {
+    background: var(--mdp-link-soft);
+    border-color: color-mix(in srgb, var(--mdp-link) 50%, var(--mdp-border));
   }
-
-  &:active {
-    transform: scale(0.94);
+  &:hover .mdp-panel-toggle__skin, &:focus-visible .mdp-panel-toggle__skin {
+    border-color: var(--mdp-link);
   }
-
-  &:focus-visible {
-    outline: 2px solid var(--mdp-link);
-    outline-offset: 2px;
-  }
+  &:focus-visible { outline: 2px solid var(--mdp-link); outline-offset: -2px; }
 }
 
-.mdp-panel-toggle--files {
-  right: auto;
-  left: max(0px, calc(100% - 11px));
-}
+.mdp-panel-toggle--files { left: 100%; }
+.mdp-panel-toggle--outline { left: -24px; }
 
-.mdp-panel-toggle--outline {
-  left: -11px;
+.mdp-panel-toggle__face {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 26px;
+  overflow: hidden;
+  border-radius: 0 6px 6px 0;
+  pointer-events: none;
 }
-
-.mdp-panel-toggle__chevron {
-  width: 11px;
-  height: 11px;
-  flex-shrink: 0;
+.mdp-panel-toggle--outline .mdp-panel-toggle__face {
+  left: auto;
+  right: 0;
+  border-radius: 6px 0 0 6px;
+}
+.mdp-panel-toggle__skin {
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--mdp-muted) 42%, var(--mdp-border));
+  border-left-width: 0;
+  border-radius: inherit;
+  background: var(--mdp-surface);
+}
+.mdp-panel-toggle--outline .mdp-panel-toggle__skin { border-left-width: 1px; border-right: 0; }
+.mdp-panel-toggle__mark {
+  position: absolute;
+  top: 4px;
+  left: calc(50% + var(--mdp-toggle-direction) * 1.75px);
+  width: 2.1px;
+  height: 2.1px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--mdp-link);
+  opacity: .6;
+}
+.mdp-panel-toggle__chevron { position: relative; z-index: 2; width: 12px; height: 16px; }
+.mdp-panel-toggle__sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  background: linear-gradient(115deg, transparent 22%, color-mix(in srgb, var(--mdp-link) 38%, transparent) 50%, transparent 78%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-panel-toggle__skin { transition: background-color 160ms, border-color 160ms; }
+  .mdp-panel-toggle:is(:hover, :focus-visible, .is-switching) .mdp-panel-toggle__sweep {
+    animation: mdp-sidebar-light-pass 580ms cubic-bezier(.2, .65, .3, 1);
+  }
+}
+@keyframes mdp-sidebar-light-pass {
+  0% { opacity: 0; transform: translateX(-100%); }
+  30%, 60% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(100%); }
 }
 
 .mdp-sidebar__resize-handle {
@@ -479,6 +487,44 @@
   }
 }
 
+@media (pointer: coarse) {
+  .mdp-body {
+    --mdp-sidebar-primary-row-height: 44px;
+    --mdp-sidebar-secondary-row-height: 52px;
+  }
+}
+
+// Files keeps its UI structure; Outline mirrors its two-row rhythm.
+@media (min-width: 900px) {
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-expanded {
+    padding-top: calc(var(--mdp-sidebar-top-inset) + var(--mdp-sidebar-header-inset));
+  }
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
+    padding-top: 57.5px;
+    padding-bottom: 16px;
+    .mdp-floating-actions { --mdp-action-divider-size: 21px; }
+    .mdp-document-actions__divider { margin-block: 8px; }
+  }
+}
+@media (min-width: 900px) and (pointer: coarse) {
+  .mdp-body { --mdp-sidebar-primary-row-height: 52px; }
+  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
+    padding-top: 69.5px;
+    &[data-compact-header='true'] { padding-top: 103.5px; }
+  }
+  // Only the label/actions row splits; the action controls never wrap.
+  // Container width excludes 22px of rail padding and its 1px border.
+  @container mdp-right-rail (max-width: 257px) {
+    .mdp-right-rail--outline-expanded > .mdp-right-rail__actions-row {
+      flex-wrap: wrap;
+      gap: 0;
+      min-height: 86px;
+      .mdp-right-rail__title { order: -1; flex-basis: 100%; min-height: 34px; padding-block: 4px; }
+      .mdp-right-rail__commands { flex-basis: 100%; min-height: 52px; }
+    }
+  }
+}
+
 @media (max-width: 899px) {
   .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) {
     --mdp-right-track: var(--mdp-actions-rail-width);
@@ -486,22 +532,23 @@
 
   .mdp-right-rail:not(.mdp-right-rail--actions-only) {
     align-items: center;
-    padding: 10px 8px;
+    padding: 10px 7px;
   }
 
   .mdp-right-rail__actions-row {
-    display: contents;
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+    align-items: stretch;
+    border: 0;
   }
 
   .mdp-right-rail .mdp-sidebar-panel--outline,
   .mdp-right-rail .mdp-sidebar__resize-handle,
   .mdp-right-rail__outline-clip,
+  .mdp-right-rail__title,
   .mdp-panel-toggle--outline {
     display: none;
-  }
-
-  .mdp-right-rail--outline-expanded > .mdp-floating-actions {
-    margin-left: 0;
   }
 
   .mdp-content-pane {
@@ -518,7 +565,7 @@
     position: fixed;
     inset: auto 12px 12px auto;
     z-index: 14;
-    width: auto;
+    width: min(360px, calc(100vw - 24px));
     height: auto;
     padding: 5px;
     border: 1px solid var(--mdp-border);
@@ -526,6 +573,11 @@
     background: color-mix(in srgb, var(--mdp-surface) 92%, transparent);
     box-shadow: var(--mdp-shadow-float);
     backdrop-filter: blur(14px);
+  }
+
+  .mdp-right-rail__actions-row,
+  .mdp-right-rail--actions-only > .mdp-right-rail__actions-row {
+    flex: none;
   }
 
   .mdp-content-pane {
@@ -540,16 +592,16 @@
   }
 
   .mdp-panel-toggle {
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
   }
 
   .mdp-panel-toggle--files {
-    left: max(0px, calc(100% - 16px));
+    left: 100%;
   }
 
   .mdp-panel-toggle--outline {
-    left: -16px;
+    left: -44px;
   }
 
   .mdp-sidebar__collapsed-hit-area {

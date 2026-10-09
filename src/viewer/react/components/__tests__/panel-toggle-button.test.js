@@ -3,41 +3,21 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { PanelToggleButton } from '../PanelToggleButton.jsx'
 
-function renderToggle(props) {
-  return renderToStaticMarkup(
-    React.createElement(PanelToggleButton, { ...props, onClick: () => {} })
-  )
-}
-
-describe('PanelToggleButton', () => {
-  it('exposes the Files panel state and target', () => {
-    const expanded = renderToggle({
-      panel: 'files',
-      expanded: true,
-      controls: 'mdp-panel-files'
-    })
-    const collapsed = renderToggle({
-      panel: 'files',
-      expanded: false,
-      controls: 'mdp-panel-files'
-    })
-
-    expect(expanded).toContain('aria-label="Hide Files panel"')
-    expect(expanded).toContain('aria-expanded="true"')
-    expect(expanded).toContain('aria-controls="mdp-panel-files"')
-    expect(collapsed).toContain('aria-label="Show Files panel"')
-    expect(collapsed).toContain('aria-expanded="false"')
-  })
-
-  it('exposes the Outline panel state and target', () => {
-    const html = renderToggle({
-      panel: 'outline',
-      expanded: false,
-      controls: 'mdp-panel-outline'
-    })
-
-    expect(html).toContain('aria-label="Show Outline panel"')
-    expect(html).toContain('aria-controls="mdp-panel-outline"')
-    expect(html).toContain('mdp-panel-toggle--outline')
+describe('Porcelain #22 panel toggles', () => {
+  it.each([
+    ['files', true, -1, 'm15 6-6 6 6 6'], ['files', false, 1, 'm9 6 6 6-6 6'],
+    ['outline', true, 1, 'm9 6 6 6-6 6'], ['outline', false, -1, 'm15 6-6 6 6 6']
+  ])('mirrors %s expanded=%s while retaining its accessible control contract', (panel, expanded, direction, path) => {
+    const html = renderToStaticMarkup(React.createElement(PanelToggleButton, {
+      panel, expanded, controls: `mdp-panel-${panel}`
+    }))
+    expect(html).toContain(`aria-expanded="${expanded}"`)
+    expect(html).toContain(`aria-controls="mdp-panel-${panel}"`)
+    expect(html).toContain(`aria-label="${expanded ? 'Hide' : 'Show'} ${panel === 'files' ? 'Files' : 'Outline'} panel"`)
+    expect(html).toContain(`--mdp-toggle-direction:${direction}`)
+    expect(html).toContain(`d="${path}"`)
+    expect(html).toContain('viewBox="3 0 18 24"')
+    expect(html).toContain('mdp-panel-toggle__face')
+    expect(html).not.toContain('aria-pressed')
   })
 })

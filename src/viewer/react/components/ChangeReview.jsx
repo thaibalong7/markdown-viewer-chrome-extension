@@ -18,20 +18,22 @@ class ReviewLoadBoundary extends React.Component {
   }
 }
 
-export function ChangeReview({ state = {}, isEditMode, editorDirty, onApply, onCheck, onSectionNavigate }) {
+export function ChangeReview({ state = {}, isEditMode, editorDirty, onApply, onCheck, onSectionNavigate, disabled = false, renderTrigger }) {
   const [pair, dispatch] = useReducer(reviewPairReducer, null)
   const triggerRef = useRef(null)
   const close = useCallback(() => dispatch({ type: 'close' }), [])
   useEffect(() => {
     dispatch({ type: 'sync', available: state.available, generation: state.generation })
   }, [state.available, state.generation])
-  if (!state.available || (!state.reviewPair && !pair)) return null
-  return <>
+  const trigger = state.available && (state.reviewPair || pair) ? (
     <IconButton ref={triggerRef} className="mdp-fab-btn mdp-change-review-trigger" tooltip="View changes" aria-label="View changes"
-      disabled={!state.reviewPair}
+      disabled={disabled || !state.reviewPair}
       onClick={() => dispatch({ type: 'open', candidate: state.reviewPair })} aria-haspopup="dialog" aria-expanded={Boolean(pair)}>
       <ChangeReviewIcon className="mdp-fab-btn__icon" />
     </IconButton>
+  ) : null
+  return <>
+    {renderTrigger ? renderTrigger(trigger) : trigger}
     {pair && state.available && pair.generation === state.generation && <ReviewLoadBoundary onClose={close}><Suspense fallback={<ChangeReviewLoadingFallback />}>
       <ChangeReviewPanel pair={pair} candidate={state.latestReviewPair} acceptedSource={state.acceptedSource} isEditMode={isEditMode} editorDirty={editorDirty}
         triggerRef={triggerRef} onClose={close} onRefresh={() => dispatch({ type: 'refresh', candidate: state.latestReviewPair })} onApply={onApply}

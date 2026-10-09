@@ -4,6 +4,7 @@ import {
   normalizeFileUrlForCompare
 } from './url-utils.js'
 import { getFileTypeFromUrl, isExplorerSupportedFile } from '../../shared/file-types.js'
+import { compareExplorerTreeNodes } from './explorer-tree-utils.js'
 
 /**
  * @typedef {'folder' | 'workspace'} ExplorerModeBadgeId
@@ -57,7 +58,7 @@ function clearActiveFlagsInExplorerTree(node) {
 }
 
 /**
- * When scan limits prevented listing the open file, prepend it at the tree root.
+ * When scan limits prevented listing the open file, add it at the tree root.
  * @param {import('./folder-scanner.js').ExplorerTreeNode} tree
  * @param {string} currentFileUrl
  * @param {import('./folder-scanner.js').ScanFolderStats | null | undefined} stats
@@ -111,7 +112,7 @@ export function injectCurrentDocumentAtRootIfMissing(tree, currentFileUrl, stats
       isActive: true
     },
     ...prior
-  ]
+  ].sort(compareExplorerTreeNodes)
   return { injected: true }
 }
 
@@ -199,14 +200,4 @@ export function buildExplorerFilesContext({
     statusLine,
     ...(warningLine ? { warningLine } : {})
   }
-}
-
-/**
- * Badge visible text for {@link ExplorerModeBadgeId}.
- * @param {ExplorerModeBadgeId} id
- * @returns {string}
- */
-export function explorerModeBadgeLabel(id) {
-  if (id === 'workspace') return 'Workspace'
-  return 'Folder'
 }

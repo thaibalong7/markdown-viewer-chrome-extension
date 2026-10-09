@@ -18,6 +18,7 @@ import {
 import { FileRow } from './FileRow.jsx'
 import { buildTreeMotionPlan, flattenVisibleTree, getTreeRowKey } from './FileTree.jsx'
 import { FolderRow } from './FolderRow.jsx'
+import { ViewerScrollbar } from '../ViewerScrollbar.jsx'
 
 const TREE_MOTION_DURATION_MS = 180
 const EMPTY_TREE_MOTION = Object.freeze({
@@ -26,7 +27,7 @@ const EMPTY_TREE_MOTION = Object.freeze({
   exitingRows: []
 })
 
-export function ExplorerPanel({ bridge }) {
+export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) {
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
   const actualBusy = state.view === 'loading' || state.view === 'progress'
@@ -439,6 +440,10 @@ export function ExplorerPanel({ bridge }) {
           })}
         </ul>
       </div>
+      <ViewerScrollbar scrollElement={expanded ? scrollElement : null}
+        visibility={scrollbarVisibility} label="Files scrollbar" variant="sidebar"
+        contentSelector=".mdp-explorer__list:not([hidden]), .mdp-explorer__loading:not([hidden]), .mdp-explorer__busy-view:not([hidden])"
+        contentVersion={`${presentedView}:${treeRows.length}:${viewState.files.length}`} />
     </div>
   )
 }

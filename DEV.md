@@ -51,6 +51,7 @@ Sau khi thay đổi entry point, manifest, service worker hoặc dependency, hã
 
 - **Content/Viewer:** `src/content/index.js` chỉ kiểm tra nhanh `file:` + Markdown-family, sau đó lazy-load `src/content/viewer-loader.js` → `src/content/bootstrap.js` → `src/viewer/app.js`.
 - **Viewer React:** `src/viewer/react/mount.js` mount `ViewerApp.jsx`; React sở hữu chrome, panel, action, editor shell và trạng thái UI, còn render pipeline sở hữu `.mdp-markdown-body`.
+- **Viewer actions và sidebar:** [`docs/document-actions.md`](docs/document-actions.md) mô tả catalog, overflow, focus và ownership; [`Viewer design system`](docs/design-system/README.md#viewer) ghi contract Outline, Porcelain toggle và scrollbar dùng chung.
 - **Document formats:** `src/shared/file-types.js` định nghĩa activation, renderer và capabilities; `src/viewer/documents/` chịu trách nhiệm load/model/render registry.
 - **Markdown:** `src/viewer/core/` quản lý markdown engine, Shiki, sanitize và render; `src/plugins/` mở rộng parser và post-render behavior.
 - **Explorer/navigation:** `src/viewer/explorer/` quản lý scan/workspace/session; `src/viewer/navigation/` phân loại link và route thật `?f=`.
@@ -114,7 +115,7 @@ Checklist smoke test thường dùng:
 
 - Mở trực tiếp đủ bốn extension Markdown được hỗ trợ và xác nhận file khác không kích hoạt Viewer trực tiếp.
 - Mở sibling/workspace, refresh scan, điều hướng qua format, kiểm tra file có khoảng trắng/Unicode và Back/Forward cho route `?f=`.
-- Thử collapse/resize Files và Outline, overlay scrollbar, Back to top, document statistics và responsive layout.
+- Thử collapse/resize độc lập Files và Outline, header hai hàng đối xứng, viền ngoài Porcelain toggle ở cả hai phía/trạng thái, overflow của commands sau khi trừ nhãn OUTLINE, touch và reduced motion. Dùng [checklist sidebar/actions](docs/document-actions.md#verification) cho scrollbar auto-hide/always-visible, tree/heading loading và cleanup khi ẩn panel; kiểm tra thêm Back to top, document statistics và responsive layout.
 - Bật editor, chọn đúng/sai file gốc, sửa/live preview/save, kiểm tra dirty confirmation và external-change protection.
 - Thử Document Updates ở Ask/Automatic/Off, tab ẩn/hiện, update liên tục, file rỗng/mất/quá lớn, giữ vị trí đọc, edit clean/dirty và Save conflict; mở Change Review để kiểm tra diff, section, cặp review cố định, keyboard/focus và responsive layout.
 - Dùng [checklist Document Updates](planning/product-feature-roadmap/document-updates-manual-test.md) cho fixture, các ca Chrome chưa xác minh và lỗi kết nối cold-start cần tái hiện. Khi review đang mở, Auto vẫn có thể cập nhật article sau input idle; diff đã pin chỉ đổi khi chọn Review latest.

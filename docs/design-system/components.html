@@ -601,62 +601,64 @@
     animation-iteration-count: 1;
   }
 }
-/* Document controls hosted by the right-side rail. */
+/* Document controls: src/viewer/styles/_floating-actions.scss */
 .mdp-floating-actions {
+  --mdp-action-size: 28px;
   display: flex;
+  flex: none;
+  flex-wrap: nowrap;
   align-items: center;
-  flex-wrap: wrap;
   gap: 4px;
-  flex-shrink: 0;
-  padding: 6px;
-  border: 1px solid var(--mdp-border);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--mdp-surface) 82%, transparent);
-  box-shadow: var(--mdp-shadow-subtle);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .mdp-floating-actions[hidden] {
   display: none;
 }
 
-.mdp-floating-actions.mdp-floating-actions--rail-strip {
-  gap: 4px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+.mdp-document-actions__slot {
+  position: relative;
+  flex: none;
+  width: var(--mdp-action-size);
+  height: var(--mdp-action-size);
 }
 
-.mdp-right-rail--actions-only .mdp-floating-actions--rail-strip {
+.mdp-document-actions__divider {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 16px;
+  margin: 0 1.5px;
+  background: var(--mdp-border);
+  pointer-events: none;
+}
+
+.mdp-right-rail--actions-only .mdp-floating-actions {
   flex-direction: column;
-  flex-wrap: nowrap;
-}
-
-.mdp-floating-actions--rail-strip .mdp-fab-btn:not(.mdp-fab-btn--theme) {
-  border-color: transparent;
+  height: 100%;
 }
 
 .mdp-fab-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  flex: none;
+  width: var(--mdp-action-size, 34px);
+  height: var(--mdp-action-size, 34px);
   padding: 0;
-  border: 1px solid var(--mdp-border);
+  border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
   color: var(--mdp-muted);
   cursor: pointer;
-  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  transition: color 140ms ease, background-color 140ms ease;
 }
-.mdp-fab-btn:hover {
+.mdp-fab-btn:hover:where(:not(:disabled)) {
   color: var(--mdp-link);
-  border-color: color-mix(in srgb, var(--mdp-link) 30%, var(--mdp-border));
   background: var(--mdp-link-soft);
-}
-.mdp-fab-btn:active {
-  transform: translateY(1px);
 }
 .mdp-fab-btn:focus-visible {
   outline: 2px solid var(--mdp-link);
@@ -665,51 +667,27 @@
 .mdp-fab-btn:disabled {
   cursor: not-allowed;
   opacity: 0.45;
-  pointer-events: none;
 }
 .mdp-fab-btn.is-copied {
   color: var(--mdp-accent);
-  border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
-  background: var(--mdp-accent-soft);
-  pointer-events: none;
-}
-.mdp-fab-btn.is-copied .mdp-fab-btn__icon {
-  display: none;
-}
-.mdp-fab-btn.is-copied::after {
-  content: "✓";
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.mdp-fab-btn__icon {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
 }
 
 .mdp-fab-btn--theme {
   --mdp-theme-action-color: var(--mdp-link);
   --mdp-theme-action-soft: var(--mdp-link-soft);
-  color: var(--mdp-theme-action-color);
-  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 44%, var(--mdp-border));
-  background: color-mix(in srgb, var(--mdp-theme-action-soft) 88%, transparent);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--mdp-theme-action-color) 18%, transparent);
 }
-.mdp-fab-btn--theme:hover {
-  color: var(--mdp-theme-action-color);
-  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 68%, var(--mdp-border));
-  background: color-mix(in srgb, var(--mdp-theme-action-soft) 76%, var(--mdp-theme-action-color) 10%);
-  box-shadow: 0 3px 11px color-mix(in srgb, var(--mdp-theme-action-color) 25%, transparent);
-}
-.mdp-fab-btn--theme[aria-pressed=true] {
+.mdp-fab-btn--theme:has(.mdp-fab-btn__theme-icon--light) {
   --mdp-theme-action-color: var(--mdp-warning);
   --mdp-theme-action-soft: var(--mdp-warning-soft);
 }
-
-.mdp-fab-btn__theme-icon {
-  transition: transform 180ms ease;
+.mdp-fab-btn--theme, .mdp-fab-btn--theme:hover:not(:disabled) {
+  color: var(--mdp-theme-action-color);
+  border-color: color-mix(in srgb, var(--mdp-theme-action-color) 44%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-theme-action-soft) 88%, transparent);
+}
+.mdp-fab-btn--theme:hover:not(:disabled) {
+  border-color: var(--mdp-theme-action-color);
+  background: var(--mdp-theme-action-soft);
 }
 
 .mdp-fab-btn__theme-icon--dark path,
@@ -718,83 +696,133 @@
   fill-opacity: 0.16;
 }
 
-.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--dark {
-  transform: rotate(-12deg) scale(1.08);
+.mdp-fab-btn__icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
 }
 
-.mdp-fab-btn--theme:hover .mdp-fab-btn__theme-icon--light {
-  transform: rotate(18deg) scale(1.08);
-}
-
-.mdp-fab-export {
+.mdp-document-actions-menu {
   position: relative;
 }
 
-.mdp-fab-export__menu {
+.mdp-document-actions-menu__panel {
   position: absolute;
-  top: 0;
-  right: calc(100% + 6px);
   z-index: 30;
-  min-width: 172px;
+  width: min(240px, 100vw - 16px);
   padding: 5px;
-  border-radius: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--mdp-border);
+  border-radius: 12px;
   background: var(--mdp-surface);
   box-shadow: var(--mdp-shadow-float);
 }
+.mdp-document-actions-menu__panel[hidden] {
+  display: none;
+}
+.mdp-document-actions-menu__panel .mdp-action-menu__tooltip-anchor {
+  display: block;
+}
 
-.mdp-fab-export__menu-item {
+.mdp-document-actions-menu__item {
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 38px;
-  margin: 0;
-  padding: 8px 10px;
+  min-height: 34px;
+  gap: 10px;
+  padding: 6px 10px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 4px;
   background: transparent;
   color: var(--mdp-text);
   font: inherit;
-  font-size: 14px;
+  font-size: 12px;
   text-align: left;
   cursor: pointer;
 }
-.mdp-fab-export__menu-item:hover, .mdp-fab-export__menu-item:focus-visible {
-  color: var(--mdp-link);
-  background: var(--mdp-link-soft);
+.mdp-document-actions-menu__item:hover:not(:disabled), .mdp-document-actions-menu__item:focus-visible {
+  background: var(--mdp-panel-strong);
 }
-.mdp-fab-export__menu-item:focus-visible {
+.mdp-document-actions-menu__item:focus-visible {
   outline: 2px solid var(--mdp-link);
-  outline-offset: -1px;
+  outline-offset: -2px;
+}
+.mdp-document-actions-menu__item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
-@media (max-width: 899px) {
+.mdp-document-actions-menu__icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.mdp-document-actions-menu .mdp-action-menu__group-label {
+  padding: 8px 10px 5px;
+  color: var(--mdp-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.mdp-document-actions-menu .mdp-action-menu__separator {
+  height: 1px;
+  margin: 5px 4px;
+  background: var(--mdp-border);
+}
+
+@media (min-width: 640px) {
+  .mdp-right-rail--actions-only .mdp-document-actions__divider {
+    width: 20px;
+    height: 1px;
+    margin: 1.5px 0;
+  }
+}
+@media (min-width: 640px) and (max-width: 899px) {
   .mdp-floating-actions {
     flex-direction: column;
-    flex-wrap: nowrap;
-    padding: 5px;
-    background: var(--mdp-surface);
+    height: 100%;
+  }
+  .mdp-document-actions__divider {
+    width: 20px;
+    height: 1px;
+    margin: 1.5px 0;
   }
 }
 @media (max-width: 639px) {
   .mdp-floating-actions,
   .mdp-right-rail--actions-only .mdp-floating-actions {
     flex-direction: row;
-    padding: 4px;
-  }
-  .mdp-floating-actions.mdp-floating-actions--rail-strip {
-    padding: 0;
-  }
-  .mdp-fab-export__menu {
-    inset: auto 0 calc(100% + 8px) auto;
+    height: auto;
   }
 }
 @media (pointer: coarse) {
+  .mdp-floating-actions {
+    --mdp-action-size: 44px;
+  }
   .mdp-fab-btn {
     width: 44px;
     height: 44px;
   }
+  .mdp-document-actions-menu__item {
+    min-height: 44px;
+  }
 }
+@media (prefers-reduced-motion: reduce) {
+  .mdp-fab-btn {
+    transition: none;
+  }
+}
+.mdp-fab-btn--edit:not(.mdp-fab-btn--active) {
+  color: var(--mdp-warning);
+}
+.mdp-fab-btn--edit:not(.mdp-fab-btn--active):hover:not(:disabled) {
+  color: var(--mdp-warning);
+  border-color: color-mix(in srgb, var(--mdp-warning) 36%, var(--mdp-border));
+  background: var(--mdp-warning-soft);
+}
+
 .mdp-watch-status {
   position: relative;
   display: flex;
@@ -1698,13 +1726,6 @@
   --mdp-panel-strong: #e3e9f0;
   --mdp-link: #2563eb;
   --mdp-link-soft: #eaf2ff;
-  --mdp-panel-toggle-bg: #edf3fc;
-  --mdp-panel-toggle-text: #58709a;
-  --mdp-panel-toggle-border: #d4dfec;
-  --mdp-panel-toggle-hover-bg: #e2ecfb;
-  --mdp-panel-toggle-hover-text: #315ea8;
-  --mdp-panel-toggle-shadow: 0 1px 4px rgb(23 32 51 / 12%);
-  --mdp-panel-toggle-hover-shadow: 0 2px 6px rgb(23 32 51 / 17%);
   --mdp-accent: #16815c;
   --mdp-accent-soft: #e8f6ef;
   --mdp-warning: #b35c00;
@@ -1752,13 +1773,6 @@
   --mdp-panel-strong: #1d2735;
   --mdp-link: #7ab7ff;
   --mdp-link-soft: #122b4d;
-  --mdp-panel-toggle-bg: #1d2735;
-  --mdp-panel-toggle-text: #9ba9bb;
-  --mdp-panel-toggle-border: #3a475a;
-  --mdp-panel-toggle-hover-bg: #26374d;
-  --mdp-panel-toggle-hover-text: #b9d8fb;
-  --mdp-panel-toggle-shadow: 0 1px 5px rgb(0 0 0 / 24%);
-  --mdp-panel-toggle-hover-shadow: 0 2px 7px rgb(0 0 0 / 32%);
   --mdp-accent: #56d39a;
   --mdp-accent-soft: #123529;
   --mdp-warning: #f4b24e;
@@ -2245,7 +2259,7 @@
           </div>
           <div class="mdp-ui-demo-group">
             <span class="mdp-ui-demo-group__title">Viewer icon actions · 34px</span>
-            <div class="mdp-ui-demo-row" id="catalog-icon-actions"><button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" data-catalog-feedback="Copy open file link preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Edit Markdown" title="Edit Markdown" data-catalog-feedback="Edit Markdown preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Document updates" title="Document updates" data-catalog-feedback="Document updates preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Update document" title="Update document" data-catalog-feedback="Update document preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Review changes" title="Review changes" data-catalog-feedback="Review changes preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg></button></div>
+            <div class="mdp-ui-demo-row" id="catalog-icon-actions"><button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" data-catalog-feedback="Copy open file link preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg></button><button class="mdp-fab-btn mdp-fab-btn--edit" type="button" aria-label="Edit Markdown" title="Edit Markdown" data-catalog-feedback="Edit Markdown preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Document updates" title="Document updates" data-catalog-feedback="Document updates preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Update document" title="Update document" data-catalog-feedback="Update document preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Review changes" title="Review changes" data-catalog-feedback="Review changes preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg></button></div>
             <p class="catalog-note">Current runtime SVGs; 44px targets on coarse pointers. Activate an action to preview feedback.</p>
           </div>
           <div class="mdp-ui-demo-group">
@@ -2369,7 +2383,7 @@
           </div>
         </div>
       </section>
-<section class="mdp-ui-section" aria-labelledby="overlays-title"><header class="mdp-ui-section__header"><h3 id="overlays-title">Overlays</h3><p>The current dirty-editor confirmation uses native dialog modality, a shared card, warning badge, and danger action.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Tooltip appearance</span><div class="mdp-tooltip" role="tooltip">Copy the current local file link</div><p class="catalog-note">Static appearance sample; runtime tooltips follow pointer/focus placement.</p></div><div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Export menu</span><div class="mdp-fab-export__menu catalog-menu" role="group" aria-label="Export menu appearance"><button class="mdp-fab-export__menu-item" type="button" data-catalog-feedback="Export HTML preview.">Export HTML</button><button class="mdp-fab-export__menu-item" type="button" data-catalog-feedback="Export Word preview.">Export Word (.doc)</button></div><p class="catalog-note">Static menu layout. Actions display preview feedback.</p></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Exit edit confirmation</span><button class="mdp-ui-button" id="catalog-dialog-open" type="button">Preview unsaved changes dialog</button><p class="catalog-note">Keep editing receives initial focus. Escape or clicking the scrim cancels; focus returns to the trigger. Discard changes affects this preview only.</p></div><p class="catalog-source">src/viewer/react/components/ExitEditConfirmation.jsx · src/viewer/styles/_exit-edit-confirmation.scss · _floating-actions.scss · layout.scss</p></section>
+<section class="mdp-ui-section" aria-labelledby="overlays-title"><header class="mdp-ui-section__header"><h3 id="overlays-title">Overlays</h3><p>The current dirty-editor confirmation uses native dialog modality, a shared card, warning badge, and danger action.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Tooltip appearance</span><div class="mdp-tooltip" role="tooltip">Copy the current local file link</div><p class="catalog-note">Static appearance sample; runtime tooltips follow pointer/focus placement.</p></div><div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Export menu</span><div class="mdp-document-actions-menu__panel catalog-menu" role="group" aria-label="Export menu appearance"><button class="mdp-document-actions-menu__item" type="button" data-catalog-feedback="Export HTML preview.">Export HTML</button><button class="mdp-document-actions-menu__item" type="button" data-catalog-feedback="Export Word preview.">Export Word (.doc)</button></div><p class="catalog-note">Static menu layout. Actions display preview feedback.</p></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Exit edit confirmation</span><button class="mdp-ui-button" id="catalog-dialog-open" type="button">Preview unsaved changes dialog</button><p class="catalog-note">Keep editing receives initial focus. Escape or clicking the scrim cancels; focus returns to the trigger. Discard changes affects this preview only.</p></div><p class="catalog-source">src/viewer/react/components/ExitEditConfirmation.jsx · src/viewer/styles/_exit-edit-confirmation.scss · _floating-actions.scss · layout.scss</p></section>
 </section>
 <section class="catalog-group" id="patterns" aria-labelledby="patterns-title"><header class="catalog-group-heading"><p class="ds-eyebrow">03 / Patterns</p><h2 id="patterns-title">Components in context</h2><p>Settings navigation, Popup tabs, document updates, and Change Review.</p></header>
 <section class="mdp-ui-section" aria-labelledby="navigation-title">

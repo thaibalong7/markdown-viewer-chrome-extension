@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   normalizeScrollbarVisibility,
   SCROLLBAR_VISIBILITY
@@ -43,7 +44,10 @@ export function getScrollTopForThumbOffset({ thumbOffset, maxThumbOffset, maxScr
 export function ViewerScrollbar({
   scrollElement,
   visibility = SCROLLBAR_VISIBILITY.AUTO,
-  label = 'Document scrollbar'
+  label = 'Document scrollbar',
+  variant = 'document',
+  contentSelector = '.mdp-body, .mdp-markdown-body, .cm-content',
+  contentVersion
 }) {
   const trackRef = useRef(null)
   const dragRef = useRef(null)
@@ -83,10 +87,11 @@ export function ViewerScrollbar({
     const trackHeight = Math.max(0, scrollElement.clientHeight - TRACK_INSET)
     const bounds = scrollElement.getBoundingClientRect()
     const viewportWidth = Math.max(0, globalThis.window?.innerWidth || bounds.right)
-    const rightEdge = Math.min(viewportWidth, bounds.right) - TRACK_EDGE_INSET
+    const sidebar = variant === 'sidebar'
+    const rightEdge = Math.min(viewportWidth, bounds.right) - (sidebar ? 0 : TRACK_EDGE_INSET)
     setTrackStyle({
       top: `${bounds.top + TRACK_EDGE_INSET}px`,
-      left: `${Math.max(bounds.left, rightEdge - TRACK_WIDTH)}px`,
+      left: `${Math.max(bounds.left, rightEdge - (sidebar ? 8 : TRACK_WIDTH))}px`,
       height: `${trackHeight}px`
     })
     setMetrics(getViewerScrollbarMetrics({
@@ -95,7 +100,7 @@ export function ViewerScrollbar({
       clientHeight: scrollElement.clientHeight,
       trackHeight
     }))
-  }, [scrollElement])
+  }, [scrollElement, variant])
 
   const scheduleMeasure = useCallback(() => {
     if (frameRef.current) return
@@ -122,8 +127,9 @@ export function ViewerScrollbar({
       ? new ResizeObserver(scheduleMeasure)
       : null
     resizeObserver?.observe(scrollElement)
-    const content = scrollElement.querySelector('.mdp-body, .mdp-markdown-body, .cm-content')
-    if (content) resizeObserver?.observe(content)
+    for (const content of scrollElement.querySelectorAll(contentSelector)) {
+      resizeObserver?.observe(content)
+    }
 
     return () => {
       scrollElement.removeEventListener('scroll', handleScroll)
@@ -133,7 +139,7 @@ export function ViewerScrollbar({
       if (frameRef.current) cancelAnimationFrame(frameRef.current)
       frameRef.current = 0
     }
-  }, [clearHideTimer, measure, reveal, scheduleMeasure, scrollElement])
+  }, [clearHideTimer, contentSelector, contentVersion, measure, reveal, scheduleMeasure, scrollElement])
 
   useEffect(() => {
     if (visibilityMode === SCROLLBAR_VISIBILITY.ALWAYS) {
@@ -234,10 +240,10 @@ export function ViewerScrollbar({
 
   const isActive = visibilityMode === SCROLLBAR_VISIBILITY.ALWAYS || activityVisible
 
-  return (
+  const scrollbar = (
     <div
       ref={trackRef}
-      className={`mdp-viewer-scrollbar${isActive ? ' is-active' : ''}`}
+      className={`mdp-viewer-scrollbar${variant === 'sidebar' ? ' mdp-viewer-scrollbar--sidebar' : ''}${isActive ? ' is-active' : ''}`}
       style={trackStyle}
       role="scrollbar"
       aria-label={label}
@@ -266,4 +272,8 @@ export function ViewerScrollbar({
       />
     </div>
   )
+  // Rails can establish fixed-position containing blocks through backdrop-filter.
+  // Keep viewport coordinates in the Viewer root, outside those filtered layers.
+  const portalRoot = variant === 'sidebar' ? scrollElement.closest('.mdp-root') : null
+  return portalRoot ? createPortal(scrollbar, portalRoot) : scrollbar
 }

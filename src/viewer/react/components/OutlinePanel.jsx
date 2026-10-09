@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { getToolbarHeightInScrollRoot } from '../../scroll-utils.js'
 import { SkeletonBlock } from '../../../shared/react/Skeleton.jsx'
-import { PanelHeader } from './common/PanelHeader.jsx'
+import { ViewerScrollbar } from './ViewerScrollbar.jsx'
 import { useScrollSpy } from '../hooks/useScrollSpy.js'
 import { useDelayedBusyState } from '../hooks/useDelayedBusyState.js'
 import { useEditorState } from '../contexts/EditorContext.jsx'
@@ -15,6 +15,8 @@ import {
 const OUTLINE_SKELETON_WIDTHS = ['86%', '72%', '78%', '60%', '82%', '68%', '94%', '76%', '62%', '48%']
 
 export function OutlinePanel({
+  expanded = true,
+  scrollbarVisibility,
   tocItems,
   tocReady,
   scrollRoot,
@@ -24,6 +26,19 @@ export function OutlinePanel({
   const editorState = useEditorState()
   const editorEditActive = Boolean(editorState?.enabled)
   const tocScrollRef = useRef(null)
+  const [scrollElement, setScrollElement] = useState(null)
+  const [rowHeight, setRowHeight] = useState(36)
+  const handleScrollRef = useCallback(node => {
+    tocScrollRef.current = node
+    setScrollElement(node)
+  }, [])
+  useLayoutEffect(() => {
+    const media = scrollElement?.ownerDocument.defaultView.matchMedia?.('(pointer: coarse)')
+    const measure = () => setRowHeight(media?.matches ? 44 : 36)
+    measure()
+    media?.addEventListener('change', measure)
+    return () => media?.removeEventListener('change', measure)
+  }, [scrollElement])
   const userTocInteractionPausedUntilRef = useRef(0)
   const contentSmoothScrollSuppressedUntilRef = useRef(0)
   const pendingClickTargetIdRef = useRef(null)
@@ -57,9 +72,11 @@ export function OutlinePanel({
   const outlineVirtualizer = useVirtualizer({
     count: outlineItems.length,
     getScrollElement: () => tocScrollRef.current,
-    estimateSize: () => 36,
+    estimateSize: () => rowHeight,
     overscan: 8
   })
+
+  useEffect(() => { outlineVirtualizer.measure() }, [outlineVirtualizer, rowHeight])
 
   useEffect(() => {
     if (activeIndex < 0) return
@@ -106,20 +123,19 @@ export function OutlinePanel({
       className="mdp-sidebar-panel mdp-sidebar-panel--outline"
       id="mdp-panel-outline"
     >
-      <PanelHeader
-        className="mdp-outline__header"
-        title="Outline"
-        meta={loadingVisible
+      <div className="mdp-outline__header">
+        <span>On this page</span>
+        <span className="mdp-outline__count">{loadingVisible
           ? 'Loading…'
           : outlineItems.length || tocReady
             ? `${outlineItems.length} ${outlineItems.length === 1 ? 'heading' : 'headings'}`
-            : ''}
-      />
+            : ''}</span>
+      </div>
       <nav
         className="mdp-toc"
         aria-label="Table of contents"
         aria-busy={!tocReady || loadingVisible}
-        ref={tocScrollRef}
+        ref={handleScrollRef}
         onWheel={pauseAutoFollowForTocInteraction}
         onPointerDown={pauseAutoFollowForTocInteraction}
         onKeyDown={pauseAutoFollowForTocInteraction}
@@ -150,6 +166,7 @@ export function OutlinePanel({
                       isActive ? ' is-active' : ''
                     }`}
                     data-mdp-toc-id={item.id}
+                    aria-current={isActive ? 'location' : undefined}
                     onClick={(event) => {
                       event.preventDefault()
                       pendingClickTargetIdRef.current = item.id
@@ -172,6 +189,10 @@ export function OutlinePanel({
           <div className="mdp-toc__empty">No headings found.</div>
         )}
       </nav>
+      <ViewerScrollbar scrollElement={expanded ? scrollElement : null}
+        visibility={scrollbarVisibility} label="Outline scrollbar" variant="sidebar"
+        contentSelector=".mdp-toc__list, .mdp-toc__skeleton, .mdp-toc__empty"
+        contentVersion={`${tocReady}:${showLoadingPlaceholder}:${outlineItems.length}`} />
     </div>
   )
 }

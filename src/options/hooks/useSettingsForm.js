@@ -278,7 +278,9 @@ export function useSettingsForm() {
     (field, enabled) =>
       persist(
         () => saveSettings({ explorer: { [field]: enabled } }),
-        'Files & Workspace behavior saved. The change applies to the next scan or viewer open.',
+        field === 'showTreeIndentGuides'
+          ? 'Tree indent guides saved. Open viewers update immediately.'
+          : 'Files & Workspace behavior saved. The change applies to the next scan or viewer open.',
         'explorerBehavior'
       ),
     [persist]

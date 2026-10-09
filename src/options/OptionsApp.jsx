@@ -12,7 +12,7 @@ import { ThemeSettings } from './sections/ThemeSettings.jsx'
 const SECTIONS = [
   { id: 'general', label: 'General', description: 'Activation and access' },
   { id: 'themes', label: 'Themes', description: 'Colors and backgrounds' },
-  { id: 'explorer', label: 'Files & Workspace', description: 'Folder scan limits' },
+  { id: 'explorer', label: 'Files & Workspace', description: 'Folder appearance and scan limits' },
   { id: 'privacy', label: 'Privacy & Data', description: 'Recent local files' },
   { id: 'advanced', label: 'Advanced', description: 'Limits, backup, and reset' },
   { id: 'about', label: 'About', description: 'Version, privacy, and support', meta: true }

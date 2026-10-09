@@ -99,7 +99,7 @@ describe('settings schema', () => {
     expect(() => normalizeHistorySettings({ [field]: value })).toThrow(SettingsValidationError)
   })
 
-  it.each(['respectGitignore', 'restoreLastWorkspace'])(
+  it.each(['respectGitignore', 'restoreLastWorkspace', 'showTreeIndentGuides'])(
     'rejects non-boolean %s values',
     (field) => {
       expect(() => normalizeExplorerSettings({ [field]: 'false' })).toThrow(
@@ -117,7 +117,8 @@ describe('settings schema', () => {
           maxFiles: 'not-a-number',
           maxFolders: Infinity,
           respectGitignore: 'yes',
-          restoreLastWorkspace: 1
+          restoreLastWorkspace: 1,
+          showTreeIndentGuides: 'yes'
         },
         history: { enabled: 'yes', maxEntries: 500 },
         documents: { maxStandaloneTextFileSizeMiB: 200 },

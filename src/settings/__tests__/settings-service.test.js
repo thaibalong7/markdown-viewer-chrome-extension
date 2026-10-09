@@ -79,7 +79,8 @@ describe('settingsService', () => {
       maxFiles: 3500,
       maxFolders: 750,
       respectGitignore: true,
-      restoreLastWorkspace: true
+      restoreLastWorkspace: true,
+      showTreeIndentGuides: true
     })
   })
 

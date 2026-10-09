@@ -31,9 +31,9 @@ export function ExplorerSettings({
   return (
     <section className="settings-section" aria-labelledby="explorer-title">
       <div className="settings-section__heading">
-        <p className="settings-eyebrow">Scan policy</p>
+        <p className="settings-eyebrow">Navigation & scanning</p>
         <h2 id="explorer-title">Files & Workspace</h2>
-        <p>Set hard resource limits for folder scans. Changes apply on the next scan or refresh.</p>
+        <p>Customize the file tree and workspace behavior. Scan limits apply on the next scan or refresh.</p>
       </div>
 
       <form
@@ -45,6 +45,24 @@ export function ExplorerSettings({
         noValidate
       >
         <div className="settings-policy-fields">
+          <div className="mdp-ui-setting-row settings-row--toggle">
+            <div>
+              <h3 className="mdp-ui-setting-row__title">Show tree indent guides</h3>
+              <p className="mdp-ui-setting-row__description">Connect folders and files with hierarchy lines. Changes apply immediately.</p>
+            </div>
+            <Switch
+              id="explorer-show-tree-indent-guides"
+              label="Show tree indent guides"
+              checked={settings.showTreeIndentGuides !== false}
+              disabled={saving}
+              onChange={(event) =>
+                void onBehaviorChange('showTreeIndentGuides', event.target.checked)
+              }
+            />
+          </div>
+
+          <div className="mdp-ui-divider" />
+
           <div className="mdp-ui-setting-row settings-row--toggle">
             <div>
               <h3 className="mdp-ui-setting-row__title">Respect .gitignore files</h3>

@@ -24,3 +24,6 @@ export const DEFAULT_EXPLORER_RESPECT_GITIGNORE = true
 
 /** Default policy for restoring a file-backed workspace when a viewer mounts. */
 export const DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE = true
+
+/** Show the hierarchy's connecting lines without changing row geometry. */
+export const DEFAULT_EXPLORER_SHOW_TREE_INDENT_GUIDES = true

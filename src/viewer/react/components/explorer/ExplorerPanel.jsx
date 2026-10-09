@@ -27,7 +27,7 @@ const EMPTY_TREE_MOTION = Object.freeze({
   exitingRows: []
 })
 
-export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) {
+export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, showTreeIndentGuides = true }) {
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
   const actualBusy = state.view === 'loading' || state.view === 'progress'
@@ -82,8 +82,8 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
   const refreshTooltip = isBusy ? 'Refresh is available after scanning finishes'
     : refreshUnavailableReason || (state.isRefreshing ? 'Refreshing file list' : 'Refresh file list')
   const treeRows = useMemo(
-    () => flattenVisibleTree(viewState.tree?.children || [], viewState.expandedMap),
-    [viewState.tree, viewState.expandedMap]
+    () => flattenVisibleTree(viewState.tree?.children || [], viewState.expandedMap, activeNormalized),
+    [viewState.tree, viewState.expandedMap, activeNormalized]
   )
   const activeFileIndex = useMemo(
     () =>
@@ -266,7 +266,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
     suppressNextAutoRevealRef.current = activeNormalized
     const nextExpandedMap = new Map(viewState.expandedMap)
     nextExpandedMap.set(href, nextExpandedMap.get(href) !== true)
-    stageTreeMotion(flattenVisibleTree(viewState.tree?.children || [], nextExpandedMap))
+    stageTreeMotion(flattenVisibleTree(viewState.tree?.children || [], nextExpandedMap, activeNormalized))
     actions.onToggleFolder(href)
   }
 
@@ -281,7 +281,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
   const onCollapseAllFoldersFromExplorer = () => {
     suppressNextAutoRevealRef.current = activeNormalized
     stageTreeMotion(
-      flattenVisibleTree(viewState.tree?.children || [], collapseAllExpandedMap)
+      flattenVisibleTree(viewState.tree?.children || [], collapseAllExpandedMap, activeNormalized)
     )
     actions.onCollapseAllFolders()
   }
@@ -291,7 +291,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
 
   return (
     <div
-      className="mdp-explorer"
+      className={`mdp-explorer${showTreeIndentGuides ? '' : ' mdp-explorer--no-guides'}`}
       role="region"
       aria-label="Supported files in folder"
       aria-busy={isBusy}
@@ -386,9 +386,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
               return (
                 <FolderRow
                   key={rowKey}
-                  node={row.node}
-                  depth={row.depth}
-                  expanded={row.expanded}
+                  treeRow={row}
                   motionState={motionState}
                   rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
                   onToggleFolder={onToggleFolderFromExplorer}
@@ -404,6 +402,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
                   fileTypeId: row.node.fileTypeId
                 }}
                 depth={row.depth}
+                treeRow={row}
                 motionState={motionState}
                 rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
                 isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
@@ -416,9 +415,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
               return (
                 <FolderRow
                   key={`exiting:${key}`}
-                  node={row.node}
-                  depth={row.depth}
-                  expanded={row.expanded}
+                  treeRow={row}
                   motionState="exiting"
                   rowStyle={{ transform: `translateY(${start}px)` }}
                 />
@@ -433,6 +430,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility }) 
                   fileTypeId: row.node.fileTypeId
                 }}
                 depth={row.depth}
+                treeRow={row}
                 motionState="exiting"
                 rowStyle={{ transform: `translateY(${start}px)` }}
               />

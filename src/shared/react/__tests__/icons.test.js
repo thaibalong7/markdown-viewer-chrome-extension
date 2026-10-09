@@ -5,6 +5,7 @@ import { AppIcon } from '../AppIcon.jsx'
 import { FileTypeIcon } from '../FileTypeIcon.jsx'
 import { createAppIconSvg } from '../../icons/create-app-icon.js'
 import { FolderRow } from '../../../viewer/react/components/explorer/FolderRow.jsx'
+import { ToastProvider } from '../../../viewer/react/contexts/ToastContext.jsx'
 
 const render = (Component, props) => renderToStaticMarkup(React.createElement(Component, props))
 const children = markup => markup.slice(markup.indexOf('>') + 1, markup.lastIndexOf('</svg>'))
@@ -50,9 +51,9 @@ describe('shared icon integration', () => {
   })
 
   it('changes folder artwork with expansion while retaining color and disclosure semantics', () => {
-    const props = { node: { href: 'file:///docs/', name: 'docs' }, depth: 1 }
-    const closed = render(FolderRow, { ...props, expanded: false })
-    const open = render(FolderRow, { ...props, expanded: true })
+    const treeRow = { node: { href: 'file:///docs/', name: 'docs' }, depth: 1, fileCount: 0, guides: [], stem: false }
+    const closed = renderToStaticMarkup(React.createElement(ToastProvider, null, React.createElement(FolderRow, { treeRow: { ...treeRow, expanded: false } })))
+    const open = renderToStaticMarkup(React.createElement(ToastProvider, null, React.createElement(FolderRow, { treeRow: { ...treeRow, expanded: true } })))
     expect(closed).toContain('aria-expanded="false"')
     expect(open).toContain('aria-expanded="true"')
     for (const markup of [closed, open]) expect(markup).toContain('color:#D6A34A;stroke:#D6A34A;stroke-width:1.25')

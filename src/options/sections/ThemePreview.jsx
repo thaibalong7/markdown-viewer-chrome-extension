@@ -257,7 +257,7 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
           ) : null}
 
           <div className="settings-theme-preview__viewer" aria-hidden="true">
-            <div className="settings-theme-preview__files">
+            <div className={`settings-theme-preview__files${settings?.explorer?.showTreeIndentGuides === false ? ' settings-theme-preview__files--no-guides' : ''}`}>
               <div className="settings-theme-preview__panel-title">
                 <span>Files</span>
                 <AppIcon name="collapse" className="settings-theme-preview__panel-action" size={14} />
@@ -267,11 +267,11 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
                 <FileTypeIcon name="folder-open" />
                 <strong>docs</strong>
               </div>
-              <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--active">
+              <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--nested settings-theme-preview__tree-row--active">
                 <FileTypeIcon name="markdown" />
                 <strong>guide.md</strong>
               </div>
-              <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--nested">
+              <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--nested settings-theme-preview__tree-row--last">
                 <FileTypeIcon name="markdown" />
                 <strong>notes.md</strong>
               </div>

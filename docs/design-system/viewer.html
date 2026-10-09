@@ -624,10 +624,15 @@
     @media (prefers-reduced-motion: reduce) { .mdp-ui-button { transition: none; } }
     @media print { .mdp-exit-edit-modal, .mdp-exit-edit-modal::backdrop { display: none !important; } }
 
-  /* Files layout snapshot: src/viewer/styles/explorer.scss */
+  /* Nested document fixture; runtime tree rows are virtualized siblings. */
+.preview-tree-children { list-style: none; margin: 0; padding: 0; }
+
+/* Files layout snapshot: src/viewer/styles/explorer.scss */
 @charset "UTF-8";
 .mdp-explorer {
   --mdp-explorer-action-size: 28px;
+  --mdp-explorer-guide: color-mix(in srgb, var(--mdp-muted) 24%, var(--mdp-surface));
+  --mdp-explorer-guide-active: color-mix(in srgb, var(--mdp-link) 60%, var(--mdp-border));
   --mdp-explorer-action-gap: 4px;
   --mdp-explorer-header-inset: 2px;
   --mdp-explorer-context-padding: 10px;
@@ -1242,29 +1247,129 @@
     translate: 0 -6px;
   }
 }
-.mdp-explorer__node {
+.mdp-explorer__node,
+.mdp-explorer__tree-folder {
   position: relative;
   margin: 0;
   padding: 0;
 }
-.mdp-explorer__node:hover .mdp-explorer__row-action-btn, .mdp-explorer__node:focus-within .mdp-explorer__row-action-btn {
+.mdp-explorer__node:hover .mdp-explorer__row-action-btn, .mdp-explorer__node:focus-within .mdp-explorer__row-action-btn,
+.mdp-explorer__tree-folder:hover .mdp-explorer__row-action-btn,
+.mdp-explorer__tree-folder:focus-within .mdp-explorer__row-action-btn {
   background: color-mix(in srgb, var(--mdp-surface) 94%, var(--mdp-panel-bg));
   opacity: 1;
+  pointer-events: auto;
 }
+.mdp-explorer__node:hover .mdp-explorer__node-btn, .mdp-explorer__node:focus-within .mdp-explorer__node-btn, .mdp-explorer__node.is-menu-open .mdp-explorer__node-btn,
+.mdp-explorer__tree-folder:hover .mdp-explorer__node-btn,
+.mdp-explorer__tree-folder:focus-within .mdp-explorer__node-btn,
+.mdp-explorer__tree-folder.is-menu-open .mdp-explorer__node-btn {
+  padding-right: calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap));
+}
+.mdp-explorer__node:hover .mdp-explorer__folder-count, .mdp-explorer__node:focus-within .mdp-explorer__folder-count, .mdp-explorer__node.is-menu-open .mdp-explorer__folder-count,
+.mdp-explorer__tree-folder:hover .mdp-explorer__folder-count,
+.mdp-explorer__tree-folder:focus-within .mdp-explorer__folder-count,
+.mdp-explorer__tree-folder.is-menu-open .mdp-explorer__folder-count {
+  visibility: hidden;
+}
+.mdp-explorer__node.is-menu-open,
+.mdp-explorer__tree-folder.is-menu-open {
+  z-index: 10;
+}
+.mdp-explorer__node.is-menu-open .mdp-explorer__row-action-btn,
+.mdp-explorer__tree-folder.is-menu-open .mdp-explorer__row-action-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .mdp-explorer__node.is-active .mdp-explorer__row-action-btn {
   background: color-mix(in srgb, var(--mdp-link-soft) 88%, var(--mdp-surface));
-  opacity: 0.58;
 }
 .mdp-explorer__node.is-active .mdp-explorer__row-action-btn:hover, .mdp-explorer__node.is-active .mdp-explorer__row-action-btn:focus-visible, .mdp-explorer__node.is-active .mdp-explorer__row-action-btn.is-open {
   background: var(--mdp-link-soft);
   color: var(--mdp-link);
   opacity: 1;
 }
-.mdp-explorer__node:hover .mdp-explorer__node-btn, .mdp-explorer__node:focus-within .mdp-explorer__node-btn, .mdp-explorer__node.is-active .mdp-explorer__node-btn, .mdp-explorer__node.is-menu-open .mdp-explorer__node-btn {
-  padding-right: calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap));
+
+.mdp-explorer__node:hover .mdp-explorer__node-btn:not(.is-active),
+.mdp-explorer__tree-folder:hover > .mdp-explorer__tree-folder-row,
+.mdp-explorer__tree-folder.is-menu-open > .mdp-explorer__tree-folder-row {
+  background: color-mix(in srgb, var(--mdp-panel-strong) 55%, var(--mdp-surface));
+  color: var(--mdp-text);
 }
-.mdp-explorer__node.is-menu-open {
-  z-index: 10;
+
+.mdp-explorer__folder-count {
+  position: absolute;
+  top: 50%;
+  right: var(--mdp-explorer-row-action-inset);
+  transform: translateY(-50%);
+  width: var(--mdp-explorer-action-size);
+  text-align: center;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--mdp-muted);
+  pointer-events: none;
+}
+
+.mdp-explorer__tree-folder.is-active-path .mdp-explorer__tree-folder-label {
+  color: var(--mdp-text);
+}
+
+.mdp-explorer__tree-guides {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mdp-explorer--no-guides .mdp-explorer__tree-guides {
+  visibility: hidden;
+}
+
+.mdp-explorer__tree-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  color: var(--mdp-explorer-guide);
+}
+.mdp-explorer__tree-guide::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-left: 1px solid currentColor;
+}
+.mdp-explorer__tree-guide.is-branch:not(.is-continuing)::before {
+  bottom: calc(50% + 4px);
+}
+.mdp-explorer__tree-guide.is-branch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 50%;
+  border-left: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  border-bottom-left-radius: 4px;
+}
+.mdp-explorer__tree-guide:not(.is-branch):not(.is-continuing) {
+  display: none;
+}
+
+.mdp-explorer__tree-stem {
+  position: absolute;
+  top: calc(50% + 6px);
+  bottom: 0;
+  border-left: 1px solid var(--mdp-explorer-guide);
+}
+
+.mdp-explorer__tree-guide.is-active-path {
+  color: var(--mdp-explorer-guide-active);
+}
+
+.mdp-explorer__tree-stem.is-active-path {
+  border-color: var(--mdp-explorer-guide-active);
 }
 
 .mdp-explorer__node-btn {
@@ -1272,7 +1377,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  width: 100%;
+  width: calc(100% - var(--mdp-tree-row-indent, 0px));
+  margin-left: var(--mdp-tree-row-indent, 0px);
   text-align: left;
   min-height: 38px;
   border: 1px solid transparent;
@@ -1282,31 +1388,19 @@
   font-size: 13px;
   text-decoration: none;
   line-height: 1.25;
-  padding: 8px 6px;
-  border-radius: 6px;
+  padding: 8px 6px 8px 2px;
+  border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
 }
-.mdp-explorer__node-btn:hover {
-  background: color-mix(in srgb, var(--mdp-surface) 76%, transparent);
-  color: var(--mdp-text);
-}
 .mdp-explorer__node-btn.is-active {
   border-color: transparent;
   background: color-mix(in srgb, var(--mdp-link-soft) 94%, var(--mdp-surface));
   color: var(--mdp-text);
   font-weight: 600;
-}
-.mdp-explorer__node-btn.is-active::before {
-  content: "";
-  position: absolute;
-  inset: 7px auto 7px 0;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--mdp-link);
 }
 .mdp-explorer__node-btn:focus-visible {
   outline: 2px solid var(--mdp-link);
@@ -1356,10 +1450,12 @@
   color: var(--mdp-muted);
   cursor: pointer;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 120ms ease, color 120ms ease, background-color 120ms ease;
 }
 .mdp-explorer__row-action-btn:hover, .mdp-explorer__row-action-btn:focus-visible, .mdp-explorer__row-action-btn.is-open {
   opacity: 1;
+  pointer-events: auto;
   color: var(--mdp-link);
   background: var(--mdp-link-soft);
 }
@@ -1489,8 +1585,6 @@
 
 .mdp-explorer__tree-folder {
   list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
 .mdp-explorer__tree-folder-row {
@@ -1498,7 +1592,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  width: 100%;
+  width: calc(100% - var(--mdp-tree-row-indent, 0px));
+  margin-left: var(--mdp-tree-row-indent, 0px);
   text-align: left;
   min-height: 38px;
   border: 1px solid transparent;
@@ -1507,13 +1602,9 @@
   font: inherit;
   font-size: 13px;
   line-height: 1.25;
-  padding: 8px 6px 8px 2px;
-  border-radius: 6px;
+  padding: 8px calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + 4px) 8px 2px;
+  border-radius: 8px;
   cursor: pointer;
-}
-.mdp-explorer__tree-folder-row:hover {
-  background: color-mix(in srgb, var(--mdp-surface) 76%, transparent);
-  color: var(--mdp-text);
 }
 .mdp-explorer__tree-folder-row:focus-visible {
   outline: 2px solid var(--mdp-link);
@@ -1557,8 +1648,9 @@
   color: var(--mdp-muted);
 }
 .mdp-explorer__tree-chevron svg {
-  width: 10px;
+  width: 12px;
   height: 12px;
+  flex-shrink: 0;
   transition: transform 160ms ease;
 }
 
@@ -1593,18 +1685,6 @@
   white-space: nowrap;
 }
 
-.mdp-explorer__tree-children {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.mdp-explorer__tree-file {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 @media (pointer: coarse) {
   .mdp-explorer {
     --mdp-explorer-action-size: 44px;
@@ -1622,8 +1702,12 @@
   }
   .mdp-explorer__row-action-btn {
     opacity: 1;
+    pointer-events: auto;
   }
-  .mdp-explorer__context-menu .mdp-explorer__row-menu-item {
+  .mdp-explorer__folder-count {
+    display: none;
+  }
+  .mdp-explorer__row-menu-item {
     min-height: 44px;
   }
 }
@@ -2762,14 +2846,15 @@
             </div>
             <div class="mdp-explorer__scroll-region">
             <ul class="mdp-explorer__list" aria-label="Workspace files">
-<li class="mdp-explorer__node mdp-explorer__tree-file is-active"><button class="mdp-explorer__node-btn is-active" type="button" style="padding-left:2px" aria-current="true" title="README.md"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#60A5FA" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="markdown" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#60A5FA;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#60A5FA" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M4.5 11.5V8L6.25 10 8 8v3.5 M11 8v3.5 m-1.25-1.25L11 11.5l1.25-1.25"></path></svg></span><span class="mdp-explorer__node-label">README.md</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for README.md" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:2px" title="notes.txt"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#64748B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="text" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#64748B;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#64748B" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M5 8h6 M5 10.5h6 M5 13h3.5"></path></svg></span><span class="mdp-explorer__node-label">notes.txt</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for notes.txt" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__tree-folder"><button class="mdp-explorer__tree-folder-row is-expanded" id="preview-tree-folder" type="button" aria-expanded="true" aria-controls="preview-tree-children" style="padding-left:2px"><span class="mdp-explorer__tree-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" class="mdp-explorer__details-chevron" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg></span><span class="mdp-explorer__tree-folder-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg></span><span class="mdp-explorer__tree-folder-label">assets</span></button><ul class="mdp-explorer__tree-children" id="preview-tree-children">
-<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="queries.sql"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="database" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M2.5 4v8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5V4" fill="#F472B6" fill-opacity=".12"></path><ellipse cx="8" cy="4" rx="5.5" ry="2.5" fill="#F472B6" fill-opacity=".2"></ellipse><path d="M2.5 8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5"></path></svg></span><span class="mdp-explorer__node-label">queries.sql</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for queries.sql" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="flow.mermaid"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F59E0B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="diagram" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F59E0B;stroke-width:1.25"><path d="M8 5v3 M3.5 10V8h9v2"></path><path d="M6 1.5h4a1 1 0 0 1 1 1V5H5V2.5a1 1 0 0 1 1-1Z M1 10h5v4.5H1Z M10 10h5v4.5h-5Z" fill="#F59E0B" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">flow.mermaid</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for flow.mermaid" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="sidebar-alignment-preview.png"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#C084FC" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="image" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#C084FC;stroke-width:1.25"><rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#C084FC" fill-opacity=".12"></rect><circle cx="10.5" cy="5" r="1.4" fill="#C084FC" stroke="none"></circle><path d="M2 12.5 6 8l3 3 2-2 3 3.5V14H2Z" fill="#C084FC" fill-opacity=".65" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">sidebar-alignment-preview.png</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for sidebar-alignment-preview.png" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node mdp-explorer__tree-file"><button class="mdp-explorer__node-btn" type="button" style="padding-left:12px" title="diagram.svg"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="vector" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M3 3h10v10H3Z"></path><path d="M1.5 1.5h3v3h-3Z M11.5 1.5h3v3h-3Z M11.5 11.5h3v3h-3Z M1.5 11.5h3v3h-3Z" fill="#F472B6" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">diagram.svg</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for diagram.svg" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__tree-folder"><div style="position:relative"><span class="mdp-explorer__tree-guides" id="preview-folder-stem" aria-hidden="true"><span class="mdp-explorer__tree-stem" style="left:8px"></span></span><button class="mdp-explorer__tree-folder-row is-expanded" id="preview-tree-folder" type="button" aria-expanded="true" aria-controls="preview-tree-children"><span class="mdp-explorer__tree-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" class="mdp-explorer__details-chevron" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg></span><span class="mdp-explorer__tree-folder-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg></span><span class="mdp-explorer__tree-folder-label">assets</span></button><span class="mdp-explorer__folder-count" aria-hidden="true" title="4 indexed files, including subfolders">4</span><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for assets" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button" data-folder-toggle>Collapse folder</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy folder name</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy folder path</button></div></div></div><ul class="preview-tree-children" id="preview-tree-children">
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="queries.sql"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="database" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M2.5 4v8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5V4" fill="#F472B6" fill-opacity=".12"></path><ellipse cx="8" cy="4" rx="5.5" ry="2.5" fill="#F472B6" fill-opacity=".2"></ellipse><path d="M2.5 8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5"></path></svg></span><span class="mdp-explorer__node-label">queries.sql</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for queries.sql" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="flow.mermaid"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F59E0B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="diagram" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F59E0B;stroke-width:1.25"><path d="M8 5v3 M3.5 10V8h9v2"></path><path d="M6 1.5h4a1 1 0 0 1 1 1V5H5V2.5a1 1 0 0 1 1-1Z M1 10h5v4.5H1Z M10 10h5v4.5h-5Z" fill="#F59E0B" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">flow.mermaid</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for flow.mermaid" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="sidebar-alignment-preview.png"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#C084FC" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="image" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#C084FC;stroke-width:1.25"><rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#C084FC" fill-opacity=".12"></rect><circle cx="10.5" cy="5" r="1.4" fill="#C084FC" stroke="none"></circle><path d="M2 12.5 6 8l3 3 2-2 3 3.5V14H2Z" fill="#C084FC" fill-opacity=".65" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">sidebar-alignment-preview.png</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for sidebar-alignment-preview.png" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="diagram.svg"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="vector" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M3 3h10v10H3Z"></path><path d="M1.5 1.5h3v3h-3Z M11.5 1.5h3v3h-3Z M11.5 11.5h3v3h-3Z M1.5 11.5h3v3h-3Z" fill="#F472B6" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">diagram.svg</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for diagram.svg" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
 </ul></li>
+<li class="mdp-explorer__node is-active"><button class="mdp-explorer__node-btn is-active" type="button" aria-current="true" title="README.md"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#60A5FA" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="markdown" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#60A5FA;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#60A5FA" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M4.5 11.5V8L6.25 10 8 8v3.5 M11 8v3.5 m-1.25-1.25L11 11.5l1.25-1.25"></path></svg></span><span class="mdp-explorer__node-label">README.md</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for README.md" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node"><button class="mdp-explorer__node-btn" type="button" title="notes.txt"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#64748B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="text" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#64748B;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#64748B" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M5 8h6 M5 10.5h6 M5 13h3.5"></path></svg></span><span class="mdp-explorer__node-label">notes.txt</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for notes.txt" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+
 </ul>
             </div>
           </div>
@@ -3003,6 +3088,8 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
     function setPreviewFolder(expanded) {
       treeChildren.getAnimations().forEach(animation => animation.cancel())
       treeFolder.setAttribute('aria-expanded', String(expanded))
+      document.getElementById('preview-folder-stem').hidden = !expanded
+      document.querySelector('[data-folder-toggle]').textContent = expanded ? 'Collapse folder' : 'Expand folder'
       treeFolder.classList.toggle('is-expanded', expanded)
       collapseFolders.disabled = !expanded
       const chevron = document.getElementById('preview-glyphs').content.querySelector('[data-mdp-icon="chevron-right"]').cloneNode(true)
@@ -3040,7 +3127,7 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
         if (restore && menu.contains(document.activeElement)) trigger.focus()
         menu.hidden = true
         trigger.setAttribute('aria-expanded', 'false')
-        actions.closest('.mdp-explorer__node').classList.remove('is-menu-open')
+        actions.closest('.mdp-explorer__node, .mdp-explorer__tree-folder').classList.remove('is-menu-open')
       }
     }
     for (const actions of rowActions) {
@@ -3051,7 +3138,7 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
         closeRowMenus()
         menu.hidden = !open
         trigger.setAttribute('aria-expanded', String(open))
-        actions.closest('.mdp-explorer__node').classList.toggle('is-menu-open', open)
+        actions.closest('.mdp-explorer__node, .mdp-explorer__tree-folder').classList.toggle('is-menu-open', open)
         if (open) menu.querySelector('button').focus()
       })
       menu.addEventListener('keydown', event => {
@@ -3065,7 +3152,7 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
           items[next]?.focus()
         }
       })
-      for (const item of menu.querySelectorAll('button')) item.addEventListener('click', () => { alert(`${item.textContent} preview only.`); closeRowMenus(true) })
+      for (const item of menu.querySelectorAll('button')) item.addEventListener('click', () => { if (item.hasAttribute('data-folder-toggle')) setPreviewFolder(treeFolder.getAttribute('aria-expanded') !== 'true'); else alert(`${item.textContent} preview only.`); closeRowMenus(true) })
     }
     document.addEventListener('pointerdown', event => { if (!event.target.closest('.mdp-explorer__row-actions')) closeRowMenus() })
     let detailsExpanded = false

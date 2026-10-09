@@ -2,6 +2,8 @@
 
 .mdp-explorer {
   --mdp-explorer-action-size: 28px;
+  --mdp-explorer-guide: color-mix(in srgb, var(--mdp-muted) 24%, var(--mdp-surface));
+  --mdp-explorer-guide-active: color-mix(in srgb, var(--mdp-link) 60%, var(--mdp-border));
   --mdp-explorer-action-gap: 4px;
   --mdp-explorer-header-inset: 2px;
   --mdp-explorer-context-padding: 10px;
@@ -630,7 +632,8 @@
   }
 }
 
-.mdp-explorer__node {
+.mdp-explorer__node,
+.mdp-explorer__tree-folder {
   position: relative;
   margin: 0;
   padding: 0;
@@ -640,40 +643,109 @@
     .mdp-explorer__row-action-btn {
       background: color-mix(in srgb, var(--mdp-surface) 94%, var(--mdp-panel-bg));
       opacity: 1;
+      pointer-events: auto;
     }
   }
 
-  &.is-active .mdp-explorer__row-action-btn {
-    background: color-mix(in srgb, var(--mdp-link-soft) 88%, var(--mdp-surface));
-    opacity: 0.58;
-
-    &:hover,
-    &:focus-visible,
-    &.is-open {
-      background: var(--mdp-link-soft);
-      color: var(--mdp-link);
-      opacity: 1;
-    }
-  }
-
+  // File names use the trailing space until More is actually visible.
   &:hover .mdp-explorer__node-btn,
   &:focus-within .mdp-explorer__node-btn,
-  &.is-active .mdp-explorer__node-btn,
   &.is-menu-open .mdp-explorer__node-btn {
     padding-right: calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + var(--mdp-explorer-action-gap));
   }
 
+  &:hover .mdp-explorer__folder-count,
+  &:focus-within .mdp-explorer__folder-count,
+  &.is-menu-open .mdp-explorer__folder-count { visibility: hidden; }
+
   &.is-menu-open {
     z-index: 10;
+    .mdp-explorer__row-action-btn { opacity: 1; pointer-events: auto; }
   }
 }
+
+// Only file rows have the active-document state.
+.mdp-explorer__node.is-active .mdp-explorer__row-action-btn {
+  background: color-mix(in srgb, var(--mdp-link-soft) 88%, var(--mdp-surface));
+
+  &:hover,
+  &:focus-visible,
+  &.is-open {
+    background: var(--mdp-link-soft);
+    color: var(--mdp-link);
+    opacity: 1;
+  }
+}
+
+.mdp-explorer__node:hover .mdp-explorer__node-btn:not(.is-active),
+.mdp-explorer__tree-folder:hover > .mdp-explorer__tree-folder-row,
+.mdp-explorer__tree-folder.is-menu-open > .mdp-explorer__tree-folder-row {
+  background: color-mix(in srgb, var(--mdp-panel-strong) 55%, var(--mdp-surface));
+  color: var(--mdp-text);
+}
+
+.mdp-explorer__folder-count {
+  position: absolute;
+  top: 50%;
+  right: var(--mdp-explorer-row-action-inset);
+  transform: translateY(-50%);
+  width: var(--mdp-explorer-action-size);
+  text-align: center;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--mdp-muted);
+  pointer-events: none;
+}
+
+.mdp-explorer__tree-folder.is-active-path .mdp-explorer__tree-folder-label { color: var(--mdp-text); }
+
+// Each virtual row carries complete continuation lanes; no dependency on mounted ancestors.
+.mdp-explorer__tree-guides {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.mdp-explorer--no-guides .mdp-explorer__tree-guides { visibility: hidden; }
+.mdp-explorer__tree-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  color: var(--mdp-explorer-guide);
+  &::before { content: ''; position: absolute; inset: 0 auto 0 0; border-left: 1px solid currentColor; }
+  &.is-branch {
+    &:not(.is-continuing)::before { bottom: calc(50% + 4px); }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 50%;
+      border-left: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      border-bottom-left-radius: 4px;
+    }
+  }
+  &:not(.is-branch):not(.is-continuing) { display: none; }
+}
+.mdp-explorer__tree-stem {
+  position: absolute;
+  top: calc(50% + 6px);
+  bottom: 0;
+  border-left: 1px solid var(--mdp-explorer-guide);
+}
+.mdp-explorer__tree-guide.is-active-path { color: var(--mdp-explorer-guide-active); }
+.mdp-explorer__tree-stem.is-active-path { border-color: var(--mdp-explorer-guide-active); }
 
 .mdp-explorer__node-btn {
   position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
-  width: 100%;
+  width: calc(100% - var(--mdp-tree-row-indent, 0px));
+  margin-left: var(--mdp-tree-row-indent, 0px);
   text-align: left;
   min-height: 38px;
   border: 1px solid transparent;
@@ -683,8 +755,8 @@
   font-size: 13px;
   text-decoration: none;
   line-height: 1.25;
-  padding: 8px 6px;
-  border-radius: v.$radius-tiny;
+  padding: 8px 6px 8px 2px;
+  border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -694,25 +766,11 @@
     background-color 120ms ease,
     border-color 120ms ease;
 
-  &:hover {
-    background: color-mix(in srgb, var(--mdp-surface) 76%, transparent);
-    color: var(--mdp-text);
-  }
-
   &.is-active {
     border-color: transparent;
     background: color-mix(in srgb, var(--mdp-link-soft) 94%, var(--mdp-surface));
     color: var(--mdp-text);
     font-weight: 600;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 7px auto 7px 0;
-      width: 3px;
-      border-radius: 999px;
-      background: var(--mdp-link);
-    }
   }
 
   &:focus-visible {
@@ -766,6 +824,7 @@
   color: var(--mdp-muted);
   cursor: pointer;
   opacity: 0;
+  pointer-events: none;
   transition:
     opacity 120ms ease,
     color 120ms ease,
@@ -775,6 +834,7 @@
   &:focus-visible,
   &.is-open {
     opacity: 1;
+    pointer-events: auto;
     color: var(--mdp-link);
     background: var(--mdp-link-soft);
   }
@@ -913,8 +973,6 @@
 
 .mdp-explorer__tree-folder {
   list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
 .mdp-explorer__tree-folder-row {
@@ -922,7 +980,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  width: 100%;
+  width: calc(100% - var(--mdp-tree-row-indent, 0px));
+  margin-left: var(--mdp-tree-row-indent, 0px);
   text-align: left;
   min-height: 38px;
   border: 1px solid transparent;
@@ -931,14 +990,9 @@
   font: inherit;
   font-size: 13px;
   line-height: 1.25;
-  padding: 8px 6px 8px 2px;
-  border-radius: v.$radius-tiny;
+  padding: 8px calc(var(--mdp-explorer-row-action-inset) + var(--mdp-explorer-action-size) + 4px) 8px 2px;
+  border-radius: 8px;
   cursor: pointer;
-
-  &:hover {
-    background: color-mix(in srgb, var(--mdp-surface) 76%, transparent);
-    color: var(--mdp-text);
-  }
 
   &:focus-visible {
     outline: 2px solid var(--mdp-link);
@@ -988,9 +1042,11 @@
   flex-shrink: 0;
   color: var(--mdp-muted);
 
+  // Keep the glyph square and centered; the compact layout slot stays 10px.
   svg {
-    width: 10px;
+    width: 12px;
     height: 12px;
+    flex-shrink: 0;
     transition: transform 160ms ease;
   }
 }
@@ -1029,18 +1085,6 @@
   white-space: nowrap;
 }
 
-.mdp-explorer__tree-children {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.mdp-explorer__tree-file {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 @media (pointer: coarse) {
   .mdp-explorer {
     --mdp-explorer-action-size: 44px;
@@ -1062,10 +1106,10 @@
 
   .mdp-explorer__row-action-btn {
     opacity: 1;
+    pointer-events: auto;
   }
-  .mdp-explorer__context-menu .mdp-explorer__row-menu-item {
-    min-height: 44px;
-  }
+  .mdp-explorer__folder-count { display: none; }
+  .mdp-explorer__row-menu-item { min-height: 44px; }
 }
 
 // Keep the Files structure and match Outline's touch rhythm at narrow widths.

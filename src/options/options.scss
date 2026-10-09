@@ -1085,13 +1085,34 @@ input[type='checkbox'] {
 }
 
 .settings-theme-preview__tree-row--nested {
-  padding-left: 15px;
+  position: relative;
+  padding-left: 13px;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: -1px;
+    height: calc(50% + 1px);
+    width: 4px;
+    border-left: 1px solid var(--mdp-border);
+    border-bottom: 1px solid var(--mdp-border);
+    border-bottom-left-radius: 4px;
+  }
+  &:not(.settings-theme-preview__tree-row--last)::after {
+    content: '';
+    position: absolute;
+    left: 9px;
+    inset-block: 0;
+    border-left: 1px solid var(--mdp-border);
+  }
+}
+.settings-theme-preview__files--no-guides .settings-theme-preview__tree-row--nested {
+  &::before, &::after { visibility: hidden; }
 }
 
 .settings-theme-preview__tree-row--active {
-  background: var(--mdp-accent-soft);
+  background: var(--mdp-link-soft);
   color: var(--mdp-text);
-  box-shadow: inset 2px 0 var(--mdp-accent);
 }
 
 .settings-theme-preview__content {

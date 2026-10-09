@@ -3,7 +3,8 @@ import {
   DEFAULT_EXPLORER_MAX_FOLDERS,
   DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
   DEFAULT_EXPLORER_RESPECT_GITIGNORE,
-  DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
+  DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE,
+  DEFAULT_EXPLORER_SHOW_TREE_INDENT_GUIDES
 } from '../shared/constants/explorer.js'
 import {
   DEFAULT_HISTORY_ENABLED,
@@ -64,6 +65,10 @@ export const EXPLORER_LIMIT_FIELDS = Object.freeze({
 })
 
 export const EXPLORER_BEHAVIOR_FIELDS = Object.freeze({
+  showTreeIndentGuides: Object.freeze({
+    label: 'Show tree indent guides',
+    defaultValue: DEFAULT_EXPLORER_SHOW_TREE_INDENT_GUIDES
+  }),
   respectGitignore: Object.freeze({
     label: 'Respect .gitignore files',
     defaultValue: DEFAULT_EXPLORER_RESPECT_GITIGNORE

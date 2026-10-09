@@ -16,9 +16,10 @@ import { MoreIcon } from '../icons/MoreIcon.jsx'
 import { OpenNewTabIcon } from '../icons/OpenNewTabIcon.jsx'
 import { FileIcon } from '../icons/FileIcon.jsx'
 import { getFileTypeById } from '../../../../shared/file-types.js'
+import { getTreeRowIndent, TreeGuides } from './TreeGuides.jsx'
+import { useExplorerRowMenuLayout } from '../../hooks/explorer/useExplorerRowMenuLayout.js'
 
-export function FileRow({ file, depth, isActive, onPick, rowStyle, motionState = '' }) {
-  const linkRef = useRef(null)
+export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, motionState = '' }) {
   const menuRef = useRef(null)
   const { showToast } = useToast()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -31,6 +32,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, motionState =
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
   }, [])
+  const menuStyle = useExplorerRowMenuLayout({ open: menuOpen, layerRef: menuRef, onClose: closeMenu })
 
   useDismissableLayer({
     open: menuOpen,
@@ -91,22 +93,21 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, motionState =
 
   return (
     <li
-      className={`mdp-explorer__node mdp-explorer__tree-file${isActive ? ' is-active' : ''}${menuOpen ? ' is-menu-open' : ''}${motionState ? ` is-tree-${motionState}` : ''}`}
+      className={`mdp-explorer__node${isActive ? ' is-active' : ''}${menuOpen ? ' is-menu-open' : ''}${motionState ? ` is-tree-${motionState}` : ''}`}
       role="treeitem"
       aria-level={String(Math.max(1, depth))}
       aria-hidden={motionState === 'exiting' ? 'true' : undefined}
       inert={motionState === 'exiting' ? true : undefined}
-      style={rowStyle}
+      style={{ ...rowStyle, '--mdp-tree-row-indent': `${getTreeRowIndent(depth)}px` }}
     >
+      <TreeGuides row={treeRow} />
       <a
-        ref={linkRef}
         href={href}
         className={`mdp-explorer__node-btn${isActive ? ' is-active' : ''}`}
         data-file-href={href}
         aria-current={isActive ? 'true' : 'false'}
         title={`${file.displayName} — ${fileTypeLabel}`}
         data-file-type={file?.fileTypeId || undefined}
-        style={{ paddingLeft: `${2 + Math.max(0, depth - 1) * 10}px` }}
         onClick={onFileClick}
         onAuxClick={onFileAuxClick}
       >
@@ -124,6 +125,9 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, motionState =
         triggerOpenClassName="is-open"
         triggerIcon={<MoreIcon className="mdp-explorer__row-action-icon" />}
         triggerLabel={`More actions for ${file.displayName}`}
+        triggerTooltip={`More actions for ${file.displayName}`}
+        menuLabel={`Actions for ${file.displayName}`}
+        menuStyle={menuStyle}
         menuClassName="mdp-explorer__row-menu"
         itemClassName="mdp-explorer__row-menu-item"
         onToggle={() => setMenuOpen((open) => !open)}

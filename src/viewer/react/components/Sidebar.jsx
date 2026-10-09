@@ -20,6 +20,7 @@ export function Sidebar({ explorerBridge, rootEl, settings, expanded, onToggle }
         aria-hidden={expanded ? 'false' : 'true'}
       >
         <FilesPanel explorerBridge={explorerBridge} expanded={expanded}
+          showTreeIndentGuides={settings?.explorer?.showTreeIndentGuides !== false}
           scrollbarVisibility={settings?.appearance?.scrollbarVisibility} />
       </div>
       <PanelToggleButton

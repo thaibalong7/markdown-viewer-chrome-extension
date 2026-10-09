@@ -20,15 +20,17 @@ function renderFile(file, depth = 1) {
 }
 
 describe('explorer file type presentation', () => {
-  it('uses compact indentation for root and nested file rows', () => {
+  it('keeps a 12px indent step and lets SCSS own the inner padding', () => {
     const file = {
       displayName: 'notes.md',
       href: 'file:///docs/notes.md',
       fileTypeId: 'markdown'
     }
 
-    expect(renderFile(file)).toContain('style="padding-left:2px"')
-    expect(renderFile(file, 2)).toContain('style="padding-left:12px"')
+    expect(renderFile(file)).not.toContain('padding-left:')
+    expect(renderFile(file)).toContain('--mdp-tree-row-indent:0px')
+    expect(renderFile(file, 2)).not.toContain('padding-left:')
+    expect(renderFile(file, 2)).toContain('--mdp-tree-row-indent:12px')
   })
 
   it('renders Markdown with its fixed identity color at its native grid size', () => {

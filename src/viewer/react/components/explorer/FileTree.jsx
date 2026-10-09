@@ -1,27 +1,53 @@
-export function flattenVisibleTree(nodes, expandedMap) {
+import { normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
+
+// All guide lanes belong to a row, so virtualization never removes their parent line.
+// Measure hidden descendants too: collapsed folders retain their full indexed-file count.
+export function flattenVisibleTree(nodes, expandedMap, activeFileUrl = '') {
   const rows = []
+  const metadata = new Map()
+  const active = normalizeFileUrlForCompare(activeFileUrl)
 
-  function visit(list) {
-    for (const node of list || []) {
-      if (node?.type === 'file') {
-        rows.push({
-          type: 'file',
-          node,
-          depth: Math.max(1, Number(node.depth) || 1)
-        })
-        continue
+  function measure(node) {
+    const meta = { fileCount: 0, containsActive: false }
+    if (node.type === 'file') {
+      meta.fileCount = 1
+      meta.containsActive = Boolean(active) && normalizeFileUrlForCompare(node.href) === active
+    } else {
+      for (const child of node.children || []) {
+        const childMeta = measure(child)
+        meta.fileCount += childMeta.fileCount
+        meta.containsActive ||= childMeta.containsActive
       }
+    }
+    metadata.set(node, meta)
+    return meta
+  }
+  for (const node of nodes || []) measure(node)
 
-      const expanded = expandedMap?.get?.(node?.href) === true
-      rows.push({
-        type: 'folder',
+  function visit(list, ancestors = [], parentPath = '') {
+    for (const [index, node] of (list || []).entries()) {
+      const meta = metadata.get(node)
+      const hasNext = index < list.length - 1
+      const expanded = node.type === 'folder' && expandedMap?.get?.(node.href) === true
+      const path = parentPath ? `${parentPath}/${node.name}` : node.name
+      const guides = ancestors.map((_, level) => {
+        const branch = level === ancestors.length - 1
+        const next = branch ? { hasNext, ...meta } : ancestors[level + 1]
+        return { level, branch, continues: next.hasNext, active: next.containsActive }
+      })
+      const row = {
+        type: node.type,
         node,
         depth: Math.max(1, Number(node?.depth) || 1),
-        expanded
-      })
-
+        expanded,
+        path,
+        guides,
+        ...meta,
+        stem: expanded && Boolean(node.children?.length)
+      }
+      rows.push(row)
       if (expanded && Array.isArray(node?.children) && node.children.length) {
-        visit(node.children)
+        visit(node.children, [...ancestors, { hasNext, ...meta }], path)
       }
     }
   }

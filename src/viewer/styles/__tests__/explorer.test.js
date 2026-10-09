@@ -67,7 +67,7 @@ describe('explorer interaction styles', () => {
 
   it('gives the active file action button visible hover, focus, and open feedback', () => {
     expect(explorerCss).toMatch(
-      /\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn:hover,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn:focus-visible,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn\.is-open\s*\{[^}]*background:\s*var\(--mdp-link-soft\);[^}]*color:\s*var\(--mdp-link\);[^}]*opacity:\s*1;/s
+      /\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn:hover,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn:focus-visible,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn\.is-open[^{]*\{[^}]*background:\s*var\(--mdp-link-soft\);[^}]*color:\s*var\(--mdp-link\);[^}]*opacity:\s*1;/s
     )
   })
 
@@ -98,13 +98,17 @@ describe('explorer interaction styles', () => {
     )
   })
 
-  it('shrinks long file names before the row action button can cover them', () => {
+  it('uses file trailing space at rest and reserves it only for visible More actions', () => {
     expect(explorerCss).toMatch(
-      /\.mdp-explorer__node:hover \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node:focus-within \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node\.is-active \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node\.is-menu-open \.mdp-explorer__node-btn\s*\{[^}]*padding-right:\s*calc\(var\(--mdp-explorer-row-action-inset\) \+ var\(--mdp-explorer-action-size\) \+ var\(--mdp-explorer-action-gap\)\);/s
+      /\.mdp-explorer__node-btn\s*\{[^}]*padding:\s*8px 6px 8px 2px;/s
     )
     expect(explorerCss).toMatch(
       /\.mdp-explorer__node-label\s*\{[^}]*min-width:\s*0;[^}]*overflow:\s*hidden;[^}]*text-overflow:\s*ellipsis;/s
     )
+    expect(explorerCss).toMatch(/\.mdp-explorer__node:hover \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node:focus-within \.mdp-explorer__node-btn,[^{]*\.mdp-explorer__node\.is-menu-open \.mdp-explorer__node-btn[^{]*\{[^}]*padding-right: calc\(var\(--mdp-explorer-row-action-inset\) \+ var\(--mdp-explorer-action-size\) \+ var\(--mdp-explorer-action-gap\)\);/s)
+    expect(explorerCss).not.toMatch(/\.mdp-explorer__node\.is-active \.mdp-explorer__node-btn[^{]*\{[^}]*padding-right:/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-folder-row\s*\{[^}]*padding: 8px calc\(var\(--mdp-explorer-row-action-inset\) \+ var\(--mdp-explorer-action-size\) \+ 4px\) 8px 2px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-folder:hover \.mdp-explorer__folder-count,[^{]*\{[^}]*visibility: hidden;/s)
   })
 
   it('keeps file and folder artwork at the native 16px size inside stable row slots', () => {
@@ -122,19 +126,26 @@ describe('explorer interaction styles', () => {
     )
   })
 
-  it('uses compact tree spacing while keeping names on one line', () => {
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__node-btn\s*\{[^}]*gap:\s*4px;[^}]*padding:\s*8px 6px;[^}]*white-space:\s*nowrap;/s
-    )
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__tree-folder-row\s*\{[^}]*gap:\s*4px;[^}]*padding:\s*8px 6px 8px 2px;/s
-    )
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__node-depth\s*\{[^}]*width:\s*10px;/s
-    )
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__tree-chevron\s*\{[^}]*width:\s*10px;/s
-    )
+  it('uses soft tree rows while keeping names on one line and guides out of pointer input', () => {
+    expect(explorerCss).toMatch(/\.mdp-explorer__node-btn\s*\{[^}]*gap:\s*4px;[^}]*border-radius:\s*8px;[^}]*white-space:\s*nowrap;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-folder-row\s*\{[^}]*gap:\s*4px;[^}]*margin-left: var\(--mdp-tree-row-indent, 0px\);/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__node-depth\s*\{[^}]*width:\s*10px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-chevron\s*\{[^}]*width:\s*10px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-chevron svg\s*\{[^}]*width: 12px;[^}]*height: 12px;[^}]*flex-shrink: 0;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-guide\.is-branch::after\s*\{[^}]*width: 5px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-guides\s*\{[^}]*pointer-events: none;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer--no-guides \.mdp-explorer__tree-guides\s*\{[^}]*visibility: hidden;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-guide\.is-branch::after\s*\{[^}]*border-bottom-left-radius: 4px;/s)
+  })
+
+  it('keeps the original row density and gives selection one soft surface without a competing stripe', () => {
+    expect(explorerCss).toMatch(/\.mdp-explorer__node-btn\s*\{[^}]*min-height: 38px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__tree-folder-row\s*\{[^}]*min-height: 38px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__list--virtual\s*\{[^}]*gap: 0;/s)
+    expect(explorerCss).toMatch(/@media \(pointer: coarse\)\s*\{[^@]*\.mdp-explorer__tree-folder-row\s*\{[^}]*min-height: 44px;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__node-btn\.is-active\s*\{[^}]*background: color-mix\(in srgb, var\(--mdp-link-soft\) 94%, var\(--mdp-surface\)\);/s)
+    expect(explorerCss).not.toContain('.mdp-explorer__node-btn.is-active::before')
+    expect(explorerCss).not.toMatch(/\.mdp-explorer__node\.is-active \.mdp-explorer__row-action-btn\s*\{[^}]*opacity:/s)
   })
 
   it('animates virtual tree row entry, exit, layout shifts, and the folder chevron', () => {

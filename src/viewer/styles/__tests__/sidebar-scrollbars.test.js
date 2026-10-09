@@ -72,10 +72,11 @@ describe('accepted Viewer sidebar layout', () => {
 
   it('fits collapsed actions using their actual divider spacing and keeps responsive docks', () => {
     const collapsed = '.mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed'
-    expect(rules(layoutCss, collapsed)[0]).toContain('padding-top: 57.5px;')
+    expect(rules(layoutCss, collapsed)[0]).toContain('padding-top: 20px;')
+    expect(rules(layoutCss, collapsed).at(-1)).toContain('padding-top: 12px;')
     expect(rules(layoutCss, collapsed + ' .mdp-floating-actions')[0]).toContain('--mdp-action-divider-size: 21px;')
     expect(rules(layoutCss, collapsed + ' .mdp-document-actions__divider')[0]).toContain('margin-block: 8px;')
-    expect(layoutCss).toContain('padding-top: 103.5px;')
+    expect(rules(layoutCss, collapsed + '[data-compact-header=true]')).toEqual([])
     expect(layoutCss).toContain('@media (max-width: 639px)')
     expect(layoutCss).toContain('width: min(360px, 100vw - 24px);')
   })

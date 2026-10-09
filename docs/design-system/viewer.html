@@ -1138,9 +1138,7 @@
   cursor: not-allowed;
 }
 
-.mdp-explorer__back-icon,
-.mdp-explorer__folder-btn,
-.mdp-explorer__back-btn {
+.mdp-explorer__folder-btn {
   color: var(--mdp-link);
 }
 
@@ -2340,7 +2338,7 @@
     padding-top: calc(var(--mdp-sidebar-top-inset) + var(--mdp-sidebar-header-inset));
   }
   .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
-    padding-top: 57.5px;
+    padding-top: 20px;
     padding-bottom: 16px;
   }
   .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed .mdp-floating-actions {
@@ -2355,10 +2353,7 @@
     --mdp-sidebar-primary-row-height: 52px;
   }
   .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
-    padding-top: 69.5px;
-  }
-  .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed[data-compact-header=true] {
-    padding-top: 103.5px;
+    padding-top: 12px;
   }
   @container mdp-right-rail (max-width: 257px) {
     .mdp-right-rail--outline-expanded > .mdp-right-rail__actions-row {
@@ -2829,12 +2824,12 @@
     var(--mdp-toc-width);
 }</code></pre>
 
-          <p>The location/count row uses plain text without a leading folder icon. Open/Switch folder uses a gold folder with a blue opening arrow to highlight workspace selection. Files keeps its title and the green Workspace badge in workspace mode. The details disclosure stays separate and uses an information-card glyph with metadata lines; only its small chevron turns when expanded, distinguishing it from folder-tree arrows. At rest, the closed control is muted on a transparent background; when expanded it uses primary text on a neutral panel background. Blue remains reserved for shared hover feedback and the focus ring. When closed, Open/Switch folder, Copy and Back/Leave are direct icon buttons and overflow only when space runs out. When expanded, Copy sits beside the filename. Open/Switch folder and Back/Leave workspace are separate full-width labeled buttons stacked inside the same card footer with a 6px gap. The entire card collapses with details and navigation returns to the compact header actions. The metadata label, filename and path share one left edge; both footer buttons share their left and right edges. Full paths remain available through the title and accessible label. Menu icons and labels use fixed columns. Details remembers the tab preference and respects reduced motion; text actions stay at least 32px, or 44px on coarse pointers. This composition is Files-local. Source: <a href="../../src/viewer/react/components/explorer/ExplorerHeader.jsx">ExplorerHeader</a> and <a href="../../src/viewer/styles/explorer.scss">explorer.scss</a>.</p>
+          <p>The location/count row uses plain text without a leading folder icon. Open/Switch folder uses a gold folder with a blue opening arrow to highlight workspace selection. Files keeps its title and the green Workspace badge in workspace mode. The details disclosure stays separate and uses an information-card glyph with metadata lines; only its small chevron turns when expanded, distinguishing it from folder-tree arrows. At rest, the closed control is muted on a transparent background; when expanded it uses primary text on a neutral panel background. Blue remains reserved for shared hover feedback and the focus ring. When closed, Open/Switch folder, Copy and Back/Leave are direct icon buttons and overflow only when space runs out. When expanded, Copy sits beside the filename. Open/Switch folder and Back/Leave workspace are separate full-width labeled buttons stacked inside the same card footer with a 6px gap. Back/Leave uses neutral text and inherited icon color in details and overflow, muted icons in the compact header, and the shared blue hover/focus feedback. The entire card collapses with details and navigation returns to the compact header actions. The metadata label, filename and path share one left edge; both footer buttons share their left and right edges. Full paths remain available through the title and accessible label. Menu icons and labels use fixed columns. Details remembers the tab preference and respects reduced motion; text actions stay at least 32px, or 44px on coarse pointers. This composition is Files-local. Source: <a href="../../src/viewer/react/components/explorer/ExplorerHeader.jsx">ExplorerHeader</a> and <a href="../../src/viewer/styles/explorer.scss">explorer.scss</a>.</p>
 
           <p>Expanded desktop sidebars share a two-row rhythm: Files keeps its existing UI structure; document actions and OUTLINE share the first row, followed by On this page and heading count. Fine-pointer rows are 36px / 44px with 12px before the lists; touch uses 52px rows and a separate label/action row on narrow panels. Porcelain #22 replaces both edge toggles. Existing mobile docks and editor policy remain.</p>
           <p>Current geometry and state contracts are recorded in <a href="./README.md#sidebar-composition">Sidebar composition</a>, <a href="./README.md#panel-toggles">Panel toggles</a>, and <a href="./README.md#sidebar-scrolling">Sidebar scrolling</a>. The standalone lists simulate auto-hide with native scrollbars; runtime uses the shared React overlay.</p>
           <h2 id="states">Interaction states</h2>
-          <p>Document actions use Direct icons: Quick access (Updates, Theme), Document (View changes, Edit, Copy), and Output (Print, Export), separated by two quiet dividers. A measured prefix remains direct; the suffix moves into More in the same order. Theme retains blue moon / amber sun colors; Edit is amber and Save/copied feedback is green. Both sidebars use the Porcelain #22 tab: a 12 × 26px face, centered 12 × 16px chevron, mirrored accent dot, and one 580ms light pass on interaction. Hit areas are 24 × 44px or 44 × 44px on touch. The collapsed action rail remains 60px, with its first icon aligned with Files Refresh. This fixture simulates commands only; runtime capability and editor policies are documented in <a href="../document-actions.md">Document actions</a>.</p>
+          <p>Document actions use Direct icons: Quick access (Updates, Theme), Document (View changes, Edit, Copy), and Output (Print, Export), separated by two quiet dividers. A measured prefix remains direct; the suffix moves into More in the same order. Theme retains blue moon / amber sun colors; Edit is amber and Save/copied feedback is green. Both sidebars use the Porcelain #22 tab: a 12 × 26px face, centered 12 × 16px chevron, mirrored accent dot, and one 580ms light pass on interaction. Hit areas are 24 × 44px or 44 × 44px on touch. The collapsed action rail remains 60px, with its first icon centered on the Show/Hide toggle and aligned with Files header icons on fine pointers. This fixture simulates commands only; runtime capability and editor policies are documented in <a href="../document-actions.md">Document actions</a>.</p>
           <p><label><input id="document-pending" type="checkbox"> Preview pending update (View changes appears in the Document group)</label></p>
           <p>
             Active rows use a soft blue fill and leading accent rail. Dense utility controls stay

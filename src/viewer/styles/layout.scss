@@ -500,7 +500,8 @@
     padding-top: calc(var(--mdp-sidebar-top-inset) + var(--mdp-sidebar-header-inset));
   }
   .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
-    padding-top: 57.5px;
+    // Center the first 28px action on the Porcelain toggle's 34px axis.
+    padding-top: 20px;
     padding-bottom: 16px;
     .mdp-floating-actions { --mdp-action-divider-size: 21px; }
     .mdp-document-actions__divider { margin-block: 8px; }
@@ -509,8 +510,8 @@
 @media (min-width: 900px) and (pointer: coarse) {
   .mdp-body { --mdp-sidebar-primary-row-height: 52px; }
   .mdp-body:not(.mdp-body--edit-split):not(.mdp-body--edit-focus) > .mdp-right-rail--outline-collapsed {
-    padding-top: 69.5px;
-    &[data-compact-header='true'] { padding-top: 103.5px; }
+    // Keep the same axis with 44px touch targets, regardless of expanded width.
+    padding-top: 12px;
   }
   // Only the label/actions row splits; the action controls never wrap.
   // Container width excludes 22px of rail padding and its 1px border.

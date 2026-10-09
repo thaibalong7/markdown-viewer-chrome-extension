@@ -518,10 +518,8 @@
   }
 }
 
-// Keep navigation accents in compact commands, details, and overflow alike.
-.mdp-explorer__back-icon,
-.mdp-explorer__folder-btn,
-.mdp-explorer__back-btn {
+// Folder selection stays accented; Back/Leave inherits each control's neutral color.
+.mdp-explorer__folder-btn {
   color: var(--mdp-link);
 }
 

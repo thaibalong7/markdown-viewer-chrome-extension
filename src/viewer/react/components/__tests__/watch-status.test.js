@@ -4,6 +4,24 @@ import { describe, expect, it } from 'vitest'
 import { WatchStatus, getWatchMessage, getWatchTriggerPresentation } from '../WatchStatus.jsx'
 
 describe('watch chrome', () => {
+  it('keeps the animated trigger at the same DOM position across ready, busy and settled states', () => {
+    for (const phase of [
+      { pending: true, manualChecking: false },
+      { pending: true, manualChecking: true },
+      { pending: false, manualChecking: false }
+    ]) {
+      const html = renderToStaticMarkup(React.createElement(WatchStatus, {
+        state: { available: true, supported: true, mode: 'ask', ...phase }
+      }))
+      // Inserting the disabled tooltip wrapper only during busy replaces the
+      // button and SVG nodes, restarting their rotation and crossfade.
+      expect(html).toMatch(/<div class="mdp-watch-status"[^>]*><span class="mdp-icon-button-tooltip-anchor"><button[^>]*mdp-watch-status__trigger/)
+      const trigger = html.match(/<button[^>]*mdp-watch-status__trigger[^>]*>/)[0]
+      expect(trigger.includes('disabled=""')).toBe(phase.manualChecking)
+      expect(trigger.includes('aria-busy="true"')).toBe(phase.manualChecking)
+    }
+  })
+
   it('disables both direct update controls while an explicit update is running', () => {
     const html = renderToStaticMarkup(React.createElement(WatchStatus, {
       state: { available: true, supported: true, pending: true, manualChecking: true }

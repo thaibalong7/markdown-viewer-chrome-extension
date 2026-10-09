@@ -830,51 +830,144 @@
 }
 .mdp-watch-status__trigger {
   position: relative;
-  --mdp-watch-indicator: var(--mdp-link);
+  --mdp-watch-color: var(--mdp-muted);
+  --mdp-watch-bg: transparent;
+  --mdp-watch-border: transparent;
+  color: var(--mdp-watch-color);
+  background: var(--mdp-watch-bg);
+  border-color: var(--mdp-watch-border);
+  transition: color 270ms ease, background-color 270ms ease, border-color 270ms ease;
 }
-.mdp-watch-status__trigger--error {
-  --mdp-watch-indicator: var(--mdp-danger);
+.mdp-watch-status__trigger[data-mdp-watch-phase=ready] {
+  --mdp-watch-color: var(--mdp-toast-info-text);
+  --mdp-watch-bg: var(--mdp-toast-info-bg);
+  --mdp-watch-border: var(--mdp-toast-info-border);
 }
-.mdp-watch-status__trigger--warning {
-  --mdp-watch-indicator: var(--mdp-warning);
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] {
+  --mdp-watch-color: var(--mdp-toast-info-text);
+  --mdp-watch-bg: var(--mdp-toast-info-bg);
+  --mdp-watch-border: var(--mdp-toast-info-border);
 }
-.mdp-watch-status__trigger--attention::after {
+.mdp-watch-status__trigger[data-mdp-watch-phase=success] {
+  --mdp-watch-color: var(--mdp-toast-success-text);
+  --mdp-watch-bg: var(--mdp-toast-success-bg);
+  --mdp-watch-border: var(--mdp-toast-success-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=error] {
+  --mdp-watch-color: var(--mdp-toast-error-text);
+  --mdp-watch-bg: var(--mdp-toast-error-bg);
+  --mdp-watch-border: var(--mdp-toast-error-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=warning] {
+  --mdp-watch-color: var(--mdp-toast-warning-text);
+  --mdp-watch-bg: var(--mdp-toast-warning-bg);
+  --mdp-watch-border: var(--mdp-toast-warning-border);
+}
+.mdp-watch-status__trigger--attention[data-mdp-watch-phase=idle], .mdp-watch-status__trigger[data-mdp-watch-phase=idle]:is(:hover, :focus-visible):not(:disabled) {
+  --mdp-watch-color: var(--mdp-toast-info-text);
+  --mdp-watch-bg: var(--mdp-toast-info-bg);
+  --mdp-watch-border: var(--mdp-toast-info-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] {
+  opacity: 1;
+  cursor: progress;
+}
+.mdp-watch-status__trigger::before {
   content: "";
   position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 6px;
-  height: 6px;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--mdp-watch-color);
+  opacity: 0;
+  pointer-events: none;
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=ready]:not(:disabled)::before {
+  animation: mdp-watch-ready 1700ms ease-in-out 2;
+}
+.mdp-watch-status__trigger::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--mdp-watch-indicator);
-  border: 1px solid var(--mdp-surface);
+  background: var(--mdp-watch-color);
+  border: 1px solid var(--mdp-watch-bg);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 270ms ease, transform 270ms ease;
+  pointer-events: none;
+}
+.mdp-watch-status__trigger--attention::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy]::after, .mdp-watch-status__trigger[data-mdp-watch-phase=success]::after {
+  opacity: 0;
+  transform: scale(0.7);
+}
+.mdp-watch-status__trigger:hover:not(:disabled), .mdp-watch-status__trigger:focus-visible:not(:disabled) {
+  color: var(--mdp-watch-color);
+  background: var(--mdp-watch-bg);
+  border-color: var(--mdp-watch-color);
+}
+.mdp-watch-status__trigger:hover:not(:disabled) .mdp-watch-status__icon-swap, .mdp-watch-status__trigger:focus-visible:not(:disabled) .mdp-watch-status__icon-swap {
+  transform: translateY(-1px);
+}
+.mdp-watch-status__trigger:focus-visible {
+  outline-color: var(--mdp-watch-color);
+}
+.mdp-watch-status__trigger:active:not(:disabled) .mdp-watch-status__icon-swap {
+  transform: scale(0.94);
 }
 .mdp-watch-status__icon-swap {
   position: relative;
-  perspective: 60px;
+  transition: transform 200ms ease;
 }
 .mdp-watch-status__icon {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
-}
-.mdp-watch-status__icon--details {
-  transform: rotateY(0deg);
-}
-.mdp-watch-status__icon--apply {
-  transform: rotateY(180deg);
   opacity: 0;
+  transform: translateY(2px) scale(0.94);
+  transition: opacity 270ms ease, transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
 }
-.mdp-watch-status__icon-swap.is-apply .mdp-watch-status__icon--details {
-  transform: rotateY(-180deg);
-  opacity: 0;
+.mdp-watch-status__icon--busy svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: mdp-watch-sync 1350ms linear infinite;
+  animation-play-state: paused;
 }
-.mdp-watch-status__icon-swap.is-apply .mdp-watch-status__icon--apply {
-  transform: rotateY(0deg);
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] .mdp-watch-status__icon--busy svg {
+  animation-play-state: running;
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=idle] .mdp-watch-status__icon--details {
   opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=error] .mdp-watch-status__icon--details {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=warning] .mdp-watch-status__icon--details {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=ready] .mdp-watch-status__icon--apply {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] .mdp-watch-status__icon--busy {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=success] .mdp-watch-status__icon--success {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 .mdp-watch-status__notice {
   position: absolute;
@@ -896,7 +989,7 @@
   text-align: left;
   cursor: pointer;
   transform-origin: right center;
-  animation: mdp-watch-notice-pop 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: mdp-watch-notice-pop 430ms ease-out both;
 }
 .mdp-watch-status__notice::after {
   content: "";
@@ -1058,23 +1151,44 @@
   white-space: nowrap;
 }
 
+@keyframes mdp-watch-ready {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.09;
+  }
+}
+@keyframes mdp-watch-sync {
+  to {
+    transform: rotate(360deg);
+  }
+}
 @keyframes mdp-watch-notice-pop {
   from {
     opacity: 0;
-    transform: translate(8px, -50%) scale(0.86) rotate(1deg);
-  }
-  70% {
-    opacity: 1;
-    transform: translate(-2px, -50%) scale(1.02) rotate(-0.5deg);
+    transform: translate(4px, -50%);
   }
   to {
     opacity: 1;
-    transform: translate(0, -50%) scale(1) rotate(0);
+    transform: translate(0, -50%);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .mdp-watch-status__icon {
+  .mdp-watch-status__trigger,
+  .mdp-watch-status__trigger::after,
+  .mdp-watch-status__icon,
+  .mdp-watch-status__icon-swap {
     transition: none;
+  }
+  .mdp-watch-status__trigger[data-mdp-watch-phase=ready]:not(:disabled)::before {
+    animation: none;
+  }
+  .mdp-watch-status__icon--busy svg {
+    animation: none;
+  }
+  .mdp-watch-status__trigger:is(:hover, :focus-visible, :active):not(:disabled) .mdp-watch-status__icon-swap {
+    transform: none;
   }
   .mdp-watch-status__notice {
     animation: none;
@@ -2429,7 +2543,7 @@
         <header class="mdp-ui-section__header"><h3 id="navigation-title">Navigation</h3><p>Settings section navigation and the four current Popup tabs.</p></header>
         <div class="mdp-ui-grid">
           <div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Settings side navigation</span><nav class="mdp-ui-side-nav" aria-label="Settings sections example"><button class="mdp-ui-side-nav__item is-active" type="button" aria-current="page"><strong>General</strong><small>Activation and access</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Themes</strong><small>Colors and backgrounds</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Files &amp; Workspace</strong><small>Folder appearance and scan limits</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Privacy &amp; Data</strong><small>Recent local files</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Advanced</strong><small>Limits, backup, and reset</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>About</strong><small>Version, privacy, and support</small></button></nav></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Popup tabs</span><div class="popup-settings-tabs catalog-tabs" role="tablist" aria-label="Quick control sections example"><button class="popup-settings-tab is-active" id="catalog-tab-reader" type="button" role="tab" aria-selected="true" aria-controls="catalog-tab-panel" tabindex="0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="reader" style="stroke:currentColor;stroke-width:1.8"><path d="M12 5v16 M12 5C9 3 6 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1"></path></svg><span>Reader</span></button><button class="popup-settings-tab" id="catalog-tab-editor" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="editor" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg><span>Editor</span></button><button class="popup-settings-tab" id="catalog-tab-plugins" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="plugins" style="stroke:currentColor;stroke-width:1.8"><path d="M8 3v5 M16 3v5 M5 8h14v2a7 7 0 0 1-14 0Z M12 17v4"></path></svg><span>Plugins</span></button><button class="popup-settings-tab" id="catalog-tab-recent" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="history" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5v5h5 M3.7 9a8.5 8.5 0 1 1-.2 5 M12 7v5l3 2"></path></svg><span>Recent</span></button></div><div id="catalog-tab-panel" role="tabpanel" aria-labelledby="catalog-tab-reader" tabindex="0"><span class="mdp-ui-status"><span class="mdp-ui-status__dot" aria-hidden="true"></span><span id="catalog-tab-label">Reading appearance</span></span></div><p class="catalog-note">Use Left/Right, Home, and End to move between tabs. Tab contents are represented by a label in this preview.</p></div></div><p class="catalog-source">src/shared/styles/_containers.scss · src/options/OptionsApp.jsx · src/popup/popup.scss</p></section>
-<section class="mdp-ui-section" aria-labelledby="viewer-title"><header class="mdp-ui-section__header"><h3 id="viewer-title">Viewer components</h3><p>Document statistics, update feedback, and source comparison now share the same application primitives.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document updates · Ask mode</span><label class="mdp-ui-field" for="catalog-update-state"><span class="mdp-ui-field__label">Preview state</span><select class="mdp-ui-select" id="catalog-update-state"><option value="pending">New version available</option><option value="current">Up to date</option><option value="error">Check failed</option></select></label><div class="mdp-watch-status catalog-watch"><section class="mdp-ui-card mdp-watch-status__panel mdp-watch-status__panel--has-actions" aria-label="Document updates preview"><header class="mdp-watch-status__header"><div class="mdp-watch-status__heading"><h3>Document updates</h3><span class="mdp-ui-badge mdp-ui-badge--info mdp-watch-status__mode">Ask</span></div><div class="mdp-watch-status__header-actions"><button class="mdp-watch-status__check" type="button" aria-label="Check now" title="Check now" id="catalog-check-update"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></button></div></header><p class="mdp-watch-status__message" id="catalog-update-message" role="status">A newer version of this document is ready.</p><div class="mdp-watch-status__actions" id="catalog-update-actions"><button class="mdp-ui-button mdp-ui-button--primary" type="button" id="catalog-apply-update">Update document</button></div></section></div></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document statistics</span><aside class="mdp-document-stats catalog-stats" role="note" aria-label="Document statistics: 420 words, 2,450 characters, 2 min read"><span aria-hidden="true">420 words</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span aria-hidden="true">2,450 characters</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span class="mdp-document-stats__reading" aria-hidden="true">2 min read</span></aside><p class="catalog-note">Selectable metadata above Markdown in read mode. Hidden for empty documents, edit mode, and print output.</p><div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Editor protection</strong>Updates never replace an active editor. Loading a disk revision requires confirmation before leaving edit mode.</div></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · source lines</span><div class="mdp-change-review catalog-review"><section class="mdp-ui-card mdp-change-review__hunk is-active" aria-label="Changed area 1" tabindex="0"><div class="mdp-change-review__hunk-header"><span>Changed area 1</span><span>1 added · 1 removed</span></div><table><caption class="mdp-change-review__visually-hidden">Source lines in changed area 1</caption><thead class="mdp-change-review__visually-hidden"><tr><th>Old line</th><th>New line</th><th>Change</th><th>Source</th></tr></thead><tbody><tr class="mdp-change-review__row--equal"><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__marker"><span aria-label="Unchanged"> </span></td><td class="mdp-change-review__source"><code># Reading notes</code></td></tr><tr class="mdp-change-review__row--removed"><td class="mdp-change-review__line-number">2</td><td></td><td class="mdp-change-review__marker"><span aria-label="Removed">−</span></td><td class="mdp-change-review__source"><code>Check for changes manually.</code></td></tr><tr class="mdp-change-review__row--added"><td></td><td class="mdp-change-review__line-number">2</td><td class="mdp-change-review__marker"><span aria-label="Added">+</span></td><td class="mdp-change-review__source"><code>Choose how document updates are applied.</code></td></tr></tbody></table></section></div><p class="catalog-note">Excerpt from the Viewer comparison. Source gutters and diff layout remain Viewer-specific; added and removed lines use paired theme colors.</p></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · load failure</span><button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="catalog-review-error-open" aria-haspopup="dialog">Preview review load failure</button><p class="catalog-note">Load failures use a modal alert with a focused Close review action. Escape and outside press dismiss it and restore trigger focus; feedback stays out of the action toolbar.</p></div><p class="catalog-source">src/viewer/styles/_watch-status.scss · _document-stats.scss · _change-review.scss · _update-feedback.scss</p></section>
+<section class="mdp-ui-section" aria-labelledby="viewer-title"><header class="mdp-ui-section__header"><h3 id="viewer-title">Viewer components</h3><p>Document statistics, update feedback, and source comparison now share the same application primitives.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document updates · Ask mode</span><label class="mdp-ui-field" for="catalog-update-state"><span class="mdp-ui-field__label">Preview state</span><select class="mdp-ui-select" id="catalog-update-state"><option value="pending">New version available</option><option value="current">Up to date</option><option value="error">Check failed</option></select></label><label class="mdp-ui-field" for="catalog-update-theme"><span class="mdp-ui-field__label">Update button theme</span><select class="mdp-ui-select" id="catalog-update-theme"><option value="inherit">Current page theme</option><option value="light">Light</option><option value="high-contrast-light">High Contrast Light</option><option value="dark">Dark</option><option value="high-contrast-dark">High Contrast Dark</option><option value="sakura">Sakura</option><option value="matcha">Matcha</option><option value="solarized-dark">Solarized Dark</option><option value="vscode-dark">Dark (VS Code)</option><option value="dracula">Dracula</option><option value="gruvbox">Gruvbox</option><option value="night-owl">Night Owl</option><option value="min-dark">Min (Dark)</option><option value="aurora-glass">Aurora Glass</option><option value="custom:audit-light">Custom light · reversed surface</option><option value="custom:audit-dark">Custom dark · reversed surface</option></select></label><div class="mdp-watch-status catalog-watch" id="catalog-update-surface"><span class="mdp-icon-button-tooltip-anchor"><button type="button" id="catalog-update-trigger" class="mdp-fab-btn mdp-watch-status__trigger mdp-watch-status__trigger--attention" data-mdp-watch-action="apply" data-mdp-watch-phase="ready" aria-label="Update document" title="Update document"><span class="mdp-fab-btn__icon mdp-watch-status__icon-swap"><svg class="mdp-watch-status__icon mdp-watch-status__icon--details" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg><svg class="mdp-watch-status__icon mdp-watch-status__icon--apply" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg><span class="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></span><svg class="mdp-watch-status__icon mdp-watch-status__icon--success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check"><path d="m5 12 4 4L19 6"></path></svg></span></button></span><p class="catalog-note">Ready: a paired theme status surface with two gentle 1.7s breaths. Apply: slow sync rotation with an 720ms minimum display, then a confirmed green check for 1s. All glyphs crossfade over 270ms in a fixed target; reduced motion keeps them static. This fixture simulates a 400ms successful read.</p><section class="mdp-ui-card mdp-watch-status__panel mdp-watch-status__panel--has-actions" aria-label="Document updates preview"><header class="mdp-watch-status__header"><div class="mdp-watch-status__heading"><h3>Document updates</h3><span class="mdp-ui-badge mdp-ui-badge--info mdp-watch-status__mode">Ask</span></div><div class="mdp-watch-status__header-actions"><button class="mdp-watch-status__check" type="button" aria-label="Check now" title="Check now" id="catalog-check-update"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></button></div></header><p class="mdp-watch-status__message" id="catalog-update-message" role="status">A newer version of this document is ready.</p><div class="mdp-watch-status__actions" id="catalog-update-actions"><button class="mdp-ui-button mdp-ui-button--primary" type="button" id="catalog-apply-update">Update document</button></div></section></div></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document statistics</span><aside class="mdp-document-stats catalog-stats" role="note" aria-label="Document statistics: 420 words, 2,450 characters, 2 min read"><span aria-hidden="true">420 words</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span aria-hidden="true">2,450 characters</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span class="mdp-document-stats__reading" aria-hidden="true">2 min read</span></aside><p class="catalog-note">Selectable metadata above Markdown in read mode. Hidden for empty documents, edit mode, and print output.</p><div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Editor protection</strong>Updates never replace an active editor. Loading a disk revision requires confirmation before leaving edit mode.</div></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · source lines</span><div class="mdp-change-review catalog-review"><section class="mdp-ui-card mdp-change-review__hunk is-active" aria-label="Changed area 1" tabindex="0"><div class="mdp-change-review__hunk-header"><span>Changed area 1</span><span>1 added · 1 removed</span></div><table><caption class="mdp-change-review__visually-hidden">Source lines in changed area 1</caption><thead class="mdp-change-review__visually-hidden"><tr><th>Old line</th><th>New line</th><th>Change</th><th>Source</th></tr></thead><tbody><tr class="mdp-change-review__row--equal"><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__marker"><span aria-label="Unchanged"> </span></td><td class="mdp-change-review__source"><code># Reading notes</code></td></tr><tr class="mdp-change-review__row--removed"><td class="mdp-change-review__line-number">2</td><td></td><td class="mdp-change-review__marker"><span aria-label="Removed">−</span></td><td class="mdp-change-review__source"><code>Check for changes manually.</code></td></tr><tr class="mdp-change-review__row--added"><td></td><td class="mdp-change-review__line-number">2</td><td class="mdp-change-review__marker"><span aria-label="Added">+</span></td><td class="mdp-change-review__source"><code>Choose how document updates are applied.</code></td></tr></tbody></table></section></div><p class="catalog-note">Excerpt from the Viewer comparison. Source gutters and diff layout remain Viewer-specific; added and removed lines use paired theme colors.</p></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · load failure</span><button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="catalog-review-error-open" aria-haspopup="dialog">Preview review load failure</button><p class="catalog-note">Load failures use a modal alert with a focused Close review action. Escape and outside press dismiss it and restore trigger focus; feedback stays out of the action toolbar.</p></div><p class="catalog-source">src/viewer/react/hooks/useWatchUpdateFeedback.js · src/viewer/styles/_watch-status.scss · _document-stats.scss · _change-review.scss · _update-feedback.scss</p></section>
 </section>
     </div>
   </section>
@@ -2501,17 +2615,125 @@
         else candidate.removeAttribute('aria-current')
       })
     }))
+    // Feedback controller snapshot: src/viewer/react/hooks/watch-update-feedback.js
+const UPDATE_BUSY_MIN_MS = 720
+const UPDATE_SUCCESS_MS = 1000
+
+// Presentation timing never delays disk I/O. Success requires a changed
+// accepted source and a completed manual request for the same document.
+function createWatchUpdateFeedback(publish) {
+  let phase = null
+  let operation = null
+  let latest = {}
+  let generation
+  let timer = null
+  const show = (next) => {
+    if (phase === next) return
+    phase = next
+    publish(next)
+  }
+  const cancel = (notify = true) => {
+    clearTimeout(timer)
+    timer = null
+    operation = null
+    if (notify) show(null)
+    else phase = null
+  }
+  const settle = () => {
+    timer = null
+    if (!operation || latest.manualChecking) return
+    const changed = operation.sawChecking && latest.acceptedSource !== operation.source
+    operation = null
+    if (changed && !latest.error && !latest.pending) {
+      show('success')
+      timer = setTimeout(() => { timer = null; show(null) }, UPDATE_SUCCESS_MS)
+    } else show(null)
+  }
+  return {
+    start(state) {
+      cancel()
+      latest = state
+      generation = state.generation
+      operation = { source: state.acceptedSource, start: Date.now(), sawChecking: false }
+      show('busy')
+      // Also recover if the caller declines a request without emitting busy.
+      timer = setTimeout(settle, UPDATE_BUSY_MIN_MS)
+    },
+    sync(state) {
+      latest = state
+      if (!state.available || !state.supported || state.mode === 'auto' || state.isEditMode || state.error ||
+          (phase && state.generation !== generation)) {
+        cancel()
+        return
+      }
+      if (phase === 'success' && state.pending) cancel()
+      if (!operation) return
+      if (state.manualChecking) {
+        operation.sawChecking = true
+        clearTimeout(timer)
+        timer = null
+      } else if (operation.sawChecking && timer === null) {
+        timer = setTimeout(settle, Math.max(0, UPDATE_BUSY_MIN_MS - (Date.now() - operation.start)))
+      }
+    },
+    cancel
+  }
+}
+    // Palette snapshot: src/theme/index.js (built-ins and custom contrast fixtures).
+    const updatePalettes = {"light":{"name":"Light","vars":{"--mdp-color-scheme":"light","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#f6f8fb","--mdp-viewer-background":"#f6f8fb","--mdp-sidebar-surface":"#eef2f6","--mdp-content-surface":"#ffffff","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#ffffff","--mdp-text":"#172033","--mdp-body-text":"#273043","--mdp-heading":"#111827","--mdp-border":"#dce2ea","--mdp-border-strong":"#c5ced9","--mdp-muted":"#667085","--mdp-code-bg":"#f2f5f8","--mdp-code-text":"#172033","--mdp-panel-bg":"#eef2f6","--mdp-panel-strong":"#e3e9f0","--mdp-link":"#2563eb","--mdp-link-soft":"#eaf2ff","--mdp-accent":"#16815c","--mdp-accent-soft":"#e8f6ef","--mdp-warning":"#b35c00","--mdp-warning-soft":"#fff3dc","--mdp-danger":"#c2413a","--mdp-table-border":"#dce2ea","--mdp-table-header-bg":"#f2f5f8","--mdp-table-row-alt-bg":"#fafbfc","--mdp-toast-info-bg":"#eff6ff","--mdp-toast-info-text":"#1d4ed8","--mdp-toast-info-border":"#bfdbfe","--mdp-toast-success-bg":"#ecfdf5","--mdp-toast-success-text":"#047857","--mdp-toast-success-border":"#a7f3d0","--mdp-toast-warning-bg":"#fffbeb","--mdp-toast-warning-text":"#92400e","--mdp-toast-warning-border":"#fde68a","--mdp-toast-error-bg":"#fef2f2","--mdp-toast-error-text":"#b91c1c","--mdp-toast-error-border":"#fecaca"}},"high-contrast-light":{"name":"High Contrast Light","vars":{"--mdp-color-scheme":"light","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#ffffff","--mdp-viewer-background":"#ffffff","--mdp-sidebar-surface":"#f2f2f2","--mdp-content-surface":"#ffffff","--mdp-scrollbar-thumb":"#707070","--mdp-scrollbar-thumb-hover":"#333333","--mdp-surface":"#ffffff","--mdp-text":"#000000","--mdp-body-text":"#111111","--mdp-heading":"#000000","--mdp-border":"#707070","--mdp-border-strong":"#333333","--mdp-muted":"#404040","--mdp-code-bg":"#eeeeee","--mdp-code-text":"#000000","--mdp-panel-bg":"#f2f2f2","--mdp-panel-strong":"#dddddd","--mdp-link":"#003b8f","--mdp-link-soft":"#dceaff","--mdp-accent":"#005a3c","--mdp-accent-soft":"#d9f2e7","--mdp-warning":"#704000","--mdp-warning-soft":"#fff0c2","--mdp-danger":"#9c0000","--mdp-table-border":"#707070","--mdp-table-header-bg":"#dddddd","--mdp-table-row-alt-bg":"#f2f2f2","--mdp-toast-info-bg":"#dceaff","--mdp-toast-info-text":"#002d6b","--mdp-toast-info-border":"#003b8f","--mdp-toast-success-bg":"#d9f2e7","--mdp-toast-success-text":"#00452e","--mdp-toast-success-border":"#005a3c","--mdp-toast-warning-bg":"#fff0c2","--mdp-toast-warning-text":"#573100","--mdp-toast-warning-border":"#704000","--mdp-toast-error-bg":"#ffe0e0","--mdp-toast-error-text":"#780000","--mdp-toast-error-border":"#9c0000"}},"dark":{"name":"Dark","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#0d121b","--mdp-viewer-background":"#0d121b","--mdp-sidebar-surface":"#101722","--mdp-content-surface":"#151b26","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#151b26","--mdp-text":"#edf2f7","--mdp-body-text":"#dce4ee","--mdp-heading":"#f8fafc","--mdp-border":"#2d3848","--mdp-border-strong":"#465469","--mdp-muted":"#9ba9bb","--mdp-code-bg":"#0b111a","--mdp-code-text":"#e6edf3","--mdp-panel-bg":"#101722","--mdp-panel-strong":"#1d2735","--mdp-link":"#7ab7ff","--mdp-link-soft":"#122b4d","--mdp-accent":"#56d39a","--mdp-accent-soft":"#123529","--mdp-warning":"#f4b24e","--mdp-warning-soft":"#3b2a0e","--mdp-danger":"#ff8d85","--mdp-table-border":"#2d3848","--mdp-table-header-bg":"#1a2330","--mdp-table-row-alt-bg":"#111925","--mdp-toast-info-bg":"#0c2d6b","--mdp-toast-info-text":"#bfdbfe","--mdp-toast-info-border":"#1d4ed8","--mdp-toast-success-bg":"#063f2c","--mdp-toast-success-text":"#bbf7d0","--mdp-toast-success-border":"#047857","--mdp-toast-warning-bg":"#3b2a05","--mdp-toast-warning-text":"#fde68a","--mdp-toast-warning-border":"#b45309","--mdp-toast-error-bg":"#450a0a","--mdp-toast-error-text":"#fecaca","--mdp-toast-error-border":"#b91c1c"}},"high-contrast-dark":{"name":"High Contrast Dark","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#000000","--mdp-viewer-background":"#000000","--mdp-sidebar-surface":"#080808","--mdp-content-surface":"#0a0a0a","--mdp-scrollbar-thumb":"#8c8c8c","--mdp-scrollbar-thumb-hover":"#d0d0d0","--mdp-surface":"#0a0a0a","--mdp-text":"#ffffff","--mdp-body-text":"#f5f5f5","--mdp-heading":"#ffffff","--mdp-border":"#8c8c8c","--mdp-border-strong":"#d0d0d0","--mdp-muted":"#bdbdbd","--mdp-code-bg":"#111111","--mdp-code-text":"#ffffff","--mdp-panel-bg":"#080808","--mdp-panel-strong":"#242424","--mdp-link":"#75baff","--mdp-link-soft":"#102d4d","--mdp-accent":"#70e8b5","--mdp-accent-soft":"#123d2d","--mdp-warning":"#ffd166","--mdp-warning-soft":"#4a3500","--mdp-danger":"#ff8a80","--mdp-table-border":"#8c8c8c","--mdp-table-header-bg":"#242424","--mdp-table-row-alt-bg":"#151515","--mdp-toast-info-bg":"#102d4d","--mdp-toast-info-text":"#cbe5ff","--mdp-toast-info-border":"#75baff","--mdp-toast-success-bg":"#123d2d","--mdp-toast-success-text":"#baf4d9","--mdp-toast-success-border":"#70e8b5","--mdp-toast-warning-bg":"#4a3500","--mdp-toast-warning-text":"#ffe7a8","--mdp-toast-warning-border":"#ffd166","--mdp-toast-error-bg":"#4d1717","--mdp-toast-error-text":"#ffd4d0","--mdp-toast-error-border":"#ff8a80"}},"sakura":{"name":"Sakura","vars":{"--mdp-color-scheme":"light","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#f7f2f4","--mdp-viewer-background":"#f7f2f4","--mdp-sidebar-surface":"#f2e8ec","--mdp-content-surface":"#fffafb","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#fffafb","--mdp-text":"#2f282b","--mdp-body-text":"#3e3538","--mdp-heading":"#22191d","--mdp-border":"#ded5d8","--mdp-border-strong":"#c8bcc0","--mdp-muted":"#73666d","--mdp-code-bg":"#f4ecef","--mdp-code-text":"#502c3b","--mdp-panel-bg":"#f2e8ec","--mdp-panel-strong":"#e8dbdf","--mdp-link":"#983256","--mdp-link-soft":"#fbeaf0","--mdp-accent":"#35755e","--mdp-accent-soft":"#e8f3ee","--mdp-warning":"#a05414","--mdp-warning-soft":"#fff2df","--mdp-danger":"#b53b49","--mdp-table-border":"#ded5d8","--mdp-table-header-bg":"#f4edf0","--mdp-table-row-alt-bg":"#faf5f7","--mdp-toast-info-bg":"#fbeaf0","--mdp-toast-info-text":"#8f294e","--mdp-toast-info-border":"#edb8ca","--mdp-toast-success-bg":"#edf8f2","--mdp-toast-success-text":"#286149","--mdp-toast-success-border":"#a9d8c3","--mdp-toast-warning-bg":"#fff6e8","--mdp-toast-warning-text":"#8b4513","--mdp-toast-warning-border":"#edcf9d","--mdp-toast-error-bg":"#fff0f1","--mdp-toast-error-text":"#a52f3d","--mdp-toast-error-border":"#efb5bc"}},"matcha":{"name":"Matcha","vars":{"--mdp-color-scheme":"light","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#f2f4ec","--mdp-viewer-background":"#f2f4ec","--mdp-sidebar-surface":"#e9ece0","--mdp-content-surface":"#faf8f2","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#faf8f2","--mdp-text":"#2b3227","--mdp-body-text":"#373e33","--mdp-heading":"#1e261a","--mdp-border":"#d6dac9","--mdp-border-strong":"#bcc3ad","--mdp-muted":"#656e5f","--mdp-code-bg":"#edf1e4","--mdp-code-text":"#2d4029","--mdp-panel-bg":"#e9ece0","--mdp-panel-strong":"#dde2cf","--mdp-link":"#356a38","--mdp-link-soft":"#e7efe0","--mdp-accent":"#2b6a54","--mdp-accent-soft":"#e1f0e7","--mdp-warning":"#945711","--mdp-warning-soft":"#fff3db","--mdp-danger":"#af3a3a","--mdp-table-border":"#d6dac9","--mdp-table-header-bg":"#e9eee0","--mdp-table-row-alt-bg":"#f5f6ee","--mdp-toast-info-bg":"#e7efe0","--mdp-toast-info-text":"#335e35","--mdp-toast-info-border":"#b9cbb1","--mdp-toast-success-bg":"#e6f3ec","--mdp-toast-success-text":"#245f44","--mdp-toast-success-border":"#a5d1ba","--mdp-toast-warning-bg":"#fff4e2","--mdp-toast-warning-text":"#804d17","--mdp-toast-warning-border":"#e6cb9d","--mdp-toast-error-bg":"#feeeec","--mdp-toast-error-text":"#9d3333","--mdp-toast-error-border":"#e8b7b2"}},"solarized-dark":{"name":"Solarized Dark","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#002b36","--mdp-viewer-background":"#002b36","--mdp-sidebar-surface":"#05303c","--mdp-content-surface":"#073642","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#073642","--mdp-text":"#d2dede","--mdp-body-text":"#a3b8bd","--mdp-heading":"#eee8d5","--mdp-border":"#0d4350","--mdp-border-strong":"#195464","--mdp-muted":"#78949c","--mdp-code-bg":"#073642","--mdp-code-text":"#c4d5d8","--mdp-panel-bg":"#05303c","--mdp-panel-strong":"#0b3e4d","--mdp-link":"#2e9fe6","--mdp-link-soft":"#073c48","--mdp-accent":"#2aa198","--mdp-accent-soft":"#073c44","--mdp-warning":"#cb8b00","--mdp-warning-soft":"#2a2408","--mdp-danger":"#ea4d49","--mdp-table-border":"#0d4350","--mdp-table-header-bg":"#073642","--mdp-table-row-alt-bg":"#022f3b","--mdp-toast-info-bg":"#073949","--mdp-toast-info-text":"#4eb8f5","--mdp-toast-info-border":"#195c73","--mdp-toast-success-bg":"#083a2c","--mdp-toast-success-text":"#48cfa0","--mdp-toast-success-border":"#16664d","--mdp-toast-warning-bg":"#382a0b","--mdp-toast-warning-text":"#f0b838","--mdp-toast-warning-border":"#785612","--mdp-toast-error-bg":"#3c1214","--mdp-toast-error-text":"#ff8280","--mdp-toast-error-border":"#852528"}},"vscode-dark":{"name":"Dark (VS Code)","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#181818","--mdp-viewer-background":"#181818","--mdp-sidebar-surface":"#181818","--mdp-content-surface":"#1f1f1f","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#1f1f1f","--mdp-text":"#d4d4d4","--mdp-body-text":"#cccccc","--mdp-heading":"#f0f0f0","--mdp-border":"#333333","--mdp-border-strong":"#484848","--mdp-muted":"#a0a0a0","--mdp-code-bg":"#1e1e1e","--mdp-code-text":"#d4d4d4","--mdp-panel-bg":"#181818","--mdp-panel-strong":"#252526","--mdp-link":"#4daafc","--mdp-link-soft":"#193a55","--mdp-accent":"#4ec9b0","--mdp-accent-soft":"#173b35","--mdp-warning":"#e2c08d","--mdp-warning-soft":"#3b321f","--mdp-danger":"#f48771","--mdp-table-border":"#333333","--mdp-table-header-bg":"#252526","--mdp-table-row-alt-bg":"#181818","--mdp-toast-info-bg":"#193a55","--mdp-toast-info-text":"#4daafc","--mdp-toast-info-border":"#484848","--mdp-toast-success-bg":"#123a2e","--mdp-toast-success-text":"#8ee6bc","--mdp-toast-success-border":"#2e765c","--mdp-toast-warning-bg":"#3b2f14","--mdp-toast-warning-text":"#f4cf78","--mdp-toast-warning-border":"#856721","--mdp-toast-error-bg":"#421f24","--mdp-toast-error-text":"#ffb4ab","--mdp-toast-error-border":"#93454c"}},"dracula":{"name":"Dracula","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#282a36","--mdp-viewer-background":"#282a36","--mdp-sidebar-surface":"#252631","--mdp-content-surface":"#303241","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#303241","--mdp-text":"#f8f8f2","--mdp-body-text":"#e6e6df","--mdp-heading":"#ffffff","--mdp-border":"#44475a","--mdp-border-strong":"#6272a4","--mdp-muted":"#b6b7c5","--mdp-code-bg":"#21222c","--mdp-code-text":"#f8f8f2","--mdp-panel-bg":"#252631","--mdp-panel-strong":"#373948","--mdp-link":"#8be9fd","--mdp-link-soft":"#244650","--mdp-accent":"#50fa7b","--mdp-accent-soft":"#1f4930","--mdp-warning":"#ffb86c","--mdp-warning-soft":"#49311f","--mdp-danger":"#ff7b96","--mdp-table-border":"#44475a","--mdp-table-header-bg":"#373948","--mdp-table-row-alt-bg":"#252631","--mdp-toast-info-bg":"#244650","--mdp-toast-info-text":"#8be9fd","--mdp-toast-info-border":"#6272a4","--mdp-toast-success-bg":"#123a2e","--mdp-toast-success-text":"#8ee6bc","--mdp-toast-success-border":"#2e765c","--mdp-toast-warning-bg":"#3b2f14","--mdp-toast-warning-text":"#f4cf78","--mdp-toast-warning-border":"#856721","--mdp-toast-error-bg":"#421f24","--mdp-toast-error-text":"#ffb4ab","--mdp-toast-error-border":"#93454c"}},"gruvbox":{"name":"Gruvbox","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#282828","--mdp-viewer-background":"#282828","--mdp-sidebar-surface":"#242424","--mdp-content-surface":"#32302f","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#32302f","--mdp-text":"#ebdbb2","--mdp-body-text":"#d5c4a1","--mdp-heading":"#fbf1c7","--mdp-border":"#504945","--mdp-border-strong":"#665c54","--mdp-muted":"#a89984","--mdp-code-bg":"#1d2021","--mdp-code-text":"#ebdbb2","--mdp-panel-bg":"#242424","--mdp-panel-strong":"#3c3836","--mdp-link":"#83a598","--mdp-link-soft":"#273735","--mdp-accent":"#b8bb26","--mdp-accent-soft":"#3c411f","--mdp-warning":"#fabd2f","--mdp-warning-soft":"#493c20","--mdp-danger":"#fb7c6c","--mdp-table-border":"#504945","--mdp-table-header-bg":"#3c3836","--mdp-table-row-alt-bg":"#242424","--mdp-toast-info-bg":"#273735","--mdp-toast-info-text":"#83a598","--mdp-toast-info-border":"#665c54","--mdp-toast-success-bg":"#123a2e","--mdp-toast-success-text":"#8ee6bc","--mdp-toast-success-border":"#2e765c","--mdp-toast-warning-bg":"#3b2f14","--mdp-toast-warning-text":"#f4cf78","--mdp-toast-warning-border":"#856721","--mdp-toast-error-bg":"#421f24","--mdp-toast-error-text":"#ffb4ab","--mdp-toast-error-border":"#93454c"}},"night-owl":{"name":"Night Owl","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#011627","--mdp-viewer-background":"#011627","--mdp-sidebar-surface":"#071d2e","--mdp-content-surface":"#0b253a","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#0b253a","--mdp-text":"#d6deeb","--mdp-body-text":"#c5d2e2","--mdp-heading":"#ffffff","--mdp-border":"#1d3b53","--mdp-border-strong":"#31566f","--mdp-muted":"#8fa8bd","--mdp-code-bg":"#01111d","--mdp-code-text":"#d6deeb","--mdp-panel-bg":"#071d2e","--mdp-panel-strong":"#102f46","--mdp-link":"#82aaff","--mdp-link-soft":"#152d52","--mdp-accent":"#addb67","--mdp-accent-soft":"#273b25","--mdp-warning":"#ecc48d","--mdp-warning-soft":"#3a3324","--mdp-danger":"#ff7a85","--mdp-table-border":"#1d3b53","--mdp-table-header-bg":"#102f46","--mdp-table-row-alt-bg":"#071d2e","--mdp-toast-info-bg":"#152d52","--mdp-toast-info-text":"#82aaff","--mdp-toast-info-border":"#31566f","--mdp-toast-success-bg":"#123a2e","--mdp-toast-success-text":"#8ee6bc","--mdp-toast-success-border":"#2e765c","--mdp-toast-warning-bg":"#3b2f14","--mdp-toast-warning-text":"#f4cf78","--mdp-toast-warning-border":"#856721","--mdp-toast-error-bg":"#421f24","--mdp-toast-error-text":"#ffb4ab","--mdp-toast-error-border":"#93454c"}},"min-dark":{"name":"Min (Dark)","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#171717","--mdp-viewer-background":"#171717","--mdp-sidebar-surface":"#1b1b1b","--mdp-content-surface":"#202020","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#202020","--mdp-text":"#d4d4d4","--mdp-body-text":"#c3c3c3","--mdp-heading":"#f2f2f2","--mdp-border":"#343434","--mdp-border-strong":"#4b4b4b","--mdp-muted":"#969696","--mdp-code-bg":"#121212","--mdp-code-text":"#d8d8d8","--mdp-panel-bg":"#1b1b1b","--mdp-panel-strong":"#292929","--mdp-link":"#9cb6d6","--mdp-link-soft":"#293442","--mdp-accent":"#a8b5a2","--mdp-accent-soft":"#30372e","--mdp-warning":"#d8bd8a","--mdp-warning-soft":"#393225","--mdp-danger":"#e69797","--mdp-table-border":"#343434","--mdp-table-header-bg":"#292929","--mdp-table-row-alt-bg":"#1b1b1b","--mdp-toast-info-bg":"#293442","--mdp-toast-info-text":"#9cb6d6","--mdp-toast-info-border":"#4b4b4b","--mdp-toast-success-bg":"#123a2e","--mdp-toast-success-text":"#8ee6bc","--mdp-toast-success-border":"#2e765c","--mdp-toast-warning-bg":"#3b2f14","--mdp-toast-warning-text":"#f4cf78","--mdp-toast-warning-border":"#856721","--mdp-toast-error-bg":"#421f24","--mdp-toast-error-text":"#ffb4ab","--mdp-toast-error-border":"#93454c"}},"aurora-glass":{"name":"Aurora Glass","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#0b1020","--mdp-viewer-background":"#0b1020","--mdp-sidebar-surface":"#0e172a","--mdp-content-surface":"#121a2d","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#121a2d","--mdp-text":"#e5edff","--mdp-body-text":"#dbeafe","--mdp-heading":"#f8fafc","--mdp-border":"#33415d","--mdp-border-strong":"#52617e","--mdp-muted":"#a7b5ce","--mdp-code-bg":"#09101f","--mdp-code-text":"#e0e7ff","--mdp-panel-bg":"#0e172a","--mdp-panel-strong":"#1a2540","--mdp-link":"#67e8f9","--mdp-link-soft":"#15354b","--mdp-accent":"#c4b5fd","--mdp-accent-soft":"#30285a","--mdp-warning":"#fbbf24","--mdp-warning-soft":"#3d2e12","--mdp-danger":"#fda4af","--mdp-table-border":"#33415d","--mdp-table-header-bg":"#1a2540","--mdp-table-row-alt-bg":"#0e172a","--mdp-toast-info-bg":"#15354b","--mdp-toast-info-text":"#67e8f9","--mdp-toast-info-border":"#52617e","--mdp-toast-success-bg":"#123a2e","--mdp-toast-success-text":"#8ee6bc","--mdp-toast-success-border":"#2e765c","--mdp-toast-warning-bg":"#3b2f14","--mdp-toast-warning-text":"#f4cf78","--mdp-toast-warning-border":"#856721","--mdp-toast-error-bg":"#421f24","--mdp-toast-error-text":"#ffb4ab","--mdp-toast-error-border":"#93454c"}},"custom:audit-light":{"name":"Custom light · reversed surface","vars":{"--mdp-color-scheme":"light","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#f6f8fb","--mdp-viewer-background":"#f6f8fb","--mdp-sidebar-surface":"#000000","--mdp-content-surface":"#121212","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#121212","--mdp-text":"#172033","--mdp-body-text":"#273043","--mdp-heading":"#111827","--mdp-border":"#dce2ea","--mdp-border-strong":"#c5ced9","--mdp-muted":"#667085","--mdp-code-bg":"#f2f5f8","--mdp-code-text":"#172033","--mdp-panel-bg":"#000000","--mdp-panel-strong":"#e3e9f0","--mdp-link":"#ffffff","--mdp-link-soft":"#eaf2ff","--mdp-accent":"#ffffff","--mdp-accent-soft":"#e8f6ef","--mdp-warning":"#b35c00","--mdp-warning-soft":"#fff3dc","--mdp-danger":"#c2413a","--mdp-table-border":"#dce2ea","--mdp-table-header-bg":"#f2f5f8","--mdp-table-row-alt-bg":"#fafbfc","--mdp-toast-info-bg":"#eff6ff","--mdp-toast-info-text":"#1d4ed8","--mdp-toast-info-border":"#bfdbfe","--mdp-toast-success-bg":"#ecfdf5","--mdp-toast-success-text":"#047857","--mdp-toast-success-border":"#a7f3d0","--mdp-toast-warning-bg":"#fffbeb","--mdp-toast-warning-text":"#92400e","--mdp-toast-warning-border":"#fde68a","--mdp-toast-error-bg":"#fef2f2","--mdp-toast-error-text":"#b91c1c","--mdp-toast-error-border":"#fecaca"}},"custom:audit-dark":{"name":"Custom dark · reversed surface","vars":{"--mdp-color-scheme":"dark","--mdp-font-family":"system-ui","--mdp-font-size":"16px","--mdp-line-height":"1.7","--mdp-content-max-width":"980px","--mdp-toc-width":"280px","--mdp-bg":"#0d121b","--mdp-viewer-background":"#0d121b","--mdp-sidebar-surface":"#ffffff","--mdp-content-surface":"#ffffff","--mdp-scrollbar-thumb":"color-mix(in srgb, var(--mdp-muted) 32%, transparent)","--mdp-scrollbar-thumb-hover":"color-mix(in srgb, var(--mdp-muted) 52%, transparent)","--mdp-surface":"#ffffff","--mdp-text":"#edf2f7","--mdp-body-text":"#dce4ee","--mdp-heading":"#f8fafc","--mdp-border":"#2d3848","--mdp-border-strong":"#465469","--mdp-muted":"#9ba9bb","--mdp-code-bg":"#0b111a","--mdp-code-text":"#e6edf3","--mdp-panel-bg":"#ffffff","--mdp-panel-strong":"#1d2735","--mdp-link":"#000000","--mdp-link-soft":"#122b4d","--mdp-accent":"#000000","--mdp-accent-soft":"#123529","--mdp-warning":"#f4b24e","--mdp-warning-soft":"#3b2a0e","--mdp-danger":"#ff8d85","--mdp-table-border":"#2d3848","--mdp-table-header-bg":"#1a2330","--mdp-table-row-alt-bg":"#111925","--mdp-toast-info-bg":"#0c2d6b","--mdp-toast-info-text":"#bfdbfe","--mdp-toast-info-border":"#1d4ed8","--mdp-toast-success-bg":"#063f2c","--mdp-toast-success-text":"#bbf7d0","--mdp-toast-success-border":"#047857","--mdp-toast-warning-bg":"#3b2a05","--mdp-toast-warning-text":"#fde68a","--mdp-toast-warning-border":"#b45309","--mdp-toast-error-bg":"#450a0a","--mdp-toast-error-text":"#fecaca","--mdp-toast-error-border":"#b91c1c"}}}
+    document.getElementById('catalog-update-theme').addEventListener('change', event => {
+      const surface = document.getElementById('catalog-update-surface')
+      surface.removeAttribute('style')
+      const palette = updatePalettes[event.target.value]
+      if (palette) for (const [token, value] of Object.entries(palette.vars)) surface.style.setProperty(token, value)
+    })
     const stateSelect = document.getElementById('catalog-update-state')
+    const updateTrigger = document.getElementById('catalog-update-trigger')
+    let previewWatch = { available: true, supported: true, generation: 1, mode: 'ask', acceptedSource: 'initial', pending: true }
+    let previewPhase = null
+    let previewRead
+    const updateFeedback = createWatchUpdateFeedback(phase => { previewPhase = phase; renderUpdateTrigger() })
+    function renderUpdateTrigger() {
+      const phase = previewWatch.error ? 'error' : previewPhase || (previewWatch.pending ? 'ready' : 'idle')
+      updateTrigger.dataset.mdpWatchPhase = phase
+      updateTrigger.dataset.mdpWatchAction = previewWatch.pending ? 'apply' : 'details'
+      updateTrigger.classList.toggle('mdp-watch-status__trigger--attention', Boolean(previewWatch.pending || previewWatch.error))
+      updateTrigger.disabled = phase === 'busy'
+      if (phase === 'busy') updateTrigger.setAttribute('aria-busy', 'true')
+      else updateTrigger.removeAttribute('aria-busy')
+      const label = phase === 'busy' ? 'Updating document…' : phase === 'success' ? 'Document updated' : previewWatch.pending ? 'Update document' : 'Document updates'
+      updateTrigger.setAttribute('aria-label', label)
+      updateTrigger.title = label
+      document.getElementById('catalog-apply-update').disabled = phase === 'busy'
+    }
     function setUpdateState(state) {
       stateSelect.value = state
+      previewWatch = { ...previewWatch, pending: state === 'pending', manualChecking: false, error: state === 'error' ? 'Read failed' : null }
+      updateFeedback.sync(previewWatch)
+      renderUpdateTrigger()
       const message = document.getElementById('catalog-update-message')
       message.className = 'mdp-watch-status__message' + (state === 'error' ? ' mdp-ui-notice mdp-ui-notice--danger' : '')
       message.textContent = state === 'pending' ? 'A newer version of this document is ready.' : state === 'error' ? 'Update check failed. Try checking again.' : 'New versions wait until you choose to update.'
       document.getElementById('catalog-update-actions').hidden = state !== 'pending'
     }
-    stateSelect.addEventListener('change', () => setUpdateState(stateSelect.value))
-    document.getElementById('catalog-apply-update').addEventListener('click', () => { setUpdateState('current'); feedback('Document updated in this preview.') })
-    document.getElementById('catalog-check-update').addEventListener('click', () => { setUpdateState('pending'); feedback('Update check preview: a new version is available.') })
+    function applyUpdatePreview() {
+      if (updateTrigger.disabled || !previewWatch.pending) return
+      updateFeedback.start(previewWatch)
+      previewWatch = { ...previewWatch, manualChecking: true }
+      updateFeedback.sync(previewWatch)
+      previewRead = setTimeout(() => {
+        previewWatch = { ...previewWatch, acceptedSource: previewWatch.acceptedSource + '-updated' }
+        setUpdateState('current')
+        feedback('Document updated in this preview.')
+      }, 400)
+    }
+    updateTrigger.addEventListener('click', () => {
+      if (previewWatch.pending) applyUpdatePreview()
+      else document.getElementById('catalog-check-update').focus()
+    })
+    stateSelect.addEventListener('change', () => { clearTimeout(previewRead); updateFeedback.cancel(); setUpdateState(stateSelect.value) })
+    document.getElementById('catalog-apply-update').addEventListener('click', applyUpdatePreview)
+    document.getElementById('catalog-check-update').addEventListener('click', () => { clearTimeout(previewRead); updateFeedback.cancel(); setUpdateState('pending'); feedback('Update check preview: a new version is available.') })
     const dialog = document.getElementById('catalog-dialog')
     const dialogTrigger = document.getElementById('catalog-dialog-open')
     dialogTrigger.addEventListener('click', () => { dialog.showModal(); document.getElementById('catalog-dialog-cancel').focus() })

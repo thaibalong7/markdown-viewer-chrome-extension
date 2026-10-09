@@ -2,11 +2,14 @@ import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Badge } from '../../../shared/react/Badge.jsx'
 import { Button } from '../../../shared/react/Button.jsx'
 import { Notice } from '../../../shared/react/Notice.jsx'
+import { AppIcon } from '../../../shared/react/AppIcon.jsx'
 import { CheckUpdatesIcon } from './icons/CheckUpdatesIcon.jsx'
 import { DocumentApplyIcon } from './icons/DocumentApplyIcon.jsx'
 import { DocumentUpdatesIcon } from './icons/DocumentUpdatesIcon.jsx'
 import { IconButton } from './common/IconButton.jsx'
+import { Tooltip } from './Tooltip.jsx'
 import { useDismissableLayer } from '../hooks/useDismissableLayer.js'
+import { useWatchUpdateFeedback } from '../hooks/useWatchUpdateFeedback.js'
 import { EditorUpdateConfirmation, EditorUpdateWarning } from './EditorUpdateConfirmation.jsx'
 
 const UPDATE_NOTICE_DURATION_MS = 5200
@@ -41,6 +44,14 @@ export function getWatchTriggerPresentation(state, isEditMode) {
   return { action: 'details', label: 'Document updates' }
 }
 
+function getWatchVisualPhase(state, feedbackPhase, appliesOnClick) {
+  if (state.error) return 'error'
+  if (feedbackPhase === 'busy') return 'busy'
+  if (!state.supported) return 'warning'
+  if (feedbackPhase === 'success' && !state.pending) return 'success'
+  return appliesOnClick ? 'ready' : 'idle'
+}
+
 export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onApply, disabled = false, dismissSignal }) {
   const [open, setOpen] = useState(false)
   const [confirmingApply, setConfirmingApply] = useState(false)
@@ -53,6 +64,13 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
   const triggerRef = useRef(null)
   const panelRef = useRef(null)
   const applyButtonRef = useRef(null)
+  const feedback = useWatchUpdateFeedback(state, isEditMode)
+  const visualPhase = getWatchVisualPhase(state, feedback.phase, appliesOnClick)
+  const visuallyBusy = visualPhase === 'busy'
+  const updateBusy = visuallyBusy || state.manualChecking
+  const triggerBusy = visuallyBusy || (appliesOnClick && state.manualChecking)
+  const triggerLabel = visuallyBusy ? 'Updating document…'
+    : visualPhase === 'success' ? 'Document updated' : presentation.label
   const panelId = useId()
   const editorWarningId = useId()
   const close = useCallback(() => setOpen(false), [])
@@ -83,8 +101,8 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
     return () => clearTimeout(timer)
   }, [noticePaused, noticeVisible])
   if (!state.available) return null
+  const showNotice = noticeVisible && !disabled
   const attention = Boolean(state.pending || state.error || !state.supported)
-  const indicator = state.error ? 'error' : !state.supported ? 'warning' : 'pending'
   const modeLabel = state.mode === 'off' ? 'Off' : state.mode === 'auto' ? 'Automatic' : 'Ask'
   const modeVariant = state.mode === 'off' ? 'warning' : state.mode === 'auto' ? 'success' : 'info'
   const message = getWatchMessage(state, isEditMode)
@@ -94,6 +112,8 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
     (state.mode !== 'auto' || state.deferred || isEditMode)
   )
   const applyUpdate = (options) => {
+    if (updateBusy) return
+    if (appliesOnClick && state.mode !== 'auto') feedback.start()
     setNoticeVisible(false)
     setNoticePaused(false)
     setConfirmingApply(false)
@@ -111,24 +131,32 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
   return (
     <>
     <div className="mdp-watch-status" ref={wrapRef} data-mdp-watch-open={open ? 'true' : 'false'}>
-      <IconButton
-        ref={triggerRef}
-        className={`mdp-fab-btn mdp-watch-status__trigger${attention ? ` mdp-watch-status__trigger--attention mdp-watch-status__trigger--${indicator}` : ''}`}
-        tooltip={presentation.label}
-        aria-label={presentation.label}
-        aria-haspopup={appliesOnClick ? undefined : 'dialog'}
-        aria-expanded={appliesOnClick ? undefined : open}
-        aria-controls={appliesOnClick ? undefined : panelId}
-        data-mdp-watch-action={presentation.action}
-        disabled={disabled || (appliesOnClick && state.manualChecking)}
-        onClick={handleTriggerClick}
-      >
-        <span className={`mdp-fab-btn__icon mdp-watch-status__icon-swap${appliesOnClick ? ' is-apply' : ''}`}>
-          <DocumentUpdatesIcon className="mdp-watch-status__icon mdp-watch-status__icon--details" />
-          <DocumentApplyIcon className="mdp-watch-status__icon mdp-watch-status__icon--apply" />
+      {/* Keep the animated button mounted when checking disables it. */}
+      <Tooltip content={triggerLabel} suppressed={showNotice}>
+        <span className="mdp-icon-button-tooltip-anchor">
+          <IconButton
+            ref={triggerRef}
+            className={`mdp-fab-btn mdp-watch-status__trigger${attention ? ' mdp-watch-status__trigger--attention' : ''}`}
+            aria-label={triggerLabel}
+            aria-haspopup={appliesOnClick ? undefined : 'dialog'}
+            aria-expanded={appliesOnClick ? undefined : open}
+            aria-controls={appliesOnClick ? undefined : panelId}
+            data-mdp-watch-action={presentation.action}
+            data-mdp-watch-phase={visualPhase}
+            aria-busy={triggerBusy || undefined}
+            disabled={disabled || triggerBusy}
+            onClick={handleTriggerClick}
+          >
+            <span className="mdp-fab-btn__icon mdp-watch-status__icon-swap">
+              <DocumentUpdatesIcon className="mdp-watch-status__icon mdp-watch-status__icon--details" />
+              <DocumentApplyIcon className="mdp-watch-status__icon mdp-watch-status__icon--apply" />
+              <span className="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><CheckUpdatesIcon /></span>
+              <AppIcon name="check" className="mdp-watch-status__icon mdp-watch-status__icon--success" />
+            </span>
+          </IconButton>
         </span>
-      </IconButton>
-      {noticeVisible && !disabled && (
+      </Tooltip>
+      {showNotice && (
         <button
           type="button"
           className="mdp-watch-status__notice"
@@ -144,7 +172,8 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
         </button>
       )}
       <span className="mdp-watch-status__announcement" role="status" aria-live="polite" aria-atomic="true">
-        {state.error ? 'Document update check failed. Open Document updates to retry.'
+        {visuallyBusy ? 'Updating document.' : visualPhase === 'success' ? 'Document updated.'
+          : state.error ? 'Document update check failed. Open Document updates to retry.'
           : state.pending && state.mode === 'auto' && !isEditMode
             ? state.deferred
               ? 'A new document version will load automatically when you stop interacting.'
@@ -188,7 +217,7 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
         {editorUpdatePending && <EditorUpdateWarning id={editorWarningId} dirty={editorDirty} compact />}
         {showPendingAction && (
           <div className="mdp-watch-status__actions" aria-busy={state.manualChecking || undefined}>
-            <Button ref={applyButtonRef} variant="primary" disabled={state.manualChecking} onClick={requestApply}
+            <Button ref={applyButtonRef} variant="primary" disabled={updateBusy} onClick={requestApply}
               aria-describedby={editorUpdatePending ? editorWarningId : undefined}>
               {isEditMode ? 'Load disk version…' : state.mode === 'auto' ? 'Update now' : 'Update document'}
             </Button>

@@ -3,44 +3,105 @@
   display: flex;
   flex-shrink: 0;
 
+  // Viewer-local update control: stable target, layered glyphs, quiet status.
   &__trigger {
     position: relative;
-    --mdp-watch-indicator: var(--mdp-link);
-    &--error { --mdp-watch-indicator: var(--mdp-danger); }
-    &--warning { --mdp-watch-indicator: var(--mdp-warning); }
-    &--attention::after {
+    --mdp-watch-color: var(--mdp-muted);
+    --mdp-watch-bg: transparent;
+    --mdp-watch-border: transparent;
+    color: var(--mdp-watch-color);
+    background: var(--mdp-watch-bg);
+    border-color: var(--mdp-watch-border);
+    transition: color 270ms ease, background-color 270ms ease, border-color 270ms ease;
+
+    // Keep the status foreground and opaque surface paired. Custom link/accent
+    // overrides need not contrast with the soft colors inherited from baseId.
+    @each $phase, $palette in (ready: info, busy: info, success: success, error: error, warning: warning) {
+      &[data-mdp-watch-phase='#{$phase}'] {
+        --mdp-watch-color: var(--mdp-toast-#{$palette}-text);
+        --mdp-watch-bg: var(--mdp-toast-#{$palette}-bg);
+        --mdp-watch-border: var(--mdp-toast-#{$palette}-border);
+      }
+    }
+    &--attention[data-mdp-watch-phase='idle'],
+    &[data-mdp-watch-phase='idle']:is(:hover, :focus-visible):not(:disabled) {
+      --mdp-watch-color: var(--mdp-toast-info-text);
+      --mdp-watch-bg: var(--mdp-toast-info-bg);
+      --mdp-watch-border: var(--mdp-toast-info-border);
+    }
+    &[data-mdp-watch-phase='busy'] { opacity: 1; cursor: progress; }
+
+    &::before {
       content: '';
       position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--mdp-watch-indicator);
-      border: 1px solid var(--mdp-surface);
+      inset: 0;
+      border-radius: inherit;
+      background: var(--mdp-watch-color);
+      opacity: 0;
+      pointer-events: none;
     }
+    &[data-mdp-watch-phase='ready']:not(:disabled)::before {
+      animation: mdp-watch-ready 1700ms ease-in-out 2;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--mdp-watch-color);
+      border: 1px solid var(--mdp-watch-bg);
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 270ms ease, transform 270ms ease;
+      pointer-events: none;
+    }
+    &--attention::after { opacity: 1; transform: scale(1); }
+    &[data-mdp-watch-phase='busy']::after,
+    &[data-mdp-watch-phase='success']::after { opacity: 0; transform: scale(0.7); }
+
+    &:hover:not(:disabled), &:focus-visible:not(:disabled) {
+      color: var(--mdp-watch-color);
+      background: var(--mdp-watch-bg);
+      border-color: var(--mdp-watch-color);
+      .mdp-watch-status__icon-swap { transform: translateY(-1px); }
+    }
+    &:focus-visible { outline-color: var(--mdp-watch-color); }
+    &:active:not(:disabled) .mdp-watch-status__icon-swap { transform: scale(0.94); }
   }
 
   &__icon-swap {
     position: relative;
-    perspective: 60px;
+    transition: transform 200ms ease;
   }
-
   &__icon {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden;
-    transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
-
-    &--details { transform: rotateY(0deg); }
-    &--apply { transform: rotateY(180deg); opacity: 0; }
+    opacity: 0;
+    transform: translateY(2px) scale(0.94);
+    transition: opacity 270ms ease, transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  &__icon--busy svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    animation: mdp-watch-sync 1350ms linear infinite;
+    animation-play-state: paused;
   }
 
-  &__icon-swap.is-apply {
-    .mdp-watch-status__icon--details { transform: rotateY(-180deg); opacity: 0; }
-    .mdp-watch-status__icon--apply { transform: rotateY(0deg); opacity: 1; }
+  // The busy glyph pauses at its current angle while fading out, rather than
+  // snapping to zero rotation when the real request finishes.
+  &__trigger[data-mdp-watch-phase='busy'] &__icon--busy svg { animation-play-state: running; }
+  @each $phase, $icon in (idle: details, error: details, warning: details, ready: apply, busy: busy, success: success) {
+    &__trigger[data-mdp-watch-phase='#{$phase}'] &__icon--#{$icon} {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
   &__notice {
@@ -63,7 +124,7 @@
     text-align: left;
     cursor: pointer;
     transform-origin: right center;
-    animation: mdp-watch-notice-pop 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: mdp-watch-notice-pop 430ms ease-out both;
 
     &::after {
       content: '';
@@ -212,14 +273,28 @@
   }
 }
 
+@keyframes mdp-watch-ready {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.09; }
+}
+
+@keyframes mdp-watch-sync {
+  to { transform: rotate(360deg); }
+}
+
 @keyframes mdp-watch-notice-pop {
-  from { opacity: 0; transform: translate(8px, -50%) scale(0.86) rotate(1deg); }
-  70% { opacity: 1; transform: translate(-2px, -50%) scale(1.02) rotate(-0.5deg); }
-  to { opacity: 1; transform: translate(0, -50%) scale(1) rotate(0); }
+  from { opacity: 0; transform: translate(4px, -50%); }
+  to { opacity: 1; transform: translate(0, -50%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mdp-watch-status__icon { transition: none; }
+  .mdp-watch-status__trigger,
+  .mdp-watch-status__trigger::after,
+  .mdp-watch-status__icon,
+  .mdp-watch-status__icon-swap { transition: none; }
+  .mdp-watch-status__trigger[data-mdp-watch-phase='ready']:not(:disabled)::before { animation: none; }
+  .mdp-watch-status__icon--busy svg { animation: none; }
+  .mdp-watch-status__trigger:is(:hover, :focus-visible, :active):not(:disabled) .mdp-watch-status__icon-swap { transform: none; }
   .mdp-watch-status__notice { animation: none; transform: translateY(-50%); }
 }
 

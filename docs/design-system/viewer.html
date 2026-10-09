@@ -1727,6 +1727,394 @@
     }
   }
 }
+
+/* Document updates snapshot: src/viewer/styles/_watch-status.scss */
+.mdp-watch-status {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+}
+.mdp-watch-status__trigger {
+  position: relative;
+  --mdp-watch-color: var(--mdp-muted);
+  --mdp-watch-bg: transparent;
+  --mdp-watch-border: transparent;
+  color: var(--mdp-watch-color);
+  background: var(--mdp-watch-bg);
+  border-color: var(--mdp-watch-border);
+  transition: color 270ms ease, background-color 270ms ease, border-color 270ms ease;
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=ready] {
+  --mdp-watch-color: var(--mdp-toast-info-text);
+  --mdp-watch-bg: var(--mdp-toast-info-bg);
+  --mdp-watch-border: var(--mdp-toast-info-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] {
+  --mdp-watch-color: var(--mdp-toast-info-text);
+  --mdp-watch-bg: var(--mdp-toast-info-bg);
+  --mdp-watch-border: var(--mdp-toast-info-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=success] {
+  --mdp-watch-color: var(--mdp-toast-success-text);
+  --mdp-watch-bg: var(--mdp-toast-success-bg);
+  --mdp-watch-border: var(--mdp-toast-success-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=error] {
+  --mdp-watch-color: var(--mdp-toast-error-text);
+  --mdp-watch-bg: var(--mdp-toast-error-bg);
+  --mdp-watch-border: var(--mdp-toast-error-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=warning] {
+  --mdp-watch-color: var(--mdp-toast-warning-text);
+  --mdp-watch-bg: var(--mdp-toast-warning-bg);
+  --mdp-watch-border: var(--mdp-toast-warning-border);
+}
+.mdp-watch-status__trigger--attention[data-mdp-watch-phase=idle], .mdp-watch-status__trigger[data-mdp-watch-phase=idle]:is(:hover, :focus-visible):not(:disabled) {
+  --mdp-watch-color: var(--mdp-toast-info-text);
+  --mdp-watch-bg: var(--mdp-toast-info-bg);
+  --mdp-watch-border: var(--mdp-toast-info-border);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] {
+  opacity: 1;
+  cursor: progress;
+}
+.mdp-watch-status__trigger::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--mdp-watch-color);
+  opacity: 0;
+  pointer-events: none;
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=ready]:not(:disabled)::before {
+  animation: mdp-watch-ready 1700ms ease-in-out 2;
+}
+.mdp-watch-status__trigger::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mdp-watch-color);
+  border: 1px solid var(--mdp-watch-bg);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 270ms ease, transform 270ms ease;
+  pointer-events: none;
+}
+.mdp-watch-status__trigger--attention::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy]::after, .mdp-watch-status__trigger[data-mdp-watch-phase=success]::after {
+  opacity: 0;
+  transform: scale(0.7);
+}
+.mdp-watch-status__trigger:hover:not(:disabled), .mdp-watch-status__trigger:focus-visible:not(:disabled) {
+  color: var(--mdp-watch-color);
+  background: var(--mdp-watch-bg);
+  border-color: var(--mdp-watch-color);
+}
+.mdp-watch-status__trigger:hover:not(:disabled) .mdp-watch-status__icon-swap, .mdp-watch-status__trigger:focus-visible:not(:disabled) .mdp-watch-status__icon-swap {
+  transform: translateY(-1px);
+}
+.mdp-watch-status__trigger:focus-visible {
+  outline-color: var(--mdp-watch-color);
+}
+.mdp-watch-status__trigger:active:not(:disabled) .mdp-watch-status__icon-swap {
+  transform: scale(0.94);
+}
+.mdp-watch-status__icon-swap {
+  position: relative;
+  transition: transform 200ms ease;
+}
+.mdp-watch-status__icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(2px) scale(0.94);
+  transition: opacity 270ms ease, transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.mdp-watch-status__icon--busy svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: mdp-watch-sync 1350ms linear infinite;
+  animation-play-state: paused;
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] .mdp-watch-status__icon--busy svg {
+  animation-play-state: running;
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=idle] .mdp-watch-status__icon--details {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=error] .mdp-watch-status__icon--details {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=warning] .mdp-watch-status__icon--details {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=ready] .mdp-watch-status__icon--apply {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=busy] .mdp-watch-status__icon--busy {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__trigger[data-mdp-watch-phase=success] .mdp-watch-status__icon--success {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.mdp-watch-status__notice {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 11px);
+  z-index: 59;
+  display: grid;
+  gap: 1px;
+  width: max-content;
+  max-width: min(210px, 100vw - 88px);
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  border-radius: 12px;
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  box-shadow: var(--mdp-shadow-float);
+  font: inherit;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  transform-origin: right center;
+  animation: mdp-watch-notice-pop 430ms ease-out both;
+}
+.mdp-watch-status__notice::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  border-right: 1px solid color-mix(in srgb, var(--mdp-link) 42%, var(--mdp-border));
+  background: var(--mdp-surface);
+  transform: translateY(-50%) rotate(45deg);
+}
+.mdp-watch-status__notice strong, .mdp-watch-status__notice span {
+  position: relative;
+  z-index: 1;
+}
+.mdp-watch-status__notice strong {
+  color: var(--mdp-heading);
+  font-size: 12px;
+  font-weight: 650;
+}
+.mdp-watch-status__notice span {
+  color: var(--mdp-link);
+  font-size: 11px;
+  font-weight: 600;
+}
+.mdp-watch-status__notice:hover {
+  border-color: color-mix(in srgb, var(--mdp-link) 68%, var(--mdp-border));
+  background: color-mix(in srgb, var(--mdp-link-soft) 46%, var(--mdp-surface));
+}
+.mdp-watch-status__notice:focus-visible {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+}
+.mdp-watch-status__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  box-sizing: border-box;
+  width: min(320px, 100vw - 24px);
+  padding: 12px;
+  overflow: visible;
+  color: var(--mdp-text);
+  box-shadow: var(--mdp-shadow-raised);
+  font-size: 12.5px;
+  line-height: 1.45;
+  text-align: left;
+  white-space: normal;
+}
+.mdp-watch-status__panel::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 20px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid var(--mdp-border);
+  border-left: 1px solid var(--mdp-border);
+  background: var(--mdp-surface);
+  transform: rotate(45deg);
+}
+.mdp-watch-status__panel[hidden] {
+  display: none;
+}
+.mdp-watch-status__panel:focus-visible {
+  outline: 2px solid var(--mdp-focus-color);
+  outline-offset: 2px;
+}
+.mdp-watch-status__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mdp-border) 72%, transparent);
+}
+.mdp-watch-status__header-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 4px;
+  margin-right: -4px;
+}
+.mdp-watch-status__heading {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+.mdp-watch-status__heading h3 {
+  margin: 0;
+  color: var(--mdp-heading);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.mdp-watch-status__mode {
+  min-height: 20px;
+  padding: 2px 8px;
+  font-size: 10px;
+}
+.mdp-watch-status__message {
+  margin: 12px 0 0;
+  color: var(--mdp-muted);
+}
+.mdp-watch-status__message.mdp-ui-notice {
+  padding: 8px 12px;
+  color: var(--mdp-text);
+}
+.mdp-watch-status__panel--has-actions .mdp-watch-status__message {
+  margin-bottom: 9px;
+}
+.mdp-watch-status__panel--editor-update {
+  width: min(336px, 100vw - 24px);
+}
+.mdp-watch-status__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 30px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mdp-watch-status__panel--editor-update .mdp-watch-status__actions {
+  display: grid;
+  margin-top: 12px;
+}
+.mdp-watch-status__panel--editor-update .mdp-watch-status__actions .mdp-ui-button {
+  width: 100%;
+  min-height: 38px;
+}
+.mdp-watch-status__check {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-color: color-mix(in srgb, var(--mdp-link) 20%, transparent);
+  color: var(--mdp-link);
+  background: color-mix(in srgb, var(--mdp-link-soft) 72%, transparent);
+}
+.mdp-watch-status__check:hover {
+  border-color: color-mix(in srgb, var(--mdp-link) 38%, var(--mdp-border));
+  background: var(--mdp-link-soft);
+}
+.mdp-watch-status__check--error {
+  color: var(--mdp-danger);
+  border-color: color-mix(in srgb, var(--mdp-danger) 24%, transparent);
+  background: color-mix(in srgb, var(--mdp-danger) 9%, transparent);
+}
+.mdp-watch-status__announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes mdp-watch-ready {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.09;
+  }
+}
+@keyframes mdp-watch-sync {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes mdp-watch-notice-pop {
+  from {
+    opacity: 0;
+    transform: translate(4px, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-watch-status__trigger,
+  .mdp-watch-status__trigger::after,
+  .mdp-watch-status__icon,
+  .mdp-watch-status__icon-swap {
+    transition: none;
+  }
+  .mdp-watch-status__trigger[data-mdp-watch-phase=ready]:not(:disabled)::before {
+    animation: none;
+  }
+  .mdp-watch-status__icon--busy svg {
+    animation: none;
+  }
+  .mdp-watch-status__trigger:is(:hover, :focus-visible, :active):not(:disabled) .mdp-watch-status__icon-swap {
+    transform: none;
+  }
+  .mdp-watch-status__notice {
+    animation: none;
+    transform: translateY(-50%);
+  }
+}
+@media (pointer: coarse) {
+  .mdp-watch-status__check {
+    width: 44px;
+    height: 44px;
+  }
+  .mdp-watch-status__actions .mdp-ui-button {
+    min-height: 44px;
+  }
+}
+@media print {
+  .mdp-watch-status {
+    display: none !important;
+  }
+}
 </style>
 <style id="document-actions-runtime-css">
 .mdp-floating-actions {
@@ -2953,7 +3341,7 @@
             application foundations without introducing alternate focus or status semantics. Document updates
             uses the shared select treatment in Settings, with a bounded control column that stacks
             on narrow layouts. Its Viewer popover uses compact title/mode typography, semantic
-            status indicators, a document-and-clock details icon that flips to a document-and-download action icon when a revision is ready,
+            status indicators, a document-and-clock idle icon, a blue ready action, a slow sync glyph and a green completion check with smooth crossfades,
             a short-lived update speech bubble, and a bounded status card composed from the shared card, badge, notice, and button contracts. Change Review uses those same primitives together with shared status, action-footer, and empty/error-state treatments; only its diff table, changed-area navigation, and responsive two-pane layout remain Viewer-specific.
           </p>
 
@@ -2969,7 +3357,7 @@
 <button class="mdp-panel-toggle mdp-panel-toggle--outline" type="button" aria-label="Hide Outline panel" aria-expanded="true" id="outline-toggle" aria-controls="mdp-panel-outline" style="--mdp-toggle-direction:1"><span class="mdp-panel-toggle__face" aria-hidden="true"><span class="mdp-panel-toggle__skin"></span><span class="mdp-panel-toggle__mark"></span><span class="mdp-panel-toggle__sweep"></span><svg width="12" height="16" viewBox="3 0 18 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="mdp-panel-toggle__chevron"><path d="m9 6 6 6-6 6"></path></svg></span></button>
 <div class="mdp-right-rail__actions-row">
 <div class="mdp-right-rail__commands"><div class="mdp-floating-actions" id="document-actions" role="group" aria-label="Document actions">
-<div class="mdp-document-actions__slot" data-mdp-action="updates"><button class="mdp-fab-btn" type="button" id="updates-button" aria-label="Document updates" title="Document updates" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="updates"><button class="mdp-fab-btn mdp-watch-status__trigger" type="button" id="updates-button" data-mdp-watch-phase="idle" data-mdp-watch-action="details" aria-label="Document updates" title="Document updates"><span class="mdp-fab-btn__icon mdp-watch-status__icon-swap"><svg class="mdp-watch-status__icon mdp-watch-status__icon--details" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg><svg class="mdp-watch-status__icon mdp-watch-status__icon--apply" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg><span class="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></span><svg class="mdp-watch-status__icon mdp-watch-status__icon--success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check"><path d="m5 12 4 4L19 6"></path></svg></span></button></div>
 <div class="mdp-document-actions__slot" data-mdp-action="theme"><button class="mdp-fab-btn mdp-fab-btn--theme" type="button" id="theme-toggle" aria-label="Switch to dark theme" title="Switch to dark theme" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg></button></div>
 <div class="mdp-document-actions__slot" data-mdp-action="review"><button class="mdp-fab-btn" type="button" id="review-button" aria-label="View changes" title="View changes" aria-haspopup="dialog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg></button></div>
 <div class="mdp-document-actions__slot" data-mdp-action="edit"><button class="mdp-fab-btn mdp-fab-btn--edit" type="button" id="edit-button" aria-label="Edit markdown" title="Edit markdown" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg></button></div>
@@ -3386,18 +3774,103 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
     document.getElementById('edit-button').addEventListener('click', () => exitPreview.click())
     document.getElementById('print-button').addEventListener('click', () => alert('Print / Save as PDF preview only.'))
     document.getElementById('review-button').addEventListener('click', () => alert('Change Review preview only. The running Viewer opens the full comparison dialog.'))
-    function syncDocumentPending() {
+    // Feedback controller snapshot: src/viewer/react/hooks/watch-update-feedback.js
+const UPDATE_BUSY_MIN_MS = 720
+const UPDATE_SUCCESS_MS = 1000
+
+// Presentation timing never delays disk I/O. Success requires a changed
+// accepted source and a completed manual request for the same document.
+function createWatchUpdateFeedback(publish) {
+  let phase = null
+  let operation = null
+  let latest = {}
+  let generation
+  let timer = null
+  const show = (next) => {
+    if (phase === next) return
+    phase = next
+    publish(next)
+  }
+  const cancel = (notify = true) => {
+    clearTimeout(timer)
+    timer = null
+    operation = null
+    if (notify) show(null)
+    else phase = null
+  }
+  const settle = () => {
+    timer = null
+    if (!operation || latest.manualChecking) return
+    const changed = operation.sawChecking && latest.acceptedSource !== operation.source
+    operation = null
+    if (changed && !latest.error && !latest.pending) {
+      show('success')
+      timer = setTimeout(() => { timer = null; show(null) }, UPDATE_SUCCESS_MS)
+    } else show(null)
+  }
+  return {
+    start(state) {
+      cancel()
+      latest = state
+      generation = state.generation
+      operation = { source: state.acceptedSource, start: Date.now(), sawChecking: false }
+      show('busy')
+      // Also recover if the caller declines a request without emitting busy.
+      timer = setTimeout(settle, UPDATE_BUSY_MIN_MS)
+    },
+    sync(state) {
+      latest = state
+      if (!state.available || !state.supported || state.mode === 'auto' || state.isEditMode || state.error ||
+          (phase && state.generation !== generation)) {
+        cancel()
+        return
+      }
+      if (phase === 'success' && state.pending) cancel()
+      if (!operation) return
+      if (state.manualChecking) {
+        operation.sawChecking = true
+        clearTimeout(timer)
+        timer = null
+      } else if (operation.sawChecking && timer === null) {
+        timer = setTimeout(settle, Math.max(0, UPDATE_BUSY_MIN_MS - (Date.now() - operation.start)))
+      }
+    },
+    cancel
+  }
+}
+    let updateState = { available: true, supported: true, generation: 1, mode: 'ask', acceptedSource: 'initial', pending: false }
+    let updatePhase = null
+    let updateRead
+    const updateFlow = createWatchUpdateFeedback(phase => { updatePhase = phase; renderPendingButton() })
+    function renderPendingButton() {
       const button = document.getElementById('updates-button')
-      button.setAttribute('aria-label', documentPending.checked ? 'Update document' : 'Document updates')
+      const phase = updatePhase || (updateState.pending ? 'ready' : 'idle')
+      button.dataset.mdpWatchPhase = phase
+      button.dataset.mdpWatchAction = updateState.pending ? 'apply' : 'details'
+      button.classList.toggle('mdp-watch-status__trigger--attention', updateState.pending)
+      button.disabled = phase === 'busy'
+      if (phase === 'busy') button.setAttribute('aria-busy', 'true')
+      else button.removeAttribute('aria-busy')
+      button.setAttribute('aria-label', phase === 'busy' ? 'Updating document…' : phase === 'success' ? 'Document updated' : updateState.pending ? 'Update document' : 'Document updates')
       button.title = button.getAttribute('aria-label')
-      replaceGlyph(button, documentPending.checked ? 'apply' : 'updates')
+    }
+    function syncDocumentPending() {
+      updateState = { ...updateState, pending: documentPending.checked, manualChecking: false }
+      updateFlow.sync(updateState)
+      renderPendingButton()
       fitDocumentActions()
     }
-    documentPending.addEventListener('change', syncDocumentPending)
+    documentPending.addEventListener('change', () => { clearTimeout(updateRead); updateFlow.cancel(); syncDocumentPending() })
     document.getElementById('updates-button').addEventListener('click', () => {
       if (!documentPending.checked) { alert('Document updates preview. Use Preview pending update to simulate a revision.'); return }
-      documentPending.checked = false
-      syncDocumentPending()
+      updateFlow.start(updateState)
+      updateState = { ...updateState, manualChecking: true }
+      updateFlow.sync(updateState)
+      updateRead = setTimeout(() => {
+        documentPending.checked = false
+        updateState = { ...updateState, acceptedSource: updateState.acceptedSource + '-updated' }
+        syncDocumentPending()
+      }, 400)
     })
     document.addEventListener('pointerdown', event => { if (documentMenu && !documentMenuTrigger.parentElement.contains(event.target)) closeDocumentMenu() })
     new ResizeObserver(fitDocumentActions).observe(documentActions.parentElement)

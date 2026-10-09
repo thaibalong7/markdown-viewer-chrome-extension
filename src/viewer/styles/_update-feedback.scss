@@ -2,6 +2,7 @@
 // palettes. Mixing warning/error text onto an arbitrary surface loses contrast.
 .mdp-watch-status,
 .mdp-change-review,
+.mdp-change-review-error,
 .mdp-editor-update-confirmation,
 .mdp-exit-edit-confirmation {
   @each $variant, $palette in (info: info, success: success, warning: warning, danger: error) {

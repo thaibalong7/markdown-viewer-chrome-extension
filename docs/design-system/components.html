@@ -1228,6 +1228,21 @@
   padding: 20px;
 }
 
+.mdp-change-review-error {
+  width: min(520px, 100%);
+  box-shadow: var(--mdp-shadow-float);
+  text-align: left;
+}
+.mdp-change-review-error__content {
+  padding: 24px;
+}
+.mdp-change-review-error p {
+  margin: 4px 0 0;
+}
+.mdp-change-review-error__actions {
+  padding: 16px 24px;
+}
+
 .mdp-change-review {
   --mdp-review-added-bg: var(--mdp-toast-success-bg);
   --mdp-review-added-text: var(--mdp-toast-success-text);
@@ -1619,6 +1634,12 @@
   }
 }
 @media (max-width: 540px) {
+  .mdp-change-review-error__content {
+    padding: 16px;
+  }
+  .mdp-change-review-error__actions {
+    padding: 12px 16px;
+  }
   .mdp-change-review__topbar {
     display: grid;
   }
@@ -1646,6 +1667,8 @@
 .mdp-watch-status .mdp-ui-notice,
 .mdp-change-review .mdp-ui-badge--info,
 .mdp-change-review .mdp-ui-notice,
+.mdp-change-review-error .mdp-ui-badge--info,
+.mdp-change-review-error .mdp-ui-notice,
 .mdp-editor-update-confirmation .mdp-ui-badge--info,
 .mdp-editor-update-confirmation .mdp-ui-notice,
 .mdp-exit-edit-confirmation .mdp-ui-badge--info,
@@ -1659,6 +1682,8 @@
 .mdp-watch-status .mdp-ui-notice--success,
 .mdp-change-review .mdp-ui-badge--success,
 .mdp-change-review .mdp-ui-notice--success,
+.mdp-change-review-error .mdp-ui-badge--success,
+.mdp-change-review-error .mdp-ui-notice--success,
 .mdp-editor-update-confirmation .mdp-ui-badge--success,
 .mdp-editor-update-confirmation .mdp-ui-notice--success,
 .mdp-exit-edit-confirmation .mdp-ui-badge--success,
@@ -1672,6 +1697,8 @@
 .mdp-watch-status .mdp-ui-notice--warning,
 .mdp-change-review .mdp-ui-badge--warning,
 .mdp-change-review .mdp-ui-notice--warning,
+.mdp-change-review-error .mdp-ui-badge--warning,
+.mdp-change-review-error .mdp-ui-notice--warning,
 .mdp-editor-update-confirmation .mdp-ui-badge--warning,
 .mdp-editor-update-confirmation .mdp-ui-notice--warning,
 .mdp-exit-edit-confirmation .mdp-ui-badge--warning,
@@ -1685,6 +1712,8 @@
 .mdp-watch-status .mdp-ui-notice--danger,
 .mdp-change-review .mdp-ui-badge--danger,
 .mdp-change-review .mdp-ui-notice--danger,
+.mdp-change-review-error .mdp-ui-badge--danger,
+.mdp-change-review-error .mdp-ui-notice--danger,
 .mdp-editor-update-confirmation .mdp-ui-badge--danger,
 .mdp-editor-update-confirmation .mdp-ui-notice--danger,
 .mdp-exit-edit-confirmation .mdp-ui-badge--danger,
@@ -1696,6 +1725,7 @@
 }
 .mdp-watch-status .mdp-ui-button--danger,
 .mdp-change-review .mdp-ui-button--danger,
+.mdp-change-review-error .mdp-ui-button--danger,
 .mdp-editor-update-confirmation .mdp-ui-button--danger,
 .mdp-exit-edit-confirmation .mdp-ui-button--danger {
   background: var(--mdp-toast-error-bg);
@@ -1704,6 +1734,7 @@
 }
 .mdp-watch-status .mdp-ui-button--danger:hover:not(:disabled),
 .mdp-change-review .mdp-ui-button--danger:hover:not(:disabled),
+.mdp-change-review-error .mdp-ui-button--danger:hover:not(:disabled),
 .mdp-editor-update-confirmation .mdp-ui-button--danger:hover:not(:disabled),
 .mdp-exit-edit-confirmation .mdp-ui-button--danger:hover:not(:disabled) {
   background: var(--mdp-toast-error-bg);
@@ -2390,7 +2421,7 @@
         <header class="mdp-ui-section__header"><h3 id="navigation-title">Navigation</h3><p>Settings section navigation and the four current Popup tabs.</p></header>
         <div class="mdp-ui-grid">
           <div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Settings side navigation</span><nav class="mdp-ui-side-nav" aria-label="Settings sections example"><button class="mdp-ui-side-nav__item is-active" type="button" aria-current="page"><strong>General</strong><small>Activation and access</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Themes</strong><small>Colors and backgrounds</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Files &amp; Workspace</strong><small>Folder scan limits</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Privacy &amp; Data</strong><small>Recent local files</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Advanced</strong><small>Limits, backup, and reset</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>About</strong><small>Version, privacy, and support</small></button></nav></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Popup tabs</span><div class="popup-settings-tabs catalog-tabs" role="tablist" aria-label="Quick control sections example"><button class="popup-settings-tab is-active" id="catalog-tab-reader" type="button" role="tab" aria-selected="true" aria-controls="catalog-tab-panel" tabindex="0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="reader" style="stroke:currentColor;stroke-width:1.8"><path d="M12 5v16 M12 5C9 3 6 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1"></path></svg><span>Reader</span></button><button class="popup-settings-tab" id="catalog-tab-editor" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="editor" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg><span>Editor</span></button><button class="popup-settings-tab" id="catalog-tab-plugins" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="plugins" style="stroke:currentColor;stroke-width:1.8"><path d="M8 3v5 M16 3v5 M5 8h14v2a7 7 0 0 1-14 0Z M12 17v4"></path></svg><span>Plugins</span></button><button class="popup-settings-tab" id="catalog-tab-recent" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="history" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5v5h5 M3.7 9a8.5 8.5 0 1 1-.2 5 M12 7v5l3 2"></path></svg><span>Recent</span></button></div><div id="catalog-tab-panel" role="tabpanel" aria-labelledby="catalog-tab-reader" tabindex="0"><span class="mdp-ui-status"><span class="mdp-ui-status__dot" aria-hidden="true"></span><span id="catalog-tab-label">Reading appearance</span></span></div><p class="catalog-note">Use Left/Right, Home, and End to move between tabs. Tab contents are represented by a label in this preview.</p></div></div><p class="catalog-source">src/shared/styles/_containers.scss · src/options/OptionsApp.jsx · src/popup/popup.scss</p></section>
-<section class="mdp-ui-section" aria-labelledby="viewer-title"><header class="mdp-ui-section__header"><h3 id="viewer-title">Viewer components</h3><p>Document statistics, update feedback, and source comparison now share the same application primitives.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document updates · Ask mode</span><label class="mdp-ui-field" for="catalog-update-state"><span class="mdp-ui-field__label">Preview state</span><select class="mdp-ui-select" id="catalog-update-state"><option value="pending">New version available</option><option value="current">Up to date</option><option value="error">Check failed</option></select></label><div class="mdp-watch-status catalog-watch"><section class="mdp-ui-card mdp-watch-status__panel mdp-watch-status__panel--has-actions" aria-label="Document updates preview"><header class="mdp-watch-status__header"><div class="mdp-watch-status__heading"><h3>Document updates</h3><span class="mdp-ui-badge mdp-ui-badge--info mdp-watch-status__mode">Ask</span></div><div class="mdp-watch-status__header-actions"><button class="mdp-watch-status__check" type="button" aria-label="Check now" title="Check now" id="catalog-check-update"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></button></div></header><p class="mdp-watch-status__message" id="catalog-update-message" role="status">A newer version of this document is ready.</p><div class="mdp-watch-status__actions" id="catalog-update-actions"><button class="mdp-ui-button mdp-ui-button--primary" type="button" id="catalog-apply-update">Update document</button></div></section></div></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document statistics</span><aside class="mdp-document-stats catalog-stats" role="note" aria-label="Document statistics: 420 words, 2,450 characters, 2 min read"><span aria-hidden="true">420 words</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span aria-hidden="true">2,450 characters</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span class="mdp-document-stats__reading" aria-hidden="true">2 min read</span></aside><p class="catalog-note">Selectable metadata above Markdown in read mode. Hidden for empty documents, edit mode, and print output.</p><div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Editor protection</strong>Updates never replace an active editor. Loading a disk revision requires confirmation before leaving edit mode.</div></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · source lines</span><div class="mdp-change-review catalog-review"><section class="mdp-ui-card mdp-change-review__hunk is-active" aria-label="Changed area 1" tabindex="0"><div class="mdp-change-review__hunk-header"><span>Changed area 1</span><span>1 added · 1 removed</span></div><table><caption class="mdp-change-review__visually-hidden">Source lines in changed area 1</caption><thead class="mdp-change-review__visually-hidden"><tr><th>Old line</th><th>New line</th><th>Change</th><th>Source</th></tr></thead><tbody><tr class="mdp-change-review__row--equal"><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__marker"><span aria-label="Unchanged"> </span></td><td class="mdp-change-review__source"><code># Reading notes</code></td></tr><tr class="mdp-change-review__row--removed"><td class="mdp-change-review__line-number">2</td><td></td><td class="mdp-change-review__marker"><span aria-label="Removed">−</span></td><td class="mdp-change-review__source"><code>Check for changes manually.</code></td></tr><tr class="mdp-change-review__row--added"><td></td><td class="mdp-change-review__line-number">2</td><td class="mdp-change-review__marker"><span aria-label="Added">+</span></td><td class="mdp-change-review__source"><code>Choose how document updates are applied.</code></td></tr></tbody></table></section></div><p class="catalog-note">Excerpt from the Viewer comparison. Source gutters and diff layout remain Viewer-specific; added and removed lines use paired theme colors.</p></div><p class="catalog-source">src/viewer/styles/_watch-status.scss · _document-stats.scss · _change-review.scss · _update-feedback.scss</p></section>
+<section class="mdp-ui-section" aria-labelledby="viewer-title"><header class="mdp-ui-section__header"><h3 id="viewer-title">Viewer components</h3><p>Document statistics, update feedback, and source comparison now share the same application primitives.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document updates · Ask mode</span><label class="mdp-ui-field" for="catalog-update-state"><span class="mdp-ui-field__label">Preview state</span><select class="mdp-ui-select" id="catalog-update-state"><option value="pending">New version available</option><option value="current">Up to date</option><option value="error">Check failed</option></select></label><div class="mdp-watch-status catalog-watch"><section class="mdp-ui-card mdp-watch-status__panel mdp-watch-status__panel--has-actions" aria-label="Document updates preview"><header class="mdp-watch-status__header"><div class="mdp-watch-status__heading"><h3>Document updates</h3><span class="mdp-ui-badge mdp-ui-badge--info mdp-watch-status__mode">Ask</span></div><div class="mdp-watch-status__header-actions"><button class="mdp-watch-status__check" type="button" aria-label="Check now" title="Check now" id="catalog-check-update"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></button></div></header><p class="mdp-watch-status__message" id="catalog-update-message" role="status">A newer version of this document is ready.</p><div class="mdp-watch-status__actions" id="catalog-update-actions"><button class="mdp-ui-button mdp-ui-button--primary" type="button" id="catalog-apply-update">Update document</button></div></section></div></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document statistics</span><aside class="mdp-document-stats catalog-stats" role="note" aria-label="Document statistics: 420 words, 2,450 characters, 2 min read"><span aria-hidden="true">420 words</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span aria-hidden="true">2,450 characters</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span class="mdp-document-stats__reading" aria-hidden="true">2 min read</span></aside><p class="catalog-note">Selectable metadata above Markdown in read mode. Hidden for empty documents, edit mode, and print output.</p><div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Editor protection</strong>Updates never replace an active editor. Loading a disk revision requires confirmation before leaving edit mode.</div></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · source lines</span><div class="mdp-change-review catalog-review"><section class="mdp-ui-card mdp-change-review__hunk is-active" aria-label="Changed area 1" tabindex="0"><div class="mdp-change-review__hunk-header"><span>Changed area 1</span><span>1 added · 1 removed</span></div><table><caption class="mdp-change-review__visually-hidden">Source lines in changed area 1</caption><thead class="mdp-change-review__visually-hidden"><tr><th>Old line</th><th>New line</th><th>Change</th><th>Source</th></tr></thead><tbody><tr class="mdp-change-review__row--equal"><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__marker"><span aria-label="Unchanged"> </span></td><td class="mdp-change-review__source"><code># Reading notes</code></td></tr><tr class="mdp-change-review__row--removed"><td class="mdp-change-review__line-number">2</td><td></td><td class="mdp-change-review__marker"><span aria-label="Removed">−</span></td><td class="mdp-change-review__source"><code>Check for changes manually.</code></td></tr><tr class="mdp-change-review__row--added"><td></td><td class="mdp-change-review__line-number">2</td><td class="mdp-change-review__marker"><span aria-label="Added">+</span></td><td class="mdp-change-review__source"><code>Choose how document updates are applied.</code></td></tr></tbody></table></section></div><p class="catalog-note">Excerpt from the Viewer comparison. Source gutters and diff layout remain Viewer-specific; added and removed lines use paired theme colors.</p></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · load failure</span><button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="catalog-review-error-open" aria-haspopup="dialog">Preview review load failure</button><p class="catalog-note">Load failures use a modal alert with a focused Close review action. Escape and outside press dismiss it and restore trigger focus; feedback stays out of the action toolbar.</p></div><p class="catalog-source">src/viewer/styles/_watch-status.scss · _document-stats.scss · _change-review.scss · _update-feedback.scss</p></section>
 </section>
     </div>
   </section>
@@ -2398,6 +2429,7 @@
   <dialog class="mdp-exit-edit-modal" id="catalog-dialog" role="alertdialog" aria-labelledby="catalog-dialog-title" aria-describedby="catalog-dialog-description">
     <div class="mdp-ui-card mdp-exit-edit-confirmation"><div class="mdp-exit-edit-confirmation__content"><span class="mdp-ui-badge mdp-ui-badge--warning">Unsaved changes</span><h2 id="catalog-dialog-title">Discard changes and exit edit mode?</h2><p id="catalog-dialog-description">Your unsaved changes will be lost. The saved file will stay unchanged.</p></div><div class="mdp-ui-action-footer mdp-ui-action-footer--end mdp-exit-edit-confirmation__actions"><button class="mdp-ui-button mdp-ui-button--secondary" id="catalog-dialog-cancel" type="button" autofocus>Keep editing</button><button class="mdp-ui-button mdp-ui-button--danger" id="catalog-dialog-confirm" type="button">Discard changes</button></div></div>
   </dialog><div class="mdp-toast mdp-toast--success" id="catalog-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <dialog class="mdp-change-review-backdrop" id="catalog-review-error" role="alertdialog" aria-modal="true" aria-labelledby="catalog-review-error-title" aria-describedby="catalog-review-error-description"><div class="mdp-ui-card mdp-change-review-error"><div class="mdp-change-review-error__content"><div class="mdp-ui-notice mdp-ui-notice--danger"><strong id="catalog-review-error-title">Could not open review</strong><p id="catalog-review-error-description">Reload this viewer and try again.</p></div></div><div class="mdp-ui-action-footer mdp-ui-action-footer--end mdp-change-review-error__actions"><button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="catalog-review-error-close" autofocus><span>Close review</span></button></div></div></dialog>
   <script>
 
     const body = document.body
@@ -2481,6 +2513,14 @@
     dialog.addEventListener('pointerdown', event => { scrimPointerDown = event.target === dialog })
     dialog.addEventListener('click', event => { if (scrimPointerDown && event.target === dialog) dialog.close('cancel'); scrimPointerDown = false })
     dialog.addEventListener('close', () => dialogTrigger.focus())
+
+    const reviewError = document.getElementById('catalog-review-error')
+    const reviewErrorTrigger = document.getElementById('catalog-review-error-open')
+    const reviewErrorClose = document.getElementById('catalog-review-error-close')
+    reviewErrorTrigger.addEventListener('click', () => { reviewError.showModal(); reviewErrorClose.focus() })
+    reviewErrorClose.addEventListener('click', () => reviewError.close())
+    reviewError.addEventListener('pointerdown', event => { if (event.target === reviewError) reviewError.close() })
+    reviewError.addEventListener('close', () => reviewErrorTrigger.focus())
   </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { expect, it, vi } from 'vitest'
-import { ChangeReview, ChangeReviewLoadingFallback } from '../ChangeReview.jsx'
+import { ChangeReview, ChangeReviewLoadingFallback, ReviewLoadBoundary } from '../ChangeReview.jsx'
 import ChangeReviewPanel, { ChangeReviewContent } from '../ChangeReviewPanel.jsx'
 import { EditorUpdateConfirmation, EditorUpdateWarning, getEditorUpdateCopy } from '../EditorUpdateConfirmation.jsx'
 import { buildChangeReview } from '../../../review/change-review.js'
@@ -19,6 +19,26 @@ it('keeps the lazy loading announcement out of the visible action toolbar', () =
   expect(html).toContain('role="status"')
   expect(html).toContain('mdp-change-review__visually-hidden')
   expect(html).toContain('Opening review…')
+})
+
+it('contains review load failures in an accessible modal instead of the action toolbar', () => {
+  const onClose = vi.fn()
+  const triggerRef = { current: null }
+  const boundary = new ReviewLoadBoundary({ onClose, triggerRef, children: 'Review content' })
+  expect(boundary.render()).toBe('Review content')
+  boundary.state = ReviewLoadBoundary.getDerivedStateFromError(new Error('Failed to load review'))
+  const fallback = boundary.render()
+  expect(fallback.props.triggerRef).toBe(triggerRef)
+  expect(fallback.props.onClose).toBe(onClose)
+  const html = renderToStaticMarkup(fallback)
+  expect(html).toContain('<dialog')
+  expect(html).toContain('role="alertdialog"')
+  expect(html).toContain('aria-labelledby=')
+  expect(html).toContain('aria-describedby=')
+  expect(html).toContain('mdp-ui-card mdp-change-review-error')
+  expect(html).toContain('mdp-ui-notice--danger')
+  expect(html).toContain('Reload this viewer and try again.')
+  expect(html).toContain('Close review')
 })
 
 it('escapes source and section titles, labels additions/deletions and displays line numbers', () => {

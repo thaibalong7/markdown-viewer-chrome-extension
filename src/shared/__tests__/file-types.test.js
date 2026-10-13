@@ -56,6 +56,8 @@ describe('file type registry', () => {
   it('publishes immutable Markdown capabilities', () => {
     expect(getFileTypeById('markdown')).toMatchObject({ rendererId: 'markdown', contentKind: 'text' })
     expect(getDocumentCapabilities('markdown')).toEqual({
+      watch: true,
+      changeReview: true,
       outline: true,
       edit: true,
       exportDocument: true,
@@ -76,6 +78,8 @@ describe('file type registry', () => {
     expect(getFileTypeFromUrl('file:///docs/notes.txt')?.id).toBe('text')
     expect(isExplorerSupportedFile('notes.txt')).toBe(true)
     expect(getDocumentCapabilities('text')).toEqual({
+      watch: true,
+      changeReview: true,
       outline: false,
       edit: false,
       exportDocument: false,
@@ -97,6 +101,8 @@ describe('file type registry', () => {
     expect(isExplorerSupportedFile('schema.sql')).toBe(true)
     expect(isDirectActivationUrl('file:///docs/schema.sql')).toBe(false)
     expect(getDocumentCapabilities('sql')).toEqual({
+      watch: true,
+      changeReview: true,
       outline: false,
       edit: false,
       exportDocument: false,
@@ -118,6 +124,8 @@ describe('file type registry', () => {
     expect(isExplorerSupportedFile('architecture.mermaid')).toBe(true)
     expect(isDirectActivationUrl('file:///docs/architecture.mermaid')).toBe(false)
     expect(getDocumentCapabilities('mermaid')).toEqual({
+      watch: true,
+      changeReview: true,
       outline: false,
       edit: false,
       exportDocument: false,
@@ -145,6 +153,8 @@ describe('file type registry', () => {
 
   it('publishes image-only capabilities for raster files', () => {
     expect(getDocumentCapabilities('raster-image')).toEqual({
+      watch: true,
+      changeReview: false,
       outline: false,
       edit: false,
       exportDocument: false,
@@ -167,6 +177,8 @@ describe('file type registry', () => {
     expect(isExplorerSupportedFile('diagram.svg')).toBe(true)
     expect(isDirectActivationUrl('file:///docs/diagram.svg')).toBe(false)
     expect(getDocumentCapabilities('svg-image')).toEqual({
+      watch: true,
+      changeReview: false,
       outline: false,
       edit: false,
       exportDocument: false,

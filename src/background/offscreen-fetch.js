@@ -56,7 +56,7 @@ async function ensureOffscreenDocument() {
  * @param {string} url - file: URL (no hash)
  * @returns {Promise<{ text: string }>}
  */
-export function fetchFileTextViaOffscreen(url) {
+function fetchFileViaOffscreen(url, { format = 'text', maxBytes } = {}) {
   return new Promise((resolve, reject) => {
     void (async () => {
       try {
@@ -78,9 +78,9 @@ export function fetchFileTextViaOffscreen(url) {
         chrome.runtime.onMessage.removeListener(onDone)
         clearTimeout(timeout)
         if (message.ok) {
-          resolve({ text: message.text ?? '' })
+          resolve(format === 'bytes' ? { base64: message.base64, size: message.size } : { text: message.text ?? '' })
         } else {
-          reject(new Error(message.error || 'Fetch failed'))
+          reject(Object.assign(new Error(message.error || 'Fetch failed'), { code: message.code }))
         }
       }
 
@@ -90,7 +90,9 @@ export function fetchFileTextViaOffscreen(url) {
         await chrome.runtime.sendMessage({
           type: MESSAGE_TYPES.OFFSCREEN_FETCH,
           id,
-          url
+          url,
+          format,
+          maxBytes
         })
       } catch (e) {
         chrome.runtime.onMessage.removeListener(onDone)
@@ -100,3 +102,6 @@ export function fetchFileTextViaOffscreen(url) {
     })()
   })
 }
+
+export const fetchFileTextViaOffscreen = (url) => fetchFileViaOffscreen(url)
+export const fetchFileBytesViaOffscreen = (url, maxBytes) => fetchFileViaOffscreen(url, { format: 'bytes', maxBytes })

@@ -1,6 +1,8 @@
 import { MDP_WS_FILE } from './constants/explorer.js'
 
 const MARKDOWN_CAPABILITIES = Object.freeze({
+  watch: true,
+  changeReview: true,
   outline: true,
   edit: true,
   exportDocument: true,
@@ -10,6 +12,8 @@ const MARKDOWN_CAPABILITIES = Object.freeze({
 })
 
 const TEXT_CAPABILITIES = Object.freeze({
+  watch: true,
+  changeReview: true,
   outline: false,
   edit: false,
   exportDocument: false,
@@ -19,6 +23,8 @@ const TEXT_CAPABILITIES = Object.freeze({
 })
 
 const IMAGE_CAPABILITIES = Object.freeze({
+  watch: true,
+  changeReview: false,
   outline: false,
   edit: false,
   exportDocument: false,
@@ -28,6 +34,8 @@ const IMAGE_CAPABILITIES = Object.freeze({
 })
 
 const MERMAID_CAPABILITIES = Object.freeze({
+  watch: true,
+  changeReview: true,
   outline: false,
   edit: false,
   exportDocument: false,

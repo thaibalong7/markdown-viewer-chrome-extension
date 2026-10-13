@@ -19,6 +19,9 @@ Plan ban đầu hoãn Auto khi còn selection/focus hoặc mở panel. Commit `e
 
 ## Watch — các ca browser còn cần xác minh
 
+- Mở TXT/SQL/Mermaid/PNG/SVG qua Files rồi sửa bằng editor ngoài: Ask giữ bản cũ tới khi Update document; Off chỉ đọc khi Check now; Auto áp dụng sau khi idle. Mermaid giữ rendered/raw; TXT/SQL/Mermaid chỉ review theo dòng, không có section Markdown; ảnh không có nút View changes.
+- Ghi đè ảnh với cùng kích thước/timestamp, SVG có source markup, file ảnh lớn hơn 5 MiB, mất quyền/đường dẫn, và chuyển file giữa lúc đọc: byte mới hiển thị qua ảnh, lỗi giữ nội dung, ảnh lớn vẫn mở được nhưng báo giới hạn Watch; kiểm tra object URL được thu hồi khi apply/navigation/teardown.
+
 - Workspace File System Access handle và fallback `webkitdirectory`; thay workspace/reader khi I/O chưa hoàn tất.
 - Git checkout thực tế, điều hướng khi I/O đang chạy, mở lại cùng URL và xác nhận tab ẩn không còn polling bằng quan sát I/O.
 - Gõ tiếp trong lúc Save chưa hoàn tất: baseline nhận đúng source đã ghi, phần gõ tiếp vẫn dirty.

@@ -14,6 +14,8 @@ export const MESSAGE_TYPES = {
   OPEN_EXPLORER_SETTINGS: 'OPEN_EXPLORER_SETTINGS',
   /** Background fetches file: URLs (content scripts on file pages cannot; origin is opaque). */
   FETCH_FILE_AS_TEXT: 'FETCH_FILE_AS_TEXT',
+  /** Bounded image bytes, serialized as base64 through Chrome JSON messaging. */
+  FETCH_FILE_AS_BYTES: 'FETCH_FILE_AS_BYTES',
   /**
    * Save bytes via `chrome.downloads` (required on `file:` where `<a download>` + blob is blocked).
    * Payload: `{ dataUrl: string, filename: string }` — `dataUrl` must start with `data:`.

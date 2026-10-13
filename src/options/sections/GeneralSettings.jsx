@@ -92,7 +92,7 @@ export function GeneralSettings({
         <div className="mdp-ui-setting-row settings-row--select">
           <div>
             <label htmlFor="general-watch-mode" className="mdp-ui-setting-row__title">Document updates</label>
-            <p id="general-watch-description" className="mdp-ui-setting-row__description">Choose how to handle changes to the open Markdown file. Updates never replace an active editor.</p>
+            <p id="general-watch-description" className="mdp-ui-setting-row__description">Choose how to handle changes to the open document, including text, diagrams and images. Updates never replace an active editor.</p>
           </div>
           <select
             id="general-watch-mode"

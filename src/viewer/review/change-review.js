@@ -32,6 +32,9 @@ export function buildChangeReview(before, after, limits = {}) {
   if (!result.added && !result.removed) return { added: 0, removed: 0, limited: false, hunks: [], sections: [] }
   const hunks = groupDiffHunks(result.rows, limits.maxOutputRows)
   if (!hunks) return { ...result, rows: [], limited: true, reason: 'output-size', hunks: [], sections: [] }
+  if (limits.fileTypeId && limits.fileTypeId !== 'markdown') {
+    return { added: result.added, removed: result.removed, limited: false, hunks, sections: [] }
+  }
   const engine = createMarkdownEngine().instance
   const oldHeadings = headingsFromSource(engine, before)
   const newHeadings = headingsFromSource(engine, after)

@@ -5,6 +5,7 @@ import {
   MIN_STANDALONE_TEXT_FILE_SIZE_LIMIT_MIB
 } from '../../shared/constants/documents.js'
 import { getFileTypeFromName } from '../../shared/file-types.js'
+import { readImageRevision, createImageRevisionPayload, createImageAssetPayload } from './image-revision.js'
 
 const BYTES_PER_MIB = 1024 * 1024
 
@@ -69,36 +70,30 @@ function validateWorkspaceImage(file, fileType) {
   }
 }
 
-async function loadImageDocument({ href, fileType, workspaceReader, signal }) {
-  if (!workspaceReader) {
-    return {
-      text: null,
-      assetUrl: normalizedLocalAssetUrl(href),
-      revokeAssetUrl: null
-    }
-  }
-
-  const file = typeof workspaceReader.getFile === 'function'
-    ? await workspaceReader.getFile()
-    : workspaceReader
+async function loadImageDocument({ href, fileType, workspaceReader, signal, revisionOnly, maxWatchBytes }) {
+  const file = workspaceReader
+    ? typeof workspaceReader.getFile === 'function' ? await workspaceReader.getFile() : workspaceReader
+    : null
   throwIfAborted(signal)
-  validateWorkspaceImage(file, fileType)
-  if (typeof URL.createObjectURL !== 'function') {
-    throw new Error('This browser cannot create an image URL for the selected workspace file.')
-  }
-
-  const assetUrl = URL.createObjectURL(file)
-  let revoked = false
-  const revokeAssetUrl = () => {
-    if (revoked) return
-    revoked = true
-    URL.revokeObjectURL(assetUrl)
+  if (file) validateWorkspaceImage(file, fileType)
+  let payload
+  try {
+    const revisionSource = await readImageRevision({ href, file, signal, maxBytes: maxWatchBytes })
+    if (revisionOnly) return { revisionSource }
+    payload = createImageRevisionPayload(revisionSource, fileType)
+  } catch (error) {
+    // Large images remain viewable through the existing resource path.
+    if (revisionOnly || error?.code !== 'document-too-large') throw error
+    if (!file) {
+      return { text: null, assetUrl: normalizedLocalAssetUrl(href), revokeAssetUrl: null }
+    }
+    payload = createImageAssetPayload(file)
   }
   if (signal?.aborted) {
-    revokeAssetUrl()
+    payload.revokeAssetUrl()
     throw abortError()
   }
-  return { text: null, assetUrl, revokeAssetUrl }
+  return payload
 }
 
 export async function loadDocument({
@@ -107,14 +102,15 @@ export async function loadDocument({
   workspaceReader,
   signal,
   maxStandaloneTextFileSizeMiB,
-  maxWatchBytes
+  maxWatchBytes,
+  revisionOnly = false
 }) {
   throwIfAborted(signal)
   if (!fileType) {
     throw new Error('This document type is not loadable yet.')
   }
   if (fileType.contentKind === 'image') {
-    return loadImageDocument({ href, fileType, workspaceReader, signal })
+    return loadImageDocument({ href, fileType, workspaceReader, signal, revisionOnly, maxWatchBytes })
   }
   if (fileType.contentKind !== 'text') throw new Error('This document type is not loadable yet.')
   const maxStandaloneTextBytes = resolveStandaloneTextMaxBytes(maxStandaloneTextFileSizeMiB)

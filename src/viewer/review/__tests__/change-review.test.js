@@ -102,3 +102,12 @@ it('navigates only existing headings in the current reviewed revision, never dra
   target = { generation: 1, acceptedSource: '# Newer' }
   expect(navigateReviewSection(options)).toBe(false)
 })
+
+it.each(['text', 'sql', 'mermaid'])('uses line diff without Markdown sections for %s', (fileTypeId) => {
+  const review = buildChangeReview('# SQL-looking heading\nold', '# SQL-looking heading\nnew', { fileTypeId })
+  expect(review.limited).toBe(false)
+  expect(review.added).toBe(1)
+  expect(review.removed).toBe(1)
+  expect(review.hunks).toHaveLength(1)
+  expect(review.sections).toEqual([])
+})

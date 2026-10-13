@@ -328,3 +328,91 @@ describe('document watch revisions', () => {
     session.destroy()
   })
 })
+
+it.each(['txt', 'sql', 'mermaid'])('updates %s in place with a reviewable baseline and current size setting', async (extension) => {
+  const render = vi.fn()
+  const loadDocument = vi.fn().mockResolvedValue({ text: 'old' })
+  const session = createSession({ loadDocument, render,
+    getSettings: () => ({ documents: { maxStandaloneTextFileSizeMiB: 2 } }) })
+  await session.openDocument(`file:///docs/source.${extension}`)
+  if (extension === 'mermaid') await session.setViewMode('raw')
+  const target = session.getWatchTarget()
+  expect(target).toMatchObject({ supported: true, reviewable: true, acceptedSource: 'old' })
+  loadDocument.mockResolvedValueOnce({ text: 'new' })
+  expect(await session.readCurrentRevision(target)).toBe('new')
+  expect(loadDocument).toHaveBeenLastCalledWith(expect.objectContaining({ maxStandaloneTextFileSizeMiB: 2 }))
+  expect(await session.applyCurrentRevision(target, 'new')).toBe(true)
+  expect(session.getPreviousRevision()).toMatchObject({ source: 'old' })
+  expect(session.getLoadedDocument().text).toBe('new')
+  if (extension === 'mermaid') expect(session.getCurrentDocument().viewMode).toBe('raw')
+  expect(render).toHaveBeenLastCalledWith({ preserveScroll: true, honorHash: false })
+  session.destroy()
+})
+
+it.each(['png', 'svg'])('replaces %s bytes without review history and releases each image URL', async (extension) => {
+  const originalCreate = URL.createObjectURL
+  const originalRevoke = URL.revokeObjectURL
+  URL.createObjectURL = vi.fn().mockReturnValue('blob:new-image')
+  URL.revokeObjectURL = vi.fn()
+  try {
+    const oldCleanup = vi.fn()
+    const loadDocument = vi.fn()
+      .mockResolvedValueOnce({ text: null, revisionSource: btoa('old'), assetUrl: 'blob:old-image', revokeAssetUrl: oldCleanup })
+      .mockResolvedValueOnce({ revisionSource: btoa('new') })
+    const session = createSession({ loadDocument })
+    await session.openDocument(`file:///docs/image.${extension}`)
+    const target = session.getWatchTarget()
+    expect(target).toMatchObject({ supported: true, reviewable: false, acceptedSource: btoa('old') })
+    expect(await session.readCurrentRevision(target)).toBe(btoa('new'))
+    expect(await session.applyCurrentRevision(target, btoa('new'))).toBe(true)
+    expect(session.getPreviousRevision()).toBeNull()
+    expect(session.getLoadedDocument()).toMatchObject({ text: null, assetUrl: 'blob:new-image' })
+    expect(oldCleanup).toHaveBeenCalledOnce()
+    const blob = URL.createObjectURL.mock.calls[0][0]
+    expect(await blob.text()).toBe('new')
+    expect(blob.type).toBe(extension === 'svg' ? 'image/svg+xml' : '')
+    session.destroy()
+    session.destroy()
+    expect(URL.revokeObjectURL).toHaveBeenCalledExactlyOnceWith('blob:new-image')
+  } finally {
+    URL.createObjectURL = originalCreate
+    URL.revokeObjectURL = originalRevoke
+  }
+})
+
+it('rejects a late image revision after navigation', async () => {
+  const late = deferred()
+  const loadDocument = vi.fn()
+    .mockResolvedValueOnce({ text: null, revisionSource: btoa('old') })
+    .mockReturnValueOnce(late.promise)
+    .mockResolvedValueOnce({ text: 'next' })
+  const session = createSession({ loadDocument })
+  await session.openDocument('file:///docs/photo.png')
+  const oldTarget = session.getWatchTarget()
+  const read = session.readCurrentRevision(oldTarget)
+  await session.openDocument('file:///docs/next.txt')
+  late.resolve({ revisionSource: btoa('late') })
+  expect(await read).toBeNull()
+  expect(await session.applyCurrentRevision(oldTarget, btoa('late'))).toBe(false)
+  expect(session.getLoadedDocument().text).toBe('next')
+  session.destroy()
+})
+
+it('recovers a failed non-Markdown load without inheriting the prior baseline or workspace reader', async () => {
+  const oldHandle = { getFile: vi.fn() }
+  const loadDocument = vi.fn()
+    .mockResolvedValueOnce({ text: 'workspace old' })
+    .mockRejectedValueOnce(new Error('not found'))
+    .mockResolvedValueOnce({ text: 'recovered' })
+  const session = createSession({ loadDocument })
+  await session.openDocument('mdp-ws-file:old.txt', { workspaceReader: oldHandle })
+  await session.openDocument('file:///docs/missing.sql')
+  const target = session.getWatchTarget()
+  expect(target).toMatchObject({ acceptedSource: null, reviewable: false, supported: true })
+  expect(await session.readCurrentRevision(target)).toBe('recovered')
+  expect(loadDocument).toHaveBeenLastCalledWith(expect.objectContaining({ workspaceReader: null }))
+  await session.applyCurrentRevision(target, 'recovered')
+  expect(session.getLoadedDocument().loadError).toBeNull()
+  expect(session.getWatchTarget().reviewable).toBe(true)
+  session.destroy()
+})

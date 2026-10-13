@@ -1,11 +1,11 @@
 # Document Updates and Change Review
 
-Markdown Plus can keep the active Markdown document synchronized with changes made by an external editor, script, Git operation, or coding agent. Document Updates detects a newer disk revision without reloading the page, while Change Review explains the source lines and sections that changed before or after that revision is applied.
+Markdown Plus can keep the active supported document synchronized with changes made by an external editor, script, Git operation, or coding agent. Document Updates detects a newer disk revision without reloading the page, while Change Review explains the source lines and sections that changed before or after that revision is applied.
 
 ## Availability and scope
 
-- Watch applies only to the active Markdown document. It does not watch the complete workspace, referenced images or assets, or non-Markdown documents opened from Files.
-- Direct `file:` Markdown documents and workspace files backed by a `FileSystemFileHandle` can be reread. A workspace opened through the `webkitdirectory` snapshot fallback cannot provide live rereads; select the folder again to regain a current snapshot.
+- Watch applies to the active Markdown, TXT, SQL, Mermaid, raster-image or SVG document. Non-Markdown files are opened from Files; they still do not activate the extension directly. Watch does not watch the complete workspace or images/assets referenced inside another document.
+- Local `file:` documents and workspace files backed by a `FileSystemFileHandle` can be reread. A workspace opened through the `webkitdirectory` snapshot fallback cannot provide live rereads; select the folder again to regain a current snapshot.
 - Checks run only while the Viewer tab is visible. Returning to a visible tab triggers an immediate check when the selected mode permits automatic checks.
 - Revision sources and the most recent review pair stay in the current tab's memory. Markdown Plus does not persist document source history.
 - The feature adds no network service, dependency, or extension permission. Local source remains inside the browser.
@@ -28,17 +28,19 @@ The **Document updates** action is in the Viewer action rail. In its normal stat
 
 Applying a revision rereads the current disk source instead of trusting an older notification. It updates the article in place without navigating, changing browser history, rescanning Files, or replacing the document identity. Automatic applies do not show a success toast; an explicit update does.
 
-Markdown Plus keeps the current article when a read fails, the file temporarily disappears, permission is lost, or the source exceeds the Watch limit. The panel reports a recoverable error and offers **Try again**. Repeated background failures back off to at most 30 seconds between checks. An empty file is a valid Markdown revision.
+Markdown Plus keeps the current article when a read fails, the file temporarily disappears, permission is lost, or the source exceeds the Watch limit. The panel reports a recoverable error and offers **Try again**. Repeated background failures back off to at most 30 seconds between checks. An empty text file is a valid revision. Image changes compare exact bytes, including overwrites with unchanged size or timestamps. Applying an image creates a fresh object URL instead of reusing a cached image URL; SVG stays an image resource. Mermaid retains the selected rendered/raw mode.
 
 ## Review what changed
 
-When a comparison is available, **View changes** appears beside Document Updates. The review opens lazily and includes:
+For Markdown, TXT, SQL and Mermaid, when a comparison is available, **View changes** appears beside Document Updates. The review opens lazily and includes:
 
 - Added and removed line counts plus the number of changed areas.
 - Old and new source line numbers, addition/removal markers, line-ending annotations, and three context lines around each area.
-- Affected Markdown sections derived from parser tokens, including Setext headings and duplicate headings while excluding heading-like text inside fenced or indented code.
+- For Markdown only, affected sections derived from parser tokens, including Setext headings and duplicate headings while excluding heading-like text inside fenced or indented code.
 - **Previous area** and **Next area** controls; `Alt+↑` and `Alt+↓` move between changed areas in the current comparison.
 - **Open document** for a surviving section only when the reviewed new source is the source currently rendered in read mode.
+
+Images offer Document Updates without a source diff. TXT, SQL and Mermaid show line changes without parsing Markdown sections or offering heading navigation.
 
 Ask and Off compare the accepted article source with the pending disk source, retaining the most recent applied comparison when no update is pending. Automatic mode opens the before/after pair from the most recent applied external update; a newer pending comparison is available through **Review latest**. Edit mode compares the accepted disk baseline with the pending disk source and deliberately excludes the editor draft. Navigation and successful internal Save clear the previous accepted-source snapshot.
 
@@ -60,11 +62,11 @@ An in-place update captures the nearest heading and text, the offset within that
 
 ## File list refresh is separate
 
-**Refresh file list** in Files only rescans the current folder or workspace. It does not reread the article, apply a pending Markdown revision, discard a draft, reset the route, or fall back to the entry document when the current file is missing from the refreshed tree. Use Document Updates to check or apply the active Markdown source.
+**Refresh file list** in Files only rescans the current folder or workspace. It does not reread the article, apply a pending document revision, discard a draft, reset the route, or fall back to the entry document when the current file is missing from the refreshed tree. Use Document Updates to check or apply the active document.
 
 ## Limits and intentional exclusions
 
-Watch accepts Markdown source up to 5 MiB. Detailed Change Review accepts at most 512 Ki UTF-16 code units and 20,000 lines per source, one million diff work steps, an 80 ms cooperative calculation budget, and 2,000 output rows. If a comparison exceeds a limit, the panel recommends an external diff tool and preserves the article and draft instead of presenting a truncated diff as complete.
+Watch reads up to 5 MiB per file, including images. Standalone text also respects the configured viewing limit. Larger images remain viewable but cannot be watched until their size is within the limit. Detailed Change Review accepts at most 512 Ki UTF-16 code units and 20,000 lines per source, one million diff work steps, an 80 ms cooperative calculation budget, and 2,000 output rows. If a comparison exceeds a limit, the panel recommends an external diff tool and preserves the article and draft instead of presenting a truncated diff as complete.
 
 Document Updates and Change Review do not provide three-way merge, draft-versus-disk diff, force overwrite, long-lived source history, annotations, or whole-workspace watching. Save conflict protection is never bypassed.
 
@@ -72,8 +74,9 @@ Document Updates and Change Review do not provide three-way merge, draft-versus-
 
 | Responsibility | Source |
 | --- | --- |
-| Disk baseline, revision ids, previous accepted source | `src/viewer/app/documentSessionController.js` |
+| Disk baseline, revision ids, previous accepted text source | `src/viewer/app/documentSessionController.js` |
 | Polling, confirmation, pending state, retries, apply coordination | `src/viewer/app/watchSessionController.js` |
+| Image byte snapshots and fresh image resources | `src/viewer/documents/image-revision.js`, `src/background/offscreen-fetch.js`, `public/offscreen.js` |
 | Reading/input deferral | `src/viewer/app/readingActivityGuard.js` |
 | Position capture and restoration | `src/viewer/navigation/reading-position.js` |
 | Document Updates UI and editor confirmation | `src/viewer/react/components/WatchStatus.jsx`, `EditorUpdateConfirmation.jsx` |

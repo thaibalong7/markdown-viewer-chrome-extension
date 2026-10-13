@@ -6,8 +6,8 @@ function deferred() {
   return { promise: new Promise((done) => { resolve = done }), resolve: (value) => resolve(value) }
 }
 
-function harness() {
-  let target = { document: {}, generation: 0, revision: 0, sourceRevision: 0, acceptedSource: 'old', supported: true }
+function harness(metadata = {}) {
+  let target = { document: {}, generation: 0, revision: 0, sourceRevision: 0, acceptedSource: 'old', supported: true, ...metadata }
   let previousRevision = null
   let disk = 'old'
   let mode = 'ask'
@@ -365,5 +365,37 @@ it('prioritizes a user check over an in-flight background read without overlappi
   expect(h.session.readCurrentRevision).toHaveBeenCalledTimes(3)
   expect(h.state()).toMatchObject({ pending: true, manualChecking: false })
   expect(h.session.applyCurrentRevision).not.toHaveBeenCalled()
+  h.watch.destroy()
+})
+
+it.each(['text', 'sql', 'mermaid', 'raster-image', 'svg-image'])('supports Ask, Off/manual and Auto for %s with format-aware review', async (fileTypeId) => {
+  const reviewable = !fileTypeId.endsWith('image')
+  const h = harness({ fileTypeId, reviewable })
+  h.disk('first')
+  h.watch.start()
+  await vi.advanceTimersByTimeAsync(400)
+  expect(h.state().pending).toBe(true)
+  expect(h.session.applyCurrentRevision).not.toHaveBeenCalled()
+  expect(Boolean(h.state().reviewPair)).toBe(reviewable)
+  if (reviewable) expect(h.state().reviewPair.fileTypeId).toBe(fileTypeId)
+  const apply = h.watch.applyPending()
+  await vi.advanceTimersByTimeAsync(400)
+  await apply
+  expect(h.state().pending).toBe(false)
+  expect(Boolean(h.state().reviewPair)).toBe(reviewable)
+  h.mode('off')
+  h.disk('second')
+  const reads = h.session.readCurrentRevision.mock.calls.length
+  await vi.advanceTimersByTimeAsync(4000)
+  expect(h.session.readCurrentRevision).toHaveBeenCalledTimes(reads)
+  const check = h.watch.check()
+  await vi.advanceTimersByTimeAsync(400)
+  await check
+  expect(h.state().pending).toBe(true)
+  h.mode('auto')
+  await vi.advanceTimersByTimeAsync(3500)
+  expect(h.session.applyCurrentRevision).toHaveBeenLastCalledWith(expect.any(Object), 'second')
+  expect(h.state().pending).toBe(false)
+  expect(Boolean(h.state().reviewPair)).toBe(reviewable)
   h.watch.destroy()
 })

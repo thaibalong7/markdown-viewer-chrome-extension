@@ -51,15 +51,15 @@ export function createWatchSessionController({
     const target = session.getWatchTarget()
     const previous = session.getPreviousRevision?.()
     const currentPending = pending && session.matchesWatchTarget(pending.target) && pending.text !== target?.acceptedSource
-    const pendingPair = target && currentPending ? {
+    const pendingPair = target && target.reviewable !== false && currentPending ? {
       id: `${target.generation}:${target.sourceRevision}:pending:${pending.id}`,
       generation: target.generation,
-      before: target.acceptedSource, after: pending.text, kind: 'pending'
+      before: target.acceptedSource, after: pending.text, kind: 'pending', fileTypeId: target.fileTypeId
     } : null
-    const appliedPair = target && previous ? {
+    const appliedPair = target && target.reviewable !== false && previous ? {
       id: `${target.generation}:${previous.id}:${target.sourceRevision}`,
       generation: target.generation,
-      before: previous.source, after: target.acceptedSource, kind: 'applied'
+      before: previous.source, after: target.acceptedSource, kind: 'applied', fileTypeId: target.fileTypeId
     } : null
     const editorProtected = isEditorProtected?.()
     const reviewPair = editorProtected ? pendingPair : mode() === 'auto' ? appliedPair : pendingPair || appliedPair
@@ -152,11 +152,11 @@ export function createWatchSessionController({
       if (signal.aborted || destroyed || !session.matchesWatchTarget(target)) return false
       ++errors
       pending = null
-      logger.warn('Could not check the current Markdown file for changes.', {
+      logger.warn('Could not check the current document for changes.', {
         message: error instanceof Error ? error.message : String(error)
       })
       emit({ pending: false, error: error?.code === 'document-too-large'
-        ? 'Watch supports Markdown files up to 5 MiB. The current content was kept.'
+        ? `${error.userMessage || 'Document updates supports files up to 5 MiB.'} The current content was kept.`
         : 'Could not read the file. The current content was kept. Check file access and try again.' })
       return false
     } finally {

@@ -184,3 +184,22 @@ describe('message router settings routes', () => {
     expect(logger.warn).toHaveBeenCalledWith('Unknown message type received.', 'UNKNOWN')
   })
 })
+
+describe('bounded image reads', () => {
+  it('restricts binary reads to registered local images and retains the file-access gate', async () => {
+    const fetchFileBytes = vi.fn(async () => ({ base64: 'AA==', size: 1 }))
+    const isAllowedFileSchemeAccess = vi.fn(async () => true)
+    const route = createMessageRouter({ fetchFileBytesViaOffscreen: fetchFileBytes,
+      extensionApi: { isAllowedFileSchemeAccess } })
+    await expect(route({ type: MESSAGE_TYPES.FETCH_FILE_AS_BYTES, payload: { url: 'file:///docs/photo.png#view' } }))
+      .resolves.toEqual({ base64: 'AA==', size: 1 })
+    expect(fetchFileBytes).toHaveBeenCalledWith('file:///docs/photo.png', 5 * 1024 * 1024)
+    for (const url of ['https://example.com/photo.png', 'file:///docs/source.sql']) {
+      await expect(route({ type: MESSAGE_TYPES.FETCH_FILE_AS_BYTES, payload: { url } })).rejects.toThrow()
+    }
+    isAllowedFileSchemeAccess.mockResolvedValue(false)
+    await expect(route({ type: MESSAGE_TYPES.FETCH_FILE_AS_BYTES, payload: { url: 'file:///docs/photo.svg' } }))
+      .rejects.toThrow('Allow access to file URLs')
+    expect(fetchFileBytes).toHaveBeenCalledOnce()
+  })
+})

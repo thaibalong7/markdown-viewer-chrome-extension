@@ -96,7 +96,7 @@ export default function ChangeReviewPanel({ pair, candidate, acceptedSource, isE
   useEffect(() => {
     setActiveHunk(0)
     const timer = setTimeout(() => {
-      try { setCalculation({ pair, review: buildChangeReview(pair.before, pair.after) }) }
+      try { setCalculation({ pair, review: buildChangeReview(pair.before, pair.after, { fileTypeId: pair.fileTypeId }) }) }
       catch { setCalculation({ pair, review: { error: true } }) }
     }, 0)
     return () => clearTimeout(timer)

@@ -21,7 +21,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     .catch((error) => {
       const normalizedError = error instanceof Error ? error.message : String(error)
       logger.error('Failed to handle runtime message.', normalizedError)
-      sendResponse({ ok: false, error: normalizedError })
+      sendResponse({ ok: false, error: normalizedError,
+        ...(error?.code === 'document-too-large' ? { code: error.code } : {}) })
     })
 
   return true

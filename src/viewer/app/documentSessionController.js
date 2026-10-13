@@ -2,6 +2,8 @@ import { getDocumentCapabilities, getFileTypeFromUrl } from '../../shared/file-t
 import { logger } from '../../shared/logger.js'
 import { loadDocument as defaultLoadDocument } from '../documents/document-loader.js'
 import { createDocumentIdentity, createDocumentUiState } from '../documents/document-model.js'
+import { MAX_WATCH_BYTES } from '../../shared/constants/documents.js'
+import { createImageRevisionPayload } from '../documents/image-revision.js'
 
 function cleanupLoadedDocument(loadedDocument) {
   try {
@@ -99,7 +101,7 @@ export function createDocumentSessionController({
       currentDocument = nextDocument
       loadedDocument = { document: nextDocument, ...payload }
       workspaceReader = options.workspaceReader || null
-      acceptedSource = String(payload.text ?? '')
+      acceptedSource = fileType.contentKind === 'image' ? payload.revisionSource ?? null : String(payload.text ?? '')
       ++sourceRevision
       previousRevision = null
       ++revision
@@ -119,6 +121,11 @@ export function createDocumentSessionController({
         const loadError = safeLoadError(error, fileType)
         cleanupLoadedDocument(loadedDocument)
         currentDocument = nextDocument
+        workspaceReader = options.workspaceReader || null
+        acceptedSource = null
+        previousRevision = null
+        ++sourceRevision
+        ++revision
         loadedDocument = {
           document: nextDocument,
           text: '',
@@ -173,13 +180,16 @@ export function createDocumentSessionController({
   }
 
   function getWatchTarget() {
-    if (destroyed || loadController || currentDocument?.fileTypeId !== 'markdown') return null
+    const capabilities = getDocumentCapabilities(currentDocument?.fileTypeId)
+    if (destroyed || loadController || !capabilities?.watch) return null
     return {
       document: currentDocument,
       generation: navigationToken,
       revision,
       sourceRevision,
       acceptedSource,
+      reviewable: capabilities.changeReview && acceptedSource !== null,
+      fileTypeId: currentDocument.fileTypeId,
       supported: currentDocument.sourceKind === 'file-url' || typeof workspaceReader?.getFile === 'function'
     }
   }
@@ -202,21 +212,34 @@ export function createDocumentSessionController({
       fileType: getFileTypeFromUrl(currentDocument.href),
       workspaceReader,
       signal,
-      maxWatchBytes: 5 * 1024 * 1024
+      maxWatchBytes: MAX_WATCH_BYTES,
+      revisionOnly: true,
+      maxStandaloneTextFileSizeMiB: getSettings?.()?.documents?.maxStandaloneTextFileSizeMiB
     })
-    return matchesWatchTarget(target) && !signal?.aborted ? String(payload.text ?? '') : null
+    if (!matchesWatchTarget(target) || signal?.aborted) return null
+    return getFileTypeFromUrl(currentDocument.href).contentKind === 'image'
+      ? payload.revisionSource : String(payload.text ?? '')
   }
 
   async function applyCurrentRevision(target, text) {
     if (!matchesWatchTarget(target)) return false
-    previousRevision = { source: acceptedSource, id: sourceRevision }
+    const fileType = getFileTypeFromUrl(currentDocument.href)
+    const nextPayload = fileType.contentKind === 'image'
+      ? createImageRevisionPayload(text, fileType)
+      : { text }
+    previousRevision = target.reviewable ? { source: acceptedSource, id: sourceRevision } : null
     acceptedSource = text
     ++sourceRevision
     ++revision
-    loadedDocument = { ...loadedDocument, text }
+    const previousDocument = loadedDocument
+    loadedDocument = { ...loadedDocument, ...nextPayload, loadError: null }
     onRevisionApplied?.(loadedDocument)
     publish()
-    await render?.({ preserveScroll: true, honorHash: false })
+    try {
+      await render?.({ preserveScroll: true, honorHash: false })
+    } finally {
+      if (fileType.contentKind === 'image') cleanupLoadedDocument(previousDocument)
+    }
     return !destroyed && target.generation === navigationToken
   }
 

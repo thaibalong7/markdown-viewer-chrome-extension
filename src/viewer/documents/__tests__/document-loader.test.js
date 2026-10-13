@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({ sendMessage: vi.fn() }))
 vi.mock('../../../messaging/index.js', () => ({
-  MESSAGE_TYPES: { FETCH_FILE_AS_TEXT: 'FETCH_FILE_AS_TEXT' },
+  MESSAGE_TYPES: { FETCH_FILE_AS_TEXT: 'FETCH_FILE_AS_TEXT', FETCH_FILE_AS_BYTES: 'FETCH_FILE_AS_BYTES' },
   sendMessage: mocks.sendMessage
 }))
 
@@ -223,7 +223,8 @@ describe('document loader', () => {
     })).rejects.toMatchObject({ code: 'document-too-large' })
   })
 
-  it('uses a normalized local URL without reading real image bytes', async () => {
+  it('retains the normalized local resource fallback for oversized images', async () => {
+    mocks.sendMessage.mockResolvedValue({ ok: false, code: 'document-too-large', error: 'too large' })
     await expect(loadDocument({
       href: 'file:///docs/My%20Photo.PNG?ignored=1#ignored',
       fileType: IMAGE_TYPE
@@ -232,19 +233,19 @@ describe('document loader', () => {
       assetUrl: 'file:///docs/My%20Photo.PNG',
       revokeAssetUrl: null
     })
-    expect(mocks.sendMessage).not.toHaveBeenCalled()
   })
 
-  it('creates and idempotently revokes an object URL for virtual images', async () => {
+  it('keeps oversized workspace images viewable and idempotently releases their URL', async () => {
     const originalCreate = URL.createObjectURL
     const originalRevoke = URL.revokeObjectURL
     URL.createObjectURL = vi.fn().mockReturnValue('blob:virtual-photo')
     URL.revokeObjectURL = vi.fn()
     try {
-      const file = { name: 'photo.png', type: 'image/png' }
+      const file = { name: 'photo.png', type: 'image/png', size: MAX_PLAIN_TEXT_BYTES + 1, arrayBuffer: vi.fn() }
       const loaded = await loadDocument({ fileType: IMAGE_TYPE, workspaceReader: file })
       expect(loaded).toMatchObject({ text: null, assetUrl: 'blob:virtual-photo' })
       expect(URL.createObjectURL).toHaveBeenCalledWith(file)
+      expect(file.arrayBuffer).not.toHaveBeenCalled()
 
       loaded.revokeAssetUrl()
       loaded.revokeAssetUrl()
@@ -277,7 +278,8 @@ describe('document loader', () => {
     }
   })
 
-  it('loads real and virtual SVGs only as image resource URLs', async () => {
+  it('keeps oversized local SVG fallback and renders workspace SVG bytes only as image resources', async () => {
+    mocks.sendMessage.mockResolvedValue({ ok: false, code: 'document-too-large', error: 'too large' })
     await expect(loadDocument({
       href: 'file:///docs/Diagram.SVG?raw=1#source',
       fileType: SVG_TYPE
@@ -292,7 +294,9 @@ describe('document loader', () => {
     URL.createObjectURL = vi.fn().mockReturnValue('blob:virtual-svg')
     URL.revokeObjectURL = vi.fn()
     try {
+      const svgSource = '<svg onload="alert(1)"><script>alert(1)</script></svg>'
       const file = {
+        arrayBuffer: vi.fn().mockResolvedValue(new TextEncoder().encode(svgSource).buffer),
         name: 'diagram.svg',
         type: 'image/svg+xml',
         text: vi.fn().mockResolvedValue('<svg onload="alert(1)"><script>alert(1)</script></svg>')
@@ -300,7 +304,9 @@ describe('document loader', () => {
       const loaded = await loadDocument({ fileType: SVG_TYPE, workspaceReader: file })
       expect(loaded).toMatchObject({ text: null, assetUrl: 'blob:virtual-svg' })
       expect(file.text).not.toHaveBeenCalled()
-      expect(URL.createObjectURL).toHaveBeenCalledWith(file)
+      const imageBlob = URL.createObjectURL.mock.calls[0][0]
+      expect(imageBlob.type).toBe('image/svg+xml')
+      expect(await imageBlob.text()).toBe(svgSource)
       loaded.revokeAssetUrl()
     } finally {
       if (originalCreate) URL.createObjectURL = originalCreate
@@ -334,7 +340,8 @@ describe('document loader', () => {
       await expect(loadDocument({
         fileType: IMAGE_TYPE,
         workspaceReader: {
-          getFile: vi.fn().mockResolvedValue({ name: 'photo.jpeg', type: 'image/jpeg' })
+          getFile: vi.fn().mockResolvedValue({ name: 'photo.jpeg', type: 'image/jpeg',
+            arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer })
         },
         signal: controller.signal
       })).rejects.toMatchObject({ name: 'AbortError' })
@@ -347,4 +354,58 @@ describe('document loader', () => {
       else delete URL.revokeObjectURL
     }
   })
+})
+
+it('captures exact local image bytes and polls without allocating temporary URLs', async () => {
+  mocks.sendMessage.mockResolvedValue({ ok: true, data: { base64: btoa('pixels'), size: 6 } })
+  const create = vi.spyOn(URL, 'createObjectURL')
+  const revoke = vi.spyOn(URL, 'revokeObjectURL')
+  try {
+    const loaded = await loadDocument({ href: 'file:///docs/photo.png', fileType: IMAGE_TYPE })
+    expect(loaded.revisionSource).toBe(btoa('pixels'))
+    expect(loaded.assetUrl).toMatch(/^blob:/)
+    expect(create).toHaveBeenCalledOnce()
+    expect(mocks.sendMessage).toHaveBeenCalledWith({ type: 'FETCH_FILE_AS_BYTES', payload: { url: 'file:///docs/photo.png' } })
+    const revision = await loadDocument({ href: 'file:///docs/photo.png', fileType: IMAGE_TYPE, revisionOnly: true, maxWatchBytes: 10 })
+    expect(revision).toEqual({ revisionSource: btoa('pixels') })
+    expect(create).toHaveBeenCalledOnce()
+    loaded.revokeAssetUrl()
+    loaded.revokeAssetUrl()
+    expect(revoke).toHaveBeenCalledOnce()
+  } finally {
+    create.mockRestore()
+    revoke.mockRestore()
+  }
+})
+
+it('keeps large real images viewable but rejects their Watch reads', async () => {
+  mocks.sendMessage.mockResolvedValue({ ok: false, code: 'document-too-large', error: 'too large' })
+  await expect(loadDocument({ href: 'file:///docs/large.png', fileType: IMAGE_TYPE }))
+    .resolves.toMatchObject({ assetUrl: 'file:///docs/large.png' })
+  await expect(loadDocument({ href: 'file:///docs/large.png', fileType: IMAGE_TYPE, revisionOnly: true }))
+    .rejects.toMatchObject({ code: 'document-too-large' })
+})
+
+it('detects same-size workspace image overwrites using bytes rather than metadata', async () => {
+  const reader = { getFile: vi.fn()
+    .mockResolvedValueOnce(new Blob(['before']))
+    .mockResolvedValueOnce(new Blob(['after!'])) }
+  const first = await loadDocument({ fileType: IMAGE_TYPE, workspaceReader: reader, revisionOnly: true })
+  const second = await loadDocument({ fileType: IMAGE_TYPE, workspaceReader: reader, revisionOnly: true })
+  expect(first.revisionSource).toBe(btoa('before'))
+  expect(second.revisionSource).toBe(btoa('after!'))
+})
+
+it('bounds workspace image reads before allocating bytes and cancels late binary responses', async () => {
+  const arrayBuffer = vi.fn()
+  await expect(loadDocument({ fileType: IMAGE_TYPE, revisionOnly: true, maxWatchBytes: 4,
+    workspaceReader: { size: 5, arrayBuffer } })).rejects.toMatchObject({ code: 'document-too-large' })
+  expect(arrayBuffer).not.toHaveBeenCalled()
+  const controller = new AbortController()
+  mocks.sendMessage.mockImplementation(async () => {
+    controller.abort()
+    return { ok: true, data: { base64: btoa('late'), size: 4 } }
+  })
+  await expect(loadDocument({ href: 'file:///docs/photo.png', fileType: IMAGE_TYPE,
+    signal: controller.signal })).rejects.toMatchObject({ name: 'AbortError' })
 })

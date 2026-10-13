@@ -1,7 +1,9 @@
 import { MESSAGE_TYPES } from '../messaging/index.js'
 import { settingsService } from '../settings/index.js'
 import { logger } from '../shared/logger.js'
-import { fetchFileTextViaOffscreen } from './offscreen-fetch.js'
+import { fetchFileTextViaOffscreen, fetchFileBytesViaOffscreen } from './offscreen-fetch.js'
+import { MAX_WATCH_BYTES } from '../shared/constants/documents.js'
+import { getFileTypeFromUrl } from '../shared/file-types.js'
 import { sanitizeDownloadFilename } from '../shared/download.js'
 import { fileHistoryService } from './file-history-service.js'
 import { optionsPageService } from './options-page-service.js'
@@ -75,6 +77,7 @@ export function createMessageRouter(dependencies = {}) {
     fileHistory: dependencies.fileHistoryService || fileHistoryService,
     optionsPage: dependencies.optionsPageService || optionsPageService,
     fetchFileText: dependencies.fetchFileTextViaOffscreen || fetchFileTextViaOffscreen,
+    fetchFileBytes: dependencies.fetchFileBytesViaOffscreen || fetchFileBytesViaOffscreen,
     downloadsApi: dependencies.downloadsApi,
     extensionApi: dependencies.extensionApi,
     log: dependencies.logger || logger
@@ -122,6 +125,12 @@ export function createMessageRouter(dependencies = {}) {
       const url = normalizeFileFetchUrl(message.payload)
       await assertFileSchemeAccess(getExtensionApi(services.extensionApi))
       return services.fetchFileText(url)
+    },
+    [MESSAGE_TYPES.FETCH_FILE_AS_BYTES]: async (message) => {
+      const url = normalizeFileFetchUrl(message.payload)
+      if (getFileTypeFromUrl(url)?.contentKind !== 'image') throw new Error('Only registered image files are allowed')
+      await assertFileSchemeAccess(getExtensionApi(services.extensionApi))
+      return services.fetchFileBytes(url, MAX_WATCH_BYTES)
     },
     [MESSAGE_TYPES.DOWNLOAD_DATA_URL]: async (message) => {
       const { dataUrl, filename } = validateDownloadPayload(message.payload)

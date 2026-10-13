@@ -123,7 +123,8 @@ describe('file type registry', () => {
       exportDocument: false,
       print: true,
       viewModes: ['rendered', 'raw'],
-      zoom: true
+      zoom: true,
+      renderResolution: true
     })
   })
 
@@ -171,7 +172,8 @@ describe('file type registry', () => {
       exportDocument: false,
       print: true,
       viewModes: ['rendered'],
-      zoom: true
+      zoom: true,
+      renderResolution: true
     })
   })
 

@@ -5,6 +5,9 @@ import {
   createZoomInIconSvg,
   createZoomOutIconSvg
 } from '../../viewer/icons.js'
+import { getDocumentCapabilities } from '../../shared/file-types.js'
+import { createResolutionControls } from '../../viewer/lightbox-resolution.js'
+import { createLightboxRasterSession } from '../../viewer/lightbox-raster.js'
 
 const LIGHTBOX_CLASS = 'mdp-mermaid-lightbox'
 const ZOOM_IN_FACTOR = 1.2
@@ -106,13 +109,16 @@ function buildLightbox(rootEl) {
   hints.textContent =
     'Drag anywhere to pan  |  Ctrl + Scroll / pinch to zoom  |  Two-finger scroll to pan  |  +/- to zoom  |  0 to re-center  |  Esc to close'
 
-  controls.append(zoomOutButton, zoomInButton, recenterButton, closeButton)
+  const zoomButtons = document.createElement('div')
+  zoomButtons.className = 'mdp-lightbox-zoom-buttons'
+  zoomButtons.append(zoomOutButton, zoomInButton, recenterButton, closeButton)
+  controls.append(zoomButtons)
   positioner.appendChild(canvas)
   viewport.appendChild(positioner)
   overlay.append(viewport, controls, hints)
   rootEl.appendChild(overlay)
 
-  return {
+  const lightbox = {
     rootEl,
     overlay,
     viewport,
@@ -123,6 +129,7 @@ function buildLightbox(rootEl) {
     recenterButton,
     closeButton,
     hints,
+    renderResolution: LIGHTBOX_RENDER_SCALE,
     chartEl: null,
     chartWidth: 1,
     chartHeight: 1,
@@ -140,6 +147,17 @@ function buildLightbox(rootEl) {
     dragStartTranslateY: 0,
     gestureScale: 1
   }
+  lightbox.resolutionControls = createResolutionControls({
+    buttonClass: `${LIGHTBOX_CLASS}__button`,
+    async onChange(resolution) {
+      const session = lightbox.rasterSession
+      const applied = await session?.update(resolution)
+      if (applied && lightbox.rasterSession === session) lightbox.renderResolution = resolution
+      return Boolean(applied && lightbox.rasterSession === session)
+    }
+  })
+  controls.prepend(lightbox.resolutionControls.group)
+  return lightbox
 }
 
 function ensureLightbox(rootEl) {
@@ -220,6 +238,8 @@ function recenterChart(lightbox) {
 }
 
 function setChart(lightbox, sourceSvg) {
+  lightbox.rasterSession?.destroy()
+  lightbox.rasterSession = null
   const clone = sourceSvg.cloneNode(true)
   const { width, height } = getSvgDimensions(sourceSvg)
   const renderWidth = Math.max(1, width) * LIGHTBOX_RENDER_SCALE
@@ -238,6 +258,24 @@ function setChart(lightbox, sourceSvg) {
   clone.style.maxWidth = 'none'
   clone.style.display = 'block'
   clone.setAttribute('aria-hidden', 'true')
+  const resolution = lightbox.resolutionControls.setResolution(
+    getDocumentCapabilities('mermaid')?.renderResolution ? LIGHTBOX_RENDER_SCALE : null,
+    { width: renderWidth, height: renderHeight, baseResolution: LIGHTBOX_RENDER_SCALE })
+  lightbox.renderResolution = resolution ?? LIGHTBOX_RENDER_SCALE
+  if (resolution == null) return
+  const session = createLightboxRasterSession({
+    host: lightbox.canvas,
+    source: sourceSvg,
+    width: renderWidth,
+    height: renderHeight,
+    baseResolution: LIGHTBOX_RENDER_SCALE,
+    controls: lightbox.resolutionControls
+  })
+  lightbox.rasterSession = session
+  lightbox.resolutionControls.setBusy(true)
+  void session.update(resolution).then(() => {
+    if (lightbox.rasterSession === session) lightbox.resolutionControls.setBusy(false)
+  })
 }
 
 function stopDragging(lightbox) {
@@ -370,6 +408,11 @@ export function closeMermaidLightbox() {
   activeLightbox.overlay.hidden = true
   activeLightbox.overlay.classList.remove('is-open')
   activeLightbox.overlay.setAttribute('aria-hidden', 'true')
+  activeLightbox.rasterSession?.destroy()
+  activeLightbox.rasterSession = null
+  activeLightbox.canvas.replaceChildren()
+  activeLightbox.chartEl = null
+  activeLightbox.resolutionControls.setResolution(null)
   window.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('resize', handleResize)
 }

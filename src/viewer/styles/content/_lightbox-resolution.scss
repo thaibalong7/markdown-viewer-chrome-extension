@@ -1,0 +1,294 @@
+.mdp-lightbox-resolution {
+  --mdp-resolution-step-width: 46px;
+  --mdp-resolution-control-height: 40px;
+  --mdp-resolution-step-height: 32px;
+  --mdp-resolution-trigger-width: 128px;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding-right: 12px;
+  border-right: 1px solid var(--mdp-border);
+  color: var(--mdp-text);
+  font: 600 11px/1.4 system-ui, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+
+  &[hidden],
+  &__advice[hidden],
+  &__status[hidden] { display: none; }
+
+  &__row {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    height: var(--mdp-resolution-control-height);
+    border: 0;
+    --mdp-resolution-border: var(--mdp-border);
+    border-radius: 999px;
+    background: var(--mdp-surface);
+    box-shadow: var(--mdp-shadow-float);
+    white-space: nowrap;
+    transition: transform 160ms ease, background-color 180ms ease, border-color 180ms ease;
+  }
+
+  &__row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--mdp-resolution-border);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  &[data-expanded='true'][data-state='ready'] &__row {
+    --mdp-resolution-border: var(--mdp-border-strong);
+  }
+
+  &__actions {
+    width: 0;
+    flex: 0 0 auto;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateX(6px);
+    transition:
+      width 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 160ms ease,
+      transform 220ms ease;
+  }
+
+  &__steps {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: max-content;
+    padding: 4px;
+    border-right: 1px solid var(--mdp-border);
+  }
+
+  &[data-expanded='true'] &__actions {
+    width: calc(var(--mdp-resolution-step-width) * 2 + 13px);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+
+  // One capsule owns the border and shadow; its buttons are local segments.
+  & &__button,
+  & &__trigger {
+    width: auto;
+    flex: 0 0 auto;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    -webkit-user-select: none;
+    user-select: none;
+    transform: none;
+    transition: background-color 160ms ease, color 160ms ease, transform 140ms ease;
+
+    &:focus-visible {
+      outline: 2px solid var(--mdp-focus-color, var(--mdp-link));
+      outline-offset: -2px;
+    }
+
+    &:active:not(:disabled) { transform: scale(0.96); }
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  & &__button {
+    width: var(--mdp-resolution-step-width);
+    height: var(--mdp-resolution-step-height);
+    padding: 0 4px;
+    border-radius: 999px;
+    color: var(--mdp-muted);
+    font-size: 11px;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      color: var(--mdp-text);
+      background: var(--mdp-panel-bg);
+    }
+  }
+
+  & &__trigger {
+    width: var(--mdp-resolution-trigger-width);
+    height: var(--mdp-resolution-control-height);
+    padding: 0 8px;
+    gap: 4px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  &__title {
+    flex: 0 0 60px;
+    text-align: left;
+    color: var(--mdp-muted);
+  }
+
+  &[data-state='error'] &__title { font-size: 10px; }
+
+  &__level {
+    position: relative;
+    box-sizing: border-box;
+    flex: 0 0 46px;
+    width: 46px;
+    text-align: center;
+    padding: 0 4px;
+    border-left: 1px solid var(--mdp-resolution-border);
+    color: var(--mdp-text);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 24px;
+  }
+
+  &__status {
+    // Live announcements do not occupy a layout slot; state replaces the caption.
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  &[data-state='limit'] &__row {
+    color: var(--mdp-toast-warning-text, var(--mdp-text));
+    background: var(--mdp-toast-warning-bg, var(--mdp-surface));
+    --mdp-resolution-border: var(--mdp-toast-warning-border, var(--mdp-border));
+  }
+
+  &[data-state='error'] &__row {
+    color: var(--mdp-toast-error-text, var(--mdp-text));
+    background: var(--mdp-toast-error-bg, var(--mdp-surface));
+    --mdp-resolution-border: var(--mdp-toast-error-border, var(--mdp-border));
+  }
+
+  &[data-state='limit'] &__title,
+  &[data-state='error'] &__title,
+  &[data-state='limit'] &__level,
+  &[data-state='error'] &__level { color: inherit; }
+
+  &[data-state='busy'] &__trigger { cursor: progress; }
+  &[data-state='busy'] &__button:disabled { cursor: wait; }
+
+  &[data-state='busy'] &__level {
+    color: transparent;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--mdp-text);
+      border-right-color: transparent;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: mdp-resolution-spin 800ms linear infinite;
+    }
+  }
+}
+
+@keyframes mdp-resolution-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+// Bitmap pixels are explicit; avoid retaining a history-dependent vector layer.
+.mdp-image-lightbox__canvas.mdp-lightbox-rasterized,
+.mdp-mermaid-lightbox__canvas.mdp-lightbox-rasterized { will-change: auto; }
+
+.mdp-lightbox-resolution__bitmap {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+}
+
+.mdp-mermaid-lightbox__canvas > .mdp-lightbox-resolution__bitmap {
+  filter: drop-shadow(0 20px 40px color-mix(in srgb, var(--mdp-text) 18%, transparent));
+}
+
+.mdp-image-lightbox__controls,
+.mdp-mermaid-lightbox__controls {
+  max-width: calc(100% - 32px);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.mdp-lightbox-zoom-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+}
+
+// Keep the two rows aligned on narrow screens when resolution is available.
+.mdp-lightbox-resolution:not([hidden]) + .mdp-lightbox-zoom-buttons > .mdp-image-lightbox__button,
+.mdp-lightbox-resolution:not([hidden]) + .mdp-lightbox-zoom-buttons > .mdp-mermaid-lightbox__button {
+  width: 40px;
+  height: 40px;
+}
+
+@media (max-width: 639px) {
+  .mdp-image-lightbox__controls,
+  .mdp-mermaid-lightbox__controls {
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .mdp-mermaid-lightbox__controls {
+    top: 12px;
+    right: 12px;
+    gap: 6px;
+  }
+
+  .mdp-lightbox-resolution {
+    padding-right: 0;
+    border-right: 0;
+  }
+}
+
+@media (pointer: coarse) {
+  .mdp-lightbox-resolution {
+    --mdp-resolution-control-height: 44px;
+    --mdp-resolution-step-height: 44px;
+  }
+
+  .mdp-lightbox-resolution__steps { padding-block: 0; }
+
+  .mdp-lightbox-resolution:not([hidden]) + .mdp-lightbox-zoom-buttons > .mdp-image-lightbox__button,
+  .mdp-lightbox-resolution:not([hidden]) + .mdp-lightbox-zoom-buttons > .mdp-mermaid-lightbox__button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-lightbox-resolution .mdp-lightbox-resolution__row,
+  .mdp-lightbox-resolution .mdp-lightbox-resolution__trigger,
+  .mdp-lightbox-resolution .mdp-lightbox-resolution__button,
+  .mdp-lightbox-resolution .mdp-lightbox-resolution__actions {
+    transition: none;
+    &:hover,
+    &:focus-visible,
+    &:active { transform: none; }
+  }
+
+  .mdp-lightbox-resolution[data-state='busy'] .mdp-lightbox-resolution__level::after {
+    animation: none;
+  }
+
+}

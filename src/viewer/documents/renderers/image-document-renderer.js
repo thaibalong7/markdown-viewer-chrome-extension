@@ -40,6 +40,7 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   const loadingState = createState(ownerDocument, 'loading', `Loading ${displayName}…`)
   const image = ownerDocument.createElement('img')
   image.className = 'mdp-image-document__image'
+  image.setAttribute('data-mdp-file-type', loadedDocument?.document?.fileTypeId || '')
   image.alt = displayName
   image.hidden = true
   image.draggable = false

@@ -33,7 +33,8 @@ const MERMAID_CAPABILITIES = Object.freeze({
   exportDocument: false,
   print: true,
   viewModes: Object.freeze(['rendered', 'raw']),
-  zoom: true
+  zoom: true,
+  renderResolution: true
 })
 
 const FILE_TYPES = Object.freeze([
@@ -112,7 +113,7 @@ const FILE_TYPES = Object.freeze([
     label: 'SVG image',
     explorerIcon: 'vector-image',
     mimeTypes: Object.freeze(['image/svg+xml']),
-    capabilities: IMAGE_CAPABILITIES
+    capabilities: Object.freeze({ ...IMAGE_CAPABILITIES, renderResolution: true })
   })
 ])
 

@@ -4,6 +4,9 @@ import {
   createZoomInIconSvg,
   createZoomOutIconSvg
 } from './icons.js'
+import { getDocumentCapabilities, getFileTypeFromName } from '../shared/file-types.js'
+import { createResolutionControls, getDefaultImageResolution } from './lightbox-resolution.js'
+import { createLightboxRasterSession } from './lightbox-raster.js'
 
 const LIGHTBOX_CLASS = 'mdp-image-lightbox'
 const ZOOM_FACTOR = 1.2
@@ -27,6 +30,20 @@ export function getRenderableImageDimensions(image) {
   const height = Number(image?.naturalHeight) || 0
   if (image?.complete !== true || width <= 0 || height <= 0) return null
   return { width, height }
+}
+
+export function canAdjustImageResolution(image) {
+  const fileTypeId = image?.getAttribute?.('data-mdp-file-type')
+  if (fileTypeId) return Boolean(getDocumentCapabilities(fileTypeId)?.renderResolution)
+  const source = image?.currentSrc || image?.src || ''
+  if (/^data:image\/svg\+xml[;,]/i.test(source)) {
+    return Boolean(getDocumentCapabilities('svg-image')?.renderResolution)
+  }
+  try {
+    return Boolean(getFileTypeFromName(decodeURIComponent(new URL(source).pathname))?.capabilities.renderResolution)
+  } catch {
+    return false
+  }
 }
 
 function createControlButton(label, icon) {
@@ -66,13 +83,16 @@ function buildLightbox(rootEl) {
   hints.textContent =
     'Drag to pan  |  Ctrl + Scroll / pinch to zoom  |  +/- to zoom  |  0 to fit  |  Esc to close'
 
-  controls.append(zoomOutButton, zoomInButton, recenterButton, closeButton)
+  const zoomButtons = document.createElement('div')
+  zoomButtons.className = 'mdp-lightbox-zoom-buttons'
+  zoomButtons.append(zoomOutButton, zoomInButton, recenterButton, closeButton)
+  controls.append(zoomButtons)
   positioner.appendChild(canvas)
   viewport.appendChild(positioner)
   overlay.append(viewport, controls, hints)
   rootEl.appendChild(overlay)
 
-  return {
+  const lightbox = {
     rootEl,
     overlay,
     viewport,
@@ -81,6 +101,7 @@ function buildLightbox(rootEl) {
     zoomInButton,
     recenterButton,
     closeButton,
+    renderResolution: 1,
     width: 1,
     height: 1,
     viewportWidth: 1,
@@ -96,6 +117,17 @@ function buildLightbox(rootEl) {
     gestureScale: 1,
     returnFocusEl: null
   }
+  lightbox.resolutionControls = createResolutionControls({
+    buttonClass: `${LIGHTBOX_CLASS}__button`,
+    async onChange(resolution) {
+      const session = lightbox.rasterSession
+      const applied = await session?.update(resolution)
+      if (applied && lightbox.rasterSession === session) lightbox.renderResolution = resolution
+      return Boolean(applied && lightbox.rasterSession === session)
+    }
+  })
+  controls.prepend(lightbox.resolutionControls.group)
+  return lightbox
 }
 
 function updateViewportMetrics(lightbox) {
@@ -274,6 +306,8 @@ export function openImageLightbox(image) {
   if (!dimensions || !(rootEl instanceof HTMLElement)) return false
 
   const lightbox = ensureLightbox(rootEl)
+  lightbox.rasterSession?.destroy()
+  lightbox.rasterSession = null
   const clone = image.cloneNode(false)
   clone.removeAttribute('tabindex')
   clone.removeAttribute('role')
@@ -290,6 +324,24 @@ export function openImageLightbox(image) {
   lightbox.canvas.style.width = `${dimensions.width}px`
   lightbox.canvas.style.height = `${dimensions.height}px`
   lightbox.canvas.replaceChildren(clone)
+  const adjustable = canAdjustImageResolution(image)
+  const resolution = lightbox.resolutionControls.setResolution(
+    adjustable ? getDefaultImageResolution(window.devicePixelRatio) : null, dimensions)
+  lightbox.renderResolution = resolution ?? 1
+  if (resolution != null) {
+    const session = createLightboxRasterSession({
+      host: lightbox.canvas,
+      source: image,
+      width: dimensions.width,
+      height: dimensions.height,
+      controls: lightbox.resolutionControls
+    })
+    lightbox.rasterSession = session
+    lightbox.resolutionControls.setBusy(true)
+    void session.update(lightbox.renderResolution).then(() => {
+      if (lightbox.rasterSession === session) lightbox.resolutionControls.setBusy(false)
+    })
+  }
   lightbox.returnFocusEl = image
   fitImage(lightbox)
   lightbox.overlay.hidden = false
@@ -305,6 +357,10 @@ export function closeImageLightbox() {
   stopDragging(activeLightbox)
   activeLightbox.overlay.hidden = true
   activeLightbox.overlay.classList.remove('is-open')
+  activeLightbox.rasterSession?.destroy()
+  activeLightbox.rasterSession = null
+  activeLightbox.canvas.replaceChildren()
+  activeLightbox.resolutionControls.setResolution(null)
   window.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('resize', handleResize)
   activeLightbox.returnFocusEl?.focus?.()

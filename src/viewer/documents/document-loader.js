@@ -131,15 +131,7 @@ export async function loadDocument({
     }
     text = await file.text()
   } else {
-    const response = await sendMessage({
-      type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT,
-      payload: { url: href }
-    })
-    throwIfAborted(signal)
-    if (!response?.ok) {
-      throw new Error(response?.error || 'Could not open document.')
-    }
-    text = String(response.data?.text ?? '')
+    text = await readLocalTextResource(href, { signal })
   }
 
   throwIfAborted(signal)
@@ -147,4 +139,16 @@ export async function loadDocument({
   if (maxWatchBytes && textBytes > maxWatchBytes) throw new DocumentTooLargeError(maxWatchBytes)
   enforceStandaloneTextLimit(fileType, textBytes, maxStandaloneTextBytes)
   return { text: String(text ?? ''), assetUrl: null, revokeAssetUrl: null }
+}
+
+// Shared local-file I/O for text documents and SVG image rasterization.
+export async function readLocalTextResource(href, { signal } = {}) {
+  throwIfAborted(signal)
+  const response = await sendMessage({
+    type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT,
+    payload: { url: href }
+  })
+  throwIfAborted(signal)
+  if (!response?.ok) throw new Error(response?.error || 'Could not open document.')
+  return String(response.data?.text ?? '')
 }

@@ -8,11 +8,11 @@ const VIEWER_ROOT_SELECTOR = '#mdp-viewer-root'
  * @param {object} [options]
  * @param {string} options.text
  * @param {number} [options.showDelayMs]
- * @returns {{ destroy: () => void }}
+ * @returns {{ destroy: () => void, hide: () => void, setText: (text: string) => void }}
  */
 export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY_DEFAULT_MS } = {}) {
   if (!(anchor instanceof HTMLElement) || !text) {
-    return { destroy() {} }
+    return { destroy() {}, hide() {}, setText() {} }
   }
 
   const doc = anchor.ownerDocument
@@ -72,7 +72,7 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
   }
 
   function show() {
-    if (tipEl || !anchor.isConnected) return
+    if (tipEl || !text || !anchor.isConnected) return
     tipEl = doc.createElement('div')
     tipEl.className = 'mdp-tooltip'
     tipEl.setAttribute('role', 'tooltip')
@@ -102,6 +102,16 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
   anchor.addEventListener('focusout', onFocusOut)
 
   return {
+    hide,
+    setText(nextText) {
+      text = String(nextText || '')
+      if (!text) {
+        hide()
+      } else if (tipEl) {
+        tipEl.textContent = text
+        positionTip()
+      }
+    },
     destroy() {
       anchor.removeEventListener('pointerenter', onPointerEnter)
       anchor.removeEventListener('pointerleave', onPointerLeave)

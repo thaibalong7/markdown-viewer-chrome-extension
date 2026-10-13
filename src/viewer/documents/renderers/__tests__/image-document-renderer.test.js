@@ -150,7 +150,8 @@ describe('image document renderer', () => {
     expect(image).toMatchObject({
       tagName: 'IMG',
       src: 'blob:unsafe-svg',
-      alt: 'unsafe.svg'
+      alt: 'unsafe.svg',
+      attributes: { 'data-mdp-file-type': 'svg-image' }
     })
     expect(articleEl.children[0].children.every((node) => node.tagName !== 'SVG')).toBe(true)
     image.naturalWidth = 100

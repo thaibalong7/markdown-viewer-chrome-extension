@@ -3,13 +3,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const mocks = vi.hoisted(() => ({
   renderDocument: vi.fn(),
   renderIntoElement: vi.fn(),
-  buildTocItems: vi.fn()
+  buildTocItems: vi.fn(),
+  prepareMarkdownImages: vi.fn()
 }))
 vi.mock('../../../core/renderer.js', () => ({
   renderDocument: mocks.renderDocument,
   renderIntoElement: mocks.renderIntoElement
 }))
 vi.mock('../../../core/toc-builder.js', () => ({ buildTocItems: mocks.buildTocItems }))
+vi.mock('../../markdown-images.js', () => ({ prepareMarkdownImages: mocks.prepareMarkdownImages }))
 
 import { render } from '../markdown-document-renderer.js'
 
@@ -43,6 +45,46 @@ function createArticle() {
 describe('Markdown document renderer', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mocks.prepareMarkdownImages.mockReturnValue(vi.fn())
+  })
+
+  it('prepares sanitized article images and releases them with plugin resources', async () => {
+    const imageCleanup = vi.fn()
+    const pluginCleanup = vi.fn()
+    mocks.prepareMarkdownImages.mockReturnValue(imageCleanup)
+    mocks.renderDocument.mockResolvedValue({
+      html: '<img src="./diagram.svg" alt="Diagram">',
+      pluginManager: { afterRender: vi.fn().mockResolvedValue(pluginCleanup) }
+    })
+    const articleEl = {}
+    const signal = new AbortController().signal
+    const result = await render({
+      loadedDocument: { document: { href: 'file:///docs/current.md' }, text: '![Diagram](./diagram.svg)' },
+      articleEl, settings: {}, services: {}, signal
+    })
+
+    expect(mocks.prepareMarkdownImages).toHaveBeenCalledWith({
+      articleEl, documentHref: 'file:///docs/current.md', signal
+    })
+    expect(mocks.renderIntoElement.mock.invocationCallOrder[0]).toBeLessThan(
+      mocks.prepareMarkdownImages.mock.invocationCallOrder[0]
+    )
+    result.cleanup()
+    expect(imageCleanup).toHaveBeenCalledOnce()
+    expect(pluginCleanup).toHaveBeenCalledOnce()
+  })
+
+  it('releases prepared image resources if an afterRender hook fails', async () => {
+    const imageCleanup = vi.fn()
+    mocks.prepareMarkdownImages.mockReturnValue(imageCleanup)
+    mocks.renderDocument.mockResolvedValue({
+      html: '<p>Document</p>',
+      pluginManager: { afterRender: vi.fn().mockRejectedValue(new Error('Hook failed')) }
+    })
+    await expect(render({
+      loadedDocument: { text: 'Document' }, articleEl: {}, settings: {}, services: {}
+    })).rejects.toThrow('Hook failed')
+    expect(imageCleanup).toHaveBeenCalledOnce()
   })
 
   it('preserves the existing sanitized render and afterRender sequence', async () => {

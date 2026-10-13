@@ -1,6 +1,7 @@
 import { renderDocument, renderIntoElement } from '../../core/renderer.js'
 import { buildTocItems } from '../../core/toc-builder.js'
 import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
+import { prepareMarkdownImages } from '../markdown-images.js'
 
 const PLUGIN_WARNING_MESSAGE =
   'Some Markdown enhancements could not be applied. Basic Markdown is still available.'
@@ -67,23 +68,35 @@ export async function render({ loadedDocument, articleEl, settings, services, si
   renderIntoElement(articleEl, result.html)
   throwIfAborted(signal)
 
-  const pluginCleanup = await result.pluginManager?.afterRender({
+  const imageCleanup = prepareMarkdownImages({
     articleEl,
-    settings,
-    copyCodeWithToast: services.copyCodeWithToast,
-    signal,
-    onPluginWarning
+    documentHref: loadedDocument?.document?.href,
+    signal
   })
-  if (signal?.aborted) {
-    pluginCleanup?.()
+  let pluginCleanup
+  try {
+    pluginCleanup = await result.pluginManager?.afterRender({
+      articleEl,
+      settings,
+      copyCodeWithToast: services.copyCodeWithToast,
+      signal,
+      onPluginWarning
+    })
     throwIfAborted(signal)
+    services.prepareZoomableImages?.()
+  } catch (error) {
+    imageCleanup()
+    pluginCleanup?.()
+    throw error
   }
-  services.prepareZoomableImages?.()
 
   return {
     tocItems: buildTocItems(articleEl),
     interactionProfile: 'markdown',
-    cleanup: typeof pluginCleanup === 'function' ? pluginCleanup : undefined,
+    cleanup: () => {
+      imageCleanup()
+      pluginCleanup?.()
+    },
     renderedText: source,
     renderResult: {
       ...result,

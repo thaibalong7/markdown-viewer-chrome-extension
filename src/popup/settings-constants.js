@@ -9,6 +9,7 @@ export const PLUGIN_LABELS = {
   tableEnhance: 'Table enhance',
   emoji: 'Emoji',
   footnote: 'Footnotes',
+  githubAlerts: 'GitHub Alerts',
   math: 'Math (KaTeX)',
   mermaid: 'Mermaid diagrams'
 }
@@ -21,6 +22,7 @@ export const PLUGIN_HINTS = {
   tableEnhance: 'Makes wide tables scrollable with enhanced table styling.',
   emoji: 'Converts supported :shortcode: text into emoji.',
   footnote: 'Adds footnote markers, definitions, and return links.',
+  githubAlerts: 'Styles GitHub-style notes, tips, important messages, warnings, and cautions.',
   math: 'Renders LaTeX-style math with KaTeX when needed.',
   mermaid: 'Renders Mermaid code fences as diagrams with export actions.'
 }

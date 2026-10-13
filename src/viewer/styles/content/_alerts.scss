@@ -1,0 +1,71 @@
+// Article-local notice variant: reader typography and paired theme status colors.
+.mdp-markdown-body .mdp-alert {
+  --mdp-alert-color: var(--mdp-toast-info-text);
+  --mdp-alert-bg: var(--mdp-toast-info-bg);
+  --mdp-alert-border: var(--mdp-toast-info-border);
+  margin: 0 0 1em;
+  padding: 13px 15px;
+  border: 1px solid var(--mdp-alert-border);
+  border-inline-start: 3px solid var(--mdp-alert-color);
+  border-radius: 8px;
+  background: var(--mdp-alert-bg);
+  color: var(--mdp-alert-color);
+  overflow-wrap: anywhere;
+
+  &--tip {
+    --mdp-alert-color: var(--mdp-toast-success-text);
+    --mdp-alert-bg: var(--mdp-toast-success-bg);
+    --mdp-alert-border: var(--mdp-toast-success-border);
+  }
+
+  &--warning {
+    --mdp-alert-color: var(--mdp-toast-warning-text);
+    --mdp-alert-bg: var(--mdp-toast-warning-bg);
+    --mdp-alert-border: var(--mdp-toast-warning-border);
+  }
+
+  &--caution {
+    --mdp-alert-color: var(--mdp-toast-error-text);
+    --mdp-alert-bg: var(--mdp-toast-error-bg);
+    --mdp-alert-border: var(--mdp-toast-error-border);
+  }
+
+  > .mdp-alert__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.65em;
+    font-weight: 650;
+    line-height: 1.4;
+  }
+
+  .mdp-alert__icon {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  // Titles, links and list markers retain contrast on this status surface,
+  // including custom themes whose document/link colors differ from their base.
+  h1, h2, h3, h4, h5, h6, a, li::marker {
+    color: inherit;
+  }
+
+  a {
+    text-decoration-color: currentColor;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media print {
+  .mdp-markdown-body .mdp-alert {
+    break-inside: avoid;
+    background: white;
+    color: black;
+    border-color: #bbb;
+    border-inline-start-color: #555;
+  }
+}

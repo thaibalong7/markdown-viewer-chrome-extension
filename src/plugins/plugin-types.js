@@ -12,6 +12,7 @@ export const PLUGIN_IDS = {
   TABLE_ENHANCE: 'tableEnhance',
   EMOJI: 'emoji',
   FOOTNOTE: 'footnote',
+  GITHUB_ALERTS: 'githubAlerts',
   MATH: 'math',
   MERMAID: 'mermaid'
 }
@@ -32,6 +33,7 @@ export const CORE_PLUGIN_DEFAULTS = {
 export const OPTIONAL_PLUGIN_DEFAULTS = {
   [PLUGIN_IDS.EMOJI]: { enabled: true },
   [PLUGIN_IDS.FOOTNOTE]: { enabled: true },
+  [PLUGIN_IDS.GITHUB_ALERTS]: { enabled: true },
   [PLUGIN_IDS.MATH]: { enabled: true },
   [PLUGIN_IDS.MERMAID]: { enabled: true, renderer: MERMAID_RENDERERS.OFFICIAL }
 }

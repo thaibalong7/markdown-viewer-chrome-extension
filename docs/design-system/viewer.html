@@ -27,6 +27,12 @@
       --mdp-warning: #b35c00;
       --mdp-warning-soft: #fff3dc;
       --mdp-danger: #c2413a;
+      --mdp-toast-info-bg: #eff6ff;
+      --mdp-toast-info-text: #1d4ed8;
+      --mdp-toast-info-border: #bfdbfe;
+      --mdp-toast-success-bg: #ecfdf5;
+      --mdp-toast-success-text: #047857;
+      --mdp-toast-success-border: #a7f3d0;
       --mdp-toast-warning-bg: #fffbeb;
       --mdp-toast-warning-text: #92400e;
       --mdp-toast-warning-border: #fde68a;
@@ -72,6 +78,12 @@
       --mdp-warning: #f4b24e;
       --mdp-warning-soft: #3b2a0e;
       --mdp-danger: #ff8d85;
+      --mdp-toast-info-bg: #0c2d6b;
+      --mdp-toast-info-text: #bfdbfe;
+      --mdp-toast-info-border: #1d4ed8;
+      --mdp-toast-success-bg: #063f2c;
+      --mdp-toast-success-text: #bbf7d0;
+      --mdp-toast-success-border: #047857;
       --mdp-toast-warning-bg: #3b2a05;
       --mdp-toast-warning-text: #fde68a;
       --mdp-toast-warning-border: #b45309;
@@ -3184,6 +3196,70 @@
     }
 
 </style>
+  <!-- GitHub Alerts snapshot: src/viewer/styles/content/_alerts.scss;
+       palettes: src/theme/index.js; icons: src/shared/icons/application-icons.js. -->
+  <style id="runtime-markdown-alert-styles">
+.mdp-markdown-body .mdp-alert {
+  --mdp-alert-color: var(--mdp-toast-info-text);
+  --mdp-alert-bg: var(--mdp-toast-info-bg);
+  --mdp-alert-border: var(--mdp-toast-info-border);
+  margin: 0 0 1em;
+  padding: 13px 15px;
+  border: 1px solid var(--mdp-alert-border);
+  border-inline-start: 3px solid var(--mdp-alert-color);
+  border-radius: 8px;
+  background: var(--mdp-alert-bg);
+  color: var(--mdp-alert-color);
+  overflow-wrap: anywhere;
+}
+.mdp-markdown-body .mdp-alert--tip {
+  --mdp-alert-color: var(--mdp-toast-success-text);
+  --mdp-alert-bg: var(--mdp-toast-success-bg);
+  --mdp-alert-border: var(--mdp-toast-success-border);
+}
+.mdp-markdown-body .mdp-alert--warning {
+  --mdp-alert-color: var(--mdp-toast-warning-text);
+  --mdp-alert-bg: var(--mdp-toast-warning-bg);
+  --mdp-alert-border: var(--mdp-toast-warning-border);
+}
+.mdp-markdown-body .mdp-alert--caution {
+  --mdp-alert-color: var(--mdp-toast-error-text);
+  --mdp-alert-bg: var(--mdp-toast-error-bg);
+  --mdp-alert-border: var(--mdp-toast-error-border);
+}
+.mdp-markdown-body .mdp-alert > .mdp-alert__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.65em;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.mdp-markdown-body .mdp-alert .mdp-alert__icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+}
+.mdp-markdown-body .mdp-alert h1, .mdp-markdown-body .mdp-alert h2, .mdp-markdown-body .mdp-alert h3, .mdp-markdown-body .mdp-alert h4, .mdp-markdown-body .mdp-alert h5, .mdp-markdown-body .mdp-alert h6, .mdp-markdown-body .mdp-alert a, .mdp-markdown-body .mdp-alert li::marker {
+  color: inherit;
+}
+.mdp-markdown-body .mdp-alert a {
+  text-decoration-color: currentColor;
+}
+.mdp-markdown-body .mdp-alert > :last-child {
+  margin-bottom: 0;
+}
+
+@media print {
+  .mdp-markdown-body .mdp-alert {
+    break-inside: avoid;
+    background: white;
+    color: black;
+    border-color: #bbb;
+    border-inline-start-color: #555;
+  }
+}
+  </style>
 </head>
 <body data-theme="light" class="ds-viewer">
   <header class="ds-nav"><a class="ds-brand" href="./index.html">Markdown Plus <span>/ Design system</span></a><nav class="ds-links" aria-label="Design system"><a href="./index.html">Overview</a><a href="./components.html">Components</a><a href="./icons.html">Icons</a><a href="./viewer.html" aria-current="page">Viewer preview</a></nav></header>
@@ -3268,6 +3344,34 @@
           <blockquote>
             Documentation follows runtime source. It does not introduce a second visual direction.
           </blockquote>
+
+          <h2 id="markdown-alerts">GitHub Alerts</h2>
+          <p>Article notices inherit reader typography and paired theme status colors. Type labels remain visible without color; decorative glyphs use the approved application icon family. Switch Light/Dark to inspect the implemented contract.</p>
+<div class="mdp-alert mdp-alert--note" data-mdp-alert="note" role="note" aria-label="Note" data-line="0">
+<p class="mdp-alert__title"><svg class="mdp-alert__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>Note</p>
+<p data-line="1">This is a GitHub-style note. It preserves <strong>Markdown</strong> and <a href="#foundation">keyboard-accessible links</a>.</p>
+</div>
+<div class="mdp-alert mdp-alert--tip" data-mdp-alert="tip" role="note" aria-label="Tip" data-line="3">
+<p class="mdp-alert__title"><svg class="mdp-alert__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"></path></svg>Tip</p>
+<p data-line="4">Use the existing theme status palettes to keep feedback readable.</p>
+<ul data-line="6">
+<li>Built-in themes provide paired colors.</li>
+<li>Custom themes inherit them from their base.</li>
+</ul>
+</div>
+<div class="mdp-alert mdp-alert--important" data-mdp-alert="important" role="note" aria-label="Important" data-line="9">
+<p class="mdp-alert__title"><svg class="mdp-alert__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><circle cx="12" cy="7" r="1" fill="currentColor" stroke="none"></circle></svg>Important</p>
+<p data-line="10">Important information uses the info palette and a distinct type label.</p>
+</div>
+<div class="mdp-alert mdp-alert--warning" data-mdp-alert="warning" role="note" aria-label="Warning" data-line="12">
+<p class="mdp-alert__title"><svg class="mdp-alert__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10.3 4.5 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 4.5a2 2 0 0 0-3.4 0Z M12 9v5"></path><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"></circle></svg>Warning</p>
+<p data-line="13">Check your changes before replacing a local document.</p>
+</div>
+<div class="mdp-alert mdp-alert--caution" data-mdp-alert="caution" role="note" aria-label="Caution" data-line="15">
+<p class="mdp-alert__title"><svg class="mdp-alert__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"></circle><path d="m9 9 6 6 M15 9l-6 6"></path></svg>Caution</p>
+<p data-line="16">Destructive changes can discard unsaved work.</p>
+</div>
+          <p class="catalog-note">Sources: src/plugins/optional/github-alerts.plugin.js · src/viewer/styles/content/_alerts.scss · src/shared/icons/application-icons.js. Popup → Plugins can restore ordinary blockquotes.</p>
 
           <h2 id="foundation">Foundation</h2>
           <p>
@@ -3369,9 +3473,9 @@
 </div>
         <div class="mdp-right-rail__outline-clip" aria-hidden="false">
         <div class="mdp-sidebar-panel mdp-sidebar-panel--outline" id="mdp-panel-outline">
-          <div class="mdp-outline__header"><span>On this page</span><span class="mdp-outline__count">4 headings</span></div>
+          <div class="mdp-outline__header"><span>On this page</span><span class="mdp-outline__count">5 headings</span></div>
           <nav class="mdp-toc" aria-label="Document outline">
-            <ul class="mdp-toc__list"><li><a class="mdp-toc__link" href="#foundation">Foundation</a></li><li><a class="mdp-toc__link" href="#layout">Runtime layout</a></li><li><a class="mdp-toc__link" href="#states">Interaction states</a></li><li><a class="mdp-toc__link" href="#extension">Extending the system</a></li></ul>
+            <ul class="mdp-toc__list"><li><a class="mdp-toc__link" href="#markdown-alerts">GitHub Alerts</a></li><li><a class="mdp-toc__link" href="#foundation">Foundation</a></li><li><a class="mdp-toc__link" href="#layout">Runtime layout</a></li><li><a class="mdp-toc__link" href="#states">Interaction states</a></li><li><a class="mdp-toc__link" href="#extension">Extending the system</a></li></ul>
           </nav>
         </div>
         </div>

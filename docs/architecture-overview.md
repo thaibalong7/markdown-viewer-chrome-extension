@@ -211,9 +211,11 @@ React renders review text safely without inserting source HTML or reconciling th
 Plugin ids/defaults live in `src/plugins/plugin-types.js`; registration and lifecycle hooks live in `src/plugins/plugin-manager.js`.
 
 - Core: code-highlight gating, task lists, heading anchors, table enhancement.
-- Optional: emoji, footnotes, Math/KaTeX, Mermaid.
+- Optional: emoji, footnotes, GitHub Alerts, Math/KaTeX, Mermaid.
 
 All registered plugins are enabled by default. Optional plugins are dynamically imported when enabled, so users can still disable specialized behavior and avoid loading its implementation. Hooks can extend Markdown, preprocess source, postprocess HTML, and attach behavior after render. Plugin-produced article HTML remains inside the sanitizer path.
+
+`src/plugins/optional/github-alerts.plugin.js` recognizes standalone GitHub blockquotes beginning with `> [!NOTE]`, `TIP`, `IMPORTANT`, `WARNING`, or `CAUTION` on their own line. It transforms parser tokens before HTML rendering, preserving Markdown body content and source-line mapping; nested, escaped, unknown, and inline markers retain normal Markdown behavior. Static labels remain inside the sanitizer path, and `afterRender` adds decorative icons through the trusted shared icon DOM helper. The article-local notice styling in `styles/content/_alerts.scss` uses paired theme status colors and is also included in standalone HTML/Word HTML exports. Popup Plugins can disable the feature, restoring ordinary blockquotes.
 
 Plugin execution is fault-isolated per plugin. A failed optional import or lifecycle hook quarantines only that plugin for the current render context, while the remaining plugins and basic Markdown continue. Cleanup handlers run independently, failures are logged with plugin/stage metadata rather than document content, and the Viewer surfaces one non-blocking warning toast for the affected render lifecycle.
 

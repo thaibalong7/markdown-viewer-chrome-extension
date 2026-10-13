@@ -2,6 +2,7 @@ import { sanitizeDownloadFilename, triggerDownload } from '../../shared/download
 import { MDP_WS_FILE } from '../../shared/constants/explorer.js'
 import { stripRegisteredFileExtension } from '../../shared/file-types.js'
 import { createStyleVars } from '../../theme/index.js'
+import alertsCss from '../styles/content/_alerts.scss?inline'
 
 /** KaTeX CSS from CDN so exported files hide MathML duplicate / render math like the viewer (offline export would need bundled fonts). */
 const EXPORT_KATEX_CDN_CSS = 'https://cdn.jsdelivr.net/npm/katex@0.16.44/dist/katex.min.css'
@@ -153,6 +154,7 @@ function buildStandaloneHtmlDocument(articleEl, settings, titleHint) {
 ${katexLink}  <style>
 ${varsBlock}
 ${EXPORT_MARKDOWN_BODY_CSS}
+${alertsCss}
 body { margin: 0; padding: 24px; font-family: var(--mdp-font-family); background: var(--mdp-bg); color: var(--mdp-text); }
   </style>
 </head>

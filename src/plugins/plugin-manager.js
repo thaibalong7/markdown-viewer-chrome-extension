@@ -16,6 +16,8 @@ const OPTIONAL_PLUGIN_LOADERS = {
   [PLUGIN_IDS.EMOJI]: () => import('./optional/emoji.plugin.js').then((module) => module.emojiPlugin),
   [PLUGIN_IDS.FOOTNOTE]: () =>
     import('./optional/footnote.plugin.js').then((module) => module.footnotePlugin),
+  [PLUGIN_IDS.GITHUB_ALERTS]: () =>
+    import('./optional/github-alerts.plugin.js').then((module) => module.githubAlertsPlugin),
   [PLUGIN_IDS.MATH]: () => import('./optional/math.plugin.js').then((module) => module.mathPlugin),
   [PLUGIN_IDS.MERMAID]: () =>
     import('./optional/mermaid.plugin.js').then((module) => module.mermaidPlugin)

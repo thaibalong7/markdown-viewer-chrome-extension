@@ -227,6 +227,8 @@ Trong Settings, `codeBg` và `codeText` được ghi nhãn là màu cho inline/f
 
 Các token còn lại được kế thừa từ `baseId`. `resolveThemeById()` merge theo thứ tự built-in base palette trước, sau đó custom `colors` override lên trên.
 
+GitHub Alerts trong nội dung Markdown dùng các bộ màu toast có sẵn theo cặp chữ/nền/viền: Note và Important dùng info, Tip dùng success, Warning dùng warning, Caution dùng error. Tiêu đề, văn bản, heading, link và list marker dùng status foreground trên nền status đặc, kể cả khi custom theme đổi màu document/link hoặc dùng background ảnh/gradient; code và bảng giữ palette chuyên biệt hiện có. Không thêm field màu hay migration: custom theme kế thừa các cặp status từ `baseId`, và CSS variables cập nhật alert khi đổi theme. Geometry và icon thuộc [Markdown alerts contract](./design-system/README.md#markdown-alerts).
+
 Mọi màu custom phải là hexadecimal 6 chữ số theo dạng `#RRGGBB`. Alpha hex, named color, `rgb()`, CSS variable và CSS expression không được schema chấp nhận.
 
 ### Phân biệt `colors.background` và `theme.background`

@@ -1,8 +1,8 @@
 import { attachTooltip } from './dom-tooltip.js'
 
-export const RESOLUTION_STEPS = Object.freeze(Array.from({ length: 29 }, (_, index) => 1 + index * 0.25))
-export const MAX_BITMAP_SIDE = 16384
-export const MAX_BITMAP_PIXELS = 32 * 1024 * 1024
+const RESOLUTION_STEPS = Object.freeze(Array.from({ length: 29 }, (_, index) => 1 + index * 0.25))
+const MAX_BITMAP_SIDE = 16384
+const MAX_BITMAP_PIXELS = 32 * 1024 * 1024
 let controlId = 0
 
 export function getNextResolution(current, direction) {

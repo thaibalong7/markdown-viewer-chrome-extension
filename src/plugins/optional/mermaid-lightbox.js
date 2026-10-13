@@ -129,8 +129,6 @@ function buildLightbox(rootEl) {
     recenterButton,
     closeButton,
     hints,
-    renderResolution: LIGHTBOX_RENDER_SCALE,
-    chartEl: null,
     chartWidth: 1,
     chartHeight: 1,
     viewportWidth: 0,
@@ -149,11 +147,8 @@ function buildLightbox(rootEl) {
   }
   lightbox.resolutionControls = createResolutionControls({
     buttonClass: `${LIGHTBOX_CLASS}__button`,
-    async onChange(resolution) {
-      const session = lightbox.rasterSession
-      const applied = await session?.update(resolution)
-      if (applied && lightbox.rasterSession === session) lightbox.renderResolution = resolution
-      return Boolean(applied && lightbox.rasterSession === session)
+    onChange(resolution) {
+      return lightbox.rasterSession?.update(resolution) ?? false
     }
   })
   controls.prepend(lightbox.resolutionControls.group)
@@ -248,7 +243,6 @@ function setChart(lightbox, sourceSvg) {
   lightbox.chartWidth = renderWidth
   lightbox.chartHeight = renderHeight
   lightbox.canvas.replaceChildren(clone)
-  lightbox.chartEl = clone
   lightbox.canvas.style.width = `${round(lightbox.chartWidth)}px`
   lightbox.canvas.style.height = `${round(lightbox.chartHeight)}px`
   clone.setAttribute('width', String(round(renderWidth)))
@@ -261,7 +255,6 @@ function setChart(lightbox, sourceSvg) {
   const resolution = lightbox.resolutionControls.setResolution(
     getDocumentCapabilities('mermaid')?.renderResolution ? LIGHTBOX_RENDER_SCALE : null,
     { width: renderWidth, height: renderHeight, baseResolution: LIGHTBOX_RENDER_SCALE })
-  lightbox.renderResolution = resolution ?? LIGHTBOX_RENDER_SCALE
   if (resolution == null) return
   const session = createLightboxRasterSession({
     host: lightbox.canvas,
@@ -411,7 +404,6 @@ export function closeMermaidLightbox() {
   activeLightbox.rasterSession?.destroy()
   activeLightbox.rasterSession = null
   activeLightbox.canvas.replaceChildren()
-  activeLightbox.chartEl = null
   activeLightbox.resolutionControls.setResolution(null)
   window.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('resize', handleResize)

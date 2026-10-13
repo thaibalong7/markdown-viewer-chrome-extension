@@ -50,7 +50,7 @@ async function readSvgSource(source, signal) {
   return response.text()
 }
 
-export function svgRasterUrl(svgText, intrinsic) {
+function svgRasterUrl(svgText, intrinsic) {
   // SVG documents remain image resources; this detached XML is never mounted.
   const parsed = new DOMParser().parseFromString(svgText, 'image/svg+xml')
   const root = parsed.documentElement
@@ -105,12 +105,14 @@ export function createLightboxRasterSession({ host, source, width, height, baseR
   host.classList.add('mdp-lightbox-rasterized')
   return {
     async update(resolution) {
+      if (controller.signal.aborted) return false
       const token = ++generation
       let nextUrl = null
       try {
         const pixels = getRasterDimensions({ width, height, resolution, baseResolution })
         const svgText = await (sourcePromise ||= readSource(source, controller.signal))
         throwIfAborted(controller.signal)
+        if (token !== generation) return false
         const blob = await rasterize(svgText, pixels, { width: width / baseResolution, height: height / baseResolution, fragment }, controller.signal)
         if (token !== generation || controller.signal.aborted) return false
         nextUrl = URL.createObjectURL(blob)

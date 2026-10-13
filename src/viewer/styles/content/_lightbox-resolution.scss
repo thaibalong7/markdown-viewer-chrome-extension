@@ -28,7 +28,7 @@
     background: var(--mdp-surface);
     box-shadow: var(--mdp-shadow-float);
     white-space: nowrap;
-    transition: transform 160ms ease, background-color 180ms ease, border-color 180ms ease;
+    transition: background-color 180ms ease;
   }
 
   &__row::before {
@@ -59,10 +59,22 @@
   &__steps {
     display: flex;
     align-items: center;
+    position: relative;
     gap: 4px;
     width: max-content;
-    padding: 4px;
-    border-right: 1px solid var(--mdp-border);
+    padding: 4px 5px 4px 4px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 1px;
+      height: 24px;
+      background: var(--mdp-resolution-border);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
   }
 
   &[data-expanded='true'] &__actions {
@@ -75,7 +87,6 @@
   // One capsule owns the border and shadow; its buttons are local segments.
   & &__button,
   & &__trigger {
-    width: auto;
     flex: 0 0 auto;
     margin: 0;
     border: 0;
@@ -108,7 +119,6 @@
     padding: 0 4px;
     border-radius: 999px;
     color: var(--mdp-muted);
-    font-size: 11px;
 
     &:hover:not(:disabled),
     &:focus-visible {

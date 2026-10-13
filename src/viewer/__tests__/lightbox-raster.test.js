@@ -26,6 +26,34 @@ function harness(overrides = {}) {
 afterEach(() => vi.restoreAllMocks())
 
 describe('lightbox bitmap session lifecycle', () => {
+  it('does not read or allocate any bitmap after the session closes', async () => {
+    const h = harness()
+    h.session.destroy()
+    expect(await h.session.update(2)).toBe(false)
+    expect(h.readSource).not.toHaveBeenCalled()
+    expect(h.rasterize).not.toHaveBeenCalled()
+    expect(h.createObjectURL).not.toHaveBeenCalled()
+    expect(h.controls.setError).not.toHaveBeenCalled()
+  })
+
+  it('skips a superseded resolution while the shared source read is pending', async () => {
+    const sourceRead = deferred()
+    const readSource = vi.fn(() => sourceRead.promise)
+    const h = harness({ readSource })
+    const oldUpdate = h.session.update(8)
+    const currentUpdate = h.session.update(1)
+    sourceRead.resolve('<svg/>')
+    expect(await oldUpdate).toBe(false)
+    expect(await currentUpdate).toBe(true)
+    expect(readSource).toHaveBeenCalledOnce()
+    expect(h.rasterize).toHaveBeenCalledExactlyOnceWith(
+      '<svg/>', { width: 600, height: 400 },
+      { width: 600, height: 400, fragment: '' }, expect.any(AbortSignal)
+    )
+    expect(h.host.replaceChildren).toHaveBeenCalledOnce()
+    h.session.destroy()
+  })
+
   it('rejects an oversized request before reading, rasterizing or replacing the applied bitmap', async () => {
     const h = harness({ width: 2000, height: 1500, baseResolution: 1 })
     expect(await h.session.update(3.25)).toBe(true)

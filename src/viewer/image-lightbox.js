@@ -101,7 +101,6 @@ function buildLightbox(rootEl) {
     zoomInButton,
     recenterButton,
     closeButton,
-    renderResolution: 1,
     width: 1,
     height: 1,
     viewportWidth: 1,
@@ -119,11 +118,8 @@ function buildLightbox(rootEl) {
   }
   lightbox.resolutionControls = createResolutionControls({
     buttonClass: `${LIGHTBOX_CLASS}__button`,
-    async onChange(resolution) {
-      const session = lightbox.rasterSession
-      const applied = await session?.update(resolution)
-      if (applied && lightbox.rasterSession === session) lightbox.renderResolution = resolution
-      return Boolean(applied && lightbox.rasterSession === session)
+    onChange(resolution) {
+      return lightbox.rasterSession?.update(resolution) ?? false
     }
   })
   controls.prepend(lightbox.resolutionControls.group)
@@ -327,7 +323,6 @@ export function openImageLightbox(image) {
   const adjustable = canAdjustImageResolution(image)
   const resolution = lightbox.resolutionControls.setResolution(
     adjustable ? getDefaultImageResolution(window.devicePixelRatio) : null, dimensions)
-  lightbox.renderResolution = resolution ?? 1
   if (resolution != null) {
     const session = createLightboxRasterSession({
       host: lightbox.canvas,
@@ -338,7 +333,7 @@ export function openImageLightbox(image) {
     })
     lightbox.rasterSession = session
     lightbox.resolutionControls.setBusy(true)
-    void session.update(lightbox.renderResolution).then(() => {
+    void session.update(resolution).then(() => {
       if (lightbox.rasterSession === session) lightbox.resolutionControls.setBusy(false)
     })
   }

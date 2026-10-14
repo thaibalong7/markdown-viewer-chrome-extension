@@ -10,6 +10,7 @@ export const PLUGIN_LABELS = {
   emoji: 'Emoji',
   footnote: 'Footnotes',
   githubAlerts: 'GitHub Alerts',
+  colorPreview: 'Color preview',
   math: 'Math (KaTeX)',
   mermaid: 'Mermaid diagrams'
 }
@@ -23,6 +24,7 @@ export const PLUGIN_HINTS = {
   emoji: 'Converts supported :shortcode: text into emoji.',
   footnote: 'Adds footnote markers, definitions, and return links.',
   githubAlerts: 'Styles GitHub-style notes, tips, important messages, warnings, and cautions.',
+  colorPreview: 'Shows color swatches and copies HEX, RGB or HSL values, including transparency.',
   math: 'Renders LaTeX-style math with KaTeX when needed.',
   mermaid: 'Renders Mermaid code fences as diagrams with export actions.'
 }

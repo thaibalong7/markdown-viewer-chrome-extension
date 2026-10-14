@@ -18,6 +18,8 @@ const OPTIONAL_PLUGIN_LOADERS = {
     import('./optional/footnote.plugin.js').then((module) => module.footnotePlugin),
   [PLUGIN_IDS.GITHUB_ALERTS]: () =>
     import('./optional/github-alerts.plugin.js').then((module) => module.githubAlertsPlugin),
+  [PLUGIN_IDS.COLOR_PREVIEW]: () =>
+    import('./optional/color-preview.plugin.js').then((module) => module.colorPreviewPlugin),
   [PLUGIN_IDS.MATH]: () => import('./optional/math.plugin.js').then((module) => module.mathPlugin),
   [PLUGIN_IDS.MERMAID]: () =>
     import('./optional/mermaid.plugin.js').then((module) => module.mermaidPlugin)

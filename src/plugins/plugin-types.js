@@ -13,6 +13,7 @@ export const PLUGIN_IDS = {
   EMOJI: 'emoji',
   FOOTNOTE: 'footnote',
   GITHUB_ALERTS: 'githubAlerts',
+  COLOR_PREVIEW: 'colorPreview',
   MATH: 'math',
   MERMAID: 'mermaid'
 }
@@ -34,6 +35,7 @@ export const OPTIONAL_PLUGIN_DEFAULTS = {
   [PLUGIN_IDS.EMOJI]: { enabled: true },
   [PLUGIN_IDS.FOOTNOTE]: { enabled: true },
   [PLUGIN_IDS.GITHUB_ALERTS]: { enabled: true },
+  [PLUGIN_IDS.COLOR_PREVIEW]: { enabled: true },
   [PLUGIN_IDS.MATH]: { enabled: true },
   [PLUGIN_IDS.MERMAID]: { enabled: true, renderer: MERMAID_RENDERERS.OFFICIAL }
 }

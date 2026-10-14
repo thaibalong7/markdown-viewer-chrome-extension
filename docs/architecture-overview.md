@@ -211,7 +211,7 @@ React renders review text safely without inserting source HTML or reconciling th
 Plugin ids/defaults live in `src/plugins/plugin-types.js`; registration and lifecycle hooks live in `src/plugins/plugin-manager.js`.
 
 - Core: code-highlight gating, task lists, heading anchors, table enhancement.
-- Optional: emoji, footnotes, GitHub Alerts, Math/KaTeX, Mermaid.
+- Optional: emoji, footnotes, GitHub Alerts, color previews, Math/KaTeX, Mermaid.
 
 All registered plugins are enabled by default. Optional plugins are dynamically imported when enabled, so users can still disable specialized behavior and avoid loading its implementation. Hooks can extend Markdown, preprocess source, postprocess HTML, and attach behavior after render. Plugin-produced article HTML remains inside the sanitizer path.
 
@@ -220,6 +220,8 @@ All registered plugins are enabled by default. Optional plugins are dynamically 
 Plugin execution is fault-isolated per plugin. A failed optional import or lifecycle hook quarantines only that plugin for the current render context, while the remaining plugins and basic Markdown continue. Cleanup handlers run independently, failures are logged with plugin/stage metadata rather than document content, and the Viewer surfaces one non-blocking warning toast for the affected render lifecycle.
 
 Shiki uses explicit language and theme loaders from `src/viewer/core/shiki-config.js`. The curated syntax-theme catalog in `src/theme/syntax-themes.js` must stay aligned with those loaders.
+
+`src/plugins/optional/color-preview.plugin.js` decorates literal HEX/RGB/HSL colors after sanitized Markdown and Shiki rendering. `color-values.js` owns strict parsing and format conversion; `src/viewer/colors/color-popover.js` owns the article-local preview/copy portal, keyboard and pointer interactions, clipboard feedback and teardown. Empty swatch buttons preserve source text and syntax spans. HEX detection is limited to code and table cells; prose accepts explicit RGB/HSL functions. Links, Mermaid, math and editable content are excluded. The enabled-by-default `colorPreview` plugin can be disabled in Popup → Plugins through the existing settings/rerender flow. Decoration is capped at 1,000 samples per render; print hides controls and HTML/Word exports remove them. See the [color preview contract](./design-system/README.md#color-previews).
 
 Each reader theme is a complete visual entity. `src/theme/index.js` owns built-in palettes and resolves `theme.activeId` across built-in and saved custom themes; every resolved theme includes semantic colors, a resolved bundled syntax-theme id, and a structured background descriptor. Custom themes may follow their built-in base's syntax theme or select another curated bundled theme. `src/theme/backgrounds.js` resolves the supported `none`, `solid`, `gradient`, and local `image` descriptor variants into trusted render data. `BackgroundScene` renders the active theme's background behind the Viewer grid while sidebar and content surfaces remain theme-colored overlays. Settings never accept arbitrary CSS, raw syntax-theme JSON, or remote URLs.
 

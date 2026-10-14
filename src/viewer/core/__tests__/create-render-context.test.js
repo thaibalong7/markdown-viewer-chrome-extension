@@ -50,6 +50,7 @@ describe('createRenderSettingsHash', () => {
         emoji: { enabled: true },
         footnote: { enabled: true },
         githubAlerts: { enabled: true },
+        colorPreview: { enabled: true },
         math: { enabled: true },
         mermaid: { enabled: true, renderer: 'official' }
       }

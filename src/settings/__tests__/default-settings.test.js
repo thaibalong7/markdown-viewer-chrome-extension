@@ -12,6 +12,7 @@ describe('DEFAULT_SETTINGS', () => {
     expect(DEFAULT_SETTINGS.enabled).toBe(true)
     expect(Object.values(DEFAULT_SETTINGS.plugins).every((plugin) => plugin.enabled)).toBe(true)
     expect(DEFAULT_SETTINGS.plugins.mermaid.renderer).toBe('official')
+    expect(DEFAULT_SETTINGS.plugins.colorPreview).toEqual({ enabled: true })
     expect(DEFAULT_SETTINGS.editor.enabled).toBe(false)
     expect(DEFAULT_SETTINGS.editor.wordWrap).toBe(true)
     expect(DEFAULT_SETTINGS.history).toEqual({ enabled: true, maxEntries: 12 })

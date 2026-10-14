@@ -113,7 +113,7 @@ function cloneArticleForExport(articleEl) {
   }
 
   clone
-    .querySelectorAll('.mdp-mermaid-toolbar, .mdp-mermaid-actions, .mdp-mermaid-actions__menu, a.mdp-heading-anchor')
+    .querySelectorAll('.mdp-mermaid-toolbar, .mdp-mermaid-actions, .mdp-mermaid-actions__menu, a.mdp-heading-anchor, .mdp-color-swatch')
     .forEach((el) => el.remove())
 
   // `innerHTML` only serializes attributes, not live JS properties. Task list uses

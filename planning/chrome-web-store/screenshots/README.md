@@ -1,17 +1,14 @@
 # Chrome Web Store screenshots
 
-This folder contains the final Chrome Web Store listing artwork and the clean demo data used to present Markdown Plus without exposing personal documents or file history.
-
-See [`composition-plan.md`](composition-plan.md) for the story and feature focus of each listing image.
+This planning folder contains clean demo data and capture working files. The five approved screenshots live in [`../../../assets/chrome-web-store/`](../../../assets/chrome-web-store/) together with the approved promotional pair and Store icon. See that folder's README for upload order and the feature focus of each image.
 
 ## Versioned contents
 
-- `final/`: five approved 1280×800 PNG files ready for Store upload.
 - `demo-workspace/`: primary showcase workspace with Markdown, Mermaid, SQL, text, and image files.
 - `demo-workspace-two/`: secondary workspace used to demonstrate folder switching.
 
 ## Working files
 
-Full-resolution captures, design explorations, generated SVG intermediates, and local rendering scripts are working files and are intentionally not versioned here. This keeps repository history focused on the approved artwork and reusable demo content.
+Full-resolution captures (`raw/`, `raw-v2/`), design explorations, generated SVG intermediates, rendering scripts, and the original composition notes (`compositions/`) are local working files ignored by Git. The Editorial Frost screenshot renderer writes approved output into `assets/chrome-web-store/`. Repository history retains the approved images and reusable demo content.
 
 Future captures should use the included demo workspaces and a clean browser profile. Do not capture personal paths, profile details, recent-file history, cursors, focus glows, or unrelated browser UI in Store-facing artwork.

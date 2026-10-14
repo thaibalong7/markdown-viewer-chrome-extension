@@ -4,5 +4,12 @@ dist
 
 .DS_Store
 
-# Unselected logo explorations (the official master lives in assets/brand).
-/assets/brand/concepts/
+# Unselected icon concepts stay local; approved artwork lives in assets/.
+/planning/brand/concepts/
+
+# Local Chrome Web Store release and artwork working files.
+/markdown-plus*.zip
+/planning/chrome-web-store/screenshots/compositions/
+/planning/chrome-web-store/screenshots/raw/
+/planning/chrome-web-store/screenshots/raw-v2/
+/planning/chrome-web-store/promotional/explorations/

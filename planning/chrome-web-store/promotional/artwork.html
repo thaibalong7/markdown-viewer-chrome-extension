@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Markdown Plus · Chrome Web Store promotional artwork</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color: #17233b; }
+    .artwork { position: relative; isolation: isolate; overflow: hidden; background: #f4f8ff; }
+    .frost { position: absolute; inset: 0; z-index: -3; background: radial-gradient(ellipse at 88% 18%, #d9e8ff 0, transparent 48%), radial-gradient(ellipse at 5% 98%, #e1ecff 0, transparent 49%), linear-gradient(120deg, #f9fbfe 0%, #f2f7ff 61%, #eaf2ff 100%); }
+    .grid { position: absolute; inset: 0; z-index: -2; background-image: linear-gradient(to right, rgba(57,114,220,.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(57,114,220,.075) 1px, transparent 1px); background-size: 176px 176px; mask-image: linear-gradient(to right, transparent 24%, #000); }
+    .arc { position: absolute; border: 1px solid #4385ff; border-radius: 50%; z-index: -1; }
+    .brand { position: absolute; display: flex; align-items: center; font-weight: 750; letter-spacing: -1px; }
+    .brand img { display: block; flex: none; }
+    .headline { position: absolute; margin: 0; font-weight: 760; letter-spacing: -2.5px; line-height: 1.04; }
+    .headline span { color: #2563eb; }
+    .description { position: absolute; margin: 0; color: #536581; line-height: 1.5; }
+    .frame { position: absolute; overflow: hidden; padding: 8px; background: white; border: 1px solid #bdcff1; box-shadow: 0 18px 38px rgba(31,57,101,.19), 0 3px 8px rgba(31,57,101,.06); }
+    .frame svg { display: block; width: 100%; height: 100%; border-radius: inherit; }
+    .label { position: absolute; color: #2563eb; font-size: 11px; font-weight: 750; letter-spacing: 1.25px; }
+    .small { width: 440px; height: 280px; }
+    .small .grid { background-size: 110px 110px; opacity: .66; }
+    .small .brand { left: 23px; top: 19px; gap: 12px; font-size: 26px; letter-spacing: -.8px; }
+    .small .brand img { width: 48px; height: 48px; }
+    .small .headline { left: 26px; top: 83px; font-size: 32px; letter-spacing: -.9px; line-height: 1.07; }
+    .small .description { left: 28px; top: 156px; font-size: 12px; font-weight: 550; }
+    .small .frame { left: 25px; top: 187px; width: 417px; height: 192px; padding: 4px; border-radius: 11px; }
+    .small .arc { width: 370px; height: 370px; right: -204px; top: -111px; opacity: .52; }
+    .small .accent { position: absolute; left: 0; top: 83px; width: 4px; height: 68px; border-radius: 0 4px 4px 0; background: #2563eb; }
+    .marquee { width: 1400px; height: 560px; }
+    .marquee .brand { left: 62px; top: 49px; gap: 16px; font-size: 32px; }
+    .marquee .brand img { width: 62px; height: 62px; }
+    .marquee .headline { left: 68px; top: 171px; font-size: 65px; }
+    .marquee .description { left: 71px; top: 330px; font-size: 19px; }
+    .marquee .label { left: 72px; top: 462px; display: flex; gap: 22px; align-items: center; }
+    .label i { width: 3px; height: 3px; display: block; border-radius: 100%; background: #8ba6cd; }
+    .marquee .arc { width: 1200px; height: 720px; left: 688px; top: -280px; transform: rotate(-12deg); opacity: .55; }
+    .marquee .accent { position: absolute; left: 0; top: 174px; width: 6px; height: 128px; border-radius: 0 5px 5px 0; background: #2563eb; }
+    .marquee .aurora { left: 837px; top: 46px; width: 495px; height: 207px; border-radius: 17px; padding: 7px; transform: rotate(2deg); }
+    .marquee .viewer { left: 650px; top: 189px; width: 696px; height: 511px; border-radius: 21px; padding: 8px; transform: rotate(-2deg); }
+    .marquee .viewer-label { left: 654px; top: 157px; font-size: 10px; }
+    .marquee .aurora-label { left: 852px; top: 24px; font-size: 10px; }
+    .marquee .dot { position: absolute; width: 13px; height: 13px; border-radius: 50%; background: #91bdff; top: 115px; left: 719px; }
+    body.preview { padding: 44px; background: #e9edf3; }
+    .preview > header { margin-bottom: 32px; font-size: 14px; color: #536581; }
+    .preview > header h1 { color: #17233b; font-size: 26px; letter-spacing: -.5px; }
+    .preview > header p { margin: 8px 0; }
+    .preview section { margin-bottom: 36px; }
+    .preview section > p { font-size: 12px; color: #536581; }
+    .preview .artwork { box-shadow: 0 12px 32px rgba(31,57,101,.1); }
+    body.export header, body.export section > p { display: none; }
+    body.export section { margin: 0; }
+    body.export[data-asset="small"] #marquee-section, body.export[data-asset="marquee"] #small-section { display: none; }
+  </style>
+</head>
+<body class="preview">
+  <header>
+    <h1>Editorial Frost · Promotional artwork</h1>
+    <p>Original approved icon and real interface crops from the final Store screenshots.</p>
+    <p>Small tile 440 × 280 · Marquee 1400 × 560</p>
+  </header>
+  <section id="small-section">
+    <p>Small promo tile · native upload size</p>
+    <div class="artwork small" role="img" aria-label="Markdown Plus. Your Markdown. A clearer view. Local files, right in Chrome, with a preview of the actual local Markdown viewer.">
+      <div class="frost"></div><div class="grid"></div><div class="arc"></div><div class="accent"></div>
+      <div class="brand"><img src="../../../assets/brand/markdown-plus-icon.svg" alt="">Markdown Plus</div>
+      <p class="headline">Your Markdown.<br><span>A clearer view.</span></p>
+      <p class="description">Local files, right in Chrome.</p>
+      <div class="frame">
+        <svg viewBox="110 239 1060 485" xmlns="http://www.w3.org/2000/svg"><image href="../../../assets/chrome-web-store/01-open-local-markdown.png" x="0" y="0" width="1280" height="800"/></svg>
+      </div>
+    </div>
+  </section>
+  <section id="marquee-section">
+    <p>Marquee · native upload size</p>
+    <div class="artwork marquee" role="img" aria-label="Markdown Plus. Your Markdown. A clearer view. Read, browse, and export local files right in Chrome, illustrated with the actual local workspace and Aurora Studio code theme.">
+      <div class="frost"></div><div class="grid"></div><div class="arc"></div><div class="accent"></div><div class="dot"></div>
+      <div class="brand"><img src="../../../assets/brand/markdown-plus-icon.svg" alt="">Markdown Plus</div>
+      <p class="headline">Your Markdown.<br><span>A clearer view.</span></p>
+      <p class="description">Read, browse, and export local files.<br>Right in Chrome.</p>
+      <div class="label"><span>LOCAL FILES</span><i></i><span>CODE · MATH · MERMAID</span></div>
+      <div class="label aurora-label">A THEME FOR YOUR FOCUS</div>
+      <div class="frame aurora">
+        <svg viewBox="230 245 580 235" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><image href="../../../assets/chrome-web-store/02-themes-for-focus.png" x="0" y="0" width="1280" height="800"/></svg>
+      </div>
+      <div class="label viewer-label">LOCAL WORKSPACE</div>
+      <div class="frame viewer">
+        <svg viewBox="110 239 660 485" xmlns="http://www.w3.org/2000/svg"><image href="../../../assets/chrome-web-store/01-open-local-markdown.png" x="0" y="0" width="1280" height="800"/></svg>
+      </div>
+    </div>
+  </section>
+  <script>
+    const asset = new URLSearchParams(location.search).get('asset');
+    if (asset === 'small' || asset === 'marquee') {
+      document.body.className = 'export';
+      document.body.dataset.asset = asset;
+    }
+  </script>
+</body>
+</html>

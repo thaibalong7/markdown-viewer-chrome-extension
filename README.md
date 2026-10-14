@@ -91,7 +91,7 @@ See [DEV.md](DEV.md) for the development loop, architecture entry points, verifi
 - `src/messaging` — shared message types and the caller wrapper.
 - `src/shared` — file-type registry, constants, utilities, logging, downloads/clipboard, settings diffs, reusable React primitives, and shared styles.
 - `public` — static files copied into the packaged extension, including icons and the offscreen document.
-- `assets` — reusable source artwork that is not packaged automatically.
+- `assets` — approved brand artwork and the complete Chrome Web Store image set; see the [resource catalog](assets/README.md). These resources are not packaged automatically.
 - `sample` — local documents and media for manual smoke testing.
 
 ## Documentation

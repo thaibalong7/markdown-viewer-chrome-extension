@@ -236,11 +236,13 @@ Description ngắn gợi ý:
 
 ### Graphic assets
 
-- [ ] Store icon 128x128 đã kiểm tra hiển thị rõ ở kích thước nhỏ.
-- [ ] Ít nhất một screenshot 1280x800; nên chuẩn bị 4–5 ảnh.
-- [ ] Small promo tile 440x280.
-- [ ] Optional marquee image 1400x560.
-- [ ] Không dùng screenshot chứa dữ liệu/path cá nhân.
+Toàn bộ 8 PNG upload đã chốt được gom tại [`assets/chrome-web-store/`](../../assets/chrome-web-store/); xem README trong folder đó để biết đúng field và thứ tự screenshot.
+
+- [x] Store icon 128x128 đã chọn, khớp icon đóng gói trong extension.
+- [x] Năm screenshot 1280x800 Editorial Frost đã duyệt.
+- [x] Small promo tile 440x280 Editorial Frost đã chốt.
+- [x] Optional marquee image 1400x560 Editorial Frost đã chốt.
+- [x] Screenshot dùng demo data/path, không dùng dữ liệu/path cá nhân.
 
 Screenshot gợi ý:
 
@@ -324,7 +326,7 @@ Chỉ submit khi tất cả điều kiện sau đạt:
 - [ ] File-access onboarding đã hoạt động.
 - [ ] Sanitizer có browser/DOM security tests.
 - [ ] Privacy policy và Store disclosures hoàn chỉnh.
-- [ ] Store icon, screenshot và promo tile sẵn sàng.
+- [x] Store icon, screenshot và promo tile sẵn sàng trong `assets/chrome-web-store/`.
 - [ ] Test và production build pass trên clean install.
 - [ ] Manual QA matrix không còn blocker.
 - [ ] ZIP release candidate có `manifest.json` ở root.

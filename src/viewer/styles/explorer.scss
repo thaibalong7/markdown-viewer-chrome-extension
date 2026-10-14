@@ -95,23 +95,6 @@
     color: var(--mdp-link);
   }
 
-  &.is-copied {
-    color: var(--mdp-accent);
-    border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
-    background: var(--mdp-accent-soft);
-    pointer-events: none;
-
-    .mdp-explorer__context-command-icon {
-      display: none;
-    }
-
-    &::after {
-      content: '✓';
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1;
-    }
-  }
 }
 
 .mdp-explorer__context-commands {

@@ -8,11 +8,11 @@ import { ChangeReview } from '../ChangeReview.jsx'
 const layout = vi.hoisted(() => ({ availableSize: 254, controlSize: 28, vertical: false }))
 vi.mock('../../hooks/useDocumentActionsLayout.js', () => ({ useDocumentActionsLayout: () => layout }))
 
-function actions() {
+function actions(copyLinkCopied = false) {
   return createDocumentActions({
     editorState: { enabled: false }, watchState: { available: true }, canReview: true,
     controls: { updates: React.createElement('button', { 'aria-label': 'Document updates' }), review: React.createElement('button', { 'aria-label': 'View changes' }) },
-    canToggleTheme: true, themeToggleTarget: 'dark', canEdit: true, canCopyLink: false,
+    canToggleTheme: true, themeToggleTarget: 'dark', canEdit: true, canCopyLink: false, copyLinkCopied,
     canPrint: true, canExport: true,
     exportItems: [{ id: 'html', label: 'Export HTML', icon: 'export' }, { id: 'word', label: 'Export Word (.doc)', icon: 'export' }]
   })
@@ -45,5 +45,14 @@ describe('Direct icons composition', () => {
     const html = renderToStaticMarkup(React.createElement(ChangeReview, { state: { available: false }, renderTrigger: trigger => React.createElement('div', { 'data-review': Boolean(trigger) }, 'Toolbar') }))
     expect(html).toContain('data-review="false"')
     expect(html).toContain('Toolbar')
+  })
+  it('retains shared copy confirmation when the action moves into overflow', () => {
+    Object.assign(layout, { availableSize: 198, controlSize: 44 })
+    const html = renderToStaticMarkup(React.createElement(DocumentActionToolbar, {
+      actions: actions(true), visible: true, openMenu: 'more', onMenuChange: () => {}
+    }))
+    expect(html).toContain('class="mdp-document-actions-menu__item is-copied" role="menuitem" aria-label="Copied"')
+    expect(html).toContain('data-swapped="true"')
+    expect(html).not.toContain('✓')
   })
 })

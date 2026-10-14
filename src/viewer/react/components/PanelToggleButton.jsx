@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AppIcon } from '../../../shared/react/AppIcon.jsx'
+import { IconSwap } from './common/IconSwap.jsx'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
 import { IconButton } from './common/IconButton.jsx'
 
@@ -34,8 +34,8 @@ export function PanelToggleButton({ panel, expanded, controls, onClick, buttonRe
         <span className="mdp-panel-toggle__skin" />
         <span className="mdp-panel-toggle__mark" />
         <span key={switching} className="mdp-panel-toggle__sweep" />
-        <AppIcon name={`sidebar-chevron-${direction}`} viewBox="3 0 18 24"
-          strokeWidth="2.25" className="mdp-panel-toggle__chevron" />
+        <IconSwap name="sidebar-chevron-left" alternate="sidebar-chevron-right" swapped={direction === 'right'}
+          size={12} style={{ height: 16 }} viewBox="3 0 18 24" strokeWidth="2.25" className="mdp-panel-toggle__chevron" />
       </span>
     </IconButton>
   )

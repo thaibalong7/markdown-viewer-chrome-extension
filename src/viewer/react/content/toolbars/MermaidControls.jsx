@@ -1,6 +1,7 @@
 import React from 'react'
 import { createPortal } from 'react-dom'
 import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
+import { IconSwap } from '../../components/common/IconSwap.jsx'
 import { Tooltip } from '../../components/Tooltip.jsx'
 import { useContentCopy } from './useContentCopy.js'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../../shared/constants/tooltip.js'
@@ -18,7 +19,7 @@ export function MermaidCopyControl({ source, copyAction }) {
         disabled={busy}
         onClick={copy}
       >
-        <AppIcon name="copy" size={14} />
+        <IconSwap name="copy" size={16} swapped={copied} />
       </button>
     </Tooltip>
   )

@@ -668,10 +668,6 @@
   cursor: not-allowed;
   opacity: 0.45;
 }
-.mdp-fab-btn.is-copied {
-  color: var(--mdp-accent);
-}
-
 .mdp-fab-btn--theme {
   --mdp-theme-action-color: var(--mdp-link);
   --mdp-theme-action-soft: var(--mdp-link-soft);
@@ -690,8 +686,8 @@
   background: var(--mdp-theme-action-soft);
 }
 
-.mdp-fab-btn__theme-icon--dark path,
-.mdp-fab-btn__theme-icon--light circle {
+.mdp-fab-btn__theme-icon--dark [data-mdp-icon='moon'] path,
+.mdp-fab-btn__theme-icon--light [data-mdp-icon='sun'] circle {
   fill: currentColor;
   fill-opacity: 0.16;
 }
@@ -912,18 +908,11 @@
   background: var(--mdp-watch-bg);
   border-color: var(--mdp-watch-color);
 }
-.mdp-watch-status__trigger:hover:not(:disabled) .mdp-watch-status__icon-swap, .mdp-watch-status__trigger:focus-visible:not(:disabled) .mdp-watch-status__icon-swap {
-  transform: translateY(-1px);
-}
 .mdp-watch-status__trigger:focus-visible {
   outline-color: var(--mdp-watch-color);
 }
-.mdp-watch-status__trigger:active:not(:disabled) .mdp-watch-status__icon-swap {
-  transform: scale(0.94);
-}
 .mdp-watch-status__icon-swap {
   position: relative;
-  transition: transform 200ms ease;
 }
 .mdp-watch-status__icon {
   position: absolute;
@@ -1209,70 +1198,7 @@
     display: none !important;
   }
 }
-.mdp-exit-edit-modal {
-  position: fixed;
-  inset: 0;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 24px;
-  border: 0;
-  overflow-y: auto;
-  background: var(--mdp-overlay-scrim);
-  color: var(--mdp-text);
-  text-align: left;
-  white-space: normal;
-}
-.mdp-exit-edit-modal[open] {
-  display: grid;
-  place-items: center;
-}
-.mdp-exit-edit-modal::backdrop {
-  background: transparent;
-}
-@media print {
-  .mdp-exit-edit-modal, .mdp-exit-edit-modal::backdrop {
-    display: none !important;
-  }
-}
-.mdp-exit-edit-modal {
-  padding: 16px;
-}
 
-.mdp-exit-edit-confirmation {
-  width: min(440px, 100%);
-  box-shadow: var(--mdp-shadow-float);
-}
-.mdp-exit-edit-confirmation__content {
-  padding: 24px;
-}
-.mdp-exit-edit-confirmation h2 {
-  margin: 12px 0 0;
-  color: var(--mdp-heading);
-  font-size: 18px;
-  line-height: 1.35;
-}
-.mdp-exit-edit-confirmation p {
-  margin: 8px 0 0;
-  color: var(--mdp-muted);
-  font-size: 13px;
-  line-height: 1.55;
-}
-.mdp-exit-edit-confirmation__actions {
-  padding: 16px 24px;
-}
-
-@media (max-width: 540px) {
-  .mdp-exit-edit-confirmation__content {
-    padding: 16px;
-  }
-  .mdp-exit-edit-confirmation__actions {
-    padding: 12px 16px;
-  }
-}
 .mdp-document-stats {
   display: flex;
   align-items: center;
@@ -2359,7 +2285,7 @@
 
 </style>
   <style id="runtime-color-preview-styles">
-/* Compiled from src/viewer/styles/content/_color-preview.scss; refresh this snapshot after runtime changes. */
+/* Snapshot: src/viewer/styles/content/_color-preview.scss */
 .mdp-color-swatch,
 .mdp-color-popover__sample {
   position: relative;
@@ -2531,22 +2457,15 @@
   color: var(--mdp-muted);
   cursor: pointer;
   outline: none;
-  transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+  transition: background 120ms ease, color 120ms ease;
 }
 .mdp-color-popover__copy:hover {
   background: color-mix(in srgb, var(--mdp-text) 8%, var(--mdp-surface));
   color: var(--mdp-text);
 }
-.mdp-color-popover__copy:active {
-  transform: translateY(1px);
-}
 .mdp-color-popover__copy:focus-visible {
   outline: 2px solid var(--mdp-link);
   outline-offset: 1px;
-}
-.mdp-color-popover__copy.is-copied {
-  color: var(--mdp-toast-success-text);
-  background: var(--mdp-toast-success-bg);
 }
 .mdp-color-popover__copy.is-error {
   color: var(--mdp-toast-error-text);
@@ -2555,28 +2474,6 @@
 .mdp-color-popover__copy:disabled {
   opacity: 0.7;
   cursor: wait;
-}
-
-.mdp-color-popover__copy-icon,
-.mdp-color-popover__check-icon {
-  grid-area: 1/1;
-  pointer-events: none;
-  transition: opacity 140ms ease, transform 140ms ease;
-}
-
-.mdp-color-popover__check-icon {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-.is-copied .mdp-color-popover__copy-icon {
-  opacity: 0;
-  transform: scale(0.8);
-}
-
-.is-copied .mdp-color-popover__check-icon {
-  opacity: 1;
-  transform: scale(1);
 }
 
 .mdp-color-source-status,
@@ -2673,9 +2570,7 @@
   .mdp-markdown-body .mdp-color-swatch:active::before,
   .mdp-markdown-body .mdp-color-swatch::before,
   .mdp-color-popover__copy,
-  .mdp-color-popover__copy:active,
-  .mdp-color-popover__copy-icon,
-  .mdp-color-popover__check-icon {
+  .mdp-color-popover__copy:active {
     transition: none;
     transform: none;
   }
@@ -2688,9 +2583,1997 @@
     display: none !important;
   }
 }
-/* Catalog fixture only: keep the inspector in flow instead of portaling it. */
-.catalog-color-popover { position: relative; z-index: auto; max-width: 100%; max-height: none; }
-  </style>
+</style>
+<style id="runtime-icon-motion-styles">
+/* Compiled from src/viewer/styles/_icon-motion.scss, including icon-recipes/. */
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=copy] {
+  --mdp-icon-recipe: app-copy;
+  --mdp-icon-motion-label: 'Sheets separate, then restack';
+  --mdp-icon-motion-duration: 560ms;
+  --mdp-icon-press-pose: translate(-0.5px, -0.5px) scale(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=copy] > [data-icon-part=front] {
+  --mdp-icon-part-animation: mdp-copy-front;
+  --mdp-icon-part-origin: 14px 14px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=copy] > [data-icon-part=back] {
+  --mdp-icon-part-animation: mdp-copy-back;
+  --mdp-icon-part-origin: 8px 8px;
+  --mdp-icon-part-delay: 35ms;
+}
+
+@keyframes mdp-copy-front {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(1.4px, 1.2px) rotate(5deg);
+  }
+  72% {
+    transform: translate(-0.35px, -0.35px);
+  }
+}
+@keyframes mdp-copy-back {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(-0.6px, -0.6px) rotate(-3deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] {
+  --mdp-icon-recipe: app-link;
+  --mdp-icon-motion-label: 'Chain ends reconnect through the bridge';
+  --mdp-icon-motion-duration: 620ms;
+  --mdp-icon-press-pose: rotate(-4deg) scale(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] > [data-icon-part=lower] {
+  --mdp-icon-part-animation: mdp-link-lower;
+  --mdp-icon-part-origin: 8px 14px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] > [data-icon-part=upper] {
+  --mdp-icon-part-animation: mdp-link-upper;
+  --mdp-icon-part-origin: 16px 10px;
+  --mdp-icon-part-delay: 25ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] > [data-icon-part=bridge] {
+  --mdp-icon-part-animation: mdp-link-bridge;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-link-lower {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: translate(-0.7px, 0.7px) rotate(-6deg);
+  }
+  65% {
+    transform: translate(0.25px, -0.25px);
+  }
+}
+@keyframes mdp-link-upper {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: translate(0.7px, -0.7px) rotate(6deg);
+  }
+  65% {
+    transform: translate(-0.25px, 0.25px);
+  }
+}
+@keyframes mdp-link-bridge {
+  0%, 100% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  25% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0.8;
+  }
+  70% {
+    stroke-dashoffset: 0;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=edit] {
+  --mdp-icon-recipe: app-edit;
+  --mdp-icon-motion-label: 'Pencil traces a short zigzag';
+  --mdp-icon-motion-duration: 660ms;
+  --mdp-icon-press-pose: translate(-0.8px, 0.8px) rotate(-5deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=edit] > [data-icon-part=body] {
+  --mdp-icon-part-animation: mdp-edit-write;
+  --mdp-icon-part-origin: 6px 18px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=edit] > [data-icon-part=cap] {
+  --mdp-icon-part-animation: mdp-edit-write;
+  --mdp-icon-part-origin: 6px 18px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-edit-write {
+  0%, 100% {
+    transform: none;
+  }
+  22% {
+    transform: translate(0.7px, -0.8px) rotate(-5deg);
+  }
+  44% {
+    transform: translate(-0.8px, 0.5px) rotate(2deg);
+  }
+  66% {
+    transform: translate(1px, -0.4px) rotate(-3deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=save] {
+  --mdp-icon-recipe: app-save;
+  --mdp-icon-motion-label: 'Disk label slides into its seat';
+  --mdp-icon-motion-duration: 580ms;
+  --mdp-icon-press-pose: translateY(0.7px) scaleY(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=save] > [data-icon-part=label] {
+  --mdp-icon-part-animation: mdp-save-label;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=save] > [data-icon-part=slot] {
+  --mdp-icon-part-animation: mdp-save-slot;
+  --mdp-icon-part-origin: 12px 5px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-save-label {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateY(-1.6px) scaleY(0.86);
+  }
+  64% {
+    transform: translateY(0.35px) scaleY(1.04);
+  }
+}
+@keyframes mdp-save-slot {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.35;
+  }
+  68% {
+    opacity: 1;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] {
+  --mdp-icon-recipe: app-print;
+  --mdp-icon-motion-label: 'Printer feeds a page and blinks its light';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: translateY(0.45px) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] > [data-icon-part=paper] {
+  --mdp-icon-part-animation: mdp-print-paper;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] > [data-icon-part=input] {
+  --mdp-icon-part-animation: mdp-print-input;
+  --mdp-icon-part-origin: 12px 5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] > [data-icon-part=indicator] {
+  --mdp-icon-part-animation: mdp-print-light;
+  --mdp-icon-part-origin: 17.5px 11px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-print-paper {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translateY(-1.3px);
+  }
+  56% {
+    transform: translateY(1.25px);
+  }
+  76% {
+    transform: translateY(0.9px);
+  }
+}
+@keyframes mdp-print-input {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translateY(0.8px) scaleY(0.82);
+  }
+}
+@keyframes mdp-print-light {
+  0%, 100% {
+    opacity: 1;
+  }
+  20%, 52% {
+    opacity: 0.2;
+  }
+  36%, 68% {
+    opacity: 1;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=export] {
+  --mdp-icon-recipe: app-export;
+  --mdp-icon-motion-label: 'Download arrow lands in the tray';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: translateY(1px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=export] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-export-drop;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=export] > [data-icon-part=tray] {
+  --mdp-icon-part-animation: mdp-export-catch;
+  --mdp-icon-part-origin: 12px 19px;
+  --mdp-icon-part-delay: 60ms;
+}
+
+@keyframes mdp-export-drop {
+  0%, 100% {
+    transform: none;
+  }
+  22% {
+    transform: translateY(-1px);
+  }
+  54% {
+    transform: translateY(2px);
+  }
+  72% {
+    transform: translateY(-0.4px);
+  }
+}
+@keyframes mdp-export-catch {
+  0%, 100% {
+    transform: none;
+  }
+  52% {
+    transform: scaleX(1.06) scaleY(0.9);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=updates] {
+  --mdp-icon-recipe: app-updates;
+  --mdp-icon-motion-label: 'Clock hand advances inside the document';
+  --mdp-icon-motion-duration: 680ms;
+  --mdp-icon-press-pose: scale(0.97) rotate(2deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=updates] > [data-icon-part=hands] {
+  --mdp-icon-part-animation: mdp-updates-clock;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=updates] > [data-icon-part=clock] {
+  --mdp-icon-part-animation: mdp-updates-ring;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-updates-clock {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(60deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+@keyframes mdp-updates-ring {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: scale(0.92);
+  }
+  68% {
+    transform: scale(1.04);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=apply] {
+  --mdp-icon-recipe: app-apply;
+  --mdp-icon-motion-label: 'Revision arrow folds down to the file';
+  --mdp-icon-motion-duration: 540ms;
+  --mdp-icon-press-pose: translateY(0.8px) scaleX(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=apply] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-apply-revision;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=apply] > [data-icon-part=document] {
+  --mdp-icon-part-animation: mdp-apply-document;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 100ms;
+}
+
+@keyframes mdp-apply-revision {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: translateY(-1.2px) scaleY(0.85);
+  }
+  64% {
+    transform: translateY(0.75px);
+  }
+}
+@keyframes mdp-apply-document {
+  0%, 100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.65;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] {
+  --mdp-icon-recipe: app-check-updates;
+  --mdp-icon-motion-label: 'Opposing sync arcs trade a quarter turn';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: rotate(12deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=upper-tip] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=lower-tip] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=upper-arc] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=lower-arc] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-check-updates-turn {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: rotate(90deg);
+  }
+  78% {
+    transform: rotate(-8deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] {
+  --mdp-icon-recipe: app-review;
+  --mdp-icon-motion-label: 'Comparison divider scans between plus and minus';
+  --mdp-icon-motion-duration: 740ms;
+  --mdp-icon-press-pose: scaleX(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] > [data-icon-part=divider] {
+  --mdp-icon-part-animation: mdp-review-scan;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] > [data-icon-part=plus] {
+  --mdp-icon-part-animation: mdp-review-plus;
+  --mdp-icon-part-origin: 7.5px 9px;
+  --mdp-icon-part-delay: 50ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-review-minus;
+  --mdp-icon-part-origin: 16.5px 14px;
+  --mdp-icon-part-delay: 140ms;
+}
+
+@keyframes mdp-review-scan {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  58% {
+    transform: translateX(1px);
+  }
+}
+@keyframes mdp-review-plus {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: rotate(90deg) scale(1.12);
+  }
+}
+@keyframes mdp-review-minus {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scaleX(0.55);
+  }
+  70% {
+    transform: scaleX(1.15);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check] {
+  --mdp-icon-recipe: app-check;
+  --mdp-icon-motion-label: 'Check draws from the short arm to the long arm';
+  --mdp-icon-motion-duration: 480ms;
+  --mdp-icon-press-pose: rotate(-3deg) scale(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check] > [data-icon-part=tick] {
+  --mdp-icon-part-animation: mdp-check-draw;
+  --mdp-icon-part-origin: 9px 16px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-check-draw {
+  0% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  62%, 100% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: none;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] {
+  --mdp-icon-recipe: app-focus;
+  --mdp-icon-motion-label: 'Four corners tighten around the reading area';
+  --mdp-icon-motion-duration: 560ms;
+  --mdp-icon-press-pose: scale(0.91);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=nw] {
+  --mdp-icon-part-animation: mdp-focus-nw;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=ne] {
+  --mdp-icon-part-animation: mdp-focus-ne;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=sw] {
+  --mdp-icon-part-animation: mdp-focus-sw;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=se] {
+  --mdp-icon-part-animation: mdp-focus-se;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-focus-nw {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(1.5px, 1.5px);
+  }
+}
+@keyframes mdp-focus-ne {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(-1.5px, 1.5px);
+  }
+}
+@keyframes mdp-focus-sw {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(1.5px, -1.5px);
+  }
+}
+@keyframes mdp-focus-se {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(-1.5px, -1.5px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=external] {
+  --mdp-icon-recipe: app-external;
+  --mdp-icon-motion-label: 'Arrow peeks through the open corner';
+  --mdp-icon-motion-duration: 610ms;
+  --mdp-icon-press-pose: translate(0.6px, -0.6px) scale(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=external] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-external-launch;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=external] > [data-icon-part=frame] {
+  --mdp-icon-part-animation: mdp-external-frame;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-external-launch {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: translate(1px, -1px);
+  }
+  63% {
+    transform: translate(0.25px, -0.25px);
+  }
+  80% {
+    transform: translate(0.65px, -0.65px);
+  }
+}
+@keyframes mdp-external-frame {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.5;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=folder-select] {
+  --mdp-icon-recipe: app-folder-select;
+  --mdp-icon-motion-label: 'Folder lip opens as the entry arrow advances';
+  --mdp-icon-motion-duration: 650ms;
+  --mdp-icon-press-pose: scaleY(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=folder-select] > [data-icon-part=lip] {
+  --mdp-icon-part-animation: mdp-folder-select-lip;
+  --mdp-icon-part-origin: 2.5px 8px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=folder-select] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-folder-select-arrow;
+  --mdp-icon-part-origin: 18px 17px;
+  --mdp-icon-part-delay: 75ms;
+}
+
+@keyframes mdp-folder-select-lip {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: skewY(-4deg) translateY(-0.5px);
+  }
+}
+@keyframes mdp-folder-select-arrow {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-1.5px);
+  }
+  62% {
+    transform: translateX(0.5px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=back-to-file] {
+  --mdp-icon-recipe: app-back-to-file;
+  --mdp-icon-motion-label: 'Return arrow nudges the document home';
+  --mdp-icon-motion-duration: 590ms;
+  --mdp-icon-press-pose: translateX(-0.7px) rotate(-2deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=back-to-file] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-back-file-arrow;
+  --mdp-icon-part-origin: 8px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=back-to-file] > [data-icon-part=document] {
+  --mdp-icon-part-animation: mdp-back-file-document;
+  --mdp-icon-part-origin: 15px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-back-file-arrow {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translateX(-1.1px);
+  }
+  68% {
+    transform: translateX(0.4px);
+  }
+}
+@keyframes mdp-back-file-document {
+  0%, 100% {
+    transform: none;
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] {
+  --mdp-icon-recipe: app-leave-workspace;
+  --mdp-icon-motion-label: 'Exit arrow glides away from a closing window';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: translateX(-1px) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-leave-arrow;
+  --mdp-icon-part-origin: 8px 15px;
+  --mdp-icon-part-delay: 40ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] > [data-icon-part=window] {
+  --mdp-icon-part-animation: mdp-leave-window;
+  --mdp-icon-part-origin: 21px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] > [data-icon-part=indicator] {
+  --mdp-icon-part-animation: mdp-leave-indicator;
+  --mdp-icon-part-origin: 12px 6.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-leave-arrow {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-1px);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translateX(0.3px);
+    opacity: 1;
+  }
+}
+@keyframes mdp-leave-window {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scaleX(0.87);
+  }
+}
+@keyframes mdp-leave-indicator {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] {
+  --mdp-icon-recipe: app-more;
+  --mdp-icon-motion-label: 'Three dots roll in a left-to-right wave';
+  --mdp-icon-motion-duration: 500ms;
+  --mdp-icon-press-pose: scaleX(0.88);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] > [data-icon-part=dot-left] {
+  --mdp-icon-part-animation: mdp-more-roll;
+  --mdp-icon-part-origin: 5px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] > [data-icon-part=dot-center] {
+  --mdp-icon-part-animation: mdp-more-roll;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] > [data-icon-part=dot-right] {
+  --mdp-icon-part-animation: mdp-more-roll;
+  --mdp-icon-part-origin: 19px 12px;
+  --mdp-icon-part-delay: 140ms;
+}
+
+@keyframes mdp-more-roll {
+  0%, 100% {
+    transform: none;
+  }
+  28% {
+    transform: translateY(-2px) scale(0.8);
+  }
+  58% {
+    transform: translateY(0.6px) scale(1.15);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=expand] {
+  --mdp-icon-recipe: app-expand;
+  --mdp-icon-motion-label: 'Diagonal corners stretch outward in sequence';
+  --mdp-icon-motion-duration: 640ms;
+  --mdp-icon-press-pose: scale(1.04);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=expand] > [data-icon-part=ne] {
+  --mdp-icon-part-animation: mdp-expand-ne;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=expand] > [data-icon-part=sw] {
+  --mdp-icon-part-animation: mdp-expand-sw;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 90ms;
+}
+
+@keyframes mdp-expand-ne {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(0.75px, -0.75px);
+  }
+  68% {
+    transform: translate(-0.2px, 0.2px);
+  }
+}
+@keyframes mdp-expand-sw {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(-0.75px, 0.75px);
+  }
+  68% {
+    transform: translate(0.2px, -0.2px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] {
+  --mdp-icon-recipe: app-zoom-in;
+  --mdp-icon-motion-label: 'Lens magnifies as the plus arms unfold';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: scale(1.06);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] > [data-icon-part=lens] {
+  --mdp-icon-part-animation: mdp-zoom-in-lens;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] > [data-icon-part=plus] {
+  --mdp-icon-part-animation: mdp-zoom-in-plus;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 35ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-zoom-in-minus;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 35ms;
+}
+
+@keyframes mdp-zoom-in-lens {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scale(1.12);
+  }
+}
+@keyframes mdp-zoom-in-plus {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: scaleY(0.35);
+  }
+  55% {
+    transform: scaleY(1.3);
+  }
+}
+@keyframes mdp-zoom-in-minus {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scaleX(1.3);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-out] {
+  --mdp-icon-recipe: app-zoom-out;
+  --mdp-icon-motion-label: 'Lens contracts while the minus flattens';
+  --mdp-icon-motion-duration: 550ms;
+  --mdp-icon-press-pose: scale(0.9);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-out] > [data-icon-part=lens] {
+  --mdp-icon-part-animation: mdp-zoom-out-lens;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-out] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-zoom-out-minus;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-zoom-out-lens {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: scale(0.84);
+  }
+  70% {
+    transform: scale(1.03);
+  }
+}
+@keyframes mdp-zoom-out-minus {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: scaleX(0.6);
+  }
+  70% {
+    transform: scaleX(1.08);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] {
+  --mdp-icon-recipe: app-recenter;
+  --mdp-icon-motion-label: 'Offset corners settle onto a pulsing center';
+  --mdp-icon-motion-duration: 760ms;
+  --mdp-icon-press-pose: translate(0.4px, 0.4px) scale(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=nw] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=ne] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=sw] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=se] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=center] {
+  --mdp-icon-part-animation: mdp-recenter-dot;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-recenter-align {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translate(-0.8px, 0.8px) rotate(-4deg);
+  }
+  55% {
+    transform: translate(0.2px, -0.2px) rotate(1deg);
+  }
+}
+@keyframes mdp-recenter-dot {
+  0%, 100% {
+    transform: none;
+  }
+  28% {
+    transform: scale(0.45);
+  }
+  58% {
+    transform: scale(1.4);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] {
+  --mdp-icon-recipe: app-source;
+  --mdp-icon-motion-label: 'Brackets open around a drawing slash';
+  --mdp-icon-motion-duration: 630ms;
+  --mdp-icon-press-pose: scaleX(1.05) scaleY(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] > [data-icon-part=left] {
+  --mdp-icon-part-animation: mdp-source-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] > [data-icon-part=right] {
+  --mdp-icon-part-animation: mdp-source-right;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] > [data-icon-part=slash] {
+  --mdp-icon-part-animation: mdp-source-slash;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-source-left {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(-0.6px) scaleX(0.9);
+  }
+}
+@keyframes mdp-source-right {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(0.6px) scaleX(0.9);
+  }
+}
+@keyframes mdp-source-slash {
+  0% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  55%, 100% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] {
+  --mdp-icon-recipe: app-workspace;
+  --mdp-icon-motion-label: 'Workspace rail slides as its tabs answer';
+  --mdp-icon-motion-duration: 690ms;
+  --mdp-icon-press-pose: scaleY(0.96) skewX(-2deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] > [data-icon-part=rail] {
+  --mdp-icon-part-animation: mdp-workspace-rail;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] > [data-icon-part=tab-left] {
+  --mdp-icon-part-animation: mdp-workspace-tab-left;
+  --mdp-icon-part-origin: 6px 6.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] > [data-icon-part=tab-right] {
+  --mdp-icon-part-animation: mdp-workspace-tab-right;
+  --mdp-icon-part-origin: 9px 6.5px;
+  --mdp-icon-part-delay: 110ms;
+}
+
+@keyframes mdp-workspace-rail {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translateX(2px);
+  }
+}
+@keyframes mdp-workspace-tab-left {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  35% {
+    transform: scale(1.8);
+    opacity: 0.5;
+  }
+}
+@keyframes mdp-workspace-tab-right {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: translateX(0.5px) scale(1.5);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=refresh] {
+  --mdp-icon-recipe: app-refresh;
+  --mdp-icon-motion-label: 'Refresh arrow turns while the file lines stay still';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: rotate(-8deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=refresh] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-refresh-orbit;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-refresh-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=collapse] {
+  --mdp-icon-recipe: app-collapse;
+  --mdp-icon-motion-label: 'Folder layers nest behind a shrinking minus';
+  --mdp-icon-motion-duration: 650ms;
+  --mdp-icon-press-pose: translate(-0.7px, -0.7px) scale(0.95);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=collapse] > [data-icon-part=front] {
+  --mdp-icon-part-animation: mdp-collapse-stack;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=collapse] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-collapse-minus;
+  --mdp-icon-part-origin: 14px 14.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-collapse-stack {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translate(-1.4px, -1.4px) scale(0.9);
+  }
+}
+@keyframes mdp-collapse-minus {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translate(-1.4px, -1.4px) scaleX(0.4);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=search] {
+  --mdp-icon-recipe: app-search;
+  --mdp-icon-motion-label: 'Magnifier scans left and right';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: translate(0.5px, -0.5px) rotate(4deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=search] > [data-icon-part=lens] {
+  --mdp-icon-part-animation: mdp-search-scan;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=search] > [data-icon-part=handle] {
+  --mdp-icon-part-animation: mdp-search-scan;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-search-scan {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translate(-0.8px, -0.5px) rotate(-7deg);
+  }
+  58% {
+    transform: translate(0.8px, 0.4px) rotate(7deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] {
+  --mdp-icon-recipe: app-outline;
+  --mdp-icon-motion-label: 'Outline lines reveal in reading order';
+  --mdp-icon-motion-duration: 500ms;
+  --mdp-icon-press-pose: translateX(0.5px) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] > [data-icon-part=line-top] {
+  --mdp-icon-part-animation: mdp-outline-line;
+  --mdp-icon-part-origin: 9px 5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] > [data-icon-part=line-middle] {
+  --mdp-icon-part-animation: mdp-outline-line;
+  --mdp-icon-part-origin: 9px 12px;
+  --mdp-icon-part-delay: 80ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] > [data-icon-part=line-bottom] {
+  --mdp-icon-part-animation: mdp-outline-line;
+  --mdp-icon-part-origin: 9px 19px;
+  --mdp-icon-part-delay: 160ms;
+}
+
+@keyframes mdp-outline-line {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  25% {
+    transform: scaleX(0.4);
+    opacity: 0.4;
+  }
+  60% {
+    transform: scaleX(1.05);
+    opacity: 1;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-left] {
+  --mdp-icon-recipe: app-chevron-left;
+  --mdp-icon-motion-label: 'Left chevron retreats and returns';
+  --mdp-icon-motion-duration: 420ms;
+  --mdp-icon-press-pose: translateX(-0.9px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-left] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-chevron-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-chevron-left {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateX(-1.5px) skewY(5deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-right] {
+  --mdp-icon-recipe: app-chevron-right;
+  --mdp-icon-motion-label: 'Right chevron steps forward twice';
+  --mdp-icon-motion-duration: 640ms;
+  --mdp-icon-press-pose: translateX(0.8px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-right] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-chevron-right;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-chevron-right {
+  0%, 52%, 100% {
+    transform: none;
+  }
+  26% {
+    transform: translateX(1.2px);
+  }
+  75% {
+    transform: translateX(0.65px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-down] {
+  --mdp-icon-recipe: app-chevron-down;
+  --mdp-icon-motion-label: 'Down chevron folds before descending';
+  --mdp-icon-motion-duration: 570ms;
+  --mdp-icon-press-pose: translateY(0.65px) scaleX(0.93);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-down] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-chevron-down;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-chevron-down {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: scaleY(0.55);
+  }
+  58% {
+    transform: translateY(1.25px) scaleY(1.08);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-left] {
+  --mdp-icon-recipe: app-sidebar-chevron-left;
+  --mdp-icon-motion-label: 'Left panel shutter pulls inward';
+  --mdp-icon-motion-duration: 460ms;
+  --mdp-icon-press-pose: scaleX(0.82);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-left] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-sidebar-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-sidebar-left {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateX(-0.8px) scaleX(0.7);
+  }
+  70% {
+    transform: scaleX(1.08);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-right] {
+  --mdp-icon-recipe: app-sidebar-chevron-right;
+  --mdp-icon-motion-label: 'Right panel shutter swings on its hinge';
+  --mdp-icon-motion-duration: 520ms;
+  --mdp-icon-press-pose: skewX(5deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-right] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-sidebar-right;
+  --mdp-icon-part-origin: 9px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-sidebar-right {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: skewY(-8deg) scaleX(0.85);
+  }
+  68% {
+    transform: skewY(3deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] {
+  --mdp-icon-recipe: app-file-details;
+  --mdp-icon-motion-label: 'Details card scans its information lines';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: scaleY(0.95);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=lines] {
+  --mdp-icon-part-animation: mdp-details-scan;
+  --mdp-icon-part-origin: 7px 8px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=card] {
+  --mdp-icon-part-animation: mdp-details-card;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-details-scan {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  35% {
+    transform: scaleX(0.55);
+    opacity: 0.25;
+  }
+  70% {
+    transform: scaleX(1.05);
+  }
+}
+@keyframes mdp-details-card {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.65;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] {
+  --mdp-icon-recipe: app-arrow-up;
+  --mdp-icon-motion-label: 'Arrowhead launches ahead of its shaft';
+  --mdp-icon-motion-duration: 610ms;
+  --mdp-icon-press-pose: translateY(-0.9px) scaleY(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] > [data-icon-part=head] {
+  --mdp-icon-part-animation: mdp-up-head;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] > [data-icon-part=shaft] {
+  --mdp-icon-part-animation: mdp-up-shaft;
+  --mdp-icon-part-origin: 12px 20px;
+  --mdp-icon-part-delay: 45ms;
+}
+
+@keyframes mdp-up-head {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: translateY(-1px);
+  }
+  60% {
+    transform: translateY(0.35px);
+  }
+}
+@keyframes mdp-up-shaft {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: scaleY(0.86);
+  }
+  65% {
+    transform: scaleY(1.03);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=close] {
+  --mdp-icon-recipe: app-close;
+  --mdp-icon-motion-label: 'Cross arms fold together and reopen';
+  --mdp-icon-motion-duration: 560ms;
+  --mdp-icon-press-pose: rotate(8deg) scale(0.92);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=close] > [data-icon-part=falling] {
+  --mdp-icon-part-animation: mdp-close-falling;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=close] > [data-icon-part=rising] {
+  --mdp-icon-part-animation: mdp-close-rising;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-close-falling {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(45deg) scale(0.8);
+  }
+}
+@keyframes mdp-close-rising {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(-45deg) scale(0.8);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=history] {
+  --mdp-icon-recipe: app-history;
+  --mdp-icon-motion-label: 'History hand rewinds behind its return hook';
+  --mdp-icon-motion-duration: 780ms;
+  --mdp-icon-press-pose: rotate(-6deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=history] > [data-icon-part=hands] {
+  --mdp-icon-part-animation: mdp-history-rewind;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=history] > [data-icon-part=return] {
+  --mdp-icon-part-animation: mdp-history-return;
+  --mdp-icon-part-origin: 5px 8px;
+  --mdp-icon-part-delay: 40ms;
+}
+
+@keyframes mdp-history-rewind {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: rotate(-85deg);
+  }
+  64% {
+    transform: rotate(-25deg);
+  }
+}
+@keyframes mdp-history-return {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateX(-0.6px) rotate(-8deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=reader] {
+  --mdp-icon-recipe: app-reader;
+  --mdp-icon-motion-label: 'Book pages fan around the fixed spine';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: scaleX(0.93) scaleY(1.02);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=reader] > [data-icon-part=left-page] {
+  --mdp-icon-part-animation: mdp-reader-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=reader] > [data-icon-part=right-page] {
+  --mdp-icon-part-animation: mdp-reader-right;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-reader-left {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: scaleX(0.75) skewY(-3deg);
+  }
+}
+@keyframes mdp-reader-right {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: scaleX(0.9) skewY(5deg);
+  }
+  65% {
+    transform: scaleX(1.03);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=editor] {
+  --mdp-icon-recipe: app-editor;
+  --mdp-icon-motion-label: 'Editor pencil lifts its cap and seats the nib';
+  --mdp-icon-motion-duration: 580ms;
+  --mdp-icon-press-pose: rotate(-7deg) scaleY(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=editor] > [data-icon-part=cap] {
+  --mdp-icon-part-animation: mdp-editor-cap;
+  --mdp-icon-part-origin: 17px 7px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=editor] > [data-icon-part=body] {
+  --mdp-icon-part-animation: mdp-editor-nib;
+  --mdp-icon-part-origin: 5px 19px;
+  --mdp-icon-part-delay: 55ms;
+}
+
+@keyframes mdp-editor-cap {
+  0%, 100% {
+    transform: none;
+  }
+  34% {
+    transform: translate(0.7px, -0.7px) rotate(12deg);
+  }
+}
+@keyframes mdp-editor-nib {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(-6deg);
+  }
+  72% {
+    transform: rotate(2deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] {
+  --mdp-icon-recipe: app-plugins;
+  --mdp-icon-motion-label: 'Plug prongs connect as the cord flexes';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: translateY(0.5px) scaleY(0.93);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] > [data-icon-part=prongs] {
+  --mdp-icon-part-animation: mdp-plugins-connect;
+  --mdp-icon-part-origin: 12px 8px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] > [data-icon-part=socket] {
+  --mdp-icon-part-animation: mdp-plugins-socket;
+  --mdp-icon-part-origin: 12px 10px;
+  --mdp-icon-part-delay: 80ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] > [data-icon-part=cord] {
+  --mdp-icon-part-animation: mdp-plugins-cord;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 150ms;
+}
+
+@keyframes mdp-plugins-connect {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translateY(-0.7px);
+  }
+  50% {
+    transform: translateY(1px);
+  }
+}
+@keyframes mdp-plugins-socket {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scaleX(1.06);
+  }
+}
+@keyframes mdp-plugins-cord {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: skewX(12deg);
+  }
+  70% {
+    transform: skewX(-5deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] {
+  --mdp-icon-recipe: app-settings;
+  --mdp-icon-motion-label: 'Three sliders tune in opposite directions';
+  --mdp-icon-motion-duration: 680ms;
+  --mdp-icon-press-pose: scaleX(0.95) rotate(1deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] > [data-icon-part=slider-top] {
+  --mdp-icon-part-animation: mdp-settings-top;
+  --mdp-icon-part-origin: 10px 5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] > [data-icon-part=slider-middle] {
+  --mdp-icon-part-animation: mdp-settings-middle;
+  --mdp-icon-part-origin: 16px 12px;
+  --mdp-icon-part-delay: 65ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] > [data-icon-part=slider-bottom] {
+  --mdp-icon-part-animation: mdp-settings-bottom;
+  --mdp-icon-part-origin: 8px 19px;
+  --mdp-icon-part-delay: 130ms;
+}
+
+@keyframes mdp-settings-top {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(3px);
+  }
+}
+@keyframes mdp-settings-middle {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(-4px);
+  }
+}
+@keyframes mdp-settings-bottom {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(2px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] {
+  --mdp-icon-recipe: app-palette;
+  --mdp-icon-motion-label: 'Paint wells brighten around the palette thumb';
+  --mdp-icon-motion-duration: 760ms;
+  --mdp-icon-press-pose: rotate(4deg) scale(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=palette] {
+  --mdp-icon-part-animation: mdp-palette-rock;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=ink-warm] {
+  --mdp-icon-part-animation: mdp-palette-well;
+  --mdp-icon-part-origin: 7.5px 9px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=ink-cool] {
+  --mdp-icon-part-animation: mdp-palette-well;
+  --mdp-icon-part-origin: 10.5px 6.5px;
+  --mdp-icon-part-delay: 80ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=ink-bright] {
+  --mdp-icon-part-animation: mdp-palette-well;
+  --mdp-icon-part-origin: 15px 7px;
+  --mdp-icon-part-delay: 160ms;
+}
+
+@keyframes mdp-palette-rock {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: rotate(-5deg);
+  }
+  68% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes mdp-palette-well {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: scale(1.6);
+  }
+  58% {
+    transform: scale(0.8);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=moon] {
+  --mdp-icon-recipe: app-moon;
+  --mdp-icon-motion-label: 'Crescent rocks into a quiet eclipse';
+  --mdp-icon-motion-duration: 820ms;
+  --mdp-icon-press-pose: rotate(-9deg) scale(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=moon] > [data-icon-part=crescent] {
+  --mdp-icon-part-animation: mdp-moon-eclipse;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-moon-eclipse {
+  0%, 100% {
+    transform: none;
+  }
+  32% {
+    transform: rotate(-18deg) scale(0.92);
+  }
+  64% {
+    transform: rotate(6deg) scale(1.02);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] {
+  --mdp-icon-recipe: app-sun;
+  --mdp-icon-motion-label: 'Sun core warms as cardinal and diagonal rays unfurl';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: rotate(10deg) scale(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] > [data-icon-part=core] {
+  --mdp-icon-part-animation: mdp-sun-warm;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] > [data-icon-part=rays-cardinal] {
+  --mdp-icon-part-animation: mdp-sun-cardinal;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] > [data-icon-part=rays-diagonal] {
+  --mdp-icon-part-animation: mdp-sun-diagonal;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-sun-warm {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: scale(1.15);
+  }
+  68% {
+    transform: scale(0.96);
+  }
+}
+@keyframes mdp-sun-cardinal {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0.8) rotate(-12deg);
+    opacity: 0.45;
+  }
+  60% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes mdp-sun-diagonal {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0.84) rotate(12deg);
+    opacity: 0.35;
+  }
+  60% {
+    transform: rotate(-8deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=type] {
+  --mdp-icon-recipe: app-type;
+  --mdp-icon-motion-label: 'Capital rises while the small letter follows';
+  --mdp-icon-motion-duration: 660ms;
+  --mdp-icon-press-pose: scaleY(0.93) translateY(0.5px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=type] > [data-icon-part=capital] {
+  --mdp-icon-part-animation: mdp-type-capital;
+  --mdp-icon-part-origin: 9px 20px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=type] > [data-icon-part=small] {
+  --mdp-icon-part-animation: mdp-type-small;
+  --mdp-icon-part-origin: 19.5px 20px;
+  --mdp-icon-part-delay: 120ms;
+}
+
+@keyframes mdp-type-capital {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: scaleY(1.06) scaleX(0.94);
+  }
+}
+@keyframes mdp-type-small {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translateY(-1.2px) scaleY(1.12);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=shield] {
+  --mdp-icon-recipe: app-shield;
+  --mdp-icon-motion-label: 'Shield braces before its check locks into place';
+  --mdp-icon-motion-duration: 710ms;
+  --mdp-icon-press-pose: scaleX(0.92) scaleY(1.02);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=shield] > [data-icon-part=shield] {
+  --mdp-icon-part-animation: mdp-shield-brace;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=shield] > [data-icon-part=check] {
+  --mdp-icon-part-animation: mdp-shield-lock;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 100ms;
+}
+
+@keyframes mdp-shield-brace {
+  0%, 100% {
+    transform: none;
+  }
+  28% {
+    transform: scaleX(0.9);
+  }
+  55% {
+    transform: scaleX(1.04);
+  }
+}
+@keyframes mdp-shield-lock {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(-0.8px) scale(0.65);
+    opacity: 0.3;
+  }
+  52% {
+    transform: scale(1.1);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=info] {
+  --mdp-icon-recipe: app-info;
+  --mdp-icon-motion-label: 'Information dot lifts while its stem stands taller';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: scale(0.95) translateY(0.3px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=info] > [data-icon-part=dot] {
+  --mdp-icon-part-animation: mdp-info-dot;
+  --mdp-icon-part-origin: 12px 7px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=info] > [data-icon-part=stem] {
+  --mdp-icon-part-animation: mdp-info-stem;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 50ms;
+}
+
+@keyframes mdp-info-dot {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateY(-1px) scale(1.2);
+  }
+}
+@keyframes mdp-info-stem {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: scaleY(1.15);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=warning] {
+  --mdp-icon-recipe: app-warning;
+  --mdp-icon-motion-label: 'Exclamation taps once inside a steady triangle';
+  --mdp-icon-motion-duration: 520ms;
+  --mdp-icon-press-pose: translateY(0.4px) scaleX(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=warning] > [data-icon-part=stem] {
+  --mdp-icon-part-animation: mdp-warning-tap;
+  --mdp-icon-part-origin: 12px 14px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=warning] > [data-icon-part=dot] {
+  --mdp-icon-part-animation: mdp-warning-dot;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 60ms;
+}
+
+@keyframes mdp-warning-tap {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateY(-0.9px);
+  }
+  58% {
+    transform: translateY(0.6px) scaleY(0.85);
+  }
+}
+@keyframes mdp-warning-dot {
+  0%, 100% {
+    transform: none;
+  }
+  52% {
+    transform: scale(1.45);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=error] {
+  --mdp-icon-recipe: app-error;
+  --mdp-icon-motion-label: 'Error cross shakes inside its steady ring';
+  --mdp-icon-motion-duration: 540ms;
+  --mdp-icon-press-pose: rotate(-2deg) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=error] > [data-icon-part=cross] {
+  --mdp-icon-part-animation: mdp-error-shake;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-error-shake {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translateX(-1px);
+  }
+  40% {
+    transform: translateX(1px);
+  }
+  60% {
+    transform: translateX(-0.5px);
+  }
+  80% {
+    transform: translateX(0.25px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=trash] {
+  --mdp-icon-recipe: app-trash;
+  --mdp-icon-motion-label: 'Bin lid lifts then closes without deleting anything';
+  --mdp-icon-motion-duration: 740ms;
+  --mdp-icon-press-pose: scaleY(0.94) rotate(3deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=trash] > [data-icon-part=lid] {
+  --mdp-icon-part-animation: mdp-trash-lid;
+  --mdp-icon-part-origin: 6px 6px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=trash] > [data-icon-part=bin] {
+  --mdp-icon-part-animation: mdp-trash-bin;
+  --mdp-icon-part-origin: 12px 21px;
+  --mdp-icon-part-delay: 60ms;
+}
+
+@keyframes mdp-trash-lid {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translateY(-0.8px) rotate(-8deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes mdp-trash-bin {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: scaleY(0.96);
+  }
+}
+.mdp-root svg[data-mdp-family=app] {
+  --mdp-icon-center: 12px 12px;
+}
+
+.mdp-root svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+  transform-box: view-box;
+  transform-origin: var(--mdp-icon-part-origin, var(--mdp-icon-center));
+  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root :where(button, a, [role=button]):not(:disabled, [aria-disabled=true], [aria-busy=true]):focus-visible svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+    animation-name: var(--mdp-icon-part-animation, none);
+    animation-duration: var(--mdp-icon-motion-duration);
+    animation-timing-function: var(--mdp-icon-ease);
+    animation-delay: var(--mdp-icon-part-delay, 0ms);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .mdp-root :where(button, a, [role=button]):not(:disabled, [aria-disabled=true], [aria-busy=true]):hover svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+    animation-name: var(--mdp-icon-part-animation, none);
+    animation-duration: var(--mdp-icon-motion-duration);
+    animation-timing-function: var(--mdp-icon-ease);
+    animation-delay: var(--mdp-icon-part-delay, 0ms);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root :where(button, a, [role=button]):not(:disabled, [aria-disabled=true], [aria-busy=true]):active svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+    animation: none;
+    transform: var(--mdp-icon-part-press, var(--mdp-icon-press-pose));
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root .is-copied .mdp-icon-swap[data-swapped=true] svg[data-mdp-icon=check] > [data-icon-part=tick] {
+    animation-name: var(--mdp-icon-part-animation, none);
+    animation-duration: var(--mdp-icon-motion-duration);
+    animation-timing-function: var(--mdp-icon-ease);
+    animation-delay: var(--mdp-icon-part-delay, 0ms);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-root svg[data-mdp-icon][data-mdp-family=app] > [data-icon-part]:not([data-icon-local-motion]) {
+    animation: none !important;
+    transition: none;
+    transform: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}
+.mdp-root {
+  --mdp-icon-press-duration: 90ms;
+  --mdp-icon-swap-duration: 180ms;
+  --mdp-icon-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mdp-root .mdp-button:has(> :is(svg[data-mdp-icon][data-mdp-family=app], .mdp-icon-swap, .mdp-explorer__menu-icon)):active:not(:disabled) {
+  transform: none;
+}
+
+.mdp-root .mdp-icon-swap {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  vertical-align: middle;
+  pointer-events: none;
+}
+.mdp-root .mdp-icon-swap > svg {
+  display: block;
+  grid-area: 1/1;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+  transition: opacity var(--mdp-icon-swap-duration) ease, transform var(--mdp-icon-swap-duration) var(--mdp-icon-ease);
+}
+.mdp-root .mdp-icon-swap > .mdp-icon-swap__from {
+  opacity: 1;
+  transform: scale(1);
+}
+.mdp-root .mdp-icon-swap > .mdp-icon-swap__to {
+  opacity: 0;
+  transform: scale(0.8) rotate(-8deg);
+}
+.mdp-root .mdp-icon-swap[data-swapped=true] > .mdp-icon-swap__from {
+  opacity: 0;
+  transform: scale(0.8) rotate(8deg);
+}
+.mdp-root .mdp-icon-swap[data-swapped=true] > .mdp-icon-swap__to {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.mdp-root button:is(.mdp-fab-btn, .mdp-explorer__context-command,
+.mdp-document-actions-menu__item, .mdp-explorer__row-menu-item, .mdp-code-block__copy,
+.mdp-mermaid-toolbar__copy, .mdp-color-popover__copy).is-copied {
+  opacity: 1;
+  color: var(--mdp-toast-success-text);
+  background: var(--mdp-toast-success-bg);
+  border-color: var(--mdp-toast-success-border);
+}
+
+@media (pointer: coarse) {
+  .mdp-root :is(.mdp-code-block__copy, .mdp-mermaid-toolbar__copy,
+  .mdp-mermaid-toolbar__expand, .mdp-mermaid-actions__trigger,
+  .mdp-image-lightbox__button, .mdp-mermaid-lightbox__button) {
+    width: 44px;
+    height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-root .mdp-icon-swap > svg,
+  .mdp-root .mdp-icon-swap[data-swapped=true] > svg {
+    transition: none;
+    transform: none;
+  }
+}
+</style>
 </head>
 <body data-theme="light">
   <header class="ds-nav"><a class="ds-brand" href="./index.html">Markdown Plus <span>/ Design system</span></a><nav class="ds-links" aria-label="Design system"><a href="./index.html">Overview</a><a href="./components.html" aria-current="page">Components</a><a href="./icons.html">Icons</a><a href="./viewer.html">Viewer preview</a></nav></header>
@@ -2737,14 +4620,14 @@
           </div>
           <div class="mdp-ui-demo-group">
             <span class="mdp-ui-demo-group__title">Viewer icon actions · 34px</span>
-            <div class="mdp-ui-demo-row" id="catalog-icon-actions"><button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" data-catalog-feedback="Copy open file link preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg></button><button class="mdp-fab-btn mdp-fab-btn--edit" type="button" aria-label="Edit Markdown" title="Edit Markdown" data-catalog-feedback="Edit Markdown preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Document updates" title="Document updates" data-catalog-feedback="Document updates preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Update document" title="Update document" data-catalog-feedback="Update document preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Review changes" title="Review changes" data-catalog-feedback="Review changes preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg></button></div>
+            <div class="mdp-ui-demo-row mdp-root" id="catalog-icon-actions"><button class="mdp-fab-btn" type="button" aria-label="Copy open file link" title="Copy open file link" data-catalog-feedback="Copy open file link preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6" data-icon-part="bridge" pathLength="1"></path><path d="M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0" data-icon-part="lower" pathLength="1"></path><path d="M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0" data-icon-part="upper" pathLength="1"></path></svg></button><button class="mdp-fab-btn mdp-fab-btn--edit" type="button" aria-label="Edit Markdown" title="Edit Markdown" data-catalog-feedback="Edit Markdown preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4" data-icon-part="cap" pathLength="1"></path><path d="M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z" data-icon-part="body" pathLength="1"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Document updates" title="Document updates" data-catalog-feedback="Document updates preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><circle cx="17" cy="17" r="4" data-icon-part="clock" pathLength="1"></circle><path d="M17 15v2l1.5 1" data-icon-part="hands" pathLength="1"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Update document" title="Update document" data-catalog-feedback="Update document preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><path d="M17 13v8 m-3-3 3 3 3-3" data-icon-part="arrow" pathLength="1"></path></svg></button><button class="mdp-fab-btn" type="button" aria-label="Review changes" title="Review changes" data-catalog-feedback="Review changes preview."><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2" data-icon-part="frame" pathLength="1"></rect><path d="M12 4v16" data-icon-part="divider" pathLength="1"></path><path d="M6 9h3 M7.5 7.5v3" data-icon-part="plus" pathLength="1"></path><path d="M15 14h3" data-icon-part="minus" pathLength="1"></path></svg></button></div>
             <p class="catalog-note">Current runtime SVGs; 44px targets on coarse pointers. Activate an action to preview feedback.</p>
           </div>
           <div class="mdp-ui-demo-group">
             <span class="mdp-ui-demo-group__title">File picker action</span>
             <input class="mdp-ui-file-input" id="catalog-file-input" type="file" accept="application/json,.json">
             <button class="mdp-ui-button" id="catalog-file-button" type="button">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="source" class="mdp-ui-button__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m8 6-6 6 6 6 m8-12 6 6-6 6 M14 3l-4 18"></path></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="source" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-ui-button__icon"><path d="m8 6-6 6 6 6" data-icon-part="left" pathLength="1"></path><path d="M16 6l6 6-6 6" data-icon-part="right" pathLength="1"></path><path d="M14 3l-4 18" data-icon-part="slash" pathLength="1"></path></svg>
               Choose JSON
             </button>
           </div>
@@ -2859,7 +4742,7 @@
             <div class="mdp-ui-state">
               <strong class="mdp-ui-state__title">No recent files</strong>
               <p class="mdp-ui-state__message">Documents opened in the Viewer will appear here.</p>
-              
+
             </div>
             <div class="mdp-ui-state mdp-ui-state--error">
               <strong class="mdp-ui-state__title">Settings could not be loaded</strong>
@@ -2874,9 +4757,9 @@
   <header class="mdp-ui-section__header"><h3 id="color-previews-title">Color previews</h3><p>A compact article-local inspector. Full-precision copy values are separate from concise display labels.</p></header>
   <div class="mdp-ui-grid">
     <div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Inline samples · neutral hover</span><div class="mdp-markdown-body"><p>Primary: <code><button class="mdp-color-swatch" type="button" aria-label="Copy color #b45309" style="--mdp-preview-color: #b45309" data-color-source-preview="#b45309"></button>#b45309</code></p><p>Alpha: <code><button class="mdp-color-swatch" type="button" aria-label="Copy color #3B82F680" style="--mdp-preview-color: #3B82F680" data-color-source-preview="#3B82F680"></button>#3B82F680</code></p></div><p class="catalog-note">Hover preserves the neutral border. Keyboard focus keeps the shared visible outline. Click a sample to copy its exact source; a click-local pulse and Copied label confirm it for 1.2 seconds (simulated here). Runtime ArrowDown opens the format actions. Original code and clipboard text are preserved.</p></div>
-    <div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Inspector · 264 × 114px</span><section class="mdp-color-popover catalog-color-popover" aria-label="Static compact color inspector appearance"><div class="mdp-color-popover__row"><span class="mdp-color-popover__label">HEX</span><span class="mdp-color-popover__value-group"><span class="mdp-color-popover__sample" style="--mdp-preview-color: #B45309" aria-hidden="true"></span><span class="mdp-color-popover__value" aria-label="#B45309" title="#B45309">#B45309</span></span><button class="mdp-color-popover__copy" type="button" aria-label="Copy HEX preview" title="Copy HEX: #B45309" data-color-copy-preview="HEX"><svg class="mdp-color-popover__copy-icon" data-mdp-icon="copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="13" rx="2"></rect><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"></path></svg><svg class="mdp-color-popover__check-icon" data-mdp-icon="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"></path></svg></button></div>
-<div class="mdp-color-popover__row"><span class="mdp-color-popover__label">RGB</span><span class="mdp-color-popover__value-group"><span class="mdp-color-popover__value" aria-label="rgb(180, 83, 9)" title="rgb(180, 83, 9)">180, 83, 9</span></span><button class="mdp-color-popover__copy" type="button" aria-label="Copy RGB preview" title="Copy RGB: rgb(180, 83, 9)" data-color-copy-preview="RGB"><svg class="mdp-color-popover__copy-icon" data-mdp-icon="copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="13" rx="2"></rect><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"></path></svg><svg class="mdp-color-popover__check-icon" data-mdp-icon="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"></path></svg></button></div>
-<div class="mdp-color-popover__row"><span class="mdp-color-popover__label">HSL</span><span class="mdp-color-popover__value-group"><span class="mdp-color-popover__value" aria-label="hsl(25.964912, 90.47619%, 37.058824%)" title="hsl(25.964912, 90.47619%, 37.058824%)">26°, 90.5%, 37.1%</span></span><button class="mdp-color-popover__copy" type="button" aria-label="Copy HSL preview" title="Copy HSL: hsl(25.964912, 90.47619%, 37.058824%)" data-color-copy-preview="HSL"><svg class="mdp-color-popover__copy-icon" data-mdp-icon="copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="13" rx="2"></rect><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"></path></svg><svg class="mdp-color-popover__check-icon" data-mdp-icon="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"></path></svg></button></div><p class="mdp-color-popover__status" role="status" aria-live="polite"></p></section><p class="catalog-note">A 16px sample sits in the HEX row. RGB/HSL use concise numeric labels; tooltips and copy actions use complete CSS expressions. Alpha is shown once when present. Copy icons crossfade to checks without resizing. This fixture simulates feedback without writing the clipboard.</p></div>
+    <div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Inspector · 264 × 114px</span><section class="mdp-color-popover catalog-color-popover mdp-root" aria-label="Static compact color inspector appearance"><div class="mdp-color-popover__row"><span class="mdp-color-popover__label">HEX</span><span class="mdp-color-popover__value-group"><span class="mdp-color-popover__sample" style="--mdp-preview-color: #B45309" aria-hidden="true"></span><span class="mdp-color-popover__value" aria-label="#B45309" title="#B45309">#B45309</span></span><button class="mdp-color-popover__copy" type="button" aria-label="Copy HEX preview" title="Copy HEX: #B45309" data-color-copy-preview="HEX"><span class="mdp-icon-swap " data-swapped="false" aria-hidden="true" style="width:16px;height:16px"><svg data-icon-visible="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="copy" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__from"><rect x="8" y="8" width="12" height="13" rx="2" data-icon-part="front" pathLength="1"></rect><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3" data-icon-part="back" pathLength="1"></path></svg><svg data-icon-visible="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__to"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></span></button></div>
+<div class="mdp-color-popover__row"><span class="mdp-color-popover__label">RGB</span><span class="mdp-color-popover__value-group"><span class="mdp-color-popover__value" aria-label="rgb(180, 83, 9)" title="rgb(180, 83, 9)">180, 83, 9</span></span><button class="mdp-color-popover__copy" type="button" aria-label="Copy RGB preview" title="Copy RGB: rgb(180, 83, 9)" data-color-copy-preview="RGB"><span class="mdp-icon-swap " data-swapped="false" aria-hidden="true" style="width:16px;height:16px"><svg data-icon-visible="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="copy" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__from"><rect x="8" y="8" width="12" height="13" rx="2" data-icon-part="front" pathLength="1"></rect><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3" data-icon-part="back" pathLength="1"></path></svg><svg data-icon-visible="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__to"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></span></button></div>
+<div class="mdp-color-popover__row"><span class="mdp-color-popover__label">HSL</span><span class="mdp-color-popover__value-group"><span class="mdp-color-popover__value" aria-label="hsl(25.964912, 90.47619%, 37.058824%)" title="hsl(25.964912, 90.47619%, 37.058824%)">26°, 90.5%, 37.1%</span></span><button class="mdp-color-popover__copy" type="button" aria-label="Copy HSL preview" title="Copy HSL: hsl(25.964912, 90.47619%, 37.058824%)" data-color-copy-preview="HSL"><span class="mdp-icon-swap " data-swapped="false" aria-hidden="true" style="width:16px;height:16px"><svg data-icon-visible="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="copy" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__from"><rect x="8" y="8" width="12" height="13" rx="2" data-icon-part="front" pathLength="1"></rect><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3" data-icon-part="back" pathLength="1"></path></svg><svg data-icon-visible="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__to"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></span></button></div><p class="mdp-color-popover__status" role="status" aria-live="polite"></p></section><p class="catalog-note">A 16px sample sits in the HEX row. RGB/HSL use concise numeric labels; tooltips and copy actions use complete CSS expressions. Alpha is shown once when present. Copy icons crossfade to checks without resizing. This fixture simulates feedback without writing the clipboard.</p></div>
   </div><p class="catalog-source">src/viewer/react/content/colors/ · src/viewer/colors/color-popover-controller.js · color-copy-controller.js · color-display-values.js · src/viewer/styles/content/_color-preview.scss · shared application copy/check icons</p>
 </section>
 </section>
@@ -2884,8 +4767,8 @@
 <section class="mdp-ui-section" aria-labelledby="navigation-title">
         <header class="mdp-ui-section__header"><h3 id="navigation-title">Navigation</h3><p>Settings section navigation and the four current Popup tabs.</p></header>
         <div class="mdp-ui-grid">
-          <div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Settings side navigation</span><nav class="mdp-ui-side-nav" aria-label="Settings sections example"><button class="mdp-ui-side-nav__item is-active" type="button" aria-current="page"><strong>General</strong><small>Activation and access</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Themes</strong><small>Colors and backgrounds</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Files &amp; Workspace</strong><small>Folder appearance and scan limits</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Privacy &amp; Data</strong><small>Recent local files</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Advanced</strong><small>Limits, backup, and reset</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>About</strong><small>Version, privacy, and support</small></button></nav></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Popup tabs</span><div class="popup-settings-tabs catalog-tabs" role="tablist" aria-label="Quick control sections example"><button class="popup-settings-tab is-active" id="catalog-tab-reader" type="button" role="tab" aria-selected="true" aria-controls="catalog-tab-panel" tabindex="0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="reader" style="stroke:currentColor;stroke-width:1.8"><path d="M12 5v16 M12 5C9 3 6 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1"></path></svg><span>Reader</span></button><button class="popup-settings-tab" id="catalog-tab-editor" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="editor" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg><span>Editor</span></button><button class="popup-settings-tab" id="catalog-tab-plugins" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="plugins" style="stroke:currentColor;stroke-width:1.8"><path d="M8 3v5 M16 3v5 M5 8h14v2a7 7 0 0 1-14 0Z M12 17v4"></path></svg><span>Plugins</span></button><button class="popup-settings-tab" id="catalog-tab-recent" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="history" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5v5h5 M3.7 9a8.5 8.5 0 1 1-.2 5 M12 7v5l3 2"></path></svg><span>Recent</span></button></div><div id="catalog-tab-panel" role="tabpanel" aria-labelledby="catalog-tab-reader" tabindex="0"><span class="mdp-ui-status"><span class="mdp-ui-status__dot" aria-hidden="true"></span><span id="catalog-tab-label">Reading appearance</span></span></div><p class="catalog-note">Use Left/Right, Home, and End to move between tabs. Tab contents are represented by a label in this preview.</p></div></div><p class="catalog-source">src/shared/styles/_containers.scss · src/options/OptionsApp.jsx · src/popup/popup.scss</p></section>
-<section class="mdp-ui-section" aria-labelledby="viewer-title"><header class="mdp-ui-section__header"><h3 id="viewer-title">Viewer components</h3><p>Document statistics, update feedback, and source comparison now share the same application primitives.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document updates · Ask mode</span><label class="mdp-ui-field" for="catalog-update-state"><span class="mdp-ui-field__label">Preview state</span><select class="mdp-ui-select" id="catalog-update-state"><option value="pending">New version available</option><option value="current">Up to date</option><option value="error">Check failed</option></select></label><label class="mdp-ui-field" for="catalog-update-theme"><span class="mdp-ui-field__label">Update button theme</span><select class="mdp-ui-select" id="catalog-update-theme"><option value="inherit">Current page theme</option><option value="light">Light</option><option value="high-contrast-light">High Contrast Light</option><option value="dark">Dark</option><option value="high-contrast-dark">High Contrast Dark</option><option value="sakura">Sakura</option><option value="matcha">Matcha</option><option value="solarized-dark">Solarized Dark</option><option value="vscode-dark">Dark (VS Code)</option><option value="dracula">Dracula</option><option value="gruvbox">Gruvbox</option><option value="night-owl">Night Owl</option><option value="min-dark">Min (Dark)</option><option value="aurora-glass">Aurora Glass</option><option value="custom:audit-light">Custom light · reversed surface</option><option value="custom:audit-dark">Custom dark · reversed surface</option></select></label><div class="mdp-watch-status catalog-watch" id="catalog-update-surface"><span class="mdp-icon-button-tooltip-anchor"><button type="button" id="catalog-update-trigger" class="mdp-fab-btn mdp-watch-status__trigger mdp-watch-status__trigger--attention" data-mdp-watch-action="apply" data-mdp-watch-phase="ready" aria-label="Update document" title="Update document"><span class="mdp-fab-btn__icon mdp-watch-status__icon-swap"><svg class="mdp-watch-status__icon mdp-watch-status__icon--details" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg><svg class="mdp-watch-status__icon mdp-watch-status__icon--apply" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg><span class="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></span><svg class="mdp-watch-status__icon mdp-watch-status__icon--success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check"><path d="m5 12 4 4L19 6"></path></svg></span></button></span><p class="catalog-note">Ready: a paired theme status surface with two gentle 1.7s breaths. Apply: slow sync rotation with an 720ms minimum display, then a confirmed green check for 1s. All glyphs crossfade over 270ms in a fixed target; reduced motion keeps them static. This fixture simulates a 400ms successful read.</p><section class="mdp-ui-card mdp-watch-status__panel mdp-watch-status__panel--has-actions" aria-label="Document updates preview"><header class="mdp-watch-status__header"><div class="mdp-watch-status__heading"><h3>Document updates</h3><span class="mdp-ui-badge mdp-ui-badge--info mdp-watch-status__mode">Ask</span></div><div class="mdp-watch-status__header-actions"><button class="mdp-watch-status__check" type="button" aria-label="Check now" title="Check now" id="catalog-check-update"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></button></div></header><p class="mdp-watch-status__message" id="catalog-update-message" role="status">A newer version of this document is ready.</p><div class="mdp-watch-status__actions" id="catalog-update-actions"><button class="mdp-ui-button mdp-ui-button--primary" type="button" id="catalog-apply-update">Update document</button></div></section></div></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document statistics</span><aside class="mdp-document-stats catalog-stats" role="note" aria-label="Document statistics: 420 words, 2,450 characters, 2 min read"><span aria-hidden="true">420 words</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span aria-hidden="true">2,450 characters</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span class="mdp-document-stats__reading" aria-hidden="true">2 min read</span></aside><p class="catalog-note">Selectable metadata above Markdown in read mode. Hidden for empty documents, edit mode, and print output.</p><div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Editor protection</strong>Updates never replace an active editor. Loading a disk revision requires confirmation before leaving edit mode.</div></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · source lines</span><div class="mdp-change-review catalog-review"><section class="mdp-ui-card mdp-change-review__hunk is-active" aria-label="Changed area 1" tabindex="0"><div class="mdp-change-review__hunk-header"><span>Changed area 1</span><span>1 added · 1 removed</span></div><table><caption class="mdp-change-review__visually-hidden">Source lines in changed area 1</caption><thead class="mdp-change-review__visually-hidden"><tr><th>Old line</th><th>New line</th><th>Change</th><th>Source</th></tr></thead><tbody><tr class="mdp-change-review__row--equal"><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__marker"><span aria-label="Unchanged"> </span></td><td class="mdp-change-review__source"><code># Reading notes</code></td></tr><tr class="mdp-change-review__row--removed"><td class="mdp-change-review__line-number">2</td><td></td><td class="mdp-change-review__marker"><span aria-label="Removed">−</span></td><td class="mdp-change-review__source"><code>Check for changes manually.</code></td></tr><tr class="mdp-change-review__row--added"><td></td><td class="mdp-change-review__line-number">2</td><td class="mdp-change-review__marker"><span aria-label="Added">+</span></td><td class="mdp-change-review__source"><code>Choose how document updates are applied.</code></td></tr></tbody></table></section></div><p class="catalog-note">Excerpt from the Viewer comparison. Source gutters and diff layout remain Viewer-specific; added and removed lines use paired theme colors.</p></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · load failure</span><button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="catalog-review-error-open" aria-haspopup="dialog">Preview review load failure</button><p class="catalog-note">Load failures use a modal alert with a focused Close review action. Escape and outside press dismiss it and restore trigger focus; feedback stays out of the action toolbar.</p></div><p class="catalog-source">src/viewer/react/hooks/useWatchUpdateFeedback.js · src/viewer/styles/_watch-status.scss · _document-stats.scss · _change-review.scss · _update-feedback.scss</p></section>
+          <div class="mdp-ui-demo-group"><span class="mdp-ui-demo-group__title">Settings side navigation</span><nav class="mdp-ui-side-nav" aria-label="Settings sections example"><button class="mdp-ui-side-nav__item is-active" type="button" aria-current="page"><strong>General</strong><small>Activation and access</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Themes</strong><small>Colors and backgrounds</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Files &amp; Workspace</strong><small>Folder appearance and scan limits</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Privacy &amp; Data</strong><small>Recent local files</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>Advanced</strong><small>Limits, backup, and reset</small></button><button class="mdp-ui-side-nav__item" type="button"><strong>About</strong><small>Version, privacy, and support</small></button></nav></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Popup tabs</span><div class="popup-settings-tabs catalog-tabs" role="tablist" aria-label="Quick control sections example"><button class="popup-settings-tab is-active" id="catalog-tab-reader" type="button" role="tab" aria-selected="true" aria-controls="catalog-tab-panel" tabindex="0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="reader" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M12 5v16" data-icon-part="spine" pathLength="1"></path><path d="M12 5C9 3 6 3 3 4v15c3-1 6-1 9 1" data-icon-part="left-page" pathLength="1"></path><path d="M12 5c3-2 6-2 9-1v15c-3-1-6-1-9 1" data-icon-part="right-page" pathLength="1"></path></svg><span>Reader</span></button><button class="popup-settings-tab" id="catalog-tab-editor" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="editor" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4" data-icon-part="cap" pathLength="1"></path><path d="M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z" data-icon-part="body" pathLength="1"></path></svg><span>Editor</span></button><button class="popup-settings-tab" id="catalog-tab-plugins" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="plugins" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M8 3v5 M16 3v5" data-icon-part="prongs" pathLength="1"></path><path d="M5 8h14v2a7 7 0 0 1-14 0Z" data-icon-part="socket" pathLength="1"></path><path d="M12 17v4" data-icon-part="cord" pathLength="1"></path></svg><span>Plugins</span></button><button class="popup-settings-tab" id="catalog-tab-recent" type="button" role="tab" aria-selected="false" aria-controls="catalog-tab-panel" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="history" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5v5h5" data-icon-part="return" pathLength="1"></path><path d="M3.7 9a8.5 8.5 0 1 1-.2 5" data-icon-part="ring" pathLength="1"></path><path d="M12 7v5l3 2" data-icon-part="hands" pathLength="1"></path></svg><span>Recent</span></button></div><div id="catalog-tab-panel" role="tabpanel" aria-labelledby="catalog-tab-reader" tabindex="0"><span class="mdp-ui-status"><span class="mdp-ui-status__dot" aria-hidden="true"></span><span id="catalog-tab-label">Reading appearance</span></span></div><p class="catalog-note">Use Left/Right, Home, and End to move between tabs. Tab contents are represented by a label in this preview.</p></div></div><p class="catalog-source">src/shared/styles/_containers.scss · src/options/OptionsApp.jsx · src/popup/popup.scss</p></section>
+<section class="mdp-ui-section" aria-labelledby="viewer-title"><header class="mdp-ui-section__header"><h3 id="viewer-title">Viewer components</h3><p>Document statistics, update feedback, and source comparison now share the same application primitives.</p></header><div class="mdp-ui-grid"><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document updates · Ask mode</span><label class="mdp-ui-field" for="catalog-update-state"><span class="mdp-ui-field__label">Preview state</span><select class="mdp-ui-select" id="catalog-update-state"><option value="pending">New version available</option><option value="current">Up to date</option><option value="error">Check failed</option></select></label><label class="mdp-ui-field" for="catalog-update-theme"><span class="mdp-ui-field__label">Update button theme</span><select class="mdp-ui-select" id="catalog-update-theme"><option value="inherit">Current page theme</option><option value="light">Light</option><option value="high-contrast-light">High Contrast Light</option><option value="dark">Dark</option><option value="high-contrast-dark">High Contrast Dark</option><option value="sakura">Sakura</option><option value="matcha">Matcha</option><option value="solarized-dark">Solarized Dark</option><option value="vscode-dark">Dark (VS Code)</option><option value="dracula">Dracula</option><option value="gruvbox">Gruvbox</option><option value="night-owl">Night Owl</option><option value="min-dark">Min (Dark)</option><option value="aurora-glass">Aurora Glass</option><option value="custom:audit-light">Custom light · reversed surface</option><option value="custom:audit-dark">Custom dark · reversed surface</option></select></label><div class="mdp-watch-status catalog-watch" id="catalog-update-surface"><span class="mdp-icon-button-tooltip-anchor"><button type="button" id="catalog-update-trigger" class="mdp-fab-btn mdp-watch-status__trigger mdp-watch-status__trigger--attention" data-mdp-watch-action="apply" data-mdp-watch-phase="ready" aria-label="Update document" title="Update document"><span class="mdp-fab-btn__icon mdp-watch-status__icon-swap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-watch-status__icon mdp-watch-status__icon--details"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><circle cx="17" cy="17" r="4" data-icon-part="clock" pathLength="1"></circle><path d="M17 15v2l1.5 1" data-icon-part="hands" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-watch-status__icon mdp-watch-status__icon--apply"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><path d="M17 13v8 m-3-3 3 3 3-3" data-icon-part="arrow" pathLength="1"></path></svg><span class="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5" data-icon-part="upper-tip" pathLength="1"></path><path d="M4 19v-5h5" data-icon-part="lower-tip" pathLength="1"></path><path d="M19.3 9a7.5 7.5 0 0 0-12.5-3" data-icon-part="upper-arc" pathLength="1"></path><path d="M4.7 15a7.5 7.5 0 0 0 12.5 3" data-icon-part="lower-arc" pathLength="1"></path></svg></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-watch-status__icon mdp-watch-status__icon--success"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></span></button></span><p class="catalog-note">Ready: a paired theme status surface with two gentle 1.7s breaths. Apply: slow sync rotation with an 720ms minimum display, then a confirmed green check for 1s. All glyphs crossfade over 270ms in a fixed target; reduced motion keeps them static. This fixture simulates a 400ms successful read.</p><section class="mdp-ui-card mdp-watch-status__panel mdp-watch-status__panel--has-actions" aria-label="Document updates preview"><header class="mdp-watch-status__header"><div class="mdp-watch-status__heading"><h3>Document updates</h3><span class="mdp-ui-badge mdp-ui-badge--info mdp-watch-status__mode">Ask</span></div><div class="mdp-watch-status__header-actions"><button class="mdp-watch-status__check" type="button" aria-label="Check now" title="Check now" id="catalog-check-update"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5" data-icon-part="upper-tip" pathLength="1"></path><path d="M4 19v-5h5" data-icon-part="lower-tip" pathLength="1"></path><path d="M19.3 9a7.5 7.5 0 0 0-12.5-3" data-icon-part="upper-arc" pathLength="1"></path><path d="M4.7 15a7.5 7.5 0 0 0 12.5 3" data-icon-part="lower-arc" pathLength="1"></path></svg></button></div></header><p class="mdp-watch-status__message" id="catalog-update-message" role="status">A newer version of this document is ready.</p><div class="mdp-watch-status__actions" id="catalog-update-actions"><button class="mdp-ui-button mdp-ui-button--primary" type="button" id="catalog-apply-update">Update document</button></div></section></div></div><div class="mdp-ui-demo-group mdp-ui-demo-stack"><span class="mdp-ui-demo-group__title">Document statistics</span><aside class="mdp-document-stats catalog-stats" role="note" aria-label="Document statistics: 420 words, 2,450 characters, 2 min read"><span aria-hidden="true">420 words</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span aria-hidden="true">2,450 characters</span><span class="mdp-document-stats__separator" aria-hidden="true">•</span><span class="mdp-document-stats__reading" aria-hidden="true">2 min read</span></aside><p class="catalog-note">Selectable metadata above Markdown in read mode. Hidden for empty documents, edit mode, and print output.</p><div class="mdp-ui-notice mdp-ui-notice--warning"><strong>Editor protection</strong>Updates never replace an active editor. Loading a disk revision requires confirmation before leaving edit mode.</div></div></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · source lines</span><div class="mdp-change-review catalog-review"><section class="mdp-ui-card mdp-change-review__hunk is-active" aria-label="Changed area 1" tabindex="0"><div class="mdp-change-review__hunk-header"><span>Changed area 1</span><span>1 added · 1 removed</span></div><table><caption class="mdp-change-review__visually-hidden">Source lines in changed area 1</caption><thead class="mdp-change-review__visually-hidden"><tr><th>Old line</th><th>New line</th><th>Change</th><th>Source</th></tr></thead><tbody><tr class="mdp-change-review__row--equal"><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__line-number">1</td><td class="mdp-change-review__marker"><span aria-label="Unchanged"> </span></td><td class="mdp-change-review__source"><code># Reading notes</code></td></tr><tr class="mdp-change-review__row--removed"><td class="mdp-change-review__line-number">2</td><td></td><td class="mdp-change-review__marker"><span aria-label="Removed">−</span></td><td class="mdp-change-review__source"><code>Check for changes manually.</code></td></tr><tr class="mdp-change-review__row--added"><td></td><td class="mdp-change-review__line-number">2</td><td class="mdp-change-review__marker"><span aria-label="Added">+</span></td><td class="mdp-change-review__source"><code>Choose how document updates are applied.</code></td></tr></tbody></table></section></div><p class="catalog-note">Excerpt from the Viewer comparison. Source gutters and diff layout remain Viewer-specific; added and removed lines use paired theme colors.</p></div><div class="mdp-ui-demo-group" style="margin-top: 16px"><span class="mdp-ui-demo-group__title">Change Review · load failure</span><button class="mdp-ui-button mdp-ui-button--secondary" type="button" id="catalog-review-error-open" aria-haspopup="dialog">Preview review load failure</button><p class="catalog-note">Load failures use a modal alert with a focused Close review action. Escape and outside press dismiss it and restore trigger focus; feedback stays out of the action toolbar.</p></div><p class="catalog-source">src/viewer/react/hooks/useWatchUpdateFeedback.js · src/viewer/styles/_watch-status.scss · _document-stats.scss · _change-review.scss · _update-feedback.scss</p></section>
 </section>
     </div>
   </section>
@@ -2924,8 +4807,9 @@
       button.addEventListener('click', () => {
         clearTimeout(copiedTimer)
         button.classList.add('is-copied')
+        button.querySelector('.mdp-icon-swap').dataset.swapped = 'true'
         button.closest('.mdp-color-popover').querySelector('[role="status"]').textContent = button.dataset.colorCopyPreview + ' copied (preview)'
-        copiedTimer = setTimeout(() => button.classList.remove('is-copied'), 2500)
+        copiedTimer = setTimeout(() => { button.classList.remove('is-copied'); button.querySelector('.mdp-icon-swap').dataset.swapped = 'false' }, 2500)
       })
     })
     // Fixture-only source-copy feedback; no clipboard writes occur in this catalog.
@@ -3144,6 +5028,27 @@ function createWatchUpdateFeedback(publish) {
     reviewErrorClose.addEventListener('click', () => reviewError.close())
     reviewError.addEventListener('pointerdown', event => { if (event.target === reviewError) reviewError.close() })
     reviewError.addEventListener('close', () => reviewErrorTrigger.focus())
-  </script>
+
+    // Fixture only: React supplies these attributes in runtime IconSwap/WatchStatus.
+    const visibleLayers = target => {
+      if (target.classList.contains('mdp-icon-swap')) {
+        const swapped = target.dataset.swapped === 'true';
+        target.querySelector('.mdp-icon-swap__from')?.setAttribute('data-icon-visible', String(!swapped));
+        target.querySelector('.mdp-icon-swap__to')?.setAttribute('data-icon-visible', String(swapped));
+      } else {
+        const phase = target.dataset.mdpWatchPhase;
+        target.querySelector('.mdp-watch-status__icon--details')?.setAttribute('data-icon-visible', String(['idle', 'error', 'warning'].includes(phase)));
+        target.querySelector('.mdp-watch-status__icon--apply')?.setAttribute('data-icon-visible', String(phase === 'ready'));
+        target.querySelector('.mdp-watch-status__icon--success')?.setAttribute('data-icon-visible', String(phase === 'success'));
+        target.querySelector('.mdp-watch-status__icon--busy svg')?.setAttribute('data-icon-visible', 'false');
+      }
+    };
+    const layerObserver = new MutationObserver(records => records.forEach(record => visibleLayers(record.target)));
+    document.querySelectorAll('.mdp-icon-swap, [data-mdp-watch-phase]').forEach(target => {
+      visibleLayers(target);
+      layerObserver.observe(target, { attributes: true, attributeFilter: ['data-swapped', 'data-mdp-watch-phase'] });
+    });
+
+</script>
 </body>
 </html>

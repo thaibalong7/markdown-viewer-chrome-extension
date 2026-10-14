@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
+import { IconSwap } from '../../components/common/IconSwap.jsx'
 
 /** Inspector DOM belongs to React; the controller owns interaction policy. */
 export function ColorPopover({
@@ -46,8 +46,7 @@ export function ColorPopover({
             disabled={row.busy}
             onClick={event => onCopy(row, event.currentTarget)}
           >
-            <AppIcon name="copy" size={16} className="mdp-color-popover__copy-icon" />
-            <AppIcon name="check" size={16} className="mdp-color-popover__check-icon" />
+            <IconSwap name="copy" size={16} swapped={row.copied} />
           </button>
         </div>
       ))}

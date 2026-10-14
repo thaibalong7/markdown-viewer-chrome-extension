@@ -1,5 +1,5 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { AppIcon } from '../../../shared/react/AppIcon.jsx'
+import { DocumentActionIcon } from './DocumentActionIcon.jsx'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
 import { useDismissableLayer } from '../hooks/useDismissableLayer.js'
 import { ActionMenu } from './common/ActionMenu.jsx'
@@ -40,7 +40,7 @@ export function DocumentActionsMenu({ action, items, open, onOpenChange }) {
     ref={wrapRef} triggerRef={triggerRef} open={open}
     className="mdp-document-actions-menu"
     triggerClassName="mdp-fab-btn" triggerOpenClassName="mdp-fab-btn--active"
-    triggerIcon={<AppIcon name={action.icon} className="mdp-fab-btn__icon" />}
+    triggerIcon={<DocumentActionIcon action={action} className="mdp-fab-btn__icon" />}
     triggerLabel={action.label} triggerTooltip={action.tooltip || action.label}
     triggerShowDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS} triggerDisabled={action.disabled}
     menuClassName="mdp-document-actions-menu__panel" menuStyle={position}
@@ -49,7 +49,7 @@ export function DocumentActionsMenu({ action, items, open, onOpenChange }) {
     items={items.map(item => ({
       ...item, key: item.id, ariaLabel: item.label,
       groupLabel: item.group ? DOCUMENT_ACTION_GROUPS[item.group].label : undefined,
-      icon: <AppIcon name={item.icon} className="mdp-document-actions-menu__icon" />,
+      icon: <DocumentActionIcon action={item} className="mdp-document-actions-menu__icon" />,
       restoreFocus: false,
       onClick: event => {
         close()

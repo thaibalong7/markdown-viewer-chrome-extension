@@ -176,24 +176,6 @@
       background: var(--mdp-link-soft);
     }
 
-    &.is-copied {
-      opacity: 1;
-      color: var(--mdp-link);
-      border-color: color-mix(in srgb, var(--mdp-link) 40%, var(--mdp-border));
-      background: color-mix(in srgb, var(--mdp-link) 14%, var(--mdp-panel-bg));
-      pointer-events: none;
-
-      > svg {
-        display: none;
-      }
-
-      &::after {
-        content: '✓';
-        font-size: 14px;
-        font-weight: 700;
-        line-height: 1;
-      }
-    }
   }
 
   .mdp-mermaid-toolbar__expand > svg {
@@ -333,7 +315,6 @@
   box-shadow: var(--mdp-shadow-float);
   cursor: pointer;
   transition:
-    transform 140ms ease,
     background-color 140ms ease,
     border-color 140ms ease,
     color 140ms ease;
@@ -343,7 +324,6 @@
     color: var(--mdp-link);
     border-color: color-mix(in srgb, var(--mdp-link) 32%, var(--mdp-border));
     background: var(--mdp-link-soft);
-    transform: translateY(-1px);
   }
 
   &:focus-visible {

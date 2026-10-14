@@ -39,6 +39,7 @@ export function createDocumentActions(context) {
       label: c.copyLinkCopied ? 'Copied' : 'Copy open file link', icon: c.copyLinkCopied ? 'check' : 'link',
       tooltip: !c.canCopyLink ? 'Copy link unavailable for workspace virtual files' : c.copyLinkCopied ? 'Copied' : 'Copy open file link',
       className: c.copyLinkCopied ? 'is-copied' : '',
+      copied: c.copyLinkCopied,
       disabled: !c.canCopyLink || c.isLoading, onClick: c.onCopyLinkClick },
     { id: 'print', group: 'output', order: 10, visible: !editing && c.canPrint,
       label: 'Print / Save as PDF', tooltip: 'Print — Save as PDF in the dialog to export PDF.',

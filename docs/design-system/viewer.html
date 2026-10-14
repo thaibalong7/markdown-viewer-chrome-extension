@@ -640,7 +640,6 @@
 .preview-tree-children { list-style: none; margin: 0; padding: 0; }
 
 /* Files layout snapshot: src/viewer/styles/explorer.scss */
-@charset "UTF-8";
 .mdp-explorer {
   --mdp-explorer-action-size: 28px;
   --mdp-explorer-guide: color-mix(in srgb, var(--mdp-muted) 24%, var(--mdp-surface));
@@ -728,21 +727,6 @@
 .mdp-explorer__context-command.is-open {
   background: var(--mdp-link-soft);
   color: var(--mdp-link);
-}
-.mdp-explorer__context-command.is-copied {
-  color: var(--mdp-accent);
-  border-color: color-mix(in srgb, var(--mdp-accent) 35%, var(--mdp-border));
-  background: var(--mdp-accent-soft);
-  pointer-events: none;
-}
-.mdp-explorer__context-command.is-copied .mdp-explorer__context-command-icon {
-  display: none;
-}
-.mdp-explorer__context-command.is-copied::after {
-  content: "✓";
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
 }
 
 .mdp-explorer__context-commands {
@@ -1739,7 +1723,6 @@
     }
   }
 }
-
 /* Document updates snapshot: src/viewer/styles/_watch-status.scss */
 .mdp-watch-status {
   position: relative;
@@ -1830,18 +1813,11 @@
   background: var(--mdp-watch-bg);
   border-color: var(--mdp-watch-color);
 }
-.mdp-watch-status__trigger:hover:not(:disabled) .mdp-watch-status__icon-swap, .mdp-watch-status__trigger:focus-visible:not(:disabled) .mdp-watch-status__icon-swap {
-  transform: translateY(-1px);
-}
 .mdp-watch-status__trigger:focus-visible {
   outline-color: var(--mdp-watch-color);
 }
-.mdp-watch-status__trigger:active:not(:disabled) .mdp-watch-status__icon-swap {
-  transform: scale(0.94);
-}
 .mdp-watch-status__icon-swap {
   position: relative;
-  transition: transform 200ms ease;
 }
 .mdp-watch-status__icon {
   position: absolute;
@@ -2195,10 +2171,6 @@
   cursor: not-allowed;
   opacity: 0.45;
 }
-.mdp-fab-btn.is-copied {
-  color: var(--mdp-accent);
-}
-
 .mdp-fab-btn--theme {
   --mdp-theme-action-color: var(--mdp-link);
   --mdp-theme-action-soft: var(--mdp-link-soft);
@@ -2217,8 +2189,8 @@
   background: var(--mdp-theme-action-soft);
 }
 
-.mdp-fab-btn__theme-icon--dark path,
-.mdp-fab-btn__theme-icon--light circle {
+.mdp-fab-btn__theme-icon--dark [data-mdp-icon='moon'] path,
+.mdp-fab-btn__theme-icon--light [data-mdp-icon='sun'] circle {
   fill: currentColor;
   fill-opacity: 0.16;
 }
@@ -3260,6 +3232,1996 @@
   }
 }
   </style>
+<style id="runtime-icon-motion-styles">
+/* Compiled from src/viewer/styles/_icon-motion.scss, including icon-recipes/. */
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=copy] {
+  --mdp-icon-recipe: app-copy;
+  --mdp-icon-motion-label: 'Sheets separate, then restack';
+  --mdp-icon-motion-duration: 560ms;
+  --mdp-icon-press-pose: translate(-0.5px, -0.5px) scale(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=copy] > [data-icon-part=front] {
+  --mdp-icon-part-animation: mdp-copy-front;
+  --mdp-icon-part-origin: 14px 14px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=copy] > [data-icon-part=back] {
+  --mdp-icon-part-animation: mdp-copy-back;
+  --mdp-icon-part-origin: 8px 8px;
+  --mdp-icon-part-delay: 35ms;
+}
+
+@keyframes mdp-copy-front {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(1.4px, 1.2px) rotate(5deg);
+  }
+  72% {
+    transform: translate(-0.35px, -0.35px);
+  }
+}
+@keyframes mdp-copy-back {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(-0.6px, -0.6px) rotate(-3deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] {
+  --mdp-icon-recipe: app-link;
+  --mdp-icon-motion-label: 'Chain ends reconnect through the bridge';
+  --mdp-icon-motion-duration: 620ms;
+  --mdp-icon-press-pose: rotate(-4deg) scale(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] > [data-icon-part=lower] {
+  --mdp-icon-part-animation: mdp-link-lower;
+  --mdp-icon-part-origin: 8px 14px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] > [data-icon-part=upper] {
+  --mdp-icon-part-animation: mdp-link-upper;
+  --mdp-icon-part-origin: 16px 10px;
+  --mdp-icon-part-delay: 25ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=link] > [data-icon-part=bridge] {
+  --mdp-icon-part-animation: mdp-link-bridge;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-link-lower {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: translate(-0.7px, 0.7px) rotate(-6deg);
+  }
+  65% {
+    transform: translate(0.25px, -0.25px);
+  }
+}
+@keyframes mdp-link-upper {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: translate(0.7px, -0.7px) rotate(6deg);
+  }
+  65% {
+    transform: translate(-0.25px, 0.25px);
+  }
+}
+@keyframes mdp-link-bridge {
+  0%, 100% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  25% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0.8;
+  }
+  70% {
+    stroke-dashoffset: 0;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=edit] {
+  --mdp-icon-recipe: app-edit;
+  --mdp-icon-motion-label: 'Pencil traces a short zigzag';
+  --mdp-icon-motion-duration: 660ms;
+  --mdp-icon-press-pose: translate(-0.8px, 0.8px) rotate(-5deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=edit] > [data-icon-part=body] {
+  --mdp-icon-part-animation: mdp-edit-write;
+  --mdp-icon-part-origin: 6px 18px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=edit] > [data-icon-part=cap] {
+  --mdp-icon-part-animation: mdp-edit-write;
+  --mdp-icon-part-origin: 6px 18px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-edit-write {
+  0%, 100% {
+    transform: none;
+  }
+  22% {
+    transform: translate(0.7px, -0.8px) rotate(-5deg);
+  }
+  44% {
+    transform: translate(-0.8px, 0.5px) rotate(2deg);
+  }
+  66% {
+    transform: translate(1px, -0.4px) rotate(-3deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=save] {
+  --mdp-icon-recipe: app-save;
+  --mdp-icon-motion-label: 'Disk label slides into its seat';
+  --mdp-icon-motion-duration: 580ms;
+  --mdp-icon-press-pose: translateY(0.7px) scaleY(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=save] > [data-icon-part=label] {
+  --mdp-icon-part-animation: mdp-save-label;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=save] > [data-icon-part=slot] {
+  --mdp-icon-part-animation: mdp-save-slot;
+  --mdp-icon-part-origin: 12px 5px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-save-label {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateY(-1.6px) scaleY(0.86);
+  }
+  64% {
+    transform: translateY(0.35px) scaleY(1.04);
+  }
+}
+@keyframes mdp-save-slot {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.35;
+  }
+  68% {
+    opacity: 1;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] {
+  --mdp-icon-recipe: app-print;
+  --mdp-icon-motion-label: 'Printer feeds a page and blinks its light';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: translateY(0.45px) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] > [data-icon-part=paper] {
+  --mdp-icon-part-animation: mdp-print-paper;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] > [data-icon-part=input] {
+  --mdp-icon-part-animation: mdp-print-input;
+  --mdp-icon-part-origin: 12px 5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=print] > [data-icon-part=indicator] {
+  --mdp-icon-part-animation: mdp-print-light;
+  --mdp-icon-part-origin: 17.5px 11px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-print-paper {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translateY(-1.3px);
+  }
+  56% {
+    transform: translateY(1.25px);
+  }
+  76% {
+    transform: translateY(0.9px);
+  }
+}
+@keyframes mdp-print-input {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translateY(0.8px) scaleY(0.82);
+  }
+}
+@keyframes mdp-print-light {
+  0%, 100% {
+    opacity: 1;
+  }
+  20%, 52% {
+    opacity: 0.2;
+  }
+  36%, 68% {
+    opacity: 1;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=export] {
+  --mdp-icon-recipe: app-export;
+  --mdp-icon-motion-label: 'Download arrow lands in the tray';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: translateY(1px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=export] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-export-drop;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=export] > [data-icon-part=tray] {
+  --mdp-icon-part-animation: mdp-export-catch;
+  --mdp-icon-part-origin: 12px 19px;
+  --mdp-icon-part-delay: 60ms;
+}
+
+@keyframes mdp-export-drop {
+  0%, 100% {
+    transform: none;
+  }
+  22% {
+    transform: translateY(-1px);
+  }
+  54% {
+    transform: translateY(2px);
+  }
+  72% {
+    transform: translateY(-0.4px);
+  }
+}
+@keyframes mdp-export-catch {
+  0%, 100% {
+    transform: none;
+  }
+  52% {
+    transform: scaleX(1.06) scaleY(0.9);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=updates] {
+  --mdp-icon-recipe: app-updates;
+  --mdp-icon-motion-label: 'Clock hand advances inside the document';
+  --mdp-icon-motion-duration: 680ms;
+  --mdp-icon-press-pose: scale(0.97) rotate(2deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=updates] > [data-icon-part=hands] {
+  --mdp-icon-part-animation: mdp-updates-clock;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=updates] > [data-icon-part=clock] {
+  --mdp-icon-part-animation: mdp-updates-ring;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-updates-clock {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(60deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+@keyframes mdp-updates-ring {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: scale(0.92);
+  }
+  68% {
+    transform: scale(1.04);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=apply] {
+  --mdp-icon-recipe: app-apply;
+  --mdp-icon-motion-label: 'Revision arrow folds down to the file';
+  --mdp-icon-motion-duration: 540ms;
+  --mdp-icon-press-pose: translateY(0.8px) scaleX(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=apply] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-apply-revision;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=apply] > [data-icon-part=document] {
+  --mdp-icon-part-animation: mdp-apply-document;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 100ms;
+}
+
+@keyframes mdp-apply-revision {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: translateY(-1.2px) scaleY(0.85);
+  }
+  64% {
+    transform: translateY(0.75px);
+  }
+}
+@keyframes mdp-apply-document {
+  0%, 100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.65;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] {
+  --mdp-icon-recipe: app-check-updates;
+  --mdp-icon-motion-label: 'Opposing sync arcs trade a quarter turn';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: rotate(12deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=upper-tip] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=lower-tip] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=upper-arc] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check-updates] > [data-icon-part=lower-arc] {
+  --mdp-icon-part-animation: mdp-check-updates-turn;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-check-updates-turn {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: rotate(90deg);
+  }
+  78% {
+    transform: rotate(-8deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] {
+  --mdp-icon-recipe: app-review;
+  --mdp-icon-motion-label: 'Comparison divider scans between plus and minus';
+  --mdp-icon-motion-duration: 740ms;
+  --mdp-icon-press-pose: scaleX(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] > [data-icon-part=divider] {
+  --mdp-icon-part-animation: mdp-review-scan;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] > [data-icon-part=plus] {
+  --mdp-icon-part-animation: mdp-review-plus;
+  --mdp-icon-part-origin: 7.5px 9px;
+  --mdp-icon-part-delay: 50ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=review] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-review-minus;
+  --mdp-icon-part-origin: 16.5px 14px;
+  --mdp-icon-part-delay: 140ms;
+}
+
+@keyframes mdp-review-scan {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  58% {
+    transform: translateX(1px);
+  }
+}
+@keyframes mdp-review-plus {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: rotate(90deg) scale(1.12);
+  }
+}
+@keyframes mdp-review-minus {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scaleX(0.55);
+  }
+  70% {
+    transform: scaleX(1.15);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check] {
+  --mdp-icon-recipe: app-check;
+  --mdp-icon-motion-label: 'Check draws from the short arm to the long arm';
+  --mdp-icon-motion-duration: 480ms;
+  --mdp-icon-press-pose: rotate(-3deg) scale(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=check] > [data-icon-part=tick] {
+  --mdp-icon-part-animation: mdp-check-draw;
+  --mdp-icon-part-origin: 9px 16px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-check-draw {
+  0% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  62%, 100% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: none;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] {
+  --mdp-icon-recipe: app-focus;
+  --mdp-icon-motion-label: 'Four corners tighten around the reading area';
+  --mdp-icon-motion-duration: 560ms;
+  --mdp-icon-press-pose: scale(0.91);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=nw] {
+  --mdp-icon-part-animation: mdp-focus-nw;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=ne] {
+  --mdp-icon-part-animation: mdp-focus-ne;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=sw] {
+  --mdp-icon-part-animation: mdp-focus-sw;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=focus] > [data-icon-part=se] {
+  --mdp-icon-part-animation: mdp-focus-se;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-focus-nw {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(1.5px, 1.5px);
+  }
+}
+@keyframes mdp-focus-ne {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(-1.5px, 1.5px);
+  }
+}
+@keyframes mdp-focus-sw {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(1.5px, -1.5px);
+  }
+}
+@keyframes mdp-focus-se {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translate(-1.5px, -1.5px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=external] {
+  --mdp-icon-recipe: app-external;
+  --mdp-icon-motion-label: 'Arrow peeks through the open corner';
+  --mdp-icon-motion-duration: 610ms;
+  --mdp-icon-press-pose: translate(0.6px, -0.6px) scale(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=external] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-external-launch;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=external] > [data-icon-part=frame] {
+  --mdp-icon-part-animation: mdp-external-frame;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-external-launch {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: translate(1px, -1px);
+  }
+  63% {
+    transform: translate(0.25px, -0.25px);
+  }
+  80% {
+    transform: translate(0.65px, -0.65px);
+  }
+}
+@keyframes mdp-external-frame {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.5;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=folder-select] {
+  --mdp-icon-recipe: app-folder-select;
+  --mdp-icon-motion-label: 'Folder lip opens as the entry arrow advances';
+  --mdp-icon-motion-duration: 650ms;
+  --mdp-icon-press-pose: scaleY(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=folder-select] > [data-icon-part=lip] {
+  --mdp-icon-part-animation: mdp-folder-select-lip;
+  --mdp-icon-part-origin: 2.5px 8px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=folder-select] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-folder-select-arrow;
+  --mdp-icon-part-origin: 18px 17px;
+  --mdp-icon-part-delay: 75ms;
+}
+
+@keyframes mdp-folder-select-lip {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: skewY(-4deg) translateY(-0.5px);
+  }
+}
+@keyframes mdp-folder-select-arrow {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-1.5px);
+  }
+  62% {
+    transform: translateX(0.5px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=back-to-file] {
+  --mdp-icon-recipe: app-back-to-file;
+  --mdp-icon-motion-label: 'Return arrow nudges the document home';
+  --mdp-icon-motion-duration: 590ms;
+  --mdp-icon-press-pose: translateX(-0.7px) rotate(-2deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=back-to-file] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-back-file-arrow;
+  --mdp-icon-part-origin: 8px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=back-to-file] > [data-icon-part=document] {
+  --mdp-icon-part-animation: mdp-back-file-document;
+  --mdp-icon-part-origin: 15px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-back-file-arrow {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translateX(-1.1px);
+  }
+  68% {
+    transform: translateX(0.4px);
+  }
+}
+@keyframes mdp-back-file-document {
+  0%, 100% {
+    transform: none;
+  }
+  55% {
+    transform: rotate(-4deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] {
+  --mdp-icon-recipe: app-leave-workspace;
+  --mdp-icon-motion-label: 'Exit arrow glides away from a closing window';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: translateX(-1px) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-leave-arrow;
+  --mdp-icon-part-origin: 8px 15px;
+  --mdp-icon-part-delay: 40ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] > [data-icon-part=window] {
+  --mdp-icon-part-animation: mdp-leave-window;
+  --mdp-icon-part-origin: 21px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=leave-workspace] > [data-icon-part=indicator] {
+  --mdp-icon-part-animation: mdp-leave-indicator;
+  --mdp-icon-part-origin: 12px 6.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-leave-arrow {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-1px);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translateX(0.3px);
+    opacity: 1;
+  }
+}
+@keyframes mdp-leave-window {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scaleX(0.87);
+  }
+}
+@keyframes mdp-leave-indicator {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] {
+  --mdp-icon-recipe: app-more;
+  --mdp-icon-motion-label: 'Three dots roll in a left-to-right wave';
+  --mdp-icon-motion-duration: 500ms;
+  --mdp-icon-press-pose: scaleX(0.88);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] > [data-icon-part=dot-left] {
+  --mdp-icon-part-animation: mdp-more-roll;
+  --mdp-icon-part-origin: 5px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] > [data-icon-part=dot-center] {
+  --mdp-icon-part-animation: mdp-more-roll;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=more] > [data-icon-part=dot-right] {
+  --mdp-icon-part-animation: mdp-more-roll;
+  --mdp-icon-part-origin: 19px 12px;
+  --mdp-icon-part-delay: 140ms;
+}
+
+@keyframes mdp-more-roll {
+  0%, 100% {
+    transform: none;
+  }
+  28% {
+    transform: translateY(-2px) scale(0.8);
+  }
+  58% {
+    transform: translateY(0.6px) scale(1.15);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=expand] {
+  --mdp-icon-recipe: app-expand;
+  --mdp-icon-motion-label: 'Diagonal corners stretch outward in sequence';
+  --mdp-icon-motion-duration: 640ms;
+  --mdp-icon-press-pose: scale(1.04);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=expand] > [data-icon-part=ne] {
+  --mdp-icon-part-animation: mdp-expand-ne;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=expand] > [data-icon-part=sw] {
+  --mdp-icon-part-animation: mdp-expand-sw;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 90ms;
+}
+
+@keyframes mdp-expand-ne {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(0.75px, -0.75px);
+  }
+  68% {
+    transform: translate(-0.2px, 0.2px);
+  }
+}
+@keyframes mdp-expand-sw {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translate(-0.75px, 0.75px);
+  }
+  68% {
+    transform: translate(0.2px, -0.2px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] {
+  --mdp-icon-recipe: app-zoom-in;
+  --mdp-icon-motion-label: 'Lens magnifies as the plus arms unfold';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: scale(1.06);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] > [data-icon-part=lens] {
+  --mdp-icon-part-animation: mdp-zoom-in-lens;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] > [data-icon-part=plus] {
+  --mdp-icon-part-animation: mdp-zoom-in-plus;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 35ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-in] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-zoom-in-minus;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 35ms;
+}
+
+@keyframes mdp-zoom-in-lens {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scale(1.12);
+  }
+}
+@keyframes mdp-zoom-in-plus {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: scaleY(0.35);
+  }
+  55% {
+    transform: scaleY(1.3);
+  }
+}
+@keyframes mdp-zoom-in-minus {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: scaleX(1.3);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-out] {
+  --mdp-icon-recipe: app-zoom-out;
+  --mdp-icon-motion-label: 'Lens contracts while the minus flattens';
+  --mdp-icon-motion-duration: 550ms;
+  --mdp-icon-press-pose: scale(0.9);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-out] > [data-icon-part=lens] {
+  --mdp-icon-part-animation: mdp-zoom-out-lens;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=zoom-out] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-zoom-out-minus;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-zoom-out-lens {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: scale(0.84);
+  }
+  70% {
+    transform: scale(1.03);
+  }
+}
+@keyframes mdp-zoom-out-minus {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: scaleX(0.6);
+  }
+  70% {
+    transform: scaleX(1.08);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] {
+  --mdp-icon-recipe: app-recenter;
+  --mdp-icon-motion-label: 'Offset corners settle onto a pulsing center';
+  --mdp-icon-motion-duration: 760ms;
+  --mdp-icon-press-pose: translate(0.4px, 0.4px) scale(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=nw] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=ne] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=sw] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=se] {
+  --mdp-icon-part-animation: mdp-recenter-align;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=recenter] > [data-icon-part=center] {
+  --mdp-icon-part-animation: mdp-recenter-dot;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-recenter-align {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translate(-0.8px, 0.8px) rotate(-4deg);
+  }
+  55% {
+    transform: translate(0.2px, -0.2px) rotate(1deg);
+  }
+}
+@keyframes mdp-recenter-dot {
+  0%, 100% {
+    transform: none;
+  }
+  28% {
+    transform: scale(0.45);
+  }
+  58% {
+    transform: scale(1.4);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] {
+  --mdp-icon-recipe: app-source;
+  --mdp-icon-motion-label: 'Brackets open around a drawing slash';
+  --mdp-icon-motion-duration: 630ms;
+  --mdp-icon-press-pose: scaleX(1.05) scaleY(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] > [data-icon-part=left] {
+  --mdp-icon-part-animation: mdp-source-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] > [data-icon-part=right] {
+  --mdp-icon-part-animation: mdp-source-right;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=source] > [data-icon-part=slash] {
+  --mdp-icon-part-animation: mdp-source-slash;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-source-left {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(-0.6px) scaleX(0.9);
+  }
+}
+@keyframes mdp-source-right {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(0.6px) scaleX(0.9);
+  }
+}
+@keyframes mdp-source-slash {
+  0% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  55%, 100% {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] {
+  --mdp-icon-recipe: app-workspace;
+  --mdp-icon-motion-label: 'Workspace rail slides as its tabs answer';
+  --mdp-icon-motion-duration: 690ms;
+  --mdp-icon-press-pose: scaleY(0.96) skewX(-2deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] > [data-icon-part=rail] {
+  --mdp-icon-part-animation: mdp-workspace-rail;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] > [data-icon-part=tab-left] {
+  --mdp-icon-part-animation: mdp-workspace-tab-left;
+  --mdp-icon-part-origin: 6px 6.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=workspace] > [data-icon-part=tab-right] {
+  --mdp-icon-part-animation: mdp-workspace-tab-right;
+  --mdp-icon-part-origin: 9px 6.5px;
+  --mdp-icon-part-delay: 110ms;
+}
+
+@keyframes mdp-workspace-rail {
+  0%, 100% {
+    transform: none;
+  }
+  48% {
+    transform: translateX(2px);
+  }
+}
+@keyframes mdp-workspace-tab-left {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  35% {
+    transform: scale(1.8);
+    opacity: 0.5;
+  }
+}
+@keyframes mdp-workspace-tab-right {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: translateX(0.5px) scale(1.5);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=refresh] {
+  --mdp-icon-recipe: app-refresh;
+  --mdp-icon-motion-label: 'Refresh arrow turns while the file lines stay still';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: rotate(-8deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=refresh] > [data-icon-part=arrow] {
+  --mdp-icon-part-animation: mdp-refresh-orbit;
+  --mdp-icon-part-origin: 17px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-refresh-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=collapse] {
+  --mdp-icon-recipe: app-collapse;
+  --mdp-icon-motion-label: 'Folder layers nest behind a shrinking minus';
+  --mdp-icon-motion-duration: 650ms;
+  --mdp-icon-press-pose: translate(-0.7px, -0.7px) scale(0.95);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=collapse] > [data-icon-part=front] {
+  --mdp-icon-part-animation: mdp-collapse-stack;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=collapse] > [data-icon-part=minus] {
+  --mdp-icon-part-animation: mdp-collapse-minus;
+  --mdp-icon-part-origin: 14px 14.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-collapse-stack {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translate(-1.4px, -1.4px) scale(0.9);
+  }
+}
+@keyframes mdp-collapse-minus {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translate(-1.4px, -1.4px) scaleX(0.4);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=search] {
+  --mdp-icon-recipe: app-search;
+  --mdp-icon-motion-label: 'Magnifier scans left and right';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: translate(0.5px, -0.5px) rotate(4deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=search] > [data-icon-part=lens] {
+  --mdp-icon-part-animation: mdp-search-scan;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=search] > [data-icon-part=handle] {
+  --mdp-icon-part-animation: mdp-search-scan;
+  --mdp-icon-part-origin: 10.5px 10.5px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-search-scan {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translate(-0.8px, -0.5px) rotate(-7deg);
+  }
+  58% {
+    transform: translate(0.8px, 0.4px) rotate(7deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] {
+  --mdp-icon-recipe: app-outline;
+  --mdp-icon-motion-label: 'Outline lines reveal in reading order';
+  --mdp-icon-motion-duration: 500ms;
+  --mdp-icon-press-pose: translateX(0.5px) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] > [data-icon-part=line-top] {
+  --mdp-icon-part-animation: mdp-outline-line;
+  --mdp-icon-part-origin: 9px 5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] > [data-icon-part=line-middle] {
+  --mdp-icon-part-animation: mdp-outline-line;
+  --mdp-icon-part-origin: 9px 12px;
+  --mdp-icon-part-delay: 80ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=outline] > [data-icon-part=line-bottom] {
+  --mdp-icon-part-animation: mdp-outline-line;
+  --mdp-icon-part-origin: 9px 19px;
+  --mdp-icon-part-delay: 160ms;
+}
+
+@keyframes mdp-outline-line {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  25% {
+    transform: scaleX(0.4);
+    opacity: 0.4;
+  }
+  60% {
+    transform: scaleX(1.05);
+    opacity: 1;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-left] {
+  --mdp-icon-recipe: app-chevron-left;
+  --mdp-icon-motion-label: 'Left chevron retreats and returns';
+  --mdp-icon-motion-duration: 420ms;
+  --mdp-icon-press-pose: translateX(-0.9px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-left] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-chevron-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-chevron-left {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateX(-1.5px) skewY(5deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-right] {
+  --mdp-icon-recipe: app-chevron-right;
+  --mdp-icon-motion-label: 'Right chevron steps forward twice';
+  --mdp-icon-motion-duration: 640ms;
+  --mdp-icon-press-pose: translateX(0.8px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-right] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-chevron-right;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-chevron-right {
+  0%, 52%, 100% {
+    transform: none;
+  }
+  26% {
+    transform: translateX(1.2px);
+  }
+  75% {
+    transform: translateX(0.65px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-down] {
+  --mdp-icon-recipe: app-chevron-down;
+  --mdp-icon-motion-label: 'Down chevron folds before descending';
+  --mdp-icon-motion-duration: 570ms;
+  --mdp-icon-press-pose: translateY(0.65px) scaleX(0.93);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=chevron-down] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-chevron-down;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-chevron-down {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: scaleY(0.55);
+  }
+  58% {
+    transform: translateY(1.25px) scaleY(1.08);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-left] {
+  --mdp-icon-recipe: app-sidebar-chevron-left;
+  --mdp-icon-motion-label: 'Left panel shutter pulls inward';
+  --mdp-icon-motion-duration: 460ms;
+  --mdp-icon-press-pose: scaleX(0.82);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-left] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-sidebar-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-sidebar-left {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateX(-0.8px) scaleX(0.7);
+  }
+  70% {
+    transform: scaleX(1.08);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-right] {
+  --mdp-icon-recipe: app-sidebar-chevron-right;
+  --mdp-icon-motion-label: 'Right panel shutter swings on its hinge';
+  --mdp-icon-motion-duration: 520ms;
+  --mdp-icon-press-pose: skewX(5deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sidebar-chevron-right] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-sidebar-right;
+  --mdp-icon-part-origin: 9px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-sidebar-right {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: skewY(-8deg) scaleX(0.85);
+  }
+  68% {
+    transform: skewY(3deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] {
+  --mdp-icon-recipe: app-file-details;
+  --mdp-icon-motion-label: 'Details card scans its information lines';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: scaleY(0.95);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=lines] {
+  --mdp-icon-part-animation: mdp-details-scan;
+  --mdp-icon-part-origin: 7px 8px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=card] {
+  --mdp-icon-part-animation: mdp-details-card;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-details-scan {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  35% {
+    transform: scaleX(0.55);
+    opacity: 0.25;
+  }
+  70% {
+    transform: scaleX(1.05);
+  }
+}
+@keyframes mdp-details-card {
+  0%, 100% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 0.65;
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] {
+  --mdp-icon-recipe: app-arrow-up;
+  --mdp-icon-motion-label: 'Arrowhead launches ahead of its shaft';
+  --mdp-icon-motion-duration: 610ms;
+  --mdp-icon-press-pose: translateY(-0.9px) scaleY(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] > [data-icon-part=head] {
+  --mdp-icon-part-animation: mdp-up-head;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] > [data-icon-part=shaft] {
+  --mdp-icon-part-animation: mdp-up-shaft;
+  --mdp-icon-part-origin: 12px 20px;
+  --mdp-icon-part-delay: 45ms;
+}
+
+@keyframes mdp-up-head {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: translateY(-1px);
+  }
+  60% {
+    transform: translateY(0.35px);
+  }
+}
+@keyframes mdp-up-shaft {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: scaleY(0.86);
+  }
+  65% {
+    transform: scaleY(1.03);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=close] {
+  --mdp-icon-recipe: app-close;
+  --mdp-icon-motion-label: 'Cross arms fold together and reopen';
+  --mdp-icon-motion-duration: 560ms;
+  --mdp-icon-press-pose: rotate(8deg) scale(0.92);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=close] > [data-icon-part=falling] {
+  --mdp-icon-part-animation: mdp-close-falling;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=close] > [data-icon-part=rising] {
+  --mdp-icon-part-animation: mdp-close-rising;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-close-falling {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(45deg) scale(0.8);
+  }
+}
+@keyframes mdp-close-rising {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(-45deg) scale(0.8);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=history] {
+  --mdp-icon-recipe: app-history;
+  --mdp-icon-motion-label: 'History hand rewinds behind its return hook';
+  --mdp-icon-motion-duration: 780ms;
+  --mdp-icon-press-pose: rotate(-6deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=history] > [data-icon-part=hands] {
+  --mdp-icon-part-animation: mdp-history-rewind;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=history] > [data-icon-part=return] {
+  --mdp-icon-part-animation: mdp-history-return;
+  --mdp-icon-part-origin: 5px 8px;
+  --mdp-icon-part-delay: 40ms;
+}
+
+@keyframes mdp-history-rewind {
+  0%, 100% {
+    transform: none;
+  }
+  30% {
+    transform: rotate(-85deg);
+  }
+  64% {
+    transform: rotate(-25deg);
+  }
+}
+@keyframes mdp-history-return {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateX(-0.6px) rotate(-8deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=reader] {
+  --mdp-icon-recipe: app-reader;
+  --mdp-icon-motion-label: 'Book pages fan around the fixed spine';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: scaleX(0.93) scaleY(1.02);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=reader] > [data-icon-part=left-page] {
+  --mdp-icon-part-animation: mdp-reader-left;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=reader] > [data-icon-part=right-page] {
+  --mdp-icon-part-animation: mdp-reader-right;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 70ms;
+}
+
+@keyframes mdp-reader-left {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: scaleX(0.75) skewY(-3deg);
+  }
+}
+@keyframes mdp-reader-right {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: scaleX(0.9) skewY(5deg);
+  }
+  65% {
+    transform: scaleX(1.03);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=editor] {
+  --mdp-icon-recipe: app-editor;
+  --mdp-icon-motion-label: 'Editor pencil lifts its cap and seats the nib';
+  --mdp-icon-motion-duration: 580ms;
+  --mdp-icon-press-pose: rotate(-7deg) scaleY(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=editor] > [data-icon-part=cap] {
+  --mdp-icon-part-animation: mdp-editor-cap;
+  --mdp-icon-part-origin: 17px 7px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=editor] > [data-icon-part=body] {
+  --mdp-icon-part-animation: mdp-editor-nib;
+  --mdp-icon-part-origin: 5px 19px;
+  --mdp-icon-part-delay: 55ms;
+}
+
+@keyframes mdp-editor-cap {
+  0%, 100% {
+    transform: none;
+  }
+  34% {
+    transform: translate(0.7px, -0.7px) rotate(12deg);
+  }
+}
+@keyframes mdp-editor-nib {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: rotate(-6deg);
+  }
+  72% {
+    transform: rotate(2deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] {
+  --mdp-icon-recipe: app-plugins;
+  --mdp-icon-motion-label: 'Plug prongs connect as the cord flexes';
+  --mdp-icon-motion-duration: 720ms;
+  --mdp-icon-press-pose: translateY(0.5px) scaleY(0.93);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] > [data-icon-part=prongs] {
+  --mdp-icon-part-animation: mdp-plugins-connect;
+  --mdp-icon-part-origin: 12px 8px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] > [data-icon-part=socket] {
+  --mdp-icon-part-animation: mdp-plugins-socket;
+  --mdp-icon-part-origin: 12px 10px;
+  --mdp-icon-part-delay: 80ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=plugins] > [data-icon-part=cord] {
+  --mdp-icon-part-animation: mdp-plugins-cord;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 150ms;
+}
+
+@keyframes mdp-plugins-connect {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translateY(-0.7px);
+  }
+  50% {
+    transform: translateY(1px);
+  }
+}
+@keyframes mdp-plugins-socket {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scaleX(1.06);
+  }
+}
+@keyframes mdp-plugins-cord {
+  0%, 100% {
+    transform: none;
+  }
+  45% {
+    transform: skewX(12deg);
+  }
+  70% {
+    transform: skewX(-5deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] {
+  --mdp-icon-recipe: app-settings;
+  --mdp-icon-motion-label: 'Three sliders tune in opposite directions';
+  --mdp-icon-motion-duration: 680ms;
+  --mdp-icon-press-pose: scaleX(0.95) rotate(1deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] > [data-icon-part=slider-top] {
+  --mdp-icon-part-animation: mdp-settings-top;
+  --mdp-icon-part-origin: 10px 5px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] > [data-icon-part=slider-middle] {
+  --mdp-icon-part-animation: mdp-settings-middle;
+  --mdp-icon-part-origin: 16px 12px;
+  --mdp-icon-part-delay: 65ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=settings] > [data-icon-part=slider-bottom] {
+  --mdp-icon-part-animation: mdp-settings-bottom;
+  --mdp-icon-part-origin: 8px 19px;
+  --mdp-icon-part-delay: 130ms;
+}
+
+@keyframes mdp-settings-top {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(3px);
+  }
+}
+@keyframes mdp-settings-middle {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(-4px);
+  }
+}
+@keyframes mdp-settings-bottom {
+  0%, 100% {
+    transform: none;
+  }
+  42% {
+    transform: translateX(2px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] {
+  --mdp-icon-recipe: app-palette;
+  --mdp-icon-motion-label: 'Paint wells brighten around the palette thumb';
+  --mdp-icon-motion-duration: 760ms;
+  --mdp-icon-press-pose: rotate(4deg) scale(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=palette] {
+  --mdp-icon-part-animation: mdp-palette-rock;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=ink-warm] {
+  --mdp-icon-part-animation: mdp-palette-well;
+  --mdp-icon-part-origin: 7.5px 9px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=ink-cool] {
+  --mdp-icon-part-animation: mdp-palette-well;
+  --mdp-icon-part-origin: 10.5px 6.5px;
+  --mdp-icon-part-delay: 80ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=palette] > [data-icon-part=ink-bright] {
+  --mdp-icon-part-animation: mdp-palette-well;
+  --mdp-icon-part-origin: 15px 7px;
+  --mdp-icon-part-delay: 160ms;
+}
+
+@keyframes mdp-palette-rock {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: rotate(-5deg);
+  }
+  68% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes mdp-palette-well {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: scale(1.6);
+  }
+  58% {
+    transform: scale(0.8);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=moon] {
+  --mdp-icon-recipe: app-moon;
+  --mdp-icon-motion-label: 'Crescent rocks into a quiet eclipse';
+  --mdp-icon-motion-duration: 820ms;
+  --mdp-icon-press-pose: rotate(-9deg) scale(0.97);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=moon] > [data-icon-part=crescent] {
+  --mdp-icon-part-animation: mdp-moon-eclipse;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-moon-eclipse {
+  0%, 100% {
+    transform: none;
+  }
+  32% {
+    transform: rotate(-18deg) scale(0.92);
+  }
+  64% {
+    transform: rotate(6deg) scale(1.02);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] {
+  --mdp-icon-recipe: app-sun;
+  --mdp-icon-motion-label: 'Sun core warms as cardinal and diagonal rays unfurl';
+  --mdp-icon-motion-duration: 700ms;
+  --mdp-icon-press-pose: rotate(10deg) scale(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] > [data-icon-part=core] {
+  --mdp-icon-part-animation: mdp-sun-warm;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] > [data-icon-part=rays-cardinal] {
+  --mdp-icon-part-animation: mdp-sun-cardinal;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=sun] > [data-icon-part=rays-diagonal] {
+  --mdp-icon-part-animation: mdp-sun-diagonal;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 80ms;
+}
+
+@keyframes mdp-sun-warm {
+  0%, 100% {
+    transform: none;
+  }
+  35% {
+    transform: scale(1.15);
+  }
+  68% {
+    transform: scale(0.96);
+  }
+}
+@keyframes mdp-sun-cardinal {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0.8) rotate(-12deg);
+    opacity: 0.45;
+  }
+  60% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes mdp-sun-diagonal {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0.84) rotate(12deg);
+    opacity: 0.35;
+  }
+  60% {
+    transform: rotate(-8deg);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=type] {
+  --mdp-icon-recipe: app-type;
+  --mdp-icon-motion-label: 'Capital rises while the small letter follows';
+  --mdp-icon-motion-duration: 660ms;
+  --mdp-icon-press-pose: scaleY(0.93) translateY(0.5px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=type] > [data-icon-part=capital] {
+  --mdp-icon-part-animation: mdp-type-capital;
+  --mdp-icon-part-origin: 9px 20px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=type] > [data-icon-part=small] {
+  --mdp-icon-part-animation: mdp-type-small;
+  --mdp-icon-part-origin: 19.5px 20px;
+  --mdp-icon-part-delay: 120ms;
+}
+
+@keyframes mdp-type-capital {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: scaleY(1.06) scaleX(0.94);
+  }
+}
+@keyframes mdp-type-small {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translateY(-1.2px) scaleY(1.12);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=shield] {
+  --mdp-icon-recipe: app-shield;
+  --mdp-icon-motion-label: 'Shield braces before its check locks into place';
+  --mdp-icon-motion-duration: 710ms;
+  --mdp-icon-press-pose: scaleX(0.92) scaleY(1.02);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=shield] > [data-icon-part=shield] {
+  --mdp-icon-part-animation: mdp-shield-brace;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=shield] > [data-icon-part=check] {
+  --mdp-icon-part-animation: mdp-shield-lock;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 100ms;
+}
+
+@keyframes mdp-shield-brace {
+  0%, 100% {
+    transform: none;
+  }
+  28% {
+    transform: scaleX(0.9);
+  }
+  55% {
+    transform: scaleX(1.04);
+  }
+}
+@keyframes mdp-shield-lock {
+  0%, 100% {
+    transform: none;
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(-0.8px) scale(0.65);
+    opacity: 0.3;
+  }
+  52% {
+    transform: scale(1.1);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=info] {
+  --mdp-icon-recipe: app-info;
+  --mdp-icon-motion-label: 'Information dot lifts while its stem stands taller';
+  --mdp-icon-motion-duration: 600ms;
+  --mdp-icon-press-pose: scale(0.95) translateY(0.3px);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=info] > [data-icon-part=dot] {
+  --mdp-icon-part-animation: mdp-info-dot;
+  --mdp-icon-part-origin: 12px 7px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=info] > [data-icon-part=stem] {
+  --mdp-icon-part-animation: mdp-info-stem;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 50ms;
+}
+
+@keyframes mdp-info-dot {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: translateY(-1px) scale(1.2);
+  }
+}
+@keyframes mdp-info-stem {
+  0%, 100% {
+    transform: none;
+  }
+  40% {
+    transform: scaleY(1.15);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=warning] {
+  --mdp-icon-recipe: app-warning;
+  --mdp-icon-motion-label: 'Exclamation taps once inside a steady triangle';
+  --mdp-icon-motion-duration: 520ms;
+  --mdp-icon-press-pose: translateY(0.4px) scaleX(0.94);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=warning] > [data-icon-part=stem] {
+  --mdp-icon-part-animation: mdp-warning-tap;
+  --mdp-icon-part-origin: 12px 14px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=warning] > [data-icon-part=dot] {
+  --mdp-icon-part-animation: mdp-warning-dot;
+  --mdp-icon-part-origin: 12px 17px;
+  --mdp-icon-part-delay: 60ms;
+}
+
+@keyframes mdp-warning-tap {
+  0%, 100% {
+    transform: none;
+  }
+  25% {
+    transform: translateY(-0.9px);
+  }
+  58% {
+    transform: translateY(0.6px) scaleY(0.85);
+  }
+}
+@keyframes mdp-warning-dot {
+  0%, 100% {
+    transform: none;
+  }
+  52% {
+    transform: scale(1.45);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=error] {
+  --mdp-icon-recipe: app-error;
+  --mdp-icon-motion-label: 'Error cross shakes inside its steady ring';
+  --mdp-icon-motion-duration: 540ms;
+  --mdp-icon-press-pose: rotate(-2deg) scaleX(0.96);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=error] > [data-icon-part=cross] {
+  --mdp-icon-part-animation: mdp-error-shake;
+  --mdp-icon-part-origin: 12px 12px;
+  --mdp-icon-part-delay: 0ms;
+}
+
+@keyframes mdp-error-shake {
+  0%, 100% {
+    transform: none;
+  }
+  20% {
+    transform: translateX(-1px);
+  }
+  40% {
+    transform: translateX(1px);
+  }
+  60% {
+    transform: translateX(-0.5px);
+  }
+  80% {
+    transform: translateX(0.25px);
+  }
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=trash] {
+  --mdp-icon-recipe: app-trash;
+  --mdp-icon-motion-label: 'Bin lid lifts then closes without deleting anything';
+  --mdp-icon-motion-duration: 740ms;
+  --mdp-icon-press-pose: scaleY(0.94) rotate(3deg);
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=trash] > [data-icon-part=lid] {
+  --mdp-icon-part-animation: mdp-trash-lid;
+  --mdp-icon-part-origin: 6px 6px;
+  --mdp-icon-part-delay: 0ms;
+}
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=trash] > [data-icon-part=bin] {
+  --mdp-icon-part-animation: mdp-trash-bin;
+  --mdp-icon-part-origin: 12px 21px;
+  --mdp-icon-part-delay: 60ms;
+}
+
+@keyframes mdp-trash-lid {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: translateY(-0.8px) rotate(-8deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes mdp-trash-bin {
+  0%, 100% {
+    transform: none;
+  }
+  38% {
+    transform: scaleY(0.96);
+  }
+}
+.mdp-root svg[data-mdp-family=app] {
+  --mdp-icon-center: 12px 12px;
+}
+
+.mdp-root svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+  transform-box: view-box;
+  transform-origin: var(--mdp-icon-part-origin, var(--mdp-icon-center));
+  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root :where(button, a, [role=button]):not(:disabled, [aria-disabled=true], [aria-busy=true]):focus-visible svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+    animation-name: var(--mdp-icon-part-animation, none);
+    animation-duration: var(--mdp-icon-motion-duration);
+    animation-timing-function: var(--mdp-icon-ease);
+    animation-delay: var(--mdp-icon-part-delay, 0ms);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .mdp-root :where(button, a, [role=button]):not(:disabled, [aria-disabled=true], [aria-busy=true]):hover svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+    animation-name: var(--mdp-icon-part-animation, none);
+    animation-duration: var(--mdp-icon-motion-duration);
+    animation-timing-function: var(--mdp-icon-ease);
+    animation-delay: var(--mdp-icon-part-delay, 0ms);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root :where(button, a, [role=button]):not(:disabled, [aria-disabled=true], [aria-busy=true]):active svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
+    animation: none;
+    transform: var(--mdp-icon-part-press, var(--mdp-icon-press-pose));
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root .is-copied .mdp-icon-swap[data-swapped=true] svg[data-mdp-icon=check] > [data-icon-part=tick] {
+    animation-name: var(--mdp-icon-part-animation, none);
+    animation-duration: var(--mdp-icon-motion-duration);
+    animation-timing-function: var(--mdp-icon-ease);
+    animation-delay: var(--mdp-icon-part-delay, 0ms);
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-root svg[data-mdp-icon][data-mdp-family=app] > [data-icon-part]:not([data-icon-local-motion]) {
+    animation: none !important;
+    transition: none;
+    transform: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}
+.mdp-root {
+  --mdp-icon-press-duration: 90ms;
+  --mdp-icon-swap-duration: 180ms;
+  --mdp-icon-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mdp-root .mdp-button:has(> :is(svg[data-mdp-icon][data-mdp-family=app], .mdp-icon-swap, .mdp-explorer__menu-icon)):active:not(:disabled) {
+  transform: none;
+}
+
+.mdp-root .mdp-icon-swap {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  vertical-align: middle;
+  pointer-events: none;
+}
+.mdp-root .mdp-icon-swap > svg {
+  display: block;
+  grid-area: 1/1;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+  transition: opacity var(--mdp-icon-swap-duration) ease, transform var(--mdp-icon-swap-duration) var(--mdp-icon-ease);
+}
+.mdp-root .mdp-icon-swap > .mdp-icon-swap__from {
+  opacity: 1;
+  transform: scale(1);
+}
+.mdp-root .mdp-icon-swap > .mdp-icon-swap__to {
+  opacity: 0;
+  transform: scale(0.8) rotate(-8deg);
+}
+.mdp-root .mdp-icon-swap[data-swapped=true] > .mdp-icon-swap__from {
+  opacity: 0;
+  transform: scale(0.8) rotate(8deg);
+}
+.mdp-root .mdp-icon-swap[data-swapped=true] > .mdp-icon-swap__to {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.mdp-root button:is(.mdp-fab-btn, .mdp-explorer__context-command,
+.mdp-document-actions-menu__item, .mdp-explorer__row-menu-item, .mdp-code-block__copy,
+.mdp-mermaid-toolbar__copy, .mdp-color-popover__copy).is-copied {
+  opacity: 1;
+  color: var(--mdp-toast-success-text);
+  background: var(--mdp-toast-success-bg);
+  border-color: var(--mdp-toast-success-border);
+}
+
+@media (pointer: coarse) {
+  .mdp-root :is(.mdp-code-block__copy, .mdp-mermaid-toolbar__copy,
+  .mdp-mermaid-toolbar__expand, .mdp-mermaid-actions__trigger,
+  .mdp-image-lightbox__button, .mdp-mermaid-lightbox__button) {
+    width: 44px;
+    height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-root .mdp-icon-swap > svg,
+  .mdp-root .mdp-icon-swap[data-swapped=true] > svg {
+    transition: none;
+    transform: none;
+  }
+}
+</style>
 </head>
 <body data-theme="light" class="ds-viewer">
   <header class="ds-nav"><a class="ds-brand" href="./index.html">Markdown Plus <span>/ Design system</span></a><nav class="ds-links" aria-label="Design system"><a href="./index.html">Overview</a><a href="./components.html">Components</a><a href="./icons.html">Icons</a><a href="./viewer.html" aria-current="page">Viewer preview</a></nav></header>
@@ -3275,14 +5237,14 @@
                 <div class="mdp-panel-header__heading-main" id="files-heading-label"><strong class="mdp-panel-header__heading">Files</strong><span class="mdp-explorer__badge mdp-explorer__badge--workspace">Workspace</span></div>
                 <div class="mdp-explorer__header-actions" id="files-header-actions">
                   <div class="mdp-explorer__context-commands" id="files-context-commands">
-                    <button class="mdp-explorer__context-command" id="files-compact-open" type="button" aria-label="Switch folder…" title="Switch folder…"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-select" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M2.5 8V5a2 2 0 0 1 2-2h5l2 2H18a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2Z" stroke="#D6A34A" fill="#D6A34A" fill-opacity=".22"></path><path d="M2.5 8H20" stroke="#D6A34A"></path><circle cx="18" cy="17" r="6" fill="var(--mdp-surface, #ffffff)" stroke="none"></circle><path d="M14 17h9 m-3.5-3.5 3.5 3.5-3.5 3.5" stroke="var(--mdp-link, #2563eb)"></path></svg><span class="preview-command-label" hidden>Switch folder…</span></button>
-<button class="mdp-explorer__context-command" id="files-compact-copy" type="button" aria-label="Copy link unavailable for workspace virtual files" title="Copy link unavailable for workspace virtual files" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg><span class="preview-command-label" hidden>Copy link</span></button>
+                    <button class="mdp-explorer__context-command" id="files-compact-open" type="button" aria-label="Switch folder…" title="Switch folder…"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-select" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__context-command-icon"><path d="M2.5 8V5a2 2 0 0 1 2-2h5l2 2H18a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4.5a2 2 0 0 1-2-2Z" stroke="#D6A34A" fill="#D6A34A" fill-opacity=".22" data-icon-part="body" pathLength="1"></path><path d="M2.5 8H20" stroke="#D6A34A" data-icon-part="lip" pathLength="1"></path><circle cx="18" cy="17" r="6" fill="var(--mdp-surface, #ffffff)" stroke="none" data-icon-part="backing" pathLength="1"></circle><path d="M14 17h9 m-3.5-3.5 3.5 3.5-3.5 3.5" stroke="var(--mdp-link, #2563eb)" data-icon-part="arrow" pathLength="1"></path></svg><span class="preview-command-label" hidden>Switch folder…</span></button>
+<button class="mdp-explorer__context-command" id="files-compact-copy" type="button" aria-label="Copy link unavailable for workspace virtual files" title="Copy link unavailable for workspace virtual files" disabled><span class="mdp-icon-swap mdp-fab-btn__icon" data-swapped="false" aria-hidden="true" style="width:16px;height:16px"><svg data-icon-visible="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__from"><path d="m9 15 6-6" data-icon-part="bridge" pathLength="1"></path><path d="M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0" data-icon-part="lower" pathLength="1"></path><path d="M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0" data-icon-part="upper" pathLength="1"></path></svg><svg data-icon-visible="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__to"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></span><span class="preview-command-label" hidden>Copy link</span></button>
                     <div class="mdp-explorer__context-overflow" id="files-context-overflow">
-                      <button class="mdp-explorer__context-command" id="files-context-more" type="button" aria-label="More file actions" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button>
+                      <button class="mdp-explorer__context-command" id="files-context-more" type="button" aria-label="More file actions" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__context-command-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button>
                       <div class="mdp-explorer__row-menu mdp-explorer__context-menu" id="files-context-menu" role="menu" aria-label="File details actions" hidden></div>
                     </div>
                   </div>
-                  <button class="mdp-explorer__context-command mdp-explorer__details-toggle" id="files-details-toggle" type="button" aria-label="Show file details" aria-expanded="false" aria-controls="files-details" title="Show file details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="file-details" class="mdp-explorer__details-icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M7 7h10 M7 10h6"></path><path data-icon-part="chevron" d="m9 14 3 3 3-3"></path></svg></button>
+                  <button class="mdp-explorer__context-command mdp-explorer__details-toggle" id="files-details-toggle" type="button" aria-label="Show file details" aria-expanded="false" aria-controls="files-details" title="Show file details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="file-details" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__details-icon"><rect x="3" y="3" width="18" height="18" rx="2" data-icon-part="card" pathLength="1"></rect><path d="M7 7h10 M7 10h6" data-icon-part="lines" pathLength="1"></path><path data-icon-part="chevron" d="m9 14 3 3 3-3" pathLength="1" data-icon-local-motion="true"></path></svg></button>
                 </div>
               </div>
               <div class="mdp-explorer__details" id="files-details" aria-hidden="true" inert><div class="mdp-explorer__details-clip"><div class="mdp-explorer__details-content">
@@ -3291,7 +5253,7 @@
                   <div class="mdp-explorer__context-row" id="files-identity-row"><div class="mdp-explorer__context-current"><strong class="mdp-explorer__context-file">README.md</strong></div></div>
                   <div class="mdp-explorer__path" title="/Users/you/Documents/markdown-plus" aria-label="Workspace root: /Users/you/Documents/markdown-plus"><span class="mdp-explorer__path-label">…/Documents/markdown-plus</span></div>
                   <div class="mdp-explorer__detail-actions" id="files-detail-actions">
-              <button class="mdp-explorer__back-btn mdp-button" id="files-compact-leave" type="button" aria-label="Leave workspace"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="leave-workspace" class="mdp-explorer__back-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M9 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9 M9 9h12"></path><circle cx="12" cy="6.5" r="0.65" fill="currentColor" stroke="none"></circle><path d="M13 15H3 m4-4-4 4 4 4"></path></svg><span class="mdp-explorer__back-label preview-command-label">Leave workspace</span></button>
+              <button class="mdp-explorer__back-btn mdp-button" id="files-compact-leave" type="button" aria-label="Leave workspace"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="leave-workspace" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__back-icon"><path d="M9 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9 M9 9h12" data-icon-part="window" pathLength="1"></path><circle cx="12" cy="6.5" r="0.65" fill="currentColor" stroke="none" data-icon-part="indicator" pathLength="1"></circle><path d="M13 15H3 m4-4-4 4 4 4" data-icon-part="arrow" pathLength="1"></path></svg><span class="mdp-explorer__back-label preview-command-label">Leave workspace</span></button>
                   </div>
                 </div>
               </div></div></div>
@@ -3301,23 +5263,23 @@
               <div class="mdp-explorer__toolbar-summary"><span class="mdp-explorer__toolbar-location" title="/Users/you/Documents/markdown-plus">markdown-plus</span><span class="mdp-explorer__toolbar-count">· 6 files</span></div>
                 <div class="mdp-explorer__toolbar-actions">
                   <button class="mdp-explorer__toolbar-btn" type="button" aria-label="Collapse folders" title="Collapse folders">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="collapse" style="stroke:currentColor;stroke-width:1.8"><path d="M8 4H5a2 2 0 0 0-2 2v10"></path><rect x="7" y="8" width="14" height="13" rx="2"></rect><path d="M11 14.5h6"></path></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="collapse" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M8 4H5a2 2 0 0 0-2 2v10" data-icon-part="back" pathLength="1"></path><rect x="7" y="8" width="14" height="13" rx="2" data-icon-part="front" pathLength="1"></rect><path d="M11 14.5h6" data-icon-part="minus" pathLength="1"></path></svg>
                   </button>
                   <button class="mdp-explorer__toolbar-btn mdp-explorer__refresh-btn" id="refresh-files" type="button" aria-label="Refresh file list" aria-busy="false" title="Refresh file list">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="refresh" class="mdp-explorer__refresh-icon" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5h15 M3 10h8 M3 15h5"></path><path data-icon-part="arrow" d="M17 13a4 4 0 1 1-4 4 M13 20v-3h3"></path></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="refresh" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__refresh-icon"><path d="M3 5h15 M3 10h8 M3 15h5" data-icon-part="lines" pathLength="1"></path><path data-icon-part="arrow" d="M17 13a4 4 0 1 1-4 4 M13 20v-3h3" pathLength="1"></path></svg>
                   </button>
                 </div>
             </div>
             <div class="mdp-explorer__scroll-region">
             <ul class="mdp-explorer__list" aria-label="Workspace files">
-<li class="mdp-explorer__tree-folder"><div style="position:relative"><span class="mdp-explorer__tree-guides" id="preview-folder-stem" aria-hidden="true"><span class="mdp-explorer__tree-stem" style="left:8px"></span></span><button class="mdp-explorer__tree-folder-row is-expanded" id="preview-tree-folder" type="button" aria-expanded="true" aria-controls="preview-tree-children"><span class="mdp-explorer__tree-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" class="mdp-explorer__details-chevron" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg></span><span class="mdp-explorer__tree-folder-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg></span><span class="mdp-explorer__tree-folder-label">assets</span></button><span class="mdp-explorer__folder-count" aria-hidden="true" title="4 indexed files, including subfolders">4</span><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for assets" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__context-command-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button" data-folder-toggle>Collapse folder</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy folder name</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy folder path</button></div></div></div><ul class="preview-tree-children" id="preview-tree-children">
-<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="queries.sql"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="database" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M2.5 4v8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5V4" fill="#F472B6" fill-opacity=".12"></path><ellipse cx="8" cy="4" rx="5.5" ry="2.5" fill="#F472B6" fill-opacity=".2"></ellipse><path d="M2.5 8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5"></path></svg></span><span class="mdp-explorer__node-label">queries.sql</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for queries.sql" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="flow.mermaid"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F59E0B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="diagram" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F59E0B;stroke-width:1.25"><path d="M8 5v3 M3.5 10V8h9v2"></path><path d="M6 1.5h4a1 1 0 0 1 1 1V5H5V2.5a1 1 0 0 1 1-1Z M1 10h5v4.5H1Z M10 10h5v4.5h-5Z" fill="#F59E0B" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">flow.mermaid</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for flow.mermaid" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="sidebar-alignment-preview.png"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#C084FC" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="image" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#C084FC;stroke-width:1.25"><rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#C084FC" fill-opacity=".12"></rect><circle cx="10.5" cy="5" r="1.4" fill="#C084FC" stroke="none"></circle><path d="M2 12.5 6 8l3 3 2-2 3 3.5V14H2Z" fill="#C084FC" fill-opacity=".65" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">sidebar-alignment-preview.png</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for sidebar-alignment-preview.png" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="diagram.svg"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="vector" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#F472B6;stroke-width:1.25"><path d="M3 3h10v10H3Z"></path><path d="M1.5 1.5h3v3h-3Z M11.5 1.5h3v3h-3Z M11.5 11.5h3v3h-3Z M1.5 11.5h3v3h-3Z" fill="#F472B6" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">diagram.svg</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for diagram.svg" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__tree-folder"><div style="position:relative"><span class="mdp-explorer__tree-guides" id="preview-folder-stem" aria-hidden="true"><span class="mdp-explorer__tree-stem" style="left:8px"></span></span><button class="mdp-explorer__tree-folder-row is-expanded" id="preview-tree-folder" type="button" aria-expanded="true" aria-controls="preview-tree-children"><span class="mdp-explorer__tree-chevron" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__details-chevron"><path d="m6.5 9.5 5.5 5.5 5.5-5.5" data-icon-part="chevron" pathLength="1"></path></svg></span><span class="mdp-explorer__tree-folder-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25" class="mdp-row-icon"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg></span><span class="mdp-explorer__tree-folder-label">assets</span></button><span class="mdp-explorer__folder-count" aria-hidden="true" title="4 indexed files, including subfolders">4</span><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for assets" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__context-command-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button" data-folder-toggle>Collapse folder</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy folder name</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy folder path</button></div></div></div><ul class="preview-tree-children" id="preview-tree-children">
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="queries.sql"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="database" data-mdp-family="filetype" style="stroke:#F472B6;stroke-width:1.25" class="mdp-row-icon"><path d="M2.5 4v8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5V4" fill="#F472B6" fill-opacity=".12"></path><ellipse cx="8" cy="4" rx="5.5" ry="2.5" fill="#F472B6" fill-opacity=".2"></ellipse><path d="M2.5 8c0 1.38 2.46 2.5 5.5 2.5s5.5-1.12 5.5-2.5"></path></svg></span><span class="mdp-explorer__node-label">queries.sql</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for queries.sql" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__row-action-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="flow.mermaid"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F59E0B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="diagram" data-mdp-family="filetype" style="stroke:#F59E0B;stroke-width:1.25" class="mdp-row-icon"><path d="M8 5v3 M3.5 10V8h9v2"></path><path d="M6 1.5h4a1 1 0 0 1 1 1V5H5V2.5a1 1 0 0 1 1-1Z M1 10h5v4.5H1Z M10 10h5v4.5h-5Z" fill="#F59E0B" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">flow.mermaid</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for flow.mermaid" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__row-action-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch is-continuing" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="sidebar-alignment-preview.png"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#C084FC" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="image" data-mdp-family="filetype" style="stroke:#C084FC;stroke-width:1.25" class="mdp-row-icon"><rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="#C084FC" fill-opacity=".12"></rect><circle cx="10.5" cy="5" r="1.4" fill="#C084FC" stroke="none"></circle><path d="M2 12.5 6 8l3 3 2-2 3 3.5V14H2Z" fill="#C084FC" fill-opacity=".65" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">sidebar-alignment-preview.png</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for sidebar-alignment-preview.png" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__row-action-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node" style="--mdp-tree-row-indent:12px"><span class="mdp-explorer__tree-guides" aria-hidden="true"><span class="mdp-explorer__tree-guide is-branch" style="left:8px"></span></span><button class="mdp-explorer__node-btn" type="button" title="diagram.svg"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F472B6" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="vector" data-mdp-family="filetype" style="stroke:#F472B6;stroke-width:1.25" class="mdp-row-icon"><path d="M3 3h10v10H3Z"></path><path d="M1.5 1.5h3v3h-3Z M11.5 1.5h3v3h-3Z M11.5 11.5h3v3h-3Z M1.5 11.5h3v3h-3Z" fill="#F472B6" fill-opacity="1" stroke="none"></path></svg></span><span class="mdp-explorer__node-label">diagram.svg</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for diagram.svg" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__row-action-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
 </ul></li>
-<li class="mdp-explorer__node is-active"><button class="mdp-explorer__node-btn is-active" type="button" aria-current="true" title="README.md"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#60A5FA" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="markdown" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#60A5FA;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#60A5FA" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M4.5 11.5V8L6.25 10 8 8v3.5 M11 8v3.5 m-1.25-1.25L11 11.5l1.25-1.25"></path></svg></span><span class="mdp-explorer__node-label">README.md</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for README.md" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
-<li class="mdp-explorer__node"><button class="mdp-explorer__node-btn" type="button" title="notes.txt"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#64748B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="text" data-mdp-family="filetype" class="mdp-row-icon" style="stroke:#64748B;stroke-width:1.25"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#64748B" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M5 8h6 M5 10.5h6 M5 13h3.5"></path></svg></span><span class="mdp-explorer__node-label">notes.txt</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for notes.txt" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-explorer__row-action-icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node is-active"><button class="mdp-explorer__node-btn is-active" type="button" aria-current="true" title="README.md"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#60A5FA" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="markdown" data-mdp-family="filetype" style="stroke:#60A5FA;stroke-width:1.25" class="mdp-row-icon"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#60A5FA" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M4.5 11.5V8L6.25 10 8 8v3.5 M11 8v3.5 m-1.25-1.25L11 11.5l1.25-1.25"></path></svg></span><span class="mdp-explorer__node-label">README.md</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for README.md" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__row-action-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
+<li class="mdp-explorer__node"><button class="mdp-explorer__node-btn" type="button" title="notes.txt"><span class="mdp-explorer__node-depth" aria-hidden="true"></span><span class="mdp-explorer__node-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#64748B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="text" data-mdp-family="filetype" style="stroke:#64748B;stroke-width:1.25" class="mdp-row-icon"><path d="M9.5 1.5H4a1.5 1.5 0 0 0-1.5 1.5v10A1.5 1.5 0 0 0 4 14.5h8a1.5 1.5 0 0 0 1.5-1.5V5.5Z" fill="#64748B" fill-opacity=".12"></path><path d="M9.5 1.5v4h4"></path><path d="M5 8h6 M5 10.5h6 M5 13h3.5"></path></svg></span><span class="mdp-explorer__node-label">notes.txt</span></button><div class="mdp-explorer__row-actions"><button class="mdp-explorer__row-action-btn" type="button" aria-label="More actions for notes.txt" aria-haspopup="menu" aria-expanded="false" title="More file actions"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-explorer__row-action-icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button><div class="mdp-explorer__row-menu" role="menu" hidden><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Open in new tab</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy link</button><button class="mdp-explorer__row-menu-item" role="menuitem" type="button">Copy file name</button></div></div></li>
 
 </ul>
             </div>
@@ -3461,14 +5423,14 @@
 <button class="mdp-panel-toggle mdp-panel-toggle--outline" type="button" aria-label="Hide Outline panel" aria-expanded="true" id="outline-toggle" aria-controls="mdp-panel-outline" style="--mdp-toggle-direction:1"><span class="mdp-panel-toggle__face" aria-hidden="true"><span class="mdp-panel-toggle__skin"></span><span class="mdp-panel-toggle__mark"></span><span class="mdp-panel-toggle__sweep"></span><svg width="12" height="16" viewBox="3 0 18 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="mdp-panel-toggle__chevron"><path d="m9 6 6 6-6 6"></path></svg></span></button>
 <div class="mdp-right-rail__actions-row">
 <div class="mdp-right-rail__commands"><div class="mdp-floating-actions" id="document-actions" role="group" aria-label="Document actions">
-<div class="mdp-document-actions__slot" data-mdp-action="updates"><button class="mdp-fab-btn mdp-watch-status__trigger" type="button" id="updates-button" data-mdp-watch-phase="idle" data-mdp-watch-action="details" aria-label="Document updates" title="Document updates"><span class="mdp-fab-btn__icon mdp-watch-status__icon-swap"><svg class="mdp-watch-status__icon mdp-watch-status__icon--details" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg><svg class="mdp-watch-status__icon mdp-watch-status__icon--apply" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg><span class="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates"><path d="M20 5v5h-5 M4 19v-5h5 M19.3 9a7.5 7.5 0 0 0-12.5-3 M4.7 15a7.5 7.5 0 0 0 12.5 3"></path></svg></span><svg class="mdp-watch-status__icon mdp-watch-status__icon--success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check"><path d="m5 12 4 4L19 6"></path></svg></span></button></div>
-<div class="mdp-document-actions__slot" data-mdp-action="theme"><button class="mdp-fab-btn mdp-fab-btn--theme" type="button" id="theme-toggle" aria-label="Switch to dark theme" title="Switch to dark theme" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg></button></div>
-<div class="mdp-document-actions__slot" data-mdp-action="review"><button class="mdp-fab-btn" type="button" id="review-button" aria-label="View changes" title="View changes" aria-haspopup="dialog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg></button></div>
-<div class="mdp-document-actions__slot" data-mdp-action="edit"><button class="mdp-fab-btn mdp-fab-btn--edit" type="button" id="edit-button" aria-label="Edit markdown" title="Edit markdown" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg></button></div>
-<div class="mdp-document-actions__slot" data-mdp-action="copy"><button class="mdp-fab-btn" type="button" id="copy-button" aria-label="Copy open file link" title="Copy open file link" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg></button></div>
-<div class="mdp-document-actions__slot" data-mdp-action="print"><button class="mdp-fab-btn" type="button" id="print-button" aria-label="Print / Save as PDF" title="Print / Save as PDF" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="print" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M7 8V3h10v5 M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="7" y="14" width="10" height="7" rx="1"></rect><circle cx="17.5" cy="11" r="0.85" fill="currentColor" stroke="none"></circle></svg></button></div>
-<div class="mdp-document-actions__slot" data-mdp-action="export"><button class="mdp-fab-btn" type="button" id="export-button" aria-label="Export document" title="Export document" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="export" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg></button></div>
-<div class="mdp-document-actions__slot" data-mdp-action="more"><button class="mdp-fab-btn" type="button" id="actions-more" aria-label="More document actions" title="More document actions" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="updates"><button class="mdp-fab-btn mdp-watch-status__trigger" type="button" id="updates-button" data-mdp-watch-phase="idle" data-mdp-watch-action="details" aria-label="Document updates" title="Document updates"><span class="mdp-fab-btn__icon mdp-watch-status__icon-swap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-watch-status__icon mdp-watch-status__icon--details"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><circle cx="17" cy="17" r="4" data-icon-part="clock" pathLength="1"></circle><path d="M17 15v2l1.5 1" data-icon-part="hands" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-watch-status__icon mdp-watch-status__icon--apply"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><path d="M17 13v8 m-3-3 3 3 3-3" data-icon-part="arrow" pathLength="1"></path></svg><span class="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check-updates" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M20 5v5h-5" data-icon-part="upper-tip" pathLength="1"></path><path d="M4 19v-5h5" data-icon-part="lower-tip" pathLength="1"></path><path d="M19.3 9a7.5 7.5 0 0 0-12.5-3" data-icon-part="upper-arc" pathLength="1"></path><path d="M4.7 15a7.5 7.5 0 0 0 12.5 3" data-icon-part="lower-arc" pathLength="1"></path></svg></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-watch-status__icon mdp-watch-status__icon--success"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></span></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="theme"><button class="mdp-fab-btn mdp-fab-btn--theme" type="button" id="theme-toggle" aria-label="Switch to dark theme" title="Switch to dark theme" ><span class="mdp-icon-swap mdp-fab-btn__icon mdp-fab-btn__theme-icon--dark" data-swapped="false" aria-hidden="true" style="width:18px;height:18px"><svg data-icon-visible="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__from"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" data-icon-part="crescent" pathLength="1"></path></svg><svg data-icon-visible="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sun" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__to"><circle cx="12" cy="12" r="4" data-icon-part="core" pathLength="1"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2" data-icon-part="rays-cardinal" pathLength="1"></path><path d="M6 4l1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4" data-icon-part="rays-diagonal" pathLength="1"></path></svg></span></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="review"><button class="mdp-fab-btn" type="button" id="review-button" aria-label="View changes" title="View changes" aria-haspopup="dialog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><rect x="3" y="4" width="18" height="16" rx="2" data-icon-part="frame" pathLength="1"></rect><path d="M12 4v16" data-icon-part="divider" pathLength="1"></path><path d="M6 9h3 M7.5 7.5v3" data-icon-part="plus" pathLength="1"></path><path d="M15 14h3" data-icon-part="minus" pathLength="1"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="edit"><button class="mdp-fab-btn mdp-fab-btn--edit" type="button" id="edit-button" aria-label="Edit markdown" title="Edit markdown" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="m15 5 4 4" data-icon-part="cap" pathLength="1"></path><path d="M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z" data-icon-part="body" pathLength="1"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="copy"><button class="mdp-fab-btn" type="button" id="copy-button" aria-label="Copy open file link" title="Copy open file link" ><span class="mdp-icon-swap mdp-fab-btn__icon" data-swapped="false" aria-hidden="true" style="width:18px;height:18px"><svg data-icon-visible="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__from"><path d="m9 15 6-6" data-icon-part="bridge" pathLength="1"></path><path d="M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0" data-icon-part="lower" pathLength="1"></path><path d="M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0" data-icon-part="upper" pathLength="1"></path></svg><svg data-icon-visible="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-icon-swap__to"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></span></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="print"><button class="mdp-fab-btn" type="button" id="print-button" aria-label="Print / Save as PDF" title="Print / Save as PDF" ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="print" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="M7 8V3h10v5" data-icon-part="input" pathLength="1"></path><path d="M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" data-icon-part="case" pathLength="1"></path><rect x="7" y="14" width="10" height="7" rx="1" data-icon-part="paper" pathLength="1"></rect><circle cx="17.5" cy="11" r="0.85" fill="currentColor" stroke="none" data-icon-part="indicator" pathLength="1"></circle></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="export"><button class="mdp-fab-btn" type="button" id="export-button" aria-label="Export document" title="Export document" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="export" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="M12 3v12 m-4-4 4 4 4-4" data-icon-part="arrow" pathLength="1"></path><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" data-icon-part="tray" pathLength="1"></path></svg></button></div>
+<div class="mdp-document-actions__slot" data-mdp-action="more"><button class="mdp-fab-btn" type="button" id="actions-more" aria-label="More document actions" title="More document actions" aria-haspopup="menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg></button></div>
 </div></div><strong class="mdp-right-rail__title">Outline</strong>
 </div>
         <div class="mdp-right-rail__outline-clip" aria-hidden="false">
@@ -3481,7 +5443,7 @@
         </div>
       </aside>
       <button class="mdp-scroll-to-top" type="button" aria-label="Back to top" title="Back to top" id="scroll-top">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="arrow-up" style="stroke:currentColor;stroke-width:1.8"><path d="M12 20V4 m-6 6 6-6 6 6"></path></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="arrow-up" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M12 20V4" data-icon-part="shaft" pathLength="1"></path><path d="m6 10 6-6 6 6" data-icon-part="head" pathLength="1"></path></svg>
       </button>
     </div>
   </div>
@@ -3501,8 +5463,8 @@
   </dialog>
 
 
-  <template id="preview-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m15 6-6 6 6 6"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9 6 6 6-6 6"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 5V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 13 14H3a1.5 1.5 0 0 1-1.5-1.5Z" fill="#D6A34A" fill-opacity=".22"></path><path d="M1.5 6h13"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sun" style="stroke:currentColor;stroke-width:1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2 m-16-8 1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-left" style="stroke:currentColor;stroke-width:1.8"><path d="m14.5 6.5-5.5 5.5 5.5 5.5"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-right" style="stroke:currentColor;stroke-width:1.8"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"></path></svg></template>
-  <template id="document-action-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><circle cx="17" cy="17" r="4"></circle><path d="M17 15v2l1.5 1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6"></path><path d="M17 13v8 m-3-3 3 3 3-3"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M12 4v16 M6 9h3 M7.5 7.5v3 M15 14h3"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m15 5 4 4 M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m9 15 6-6 M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0 M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="print" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M7 8V3h10v5 M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="7" y="14" width="10" height="7" rx="1"></rect><circle cx="17.5" cy="11" r="0.85" fill="currentColor" stroke="none"></circle></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="export" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"></circle></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" class="mdp-fab-btn__icon" style="stroke:currentColor;stroke-width:1.8"><path d="m5 12 4 4L19 6"></path></svg></template>
+  <template id="preview-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-left" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m15 6-6 6 6 6" data-icon-part="chevron" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-right" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m9 6 6 6-6 6" data-icon-part="chevron" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5" data-icon-part="chevron" pathLength="1"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder-open" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 7V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M1.5 7h13l-2 7H3.5Z" fill="#D6A34A" fill-opacity=".28"></path></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#D6A34A" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="folder" data-mdp-family="filetype" style="stroke:#D6A34A;stroke-width:1.25"><path d="M1.5 5V3.5a1 1 0 0 1 1-1H6l1.5 2H13a1.5 1.5 0 0 1 1.5 1.5v6.5A1.5 1.5 0 0 1 13 14H3a1.5 1.5 0 0 1-1.5-1.5Z" fill="#D6A34A" fill-opacity=".22"></path><path d="M1.5 6h13"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sun" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><circle cx="12" cy="12" r="4" data-icon-part="core" pathLength="1"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2" data-icon-part="rays-cardinal" pathLength="1"></path><path d="M6 4l1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4" data-icon-part="rays-diagonal" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="moon" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" data-icon-part="crescent" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-left" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m14.5 6.5-5.5 5.5 5.5 5.5" data-icon-part="chevron" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-right" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m9.5 6.5 5.5 5.5-5.5 5.5" data-icon-part="chevron" pathLength="1"></path></svg></template>
+  <template id="document-action-glyphs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="updates" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><circle cx="17" cy="17" r="4" data-icon-part="clock" pathLength="1"></circle><path d="M17 15v2l1.5 1" data-icon-part="hands" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="apply" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="M11 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8l6 6v2 M14 3v6h6" data-icon-part="document" pathLength="1"></path><path d="M17 13v8 m-3-3 3 3 3-3" data-icon-part="arrow" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="review" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><rect x="3" y="4" width="18" height="16" rx="2" data-icon-part="frame" pathLength="1"></rect><path d="M12 4v16" data-icon-part="divider" pathLength="1"></path><path d="M6 9h3 M7.5 7.5v3" data-icon-part="plus" pathLength="1"></path><path d="M15 14h3" data-icon-part="minus" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="edit" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="m15 5 4 4" data-icon-part="cap" pathLength="1"></path><path d="M4 20l4.5-1L20 7.5a2.47 2.47 0 0 0-3.5-3.5L5 15.5Z" data-icon-part="body" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="link" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="m9 15 6-6" data-icon-part="bridge" pathLength="1"></path><path d="M8 16l-1 1a3.54 3.54 0 0 1-5-5l4-4a3.54 3.54 0 0 1 5 0" data-icon-part="lower" pathLength="1"></path><path d="M16 8l1-1a3.54 3.54 0 0 1 5 5l-4 4a3.54 3.54 0 0 1-5 0" data-icon-part="upper" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="print" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="M7 8V3h10v5" data-icon-part="input" pathLength="1"></path><path d="M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" data-icon-part="case" pathLength="1"></path><rect x="7" y="14" width="10" height="7" rx="1" data-icon-part="paper" pathLength="1"></rect><circle cx="17.5" cy="11" r="0.85" fill="currentColor" stroke="none" data-icon-part="indicator" pathLength="1"></circle></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="export" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="M12 3v12 m-4-4 4 4 4-4" data-icon-part="arrow" pathLength="1"></path><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" data-icon-part="tray" pathLength="1"></path></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="more" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-left" pathLength="1"></circle><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-center" pathLength="1"></circle><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" data-icon-part="dot-right" pathLength="1"></circle></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="check" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8" class="mdp-fab-btn__icon"><path d="m5 12 4 4L19 6" data-icon-part="tick" pathLength="1"></path></svg></template>
   <script>
     // Trusted application glyph snapshots, not document content.
     document.getElementById('preview-glyphs').content.append(document.getElementById('document-action-glyphs').content)
@@ -3740,10 +5702,12 @@ function partitionDetailsCommands(commands, { width, badgeWidth = 0, coarse, res
     for (const command of compactCommands) command.node.addEventListener('click', () => {
       if (command.key === 'copy-link') {
         command.node.classList.add('is-copied')
+        command.node.querySelector('.mdp-icon-swap').dataset.swapped = 'true'
         command.node.title = 'Copied'
         command.node.setAttribute('aria-label', 'Copied')
         window.setTimeout(() => {
           command.node.classList.remove('is-copied')
+          command.node.querySelector('.mdp-icon-swap').dataset.swapped = 'false'
           command.node.title = 'Copy open file link'
           command.node.setAttribute('aria-label', 'Copy open file link')
         }, 1200)
@@ -4002,13 +5966,16 @@ function createWatchUpdateFeedback(publish) {
         icon.setAttribute('viewBox', '3 0 18 24'); icon.setAttribute('stroke-width', '2.25'); icon.setAttribute('style', 'stroke:currentColor;stroke-width:2.25')
         icon.classList.add('mdp-panel-toggle__chevron')
         button.style.setProperty('--mdp-toggle-direction', name === 'chevron-left' ? '-1' : '1')
-        button.querySelector('svg').replaceWith(icon)
+        button.querySelector('.mdp-icon-swap').dataset.swapped = String(name === 'chevron-right')
         button.classList.remove('is-switching'); void button.offsetWidth; button.classList.add('is-switching')
         setTimeout(() => button.classList.remove('is-switching'), 600)
+      } else if (button.querySelector('.mdp-icon-swap')) {
+        const layers = button.querySelector('.mdp-icon-swap')
+        layers.dataset.swapped = String(layers.lastElementChild.dataset.mdpIcon === name)
       } else button.querySelector('svg').replaceWith(replacement)
     }
 
-    themeToggle.querySelector('svg').classList.add('mdp-fab-btn__theme-icon--dark')
+    themeToggle.querySelector('.mdp-icon-swap').classList.add('mdp-fab-btn__theme-icon--dark')
 
     if (filesToggle.getAttribute('aria-expanded') === 'false') replaceGlyph(filesToggle, 'chevron-right')
     filesToggle.addEventListener('click', () => {
@@ -4040,7 +6007,8 @@ function createWatchUpdateFeedback(publish) {
       themeToggle.setAttribute('aria-label', body.dataset.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme')
       themeToggle.title = themeToggle.getAttribute('aria-label')
       replaceGlyph(themeToggle, body.dataset.theme === 'dark' ? 'sun' : 'moon')
-      themeToggle.querySelector('svg').classList.add(body.dataset.theme === 'dark' ? 'mdp-fab-btn__theme-icon--light' : 'mdp-fab-btn__theme-icon--dark')
+      themeToggle.querySelector('.mdp-icon-swap').classList.toggle('mdp-fab-btn__theme-icon--light', body.dataset.theme === 'dark')
+      themeToggle.querySelector('.mdp-icon-swap').classList.toggle('mdp-fab-btn__theme-icon--dark', body.dataset.theme !== 'dark')
     })
 
     copyButton.addEventListener('click', () => {
@@ -4087,6 +6055,27 @@ function createWatchUpdateFeedback(publish) {
     window.addEventListener('resize', syncScrollTopButton)
     syncScrollTopButton()
     fitDocumentActions()
-  </script>
+
+    // Fixture only: React supplies these attributes in runtime IconSwap/WatchStatus.
+    const visibleLayers = target => {
+      if (target.classList.contains('mdp-icon-swap')) {
+        const swapped = target.dataset.swapped === 'true';
+        target.querySelector('.mdp-icon-swap__from')?.setAttribute('data-icon-visible', String(!swapped));
+        target.querySelector('.mdp-icon-swap__to')?.setAttribute('data-icon-visible', String(swapped));
+      } else {
+        const phase = target.dataset.mdpWatchPhase;
+        target.querySelector('.mdp-watch-status__icon--details')?.setAttribute('data-icon-visible', String(['idle', 'error', 'warning'].includes(phase)));
+        target.querySelector('.mdp-watch-status__icon--apply')?.setAttribute('data-icon-visible', String(phase === 'ready'));
+        target.querySelector('.mdp-watch-status__icon--success')?.setAttribute('data-icon-visible', String(phase === 'success'));
+        target.querySelector('.mdp-watch-status__icon--busy svg')?.setAttribute('data-icon-visible', 'false');
+      }
+    };
+    const layerObserver = new MutationObserver(records => records.forEach(record => visibleLayers(record.target)));
+    document.querySelectorAll('.mdp-icon-swap, [data-mdp-watch-phase]').forEach(target => {
+      visibleLayers(target);
+      layerObserver.observe(target, { attributes: true, attributeFilter: ['data-swapped', 'data-mdp-watch-phase'] });
+    });
+
+</script>
 </body>
 </html>

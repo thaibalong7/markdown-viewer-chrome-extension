@@ -16,6 +16,7 @@ describe('Porcelain #22 panel toggles', () => {
     expect(html).toContain(`aria-label="${expanded ? 'Hide' : 'Show'} ${panel === 'files' ? 'Files' : 'Outline'} panel"`)
     expect(html).toContain(`--mdp-toggle-direction:${direction}`)
     expect(html).toContain(`d="${path}"`)
+    expect(html).toContain(`data-swapped="${direction === 1}"`)
     expect(html).toContain('viewBox="3 0 18 24"')
     expect(html).toContain('mdp-panel-toggle__face')
     expect(html).not.toContain('aria-pressed')

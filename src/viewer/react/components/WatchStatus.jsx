@@ -148,10 +148,10 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
             onClick={handleTriggerClick}
           >
             <span className="mdp-fab-btn__icon mdp-watch-status__icon-swap">
-              <DocumentUpdatesIcon className="mdp-watch-status__icon mdp-watch-status__icon--details" />
-              <DocumentApplyIcon className="mdp-watch-status__icon mdp-watch-status__icon--apply" />
-              <span className="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><CheckUpdatesIcon /></span>
-              <AppIcon name="check" className="mdp-watch-status__icon mdp-watch-status__icon--success" />
+              <DocumentUpdatesIcon data-icon-visible={['idle', 'error', 'warning'].includes(visualPhase)} className="mdp-watch-status__icon mdp-watch-status__icon--details" />
+              <DocumentApplyIcon data-icon-visible={visualPhase === 'ready'} className="mdp-watch-status__icon mdp-watch-status__icon--apply" />
+              <span className="mdp-watch-status__icon mdp-watch-status__icon--busy" aria-hidden="true"><CheckUpdatesIcon data-icon-visible={false} /></span>
+              <AppIcon name="check" data-icon-visible={visualPhase === 'success'} className="mdp-watch-status__icon mdp-watch-status__icon--success" />
             </span>
           </IconButton>
         </span>

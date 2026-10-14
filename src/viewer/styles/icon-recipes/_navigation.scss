@@ -1,0 +1,168 @@
+@use 'recipe' as r;
+
+@include r.icon(app, focus, 'Four corners tighten around the reading area', 560ms, scale(0.91)) {
+  @include r.part(nw, mdp-focus-nw);
+  @include r.part(ne, mdp-focus-ne);
+  @include r.part(sw, mdp-focus-sw);
+  @include r.part(se, mdp-focus-se);
+}
+@keyframes mdp-focus-nw { 0%, 100% { transform: none; } 48% { transform: translate(1.5px, 1.5px); } }
+@keyframes mdp-focus-ne { 0%, 100% { transform: none; } 48% { transform: translate(-1.5px, 1.5px); } }
+@keyframes mdp-focus-sw { 0%, 100% { transform: none; } 48% { transform: translate(1.5px, -1.5px); } }
+@keyframes mdp-focus-se { 0%, 100% { transform: none; } 48% { transform: translate(-1.5px, -1.5px); } }
+
+@include r.icon(app, external, 'Arrow peeks through the open corner', 610ms, translate(0.6px, -0.6px) scale(0.97)) {
+  @include r.part(arrow, mdp-external-launch);
+  @include r.part(frame, mdp-external-frame);
+}
+@keyframes mdp-external-launch { 0%, 100% { transform: none; } 35% { transform: translate(1px, -1px); } 63% { transform: translate(0.25px, -0.25px); } 80% { transform: translate(0.65px, -0.65px); } }
+@keyframes mdp-external-frame { 0%, 100% { opacity: 1; } 35% { opacity: 0.5; } }
+
+@include r.icon(app, folder-select, 'Folder lip opens as the entry arrow advances', 650ms, scaleY(0.94)) {
+  @include r.part(lip, mdp-folder-select-lip, 2.5px 8px);
+  @include r.part(arrow, mdp-folder-select-arrow, 18px 17px, 75ms);
+}
+@keyframes mdp-folder-select-lip { 0%, 100% { transform: none; } 42% { transform: skewY(-4deg) translateY(-0.5px); } }
+@keyframes mdp-folder-select-arrow { 0%, 100% { transform: none; } 25% { transform: translateX(-1.5px); } 62% { transform: translateX(0.5px); } }
+
+@include r.icon(app, back-to-file, 'Return arrow nudges the document home', 590ms, translateX(-0.7px) rotate(-2deg)) {
+  @include r.part(arrow, mdp-back-file-arrow, 8px 12px);
+  @include r.part(document, mdp-back-file-document, 15px 12px, 70ms);
+}
+@keyframes mdp-back-file-arrow { 0%, 100% { transform: none; } 38% { transform: translateX(-1.1px); } 68% { transform: translateX(0.4px); } }
+@keyframes mdp-back-file-document { 0%, 100% { transform: none; } 55% { transform: rotate(-4deg); } }
+
+@include r.icon(app, leave-workspace, 'Exit arrow glides away from a closing window', 720ms, translateX(-1px) scaleX(0.96)) {
+  @include r.part(arrow, mdp-leave-arrow, 8px 15px, 40ms);
+  @include r.part(window, mdp-leave-window, 21px 12px);
+  @include r.part(indicator, mdp-leave-indicator, 12px 6.5px);
+}
+@keyframes mdp-leave-arrow { 0%, 100% { transform: none; opacity: 1; } 50% { transform: translateX(-1px); opacity: 0.5; } 75% { transform: translateX(0.3px); opacity: 1; } }
+@keyframes mdp-leave-window { 0%, 100% { transform: none; } 45% { transform: scaleX(0.87); } }
+@keyframes mdp-leave-indicator { 0%, 100% { opacity: 1; } 35% { opacity: 0; } }
+
+@include r.icon(app, more, 'Three dots roll in a left-to-right wave', 500ms, scaleX(0.88)) {
+  @include r.part(dot-left, mdp-more-roll, 5px 12px);
+  @include r.part(dot-center, mdp-more-roll, 12px 12px, 70ms);
+  @include r.part(dot-right, mdp-more-roll, 19px 12px, 140ms);
+}
+@keyframes mdp-more-roll { 0%, 100% { transform: none; } 28% { transform: translateY(-2px) scale(0.8); } 58% { transform: translateY(0.6px) scale(1.15); } }
+
+@include r.icon(app, expand, 'Diagonal corners stretch outward in sequence', 640ms, scale(1.04)) {
+  @include r.part(ne, mdp-expand-ne);
+  @include r.part(sw, mdp-expand-sw, 12px 12px, 90ms);
+}
+@keyframes mdp-expand-ne { 0%, 100% { transform: none; } 38% { transform: translate(0.75px, -0.75px); } 68% { transform: translate(-0.2px, 0.2px); } }
+@keyframes mdp-expand-sw { 0%, 100% { transform: none; } 38% { transform: translate(-0.75px, 0.75px); } 68% { transform: translate(0.2px, -0.2px); } }
+
+@include r.icon(app, zoom-in, 'Lens magnifies as the plus arms unfold', 600ms, scale(1.06)) {
+  @include r.part(lens, mdp-zoom-in-lens, 10.5px 10.5px);
+  @include r.part(plus, mdp-zoom-in-plus, 10.5px 10.5px, 35ms);
+  @include r.part(minus, mdp-zoom-in-minus, 10.5px 10.5px, 35ms);
+}
+@keyframes mdp-zoom-in-lens { 0%, 100% { transform: none; } 45% { transform: scale(1.12); } }
+@keyframes mdp-zoom-in-plus { 0%, 100% { transform: none; } 20% { transform: scaleY(0.35); } 55% { transform: scaleY(1.3); } }
+@keyframes mdp-zoom-in-minus { 0%, 100% { transform: none; } 45% { transform: scaleX(1.3); } }
+
+@include r.icon(app, zoom-out, 'Lens contracts while the minus flattens', 550ms, scale(0.9)) {
+  @include r.part(lens, mdp-zoom-out-lens, 10.5px 10.5px);
+  @include r.part(minus, mdp-zoom-out-minus, 10.5px 10.5px);
+}
+@keyframes mdp-zoom-out-lens { 0%, 100% { transform: none; } 40% { transform: scale(0.84); } 70% { transform: scale(1.03); } }
+@keyframes mdp-zoom-out-minus { 0%, 100% { transform: none; } 40% { transform: scaleX(0.6); } 70% { transform: scaleX(1.08); } }
+
+@include r.icon(app, recenter, 'Offset corners settle onto a pulsing center', 760ms, translate(0.4px, 0.4px) scale(0.96)) {
+  @each $part in nw, ne, sw, se { @include r.part($part, mdp-recenter-align); }
+  @include r.part(center, mdp-recenter-dot, 12px 12px, 70ms);
+}
+@keyframes mdp-recenter-align { 0%, 100% { transform: none; } 20% { transform: translate(-0.8px, 0.8px) rotate(-4deg); } 55% { transform: translate(0.2px, -0.2px) rotate(1deg); } }
+@keyframes mdp-recenter-dot { 0%, 100% { transform: none; } 28% { transform: scale(0.45); } 58% { transform: scale(1.4); } }
+
+@include r.icon(app, source, 'Brackets open around a drawing slash', 630ms, scaleX(1.05) scaleY(0.97)) {
+  @include r.part(left, mdp-source-left);
+  @include r.part(right, mdp-source-right);
+  @include r.part(slash, mdp-source-slash, 12px 12px, 70ms);
+}
+@keyframes mdp-source-left { 0%, 100% { transform: none; } 42% { transform: translateX(-0.6px) scaleX(0.9); } }
+@keyframes mdp-source-right { 0%, 100% { transform: none; } 42% { transform: translateX(0.6px) scaleX(0.9); } }
+@keyframes mdp-source-slash { 0% { stroke-dasharray: 1; stroke-dashoffset: 1; } 55%, 100% { stroke-dasharray: 1; stroke-dashoffset: 0; } }
+
+@include r.icon(app, workspace, 'Workspace rail slides as its tabs answer', 690ms, scaleY(0.96) skewX(-2deg)) {
+  @include r.part(rail, mdp-workspace-rail);
+  @include r.part(tab-left, mdp-workspace-tab-left, 6px 6.5px);
+  @include r.part(tab-right, mdp-workspace-tab-right, 9px 6.5px, 110ms);
+}
+@keyframes mdp-workspace-rail { 0%, 100% { transform: none; } 48% { transform: translateX(2px); } }
+@keyframes mdp-workspace-tab-left { 0%, 100% { transform: none; opacity: 1; } 35% { transform: scale(1.8); opacity: 0.5; } }
+@keyframes mdp-workspace-tab-right { 0%, 100% { transform: none; } 35% { transform: translateX(0.5px) scale(1.5); } }
+
+@include r.icon(app, refresh, 'Refresh arrow turns while the file lines stay still', 720ms, rotate(-8deg)) {
+  @include r.part(arrow, mdp-refresh-orbit, 17px 17px);
+}
+@keyframes mdp-refresh-orbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+@include r.icon(app, collapse, 'Folder layers nest behind a shrinking minus', 650ms, translate(-0.7px, -0.7px) scale(0.95)) {
+  @include r.part(front, mdp-collapse-stack);
+  @include r.part(minus, mdp-collapse-minus, 14px 14.5px);
+}
+@keyframes mdp-collapse-stack { 0%, 100% { transform: none; } 42% { transform: translate(-1.4px, -1.4px) scale(0.9); } }
+@keyframes mdp-collapse-minus { 0%, 100% { transform: none; } 42% { transform: translate(-1.4px, -1.4px) scaleX(0.4); } }
+
+@include r.icon(app, search, 'Magnifier scans left and right', 700ms, translate(0.5px, -0.5px) rotate(4deg)) {
+  @include r.part(lens, mdp-search-scan, 10.5px 10.5px);
+  @include r.part(handle, mdp-search-scan, 10.5px 10.5px);
+}
+@keyframes mdp-search-scan { 0%, 100% { transform: none; } 25% { transform: translate(-0.8px, -0.5px) rotate(-7deg); } 58% { transform: translate(0.8px, 0.4px) rotate(7deg); } }
+
+@include r.icon(app, outline, 'Outline lines reveal in reading order', 500ms, translateX(0.5px) scaleX(0.96)) {
+  @include r.part(line-top, mdp-outline-line, 9px 5px);
+  @include r.part(line-middle, mdp-outline-line, 9px 12px, 80ms);
+  @include r.part(line-bottom, mdp-outline-line, 9px 19px, 160ms);
+}
+@keyframes mdp-outline-line { 0%, 100% { transform: none; opacity: 1; } 25% { transform: scaleX(0.4); opacity: 0.4; } 60% { transform: scaleX(1.05); opacity: 1; } }
+
+@include r.icon(app, chevron-left, 'Left chevron retreats and returns', 420ms, translateX(-0.9px)) { @include r.part(chevron, mdp-chevron-left); }
+@keyframes mdp-chevron-left { 0%, 100% { transform: none; } 40% { transform: translateX(-1.5px) skewY(5deg); } }
+@include r.icon(app, chevron-right, 'Right chevron steps forward twice', 640ms, translateX(0.8px)) { @include r.part(chevron, mdp-chevron-right); }
+@keyframes mdp-chevron-right { 0%, 52%, 100% { transform: none; } 26% { transform: translateX(1.2px); } 75% { transform: translateX(0.65px); } }
+@include r.icon(app, chevron-down, 'Down chevron folds before descending', 570ms, translateY(0.65px) scaleX(0.93)) { @include r.part(chevron, mdp-chevron-down); }
+@keyframes mdp-chevron-down { 0%, 100% { transform: none; } 25% { transform: scaleY(0.55); } 58% { transform: translateY(1.25px) scaleY(1.08); } }
+@include r.icon(app, sidebar-chevron-left, 'Left panel shutter pulls inward', 460ms, scaleX(0.82)) { @include r.part(chevron, mdp-sidebar-left); }
+@keyframes mdp-sidebar-left { 0%, 100% { transform: none; } 40% { transform: translateX(-0.8px) scaleX(0.7); } 70% { transform: scaleX(1.08); } }
+@include r.icon(app, sidebar-chevron-right, 'Right panel shutter swings on its hinge', 520ms, skewX(5deg)) { @include r.part(chevron, mdp-sidebar-right, 9px 12px); }
+@keyframes mdp-sidebar-right { 0%, 100% { transform: none; } 38% { transform: skewY(-8deg) scaleX(0.85); } 68% { transform: skewY(3deg); } }
+
+@include r.icon(app, file-details, 'Details card scans its information lines', 600ms, scaleY(0.95)) {
+  @include r.part(lines, mdp-details-scan, 7px 8px);
+  @include r.part(card, mdp-details-card);
+}
+@keyframes mdp-details-scan { 0%, 100% { transform: none; opacity: 1; } 35% { transform: scaleX(0.55); opacity: 0.25; } 70% { transform: scaleX(1.05); } }
+@keyframes mdp-details-card { 0%, 100% { opacity: 1; } 35% { opacity: 0.65; } }
+
+@include r.icon(app, arrow-up, 'Arrowhead launches ahead of its shaft', 610ms, translateY(-0.9px) scaleY(0.96)) {
+  @include r.part(head, mdp-up-head);
+  @include r.part(shaft, mdp-up-shaft, 12px 20px, 45ms);
+}
+@keyframes mdp-up-head { 0%, 100% { transform: none; } 35% { transform: translateY(-1px); } 60% { transform: translateY(0.35px); } }
+@keyframes mdp-up-shaft { 0%, 100% { transform: none; } 35% { transform: scaleY(0.86); } 65% { transform: scaleY(1.03); } }
+
+@include r.icon(app, close, 'Cross arms fold together and reopen', 560ms, rotate(8deg) scale(0.92)) {
+  @include r.part(falling, mdp-close-falling);
+  @include r.part(rising, mdp-close-rising);
+}
+@keyframes mdp-close-falling { 0%, 100% { transform: none; } 45% { transform: rotate(45deg) scale(0.8); } }
+@keyframes mdp-close-rising { 0%, 100% { transform: none; } 45% { transform: rotate(-45deg) scale(0.8); } }
+
+@include r.icon(app, history, 'History hand rewinds behind its return hook', 780ms, rotate(-6deg)) {
+  @include r.part(hands, mdp-history-rewind);
+  @include r.part(return, mdp-history-return, 5px 8px, 40ms);
+}
+@keyframes mdp-history-rewind { 0%, 100% { transform: none; } 30% { transform: rotate(-85deg); } 64% { transform: rotate(-25deg); } }
+@keyframes mdp-history-return { 0%, 100% { transform: none; } 40% { transform: translateX(-0.6px) rotate(-8deg); } }
+
+@include r.icon(app, reader, 'Book pages fan around the fixed spine', 700ms, scaleX(0.93) scaleY(1.02)) {
+  @include r.part(left-page, mdp-reader-left, 12px 12px);
+  @include r.part(right-page, mdp-reader-right, 12px 12px, 70ms);
+}
+@keyframes mdp-reader-left { 0%, 100% { transform: none; } 42% { transform: scaleX(0.75) skewY(-3deg); } }
+@keyframes mdp-reader-right { 0%, 100% { transform: none; } 42% { transform: scaleX(0.9) skewY(5deg); } 65% { transform: scaleX(1.03); } }

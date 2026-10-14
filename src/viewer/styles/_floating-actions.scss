@@ -63,7 +63,6 @@
     outline-offset: 2px;
   }
   &:disabled { cursor: not-allowed; opacity: .45; }
-  &.is-copied { color: var(--mdp-accent); }
 }
 
 // Retain the original blue moon / amber sun treatment in the new direct row.
@@ -88,8 +87,8 @@
   }
 }
 
-.mdp-fab-btn__theme-icon--dark path,
-.mdp-fab-btn__theme-icon--light circle {
+.mdp-fab-btn__theme-icon--dark [data-mdp-icon='moon'] path,
+.mdp-fab-btn__theme-icon--light [data-mdp-icon='sun'] circle {
   fill: currentColor;
   fill-opacity: .16;
 }

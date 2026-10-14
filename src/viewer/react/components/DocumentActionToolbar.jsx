@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef } from 'react'
-import { AppIcon } from '../../../shared/react/AppIcon.jsx'
+import { DocumentActionIcon } from './DocumentActionIcon.jsx'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
 import { useDocumentActionsLayout } from '../hooks/useDocumentActionsLayout.js'
 import { IconButton } from './common/IconButton.jsx'
@@ -49,7 +49,7 @@ export function DocumentActionToolbar({ actions, visible, openMenu, onMenuChange
             showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS} aria-label={action.label}
             aria-busy={action.busy || undefined} pressed={action.pressed} disabled={action.disabled}
             onClick={event => { onMenuChange(null); action.onClick?.(event) }}>
-            <AppIcon name={action.icon} className={`mdp-fab-btn__icon ${action.iconClassName || ''}`} />
+            <DocumentActionIcon action={action} className="mdp-fab-btn__icon" />
           </IconButton>)}
       </div>
     </React.Fragment>)}

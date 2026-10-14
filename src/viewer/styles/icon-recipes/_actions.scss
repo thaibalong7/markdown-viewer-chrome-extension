@@ -1,0 +1,79 @@
+@use 'recipe' as r;
+
+@include r.icon(app, copy, 'Sheets separate, then restack', 560ms, translate(-0.5px, -0.5px) scale(0.96)) {
+  @include r.part(front, mdp-copy-front, 14px 14px);
+  @include r.part(back, mdp-copy-back, 8px 8px, 35ms);
+}
+@keyframes mdp-copy-front { 0%, 100% { transform: none; } 38% { transform: translate(1.4px, 1.2px) rotate(5deg); } 72% { transform: translate(-0.35px, -0.35px); } }
+@keyframes mdp-copy-back { 0%, 100% { transform: none; } 38% { transform: translate(-0.6px, -0.6px) rotate(-3deg); } }
+
+@include r.icon(app, link, 'Chain ends reconnect through the bridge', 620ms, rotate(-4deg) scale(0.97)) {
+  @include r.part(lower, mdp-link-lower, 8px 14px);
+  @include r.part(upper, mdp-link-upper, 16px 10px, 25ms);
+  @include r.part(bridge, mdp-link-bridge, 12px 12px, 80ms);
+}
+@keyframes mdp-link-lower { 0%, 100% { transform: none; } 30% { transform: translate(-0.7px, 0.7px) rotate(-6deg); } 65% { transform: translate(0.25px, -0.25px); } }
+@keyframes mdp-link-upper { 0%, 100% { transform: none; } 30% { transform: translate(0.7px, -0.7px) rotate(6deg); } 65% { transform: translate(-0.25px, 0.25px); } }
+@keyframes mdp-link-bridge { 0%, 100% { stroke-dasharray: 1; stroke-dashoffset: 0; } 25% { stroke-dasharray: 1; stroke-dashoffset: 0.8; } 70% { stroke-dashoffset: 0; } }
+
+@include r.icon(app, edit, 'Pencil traces a short zigzag', 660ms, translate(-0.8px, 0.8px) rotate(-5deg)) {
+  @include r.part(body, mdp-edit-write, 6px 18px);
+  @include r.part(cap, mdp-edit-write, 6px 18px);
+}
+@keyframes mdp-edit-write { 0%, 100% { transform: none; } 22% { transform: translate(0.7px, -0.8px) rotate(-5deg); } 44% { transform: translate(-0.8px, 0.5px) rotate(2deg); } 66% { transform: translate(1px, -0.4px) rotate(-3deg); } }
+
+@include r.icon(app, save, 'Disk label slides into its seat', 580ms, translateY(0.7px) scaleY(0.94)) {
+  @include r.part(label, mdp-save-label, 12px 17px);
+  @include r.part(slot, mdp-save-slot, 12px 5px, 80ms);
+}
+@keyframes mdp-save-label { 0%, 100% { transform: none; } 25% { transform: translateY(-1.6px) scaleY(0.86); } 64% { transform: translateY(0.35px) scaleY(1.04); } }
+@keyframes mdp-save-slot { 0%, 100% { opacity: 1; } 35% { opacity: 0.35; } 68% { opacity: 1; } }
+
+@include r.icon(app, print, 'Printer feeds a page and blinks its light', 720ms, translateY(0.45px) scaleX(0.96)) {
+  @include r.part(paper, mdp-print-paper, 12px 17px);
+  @include r.part(input, mdp-print-input, 12px 5px);
+  @include r.part(indicator, mdp-print-light, 17.5px 11px, 80ms);
+}
+@keyframes mdp-print-paper { 0%, 100% { transform: none; } 20% { transform: translateY(-1.3px); } 56% { transform: translateY(1.25px); } 76% { transform: translateY(0.9px); } }
+@keyframes mdp-print-input { 0%, 100% { transform: none; } 48% { transform: translateY(0.8px) scaleY(0.82); } }
+@keyframes mdp-print-light { 0%, 100% { opacity: 1; } 20%, 52% { opacity: 0.2; } 36%, 68% { opacity: 1; } }
+
+@include r.icon(app, export, 'Download arrow lands in the tray', 600ms, translateY(1px)) {
+  @include r.part(arrow, mdp-export-drop, 12px 12px);
+  @include r.part(tray, mdp-export-catch, 12px 19px, 60ms);
+}
+@keyframes mdp-export-drop { 0%, 100% { transform: none; } 22% { transform: translateY(-1px); } 54% { transform: translateY(2px); } 72% { transform: translateY(-0.4px); } }
+@keyframes mdp-export-catch { 0%, 100% { transform: none; } 52% { transform: scaleX(1.06) scaleY(0.9); } }
+
+@include r.icon(app, updates, 'Clock hand advances inside the document', 680ms, scale(0.97) rotate(2deg)) {
+  @include r.part(hands, mdp-updates-clock, 17px 17px);
+  @include r.part(clock, mdp-updates-ring, 17px 17px);
+}
+@keyframes mdp-updates-clock { 0%, 100% { transform: none; } 45% { transform: rotate(60deg); } 75% { transform: rotate(-10deg); } }
+@keyframes mdp-updates-ring { 0%, 100% { transform: none; } 42% { transform: scale(0.92); } 68% { transform: scale(1.04); } }
+
+@include r.icon(app, apply, 'Revision arrow folds down to the file', 540ms, translateY(0.8px) scaleX(0.97)) {
+  @include r.part(arrow, mdp-apply-revision, 17px 17px);
+  @include r.part(document, mdp-apply-document, 12px 12px, 100ms);
+}
+@keyframes mdp-apply-revision { 0%, 100% { transform: none; } 30% { transform: translateY(-1.2px) scaleY(0.85); } 64% { transform: translateY(0.75px); } }
+@keyframes mdp-apply-document { 0%, 100% { opacity: 1; } 45% { opacity: 0.65; } }
+
+@include r.icon(app, check-updates, 'Opposing sync arcs trade a quarter turn', 700ms, rotate(12deg)) {
+  @each $part in upper-tip, lower-tip, upper-arc, lower-arc { @include r.part($part, mdp-check-updates-turn); }
+}
+@keyframes mdp-check-updates-turn { 0%, 100% { transform: none; } 48% { transform: rotate(90deg); } 78% { transform: rotate(-8deg); } }
+
+@include r.icon(app, review, 'Comparison divider scans between plus and minus', 740ms, scaleX(0.94)) {
+  @include r.part(divider, mdp-review-scan);
+  @include r.part(plus, mdp-review-plus, 7.5px 9px, 50ms);
+  @include r.part(minus, mdp-review-minus, 16.5px 14px, 140ms);
+}
+@keyframes mdp-review-scan { 0%, 100% { transform: none; } 25% { transform: translateX(-1px); } 58% { transform: translateX(1px); } }
+@keyframes mdp-review-plus { 0%, 100% { transform: none; } 38% { transform: rotate(90deg) scale(1.12); } }
+@keyframes mdp-review-minus { 0%, 100% { transform: none; } 45% { transform: scaleX(0.55); } 70% { transform: scaleX(1.15); } }
+
+@include r.icon(app, check, 'Check draws from the short arm to the long arm', 480ms, rotate(-3deg) scale(0.94)) {
+  @include r.part(tick, mdp-check-draw, 9px 16px);
+}
+@keyframes mdp-check-draw { 0% { stroke-dasharray: 1; stroke-dashoffset: 1; } 62%, 100% { stroke-dasharray: 1; stroke-dashoffset: 0; } 70% { transform: scale(1.08); } 100% { transform: none; } }

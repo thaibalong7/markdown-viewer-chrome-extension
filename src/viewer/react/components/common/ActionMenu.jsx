@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useId, useRef } from 'react'
 import { Tooltip } from '../Tooltip.jsx'
-import { IconButton } from './IconButton.jsx'
+import { IconButton, classNames } from './IconButton.jsx'
 
 function assignRef(ref, value) {
   if (typeof ref === 'function') ref(value)
@@ -103,7 +103,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
           const button = (
             <button
               type="button"
-              className={itemClassName}
+              className={classNames(itemClassName, item.copied ? 'is-copied' : '')}
               role={item.pressed === undefined ? 'menuitem' : 'menuitemcheckbox'}
               aria-label={item.ariaLabel}
               disabled={item.disabled}

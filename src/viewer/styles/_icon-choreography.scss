@@ -1,0 +1,51 @@
+@use 'icon-recipes/actions';
+@use 'icon-recipes/navigation';
+@use 'icon-recipes/utility';
+
+// Animate trusted glyph parts, not the outer SVG: its transform can belong to
+// a crossfade, optical alignment, disclosure direction or progress indicator.
+$controls: ':where(button, a, [role="button"]):not(:disabled, [aria-disabled="true"], [aria-busy="true"])';
+$glyphs: 'svg[data-mdp-icon][data-mdp-family="app"]:not([data-icon-visible="false"])';
+
+.mdp-root svg[data-mdp-family='app'] { --mdp-icon-center: 12px 12px; }
+.mdp-root #{$glyphs} > [data-icon-part]:not([data-icon-local-motion]) {
+  transform-box: view-box;
+  transform-origin: var(--mdp-icon-part-origin, var(--mdp-icon-center));
+  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease;
+}
+
+@mixin play {
+  animation-name: var(--mdp-icon-part-animation, none);
+  animation-duration: var(--mdp-icon-motion-duration);
+  animation-timing-function: var(--mdp-icon-ease);
+  animation-delay: var(--mdp-icon-part-delay, 0ms);
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root #{$controls}:focus-visible #{$glyphs} > [data-icon-part]:not([data-icon-local-motion]) { @include play; }
+  @media (hover: hover) and (pointer: fine) {
+    .mdp-root #{$controls}:hover #{$glyphs} > [data-icon-part]:not([data-icon-local-motion]) { @include play; }
+  }
+  .mdp-root #{$controls}:active #{$glyphs} > [data-icon-part]:not([data-icon-local-motion]) {
+    animation: none;
+    transform: var(--mdp-icon-part-press, var(--mdp-icon-press-pose));
+  }
+}
+
+// A check is real success feedback. Its arrival draws even after the pointer
+// has left the originating control; busy/failure never marks the layer visible.
+@media (prefers-reduced-motion: no-preference) {
+  .mdp-root .is-copied .mdp-icon-swap[data-swapped='true'] svg[data-mdp-icon='check'] > [data-icon-part='tick'] { @include play; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-root svg[data-mdp-icon][data-mdp-family='app'] > [data-icon-part]:not([data-icon-local-motion]) {
+    animation: none !important;
+    transition: none;
+    transform: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}

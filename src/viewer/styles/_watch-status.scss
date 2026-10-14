@@ -66,15 +66,12 @@
       color: var(--mdp-watch-color);
       background: var(--mdp-watch-bg);
       border-color: var(--mdp-watch-color);
-      .mdp-watch-status__icon-swap { transform: translateY(-1px); }
     }
     &:focus-visible { outline-color: var(--mdp-watch-color); }
-    &:active:not(:disabled) .mdp-watch-status__icon-swap { transform: scale(0.94); }
   }
 
   &__icon-swap {
     position: relative;
-    transition: transform 200ms ease;
   }
   &__icon {
     position: absolute;

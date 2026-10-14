@@ -32,7 +32,7 @@ describe('file list refresh control', () => {
     expect(html).toContain('aria-label="Refresh file list"')
     expect(html).toContain('aria-busy="false"')
     expect(html).not.toContain('disabled=""')
-    expect(html).toMatch(/<path d="[^"]+"><\/path><path data-icon-part="arrow"/)
+    expect(html).toMatch(/<path d="[^"]+" data-icon-part="lines" pathLength="1"><\/path><path data-icon-part="arrow"/)
   })
 
   it('exposes the busy state and prevents another refresh until completion', () => {

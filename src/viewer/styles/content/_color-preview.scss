@@ -142,21 +142,13 @@
   color: var(--mdp-muted);
   cursor: pointer;
   outline: none;
-  transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+  transition: background 120ms ease, color 120ms ease;
 
   &:hover { background: color-mix(in srgb, var(--mdp-text) 8%, var(--mdp-surface)); color: var(--mdp-text); }
-  &:active { transform: translateY(1px); }
   &:focus-visible { outline: 2px solid var(--mdp-link); outline-offset: 1px; }
-  &.is-copied { color: var(--mdp-toast-success-text); background: var(--mdp-toast-success-bg); }
   &.is-error { color: var(--mdp-toast-error-text); background: var(--mdp-toast-error-bg); }
   &:disabled { opacity: 0.7; cursor: wait; }
 }
-
-.mdp-color-popover__copy-icon,
-.mdp-color-popover__check-icon { grid-area: 1 / 1; pointer-events: none; transition: opacity 140ms ease, transform 140ms ease; }
-.mdp-color-popover__check-icon { opacity: 0; transform: scale(0.8); }
-.is-copied .mdp-color-popover__copy-icon { opacity: 0; transform: scale(0.8); }
-.is-copied .mdp-color-popover__check-icon { opacity: 1; transform: scale(1); }
 
 // Live copy confirmation occupies no visual space. Only actionable errors reveal a footer.
 .mdp-color-source-status,
@@ -227,9 +219,7 @@
   .mdp-markdown-body .mdp-color-swatch:active::before,
   .mdp-markdown-body .mdp-color-swatch::before,
   .mdp-color-popover__copy,
-  .mdp-color-popover__copy:active,
-  .mdp-color-popover__copy-icon,
-  .mdp-color-popover__check-icon { transition: none; transform: none; }
+  .mdp-color-popover__copy:active { transition: none; transform: none; }
 
 }
 

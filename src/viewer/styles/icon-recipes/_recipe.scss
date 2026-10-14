@@ -1,0 +1,20 @@
+// Metadata and motion bindings are emitted together so the catalog derives from
+// the actual recipes. Geometry stays in src/shared/icons/.
+@mixin icon($family, $name, $caption, $duration, $press) {
+  .mdp-root svg[data-mdp-family='#{$family}'][data-mdp-icon='#{$name}'] {
+    --mdp-icon-recipe: #{$family}-#{$name};
+    --mdp-icon-motion-label: '#{$caption}';
+    --mdp-icon-motion-duration: #{$duration};
+    --mdp-icon-press-pose: #{$press};
+    @content;
+  }
+}
+
+@mixin part($name, $animation, $origin: 12px 12px, $delay: 0ms, $press: null) {
+  > [data-icon-part='#{$name}'] {
+    --mdp-icon-part-animation: #{$animation};
+    --mdp-icon-part-origin: #{$origin};
+    --mdp-icon-part-delay: #{$delay};
+    @if $press { --mdp-icon-part-press: #{$press}; }
+  }
+}

@@ -1,0 +1,89 @@
+@use 'recipe' as r;
+
+@include r.icon(app, editor, 'Editor pencil lifts its cap and seats the nib', 580ms, rotate(-7deg) scaleY(0.96)) {
+  @include r.part(cap, mdp-editor-cap, 17px 7px);
+  @include r.part(body, mdp-editor-nib, 5px 19px, 55ms);
+}
+@keyframes mdp-editor-cap { 0%, 100% { transform: none; } 34% { transform: translate(0.7px, -0.7px) rotate(12deg); } }
+@keyframes mdp-editor-nib { 0%, 100% { transform: none; } 45% { transform: rotate(-6deg); } 72% { transform: rotate(2deg); } }
+
+@include r.icon(app, plugins, 'Plug prongs connect as the cord flexes', 720ms, translateY(0.5px) scaleY(0.93)) {
+  @include r.part(prongs, mdp-plugins-connect, 12px 8px);
+  @include r.part(socket, mdp-plugins-socket, 12px 10px, 80ms);
+  @include r.part(cord, mdp-plugins-cord, 12px 17px, 150ms);
+}
+@keyframes mdp-plugins-connect { 0%, 100% { transform: none; } 20% { transform: translateY(-0.7px); } 50% { transform: translateY(1px); } }
+@keyframes mdp-plugins-socket { 0%, 100% { transform: none; } 50% { transform: scaleX(1.06); } }
+@keyframes mdp-plugins-cord { 0%, 100% { transform: none; } 45% { transform: skewX(12deg); } 70% { transform: skewX(-5deg); } }
+
+@include r.icon(app, settings, 'Three sliders tune in opposite directions', 680ms, scaleX(0.95) rotate(1deg)) {
+  @include r.part(slider-top, mdp-settings-top, 10px 5px);
+  @include r.part(slider-middle, mdp-settings-middle, 16px 12px, 65ms);
+  @include r.part(slider-bottom, mdp-settings-bottom, 8px 19px, 130ms);
+}
+@keyframes mdp-settings-top { 0%, 100% { transform: none; } 42% { transform: translateX(3px); } }
+@keyframes mdp-settings-middle { 0%, 100% { transform: none; } 42% { transform: translateX(-4px); } }
+@keyframes mdp-settings-bottom { 0%, 100% { transform: none; } 42% { transform: translateX(2px); } }
+
+@include r.icon(app, palette, 'Paint wells brighten around the palette thumb', 760ms, rotate(4deg) scale(0.96)) {
+  @include r.part(palette, mdp-palette-rock, 12px 17px);
+  @include r.part(ink-warm, mdp-palette-well, 7.5px 9px);
+  @include r.part(ink-cool, mdp-palette-well, 10.5px 6.5px, 80ms);
+  @include r.part(ink-bright, mdp-palette-well, 15px 7px, 160ms);
+}
+@keyframes mdp-palette-rock { 0%, 100% { transform: none; } 40% { transform: rotate(-5deg); } 68% { transform: rotate(2deg); } }
+@keyframes mdp-palette-well { 0%, 100% { transform: none; } 35% { transform: scale(1.6); } 58% { transform: scale(0.8); } }
+
+@include r.icon(app, moon, 'Crescent rocks into a quiet eclipse', 820ms, rotate(-9deg) scale(0.97)) {
+  @include r.part(crescent, mdp-moon-eclipse, 12px 12px);
+}
+@keyframes mdp-moon-eclipse { 0%, 100% { transform: none; } 32% { transform: rotate(-18deg) scale(0.92); } 64% { transform: rotate(6deg) scale(1.02); } }
+
+@include r.icon(app, sun, 'Sun core warms as cardinal and diagonal rays unfurl', 700ms, rotate(10deg) scale(0.94)) {
+  @include r.part(core, mdp-sun-warm, 12px 12px);
+  @include r.part(rays-cardinal, mdp-sun-cardinal, 12px 12px);
+  @include r.part(rays-diagonal, mdp-sun-diagonal, 12px 12px, 80ms);
+}
+@keyframes mdp-sun-warm { 0%, 100% { transform: none; } 35% { transform: scale(1.15); } 68% { transform: scale(0.96); } }
+@keyframes mdp-sun-cardinal { 0%, 100% { transform: none; opacity: 1; } 25% { transform: scale(0.8) rotate(-12deg); opacity: 0.45; } 60% { transform: rotate(8deg); } }
+@keyframes mdp-sun-diagonal { 0%, 100% { transform: none; opacity: 1; } 25% { transform: scale(0.84) rotate(12deg); opacity: 0.35; } 60% { transform: rotate(-8deg); } }
+
+@include r.icon(app, type, 'Capital rises while the small letter follows', 660ms, scaleY(0.93) translateY(0.5px)) {
+  @include r.part(capital, mdp-type-capital, 9px 20px);
+  @include r.part(small, mdp-type-small, 19.5px 20px, 120ms);
+}
+@keyframes mdp-type-capital { 0%, 100% { transform: none; } 38% { transform: scaleY(1.06) scaleX(0.94); } }
+@keyframes mdp-type-small { 0%, 100% { transform: none; } 38% { transform: translateY(-1.2px) scaleY(1.12); } }
+
+@include r.icon(app, shield, 'Shield braces before its check locks into place', 710ms, scaleX(0.92) scaleY(1.02)) {
+  @include r.part(shield, mdp-shield-brace, 12px 12px);
+  @include r.part(check, mdp-shield-lock, 12px 12px, 100ms);
+}
+@keyframes mdp-shield-brace { 0%, 100% { transform: none; } 28% { transform: scaleX(0.9); } 55% { transform: scaleX(1.04); } }
+@keyframes mdp-shield-lock { 0%, 100% { transform: none; opacity: 1; } 20% { transform: translateY(-0.8px) scale(0.65); opacity: 0.3; } 52% { transform: scale(1.1); } }
+
+@include r.icon(app, info, 'Information dot lifts while its stem stands taller', 600ms, scale(0.95) translateY(0.3px)) {
+  @include r.part(dot, mdp-info-dot, 12px 7px);
+  @include r.part(stem, mdp-info-stem, 12px 17px, 50ms);
+}
+@keyframes mdp-info-dot { 0%, 100% { transform: none; } 40% { transform: translateY(-1px) scale(1.2); } }
+@keyframes mdp-info-stem { 0%, 100% { transform: none; } 40% { transform: scaleY(1.15); } }
+
+@include r.icon(app, warning, 'Exclamation taps once inside a steady triangle', 520ms, translateY(0.4px) scaleX(0.94)) {
+  @include r.part(stem, mdp-warning-tap, 12px 14px);
+  @include r.part(dot, mdp-warning-dot, 12px 17px, 60ms);
+}
+@keyframes mdp-warning-tap { 0%, 100% { transform: none; } 25% { transform: translateY(-0.9px); } 58% { transform: translateY(0.6px) scaleY(0.85); } }
+@keyframes mdp-warning-dot { 0%, 100% { transform: none; } 52% { transform: scale(1.45); } }
+
+@include r.icon(app, error, 'Error cross shakes inside its steady ring', 540ms, rotate(-2deg) scaleX(0.96)) {
+  @include r.part(cross, mdp-error-shake, 12px 12px);
+}
+@keyframes mdp-error-shake { 0%, 100% { transform: none; } 20% { transform: translateX(-1px); } 40% { transform: translateX(1px); } 60% { transform: translateX(-0.5px); } 80% { transform: translateX(0.25px); } }
+
+@include r.icon(app, trash, 'Bin lid lifts then closes without deleting anything', 740ms, scaleY(0.94) rotate(3deg)) {
+  @include r.part(lid, mdp-trash-lid, 6px 6px);
+  @include r.part(bin, mdp-trash-bin, 12px 21px, 60ms);
+}
+@keyframes mdp-trash-lid { 0%, 100% { transform: none; } 38% { transform: translateY(-0.8px) rotate(-8deg); } 70% { transform: rotate(2deg); } }
+@keyframes mdp-trash-bin { 0%, 100% { transform: none; } 38% { transform: scaleY(0.96); } }

@@ -71,18 +71,6 @@ describe('explorer interaction styles', () => {
     )
   })
 
-  it('replaces the Files copy-link icon with a checkmark while copied feedback is active', () => {
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__context-command\.is-copied\s*\{[^}]*color:\s*var\(--mdp-accent\);[^}]*background:\s*var\(--mdp-accent-soft\);[^}]*pointer-events:\s*none;/s
-    )
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__context-command\.is-copied \.mdp-explorer__context-command-icon\s*\{[^}]*display:\s*none;/s
-    )
-    expect(explorerCss).toMatch(
-      /\.mdp-explorer__context-command\.is-copied::after\s*\{[^}]*content:\s*"✓";/s
-    )
-  })
-
   it('keeps the overflow menu inside the rendered Files and viewport bounds', () => {
     expect(explorerCss).toMatch(
       /\.mdp-explorer__header\s*\{[^}]*container-type:\s*inline-size;[^}]*z-index:\s*11;/s

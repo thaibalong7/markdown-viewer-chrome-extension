@@ -6,7 +6,7 @@ import { openExplorerSettings } from '../../../actions/explorer-settings-actions
 import { useToast } from '../../contexts/ToastContext.jsx'
 import { useCopyFeedback } from '../../hooks/useCopyFeedback.js'
 import { useExplorerDetailsLayout } from '../../hooks/explorer/useExplorerDetailsLayout.js'
-import { CopyLinkIcon } from '../icons/CopyLinkIcon.jsx'
+import { IconSwap } from '../common/IconSwap.jsx'
 import { IconButton } from '../common/IconButton.jsx'
 import { ExplorerContextActions } from './ExplorerContextActions.jsx'
 import { getExplorerHeaderButtonState } from './explorer-header-state.js'
@@ -112,12 +112,12 @@ export function ExplorerHeader({
     {
       key: 'copy-link', label: copyLabel, ariaLabel: copyTooltip,
       tooltip: copyUnavailableReason ? copyTooltip : undefined, disabled: !canCopyCurrentFile,
-      copied: copyLinkCopied, icon: <CopyLinkIcon className="mdp-explorer__context-command-icon" />,
+      copied: copyLinkCopied, icon: <IconSwap name="link" size={16} swapped={copyLinkCopied} className="mdp-explorer__context-command-icon" />,
       onClick: onCopyCurrentFile
     },
     ...(!buttonState.leaveWorkspaceHidden || !buttonState.backHidden ? [{
       key: 'navigate', label: navigationLabel, disabled: navigationDisabled,
-      icon: <AppIcon name={navigationIcon} size={16} className="mdp-explorer__back-icon" />,
+      icon: <IconSwap name="back-to-file" alternate="leave-workspace" swapped={navigationIcon === 'leave-workspace'} size={16} className="mdp-explorer__back-icon" />,
       onClick: onContextNavigate
     }] : [])
   ]
@@ -155,7 +155,7 @@ export function ExplorerHeader({
               <IconButton className="mdp-explorer__context-command mdp-explorer__copy-link-btn"
                 tooltip={copyTooltip} aria-label={copyTooltip} disabled={!canCopyCurrentFile}
                 copied={copyLinkCopied} copiedClassName="is-copied" onClick={onCopyCurrentFile}>
-                <CopyLinkIcon className="mdp-explorer__context-command-icon" />
+                <IconSwap name="link" size={16} swapped={copyLinkCopied} className="mdp-explorer__context-command-icon" />
               </IconButton>
             ) : null}
           </div>
@@ -172,7 +172,7 @@ export function ExplorerHeader({
               {!buttonState.leaveWorkspaceHidden || !buttonState.backHidden ? (
                 <button type="button" className="mdp-explorer__back-btn mdp-button" aria-label={navigationLabel}
                   disabled={navigationDisabled} onClick={onContextNavigate}>
-                  <AppIcon name={navigationIcon} size={16} className="mdp-explorer__back-icon" />
+                  <IconSwap name="back-to-file" alternate="leave-workspace" swapped={navigationIcon === 'leave-workspace'} size={16} className="mdp-explorer__back-icon" />
                   <span className="mdp-explorer__back-label">{navigationLabel}</span>
                 </button>
               ) : null}

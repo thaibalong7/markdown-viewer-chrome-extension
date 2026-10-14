@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
+import { IconSwap } from '../../components/common/IconSwap.jsx'
 import { Tooltip } from '../../components/Tooltip.jsx'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../../shared/constants/tooltip.js'
 import { useContentCopy } from './useContentCopy.js'
@@ -19,7 +19,7 @@ export function CodeToolbar({ language, pre, copyAction }) {
           disabled={busy}
           onClick={copy}
         >
-          <AppIcon name="copy" size={14} className="mdp-code-block__copy-icon" />
+          <IconSwap name="copy" size={16} swapped={copied} />
         </button>
       </Tooltip>
     </div>

@@ -16,6 +16,7 @@
 @use 'editor-update-confirmation';
 @use 'exit-edit-confirmation';
 @use 'update-feedback';
+@use 'icon-motion';
 
 .mdp-root {
   --mdp-sidebar-layer-background: var(--mdp-sidebar-surface, var(--mdp-bg));

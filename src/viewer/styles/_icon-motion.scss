@@ -1,0 +1,60 @@
+@use 'icon-choreography';
+
+// Viewer-only motion: named parts tell each action's story; hit targets stay put.
+.mdp-root {
+  --mdp-icon-press-duration: 90ms;
+  --mdp-icon-swap-duration: 180ms;
+  --mdp-icon-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+$artwork: ':is(svg[data-mdp-icon][data-mdp-family="app"], .mdp-icon-swap, .mdp-explorer__menu-icon)';
+.mdp-root .mdp-button:has(> #{$artwork}):active:not(:disabled) { transform: none; }
+
+.mdp-root .mdp-icon-swap {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  vertical-align: middle;
+  pointer-events: none;
+
+  > svg {
+    display: block;
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+    transition: opacity var(--mdp-icon-swap-duration) ease,
+      transform var(--mdp-icon-swap-duration) var(--mdp-icon-ease);
+  }
+  > .mdp-icon-swap__from { opacity: 1; transform: scale(1); }
+  > .mdp-icon-swap__to { opacity: 0; transform: scale(0.8) rotate(-8deg); }
+  &[data-swapped='true'] > .mdp-icon-swap__from { opacity: 0; transform: scale(0.8) rotate(8deg); }
+  &[data-swapped='true'] > .mdp-icon-swap__to { opacity: 1; transform: scale(1); }
+}
+
+// Keep the success palette even under hover/focus and custom reversed themes.
+.mdp-root button:is(.mdp-fab-btn, .mdp-explorer__context-command,
+  .mdp-document-actions-menu__item, .mdp-explorer__row-menu-item, .mdp-code-block__copy,
+  .mdp-mermaid-toolbar__copy, .mdp-color-popover__copy).is-copied {
+  opacity: 1;
+  color: var(--mdp-toast-success-text);
+  background: var(--mdp-toast-success-bg);
+  border-color: var(--mdp-toast-success-border);
+}
+
+@media (pointer: coarse) {
+  .mdp-root :is(.mdp-code-block__copy, .mdp-mermaid-toolbar__copy,
+    .mdp-mermaid-toolbar__expand, .mdp-mermaid-actions__trigger,
+    .mdp-image-lightbox__button, .mdp-mermaid-lightbox__button) {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdp-root .mdp-icon-swap > svg,
+  .mdp-root .mdp-icon-swap[data-swapped='true'] > svg {
+    transition: none;
+    transform: none;
+  }
+}

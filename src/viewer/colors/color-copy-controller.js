@@ -1,17 +1,15 @@
 import { copyTextToClipboard } from '../../shared/clipboard.js'
-import { createAppIconSvg } from '../../shared/icons/create-app-icon.js'
+import { mountContentUi, getContentOverlayTarget } from '../react/content/mount-content-ui.jsx'
+import { ColorCopyFeedback, ColorCopyStatus } from '../react/content/colors/ColorCopyFeedback.jsx'
 import { logger } from '../../shared/logger.js'
 
 /** Copies the detected literal verbatim with confirmation at its activation point. */
 export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled, getAvoidRect }) {
   const doc = articleEl.ownerDocument
   const win = doc.defaultView
-  const root = articleEl.closest('#mdp-viewer-root') || articleEl.parentElement
-  const status = doc.createElement('span')
-  status.className = 'mdp-color-source-status'
-  status.setAttribute('role', 'status')
-  status.setAttribute('aria-live', 'polite')
-  root.append(status)
+  const root = getContentOverlayTarget(articleEl)
+  const status = mountContentUi(root, ColorCopyStatus, { text: '' }, { scope: articleEl })
+  let feedback = null
   const pending = new Set()
   let destroyed = false
   let visual = null
@@ -22,7 +20,8 @@ export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled
   function clearVisual() {
     win.clearTimeout(visualTimer)
     visualTimer = 0
-    visual?.remove()
+    feedback?.destroy()
+    feedback = null
     visual = visualPoint = null
   }
 
@@ -53,25 +52,11 @@ export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled
 
   function showVisual(point) {
     clearVisual()
-    visual = doc.createElement('span')
-    visual.className = 'mdp-color-copy-feedback'
-    visual.setAttribute('aria-hidden', 'true')
-    visual.style.left = `${point.x}px`
-    visual.style.top = `${point.y}px`
-    const pulse = doc.createElement('span')
-    pulse.className = 'mdp-color-copy-feedback__pulse'
-    const label = doc.createElement('span')
-    label.className = 'mdp-color-copy-feedback__label'
-    const text = doc.createElement('span')
-    text.textContent = 'Copied'
-    label.append(createAppIconSvg('check', { width: 14, height: 14 }), text)
-    visual.append(pulse, label)
-    // The portal keeps decorative text/SVG out of selectable Markdown and code.
-    root.append(visual)
+    feedback = mountContentUi(root, ColorCopyFeedback, { point, leaving: false, feedbackRef: node => { visual = node } }, { scope: articleEl })
     visualPoint = point
     positionVisual()
     visualTimer = win.setTimeout(() => {
-      visual.classList.add('is-leaving')
+      feedback?.update({ point, leaving: true, feedbackRef: node => { visual = node } })
       visualTimer = win.setTimeout(clearVisual, 180)
     }, 1020)
   }
@@ -89,12 +74,12 @@ export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled
     clearVisual()
     const source = trigger.dataset.mdpColor
     pending.add(trigger)
-    status.textContent = ''
+    status.update({ text: '' })
     trigger.setAttribute('aria-busy', 'true')
     try {
       await copyTextToClipboard(source)
       if (destroyed || !trigger.isConnected) return
-      status.textContent = `Copied ${source}`
+      status.update({ text: `Copied ${source}` })
       if (copySequence === sequence) {
         onSuccess?.(trigger)
         showVisual(point)
@@ -104,7 +89,7 @@ export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled
       logger.warn('Could not copy detected color.', { errorName: error?.name || 'Error' })
       const message = 'Could not copy color. Select the original text to copy manually.'
       if (copySequence === sequence && onError) onError(trigger, message)
-      else status.textContent = message
+      else status.update({ text: message })
     } finally {
       pending.delete(trigger)
       trigger.removeAttribute('aria-busy')
@@ -130,7 +115,7 @@ export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled
       win.removeEventListener('resize', onViewport)
       for (const trigger of pending) trigger.removeAttribute('aria-busy')
       pending.clear()
-      status.remove()
+      status.destroy()
     }
   }
 }

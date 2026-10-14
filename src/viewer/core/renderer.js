@@ -1,3 +1,4 @@
+import { clearContentUi } from '../react/content/mount-content-ui.jsx'
 import { renderMarkdown } from './markdown-engine.js'
 import { createRenderContext } from './create-render-context.js'
 import { applyShikiToFencedCode } from './shiki-highlighter.js'
@@ -57,6 +58,7 @@ export function renderIntoElement(element, html) {
   if (!element) {
     throw new Error('Missing render target element.')
   }
+  clearContentUi(element)
   element.innerHTML = html || ''
 }
 

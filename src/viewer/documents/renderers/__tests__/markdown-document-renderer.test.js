@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+// @vitest-environment jsdom
+import { createArticle as createRealArticle, cleanDom } from '../../../react/content/__tests__/dom-test-helpers.js'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
   renderDocument: vi.fn(),
@@ -15,32 +17,9 @@ vi.mock('../../markdown-images.js', () => ({ prepareMarkdownImages: mocks.prepar
 
 import { render } from '../markdown-document-renderer.js'
 
-function createElement(tagName) {
-  return {
-    tagName: tagName.toUpperCase(),
-    className: '',
-    textContent: '',
-    children: [],
-    attributes: {},
-    setAttribute(name, value) {
-      this.attributes[name] = value
-    },
-    append(...children) {
-      this.children.push(...children)
-    }
-  }
-}
+afterEach(cleanDom)
 
-function createArticle() {
-  const ownerDocument = { createElement }
-  return {
-    ownerDocument,
-    children: [],
-    replaceChildren(...children) {
-      this.children = children
-    }
-  }
-}
+function createArticle() { return createRealArticle() }
 
 describe('Markdown document renderer', () => {
   beforeEach(() => {
@@ -178,9 +157,9 @@ describe('Markdown document renderer', () => {
     expect(articleEl.children[0]).toMatchObject({
       tagName: 'SECTION',
       className: 'mdp-ui-state mdp-document-empty',
-      attributes: { role: 'status' }
+      role: 'status'
     })
-    expect(articleEl.children[0].children).toEqual([
+    expect([...articleEl.children[0].children]).toEqual([
       expect.objectContaining({ textContent: 'Empty Markdown document' }),
       expect.objectContaining({ textContent: 'Use Edit to start writing.' })
     ])
@@ -205,7 +184,7 @@ describe('Markdown document renderer', () => {
       signal: new AbortController().signal
     })
 
-    expect(articleEl.children[0].children).toEqual([
+    expect([...articleEl.children[0].children]).toEqual([
       expect.objectContaining({ textContent: 'Empty Markdown document' })
     ])
   })

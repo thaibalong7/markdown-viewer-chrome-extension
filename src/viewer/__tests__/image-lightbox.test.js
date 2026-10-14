@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canAdjustImageResolution, getRenderableImageDimensions } from '../image-lightbox.js'
+import { canAdjustImageResolution, getRenderableImageDimensions } from '../media/image-lightbox-controller.js'
 
 describe('image lightbox', () => {
   it('uses registry capabilities for workspace images rather than their blob URL', () => {

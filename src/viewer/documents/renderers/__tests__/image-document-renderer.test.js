@@ -1,63 +1,11 @@
-import { describe, expect, it, vi } from 'vitest'
+// @vitest-environment jsdom
+import { createArticle as createRealArticle, cleanDom, fire } from '../../../react/content/__tests__/dom-test-helpers.js'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render } from '../image-document-renderer.js'
 
-function createNode(tagName) {
-  const listeners = new Map()
-  const node = {
-    tagName: tagName.toUpperCase(),
-    className: '',
-    textContent: '',
-    children: [],
-    attributes: {},
-    hidden: false,
-    complete: false,
-    naturalWidth: 0,
-    naturalHeight: 0,
-    append(...children) {
-      for (const child of children) {
-        child.parentNode = this
-        this.children.push(child)
-      }
-    },
-    replaceChildren(...children) {
-      this.children = []
-      this.append(...children)
-    },
-    remove() {
-      if (!this.parentNode) return
-      this.parentNode.children = this.parentNode.children.filter((child) => child !== this)
-      this.parentNode = null
-    },
-    setAttribute(name, value) {
-      this.attributes[name] = value
-    },
-    addEventListener(type, listener) {
-      listeners.set(type, listener)
-    },
-    removeEventListener(type, listener) {
-      if (listeners.get(type) === listener) listeners.delete(type)
-    },
-    dispatch(type) {
-      listeners.get(type)?.({ type, target: this })
-    },
-    listenerCount() {
-      return listeners.size
-    }
-  }
-  Object.defineProperty(node, 'innerHTML', {
-    set() {
-      throw new Error('image renderer must not use innerHTML')
-    }
-  })
-  return node
-}
+afterEach(cleanDom)
 
-function createHarness() {
-  const ownerDocument = { createElement: vi.fn((tagName) => createNode(tagName)) }
-  const articleEl = createNode('article')
-  articleEl.ownerDocument = ownerDocument
-  return { articleEl }
-}
+function createHarness() { return { articleEl: createRealArticle() } }
 
 describe('image document renderer', () => {
   it('renders through img.src, preserves an accessible loading state, and enables zoom on load', async () => {
@@ -74,10 +22,11 @@ describe('image document renderer', () => {
     await Promise.resolve()
 
     const [figure] = articleEl.children
-    const [loading, image] = figure.children
+    const [loadingSlot, image] = figure.children
+    const loading = loadingSlot.firstElementChild
     expect(loading).toMatchObject({
       className: expect.stringContaining('mdp-ui-loading-state'),
-      attributes: { role: 'status', 'aria-busy': 'true' }
+      role: 'status', ariaBusy: 'true'
     })
     expect(loading.children[1].textContent).toBe('Loading Xin chào.png…')
     expect(image).toMatchObject({
@@ -88,17 +37,18 @@ describe('image document renderer', () => {
       hidden: true
     })
 
-    image.naturalWidth = 640
-    image.naturalHeight = 480
-    image.dispatch('load')
+    Object.defineProperty(image, 'naturalWidth', { configurable: true, value: 640 })
+    Object.defineProperty(image, 'naturalHeight', { configurable: true, value: 480 })
+    fire(image, 'load')
     const result = await renderPromise
     expect(image.hidden).toBe(false)
-    expect(figure.children).toEqual([image])
+    expect([...figure.children]).toEqual([image])
     expect(prepareZoomableImages).toHaveBeenCalledOnce()
 
     result.cleanup()
     result.cleanup()
-    expect(image.listenerCount()).toBe(0)
+    fire(image, 'load')
+    expect(prepareZoomableImages).toHaveBeenCalledOnce()
   })
 
   it('shows safe errors for failed loading and corrupt image decoding', async () => {
@@ -112,7 +62,7 @@ describe('image document renderer', () => {
     })
     expect(articleEl.children[0]).toMatchObject({
       textContent: 'Could not open this image.',
-      attributes: { role: 'alert' }
+      role: 'alert'
     })
 
     const next = createHarness()
@@ -125,11 +75,11 @@ describe('image document renderer', () => {
     })
     await Promise.resolve()
     const figure = next.articleEl.children[0]
-    figure.children[1].dispatch('error')
+    fire(figure.children[1], 'error')
     await brokenRender
     expect(figure.children[0]).toMatchObject({
       textContent: 'Could not display <script>.png.',
-      attributes: { role: 'alert' }
+      role: 'alert'
     })
   })
 
@@ -145,18 +95,19 @@ describe('image document renderer', () => {
     })
     await Promise.resolve()
 
-    const [loading, image] = articleEl.children[0].children
+    const [loadingSlot, image] = articleEl.children[0].children
+    const loading = loadingSlot.firstElementChild
     expect(loading.children[1].textContent).toBe('Loading unsafe.svg…')
     expect(image).toMatchObject({
       tagName: 'IMG',
       src: 'blob:unsafe-svg',
       alt: 'unsafe.svg',
-      attributes: { 'data-mdp-file-type': 'svg-image' }
+      dataset: { mdpFileType: 'svg-image' }
     })
-    expect(articleEl.children[0].children.every((node) => node.tagName !== 'SVG')).toBe(true)
-    image.naturalWidth = 100
-    image.naturalHeight = 100
-    image.dispatch('load')
+    expect([...articleEl.children[0].children].every((node) => node.tagName !== 'SVG')).toBe(true)
+    Object.defineProperty(image, 'naturalWidth', { configurable: true, value: 100 })
+    Object.defineProperty(image, 'naturalHeight', { configurable: true, value: 100 })
+    fire(image, 'load')
     await renderPromise
   })
 })

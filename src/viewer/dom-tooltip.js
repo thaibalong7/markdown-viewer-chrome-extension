@@ -1,6 +1,8 @@
+import { mountContentUi } from './react/content/mount-content-ui.jsx'
+import { TooltipBubble } from './react/content/TooltipBubble.jsx'
 import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../shared/constants/tooltip.js'
 
-const VIEWER_ROOT_SELECTOR = '#mdp-viewer-root'
+const VIEWER_ROOT_SELECTOR = '.mdp-root, #mdp-viewer-root'
 
 /**
  * Lightweight hover/focus tooltips for imperative viewer DOM (plugins).
@@ -18,6 +20,7 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
   const doc = anchor.ownerDocument
   const win = doc.defaultView || window
   let tipEl = null
+  let tipUi = null
   let showTimer = 0
 
   function portalParent() {
@@ -67,17 +70,14 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
     if (!tipEl) return
     win.removeEventListener('scroll', onReposition, true)
     win.removeEventListener('resize', onReposition)
-    tipEl.remove()
+    tipUi?.destroy()
+    tipUi = null
     tipEl = null
   }
 
   function show() {
     if (tipEl || !text || !anchor.isConnected) return
-    tipEl = doc.createElement('div')
-    tipEl.className = 'mdp-tooltip'
-    tipEl.setAttribute('role', 'tooltip')
-    tipEl.textContent = text
-    portalParent().appendChild(tipEl)
+    tipUi = mountContentUi(portalParent(), TooltipBubble, { text, tooltipRef: node => { tipEl = node } }, { scope: anchor })
     positionTip()
     win.addEventListener('scroll', onReposition, true)
     win.addEventListener('resize', onReposition)
@@ -108,7 +108,7 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
       if (!text) {
         hide()
       } else if (tipEl) {
-        tipEl.textContent = text
+        tipUi.update({ text, tooltipRef: node => { tipEl = node } })
         positionTip()
       }
     },

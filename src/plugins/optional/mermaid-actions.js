@@ -1,10 +1,10 @@
 import { exportMermaidPng, exportMermaidSvg } from './mermaid-export.js'
-import { createMermaidLightboxButton, openMermaidLightbox } from './mermaid-lightbox.js'
+import { openMermaidLightbox } from '../../viewer/media/mermaid-lightbox-controller.js'
 import { logger } from '../../shared/logger.js'
-import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../shared/constants/tooltip.js'
-import { createCopyIconSvg } from '../../viewer/icons.js'
-import { createAppIconSvg } from '../../shared/icons/create-app-icon.js'
-import { attachTooltip } from '../../viewer/dom-tooltip.js'
+import { mountContentUi, getContentOverlayTarget } from '../../viewer/react/content/mount-content-ui.jsx'
+import { MermaidCopyControl, MermaidExpandControl, MermaidActions } from '../../viewer/react/content/toolbars/MermaidControls.jsx'
+
+let menuId = 0
 
 function ensureMermaidToolbar(containerEl) {
   let toolbar = containerEl.querySelector(':scope > .mdp-mermaid-toolbar')
@@ -23,82 +23,16 @@ function ensureMermaidToolbar(containerEl) {
  */
 export function attachMermaidCopyButton(containerEl, { source, copyCodeWithToast } = {}) {
   if (!containerEl || containerEl.dataset.mermaidCopyAttached === 'true') return () => {}
-
-  const text = source == null ? '' : String(source)
   containerEl.dataset.mermaidCopyAttached = 'true'
-
-  const toolbar = ensureMermaidToolbar(containerEl)
-  const copyBtn = document.createElement('button')
-  copyBtn.type = 'button'
-  copyBtn.className = 'mdp-mermaid-toolbar__copy'
-  copyBtn.setAttribute('aria-label', 'Copy Mermaid source')
-  const tooltip = attachTooltip(copyBtn, {
-    text: 'Copy Mermaid source',
-    showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
-  })
-  copyBtn.appendChild(createCopyIconSvg())
-
-  const onClick = (event) => {
-    event.preventDefault()
-    event.stopPropagation()
-    if (typeof copyCodeWithToast !== 'function') return
-    void copyCodeWithToast(text, copyBtn)
-  }
-  copyBtn.addEventListener('click', onClick)
-
-  toolbar.insertBefore(copyBtn, toolbar.firstChild)
-  return () => {
-    copyBtn.removeEventListener('click', onClick)
-    tooltip.destroy()
-    copyBtn.remove()
-    delete containerEl.dataset.mermaidCopyAttached
-  }
+  const ui = mountContentUi(ensureMermaidToolbar(containerEl), MermaidCopyControl, { source: String(source ?? ''), copyAction: copyCodeWithToast }, { scope: containerEl })
+  return () => { ui.destroy(); delete containerEl.dataset.mermaidCopyAttached }
 }
 
 export function attachMermaidLightboxButton(containerEl) {
-  if (!containerEl || containerEl.dataset.mermaidExpandAttached === 'true') return () => {}
-  if (!containerEl.querySelector(':scope > svg')) return () => {}
-
+  if (!containerEl || containerEl.dataset.mermaidExpandAttached === 'true' || !containerEl.querySelector(':scope > svg')) return () => {}
   containerEl.dataset.mermaidExpandAttached = 'true'
-
-  const toolbar = ensureMermaidToolbar(containerEl)
-  const expandBtn = createMermaidLightboxButton()
-  const tooltip = attachTooltip(expandBtn, {
-    text: 'Open chart in full-screen zoom view.',
-    showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
-  })
-
-  const onClick = (event) => {
-    event.preventDefault()
-    event.stopPropagation()
-    openMermaidLightbox(containerEl)
-  }
-  expandBtn.addEventListener('click', onClick)
-
-  const actionsRoot = toolbar.querySelector(':scope > .mdp-mermaid-actions')
-  if (actionsRoot) {
-    toolbar.insertBefore(expandBtn, actionsRoot)
-  } else {
-    toolbar.appendChild(expandBtn)
-  }
-  return () => {
-    expandBtn.removeEventListener('click', onClick)
-    tooltip.destroy()
-    expandBtn.remove()
-    delete containerEl.dataset.mermaidExpandAttached
-  }
-}
-
-function createMenuButton({ label, action, scale }) {
-  const button = document.createElement('button')
-  button.type = 'button'
-  button.className = 'mdp-mermaid-actions__item'
-  button.dataset.action = action
-  if (typeof scale === 'number') {
-    button.dataset.scale = String(scale)
-  }
-  button.textContent = label
-  return button
+  const ui = mountContentUi(ensureMermaidToolbar(containerEl), MermaidExpandControl, { onOpen: () => openMermaidLightbox(containerEl) }, { scope: containerEl })
+  return () => { ui.destroy(); delete containerEl.dataset.mermaidExpandAttached }
 }
 
 function getClosestActionButton(target) {
@@ -142,48 +76,20 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
 
   containerEl.dataset.mermaidActionsAttached = 'true'
 
-  const root = document.createElement('div')
-  root.className = 'mdp-mermaid-actions'
-
-  const trigger = document.createElement('button')
-  trigger.type = 'button'
-  trigger.className = 'mdp-mermaid-actions__trigger'
-  trigger.setAttribute('aria-label', 'Mermaid chart actions')
-  trigger.setAttribute('aria-haspopup', 'menu')
-  trigger.setAttribute('aria-expanded', 'false')
-  trigger.appendChild(createAppIconSvg('more', { width: 14, height: 14 }))
-
-  const menu = document.createElement('div')
-  menu.className = 'mdp-mermaid-actions__menu'
-  menu.hidden = true
-  menu.setAttribute('role', 'menu')
-
-  menu.appendChild(createMenuButton({ label: 'Download SVG', action: 'export-svg' }))
-
-  const separator = document.createElement('div')
-  separator.className = 'mdp-mermaid-actions__separator'
-  separator.setAttribute('role', 'separator')
-  menu.appendChild(separator)
-
-  const groupLabel = document.createElement('div')
-  groupLabel.className = 'mdp-mermaid-actions__group-label'
-  groupLabel.textContent = 'Download PNG'
-  menu.appendChild(groupLabel)
-
-  menu.appendChild(createMenuButton({ label: 'PNG 1x', action: 'export-png', scale: 1 }))
-  menu.appendChild(createMenuButton({ label: 'PNG 2x', action: 'export-png', scale: 2 }))
-  menu.appendChild(createMenuButton({ label: 'PNG 3x', action: 'export-png', scale: 3 }))
-  menu.appendChild(createMenuButton({ label: 'PNG 4x', action: 'export-png', scale: 4 }))
-
-  const portalParent = containerEl.closest('.mdp-markdown-body')
-  if (portalParent) {
-    portalParent.appendChild(menu)
-  } else {
-    root.appendChild(menu)
+  let root = null
+  let trigger = null
+  let menu = null
+  let ui = null
+  const id = `mdp-mermaid-menu-${++menuId}`
+  const portalTarget = getContentOverlayTarget(containerEl)
+  const refs = { rootRef: node => { root = node }, triggerRef: node => { trigger = node }, menuRef: node => { menu = node } }
+  function publish() {
+    ui?.update({ ...refs, menuId: id, open: isOpen, portalTarget, onToggle: onTriggerClick, onAction: onMenuClick, onKeyDown: onMenuKeyDown })
   }
-
   let isOpen = false
   let repositionRaf = 0
+  let openingRaf = 0
+  let destroyed = false
   const scrollTargets = new Set()
 
   const onReposition = () => {
@@ -199,11 +105,11 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
     closeMenu()
   }
   const onWindowKeyDown = (event) => {
-    if (event.key === 'Escape') closeMenu()
+    if (event.key === 'Escape') { closeMenu(); trigger.focus({ preventScroll: true }) }
   }
 
   function positionMenu() {
-    if (!isOpen || menu.hidden || !trigger.isConnected) return
+    if (destroyed || !isOpen || !menu || menu.hidden || !trigger?.isConnected) return
     const rect = trigger.getBoundingClientRect()
     const margin = 6
     const pad = 8
@@ -249,6 +155,7 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
       el.removeEventListener('scroll', onReposition)
     }
     scrollTargets.clear()
+    if (openingRaf) { cancelAnimationFrame(openingRaf); openingRaf = 0 }
     if (repositionRaf) {
       cancelAnimationFrame(repositionRaf)
       repositionRaf = 0
@@ -256,33 +163,28 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
   }
 
   function openMenu() {
-    if (isOpen) return
+    if (destroyed || isOpen) return
     isOpen = true
-    menu.hidden = false
-    trigger.setAttribute('aria-expanded', 'true')
+    publish()
     window.addEventListener('pointerdown', onWindowPointerDown)
     window.addEventListener('keydown', onWindowKeyDown)
     bindRepositionListeners()
-    requestAnimationFrame(() => {
+    openingRaf = requestAnimationFrame(() => {
+      if (!isOpen || destroyed) return
       positionMenu()
-      requestAnimationFrame(() => positionMenu())
+      menu.querySelector('[role="menuitem"]')?.focus()
+      openingRaf = requestAnimationFrame(() => { openingRaf = 0; positionMenu() })
     })
   }
 
   function closeMenu() {
     if (!isOpen) return
     isOpen = false
-    menu.hidden = true
-    trigger.setAttribute('aria-expanded', 'false')
+    publish()
     unbindRepositionListeners()
     window.removeEventListener('pointerdown', onWindowPointerDown)
     window.removeEventListener('keydown', onWindowKeyDown)
   }
-
-  const tooltip = attachTooltip(trigger, {
-    text: 'Export this diagram: SVG (vector) or PNG at 1x–4x resolution.',
-    showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS
-  })
 
   const onTriggerClick = (event) => {
     event.preventDefault()
@@ -290,7 +192,6 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
     if (isOpen) closeMenu()
     else openMenu()
   }
-  trigger.addEventListener('click', onTriggerClick)
 
   const onMenuClick = async (event) => {
     const button = getClosestActionButton(event.target)
@@ -313,17 +214,19 @@ export function attachMermaidActionsMenu(containerEl, { chartIndex } = {}) {
       logger.warn('Mermaid export action failed.', error)
     }
   }
-  menu.addEventListener('click', onMenuClick)
-
-  root.appendChild(trigger)
-  ensureMermaidToolbar(containerEl).appendChild(root)
+  const onMenuKeyDown = event => {
+    const buttons = [...menu.querySelectorAll('[role="menuitem"]')]
+    const index = buttons.indexOf(containerEl.ownerDocument.activeElement)
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : event.key === 'ArrowDown' ? (index + 1) % buttons.length : event.key === 'ArrowUp' ? (index - 1 + buttons.length) % buttons.length : null
+    if (next !== null) { event.preventDefault(); buttons[next]?.focus() }
+    if (event.key === 'Escape' || event.key === 'Tab') { closeMenu(); trigger.focus({ preventScroll: true }) }
+  }
+  ui = mountContentUi(ensureMermaidToolbar(containerEl), MermaidActions, { ...refs, menuId: id, open: false, portalTarget, onToggle: onTriggerClick, onAction: onMenuClick, onKeyDown: onMenuKeyDown }, { scope: containerEl })
   return () => {
+    if (destroyed) return
     closeMenu()
-    trigger.removeEventListener('click', onTriggerClick)
-    menu.removeEventListener('click', onMenuClick)
-    tooltip.destroy()
-    menu.remove()
-    root.remove()
+    destroyed = true
+    ui.destroy()
     delete containerEl.dataset.mermaidActionsAttached
   }
 }

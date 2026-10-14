@@ -1,6 +1,6 @@
-import { readLocalTextResource } from './documents/document-loader.js'
-import { getRasterDimensions } from './lightbox-resolution.js'
-import { logger } from '../shared/logger.js'
+import { readLocalTextResource } from '../documents/document-loader.js'
+import { getRasterDimensions } from './resolution-model.js'
+import { logger } from '../../shared/logger.js'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
@@ -102,7 +102,6 @@ export function createLightboxRasterSession({ host, source, width, height, baseR
   const fragment = sourceUrl ? new URL(sourceUrl).hash : ''
   // Snapshot only this opening's source. No viewer node or file is changed.
   let sourcePromise = null
-  host.classList.add('mdp-lightbox-rasterized')
   return {
     async update(resolution) {
       if (controller.signal.aborted) return false
@@ -144,7 +143,6 @@ export function createLightboxRasterSession({ host, source, width, height, baseR
       controller.abort()
       if (currentUrl) URL.revokeObjectURL(currentUrl)
       currentUrl = null
-      host.classList.remove('mdp-lightbox-rasterized')
     }
   }
 }

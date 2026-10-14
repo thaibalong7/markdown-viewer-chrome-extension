@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+// @vitest-environment jsdom
+import { createArticle as createRealArticle, cleanDom } from '../../../react/content/__tests__/dom-test-helpers.js'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
   highlightCode: vi.fn(),
@@ -18,32 +20,9 @@ vi.mock('../../../core/renderer.js', () => ({
 
 import { render } from '../sql-document-renderer.js'
 
-function createNode(tagName) {
-  return {
-    tagName: tagName.toUpperCase(),
-    className: '',
-    textContent: '',
-    children: [],
-    attributes: {},
-    appendChild(child) {
-      this.children.push(child)
-      return child
-    },
-    setAttribute(name, value) {
-      this.attributes[name] = value
-    }
-  }
-}
+afterEach(cleanDom)
 
-function createHarness() {
-  const ownerDocument = { createElement: vi.fn((tagName) => createNode(tagName)) }
-  const articleEl = createNode('article')
-  articleEl.ownerDocument = ownerDocument
-  articleEl.replaceChildren = function (...children) {
-    this.children = children
-  }
-  return { articleEl }
-}
+function createHarness() { const articleEl = createRealArticle(); return { articleEl, ownerDocument: document } }
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -92,7 +71,7 @@ describe('SQL document renderer', () => {
     const pre = articleEl.children[0].children[1]
     expect(pre).toMatchObject({
       className: 'mdp-sql-document__source',
-      attributes: { 'data-mdp-lang': 'sql' }
+      dataset: { mdpLang: 'sql' }
     })
     expect(pre.children[0]).toMatchObject({ tagName: 'CODE', textContent: source })
   })
@@ -102,7 +81,7 @@ describe('SQL document renderer', () => {
     await render({ loadedDocument: { text: '' }, articleEl: empty.articleEl })
     expect(empty.articleEl.children[0]).toMatchObject({
       textContent: 'This SQL file is empty.',
-      attributes: { role: 'status' }
+      role: 'status'
     })
 
     const failed = createHarness()
@@ -112,7 +91,7 @@ describe('SQL document renderer', () => {
     })
     expect(failed.articleEl.children[0]).toMatchObject({
       textContent: 'SQL file is too large.',
-      attributes: { role: 'alert' }
+      role: 'alert'
     })
   })
 })

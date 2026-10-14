@@ -1,40 +1,11 @@
-import { describe, expect, it, vi } from 'vitest'
+// @vitest-environment jsdom
+import { createArticle as createRealArticle, cleanDom } from '../../../react/content/__tests__/dom-test-helpers.js'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render } from '../text-document-renderer.js'
 
-function createNode(tagName) {
-  const node = {
-    tagName: tagName.toUpperCase(),
-    className: '',
-    textContent: '',
-    children: [],
-    attributes: {},
-    appendChild(child) {
-      this.children.push(child)
-      return child
-    },
-    setAttribute(name, value) {
-      this.attributes[name] = value
-    }
-  }
-  Object.defineProperty(node, 'innerHTML', {
-    set() {
-      throw new Error('text renderer must not use innerHTML')
-    }
-  })
-  return node
-}
+afterEach(cleanDom)
 
-function createHarness() {
-  const ownerDocument = { createElement: vi.fn((tagName) => createNode(tagName)) }
-  const articleEl = {
-    ownerDocument,
-    children: [],
-    replaceChildren(...children) {
-      this.children = children
-    }
-  }
-  return { ownerDocument, articleEl }
-}
+function createHarness() { const articleEl = createRealArticle(); return { articleEl, ownerDocument: document } }
 
 describe('plain text document renderer', () => {
   it('renders HTML-looking, Unicode, whitespace, and long lines only through textContent', async () => {
@@ -60,7 +31,7 @@ describe('plain text document renderer', () => {
 
     expect(articleEl.children[0]).toMatchObject({
       textContent: 'This text file is empty.',
-      attributes: { role: 'status' }
+      role: 'status'
     })
   })
 
@@ -75,7 +46,7 @@ describe('plain text document renderer', () => {
 
     expect(articleEl.children[0]).toMatchObject({
       textContent: 'This text file is too large.',
-      attributes: { role: 'alert' }
+      role: 'alert'
     })
   })
 })

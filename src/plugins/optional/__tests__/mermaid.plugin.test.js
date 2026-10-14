@@ -4,7 +4,7 @@ const mocks = vi.hoisted(() => ({ renderMermaidIntoNode: vi.fn() }))
 vi.mock('../../../viewer/mermaid/mermaid-render-service.js', () => ({
   renderMermaidIntoNode: mocks.renderMermaidIntoNode
 }))
-vi.mock('../mermaid-lightbox.js', () => ({
+vi.mock('../../../viewer/media/mermaid-lightbox-controller.js', () => ({
   closeMermaidLightbox: vi.fn(),
   destroyMermaidLightbox: vi.fn()
 }))

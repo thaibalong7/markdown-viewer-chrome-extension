@@ -1,6 +1,6 @@
 import { triggerDownload } from '../../shared/download.js'
 import { logger } from '../../shared/logger.js'
-import { SVG_NS } from '../../viewer/icons.js'
+import { SVG_NS } from '../../shared/icons/create-app-icon.js'
 
 function formatExportTimestamp(date = new Date()) {
   const year = String(date.getFullYear())

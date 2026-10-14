@@ -1,3 +1,6 @@
+import { DocumentLabel } from '../../react/content/states/DocumentState.jsx'
+import { mountDocumentState } from '../../react/content/states/mount-document-state.js'
+import { mountContentUi, clearContentUi } from '../../react/content/mount-content-ui.jsx'
 import { highlightCode } from '../../core/shiki-highlighter.js'
 import { renderIntoElement, sanitizeHtml } from '../../core/renderer.js'
 
@@ -5,13 +8,6 @@ function throwIfAborted(signal) {
   if (signal?.aborted) throw new DOMException('Document render was aborted.', 'AbortError')
 }
 
-function createState(document, modifier, message, role = 'status') {
-  const state = document.createElement('div')
-  state.className = `mdp-sql-document__state mdp-sql-document__state--${modifier}`
-  state.setAttribute('role', role)
-  state.textContent = message
-  return state
-}
 
 function createPlainSql(document, source) {
   const pre = document.createElement('pre')
@@ -30,19 +26,15 @@ export async function render({ loadedDocument, articleEl, settings, signal }) {
     throw new Error('The SQL document host is unavailable.')
   }
 
+  clearContentUi(articleEl)
   if (loadedDocument?.loadError) {
-    articleEl.replaceChildren(createState(
-      ownerDocument,
-      'error',
-      loadedDocument.loadError.message || 'Could not display this SQL file.',
-      'alert'
-    ))
+    mountDocumentState(articleEl, { className: 'mdp-sql-document__state mdp-sql-document__state--error', message: loadedDocument.loadError.message || 'Could not display this SQL file.', role: 'alert' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 
   const source = String(loadedDocument?.text ?? '')
   if (!source) {
-    articleEl.replaceChildren(createState(ownerDocument, 'empty', 'This SQL file is empty.'))
+    mountDocumentState(articleEl, { className: 'mdp-sql-document__state mdp-sql-document__state--empty', message: 'This SQL file is empty.' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 
@@ -51,7 +43,6 @@ export async function render({ loadedDocument, articleEl, settings, signal }) {
 
   const header = ownerDocument.createElement('div')
   header.className = 'mdp-sql-document__header'
-  header.textContent = 'SQL'
   container.appendChild(header)
 
   const codeHighlightEnabled = settings?.plugins?.codeHighlight?.enabled !== false
@@ -71,5 +62,6 @@ export async function render({ loadedDocument, articleEl, settings, signal }) {
 
   throwIfAborted(signal)
   articleEl.replaceChildren(container)
-  return { tocItems: [], interactionProfile: 'none' }
+  const headerUi = mountContentUi(header, DocumentLabel, { text: 'SQL' }, { scope: articleEl })
+  return { tocItems: [], interactionProfile: 'none', cleanup: () => headerUi.destroy() }
 }

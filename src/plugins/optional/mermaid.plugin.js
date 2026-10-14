@@ -1,6 +1,6 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { logger } from '../../shared/logger.js'
-import { closeMermaidLightbox, destroyMermaidLightbox } from './mermaid-lightbox.js'
+import { closeMermaidLightbox, destroyMermaidLightbox } from '../../viewer/media/mermaid-lightbox-controller.js'
 import { renderMermaidIntoNode } from '../../viewer/mermaid/mermaid-render-service.js'
 
 function isMermaidFenceClass(className) {

@@ -233,67 +233,7 @@
     }
   }
 
-  .mdp-mermaid-actions__menu {
-    /* `position` + placement set in JS (`fixed` + top/left) so the menu escapes `.mdp-mermaid` overflow clipping */
-    position: fixed;
-    z-index: 30;
-    min-width: 150px;
-    padding: 6px;
-    border: 1px solid var(--mdp-border);
-    border-radius: $radius-default;
-    background: var(--mdp-surface);
-    box-shadow: var(--mdp-shadow-float);
-  }
 
-  .mdp-mermaid-actions__item {
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: 7px 9px;
-    border: none;
-    border-radius: 6px;
-    font-size: calc(0.84rem - 1px);
-    line-height: 1.3;
-    color: var(--mdp-text);
-    background: transparent;
-    text-align: left;
-    cursor: pointer;
-    transition:
-      background-color 140ms ease,
-      color 140ms ease;
-
-    &:hover {
-      color: var(--mdp-link);
-      background: var(--mdp-link-soft);
-    }
-
-    &:focus-visible {
-      color: var(--mdp-link);
-      background: var(--mdp-link-soft);
-      outline: 2px solid var(--mdp-focus-color);
-      outline-offset: 1px;
-    }
-
-    &:active {
-      background: color-mix(in srgb, var(--mdp-link) 18%, var(--mdp-surface));
-    }
-  }
-
-  .mdp-mermaid-actions__separator {
-    height: 1px;
-    margin: 6px 2px;
-    background: var(--mdp-border);
-  }
-
-  .mdp-mermaid-actions__group-label {
-    margin: 0;
-    padding: 6px 9px 4px;
-    font-size: calc(0.72rem - 1px);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--mdp-muted);
-  }
 }
 
 @media (max-width: 639px) {
@@ -435,4 +375,67 @@
   text-align: center;
   white-space: normal;
   pointer-events: none;
+}
+
+// Portaled application UI lives outside the rendered article.
+.mdp-mermaid-actions__menu {
+  /* `position` + placement set in JS (`fixed` + top/left) so the menu escapes `.mdp-mermaid` overflow clipping */
+  position: fixed;
+  z-index: 30;
+  min-width: 150px;
+  padding: 6px;
+  border: 1px solid var(--mdp-border);
+  border-radius: $radius-default;
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-float);
+}
+
+.mdp-mermaid-actions__item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 7px 9px;
+  border: none;
+  border-radius: 6px;
+  font-size: calc(0.84rem - 1px);
+  line-height: 1.3;
+  color: var(--mdp-text);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+
+  &:hover {
+    color: var(--mdp-link);
+    background: var(--mdp-link-soft);
+  }
+
+  &:focus-visible {
+    color: var(--mdp-link);
+    background: var(--mdp-link-soft);
+    outline: 2px solid var(--mdp-focus-color);
+    outline-offset: 1px;
+  }
+
+  &:active {
+    background: color-mix(in srgb, var(--mdp-link) 18%, var(--mdp-surface));
+  }
+}
+
+.mdp-mermaid-actions__separator {
+  height: 1px;
+  margin: 6px 2px;
+  background: var(--mdp-border);
+}
+
+.mdp-mermaid-actions__group-label {
+  margin: 0;
+  padding: 6px 9px 4px;
+  font-size: calc(0.72rem - 1px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mdp-muted);
 }

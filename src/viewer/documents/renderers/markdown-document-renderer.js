@@ -1,3 +1,4 @@
+import { mountDocumentState } from '../../react/content/states/mount-document-state.js'
 import { renderDocument, renderIntoElement } from '../../core/renderer.js'
 import { buildTocItems } from '../../core/toc-builder.js'
 import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
@@ -16,22 +17,10 @@ function renderEmptyState(articleEl, { showEditHint = false } = {}) {
     throw new Error('Missing render target document.')
   }
 
-  const state = ownerDocument.createElement('section')
-  state.className = 'mdp-ui-state mdp-document-empty'
-  state.setAttribute('role', 'status')
-
-  const title = ownerDocument.createElement('strong')
-  title.className = 'mdp-ui-state__title'
-  title.textContent = 'Empty Markdown document'
-
-  state.append(title)
-  if (showEditHint) {
-    const message = ownerDocument.createElement('p')
-    message.className = 'mdp-ui-state__message'
-    message.textContent = 'Use Edit to start writing.'
-    state.append(message)
-  }
-  articleEl.replaceChildren(state)
+  mountDocumentState(articleEl, {
+    className: 'mdp-ui-state mdp-document-empty', title: 'Empty Markdown document',
+    message: showEditHint ? 'Use Edit to start writing.' : undefined
+  })
 }
 
 export async function render({ loadedDocument, articleEl, settings, services, signal }) {

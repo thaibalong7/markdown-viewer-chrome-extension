@@ -1,3 +1,5 @@
+import { mountDocumentState } from '../react/content/states/mount-document-state.js'
+import { clearContentUi } from '../react/content/mount-content-ui.jsx'
 import { captureReadingPosition, restoreReadingPosition } from '../navigation/reading-position.js'
 import { logger } from '../../shared/logger.js'
 import { getFileTypeById } from '../../shared/file-types.js'
@@ -95,63 +97,44 @@ export function createRenderController({
     onBusyChange?.(isBusy)
   }
 
-  function scheduleInitialSkeleton(article) {
+  function scheduleInitialSkeleton(article, signal) {
     if (!article || article.childElementCount > 0 || typeof article.replaceChildren !== 'function') {
       return () => {}
     }
 
     let skeletonMounted = false
+    let disposed = false
+    let skeletonUi = null
     const timer = setTimeout(() => {
       const ownerDocument = article.ownerDocument || globalThis.document
-      if (!ownerDocument?.createElement || article.childElementCount > 0) return
-      const skeleton = ownerDocument.createElement('div')
-      skeleton.className = 'mdp-skeleton mdp-document-skeleton'
-      skeleton.setAttribute('aria-hidden', 'true')
-      const widths = ['52%', '94%', '88%', '72%', '90%', '64%']
-      for (const [index, width] of widths.entries()) {
-        const line = ownerDocument.createElement('span')
-        line.className = `mdp-skeleton-line${index === 0 ? ' mdp-document-skeleton__title' : ''}`
-        line.style.width = width
-        line.style.height = index === 0 ? '24px' : '14px'
-        skeleton.appendChild(line)
-      }
+      if (signal?.aborted || !ownerDocument?.createElement || article.childElementCount > 0) return
       article.setAttribute('aria-label', 'Loading document')
-      article.replaceChildren(skeleton)
+      skeletonUi = mountDocumentState(article, { skeleton: true })
       skeletonMounted = true
     }, 180)
 
-    return () => {
+    const dispose = () => {
+      if (disposed) return
+      disposed = true
       clearTimeout(timer)
+      signal?.removeEventListener('abort', dispose)
+      skeletonUi?.destroy()
       if (skeletonMounted) article.removeAttribute('aria-label')
     }
+    signal?.addEventListener('abort', dispose, { once: true })
+    return dispose
   }
 
   function showRenderError(article) {
     const ownerDocument = article?.ownerDocument || globalThis.document
     if (!ownerDocument?.createElement || typeof article?.replaceChildren !== 'function') return
 
-    const state = ownerDocument.createElement('section')
-    state.className = 'mdp-ui-state mdp-ui-state--error mdp-document-render-error'
-    state.setAttribute('role', 'alert')
-
-    const title = ownerDocument.createElement('strong')
-    title.className = 'mdp-ui-state__title'
-    title.textContent = 'Document could not be rendered'
-
-    const message = ownerDocument.createElement('p')
-    message.className = 'mdp-ui-state__message'
-    message.textContent = 'Try again. If the problem continues, refresh the file or disable optional rendering plugins.'
-
-    const retry = ownerDocument.createElement('button')
-    retry.type = 'button'
-    retry.className = 'mdp-ui-button mdp-ui-state__action'
-    retry.textContent = 'Try again'
-    retry.addEventListener('click', () => {
-      void render({ preserveScroll: false, honorHash: false })
-    }, { once: true })
-
-    state.append(title, message, retry)
-    article.replaceChildren(state)
+    mountDocumentState(article, {
+      className: 'mdp-ui-state mdp-ui-state--error mdp-document-render-error', role: 'alert',
+      title: 'Document could not be rendered',
+      message: 'Try again. If the problem continues, refresh the file or disable optional rendering plugins.',
+      onRetry: () => { void render({ preserveScroll: false, honorHash: false }) }
+    })
   }
 
   function cleanupActiveRenderer() {
@@ -173,13 +156,15 @@ export function createRenderController({
     const currentRenderToken = ++renderToken
     activeRenderController?.abort()
     cleanupActiveRenderer()
+    getArticleInteractions()?.closeImageLightbox?.()
+    clearContentUi(getArticleEl())
     activeRenderController = new AbortController()
     const signal = activeRenderController.signal
     const scrollSnapshot = preserveScroll ? captureScrollPosition() : null
     if (scrollSnapshot) signal.addEventListener('abort', scrollSnapshot.dispose, { once: true })
     const article = getArticleEl()
     let scrollSettled = false
-    const clearInitialSkeleton = scheduleInitialSkeleton(article)
+    const clearInitialSkeleton = scheduleInitialSkeleton(article, signal)
     setArticleBusy(true)
     try {
       const loadedDocument = getLoadedDocument()
@@ -227,7 +212,7 @@ export function createRenderController({
 
       return result?.renderResult ?? result
     } catch (error) {
-      if (error?.name === 'AbortError') return null
+      if (error?.name === 'AbortError' || signal.aborted || currentRenderToken !== renderToken) return null
       logger.error('Failed to render document.', error)
       reactHandle?.setTocReady?.(true)
       showRenderError(article)
@@ -246,6 +231,7 @@ export function createRenderController({
     activeRenderController?.abort()
     activeRenderController = null
     cleanupActiveRenderer()
+    clearContentUi(getArticleEl())
     lastTocItems = []
     renderContextCache.clear()
     runtimeStyleElements.clear()

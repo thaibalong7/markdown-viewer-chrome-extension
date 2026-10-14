@@ -1,21 +1,5 @@
-function createState(document, modifier, message, role = 'status') {
-  const state = document.createElement('div')
-  state.className = `mdp-image-document__state mdp-image-document__state--${modifier}`
-  state.setAttribute('role', role)
-  if (modifier === 'loading') {
-    state.className += ' mdp-ui-loading-state'
-    state.setAttribute('aria-busy', 'true')
-    const spinner = document.createElement('span')
-    spinner.className = 'mdp-ui-spinner'
-    spinner.setAttribute('aria-hidden', 'true')
-    const label = document.createElement('span')
-    label.textContent = message
-    state.append(spinner, label)
-  } else {
-    state.textContent = message
-  }
-  return state
-}
+import { mountDocumentState } from '../../react/content/states/mount-document-state.js'
+import { clearContentUi } from '../../react/content/mount-content-ui.jsx'
 
 function abortError() {
   return new DOMException('Document render was aborted.', 'AbortError')
@@ -28,16 +12,19 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
     throw new Error('The image document host is unavailable.')
   }
 
+  clearContentUi(articleEl)
   const displayName = loadedDocument?.document?.displayName || 'image'
   if (loadedDocument?.loadError || !loadedDocument?.assetUrl) {
     const message = loadedDocument?.loadError?.message || `Could not display ${displayName}.`
-    articleEl.replaceChildren(createState(ownerDocument, 'error', message, 'alert'))
+    mountDocumentState(articleEl, { className: 'mdp-image-document__state mdp-image-document__state--error', message, role: 'alert' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 
   const figure = ownerDocument.createElement('figure')
   figure.className = 'mdp-image-document'
-  const loadingState = createState(ownerDocument, 'loading', `Loading ${displayName}…`)
+  const loadingSlot = ownerDocument.createElement('div')
+  figure.append(loadingSlot)
+  let loadingUi
   const image = ownerDocument.createElement('img')
   image.className = 'mdp-image-document__image'
   image.setAttribute('data-mdp-file-type', loadedDocument?.document?.fileTypeId || '')
@@ -67,6 +54,8 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   const cleanup = () => {
     if (cleaned) return
     cleaned = true
+    loadingUi?.destroy()
+    clearContentUi(figure)
     image.removeEventListener('load', handleLoad)
     image.removeEventListener('error', handleError)
     signal?.removeEventListener?.('abort', handleAbort)
@@ -74,7 +63,8 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   }
   const handleLoad = () => {
     if (cleaned || signal?.aborted) return
-    loadingState.remove()
+    loadingUi.destroy()
+    loadingSlot.remove()
     image.hidden = false
     services.prepareZoomableImages?.()
     settleReady()
@@ -82,9 +72,8 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   const handleError = () => {
     if (cleaned || signal?.aborted) return
     services.closeImageLightbox?.()
-    figure.replaceChildren(
-      createState(ownerDocument, 'error', `Could not display ${displayName}.`, 'alert')
-    )
+    loadingUi.destroy()
+    mountDocumentState(figure, { className: 'mdp-image-document__state mdp-image-document__state--error', message: `Could not display ${displayName}.`, role: 'alert' })
     settleReady()
   }
   const handleAbort = () => {
@@ -95,9 +84,10 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   image.addEventListener('load', handleLoad)
   image.addEventListener('error', handleError)
   signal?.addEventListener?.('abort', handleAbort, { once: true })
-  image.src = loadedDocument.assetUrl
-  figure.append(loadingState, image)
+  figure.append(image)
   articleEl.replaceChildren(figure)
+  loadingUi = mountDocumentState(loadingSlot, { className: 'mdp-image-document__state mdp-image-document__state--loading', loading: true, message: `Loading ${displayName}…` })
+  image.src = loadedDocument.assetUrl
   if (signal?.aborted) {
     cleanup()
     throw abortError()

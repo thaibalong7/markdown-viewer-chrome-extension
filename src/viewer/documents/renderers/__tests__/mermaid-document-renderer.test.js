@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+// @vitest-environment jsdom
+import { createArticle as createRealArticle, cleanDom } from '../../../react/content/__tests__/dom-test-helpers.js'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
   renderMermaidIntoNode: vi.fn(),
@@ -9,48 +11,16 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../../../mermaid/mermaid-render-service.js', () => ({
   renderMermaidIntoNode: mocks.renderMermaidIntoNode
 }))
-vi.mock('../../../../plugins/optional/mermaid-lightbox.js', () => ({
+vi.mock('../../../media/mermaid-lightbox-controller.js', () => ({
   closeMermaidLightbox: mocks.closeMermaidLightbox,
   destroyMermaidLightbox: mocks.destroyMermaidLightbox
 }))
 
 import { render } from '../mermaid-document-renderer.js'
 
-function createNode(tagName) {
-  const node = {
-    tagName: tagName.toUpperCase(),
-    className: '',
-    textContent: '',
-    children: [],
-    attributes: {},
-    appendChild(child) {
-      this.children.push(child)
-      return child
-    },
-    setAttribute(name, value) {
-      this.attributes[name] = value
-    },
-    closest() {
-      return { className: 'mdp-root' }
-    }
-  }
-  Object.defineProperty(node, 'innerHTML', {
-    set() {
-      throw new Error('standalone renderer must delegate SVG insertion to the shared service')
-    }
-  })
-  return node
-}
+afterEach(cleanDom)
 
-function createHarness() {
-  const ownerDocument = { createElement: vi.fn((tagName) => createNode(tagName)) }
-  const articleEl = createNode('article')
-  articleEl.ownerDocument = ownerDocument
-  articleEl.replaceChildren = function (...children) {
-    this.children = children
-  }
-  return { articleEl }
-}
+function createHarness() { const articleEl = createRealArticle(); return { articleEl, ownerDocument: document } }
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -106,7 +76,7 @@ describe('standalone Mermaid document renderer', () => {
     })
     expect(articleEl.children[0]).toMatchObject({
       textContent: 'Could not open this text file.',
-      attributes: { role: 'alert' }
+      role: 'alert'
     })
   })
 
@@ -118,7 +88,7 @@ describe('standalone Mermaid document renderer', () => {
     })
     expect(articleEl.children[0]).toMatchObject({
       textContent: 'This Mermaid file is empty.',
-      attributes: { role: 'status' }
+      role: 'status'
     })
     expect(mocks.renderMermaidIntoNode).not.toHaveBeenCalled()
   })

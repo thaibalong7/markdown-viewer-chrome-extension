@@ -37,12 +37,13 @@ trigger: glob
 - Keep the Markdown HTML path intact: Markdown/plugin transforms -> optional Shiki highlighting -> `sanitizeHtml()` in `renderDocument()` -> `renderIntoElement()`.
 - Do not add rendered HTML paths that bypass `sanitizeHtml()` in `src/viewer/core/renderer.js`.
 - `renderDocument()` is the main Markdown -> safe HTML boundary. Callers should receive sanitized HTML before DOM insertion.
-- Restrict `innerHTML` usage to approved render/mount boundaries. Use `textContent` and DOM APIs for dynamic UI text.
+- Restrict `innerHTML` usage to approved document render boundaries. Application UI text is rendered through React; document source uses `textContent`/DOM APIs. Use the exclusive UI-slot and document-island ownership contract in `20-architecture-boundaries.md`.
 - Keep `DOMPurify` configured from the runtime `window` purifier instance unless intentionally extracting the sanitizer with equivalent behavior.
 - Preserve heading `id` generation when changing MarkdownIt or `markdown-it-anchor`; TOC and link navigation rely on it.
 - External Markdown links should keep `target="_blank"` and `rel="noopener noreferrer"`.
 - Plugin-generated or postprocessed HTML must still pass through the sanitizer before insertion.
 - Event listeners added to generated article nodes need teardown paths through `destroy()` or plugin cleanup.
+- Before replacing article/diagram content, clear scoped React portals while their targets are still attached. Sanitization remains mandatory for document HTML/SVG; moving controls to React does not transfer document rendering into `dangerouslySetInnerHTML` components.
 
 ## Non-Markdown Renderers
 

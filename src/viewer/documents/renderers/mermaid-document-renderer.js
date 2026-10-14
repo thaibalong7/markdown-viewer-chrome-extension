@@ -1,17 +1,12 @@
-import { closeMermaidLightbox, destroyMermaidLightbox } from '../../../plugins/optional/mermaid-lightbox.js'
+import { mountDocumentState } from '../../react/content/states/mount-document-state.js'
+import { clearContentUi } from '../../react/content/mount-content-ui.jsx'
+import { closeMermaidLightbox, destroyMermaidLightbox } from '../../media/mermaid-lightbox-controller.js'
 import { renderMermaidIntoNode } from '../../mermaid/mermaid-render-service.js'
 
 function abortError() {
   return new DOMException('Document render was aborted.', 'AbortError')
 }
 
-function createState(document, modifier, message, role = 'status') {
-  const state = document.createElement('div')
-  state.className = `mdp-mermaid-document__state mdp-mermaid-document__state--${modifier}`
-  state.setAttribute('role', role)
-  state.textContent = message
-  return state
-}
 
 export async function render({ loadedDocument, articleEl, settings, services = {}, signal }) {
   if (signal?.aborted) throw abortError()
@@ -20,13 +15,9 @@ export async function render({ loadedDocument, articleEl, settings, services = {
     throw new Error('The Mermaid document host is unavailable.')
   }
 
+  clearContentUi(articleEl)
   if (loadedDocument?.loadError) {
-    articleEl.replaceChildren(createState(
-      ownerDocument,
-      'error',
-      loadedDocument.loadError.message || 'Could not display this Mermaid document.',
-      'alert'
-    ))
+    mountDocumentState(articleEl, { className: 'mdp-mermaid-document__state mdp-mermaid-document__state--error', message: loadedDocument.loadError.message || 'Could not display this Mermaid document.', role: 'alert' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 
@@ -42,7 +33,7 @@ export async function render({ loadedDocument, articleEl, settings, services = {
   }
 
   if (!source) {
-    articleEl.replaceChildren(createState(ownerDocument, 'empty', 'This Mermaid file is empty.'))
+    mountDocumentState(articleEl, { className: 'mdp-mermaid-document__state mdp-mermaid-document__state--empty', message: 'This Mermaid file is empty.' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 

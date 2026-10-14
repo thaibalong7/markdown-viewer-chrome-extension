@@ -1,10 +1,11 @@
+import { clearContentUi } from '../react/content/mount-content-ui.jsx'
 import { MERMAID_RENDERERS, PLUGIN_IDS } from '../../plugins/plugin-types.js'
 import {
   attachMermaidActionsMenu,
   attachMermaidCopyButton,
   attachMermaidLightboxButton
 } from '../../plugins/optional/mermaid-actions.js'
-import { attachMermaidLightbox } from '../../plugins/optional/mermaid-lightbox.js'
+import { attachMermaidLightbox } from '../media/mermaid-lightbox-controller.js'
 import { logger } from '../../shared/logger.js'
 import { getThemeColorsByPreset, getThemeColorsForSettings } from '../../theme/index.js'
 import { setMermaidRenderError } from './mermaid-error-view.js'
@@ -232,6 +233,7 @@ export async function renderMermaidIntoNode({
 }) {
   if (!node) throw new Error('Missing Mermaid render target.')
   throwIfAborted(signal)
+  clearContentUi(node)
   const rawSource = String(source ?? node.textContent ?? '')
   const code = rawSource.trim()
   node.classList.remove('mdp-mermaid--error')
@@ -270,9 +272,9 @@ export async function renderMermaidIntoNode({
       renderer: getMermaidRenderer(settings),
       message: error instanceof Error ? error.message : String(error)
     })
-    setMermaidRenderError(node, rawSource, error)
+    const errorUi = setMermaidRenderError(node, rawSource, error)
     const copyCleanup = attachMermaidCopyButton(node, { source: rawSource, copyCodeWithToast })
-    cleanup = () => copyCleanup?.()
+    cleanup = () => { copyCleanup?.(); errorUi?.destroy() }
   }
   node.setAttribute('data-mermaid-processed', 'true')
   return { cleanup }

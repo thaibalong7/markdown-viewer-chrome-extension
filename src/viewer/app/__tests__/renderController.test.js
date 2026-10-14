@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+// @vitest-environment jsdom
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { renderer } = vi.hoisted(() => ({ renderer: { render: vi.fn() } }))
 vi.mock('../../documents/renderer-registry.js', () => ({
@@ -8,37 +9,15 @@ vi.mock('../../../shared/logger.js', () => ({
   logger: { error: vi.fn() }
 }))
 
+import { createArticle, cleanDom, fire } from '../../react/content/__tests__/dom-test-helpers.js'
+afterEach(cleanDom)
+
 import { createRenderController } from '../renderController.js'
 
 function createHarness() {
-  const createNode = (tagName) => {
-    const listeners = new Map()
-    return {
-      tagName: tagName.toUpperCase(),
-      className: '',
-      textContent: '',
-      children: [],
-      attributes: {},
-      style: {},
-      append(...children) { this.children.push(...children) },
-      appendChild(child) { this.children.push(child) },
-      replaceChildren(...children) { this.children = children },
-      setAttribute(name, value) { this.attributes[name] = value },
-      removeAttribute(name) { delete this.attributes[name] },
-      addEventListener(type, listener) { listeners.set(type, listener) },
-      dispatch(type) { listeners.get(type)?.({ type, target: this }) }
-    }
-  }
-  const ownerDocument = { createElement: vi.fn(createNode) }
-  const article = {
-    ...createNode('article'),
-    ownerDocument
-  }
+  const article = createArticle()
   article.setAttribute = vi.fn(article.setAttribute)
   article.removeAttribute = vi.fn(article.removeAttribute)
-  Object.defineProperty(article, 'childElementCount', {
-    get() { return article.children.length }
-  })
   const reactHandle = {
     setTocReady: vi.fn(),
     updateChromeState: vi.fn(),
@@ -120,6 +99,25 @@ describe('document render controller', () => {
     expect(controller.getLastSuccessfulRenderMarkdown()).toBe('# Second')
   })
 
+  it('does not replace a newer document with an older renderer failure', async () => {
+    let fail
+    renderer.render
+      .mockImplementationOnce(() => new Promise((resolve, reject) => { fail = reject }))
+      .mockImplementationOnce(({ articleEl }) => {
+        articleEl.textContent = 'New document'
+        return { tocItems: [], renderedText: '# New' }
+      })
+    const { controller, article } = createHarness()
+    const first = controller.render()
+    await Promise.resolve()
+    await controller.render()
+    fail(new Error('Stale render failure'))
+    await first
+    expect(article.textContent).toBe('New document')
+    expect(article.querySelector('[role="alert"]')).toBeNull()
+    controller.destroy()
+  })
+
   it('publishes busy state through rendering and mounts a recoverable visible error', async () => {
     renderer.render
       .mockRejectedValueOnce(new Error('renderer failed'))
@@ -130,11 +128,11 @@ describe('document render controller', () => {
     expect(onBusyChange.mock.calls.map(([value]) => value)).toEqual([true, false])
     expect(article.children[0]).toMatchObject({
       className: expect.stringContaining('mdp-ui-state--error'),
-      attributes: { role: 'alert' }
+      role: 'alert'
     })
     expect(article.children[0].children[0].textContent).toBe('Document could not be rendered')
 
-    article.children[0].children[2].dispatch('click')
+    fire(article.children[0].children[2], 'click')
     await vi.waitFor(() => expect(renderer.render).toHaveBeenCalledTimes(2))
   })
 
@@ -155,13 +153,13 @@ describe('document render controller', () => {
       await vi.advanceTimersByTimeAsync(180)
       expect(article.children[0]).toMatchObject({
         className: 'mdp-skeleton mdp-document-skeleton',
-        attributes: { 'aria-hidden': 'true' }
+        ariaHidden: 'true'
       })
-      expect(article.attributes['aria-label']).toBe('Loading document')
+      expect(article.getAttribute('aria-label')).toBe('Loading document')
 
       resolveRender({ tocItems: [], renderedText: '# Loaded' })
       await renderPromise
-      expect(article.attributes['aria-label']).toBeUndefined()
+      expect(article.getAttribute('aria-label')).toBeNull()
     } finally {
       vi.useRealTimers()
     }

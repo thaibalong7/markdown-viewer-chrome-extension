@@ -65,7 +65,7 @@ it.each(['onPointerEnter', 'onFocus'])('blocks %s while suppressed, then restore
   const restored = render()
   anchor(restored).props[handler](event)
   vi.advanceTimersByTime(100)
-  expect(tip(render()).props.role).toBe('tooltip')
+  expect(tip(render()).props.text).toBe('Update document')
   expect(anchor(restored).type).toBe(anchor(hidden).type)
   expect(anchor(restored).props['aria-label']).toBe('Update document')
 })
@@ -83,7 +83,7 @@ it('cancels a hover timer already pending when the notification appears', () => 
 it('hides an already-open tooltip immediately and keeps it closed after suppression ends', () => {
   anchor(render()).props.onFocus(event)
   vi.advanceTimersByTime(100)
-  expect(tip(render()).props.role).toBe('tooltip')
+  expect(tip(render()).props.text).toBe('Update document')
   expect(tip(render(true))).toBeNull()
   flushEffects()
   expect(tip(render())).toBeNull()

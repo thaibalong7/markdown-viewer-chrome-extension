@@ -1,3 +1,4 @@
+import { destroyContentUi } from './react/content/mount-content-ui.jsx'
 import { logger } from '../shared/logger.js'
 import { deepMerge } from '../shared/deep-merge.js'
 import { needsFullRender } from '../shared/settings-diff.js'
@@ -490,6 +491,7 @@ export class MarkdownViewerApp {
     this._editorApi = null
     this._articleInteractions?.destroy()
     this._articleInteractions = null
+    destroyContentUi(this.container)
     this._reactHandle?.unmount()
     this._reactHandle = null
     this._themeTogglePromise = null

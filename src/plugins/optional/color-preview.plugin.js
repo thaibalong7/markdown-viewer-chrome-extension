@@ -1,6 +1,6 @@
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { findColors } from './color-values.js'
-import { createColorPopover } from '../../viewer/colors/color-popover.js'
+import { createColorPopover } from '../../viewer/colors/color-popover-controller.js'
 
 const SKIP = 'a, button, textarea, script, style, svg, math, .katex, .mdp-mermaid, .language-mermaid, [data-mdp-lang="mermaid"], [data-mdp-color], [contenteditable="true"]'
 const MAX_SWATCHES = 1000

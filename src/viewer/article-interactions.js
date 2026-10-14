@@ -12,7 +12,7 @@ import {
   destroyImageLightbox,
   getRenderableImageDimensions,
   openImageLightbox
-} from './image-lightbox.js'
+} from './media/image-lightbox-controller.js'
 
 /**
  * Hash navigation, in-article link handling, and clipboard UX for the markdown body.
@@ -110,7 +110,7 @@ export function createArticleInteractions({
     const target = event.target
     if (!(target instanceof Element)) return false
     const codeCopyBtn = target.closest('button.mdp-code-block__copy')
-    if (!codeCopyBtn || !article.contains(codeCopyBtn)) return false
+    if (!codeCopyBtn || !article.contains(codeCopyBtn) || codeCopyBtn.hasAttribute('data-mdp-react-control')) return false
     event.preventDefault()
     const block = codeCopyBtn.closest('.mdp-code-block')
     const pre = block?.querySelector('pre')
@@ -231,17 +231,19 @@ export function createArticleInteractions({
    * @param {string} text
    * @param {HTMLButtonElement | null} [triggerButton]
    */
-  async function copyCodeWithToast(text, triggerButton = null) {
+  async function copyCodeWithToast(text, triggerButton = null, { inline = false } = {}) {
     try {
       await copyTextToClipboard(text)
       if (triggerButton instanceof HTMLButtonElement) {
         flashCopyButtonCopied(triggerButton)
-      } else {
+      } else if (!inline) {
         showToast('Copied', { variant: 'success' })
       }
+      return true
     } catch (error) {
       logger.debug('Copy code failed.', error)
       showToast('Could not copy', { variant: 'error' })
+      return false
     }
   }
 

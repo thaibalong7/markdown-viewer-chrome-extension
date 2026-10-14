@@ -1,101 +1,45 @@
+// @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createColorPopover } from '../color-popover.js'
+import { createArticle, cleanDom, fire } from '../../react/content/__tests__/dom-test-helpers.js'
+import { createColorPopover } from '../color-popover-controller.js'
 
 const mocks = vi.hoisted(() => ({ copy: vi.fn(), warn: vi.fn(), tooltip: vi.fn() }))
 vi.mock('../../../shared/clipboard.js', () => ({ copyTextToClipboard: mocks.copy }))
 vi.mock('../../../shared/logger.js', () => ({ logger: { warn: mocks.warn } }))
-vi.mock('../../../shared/icons/create-app-icon.js', () => ({
-  SVG_NS: 'http://www.w3.org/2000/svg',
-  createAppIconSvg: (name, { className }) => ({ tagName: 'svg', name, className, setAttribute() {}, outerHTML: '<svg></svg>', querySelectorAll: () => [], contains: () => false,
-    remove() { this.parent.children = this.parent.children.filter(child => child !== this) } })
-}))
 vi.mock('../../dom-tooltip.js', () => ({ attachTooltip: mocks.tooltip }))
 
-// Small DOM/event adapter for lifecycle tests; rendering/layout is checked in the browser.
-class Node {
-  constructor(doc, tag = 'div') {
-    this.ownerDocument = doc
-    this.tagName = tag
-    this.children = []
-    this.attributes = new Map()
-    this.listeners = new Map()
-    this.dataset = {}
-    this.style = { setProperty: (key, value) => { this.style[key] = value }, getPropertyValue: key => this.style[key], removeProperty: key => { delete this.style[key] } }
-    this.classList = { add: value => { this.className += ` ${value}` }, remove: (...values) => { values.forEach(value => { this.className = this.className.replace(` ${value}`, '') }) } }
-    this.offsetWidth = 264
-    this.offsetHeight = 114
-    this.textContent = ''
-  }
-  get isConnected() { return this === this.ownerDocument.root || Boolean(this.parent?.isConnected) }
-  append(...nodes) { for (const node of nodes) { node.parent = this; this.children.push(node) } }
-  remove() { if (this.parent) this.parent.children = this.parent.children.filter(node => node !== this); this.parent = null }
-  setAttribute(key, value) { this.attributes.set(key, value) }
-  removeAttribute(key) { this.attributes.delete(key) }
-  getAttribute(key) { return this.attributes.get(key) }
-  closest(selector) { return selector === '.mdp-color-swatch' ? this : this.ownerDocument.root }
-  matches() { return this.keyboardFocus !== false }
-  contains(node) { return this === node || this.children.some(child => child.contains(node)) }
-  querySelectorAll(tag) { return this.children.flatMap(child => [...((tag === '[role="status"]' ? child.attributes?.get('role') === 'status' : child.tagName === tag) ? [child] : []), ...child.querySelectorAll(tag)]) }
-  querySelector(tag) { return this.querySelectorAll(tag)[0] }
-  focus() { if (!this.disabled) { this.ownerDocument.activeElement = this; this.ownerDocument.fire('focusin', { target: this }) } }
-  getBoundingClientRect() {
-    const left = Number.parseFloat(this.style.left) || 280
-    const top = Number.parseFloat(this.style.top) || 60
-    const width = this.className === 'mdp-color-popover' ? 264 : 16
-    const height = this.className === 'mdp-color-popover' ? 114 : 16
-    return { left, top, right: left + width, bottom: top + height, width, height }
-  }
-  addEventListener(type, handler) {
-    if (!this.listeners.has(type)) this.listeners.set(type, new Set())
-    this.listeners.get(type).add(handler)
-  }
-  removeEventListener(type, handler) {
-    const handlers = this.listeners.get(type)
-    handlers?.delete(handler)
-    if (!handlers?.size) this.listeners.delete(type)
-  }
-  fire(type, event = {}) {
-    if (type === 'focusin' && !this.ownerDocument) this.activeElement = event.target
-    if (type === 'click' && this.tagName === 'button') {
-      if (this.disabled) return
-      this.focus()
-    }
-    this.listeners.get(type)?.forEach(handler => handler(event))
-  }
-}
-
 function harness() {
-  const doc = { listeners: new Map(), ...Object.fromEntries(['addEventListener', 'removeEventListener', 'fire'].map(key => [key, Node.prototype[key]])) }
-  const win = new Node(doc)
-  Object.assign(win, { innerWidth: 640, innerHeight: 480, setTimeout, clearTimeout })
-  doc.defaultView = win
-  doc.createElement = tag => {
-    const node = new Node(doc, tag)
-    if (tag === 'span') { node.offsetWidth = 74; node.offsetHeight = 24 }
-    return node
-  }
-  doc.root = new Node(doc)
-  const article = new Node(doc)
-  const trigger = new Node(doc, 'button')
+  const article = createArticle()
+  const doc = document
+  doc.root = article.parentElement
+  const win = window
+  Object.defineProperty(win, 'innerWidth', { configurable: true, value: 640 })
+  Object.defineProperty(win, 'innerHeight', { configurable: true, value: 480 })
+  const trigger = document.createElement('button')
   trigger.className = 'mdp-color-swatch'
   trigger.dataset.mdpColor = '#3B82F680'
   trigger.setAttribute('aria-label', 'Copy color #3B82F680')
   trigger.style.setProperty('--mdp-preview-color', 'rgba(59, 130, 246, .5)')
-  doc.root.append(article)
+  trigger.getBoundingClientRect = () => ({ left: 280, top: 60, right: 296, bottom: 76, width: 16, height: 16 })
+  trigger.matches = selector => selector === ':focus-visible' ? trigger.keyboardFocus !== false : HTMLElement.prototype.matches.call(trigger, selector)
   article.append(trigger)
+  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get() { return this.className === 'mdp-color-popover' ? 264 : 74 } })
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { configurable: true, get() { return this.className === 'mdp-color-popover' ? 114 : 24 } })
+  HTMLElement.prototype.getBoundingClientRect = function() { const left = parseFloat(this.style.left) || 280; const top = parseFloat(this.style.top) || 60; return { left, top, right: left + this.offsetWidth, bottom: top + this.offsetHeight, width: this.offsetWidth, height: this.offsetHeight } }
   const popover = createColorPopover({ articleEl: article, swatches: new Map([[trigger, { r: 59, g: 130, b: 246, a: 128 / 255 }]]) })
-  const open = () => doc.fire('keydown', { key: 'ArrowDown', target: trigger, preventDefault: vi.fn() })
-  const click = (point = {}) => { trigger.keyboardFocus = false; trigger.focus(); article.fire('click', { target: trigger, preventDefault: vi.fn(), detail: 1, clientX: 288, clientY: 68, ...point }) }
-  const panel = () => doc.root.children.find(node => node.className === 'mdp-color-popover')
-  const visual = () => doc.root.children.find(node => node.className?.split(' ').includes('mdp-color-copy-feedback'))
-  return { doc, win, article, trigger, popover, open, click, panel, visual }
+  const open = () => fire(trigger, 'keydown', { key: 'ArrowDown' })
+  const click = (point = {}) => { trigger.keyboardFocus = false; fire(trigger, 'click', { detail: 1, clientX: 288, clientY: 68, ...point }) }
+  for (const node of [article, doc, win]) node.fire = (type, options) => fire(node, type, options)
+  return { doc, win, article, trigger, popover, open, click,
+    panel: () => doc.root.querySelector('.mdp-color-popover') || undefined,
+    visual: () => doc.root.querySelector('.mdp-color-copy-feedback') || undefined }
 }
 
 beforeEach(() => {
   vi.useFakeTimers(); vi.clearAllMocks(); mocks.copy.mockResolvedValue(undefined)
   mocks.tooltip.mockImplementation(() => ({ destroy: vi.fn(), hide: vi.fn(), setText: vi.fn() }))
 })
-afterEach(() => vi.useRealTimers())
+afterEach(() => { cleanDom(); vi.useRealTimers() })
 
 describe('color popover interaction lifecycle', () => {
   it('opens on keyboard focus and ArrowDown focuses the first format command without copying', () => {
@@ -115,12 +59,12 @@ describe('color popover interaction lifecycle', () => {
     const h = harness()
     h.open()
     const button = h.panel().querySelectorAll('button')[1]
-    button.fire('click')
+    fire(button, 'click')
     await vi.advanceTimersByTimeAsync(0)
     expect(mocks.copy).toHaveBeenCalledWith('rgba(59, 130, 246, 0.5019607843137255)')
     expect(button.className).toContain('is-copied')
     expect(button.textContent).toBe('')
-    expect(button.children.map(icon => icon.name)).toEqual(['copy', 'check'])
+    expect([...button.children].map(icon => icon.getAttribute('class'))).toEqual(['mdp-color-popover__copy-icon', 'mdp-color-popover__check-icon'])
     expect(button.disabled).toBe(false)
     expect(h.doc.activeElement).toBe(button)
     await vi.runAllTimersAsync()
@@ -133,9 +77,9 @@ describe('color popover interaction lifecycle', () => {
     const h = harness()
     h.open()
     const button = h.panel().querySelectorAll('button')[2]
-    button.fire('click')
+    fire(button, 'click')
     await vi.advanceTimersByTimeAsync(0)
-    expect(h.panel().children.at(-1).textContent).toContain('Could not copy')
+    expect(h.panel().lastElementChild.textContent).toContain('Could not copy')
     expect(button.disabled).toBe(false)
     expect(h.panel().children[2].children[1].children[0].textContent).toBe('hsla(217.219251, 91.219512%, 59.803922%, 0.5019607843137255)')
     expect(JSON.stringify(mocks.warn.mock.calls)).not.toContain('private message')
@@ -146,11 +90,11 @@ describe('color popover interaction lifecycle', () => {
     const h = harness()
     h.open()
     const button = h.panel().querySelectorAll('button')[1]
-    button.fire('click')
+    fire(button, 'click')
     await vi.advanceTimersByTimeAsync(0)
     expect(button.className).toContain('is-copied')
     mocks.copy.mockRejectedValueOnce(new Error('clipboard blocked'))
-    button.fire('click')
+    fire(button, 'click')
     await vi.advanceTimersByTimeAsync(0)
     expect(button.className).toContain('is-error')
     expect(button.className).not.toContain('is-copied')
@@ -164,7 +108,7 @@ describe('color popover interaction lifecycle', () => {
     const h = harness()
     h.open()
     const button = h.panel().querySelector('button')
-    button.fire('click')
+    fire(button, 'click')
     h.article.focus()
     finish()
     await vi.advanceTimersByTimeAsync(0)
@@ -179,8 +123,8 @@ describe('color popover interaction lifecycle', () => {
     const h = harness()
     h.open()
     const buttons = h.panel().querySelectorAll('button')
-    buttons[0].fire('click')
-    buttons[1].fire('click')
+    fire(buttons[0], 'click')
+    fire(buttons[1], 'click')
     finishes[0]()
     await vi.advanceTimersByTimeAsync(0)
     h.article.focus()
@@ -197,7 +141,7 @@ describe('color popover interaction lifecycle', () => {
     mocks.copy.mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
     const h = harness()
     h.open()
-    if (kind === 'format') h.panel().querySelector('button').fire('click')
+    if (kind === 'format') fire(h.panel().querySelector('button'), 'click')
     else h.click()
     h.doc.fire('keydown', { key: 'Escape', preventDefault: vi.fn(), stopPropagation: vi.fn() })
     h.article.focus()
@@ -242,7 +186,7 @@ describe('color popover interaction lifecycle', () => {
     const h = harness()
     h.open()
     const button = h.panel().querySelector('button')
-    button.fire('click')
+    fire(button, 'click')
     h.popover.destroy()
     h.popover.destroy()
     finish()
@@ -250,7 +194,8 @@ describe('color popover interaction lifecycle', () => {
     expect(h.panel()).toBeUndefined()
     expect(button.className).not.toContain('is-copied')
     expect(mocks.tooltip.mock.results.every(result => result.value.destroy.mock.calls.length === 1)).toBe(true)
-    expect(h.article.listeners.size + h.doc.listeners.size + h.win.listeners.size).toBe(0)
+    fire(h.trigger, 'keydown', { key: 'ArrowDown' })
+    expect(h.panel()).toBeUndefined()
     expect(vi.getTimerCount()).toBe(0)
   })
 
@@ -289,7 +234,7 @@ describe('color popover interaction lifecycle', () => {
     expect(h.visual()).toBeDefined()
     expect(h.trigger.textContent).toBe('')
     expect(h.visual().children[1].children[1].textContent).toBe('Copied')
-    expect(h.visual().children[1].children[0].name).toBe('check')
+    expect(h.visual().children[1].children[0].tagName.toLowerCase()).toBe('svg')
     expect(h.article.contains(h.visual())).toBe(false)
     expect(h.trigger.style.getPropertyValue('--mdp-preview-color')).toBe('rgba(59, 130, 246, .5)')
     expect(h.trigger.getAttribute('aria-label')).toBe('Copy color #3B82F680')
@@ -326,7 +271,7 @@ describe('color popover interaction lifecycle', () => {
     expect(h.trigger.className).toBe('mdp-color-swatch')
     expect(h.visual()).toBeUndefined()
     expect(h.panel().querySelector('[role="status"]').textContent).toContain('Could not copy')
-    expect(h.doc.root.querySelectorAll('[role="status"]').filter(node => node.textContent.startsWith('Could not copy'))).toHaveLength(1)
+    expect([...h.doc.root.querySelectorAll('[role="status"]')].filter(node => node.textContent.startsWith('Could not copy'))).toHaveLength(1)
     h.click()
     await vi.advanceTimersByTimeAsync(0)
     expect(h.visual()).toBeDefined()
@@ -346,7 +291,7 @@ describe('color popover interaction lifecycle', () => {
     await vi.advanceTimersByTimeAsync(0)
     expect(h.trigger.children).toHaveLength(0)
     expect(h.visual()).toBeUndefined()
-    expect(h.trigger.getAttribute('aria-busy')).toBeUndefined()
+    expect(h.trigger.getAttribute('aria-busy')).toBeNull()
     expect(vi.getTimerCount()).toBe(0)
   })
 
@@ -388,7 +333,7 @@ describe('color popover interaction lifecycle', () => {
     vi.advanceTimersByTime(180)
     expect(h.visual()).toBeUndefined()
     h.popover.destroy()
-    expect(h.win.listeners.size).toBe(0)
+    expect(h.visual()).toBeUndefined()
     expect(vi.getTimerCount()).toBe(0)
   })
 

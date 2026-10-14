@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+// @vitest-environment jsdom
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
   initialize: vi.fn(),
@@ -22,10 +23,13 @@ vi.mock('../../../plugins/optional/mermaid-actions.js', () => ({
   attachMermaidActionsMenu: mocks.attachActions,
   attachMermaidLightboxButton: mocks.attachExpand
 }))
-vi.mock('../../../plugins/optional/mermaid-lightbox.js', () => ({
+vi.mock('../../media/mermaid-lightbox-controller.js', () => ({
   attachMermaidLightbox: mocks.attachLightbox
 }))
 vi.mock('../../../shared/logger.js', () => ({ logger: { warn: mocks.warn } }))
+
+import { createArticle, cleanDom } from '../../react/content/__tests__/dom-test-helpers.js'
+afterEach(cleanDom)
 
 import {
   getMermaidThemeByPreset,
@@ -33,48 +37,11 @@ import {
   renderMermaidIntoNode
 } from '../mermaid-render-service.js'
 
-function createElement(tagName) {
-  return {
-    tagName: tagName.toUpperCase(),
-    className: '',
-    textContent: '',
-    children: [],
-    attributes: {},
-    append(...children) {
-      this.children.push(...children)
-    },
-    setAttribute(name, value) {
-      this.attributes[name] = value
-    }
-  }
-}
-
 function createNode(source = 'flowchart LR\nA-->B') {
-  const classes = new Set()
-  return {
-    textContent: source,
-    ownerDocument: { createElement },
-    children: [],
-    attributes: {},
-    classList: {
-      add: (name) => classes.add(name),
-      remove: (name) => classes.delete(name),
-      contains: (name) => classes.has(name)
-    },
-    closest: () => null,
-    replaceChildren(...children) {
-      this.children = children
-    },
-    append(...children) {
-      this.children.push(...children)
-    },
-    setAttribute(name, value) {
-      this.attributes[name] = value
-    },
-    set innerHTML(value) {
-      this.mountedHtml = value
-    }
-  }
+  const node = document.createElement('div')
+  node.textContent = source
+  createArticle().append(node)
+  return node
 }
 
 beforeEach(() => {
@@ -123,7 +90,7 @@ describe('shared Mermaid render service', () => {
     })
 
     expect(mocks.sanitize).toHaveBeenCalledOnce()
-    expect(node.mountedHtml).toMatch('data-sanitized="true"')
+    expect(node.innerHTML).toMatch('data-sanitized="true"')
     expect(mocks.attachCopy).toHaveBeenCalledOnce()
     expect(mocks.attachActions).toHaveBeenCalledOnce()
     expect(mocks.attachExpand).toHaveBeenCalledOnce()
@@ -156,7 +123,7 @@ describe('shared Mermaid render service', () => {
     expect(node.classList.contains('mdp-mermaid--error')).toBe(true)
     expect(node.children[0].children[1]).toMatchObject({
       textContent: 'Parse failed',
-      attributes: { role: 'alert' }
+      role: 'alert'
     })
     expect(node.children[2].textContent).toBe(source)
     expect(mocks.attachCopy).toHaveBeenCalledWith(node, expect.objectContaining({ source }))
@@ -176,6 +143,7 @@ describe('shared Mermaid render service', () => {
       settings: { plugins: { mermaid: { renderer: 'official' } } },
       signal: controller.signal
     })).rejects.toMatchObject({ name: 'AbortError' })
-    expect(node.mountedHtml).toBeUndefined()
+    expect(node.querySelector('svg')).toBeNull()
+    expect(node.textContent).toBe('flowchart LR\nA-->B')
   })
 })

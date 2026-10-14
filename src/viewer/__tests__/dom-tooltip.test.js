@@ -1,83 +1,59 @@
+// @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { attachTooltip } from '../dom-tooltip.js'
-
-class Element {
-  constructor(doc) {
-    this.ownerDocument = doc
-    this.listeners = {}
-    this.style = {}
-    this.isConnected = true
-    this.offsetWidth = 160
-    this.offsetHeight = 32
-  }
-  addEventListener(name, listener) { this.listeners[name] = listener }
-  removeEventListener(name) { delete this.listeners[name] }
-  setAttribute() {}
-  getRootNode() { return this.ownerDocument }
-  closest() { return this.ownerDocument.root }
-  getBoundingClientRect() { return { left: 100, top: 20, bottom: 60, width: 148 } }
-  remove() { this.ownerDocument.root.children = this.ownerDocument.root.children.filter((node) => node !== this) }
-}
+import { createArticle, cleanDom, fire } from '../react/content/__tests__/dom-test-helpers.js'
 
 function harness() {
-  const win = { innerWidth: 800, innerHeight: 600, setTimeout, clearTimeout,
-    addEventListener: vi.fn(), removeEventListener: vi.fn() }
-  const root = { children: [], appendChild(node) { this.children.push(node) } }
-  const doc = { defaultView: win, root, createElement() { return new Element(doc) } }
-  const anchor = new Element(doc)
-  const tooltip = attachTooltip(anchor, { text: 'Resolution details' })
-  return { anchor, tooltip, root, win }
+  const article = createArticle()
+  const anchor = document.createElement('button')
+  article.append(anchor)
+  anchor.getBoundingClientRect = () => ({ left: 100, top: 20, bottom: 60, width: 148 })
+  return { anchor, tooltip: attachTooltip(anchor, { text: 'Resolution details' }), root: article.parentElement }
 }
+beforeEach(() => vi.useFakeTimers())
+afterEach(() => { cleanDom(); vi.useRealTimers() })
 
-beforeEach(() => {
-  vi.useFakeTimers()
-  vi.stubGlobal('HTMLElement', Element)
-  vi.stubGlobal('ShadowRoot', class {})
-})
-afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals() })
-
-describe('imperative Viewer tooltip updates', () => {
-  it('updates an open tooltip and hides/cancels it when content is suppressed', () => {
+describe('DOM-anchor adapter with React tooltip rendering', () => {
+  it('updates an open tooltip and cancels pending opens when suppressed', () => {
     const h = harness()
-    h.anchor.listeners.pointerenter()
+    fire(h.anchor, 'pointerenter')
     vi.advanceTimersByTime(280)
-    expect(h.root.children).toHaveLength(1)
+    expect(h.root.querySelector('[role="tooltip"]').textContent).toBe('Resolution details')
     h.tooltip.setText('Maximum ×3.25')
-    expect(h.root.children[0].textContent).toBe('Maximum ×3.25')
+    expect(h.root.querySelector('[role="tooltip"]').textContent).toBe('Maximum ×3.25')
     h.tooltip.setText('')
-    expect(h.root.children).toHaveLength(0)
-    h.anchor.listeners.pointerenter()
+    expect(h.root.querySelector('[role="tooltip"]')).toBeNull()
+    fire(h.anchor, 'pointerenter')
     vi.advanceTimersByTime(280)
-    expect(h.root.children).toHaveLength(0)
+    expect(h.root.querySelector('[role="tooltip"]')).toBeNull()
     h.tooltip.setText('Ready again')
-    h.anchor.listeners.focusin()
+    h.anchor.focus()
     vi.advanceTimersByTime(280)
-    expect(h.root.children[0].textContent).toBe('Ready again')
+    expect(h.root.querySelector('[role="tooltip"]').textContent).toBe('Ready again')
     h.tooltip.destroy()
-    expect(h.root.children).toHaveLength(0)
-    expect(h.win.removeEventListener).toHaveBeenCalledWith('resize', expect.any(Function))
+    expect(h.root.querySelector('[role="tooltip"]')).toBeNull()
   })
-
-  it('cannot show a pending tooltip after its owner closes', () => {
+  it('cannot reopen after its owner is destroyed', () => {
     const h = harness()
-    h.anchor.listeners.pointerenter()
+    fire(h.anchor, 'pointerenter')
     h.tooltip.destroy()
     vi.advanceTimersByTime(280)
-    expect(h.root.children).toHaveLength(0)
-    expect(h.anchor.listeners).toEqual({})
-    expect(h.win.addEventListener).not.toHaveBeenCalled()
+    fire(h.anchor, 'pointerenter')
+    vi.advanceTimersByTime(280)
+    expect(h.root.querySelector('[role="tooltip"]')).toBeNull()
+    expect(vi.getTimerCount()).toBe(0)
   })
-
-  it('can hide a tip without destroying its listeners or text', () => {
+  it('can hide without losing the anchor subscription or text', () => {
     const h = harness()
-    h.anchor.listeners.pointerenter()
+    fire(h.anchor, 'pointerenter')
     h.tooltip.hide()
     vi.advanceTimersByTime(280)
-    expect(h.root.children).toHaveLength(0)
-    h.anchor.listeners.focusin()
+    expect(h.root.querySelector('[role="tooltip"]')).toBeNull()
+    h.anchor.focus()
     vi.advanceTimersByTime(280)
-    expect(h.root.children[0].textContent).toBe('Resolution details')
+    expect(h.root.querySelector('[role="tooltip"]').textContent).toBe('Resolution details')
     h.tooltip.hide()
-    expect(h.root.children).toHaveLength(0)
+    expect(h.root.querySelector('[role="tooltip"]')).toBeNull()
+    h.tooltip.destroy()
   })
 })

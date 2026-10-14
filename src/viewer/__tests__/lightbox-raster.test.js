@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createLightboxRasterSession } from '../lightbox-raster.js'
+import { createLightboxRasterSession } from '../media/lightbox-raster.js'
 
 function deferred() {
   let resolve
@@ -112,7 +112,8 @@ describe('lightbox bitmap session lifecycle', () => {
     expect(await update).toBe(false)
     expect(h.host.replaceChildren).not.toHaveBeenCalled()
     expect(h.revokeObjectURL).toHaveBeenCalledWith('blob:resolution-1')
-    expect(h.host.classList.remove).toHaveBeenCalledWith('mdp-lightbox-rasterized')
+    expect(h.host.classList.add).not.toHaveBeenCalled()
+    expect(h.host.classList.remove).not.toHaveBeenCalled()
   })
 
   it('retains the last successful surface on failure and does not claim the requested resolution', async () => {

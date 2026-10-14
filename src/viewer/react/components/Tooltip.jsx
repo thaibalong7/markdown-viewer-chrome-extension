@@ -7,11 +7,12 @@ import React, {
   useState
 } from 'react'
 import { createPortal } from 'react-dom'
+import { TooltipBubble } from '../content/TooltipBubble.jsx'
 import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../../../shared/constants/tooltip.js'
 
 const TIP_MARGIN_PX = 8
 const VIEWPORT_PAD_PX = 6
-const VIEWER_ROOT_SELECTOR = '#mdp-viewer-root'
+const VIEWER_ROOT_SELECTOR = '.mdp-root, #mdp-viewer-root'
 
 /** @param {import('react').Ref | undefined | null} ref @param {HTMLElement | null} node */
 function assignRef(ref, node) {
@@ -191,7 +192,7 @@ export function Tooltip({
       } else {
         setPortalTarget(null)
       }
-      assignRef(child.ref, node)
+      assignRef(child.props.ref, node)
     },
     onPointerEnter: (event) => {
       child.props.onPointerEnter?.(event)
@@ -223,19 +224,7 @@ export function Tooltip({
   })
 
   const tipNode = visible ? (
-    <div
-      ref={tipRef}
-      className="mdp-tooltip"
-      style={{
-        position: 'fixed',
-        zIndex: 2147483646,
-        top: coords.top,
-        left: coords.left
-      }}
-      role="tooltip"
-    >
-      {text}
-    </div>
+    <TooltipBubble tooltipRef={tipRef} text={text} style={{ position: 'fixed', zIndex: 2147483646, top: coords.top, left: coords.left }} />
   ) : null
 
   return (

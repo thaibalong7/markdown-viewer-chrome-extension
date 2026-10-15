@@ -69,7 +69,8 @@ describe('Per-icon Viewer choreography', () => {
   it('protects expanded disclosure orientation, hidden swaps and actual busy animations', () => {
     expect(css).toContain(':not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion])')
     expect(css).toContain(':not(:disabled, [aria-disabled=true], [aria-busy=true])')
-    expect(APPLICATION_ICONS['file-details'].elements.find(([, attrs]) => attrs['data-icon-part'] === 'chevron')[1]['data-icon-local-motion']).toBe('true')
+    // The frame and metadata must stay outside decorative animation bindings.
+    expect(bindings.filter(binding => binding.key === 'app/file-details').map(binding => binding.part)).toEqual(['chevron'])
     const reduced = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'))
     expect(reduced).toContain('[data-icon-part]:not([data-icon-local-motion])')
     expect(reduced).toContain('animation: none !important;')

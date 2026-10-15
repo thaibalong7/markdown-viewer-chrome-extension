@@ -3799,40 +3799,26 @@
 }
 .mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] {
   --mdp-icon-recipe: app-file-details;
-  --mdp-icon-motion-label: 'Details card scans its information lines';
-  --mdp-icon-motion-duration: 600ms;
-  --mdp-icon-press-pose: scaleY(0.95);
+  --mdp-icon-motion-label: 'Chevron hinges in place; frame and metadata remain still';
+  --mdp-icon-motion-duration: 360ms;
+  --mdp-icon-press-pose: none;
 }
-.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=lines] {
-  --mdp-icon-part-animation: mdp-details-scan;
-  --mdp-icon-part-origin: 7px 8px;
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-details-hinge;
+  --mdp-icon-part-origin: 12px 15.5px;
   --mdp-icon-part-delay: 0ms;
-}
-.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=card] {
-  --mdp-icon-part-animation: mdp-details-card;
-  --mdp-icon-part-origin: 12px 12px;
-  --mdp-icon-part-delay: 0ms;
+  --mdp-icon-part-press: scaleY(0.7);
 }
 
-@keyframes mdp-details-scan {
+@keyframes mdp-details-hinge {
   0%, 100% {
     transform: none;
-    opacity: 1;
   }
-  35% {
-    transform: scaleX(0.55);
-    opacity: 0.25;
+  40% {
+    transform: scaleY(0.45);
   }
-  70% {
-    transform: scaleX(1.05);
-  }
-}
-@keyframes mdp-details-card {
-  0%, 100% {
-    opacity: 1;
-  }
-  35% {
-    opacity: 0.65;
+  72% {
+    transform: scaleY(0.9);
   }
 }
 .mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] {
@@ -4459,7 +4445,7 @@
 .mdp-root svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
   transform-box: view-box;
   transform-origin: var(--mdp-icon-part-origin, var(--mdp-icon-center));
-  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease;
+  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease, rotate 200ms ease;
 }
 
 @media (prefers-reduced-motion: no-preference) {

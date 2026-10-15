@@ -1389,40 +1389,26 @@
 }
 .mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] {
   --mdp-icon-recipe: app-file-details;
-  --mdp-icon-motion-label: 'Details card scans its information lines';
-  --mdp-icon-motion-duration: 600ms;
-  --mdp-icon-press-pose: scaleY(0.95);
+  --mdp-icon-motion-label: 'Chevron hinges in place; frame and metadata remain still';
+  --mdp-icon-motion-duration: 360ms;
+  --mdp-icon-press-pose: none;
 }
-.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=lines] {
-  --mdp-icon-part-animation: mdp-details-scan;
-  --mdp-icon-part-origin: 7px 8px;
+.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=chevron] {
+  --mdp-icon-part-animation: mdp-details-hinge;
+  --mdp-icon-part-origin: 12px 15.5px;
   --mdp-icon-part-delay: 0ms;
-}
-.mdp-root svg[data-mdp-family=app][data-mdp-icon=file-details] > [data-icon-part=card] {
-  --mdp-icon-part-animation: mdp-details-card;
-  --mdp-icon-part-origin: 12px 12px;
-  --mdp-icon-part-delay: 0ms;
+  --mdp-icon-part-press: scaleY(0.7);
 }
 
-@keyframes mdp-details-scan {
+@keyframes mdp-details-hinge {
   0%, 100% {
     transform: none;
-    opacity: 1;
   }
-  35% {
-    transform: scaleX(0.55);
-    opacity: 0.25;
+  40% {
+    transform: scaleY(0.45);
   }
-  70% {
-    transform: scaleX(1.05);
-  }
-}
-@keyframes mdp-details-card {
-  0%, 100% {
-    opacity: 1;
-  }
-  35% {
-    opacity: 0.65;
+  72% {
+    transform: scaleY(0.9);
   }
 }
 .mdp-root svg[data-mdp-family=app][data-mdp-icon=arrow-up] {
@@ -2049,7 +2035,7 @@
 .mdp-root svg[data-mdp-icon][data-mdp-family=app]:not([data-icon-visible=false]) > [data-icon-part]:not([data-icon-local-motion]) {
   transform-box: view-box;
   transform-origin: var(--mdp-icon-part-origin, var(--mdp-icon-center));
-  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease;
+  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease, rotate 200ms ease;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -2214,7 +2200,7 @@
 <article class="ds-icon-tile" data-search="Sidebar chevron left sidebar-chevron-left Left panel shutter pulls inward src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Sidebar chevron left animation" aria-describedby="motion-app-sidebar-chevron-left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-left" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m15 6-6 6 6 6" data-icon-part="chevron" pathLength="1"></path></svg></button><strong>Sidebar chevron left</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-sidebar-chevron-left">Left panel shutter pulls inward · 460ms</p><a href="../../src/shared/icons/application-icons.js">sidebar-chevron-left · source</a></article>
 <article class="ds-icon-tile" data-search="Sidebar chevron right sidebar-chevron-right Right panel shutter swings on its hinge src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Sidebar chevron right animation" aria-describedby="motion-app-sidebar-chevron-right"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="sidebar-chevron-right" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m9 6 6 6-6 6" data-icon-part="chevron" pathLength="1"></path></svg></button><strong>Sidebar chevron right</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-sidebar-chevron-right">Right panel shutter swings on its hinge · 520ms</p><a href="../../src/shared/icons/application-icons.js">sidebar-chevron-right · source</a></article>
 <article class="ds-icon-tile" data-search="Chevron down chevron-down Down chevron folds before descending src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Chevron down animation" aria-describedby="motion-app-chevron-down"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="chevron-down" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m6.5 9.5 5.5 5.5 5.5-5.5" data-icon-part="chevron" pathLength="1"></path></svg></button><strong>Chevron down</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-chevron-down">Down chevron folds before descending · 570ms</p><a href="../../src/shared/icons/application-icons.js">chevron-down · source</a></article>
-<article class="ds-icon-tile" data-search="Show or hide file details file-details Details card scans its information lines src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Show or hide file details animation" aria-describedby="motion-app-file-details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="file-details" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="3" width="18" height="18" rx="2" data-icon-part="card" pathLength="1"></rect><path d="M7 7h10 M7 10h6" data-icon-part="lines" pathLength="1"></path><path data-icon-part="chevron" d="m9 14 3 3 3-3" pathLength="1" data-icon-local-motion="true"></path></svg></button><strong>Show or hide file details</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-file-details">Details card scans its information lines · 600ms</p><a href="../../src/shared/icons/application-icons.js">file-details · source</a></article>
+<article class="ds-icon-tile" data-search="Show or hide file details file-details Chevron hinges in place; frame and metadata remain still src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Show or hide file details animation" aria-describedby="motion-app-file-details"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="file-details" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><rect x="3" y="3" width="18" height="18" rx="2" data-icon-part="card" pathLength="1"></rect><path d="M7 7h10 M7 10h6" data-icon-part="lines" pathLength="1"></path><path data-icon-part="chevron" d="m9 14 3 3 3-3" pathLength="1"></path></svg></button><strong>Show or hide file details</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-file-details">Chevron hinges in place; frame and metadata remain still · 360ms</p><a href="../../src/shared/icons/application-icons.js">file-details · source</a></article>
 <article class="ds-icon-tile" data-search="Back to top arrow-up Arrowhead launches ahead of its shaft src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Back to top animation" aria-describedby="motion-app-arrow-up"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="arrow-up" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M12 20V4" data-icon-part="shaft" pathLength="1"></path><path d="m6 10 6-6 6 6" data-icon-part="head" pathLength="1"></path></svg></button><strong>Back to top</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-arrow-up">Arrowhead launches ahead of its shaft · 610ms</p><a href="../../src/shared/icons/application-icons.js">arrow-up · source</a></article>
 <article class="ds-icon-tile" data-search="Close close Cross arms fold together and reopen src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Close animation" aria-describedby="motion-app-close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="close" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="m6 6 12 12" data-icon-part="falling" pathLength="1"></path><path d="M18 6 6 18" data-icon-part="rising" pathLength="1"></path></svg></button><strong>Close</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-close">Cross arms fold together and reopen · 560ms</p><a href="../../src/shared/icons/application-icons.js">close · source</a></article>
 <article class="ds-icon-tile" data-search="Recent files history History hand rewinds behind its return hook src/shared/icons/application-icons.js"><button class="ds-icon-preview" type="button" aria-label="Preview Recent files animation" aria-describedby="motion-app-history"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-mdp-icon="history" data-mdp-family="app" style="stroke:currentColor;stroke-width:1.8"><path d="M3 5v5h5" data-icon-part="return" pathLength="1"></path><path d="M3.7 9a8.5 8.5 0 1 1-.2 5" data-icon-part="ring" pathLength="1"></path><path d="M12 7v5l3 2" data-icon-part="hands" pathLength="1"></path></svg></button><strong>Recent files</strong><small>24 grid · 1.8 stroke</small><p class="ds-icon-story" id="motion-app-history">History hand rewinds behind its return hook · 780ms</p><a href="../../src/shared/icons/application-icons.js">history · source</a></article>

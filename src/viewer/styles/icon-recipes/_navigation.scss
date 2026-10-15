@@ -132,12 +132,15 @@
 @include r.icon(app, sidebar-chevron-right, 'Right panel shutter swings on its hinge', 520ms, skewX(5deg)) { @include r.part(chevron, mdp-sidebar-right, 9px 12px); }
 @keyframes mdp-sidebar-right { 0%, 100% { transform: none; } 38% { transform: skewY(-8deg) scaleX(0.85); } 68% { transform: skewY(3deg); } }
 
-@include r.icon(app, file-details, 'Details card scans its information lines', 600ms, scaleY(0.95)) {
-  @include r.part(lines, mdp-details-scan, 7px 8px);
-  @include r.part(card, mdp-details-card);
+// Only the chevron folds. The frame and metadata retain their exact geometry.
+@include r.icon(app, file-details, 'Chevron hinges in place; frame and metadata remain still', 360ms, none) {
+  @include r.part(chevron, mdp-details-hinge, 12px 15.5px, 0ms, scaleY(0.7));
 }
-@keyframes mdp-details-scan { 0%, 100% { transform: none; opacity: 1; } 35% { transform: scaleX(0.55); opacity: 0.25; } 70% { transform: scaleX(1.05); } }
-@keyframes mdp-details-card { 0%, 100% { opacity: 1; } 35% { opacity: 0.65; } }
+@keyframes mdp-details-hinge {
+  0%, 100% { transform: none; }
+  40% { transform: scaleY(0.45); }
+  72% { transform: scaleY(0.9); }
+}
 
 @include r.icon(app, arrow-up, 'Arrowhead launches ahead of its shaft', 610ms, translateY(-0.9px) scaleY(0.96)) {
   @include r.part(head, mdp-up-head);

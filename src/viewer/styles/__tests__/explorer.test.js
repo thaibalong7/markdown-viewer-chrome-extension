@@ -21,10 +21,11 @@ describe('explorer interaction styles', () => {
   it('animates the details height and chevron, removes collapsed space, and respects reduced motion', () => {
     expect(explorerCss).toMatch(/\.mdp-explorer__details\s*\{[^}]*grid-template-rows: 0fr;[^}]*transition: grid-template-rows 200ms/s)
     expect(explorerCss).toMatch(/\.mdp-explorer__details\.is-expanded\s*\{[^}]*grid-template-rows: 1fr;/s)
+    expect(explorerCss).toMatch(/\.mdp-explorer__details-icon\.is-expanded \[data-icon-part=chevron\]\s*\{\s*rotate: 180deg;/)
     expect(explorerCss).toMatch(/\.mdp-explorer__details-content\s*\{[^}]*visibility: hidden;[^}]*opacity: 0;[^}]*transition: opacity 160ms ease;/s)
     expect(explorerCss).not.toMatch(/visibility 0s linear/)
     expect(explorerCss).toMatch(/\.mdp-explorer__details-clip\s*\{[^}]*min-height: 0;[^}]*overflow: hidden;/s)
-    expect(explorerCss).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.mdp-explorer__details,\s*\.mdp-explorer__details-content,\s*\.mdp-explorer__details-icon \[data-icon-part=chevron\]\s*\{\s*transition: none;/s)
+    expect(explorerCss).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.mdp-explorer__details,\s*\.mdp-explorer__details-content\s*\{\s*transition: none;/s)
     expect(explorerCss).toMatch(/@media \(pointer: coarse\)\s*\{\s*\.mdp-explorer\s*\{[^}]*--mdp-explorer-action-size: 44px;/s)
   })
 
@@ -35,7 +36,7 @@ describe('explorer interaction styles', () => {
     expect(explorerCss).toMatch(/\.mdp-explorer__context-commands > :nth-last-child\(2\)\s*\{[^}]*animation-delay: 25ms;/s)
     expect(explorerCss).toMatch(/\.mdp-explorer__context-commands > :nth-last-child\(3\)\s*\{[^}]*animation-delay: 50ms;/s)
     expect(explorerCss).toMatch(
-      /@keyframes mdp-explorer-context-command-in\s*\{\s*from\s*\{[^}]*opacity: 0;[^}]*transform: translateX\(6px\) scale\(0\.92\);[^}]*\}\s*to\s*\{[^}]*opacity: 1;[^}]*transform: none;/s
+      /@keyframes mdp-explorer-context-command-in\s*\{\s*from\s*\{[^}]*opacity: 0;[^}]*transform: translateY\(4px\);[^}]*\}\s*to\s*\{[^}]*opacity: 1;[^}]*transform: none;/s
     )
     expect(explorerCss).toMatch(
       /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\.mdp-explorer__context-commands > \*\s*\{[^}]*animation: none;/

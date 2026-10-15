@@ -11,7 +11,7 @@ $glyphs: 'svg[data-mdp-icon][data-mdp-family="app"]:not([data-icon-visible="fals
 .mdp-root #{$glyphs} > [data-icon-part]:not([data-icon-local-motion]) {
   transform-box: view-box;
   transform-origin: var(--mdp-icon-part-origin, var(--mdp-icon-center));
-  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease;
+  transition: transform var(--mdp-icon-press-duration) var(--mdp-icon-ease), opacity 160ms ease, rotate 200ms ease;
 }
 
 @mixin play {

@@ -1,15 +1,20 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createMediaLightboxController } from '../../../media/media-lightbox-controller.js'
+import { createLightboxRasterSession, readSvgSource } from '../../../media/lightbox-raster.js'
+import { getRasterDimensions } from '../../../media/resolution-model.js'
 import { openImageLightbox, closeImageLightbox, destroyImageLightbox } from '../../../media/image-lightbox-controller.js'
 import { openMermaidLightbox, closeMermaidLightbox, destroyMermaidLightbox } from '../../../media/mermaid-lightbox-controller.js'
 import { createArticle, cleanDom, fire } from './dom-test-helpers.js'
 const raster = vi.hoisted(() => ({ sessions: [] }))
-vi.mock('../../../media/lightbox-raster.js', () => ({ createLightboxRasterSession: vi.fn(options => {
-  const session = { options, update: vi.fn(async () => true), destroy: vi.fn() }
-  raster.sessions.push(session)
-  return session
-}) }))
+vi.mock('../../../media/lightbox-raster.js', () => ({
+  readSvgSource: vi.fn(async () => '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"/>'),
+  createLightboxRasterSession: vi.fn(options => {
+    const session = { options, update: vi.fn(async () => true), destroy: vi.fn() }
+    raster.sessions.push(session)
+    return session
+  })
+}))
 afterEach(() => { destroyImageLightbox(); destroyMermaidLightbox(); cleanDom(); raster.sessions = []; vi.clearAllMocks() })
 function harness(kind = 'image') {
   const article = createArticle()
@@ -19,6 +24,13 @@ function harness(kind = 'image') {
   const controller = createMediaLightboxController({ rootEl: root, kind })
   const open = options => controller.open({ source, dimensions: { width: 600, height: 400 }, ...options })
   return { article, root, source, controller, open, overlay: root.querySelector('[role="dialog"]'), canvas: root.querySelector(`.mdp-${kind}-lightbox__canvas`) }
+}
+function svgHarness() {
+  const h = harness(); h.controller.destroy()
+  h.source.src = 'file:///diagram.svg'
+  h.source.dataset.mdpFileType = 'svg-image'
+  Object.defineProperties(h.source, { complete: { value: true }, naturalWidth: { value: 300 }, naturalHeight: { value: 162 } })
+  return h
 }
 describe('React media lightbox with imperative media island', () => {
   it('opens, zooms and fits without changing the viewer image, then restores focus', () => {
@@ -87,7 +99,7 @@ describe('React media lightbox with imperative media island', () => {
     expect(source.getAttribute('width')).toBeNull()
     h.controller.destroy()
   })
-  it('uses capability-based resolution only for SVG images and reuses one image overlay', () => {
+  it('uses capability-based resolution only for SVG images and reuses one image overlay', async () => {
     const h = harness(); h.controller.destroy()
     Object.defineProperties(h.source, { complete: { value: true }, naturalWidth: { value: 600 }, naturalHeight: { value: 400 } })
     expect(openImageLightbox(h.source)).toBe(true)
@@ -95,8 +107,80 @@ describe('React media lightbox with imperative media island', () => {
     closeImageLightbox()
     h.source.dataset.mdpFileType = 'svg-image'
     expect(openImageLightbox(h.source)).toBe(true)
-    expect(raster.sessions).toHaveLength(1)
+    await vi.waitFor(() => expect(raster.sessions).toHaveLength(1))
     expect(h.root.querySelectorAll('.mdp-image-lightbox')).toHaveLength(1)
+  })
+  it('uses landscape metadata for both the zoom canvas and resolution without changing the viewer image', async () => {
+    const h = svgHarness()
+    const text = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1280 690"><text x="12" y="24">Landscape</text></svg>'
+    vi.mocked(readSvgSource).mockResolvedValueOnce(text)
+    const original = h.source.outerHTML
+    expect(openImageLightbox(h.source)).toBe(true)
+    await vi.waitFor(() => expect(raster.sessions).toHaveLength(1))
+    const canvas = h.root.querySelector('.mdp-image-lightbox__canvas')
+    expect(canvas.style.width).toBe('1280px')
+    expect(canvas.style.height).toBe('690px')
+    const options = raster.sessions[0].options
+    expect(getRasterDimensions({ ...options, resolution: 2 })).toEqual({ width: 2560, height: 1380 })
+    expect(await options.readSource()).toBe(text)
+    expect(readSvgSource).toHaveBeenCalledOnce()
+    expect(h.source.outerHTML).toBe(original)
+    const transform = canvas.style.transform
+    fire(h.root.querySelector('[aria-label="Zoom in image"]'), 'click')
+    expect(canvas.style.transform).not.toBe(transform)
+    fire(window, 'keydown', { key: '0' })
+    expect(canvas.style.transform).toBe(transform)
+  })
+  it.each(['close', 'destroy', 'escape', 'detach', 'replace'])('does not open a late SVG after %s', async action => {
+    const h = svgHarness()
+    let finish
+    vi.mocked(readSvgSource).mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+    openImageLightbox(h.source)
+    const signal = vi.mocked(readSvgSource).mock.calls[0][1]
+    if (action === 'close') closeImageLightbox()
+    if (action === 'destroy') destroyImageLightbox()
+    if (action === 'escape') fire(window, 'keydown', { key: 'Escape' })
+    if (action === 'detach') h.source.remove()
+    if (action === 'replace') h.source.src = 'file:///replacement.svg'
+    finish('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 690"/>')
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(raster.sessions).toHaveLength(0)
+    expect(h.root.querySelector('.mdp-image-lightbox')?.hidden ?? true).toBe(true)
+    if (['close', 'destroy', 'escape'].includes(action)) expect(signal.aborted).toBe(true)
+  })
+  it('ignores an older SVG read when another image opens', async () => {
+    const h = svgHarness()
+    let finish
+    vi.mocked(readSvgSource).mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+    openImageLightbox(h.source)
+    h.source.src = 'file:///next.svg'
+    openImageLightbox(h.source)
+    await vi.waitFor(() => expect(raster.sessions).toHaveLength(1))
+    finish('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 690"/>')
+    await Promise.resolve()
+    expect(raster.sessions).toHaveLength(1)
+    expect(raster.sessions[0].options).toMatchObject({ width: 600, height: 400 })
+  })
+  it.each(['invalid', 'fragment'])('keeps browser dimensions for %s SVG metadata', async mode => {
+    const h = svgHarness()
+    if (mode === 'fragment') h.source.src += '#detail'
+    vi.mocked(readSvgSource).mockResolvedValueOnce(mode === 'invalid' ? '<svg' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 690"/>')
+    openImageLightbox(h.source)
+    await vi.waitFor(() => expect(raster.sessions).toHaveLength(1))
+    expect(raster.sessions[0].options).toMatchObject({ width: 300, height: 162 })
+  })
+  it('reports a failed SVG read through resolution controls without reading the source twice', async () => {
+    const h = svgHarness()
+    const actual = await vi.importActual('../../../media/lightbox-raster.js')
+    vi.mocked(createLightboxRasterSession).mockImplementationOnce(actual.createLightboxRasterSession)
+    vi.mocked(readSvgSource).mockRejectedValueOnce(new Error('SVG source unavailable'))
+    openImageLightbox(h.source)
+    await vi.waitFor(() => expect(h.root.querySelector('.mdp-lightbox-resolution')?.textContent).toContain('Unavailable'))
+    expect(h.root.querySelector('.mdp-lightbox-resolution__trigger').getAttribute('aria-label')).toContain('SVG source unavailable')
+    expect(readSvgSource).toHaveBeenCalledOnce()
+    expect(h.root.querySelector('.mdp-image-lightbox__canvas').style.width).toBe('300px')
+    expect(h.root.querySelector('.mdp-image-lightbox__canvas img')).not.toBeNull()
   })
   it('opens the standalone/fenced Mermaid adapter and returns focus to its caller', () => {
     const h = harness('mermaid'); h.controller.destroy()

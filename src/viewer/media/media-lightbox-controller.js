@@ -123,7 +123,7 @@ export function createMediaLightboxController({ rootEl, kind }) {
     if (returnFocusEl?.isConnected) returnFocusEl.focus?.({ preventScroll: true })
     returnFocusEl = null
   }
-  function open({ source, dimensions, baseResolution = 1, resolution = null, focusTarget = source }) {
+  function open({ source, dimensions, baseResolution = 1, resolution = null, focusTarget = source, readSource }) {
     if (destroyed) return false
     rasterSession?.destroy()
     rasterSession = null
@@ -142,7 +142,7 @@ export function createMediaLightboxController({ rootEl, kind }) {
     const initial = controls.setResolution(resolution, { width, height, baseResolution })
     state.rasterized = initial != null
     if (initial != null) {
-      const session = createLightboxRasterSession({ host: nodes.canvas, source, width, height, baseResolution, controls })
+      const session = createLightboxRasterSession({ host: nodes.canvas, source, width, height, baseResolution, controls, readSource })
       rasterSession = session
       controls.setBusy(true)
       void session.update(initial).then(() => { if (!destroyed && rasterSession === session) controls.setBusy(false) })

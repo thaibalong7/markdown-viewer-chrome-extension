@@ -29,7 +29,7 @@ function loadImage(url, signal) {
   })
 }
 
-async function readSvgSource(source, signal) {
+export async function readSvgSource(source, signal) {
   if (source.namespaceURI === SVG_NS) {
     // This is already sanitized Mermaid output; serialize only the detached copy.
     const clone = source.cloneNode(true)

@@ -14,7 +14,7 @@ This document describes the implemented boundary between React application contr
 | Mermaid control registration, export actions and menu geometry | `src/plugins/optional/mermaid-actions.js`, `mermaid-export.js` |
 | Lightbox and resolution JSX | `src/viewer/react/content/media/` |
 | Shared pan/zoom, native input listeners, raster-session lifecycle | `src/viewer/media/media-lightbox-controller.js` |
-| Image and Mermaid entry adapters / source dimensions | `src/viewer/media/image-lightbox-controller.js`, `mermaid-lightbox-controller.js` |
+| Image and Mermaid entry adapters / source dimensions | `src/viewer/media/image-lightbox-controller.js`, `svg-image-dimensions.js`, `mermaid-lightbox-controller.js` |
 | Pure density presets and bitmap limits | `src/viewer/media/resolution-model.js` |
 | Resolution interaction and stale-request guards | `src/viewer/media/resolution-controller.js` |
 | SVG reads, decoding, bitmap buffers and object URLs | `src/viewer/media/lightbox-raster.js` |
@@ -41,6 +41,8 @@ React owns the shell and application controls. The document renderers own saniti
 The separate content root keeps imperative document rendering independent of shell reconciliation. All content registrations share it; a code block, swatch or tooltip never creates its own root. The registry retains unchanged React elements across commits, and independent slot registrations can be batched. React component state still updates through normal React scheduling.
 
 A toolbar slot starts empty. After registration, its children belong exclusively to React until disposal. React never reconciles the sibling `pre` or chart SVG. A lightbox similarly declares an empty canvas host: the media controller owns its cloned image/sanitized SVG and the raster session may replace it with a decoded PNG. React owns the overlay, buttons, hints and resolution slot around that canvas. High-frequency gesture transforms update the canvas ref without document rerenders.
+
+SVG image openings read detached XML metadata before choosing the lightbox's logical dimensions. Absolute root dimensions (including inline CSS) take precedence; a valid `viewBox` supplies missing dimensions or the size for percentage-based SVGs. For example, `width="100%" viewBox="0 0 1280 690"` opens on a 1280 × 690 logical canvas, and Resolution ×2 renders 2560 × 1380 pixels. The same source snapshot is reused for rasterization. Invalid/unreadable metadata and view fragments retain browser-provided dimensions; raster images retain their natural dimensions. Pending SVG reads are aborted on close, Escape, reopening or teardown, and detached/replaced source images cannot open a stale overlay. This sizing affects only the zoom view; the article image and source file stay unchanged.
 
 For a document state, the state adapter clears existing scoped portals, empties the target and transfers its children to React. This temporary ownership ends before a renderer inserts document content. Image loading uses an empty state slot beside the renderer-owned image. The article node itself stays stable.
 

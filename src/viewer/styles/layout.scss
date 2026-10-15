@@ -437,7 +437,7 @@
 .mdp-content-pane {
   grid-column: 2;
   grid-row: 1;
-  padding: clamp(12px, 1.5vw, 20px) clamp(16px, 2.5vw, 36px) 48px;
+  padding: 16px clamp(16px, 2vw, 28px) 48px;
   min-width: 0;
   background: var(--mdp-content-layer-background);
 }
@@ -554,7 +554,7 @@
   }
 
   .mdp-content-pane {
-    padding-inline: clamp(16px, 4vw, 32px);
+    padding-inline: 16px;
   }
 }
 
@@ -584,7 +584,7 @@
 
   .mdp-content-pane {
     grid-column: 1;
-    padding: 8px 10px 64px;
+    padding: 12px 8px 64px;
   }
 }
 

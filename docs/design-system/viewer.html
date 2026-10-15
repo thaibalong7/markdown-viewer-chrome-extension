@@ -299,7 +299,7 @@
     .mdp-content-pane {
       grid-column: 2;
       min-width: 0;
-      padding: clamp(12px, 1.5vw, 20px) clamp(16px, 2.5vw, 36px) 48px;
+      padding: 16px clamp(16px, 2vw, 28px) 48px;
       background: var(--mdp-surface);
     }
 
@@ -308,7 +308,7 @@
       max-width: var(--mdp-content-max-width);
       min-height: calc(100vh - clamp(40px, 6vw, 88px));
       margin: 0 auto;
-      padding: clamp(16px, 2vw, 28px) clamp(20px, 3.5vw, 48px) clamp(36px, 5vw, 64px);
+      padding: 16px clamp(12px, 2vw, 24px) 48px;
       background: transparent;
       color: var(--mdp-body-text);
       font-family: var(--mdp-font-family);
@@ -323,7 +323,7 @@
       gap: 6px;
       max-width: var(--mdp-content-max-width);
       margin: 0 auto;
-      padding: 8px clamp(20px, 3.5vw, 48px) 0;
+      padding: 8px clamp(12px, 2vw, 24px) 0;
       color: var(--mdp-muted);
       font-size: 12px;
       font-weight: 560;
@@ -552,7 +552,7 @@
 
 
       .mdp-content-pane {
-        padding-inline: clamp(16px, 4vw, 32px);
+        padding-inline: 16px;
       }
     }
 
@@ -565,16 +565,16 @@
 
       .mdp-content-pane {
         grid-column: 1;
-        padding: 8px 10px 64px;
+        padding: 12px 8px 64px;
       }
 
       .mdp-markdown-body {
         min-height: calc(100vh - 24px);
-        padding: 16px 14px 40px;
+        padding: 16px 8px 32px;
       }
 
       .mdp-document-stats {
-        padding-inline: 14px;
+        padding-inline: 8px;
       }
 
       .mdp-scroll-to-top {
@@ -2846,7 +2846,7 @@
     display: none;
   }
   .mdp-content-pane {
-    padding-inline: clamp(16px, 4vw, 32px);
+    padding-inline: 16px;
   }
 }
 @media (max-width: 639px) {
@@ -2872,7 +2872,7 @@
   }
   .mdp-content-pane {
     grid-column: 1;
-    padding: 8px 10px 64px;
+    padding: 12px 8px 64px;
   }
 }
 @media (pointer: coarse) {

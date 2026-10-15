@@ -8,16 +8,16 @@ const contentCss = compile(fileURLToPath(new URL('../content.scss', import.meta.
 describe('reader content spacing', () => {
   it('keeps the outer content pane compact', () => {
     expect(layoutCss).toMatch(
-      /\.mdp-content-pane\s*\{[^}]*padding: clamp\(12px, 1\.5vw, 20px\) clamp\(16px, 2\.5vw, 36px\) 48px;/s
+      /\.mdp-content-pane\s*\{[^}]*padding: 16px clamp\(16px, 2vw, 28px\) 48px;/s
     )
   })
 
   it('keeps article padding compact on desktop and mobile', () => {
     expect(contentCss).toMatch(
-      /\.mdp-markdown-body\s*\{[^}]*padding: clamp\(16px, 2vw, 28px\) clamp\(20px, 3\.5vw, 48px\) clamp\(36px, 5vw, 64px\);/s
+      /\.mdp-markdown-body\s*\{[^}]*padding: 16px clamp\(12px, 2vw, 24px\) 48px;/s
     )
     expect(contentCss).toMatch(
-      /@media \(max-width: 639px\)[\s\S]*?\.mdp-markdown-body\s*\{[^}]*padding: 16px 14px 40px;/s
+      /@media \(max-width: 639px\)[\s\S]*?\.mdp-markdown-body\s*\{[^}]*padding: 16px 8px 32px;/s
     )
   })
 })

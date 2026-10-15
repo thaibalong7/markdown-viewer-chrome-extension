@@ -194,6 +194,8 @@ The independently resizable Files rail, center document/editor pane, and right r
 
 Read mode can place a compact document-stat row above Markdown, an overlay scrollbar at the active scroll root, and a floating Back to top action after the user has scrolled far enough.
 
+Read-mode content uses compact padding to leave more room for documents: the outer pane has 16px top padding, responsive 16–28px horizontal padding and 48px bottom padding; the article has 16px top padding, responsive 12–24px horizontal padding and 48px bottom padding. Below 900px, the outer horizontal padding is 16px. Below 640px, the outer pane has 12px top padding, the outer and article horizontal padding is 8px and the article bottom padding is 32px, while the outer pane retains 64px bottom clearance for the action dock. Document statistics align with the article text at every width. Editor preview padding remains defined by its own layout.
+
 #### Sidebar composition
 
 Expanded desktop reading mirrors the Files two-row rhythm. Files retains its header, details disclosure/card, location/count row, contextual commands, and tree structure. Outline places document actions on the left and the uppercase OUTLINE label on the right of its first row, followed by On this page and the loading/heading count at opposite ends of the second row. It has no additional title row below the commands. The title reserves 60px with an 8px gap; only the remaining command wrapper is measured for overflow.

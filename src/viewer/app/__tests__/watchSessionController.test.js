@@ -368,7 +368,7 @@ it('prioritizes a user check over an in-flight background read without overlappi
   h.watch.destroy()
 })
 
-it.each(['text', 'sql', 'mermaid', 'raster-image', 'svg-image'])('supports Ask, Off/manual and Auto for %s with format-aware review', async (fileTypeId) => {
+it.each(['text', 'sql', 'dbml', 'mermaid', 'raster-image', 'svg-image'])('supports Ask, Off/manual and Auto for %s with format-aware review', async (fileTypeId) => {
   const reviewable = !fileTypeId.endsWith('image')
   const h = harness({ fileTypeId, reviewable })
   h.disk('first')

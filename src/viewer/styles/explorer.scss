@@ -769,15 +769,13 @@
   align-items: center;
   justify-content: center;
   width: 16px;
-  height: 19px;
+  height: 16px;
   flex-shrink: 0;
 
   svg {
     display: block;
     width: 16px;
     height: 16px;
-    // Match the optical center of the 13px filename glyphs, above the line-box center.
-    transform: translateY(-1px);
   }
 }
 
@@ -1043,15 +1041,13 @@
   align-items: center;
   justify-content: center;
   width: 16px;
-  height: 19px;
+  height: 16px;
   flex-shrink: 0;
 
   svg {
     display: block;
     width: 16px;
     height: 16px;
-    // Match the optical center of the 13px filename glyphs, above the line-box center.
-    transform: translateY(-1px);
   }
 }
 

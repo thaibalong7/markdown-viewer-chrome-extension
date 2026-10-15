@@ -34,7 +34,8 @@
     color: var(--mdp-toast-error-text);
   }
 
-  .mdp-sql-document {
+  .mdp-sql-document,
+  .mdp-dbml-document {
     overflow: hidden;
     border: 1px solid var(--mdp-border);
     border-radius: 8px;
@@ -42,7 +43,8 @@
     box-shadow: var(--mdp-shadow-raised);
   }
 
-  .mdp-sql-document__header {
+  .mdp-sql-document__header,
+  .mdp-dbml-document__header {
     padding: 0.55rem 1rem;
     border-bottom: 1px solid var(--mdp-border);
     color: var(--mdp-muted);
@@ -53,14 +55,17 @@
   }
 
   .mdp-sql-document__highlighted > pre.shiki,
-  pre.mdp-sql-document__source {
+  pre.mdp-sql-document__source,
+  .mdp-dbml-document__highlighted > pre.shiki,
+  pre.mdp-dbml-document__source {
     margin: 0;
     border: 0;
     border-radius: 0;
     box-shadow: none;
   }
 
-  .mdp-sql-document__source {
+  .mdp-sql-document__source,
+  .mdp-dbml-document__source {
     overflow: auto;
     padding: 1rem 1.1rem;
     color: var(--mdp-code-text);
@@ -77,7 +82,8 @@
     }
   }
 
-  .mdp-sql-document__state {
+  .mdp-sql-document__state,
+  .mdp-dbml-document__state {
     padding: 1rem 1.1rem;
     border: 1px solid var(--mdp-border);
     border-radius: 8px;
@@ -85,9 +91,15 @@
     color: var(--mdp-muted);
   }
 
-  .mdp-sql-document__state--error {
+  .mdp-sql-document__state--error,
+  .mdp-dbml-document__state--error {
     border-color: color-mix(in srgb, var(--mdp-toast-error-border) 72%, var(--mdp-border));
     color: var(--mdp-toast-error-text);
+  }
+
+  // DBML restores literal line separators for selection/copy, including blanks.
+  .mdp-dbml-document pre.shiki code .line {
+    display: inline;
   }
 }
 
@@ -97,7 +109,8 @@
     font-size: 0.82em;
   }
 
-  .mdp-markdown-body .mdp-sql-document__source {
+  .mdp-markdown-body .mdp-sql-document__source,
+  .mdp-markdown-body .mdp-dbml-document__source {
     padding: 0.8rem;
     font-size: 0.82em;
   }

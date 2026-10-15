@@ -102,17 +102,22 @@ describe('explorer interaction styles', () => {
 
   it('keeps file and folder artwork at the native 16px size inside stable row slots', () => {
     expect(explorerCss).toMatch(
-      /\.mdp-explorer__node-icon\s*\{[^}]*width:\s*16px;[^}]*height:\s*19px;/s
+      /\.mdp-explorer__node-icon\s*\{[^}]*width:\s*16px;[^}]*height:\s*16px;/s
     )
     expect(explorerCss).toMatch(
       /\.mdp-explorer__node-icon svg\s*\{[^}]*width:\s*16px;[^}]*height:\s*16px;/s
     )
     expect(explorerCss).toMatch(
-      /\.mdp-explorer__tree-folder-icon\s*\{[^}]*width:\s*16px;[^}]*height:\s*19px;/s
+      /\.mdp-explorer__tree-folder-icon\s*\{[^}]*width:\s*16px;[^}]*height:\s*16px;/s
     )
     expect(explorerCss).toMatch(
       /\.mdp-explorer__tree-folder-icon svg\s*\{[^}]*width:\s*16px;[^}]*height:\s*16px;/s
     )
+    for (const selector of ['.mdp-explorer__node-icon svg', '.mdp-explorer__tree-folder-icon svg']) {
+      const artworkRule = explorerCss.slice(explorerCss.indexOf(`${selector} {`)).split('}')[0]
+      expect(artworkRule).not.toContain('transform:')
+      expect(artworkRule).not.toContain('translate:')
+    }
   })
 
   it('uses soft tree rows while keeping names on one line and guides out of pointer input', () => {

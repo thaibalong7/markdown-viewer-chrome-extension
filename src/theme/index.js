@@ -1,4 +1,5 @@
 import { AURORA_THEME_BACKGROUND, DEFAULT_THEME_BACKGROUND } from './backgrounds.js'
+import { getFileTypeIconStyleVars } from '../shared/icons/file-type-colors.js'
 import {
   getSyntaxThemeIdForBaseTheme,
   isBundledSyntaxThemeId
@@ -684,6 +685,7 @@ export function createStyleVars(settings = {}) {
   const colors = getThemeColorsForSettings(settings)
 
   return {
+    ...getFileTypeIconStyleVars(colors.colorScheme),
     '--mdp-color-scheme': colors.colorScheme || 'light',
     '--mdp-font-family': typography.fontFamily || 'system-ui',
     '--mdp-font-size': toPx(typography.fontSize, 16),

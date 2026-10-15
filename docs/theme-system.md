@@ -29,6 +29,7 @@ Một số nguyên tắc bất biến:
 | Trách nhiệm | Source chính |
 | --- | --- |
 | Palette built-in, registry, resolve theme, CSS variables | `src/theme/index.js` |
+| File identity hues and light/dark shades, published as `--mdp-file-icon-*` by `createStyleVars()` | `src/shared/icons/file-type-colors.js` |
 | Catalog syntax theme được phép chọn và mapping theo base | `src/theme/syntax-themes.js` |
 | Kiểu background và chuyển descriptor thành scene render | `src/theme/backgrounds.js` |
 | Client gọi background service để quản lý image asset | `src/theme/theme-asset-client.js` |

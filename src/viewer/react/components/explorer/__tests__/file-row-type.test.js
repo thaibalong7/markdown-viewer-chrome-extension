@@ -33,7 +33,7 @@ describe('explorer file type presentation', () => {
     expect(renderFile(file, 2)).toContain('--mdp-tree-row-indent:12px')
   })
 
-  it('renders Markdown with its fixed identity color at its native grid size', () => {
+  it('renders Markdown with its theme-aware identity color at its native grid size', () => {
     const html = renderFile({
       displayName: 'notes.md',
       href: 'file:///docs/notes.md',
@@ -41,11 +41,11 @@ describe('explorer file type presentation', () => {
     })
 
     expect(html).toContain('data-file-type="markdown"')
-    expect(html).toContain('fill="#60A5FA"')
+    expect(html).toContain('fill="currentColor"')
     expect(html).toContain('viewBox="0 0 16 16"')
   })
 
-  it('renders plain text with its own fixed identity color', () => {
+  it('renders plain text with its own theme-aware identity color', () => {
     const html = renderFile({
       displayName: 'notes.txt',
       href: 'file:///docs/notes.txt',
@@ -53,7 +53,7 @@ describe('explorer file type presentation', () => {
     })
 
     expect(html).toContain('data-file-type="text"')
-    expect(html).toContain('stroke:#64748B;stroke-width:1.25')
+    expect(html).toContain('stroke:var(--mdp-file-icon-text, #687686);stroke-width:1.25')
   })
 
   it('renders SQL with its own database icon and label', () => {
@@ -65,7 +65,7 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="sql"')
     expect(html).toContain('title="schema.sql — SQL document"')
-    expect(html).toContain('stroke:#F472B6;stroke-width:1.25')
+    expect(html).toContain('stroke:var(--mdp-file-icon-database, #117F80);stroke-width:1.25')
   })
 
   it('marks raster rows and renders the image-specific icon and label', () => {
@@ -77,7 +77,17 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="raster-image"')
     expect(html).toContain('title="photo.png — Image"')
-    expect(html).toContain('stroke:#C084FC;stroke-width:1.25')
+    expect(html).toContain('stroke:var(--mdp-file-icon-image, #3F804B);stroke-width:1.25')
+  })
+
+  it('gives DBML its own schema identity and document label in the actual file row', () => {
+    const html = renderFile({
+      displayName: 'schema.dbml', href: 'file:///docs/schema.dbml', fileTypeId: 'dbml'
+    })
+    expect(html).toContain('data-file-type="dbml"')
+    expect(html).toContain('title="schema.dbml — DBML document"')
+    expect(html).toContain('var(--mdp-file-icon-schema, #8061C3)')
+    expect(html).not.toContain('--mdp-file-icon-database')
   })
 
   it('marks SVG rows as a distinct type with a vector-specific icon', () => {
@@ -89,7 +99,7 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="svg-image"')
     expect(html).toContain('title="diagram.svg — SVG image"')
-    expect(html).toContain('stroke:#F472B6;stroke-width:1.25')
+    expect(html).toContain('stroke:var(--mdp-file-icon-vector, #B85C24);stroke-width:1.25')
   })
 
   it('uses the diagram presentation for standalone Mermaid files', () => {
@@ -101,6 +111,6 @@ describe('explorer file type presentation', () => {
 
     expect(html).toContain('data-file-type="mermaid"')
     expect(html).toContain('title="chart.mermaid — Mermaid diagram"')
-    expect(html).toContain('stroke:#F59E0B;stroke-width:1.25')
+    expect(html).toContain('stroke:var(--mdp-file-icon-diagram, #C14F72);stroke-width:1.25')
   })
 })

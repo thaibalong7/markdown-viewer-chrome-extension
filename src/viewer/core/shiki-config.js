@@ -39,6 +39,7 @@ const SHIKI_LANGUAGE_LOADERS = {
   csharp: () => import('@shikijs/langs/csharp'),
   php: () => import('@shikijs/langs/php'),
   sql: () => import('@shikijs/langs/sql'),
+  dbml: () => import('./languages/dbml.js'),
   graphql: () => import('@shikijs/langs/graphql'),
   dockerfile: () => import('@shikijs/langs/dockerfile'),
   nginx: () => import('@shikijs/langs/nginx'),

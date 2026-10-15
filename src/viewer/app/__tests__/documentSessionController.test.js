@@ -329,7 +329,7 @@ describe('document watch revisions', () => {
   })
 })
 
-it.each(['txt', 'sql', 'mermaid'])('updates %s in place with a reviewable baseline and current size setting', async (extension) => {
+it.each(['txt', 'sql', 'dbml', 'mermaid'])('updates %s in place with a reviewable baseline and current size setting', async (extension) => {
   const render = vi.fn()
   const loadDocument = vi.fn().mockResolvedValue({ text: 'old' })
   const session = createSession({ loadDocument, render,

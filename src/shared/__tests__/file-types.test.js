@@ -112,6 +112,19 @@ describe('file type registry', () => {
     })
   })
 
+  it('registers DBML source for explorer and workspace navigation with text capabilities', () => {
+    expect(getFileTypeFromName('schema.DBML')).toMatchObject({
+      id: 'dbml', activation: 'explorer-only', contentKind: 'text',
+      rendererId: 'dbml', explorerIcon: 'schema'
+    })
+    expect(getFileTypeFromUrl('file:///docs/schema.dbml?raw=1#users')?.id).toBe('dbml')
+    expect(getFileTypeFromUrl(`${MDP_WS_FILE}${encodeURIComponent('Dự án/schema.DBML')}`)?.id).toBe('dbml')
+    expect(isExplorerSupportedFile('schema.dbml')).toBe(true)
+    expect(isDirectActivationUrl('file:///docs/schema.dbml')).toBe(false)
+    expect(getDocumentCapabilities('dbml')).toEqual(getDocumentCapabilities('sql'))
+    expect(stripRegisteredFileExtension('my.schema.dbml')).toBe('my.schema')
+  })
+
   it('registers standalone Mermaid with rendered and raw modes but no direct activation', () => {
     expect(getFileTypeFromName('architecture.MERMAID')).toMatchObject({
       id: 'mermaid',

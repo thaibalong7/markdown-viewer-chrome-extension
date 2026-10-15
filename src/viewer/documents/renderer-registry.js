@@ -2,6 +2,7 @@ const rendererLoaders = Object.freeze({
   markdown: () => import('./renderers/markdown-document-renderer.js'),
   text: () => import('./renderers/text-document-renderer.js'),
   sql: () => import('./renderers/sql-document-renderer.js'),
+  dbml: () => import('./renderers/dbml-document-renderer.js'),
   mermaid: () => import('./renderers/mermaid-document-renderer.js'),
   image: () => import('./renderers/image-document-renderer.js')
 })

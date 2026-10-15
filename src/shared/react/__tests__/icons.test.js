@@ -3,6 +3,10 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AppIcon } from '../AppIcon.jsx'
 import { FileTypeIcon } from '../FileTypeIcon.jsx'
+import { FILE_TYPE_ICONS } from '../../icons/file-type-icons.js'
+import { FILE_TYPE_COLORS } from '../../icons/file-type-colors.js'
+import { getFileTypeFromName } from '../../file-types.js'
+import { FileIcon } from '../../../viewer/react/components/icons/FileIcon.jsx'
 import { createAppIconSvg } from '../../icons/create-app-icon.js'
 import { FolderRow } from '../../../viewer/react/components/explorer/FolderRow.jsx'
 import { ToastProvider } from '../../../viewer/react/contexts/ToastContext.jsx'
@@ -46,7 +50,7 @@ describe('shared icon integration', () => {
       name: 'markdown', style: { color: 'red', stroke: 'blue', strokeWidth: 3 }
     })
     expect(markup).toContain('viewBox="0 0 16 16"')
-    expect(markup).toContain('style="color:#60A5FA;stroke:#60A5FA;stroke-width:1.25"')
+    expect(markup).toContain('style="color:var(--mdp-file-icon-markdown, #3276C3);stroke:var(--mdp-file-icon-markdown, #3276C3);stroke-width:1.25"')
     expect(markup).toContain('focusable="false"')
   })
 
@@ -62,11 +66,27 @@ describe('shared icon integration', () => {
     expect(children(render(FileTypeIcon, { name: 'folder-open' }))).not.toBe(children(render(FileTypeIcon, { name: 'folder' })))
   })
 
-  it('keeps SQL and SVG distinguishable through shape when their identity color matches', () => {
-    const sql = render(FileTypeIcon, { name: 'database' })
-    const vector = render(FileTypeIcon, { name: 'vector' })
-    expect(sql).toContain('stroke:#F472B6')
-    expect(vector).toContain('stroke:#F472B6')
-    expect(children(sql)).not.toBe(children(vector))
+  it('maps each supported file family to distinct artwork and a stable hue, including DBML', () => {
+    const filenames = ['README.md', 'notes.txt', 'schema.sql', 'schema.dbml', 'flow.mermaid', 'cover.png', 'logo.svg']
+    const artwork = filenames.map(name => render(FileIcon, { kind: getFileTypeFromName(name).explorerIcon }))
+    expect(new Set(artwork.map(children)).size).toBe(filenames.length)
+    for (const scheme of ['light', 'dark']) {
+      expect(new Set(Object.values(FILE_TYPE_COLORS).map(shades => shades[scheme])).size).toBe(filenames.length)
+    }
+    expect(artwork[3]).toBe(render(FileTypeIcon, { name: 'schema' }))
+    expect(artwork[3]).not.toBe(render(FileTypeIcon, { name: 'database' }))
+    for (const markup of artwork) {
+      expect(markup).toContain('width="16" height="16" viewBox="0 0 16 16"')
+      expect(markup).toContain('aria-hidden="true" focusable="false"')
+      expect(markup).toContain('stroke-width:1.25')
+    }
+  })
+
+  it('keeps fill accents on the same theme-aware hue as their outlines', () => {
+    for (const icon of Object.values(FILE_TYPE_ICONS)) {
+      for (const [, attrs] of icon.elements) {
+        if (attrs.fill && attrs.fill !== 'none') expect(attrs.fill).toBe('currentColor')
+      }
+    }
   })
 })

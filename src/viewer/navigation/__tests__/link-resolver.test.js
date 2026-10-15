@@ -226,6 +226,18 @@ describe('resolveMarkdownLink', () => {
     })
   })
 
+  describe('DBML documents', () => {
+    it('intercepts real and virtual workspace DBML links', () => {
+      expect(resolve('schema.dbml')).toMatchObject({
+        kind: 'document-file', resolvedUrl: 'file:///Users/me/docs/schema.dbml', shouldIntercept: true
+      })
+      const target = 'mdp-ws-file:docs%2Fschema.dbml'
+      expect(resolveMarkdownLink('schema.dbml', {
+        currentFileUrl: 'mdp-ws-file:docs%2Fa.md', virtualFileExists: href => href === target
+      })).toMatchObject({ kind: 'workspace-virtual-file', resolvedUrl: target, shouldIntercept: true })
+    })
+  })
+
   describe('SQL documents', () => {
     it('intercepts a relative .sql target as a supported document', () => {
       const r = resolve('schema.sql')

@@ -4,7 +4,7 @@ Markdown Plus can keep the active supported document synchronized with changes m
 
 ## Availability and scope
 
-- Watch applies to the active Markdown, TXT, SQL, Mermaid, raster-image or SVG document. Non-Markdown files are opened from Files; they still do not activate the extension directly. Watch does not watch the complete workspace or images/assets referenced inside another document.
+- Watch applies to the active Markdown, TXT, SQL, DBML, Mermaid, raster-image or SVG document. Non-Markdown files are opened from Files; they still do not activate the extension directly. Watch does not watch the complete workspace or images/assets referenced inside another document.
 - Local `file:` documents and workspace files backed by a `FileSystemFileHandle` can be reread. A workspace opened through the `webkitdirectory` snapshot fallback cannot provide live rereads; select the folder again to regain a current snapshot.
 - Checks run only while the Viewer tab is visible. Returning to a visible tab triggers an immediate check when the selected mode permits automatic checks.
 - Revision sources and the most recent review pair stay in the current tab's memory. Markdown Plus does not persist document source history.
@@ -32,7 +32,7 @@ Markdown Plus keeps the current article when a read fails, the file temporarily 
 
 ## Review what changed
 
-For Markdown, TXT, SQL and Mermaid, when a comparison is available, **View changes** appears beside Document Updates. The review opens lazily and includes:
+For Markdown, TXT, SQL, DBML and Mermaid, when a comparison is available, **View changes** appears beside Document Updates. The review opens lazily and includes:
 
 - Added and removed line counts plus the number of changed areas.
 - Old and new source line numbers, addition/removal markers, line-ending annotations, and three context lines around each area.
@@ -40,7 +40,7 @@ For Markdown, TXT, SQL and Mermaid, when a comparison is available, **View chang
 - **Previous area** and **Next area** controls; `Alt+↑` and `Alt+↓` move between changed areas in the current comparison.
 - **Open document** for a surviving section only when the reviewed new source is the source currently rendered in read mode.
 
-Images offer Document Updates without a source diff. TXT, SQL and Mermaid show line changes without parsing Markdown sections or offering heading navigation.
+Images offer Document Updates without a source diff. TXT, SQL, DBML and Mermaid show line changes without parsing Markdown sections or offering heading navigation.
 
 Ask and Off compare the accepted article source with the pending disk source, retaining the most recent applied comparison when no update is pending. Automatic mode opens the before/after pair from the most recent applied external update; a newer pending comparison is available through **Review latest**. Edit mode compares the accepted disk baseline with the pending disk source and deliberately excludes the editor draft. Navigation and successful internal Save clear the previous accepted-source snapshot.
 

@@ -1,0 +1,50 @@
+// Source-viewing fixture: declarations, relationships, notes and color previews.
+Project shop {
+  database_type: 'PostgreSQL'
+  Note: 'A small local schema for testing DBML source viewing.'
+}
+
+Enum order_state {
+  pending
+  paid
+  cancelled
+}
+
+TablePartial timestamps {
+  created_at timestamp [default: `now()`]
+  updated_at timestamp
+}
+
+Table shop.customers as C [headercolor: #3498DB] {
+  id bigint [pk, increment]
+  email varchar(255) [not null, unique]
+  name varchar(120) [note: 'Tên khách hàng']
+  ~timestamps
+}
+
+Table shop.orders as O [headercolor: #8E44AD] {
+  id bigint [pk]
+  customer_id bigint [not null, ref: > C.id]
+  state order_state [default: 'pending']
+  total decimal(12, 2) [default: 0]
+  ~timestamps
+
+  indexes {
+    (customer_id, state) [name: 'orders_by_customer_state']
+  }
+}
+
+TableGroup checkout [color: #27AE60] {
+  shop.customers
+  shop.orders
+}
+
+Note palette {
+  '''
+  Inspect/copy these literal samples without changing the source:
+  HEX: #abc #ABCD #3498DB #3498DB80
+  RGB: rgb(52, 152, 219) rgba(52, 152, 219, 0.5)
+  HSL: hsl(204, 70%, 53%) hsla(204, 70%, 53%, 0.5)
+  Invalid samples should have no swatch: #12 #12345 #GGGGGG
+  '''
+}

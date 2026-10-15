@@ -11,6 +11,7 @@ import { loadDocument, MAX_PLAIN_TEXT_BYTES } from '../document-loader.js'
 const MARKDOWN_TYPE = { id: 'markdown', contentKind: 'text' }
 const TEXT_TYPE = { id: 'text', contentKind: 'text' }
 const SQL_TYPE = { id: 'sql', contentKind: 'text' }
+const DBML_TYPE = { id: 'dbml', contentKind: 'text' }
 const MERMAID_TYPE = { id: 'mermaid', contentKind: 'text' }
 const IMAGE_TYPE = {
   id: 'raster-image',
@@ -206,6 +207,27 @@ describe('document loader', () => {
       href: 'file:///docs/large.mermaid',
       fileType: MERMAID_TYPE
     })).rejects.toMatchObject({ code: 'document-too-large' })
+  })
+
+  it('loads DBML from file URLs and virtual/handle workspaces without altering its source', async () => {
+    const source = "Table users [headercolor: #3498DB] {\n\tid int [pk]\n}\n"
+    mocks.sendMessage.mockResolvedValue({ ok: true, data: { text: source } })
+    for (const reader of [undefined, { text: async () => source }, { getFile: async () => ({ text: async () => source }) }]) {
+      await expect(loadDocument({
+        href: 'file:///docs/schema.dbml', fileType: DBML_TYPE, workspaceReader: reader
+      })).resolves.toMatchObject({ text: source, assetUrl: null })
+    }
+    expect(mocks.sendMessage).toHaveBeenCalledOnce()
+  })
+
+  it('enforces DBML viewing limits before workspace reads and on UTF-8 file URL results', async () => {
+    const reader = { size: 1024 * 1024 + 1, text: vi.fn() }
+    await expect(loadDocument({ fileType: DBML_TYPE, workspaceReader: reader, maxStandaloneTextFileSizeMiB: 1 }))
+      .rejects.toMatchObject({ code: 'document-too-large' })
+    expect(reader.text).not.toHaveBeenCalled()
+    mocks.sendMessage.mockResolvedValue({ ok: true, data: { text: 'é'.repeat(512 * 1024 + 1) } })
+    await expect(loadDocument({ href: 'file:///docs/schema.dbml', fileType: DBML_TYPE, maxStandaloneTextFileSizeMiB: 1 }))
+      .rejects.toMatchObject({ code: 'document-too-large' })
   })
 
   it('loads SQL as text and enforces the standalone file limit', async () => {

@@ -77,6 +77,16 @@ const FILE_TYPES = Object.freeze([
     capabilities: TEXT_CAPABILITIES
   }),
   Object.freeze({
+    id: 'dbml',
+    extensions: Object.freeze(['dbml']),
+    activation: 'explorer-only',
+    contentKind: 'text',
+    rendererId: 'dbml',
+    label: 'DBML document',
+    explorerIcon: 'schema',
+    capabilities: TEXT_CAPABILITIES
+  }),
+  Object.freeze({
     id: 'mermaid',
     extensions: Object.freeze(['mermaid']),
     activation: 'explorer-only',

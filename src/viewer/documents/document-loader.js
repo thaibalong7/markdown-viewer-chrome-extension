@@ -46,7 +46,7 @@ function resolveStandaloneTextMaxBytes(maxSizeMiB) {
 }
 
 function enforceStandaloneTextLimit(fileType, byteLength, maxBytes) {
-  if (['text', 'sql', 'mermaid'].includes(fileType?.id) && byteLength > maxBytes) {
+  if (['text', 'sql', 'dbml', 'mermaid'].includes(fileType?.id) && byteLength > maxBytes) {
     throw new DocumentTooLargeError(maxBytes)
   }
 }

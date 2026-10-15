@@ -42,7 +42,7 @@ export function AdvancedSettings({
           <NumberField
             id={inputId}
             label={definition.label}
-            helper="Maximum UTF-8 size for standalone .txt, .sql, and .mermaid files opened in the viewer. Markdown documents are not affected."
+            helper="Maximum UTF-8 size for standalone .txt, .sql, .dbml, and .mermaid files opened in the viewer. Markdown documents are not affected."
             error={fieldError}
             rangeLabel={`${definition.min}–${definition.max} MiB`}
             min={definition.min}

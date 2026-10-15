@@ -28,6 +28,7 @@ const RASTER_NAMES = [
 const SVG_NAME = 'diagram.svg'
 const MERMAID_NAME = 'architecture.mermaid'
 const SQL_NAME = 'schema.sql'
+const DBML_NAME = 'schema.DBML'
 
 function fileHandle(name) {
   return {
@@ -86,6 +87,7 @@ describe('supported-document explorer filtering', () => {
           'addRow("Hướng dẫn.mdown", "H%C6%B0%E1%BB%9Bng%20d%E1%BA%ABn.mdown", false, 1);',
           'addRow("notes.txt", "notes.txt", false, 1);',
           `addRow("${SQL_NAME}", "${SQL_NAME}", false, 1);`,
+          `addRow("${DBML_NAME}", "${DBML_NAME}", false, 1);`,
           ...RASTER_NAMES.map((name) => `addRow("${name}", "${name}", false, 1);`),
           `addRow("${SVG_NAME}", "${SVG_NAME}", false, 1);`,
           `addRow("${MERMAID_NAME}", "${MERMAID_NAME}", false, 1);`,
@@ -105,6 +107,7 @@ describe('supported-document explorer filtering', () => {
         'Hướng dẫn.mdown',
         'notes.txt',
         SQL_NAME,
+        DBML_NAME,
         'README.md',
         ...RASTER_NAMES,
         SVG_NAME,
@@ -113,6 +116,7 @@ describe('supported-document explorer filtering', () => {
     )
     expect(files.find((file) => file.displayName === 'notes.txt')?.fileTypeId).toBe('text')
     expect(files.find((file) => file.displayName === SQL_NAME)?.fileTypeId).toBe('sql')
+    expect(files.find((file) => file.displayName === DBML_NAME)?.fileTypeId).toBe('dbml')
     expect(files.find((file) => file.displayName === 'photo.png')?.fileTypeId).toBe('raster-image')
     expect(files.find((file) => file.displayName === SVG_NAME)?.fileTypeId).toBe('svg-image')
     expect(files.find((file) => file.displayName === MERMAID_NAME)?.fileTypeId).toBe('mermaid')
@@ -127,6 +131,7 @@ describe('supported-document explorer filtering', () => {
       ['config.mdc', fileHandle('config.mdc')],
       ['notes.txt', fileHandle('notes.txt')],
       [SQL_NAME, fileHandle(SQL_NAME)],
+      [DBML_NAME, fileHandle(DBML_NAME)],
       ...RASTER_NAMES.map((name) => [name, fileHandle(name)]),
       [SVG_NAME, fileHandle(SVG_NAME)],
       [MERMAID_NAME, fileHandle(MERMAID_NAME)]
@@ -143,15 +148,17 @@ describe('supported-document explorer filtering', () => {
         'Guide Notes.MARKDOWN',
         'notes.txt',
         SQL_NAME,
+        DBML_NAME,
         'README.md',
         ...RASTER_NAMES,
         SVG_NAME,
         MERMAID_NAME
       ])
     )
-    expect(readers.size).toBe(8 + RASTER_NAMES.length)
+    expect(readers.size).toBe(9 + RASTER_NAMES.length)
     expect(flattenFileNodes(tree).find((file) => file.name === 'notes.txt')?.fileTypeId).toBe('text')
     expect(flattenFileNodes(tree).find((file) => file.name === SQL_NAME)?.fileTypeId).toBe('sql')
+    expect(flattenFileNodes(tree).find((file) => file.name === DBML_NAME)?.fileTypeId).toBe('dbml')
     expect(flattenFileNodes(tree).find((file) => file.name === 'photo.jpg')?.fileTypeId).toBe('raster-image')
     expect(flattenFileNodes(tree).find((file) => file.name === SVG_NAME)?.fileTypeId).toBe('svg-image')
     expect(flattenFileNodes(tree).find((file) => file.name === MERMAID_NAME)?.fileTypeId).toBe('mermaid')
@@ -210,6 +217,7 @@ describe('supported-document explorer filtering', () => {
           'addRow("config.mdc", "config.mdc", false, 1);',
           'addRow("notes.txt", "notes.txt", false, 1);',
           `addRow("${SQL_NAME}", "${SQL_NAME}", false, 1);`,
+          `addRow("${DBML_NAME}", "${DBML_NAME}", false, 1);`,
           ...RASTER_NAMES.map((name) => `addRow("${name}", "${name}", false, 1);`),
           `addRow("${SVG_NAME}", "${SVG_NAME}", false, 1);`,
           `addRow("${MERMAID_NAME}", "${MERMAID_NAME}", false, 1);`,
@@ -223,14 +231,15 @@ describe('supported-document explorer filtering', () => {
     })
 
     expect(new Set(flattenFileNames(tree))).toEqual(
-      new Set(['config.mdc', 'notes.txt', SQL_NAME, 'README.md', ...RASTER_NAMES, SVG_NAME, MERMAID_NAME])
+      new Set(['config.mdc', 'notes.txt', SQL_NAME, DBML_NAME, 'README.md', ...RASTER_NAMES, SVG_NAME, MERMAID_NAME])
     )
     expect(flattenFileNodes(tree).find((file) => file.name === 'notes.txt')?.fileTypeId).toBe('text')
     expect(flattenFileNodes(tree).find((file) => file.name === SQL_NAME)?.fileTypeId).toBe('sql')
+    expect(flattenFileNodes(tree).find((file) => file.name === DBML_NAME)?.fileTypeId).toBe('dbml')
     expect(flattenFileNodes(tree).find((file) => file.name === 'photo.webp')?.fileTypeId).toBe('raster-image')
     expect(flattenFileNodes(tree).find((file) => file.name === SVG_NAME)?.fileTypeId).toBe('svg-image')
     expect(flattenFileNodes(tree).find((file) => file.name === MERMAID_NAME)?.fileTypeId).toBe('mermaid')
-    expect(stats.scannedFiles).toBe(6 + RASTER_NAMES.length)
+    expect(stats.scannedFiles).toBe(7 + RASTER_NAMES.length)
   })
 
   it('applies the same supported-file allowlist to webkitdirectory workspaces', async () => {
@@ -241,6 +250,7 @@ describe('supported-document explorer filtering', () => {
       webkitFile('config.mdc', 'Dự án/config.mdc'),
       webkitFile('notes.txt', 'Dự án/notes.txt'),
       webkitFile(SQL_NAME, `Dự án/${SQL_NAME}`),
+      webkitFile(DBML_NAME, `Dự án/${DBML_NAME}`),
       ...RASTER_NAMES.map((name) => webkitFile(name, `Dự án/${name}`)),
       webkitFile(SVG_NAME, `Dự án/${SVG_NAME}`),
       webkitFile(MERMAID_NAME, `Dự án/${MERMAID_NAME}`)
@@ -257,15 +267,17 @@ describe('supported-document explorer filtering', () => {
         'Guide Notes.markdown',
         'notes.txt',
         SQL_NAME,
+        DBML_NAME,
         'README.md',
         ...RASTER_NAMES,
         SVG_NAME,
         MERMAID_NAME
       ])
     )
-    expect(readers.size).toBe(8 + RASTER_NAMES.length)
+    expect(readers.size).toBe(9 + RASTER_NAMES.length)
     expect(flattenFileNodes(tree).find((file) => file.name === 'notes.txt')?.fileTypeId).toBe('text')
     expect(flattenFileNodes(tree).find((file) => file.name === SQL_NAME)?.fileTypeId).toBe('sql')
+    expect(flattenFileNodes(tree).find((file) => file.name === DBML_NAME)?.fileTypeId).toBe('dbml')
     expect(flattenFileNodes(tree).find((file) => file.name === 'animation.apng')?.fileTypeId).toBe('raster-image')
     expect(flattenFileNodes(tree).find((file) => file.name === SVG_NAME)?.fileTypeId).toBe('svg-image')
     expect(flattenFileNodes(tree).find((file) => file.name === MERMAID_NAME)?.fileTypeId).toBe('mermaid')

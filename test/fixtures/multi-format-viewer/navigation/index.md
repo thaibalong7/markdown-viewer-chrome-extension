@@ -7,3 +7,5 @@
 [Open a standalone Mermaid diagram](../diagram.mermaid)
 
 [Open an invalid standalone Mermaid diagram](../invalid.mermaid)
+
+[Open DBML source with color previews](../schema.dbml)

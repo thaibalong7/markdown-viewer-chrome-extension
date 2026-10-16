@@ -261,7 +261,7 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 
 UI messages displayed inside the article retain UI ownership: the workspace file-selection prompt is `loadedDocument.placeholderMessage` with empty source `text`, rendered through the subscribed `DocumentState` portal. It never enters Markdown parsing, source statistics, or the saved document baseline. A real document containing a semantic ID remains literal content.
 
-The scoped [internationalization rule](../.agents/rules/35-internationalization.md) governs new copy and locale handling. The shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md) covers adding a locale, researching terminology in the target language, and reviewing every translation for meaning and natural wording. Locale-specific editorial decisions live in [Vietnamese localization](./vietnamese-localization.md), [Simplified Chinese localization](./zh-CN-localization.md), and corresponding guides for future languages.
+The scoped [internationalization rule](../.agents/rules/35-internationalization.md) governs new copy and locale handling. The shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md) covers adding a locale, researching terminology in the target language, and reviewing every translation for meaning and natural wording. Shared writing principles and locale-specific editorial decisions live in the [Localization writing guide](./localization.md), with sections extended as languages are added. Revision-specific review and verification results belong in the task or pull request.
 
 ## Security and privacy boundaries
 

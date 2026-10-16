@@ -2,7 +2,19 @@
 
 Markdown Plus ships English, Vietnamese, and Simplified Chinese (China) across Settings, Popup, Viewer chrome, document controls, editor dialogs, and CodeMirror search/replace. Choose **Settings → General → Interface language**. The synchronized `language` preference accepts `auto` (default), `en`, `vi`, or `zh-CN`. Automatic mode walks the browser's preferred languages in order and falls back to English. English and Vietnamese regional variants resolve to their base language. Chinese uses script-aware matching: `zh`, `zh-CN`, `zh-SG`, and explicit `zh-Hans` variants resolve to `zh-CN`; `zh-Hant`, `zh-TW`, `zh-HK`, and `zh-MO` are skipped rather than mapped to Simplified Chinese. An explicit script takes precedence over region; other Chinese regions without a supported script are skipped.
 
-The coding contract is [Internationalization](../.agents/rules/35-internationalization.md). For an end-to-end locale addition, use the shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md). Language-specific vocabulary and research belong in `docs/<locale>-localization.md`; see the [Vietnamese editorial guide](./vietnamese-localization.md) and [Simplified Chinese editorial guide](./zh-CN-localization.md).
+The coding contract is [Internationalization](../.agents/rules/35-internationalization.md). For an end-to-end locale addition, use the shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md). Shared writing principles, locale-specific terminology, and research references live in the [Localization writing guide](./localization.md).
+
+## Documentation responsibilities
+
+| Location | What belongs here |
+| --- | --- |
+| This document | Current runtime behavior, integration points, and shared verification requirements |
+| [Localization writing guide](./localization.md) | Shared editorial principles and sections for locale-specific vocabulary, tone, exceptions, and research references |
+| [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md) | The reusable research, translation, complete review, and delivery workflow |
+| `src/i18n/locales/<locale>.json` and `public/_locales/<chrome-locale>/messages.json` | Runtime messages and native Chrome metadata |
+| Task or pull request | Revision-specific review coverage, test/build output, bundle comparison, and unverified manual checks |
+
+These documents describe translating the application interface, not separate editions of product documentation. Add a section to the writing guide when another locale needs editorial notes; do not create a new documentation file for every language. Runtime and Chrome catalogs remain separate per locale because the application and Chrome consume them. Keep general implementation and verification instructions shared.
 
 ## Ownership and flow
 
@@ -48,22 +60,6 @@ Existing service `Error.message` contracts remain stable English at their owners
 
 CodeMirror receives translated phrases through a dedicated `Compartment`; changing language reconfigures that compartment instead of rebuilding the editor. An open search panel is recreated to refresh its native labels, retaining the search state, focused field/selection, document, and undo history. Built-in theme and technology names remain proper names.
 
-## Vietnamese terminology
-
-| English concept | Vietnamese UI |
-| --- | --- |
-| Settings / General | Cài đặt / Chung |
-| Files / Outline | Tệp / Mục lục |
-| Workspace | Thư mục làm việc |
-| Reader / Editor | Đọc / Soạn thảo |
-| Plugins (compact tab) | Tính năng |
-| Discard changes / Keep editing | Bỏ thay đổi / Tiếp tục chỉnh sửa |
-| Load disk version | Mở bản đã lưu |
-| Render resolution | Độ phân giải hiển thị |
-| Privacy & Data | Quyền riêng tư và dữ liệu |
-
-The Vietnamese copy review and terminology choices are recorded in [Quy ước bản dịch tiếng Việt](./vietnamese-localization.md), including the external product references used for comparison. Use direct, natural Vietnamese with explicit consequences for destructive actions. Keep Markdown, Mermaid, KaTeX, Shiki, Git, HEX/RGB/HSL, keyboard shortcuts, file extensions, and proper theme names recognizable. Prefer complete translated messages to assembling fragments when adding new copy.
-
 ## Adding a language
 
 The [shared skill](../.agents/skills/mdp-dev-add-language/SKILL.md) owns the research, translation, full editorial review, and delivery workflow. This integration map identifies the current runtime touchpoints:
@@ -76,15 +72,15 @@ The [shared skill](../.agents/skills/mdp-dev-add-language/SKILL.md) owns the res
 | `src/i18n/editor-phrases.js` and the runtime catalog | Translate enabled CodeMirror phrases and retain `$` substitutions; extend the adapter only for newly enabled phrases |
 | Settings schema, client, import/export/reset, and broadcasts | Verify registry-derived acceptance and live propagation; change implementation only where necessary |
 | `src/i18n/__tests__/` | Cover the added locale's resolution, preference handling, counts, and live UI; keep every catalog in generic parity checks |
-| Documentation and UI fit | Update supported-language facts, record the locale's terminology/sources, and inspect actual controls in the target language |
+| Documentation and UI fit | Update supported-language facts, extend the shared writing guide with the locale's terminology/sources, and inspect actual controls in the target language |
 
-The resolver preserves the Simplified/Traditional Chinese distinction before base-language matching for English and Vietnamese. The canonical runtime preference and HTML `lang` are `zh-CN`; Chrome metadata uses `public/_locales/zh_CN/`. Bare `zh` intentionally defaults to Simplified Chinese. Traditional Chinese is not yet supported. Existing language publication sets `lang`, not a complete right-to-left layout contract; an RTL locale still requires direction/layout work.
+The resolver preserves the Simplified/Traditional Chinese distinction before base-language matching for English and Vietnamese. The canonical runtime preference and HTML `lang` are `zh-CN`; Chrome metadata uses `public/_locales/zh_CN/`. Bare `zh` intentionally defaults to Simplified Chinese. For example, `zh-Hans-TW` selects `zh-CN`, while `zh-Hant-CN` is skipped because its explicit script takes precedence. The self-identifying language label is **简体中文（中国）**. Traditional Chinese is not yet supported. Chrome packaging identifiers are listed in the [Chrome i18n locale reference](https://developer.chrome.com/docs/extensions/reference/api/i18n#locales). Existing language publication sets `lang`, not a complete right-to-left layout contract; an RTL locale still requires direction/layout work.
 
 Some tests deliberately use an unsupported language such as `fr` to exercise fallback and strict rejection. If adding that language, replace those fixtures with a still-unsupported identifier and retain their assertions. Do not remove negative coverage to make a new locale pass.
 
 ## Translation review and verification
 
-Review each entry for both behavioral accuracy and natural wording in its actual component. Compare familiar terminology in established tools using the target language, and record references actually read in the locale's editorial guide. Preserve the action's meaning and consequences while allowing different vocabulary, sentence structure, and word order. Read neighboring labels and hints together; a literal sentence can pass placeholder checks while still being confusing. The [skill's editorial passes](../.agents/skills/mdp-dev-add-language/SKILL.md#review-every-translation-in-two-passes) define complete review coverage.
+Review each entry for both behavioral accuracy and natural wording in its actual component. Compare familiar terminology in established tools using the target language, and record references actually read in the locale's section of the [writing guide](./localization.md). Preserve the action's meaning and consequences while allowing different vocabulary, sentence structure, and word order. Read neighboring labels and hints together; a literal sentence can pass placeholder checks while still being confusing. The [skill's editorial passes](../.agents/skills/mdp-dev-add-language/SKILL.md#review-every-translation-in-two-passes) define complete review coverage.
 
 | Surface | Review and smoke checks |
 | --- | --- |
@@ -102,6 +98,6 @@ Run focused checks while editing:
 npm test -- src/i18n/__tests__
 ```
 
-For a completed runtime addition, run `npm test`, `npm run build`, and `npm run size:report`, comparing the bundle with the prior result. Catalog tests enforce nested leaf/key parity, semantic key syntax, nonempty translations, interpolation parity, plural fallback, and registration of literal `t()`/`message()` calls. Real-DOM tests cover live switching, portal updates, visible message descriptors, and preservation of draft/source text, including the workspace placeholder. These checks do not establish natural wording or visual fit. Complete the surface checks above and Chrome smoke checks for file access, editing/saving, and export; report any checks that remain unverified.
+For a completed runtime addition, run `npm test`, `npm run build`, and `npm run size:report`, comparing the bundle with the prior result. Catalog tests enforce nested leaf/key parity, semantic key syntax, nonempty translations, interpolation parity, plural fallback, and registration of literal `t()`/`message()` calls. Real-DOM tests cover live switching, portal updates, visible message descriptors, and preservation of draft/source text, including the workspace placeholder. These checks do not establish natural wording or visual fit. Complete the surface checks above and Chrome smoke checks for file access, editing/saving, and export; report any checks that remain unverified. Keep revision-specific results and review coverage in the task or pull request rather than turning a past successful run into a permanent locale guarantee.
 
 Catalogs are bundled locally with no translation network request, new dependency, or additional permission. Adding many languages may justify lazy-loading catalogs behind an asynchronous initialization boundary; the current three catalogs use synchronous access so controls and native confirmations have translations available immediately.

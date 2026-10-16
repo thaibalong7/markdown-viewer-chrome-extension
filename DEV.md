@@ -61,7 +61,7 @@ Sau khi thay đổi entry point, manifest, service worker hoặc dependency, hã
 - **Settings:** `src/options/index.jsx` mount `OptionsApp.jsx` với General, Themes, Files & Workspace, Privacy & Data và Advanced sections.
 - **Background:** `src/background/service-worker.js` bọc response envelope và chuyển route thường sang `message-router.js`; offscreen fetch wire messages được xử lý riêng.
 - **Messaging/settings:** message type tập trung tại `src/messaging/index.js`; defaults, schema, migration và persistence nằm trong `src/settings/`.
-- **Ngôn ngữ giao diện:** `src/i18n/` sở hữu catalog theo key phân cấp, chọn ngôn ngữ, định dạng và cập nhật trực tiếp; `public/_locales/` dành cho thông tin extension do Chrome chọn ngôn ngữ. Xem [Interface languages](docs/internationalization.md) và [quy ước tiếng Việt](docs/vietnamese-localization.md).
+- **Ngôn ngữ giao diện:** `src/i18n/` sở hữu catalog theo key phân cấp, chọn ngôn ngữ, định dạng và cập nhật trực tiếp; `public/_locales/` dành cho thông tin extension do Chrome chọn ngôn ngữ. Xem [Interface languages](docs/internationalization.md) và [quy ước biên tập bản dịch](docs/localization.md).
 
 Viewer SCSS nằm trong `src/viewer/styles/**/*.scss` và được import bằng `?inline` từ `src/content/viewer-loader.js`. `src/content/host-print.scss` xử lý print ở host page. Không thêm hoặc sửa CSS sinh ra trong `dist/`.
 
@@ -129,7 +129,7 @@ Checklist smoke test thường dùng:
 
 ## Thêm ngôn ngữ giao diện
 
-Dùng shared skill [mdp-dev-add-language](.agents/skills/mdp-dev-add-language/SKILL.md), ví dụ: “Dùng $mdp-dev-add-language để thêm tiếng Nhật cho giao diện Markdown Plus”. Skill bao gồm tích hợp locale, đối chiếu thuật ngữ từ công cụ dùng ngôn ngữ đích, rà soát từng bản dịch cho đúng nghĩa và tự nhiên, cùng các bước kiểm tra. Key là nhãn phân cấp ổn định; không dùng câu tiếng Anh làm key. Khi chỉ sửa vài câu tiếng Việt, theo [quy ước biên tập](docs/vietnamese-localization.md) và kiểm tra những thành phần bị ảnh hưởng.
+Dùng shared skill [mdp-dev-add-language](.agents/skills/mdp-dev-add-language/SKILL.md), ví dụ: “Dùng $mdp-dev-add-language để thêm tiếng Nhật cho giao diện Markdown Plus”. Skill bao gồm tích hợp locale, đối chiếu thuật ngữ từ công cụ dùng ngôn ngữ đích, rà soát từng bản dịch cho đúng nghĩa và tự nhiên, cùng các bước kiểm tra. Quy ước và thuật ngữ của ngôn ngữ mới được bổ sung thành một mục trong [hướng dẫn biên tập chung](docs/localization.md), không cần tạo file Markdown riêng. Kết quả rà soát và kiểm thử của từng lần triển khai ghi trong task hoặc pull request. Key là nhãn phân cấp ổn định; không dùng câu tiếng Anh làm key. Khi chỉ sửa vài câu tiếng Việt, theo [nguyên tắc chung và mục tiếng Việt](docs/localization.md#vi) và kiểm tra những thành phần bị ảnh hưởng.
 
 ## Troubleshooting
 

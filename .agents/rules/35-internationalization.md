@@ -7,7 +7,7 @@ globs:
   - "public/_locales/**/*.json"
   - "manifest.json"
   - "docs/internationalization.md"
-  - "docs/*-localization.md"
+  - "docs/localization.md"
 paths:
   - "src/**/*.js"
   - "src/**/*.jsx"
@@ -16,7 +16,7 @@ paths:
   - "public/_locales/**/*.json"
   - "manifest.json"
   - "docs/internationalization.md"
-  - "docs/*-localization.md"
+  - "docs/localization.md"
 trigger: glob
 ---
 
@@ -40,5 +40,5 @@ Apply these constraints when changing application copy, locale handling, or UI m
 ## Editorial quality and checks
 
 - Write natural target-language UI for the action and context, not a word-for-word rendering of English. Preserve behavior, limits, permissions, and consequences while choosing familiar local terms. Keep labels concise and use descriptions to explain scope; never obscure loss of unsaved work or confuse clearing history with deleting a file.
-- Review new or changed wording with its neighboring controls, tooltips, accessible labels, and states. Follow the locale's editorial guide; for Vietnamese use [Quy ước bản dịch tiếng Việt](../../docs/vietnamese-localization.md). When adding a language, review every catalog entry and compare terminology with actual localized tools using the skill workflow.
+- Review new or changed wording with its neighboring controls, tooltips, accessible labels, and states. Follow the shared principles and target locale's section in the [Localization writing guide](../../docs/localization.md); add a section there for new editorial decisions rather than requiring a separate guide per locale. When adding a language, review every catalog entry and compare terminology with actual localized tools using the skill workflow.
 - Run focused catalog/live-switching tests for translation changes; run the full suite and production build for runtime additions, plus a size comparison for another bundled catalog. Inspect affected UI for wrapping, font coverage, accessibility, and narrow layouts. Report unperformed visual/Chrome checks explicitly.

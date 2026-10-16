@@ -1,10 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   getInitialExplorerFileUrl,
-  getSiblingRefreshScanOptions,
-  launchInitialExplorerScan,
-  resolveInitialExplorerStartup
+  getSiblingRefreshScanOptions
 } from '../useExplorer.js'
+import { launchInitialExplorerScan, resolveInitialExplorerStartup } from '../../../explorer/explorer-startup.js'
 
 describe('getInitialExplorerFileUrl', () => {
   it('prefers the app current file url over the browser location', () => {

@@ -9,8 +9,7 @@ import {
   DEFAULT_EXPLORER_MAX_FILES,
   DEFAULT_EXPLORER_MAX_FOLDERS,
   DEFAULT_EXPLORER_MAX_SCAN_DEPTH,
-  DEFAULT_EXPLORER_RESPECT_GITIGNORE,
-  DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
+  DEFAULT_EXPLORER_RESPECT_GITIGNORE
 } from '../../../shared/constants/explorer.js'
 import {
   buildExplorerFilesContext
@@ -37,6 +36,7 @@ import {
 } from '../../explorer/explorer-navigation.js'
 import { refreshExplorerFileList } from '../../explorer/explorer-list-refresh.js'
 import { createExplorerWorkspaceSession } from '../../explorer/explorer-workspace-session.js'
+import { launchInitialExplorerScan, resolveInitialExplorerStartup } from '../../explorer/explorer-startup.js'
 import {
   fileUrlIsUnderDirectoryUrl,
   getParentDirectoryUrl,
@@ -73,33 +73,6 @@ export function getSiblingRefreshScanOptions({
     folderLabel: normalizedRootDirUrl === normalizedSiblingRootUrl ? siblingFolderLabel : '',
     preserveExpandedState
   }
-}
-
-export function resolveInitialExplorerStartup({
-  storedMode,
-  storedRoot,
-  restoreLastWorkspace = DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
-}) {
-  if (restoreLastWorkspace && storedMode === 'workspace' && storedRoot) {
-    return { mode: 'workspace', workspaceRoot: storedRoot }
-  }
-  return { mode: 'sibling', workspaceRoot: null }
-}
-
-export function launchInitialExplorerScan({
-  startup,
-  initialUrl,
-  siblingScanOptions,
-  runSiblingScan,
-  openWorkspaceFolder
-}) {
-  if (startup.mode === 'workspace') {
-    return openWorkspaceFolder(startup.workspaceRoot, {
-      restore: true,
-      keepCurrentDocumentOnMissing: true
-    })
-  }
-  return runSiblingScan(initialUrl, siblingScanOptions)
 }
 
 /** React composition hook for the Files explorer. */
@@ -273,6 +246,7 @@ export function useExplorer({ bridge }) {
 
   const failWorkspaceToSibling = useCallback(
     async (message) => {
+      bridge?.readingPositions?.leaveWorkspace()
       viewActions.clearExplorerBody()
       if (message) bridge?.showToast?.(message, { variant: 'error' })
       clearWorkspaceVirtualReaders()
@@ -282,6 +256,7 @@ export function useExplorer({ bridge }) {
       workspaceTreeRef.current = null
       safePatch({ explorerMode: 'sibling' })
       await runSiblingScan(currentFileUrlRef.current)
+      bridge?.readingPositions?.resume()
     },
     [bridge, clearWorkspaceVirtualReaders, runSiblingScan, safePatch, viewActions]
   )
@@ -334,7 +309,6 @@ export function useExplorer({ bridge }) {
         clearWorkspaceVirtualReaders,
         resetViewerToPickWorkspaceFile,
         failWorkspaceToSibling,
-        setCurrentFileUrl,
         navigateToFileRef,
         runSiblingScan,
         safePatch,
@@ -352,7 +326,6 @@ export function useExplorer({ bridge }) {
       runSiblingScan,
       safePatch,
       siblingScanSession,
-      setCurrentFileUrl,
       viewActions,
       workspaceScanSession
     ]
@@ -396,9 +369,7 @@ export function useExplorer({ bridge }) {
     const startup = resolveInitialExplorerStartup({
       storedMode,
       storedRoot,
-      restoreLastWorkspace:
-        bridge?.getSettings?.()?.explorer?.restoreLastWorkspace ??
-        DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
+      restoreLastWorkspace: bridge?.getSettings?.()?.explorer?.restoreLastWorkspace
     })
     if (startup.mode === 'workspace') {
       explorerModeRef.current = 'workspace'

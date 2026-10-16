@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   splitDestroy: vi.fn(),
   editorDestroy: vi.fn(),
   renderDestroy: vi.fn(),
+  renderOptions: null,
   documentSessionDestroy: vi.fn(),
   documentSessionOpen: vi.fn(),
   interactionsDestroy: vi.fn(),
@@ -16,13 +17,17 @@ vi.mock('../../shared/logger.js', () => ({
   logger: { debug: vi.fn(), error: vi.fn() }
 }))
 vi.mock('../app/renderController.js', () => ({
-  createRenderController: () => ({
-    render: vi.fn(),
-    syncTocItems: vi.fn(),
-    destroy: mocks.renderDestroy,
-    getLastSuccessfulRenderMarkdown: () => '',
-    setSmoothInitialHashScroll: vi.fn()
-  })
+  createRenderController: (options) => {
+    mocks.renderOptions = options
+    return {
+      render: vi.fn(),
+      syncTocItems: vi.fn(),
+      destroy: mocks.renderDestroy,
+      getLastSuccessfulRenderMarkdown: () => '',
+      setSmoothInitialHashScroll: vi.fn(),
+      cancelReadingRestoration: vi.fn()
+    }
+  }
 }))
 vi.mock('../app/editorSessionController.js', () => ({
   createEditorSessionController: () => ({
@@ -43,6 +48,7 @@ vi.mock('../app/documentSessionController.js', () => ({
       return opened
     },
     getLoadedDocument: () => null,
+    getCurrentDocument: () => null,
     getWatchTarget: () => null,
     getUiState: () => ({ capabilities: { edit: true }, sourceKind: 'file-url' }),
     updateText: vi.fn()
@@ -128,6 +134,14 @@ describe('MarkdownViewerApp cleanup characterization', () => {
     expect(container.innerHTML).toBe('')
   })
 
+  it('connects render start to reading-position invalidation', () => {
+    const app = new MarkdownViewerApp({ markdown: '# Fixture', settings: {}, container: { innerHTML: '' } })
+    const beforeRender = vi.spyOn(app._readingPositions, 'beforeRender')
+    mocks.renderOptions.onRenderStart()
+    expect(beforeRender).toHaveBeenCalledOnce()
+    app.destroy()
+  })
+
   it('keeps workspace heading navigation out of the browser URL', () => {
     vi.stubGlobal('sessionStorage', {
       getItem: vi.fn((key) => (key === 'mdp:explorer:mode' ? 'workspace' : null))
@@ -170,7 +184,10 @@ describe('MarkdownViewerApp cleanup characterization', () => {
 
   it('ignores an f route when restoring a workspace session', async () => {
     vi.stubGlobal('sessionStorage', {
-      getItem: vi.fn((key) => (key === 'mdp:explorer:mode' ? 'workspace' : null))
+      getItem: vi.fn((key) => ({
+        'mdp:explorer:mode': 'workspace',
+        'mdp:explorer:workspaceRoot': 'file:///fixtures/navigation/'
+      })[key] || null)
     })
     const app = new MarkdownViewerApp({
       markdown: '# Fixture',
@@ -194,6 +211,44 @@ describe('MarkdownViewerApp cleanup characterization', () => {
       '',
       'file:///fixtures/navigation/index.md'
     )
+  })
+
+  it('reopens the last real workspace document from the tab reading session', async () => {
+    const entry = 'file:///fixtures/navigation/index.md'
+    const target = 'file:///fixtures/navigation/docs/guide.md'
+    const root = 'file:///fixtures/navigation/'
+    vi.stubGlobal('sessionStorage', {
+      getItem: (key) => ({
+        'mdp:explorer:mode': 'workspace', 'mdp:explorer:workspaceRoot': root,
+        'mdp:readingPositions': JSON.stringify({
+          entry, scope: `workspace:${root}`, currentFile: target,
+          positions: [[target, { top: 300, ratio: 0.3, offset: 0, headingIndex: -1 }]]
+        })
+      })[key] || null
+    })
+    const app = new MarkdownViewerApp({ markdown: '# Fixture', settings: {}, container: { innerHTML: '' } })
+    await app._restoreInitialRoute()
+    expect(mocks.documentSessionOpen).toHaveBeenCalledWith(target)
+    expect(app._currentFileUrl).toBe(target)
+    app.destroy()
+  })
+
+  it('honors the route when workspace restoration is disabled', async () => {
+    vi.stubGlobal('sessionStorage', {
+      getItem: (key) => ({
+        'mdp:explorer:mode': 'workspace',
+        'mdp:explorer:workspaceRoot': 'file:///fixtures/navigation/'
+      })[key] || null
+    })
+    const target = 'file:///fixtures/navigation/docs/guide.md'
+    const app = new MarkdownViewerApp({
+      markdown: '# Fixture', container: { innerHTML: '' },
+      initialRoute: { entryFileUrl: window.location.href, targetFileUrl: target, hasFileTarget: true },
+      settings: { explorer: { restoreLastWorkspace: false } }
+    })
+    await app._restoreInitialRoute()
+    expect(mocks.documentSessionOpen).toHaveBeenCalledWith(target)
+    app.destroy()
   })
 
   it('wires the floating theme action to the viewer theme handler', async () => {

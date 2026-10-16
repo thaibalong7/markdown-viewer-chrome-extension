@@ -8,7 +8,8 @@ function contentTop(element, root) {
   return element.getBoundingClientRect().top - root.getBoundingClientRect().top + root.scrollTop
 }
 
-export function captureReadingPosition(root, article) {
+// Data-only bookmark: safe to keep across documents or serialize for this tab.
+export function readReadingPosition(root, article) {
   if (!root) return null
   const top = root.scrollTop
   const max = Math.max(0, root.scrollHeight - root.clientHeight)
@@ -18,14 +19,21 @@ export function captureReadingPosition(root, article) {
     if (contentTop(heading, root) <= top + 2) active = heading
     else break
   }
-  const snapshot = {
-    scrollRoot: root,
+  return {
     top,
     ratio: max ? top / max : 0,
     headingId: active?.id || null,
     headingText: headingText(active),
     headingIndex: active ? headings.indexOf(active) : -1,
-    offset: active ? top - contentTop(active, root) : 0,
+    offset: active ? top - contentTop(active, root) : 0
+  }
+}
+
+export function trackReadingPosition(root, position) {
+  if (!root || !position) return null
+  const snapshot = {
+    ...position,
+    scrollRoot: root,
     userMoved: false,
     dispose: null
   }
@@ -42,6 +50,10 @@ export function captureReadingPosition(root, article) {
     for (const [name, listener] of events) inputTarget.removeEventListener?.(name, listener, { capture: true })
   }
   return snapshot
+}
+
+export function captureReadingPosition(root, article) {
+  return trackReadingPosition(root, readReadingPosition(root, article))
 }
 
 export function restoreReadingPosition(snapshot, article) {

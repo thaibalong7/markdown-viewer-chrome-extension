@@ -65,6 +65,7 @@ The Viewer intentionally uses light DOM. This keeps document text visible to bro
 
 - `documentSessionController.js` owns current-document identity, loading, cancellation, capability publication, dirty-editor checks, and loaded-resource cleanup.
 - `renderController.js` selects a renderer, cancels stale renders, runs renderer cleanup, publishes busy/TOC state, preserves scroll, and presents recoverable render errors.
+- `readingPositionController.js` coordinates bookmark capture/restoration with document, render, and workspace lifecycles. `navigation/reading-position-store.js` owns data-only bookmarks, scope isolation, validation, and tab-local real-file persistence; `navigation/reading-position.js` owns DOM measurement and scroll correction.
 - `editorSessionController.js` owns edit mode, dirty/save state, debounced preview, and save errors.
 - `watchSessionController.js` owns visible-tab document polling, stable-change confirmation, pending updates, retries, and coordination with editor/save state. `readingActivityGuard.js` owns the input/selection guard and cleans up its listeners with the watch lifecycle.
 - `splitScrollSync.js` owns editor-to-preview scroll synchronization and cleanup.
@@ -156,7 +157,7 @@ Files and Outline collapse independently and retain a narrow interaction gutter 
 
 The explorer has sibling mode, which lists supported files beside the current document, and workspace mode, which recursively scans a selected directory and renders a tree.
 
-Non-React workflows live in `src/viewer/explorer/`: scanning, workspace selection/restoration, cancellation, navigation, URL normalization, `.gitignore` matching, and session state. React adapters and reducer helpers live under `src/viewer/react/hooks/explorer/`.
+Non-React workflows live in `src/viewer/explorer/`: scanning, workspace selection/restoration, cancellation, navigation, URL normalization, `.gitignore` matching, and session state. `explorer-startup.js` shares workspace-restore policy between the app's initial document loading and the Files explorer's initial scan. React adapters and reducer helpers live under `src/viewer/react/hooks/explorer/`.
 
 Workspace selection prefers the File System Access API and can fall back to `webkitdirectory`. When real paths are unavailable, files receive `mdp-ws-*` virtual URLs backed by in-memory `File` objects or handles. Virtual workspace URLs must not be converted into fake `file:` URLs.
 
@@ -172,9 +173,13 @@ For real files, `src/viewer/navigation/viewer-route.js` keeps the original Markd
 entry.md?f=relative/path/to/document.txt#heading
 ```
 
-This supports reload and Back/Forward without making explorer-only formats direct activation entries. Workspace navigation does not write virtual paths into the browser URL; reload returns to the entry document.
+This supports reload and Back/Forward without making explorer-only formats direct activation entries. Workspace navigation does not write virtual paths into the browser URL. Restored file-backed workspaces can reopen their last real document from the tab's reading-position session; virtual workspaces return to the entry document on reload because their readers remain in memory.
 
-Explorer navigation ultimately calls the document session's `openDocument()` path. That boundary coordinates loading, stale-request cancellation, rendering, active-file state, title, focus, and history.
+Real and virtual explorer documents share one navigation path into the document session's `openDocument()` boundary; virtual documents supply their workspace reader instead of a real-file loader source. Both honor force reload and explorer-sync options, then share rendering, active-file state, title, focus, history policy, and reading-position restoration.
+
+Back to original file, Files navigation, internal document links, and browser Back/Forward reuse the last reading position per file. An explicit valid heading takes priority; unseen files start at the top, and selecting the current file keeps its position. Bookmarks contain only heading/text, section offset, scroll offset, and ratio data. The active Folder session is tied to the entry document, so navigating into a subfolder does not clear it. Changing or leaving a workspace clears the old bookmarks and cancels pending document loads, renders, anchor locks, and scroll correction; refresh-list scans and canceled folder pickers retain them. Dirty-draft rejection when leaving a workspace retains the workspace and its bookmarks. Real-file bookmarks use `sessionStorage` with an in-memory fallback when storage is unavailable, and the current position is saved on navigation, page exit, and Viewer teardown. Virtual workspaces use fresh in-memory sessions to avoid collisions between equal relative paths in different selected folders. The Viewer temporarily owns manual browser scroll restoration so native history restoration cannot overwrite its document scroll position.
+
+Capture is enabled only for the current document identity after a successful render. Render start invalidates that identity so canceled or partial renders cannot replace saved bookmarks, including after a workspace scan retains the document. Scope resets still attempt to remove persisted data after a write/quota failure; an older canceled scan cannot reset a newer workspace when its failure arrives late.
 
 ## Markdown editor
 

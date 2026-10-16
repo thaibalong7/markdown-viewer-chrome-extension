@@ -24,7 +24,8 @@ export function createExplorerBridge({
   getEntryFileUrl,
   resetBrowserRoute,
   updateCurrentFileUrl,
-  updateWorkspaceReaders
+  updateWorkspaceReaders,
+  readingPositions
 }) {
   return {
     getSettings,
@@ -39,6 +40,7 @@ export function createExplorerBridge({
     resetBrowserRoute,
     updateCurrentFileUrl,
     updateWorkspaceReaders,
+    readingPositions,
     navigateToFile: null,
     virtualFileExists: null
   }

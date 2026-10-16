@@ -17,11 +17,13 @@ import { applyReaderStyles, createStyleElement } from './app/viewerStyles.js'
 import { createGlobalViewerListeners } from './app/globalViewerListeners.js'
 import { createWatchSessionController } from './app/watchSessionController.js'
 import { createDocumentSessionController } from './app/documentSessionController.js'
+import { createReadingPositionController } from './app/readingPositionController.js'
 import { createDocumentIdentity } from './documents/document-model.js'
 import { navigateReviewSection } from './review/review-navigation.js'
 import { getLightDarkThemeToggleTarget } from '../theme/index.js'
 import { saveSettings } from '../settings/settings-client.js'
-import { getExplorerMode } from './explorer/explorer-state.js'
+import { getExplorerMode, getWorkspaceRootUrl } from './explorer/explorer-state.js'
+import { resolveInitialExplorerStartup } from './explorer/explorer-startup.js'
 import { documentTitleFromUrl } from './explorer/url-utils.js'
 import { isEditorFeatureEnabled } from '../shared/constants/editor.js'
 import {
@@ -71,6 +73,25 @@ export class MarkdownViewerApp {
     this._themeTogglePromise = null
     /** @type {ReturnType<typeof createArticleInteractions> | null} */
     this._articleInteractions = null
+    this._initialExplorerStartup = resolveInitialExplorerStartup({
+      storedMode: getExplorerMode(),
+      storedRoot: getWorkspaceRootUrl(),
+      restoreLastWorkspace: this.settings?.explorer?.restoreLastWorkspace
+    })
+    this._readingPositions = createReadingPositionController({
+      entryFileUrl: this._entryFileUrl,
+      workspaceRoot: this._initialExplorerStartup.workspaceRoot,
+      getCurrentDocument: () => this._documentSession?.getCurrentDocument(),
+      getScrollRoot: () => this.getScrollRoot(),
+      getArticleEl: () => this._articleEl,
+      restorePosition: (position) => this._renderController.restoreSavedPosition(position),
+      cancelRestoration: () => this._renderController?.cancelReadingRestoration(),
+      onScopeChange: () => {
+        this._watchSession?.reset()
+        this._documentSession?.cancelPendingNavigation()
+        this._renderController?.cancelPendingRender()
+      }
+    })
     this._renderController = createRenderController({
       getLoadedDocument: () => this._documentSession?.getLoadedDocument() || this._initialLoadedDocument,
       getSettings: () => this.settings,
@@ -78,6 +99,8 @@ export class MarkdownViewerApp {
       getArticleInteractions: () => this._articleInteractions,
       getReactHandle: () => this._reactHandle,
       getScrollRoot: () => this.getScrollRoot(),
+      onRenderStart: () => this._readingPositions.beforeRender(),
+      onDocumentRendered: (loaded) => this._readingPositions.documentRendered(loaded),
       onBusyChange: (isBusy) => {
         const currentUiState = this._documentSession?.getUiState()
         if (!currentUiState) return
@@ -125,6 +148,7 @@ export class MarkdownViewerApp {
       getSettings: () => this.settings,
       render: (opts) => this.render(opts),
       beforeDocumentSwitch: () => this._editorSession.prepareForDocumentSwitch(),
+      onBeforeDocumentReplace: () => this._readingPositions.beforeDocumentReplace(),
       onDocumentSwitchStart: () => {
         this._watchSession?.reset()
         this._articleInteractions?.closeImageLightbox()
@@ -224,6 +248,7 @@ export class MarkdownViewerApp {
         this._documentSession.updateWorkspaceReader(readers)
         this._watchSession.reset()
       },
+      readingPositions: this._readingPositions,
       updateCurrentFileUrl: (nextUrl) => {
         const url = typeof nextUrl === 'string' ? nextUrl : ''
         if (url === this._currentFileUrl) return
@@ -313,7 +338,9 @@ export class MarkdownViewerApp {
     this._renderController.setSmoothInitialHashScroll(Boolean(window.location.hash))
     this.applyReaderStyles()
     this._recordCurrentFileInHistory()
-    void this.render()
+    void this.render().then((result) => {
+      if (result && !window.location.hash) this._readingPositions.restore(this._currentFileUrl)
+    })
     this._articleInteractions.bind()
     this._globalListeners.bind()
     this._watchSession.start()
@@ -324,20 +351,24 @@ export class MarkdownViewerApp {
   }
 
   async _restoreInitialRoute() {
-    if (this._initialRoute?.invalidFileTarget || getExplorerMode() === 'workspace') {
+    const restoreWorkspace = this._initialExplorerStartup.mode === 'workspace'
+    let targetFileUrl = null
+    if (restoreWorkspace) {
       this._resetBrowserRoute()
-      if (this._initialRoute?.invalidFileTarget) {
-        this._initialRouteWarning = 'viewer.app.fileRouteInThisURLIsNotSupported'
-      }
+      targetFileUrl = this._readingPositions.getReloadHref()
+    } else if (this._initialRoute?.invalidFileTarget) {
+      this._resetBrowserRoute()
+      this._initialRouteWarning = 'viewer.app.fileRouteInThisURLIsNotSupported'
     } else if (this._initialRoute?.hasFileTarget) {
-      const restored = await this._documentSession.openDocument(this._initialRoute.targetFileUrl)
-      if (!restored) {
-        this._resetBrowserRoute()
-        this._initialRouteWarning =
-          'errors.viewer.app.restoreTheLinkedFileReturnedToTheOriginal'
-      } else {
-        document.title = `${documentTitleFromUrl(this._currentFileUrl)} - Markdown Plus`
-      }
+      targetFileUrl = this._initialRoute.targetFileUrl
+    }
+    if (!targetFileUrl || targetFileUrl === this._entryFileUrl) return
+    const restored = await this._documentSession.openDocument(targetFileUrl)
+    if (!restored) {
+      this._resetBrowserRoute()
+      this._initialRouteWarning = 'errors.viewer.app.restoreTheLinkedFileReturnedToTheOriginal'
+    } else {
+      document.title = `${documentTitleFromUrl(this._currentFileUrl)} - Markdown Plus`
     }
   }
 
@@ -485,6 +516,7 @@ export class MarkdownViewerApp {
   destroy() {
     if (this._destroyed) return
     this._destroyed = true
+    this._readingPositions.destroy()
     this._watchSession.destroy()
     this._globalListeners.unbind()
     this._splitScrollSync.destroy()

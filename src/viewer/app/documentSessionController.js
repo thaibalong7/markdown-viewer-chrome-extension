@@ -33,6 +33,7 @@ export function createDocumentSessionController({
   render,
   beforeDocumentSwitch,
   onDocumentSwitchStart,
+  onBeforeDocumentReplace,
   onDocumentLoaded,
   onRevisionApplied,
   onDocumentLoadSettled,
@@ -54,14 +55,23 @@ export function createDocumentSessionController({
   let previousRevision = null
   let loadController = null
   let navigationToken = 0
+  let navigationEpoch = 0
   let destroyed = false
 
   const publish = (state = {}, document = currentDocument) => {
     publishUiState?.(createDocumentUiState(document, state))
   }
 
+  function cancelPendingNavigation() {
+    ++navigationEpoch
+    ++navigationToken
+    loadController?.abort()
+    loadController = null
+  }
+
   async function openDocument(href, options = {}) {
     if (destroyed || !href) return false
+    const epoch = navigationEpoch
     const fileType = getFileTypeFromUrl(href)
     const nextDocument = createDocumentIdentity(href)
     if (!fileType || !nextDocument) {
@@ -78,6 +88,7 @@ export function createDocumentSessionController({
       })
       if (canSwitch === false) return false
     }
+    if (destroyed || epoch !== navigationEpoch) return false
 
     const token = ++navigationToken
     loadController?.abort()
@@ -98,6 +109,7 @@ export function createDocumentSessionController({
         cleanupLoadedDocument(payload)
         return false
       }
+      onBeforeDocumentReplace?.()
       cleanupLoadedDocument(loadedDocument)
       currentDocument = nextDocument
       loadedDocument = { document: nextDocument, ...payload }
@@ -120,6 +132,7 @@ export function createDocumentSessionController({
       })
       if (fileType.id !== 'markdown') {
         const loadError = safeLoadError(error, fileType)
+        onBeforeDocumentReplace?.()
         cleanupLoadedDocument(loadedDocument)
         currentDocument = nextDocument
         workspaceReader = options.workspaceReader || null
@@ -156,12 +169,13 @@ export function createDocumentSessionController({
 
   async function showPlaceholder(placeholderMessage) {
     if (destroyed) return false
+    const epoch = navigationEpoch
     const canSwitch = await beforeDocumentSwitch?.({ currentDocument, nextDocument: null })
-    if (canSwitch === false) return false
-    ++navigationToken
-    loadController?.abort()
-    loadController = null
+    if (canSwitch === false || destroyed || epoch !== navigationEpoch) return false
+    cancelPendingNavigation()
+    const token = navigationToken
     onDocumentSwitchStart?.()
+    onBeforeDocumentReplace?.()
     cleanupLoadedDocument(loadedDocument)
     currentDocument = null
     workspaceReader = null
@@ -178,7 +192,7 @@ export function createDocumentSessionController({
     onCurrentDocumentChange?.(null)
     publish()
     await render?.({ preserveScroll: false, honorHash: false })
-    return true
+    return !destroyed && token === navigationToken
   }
 
   function getWatchTarget() {
@@ -284,9 +298,7 @@ export function createDocumentSessionController({
   function destroy() {
     if (destroyed) return
     destroyed = true
-    ++navigationToken
-    loadController?.abort()
-    loadController = null
+    cancelPendingNavigation()
     onDocumentSwitchStart?.()
     cleanupLoadedDocument(loadedDocument)
     loadedDocument = null
@@ -296,6 +308,7 @@ export function createDocumentSessionController({
   }
 
   return {
+    cancelPendingNavigation,
     openDocument,
     getWatchTarget,
     getPreviousRevision: () => previousRevision,

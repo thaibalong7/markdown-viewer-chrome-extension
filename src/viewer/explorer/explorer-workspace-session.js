@@ -50,13 +50,18 @@ export function createExplorerWorkspaceSession(deps) {
     clearWorkspaceVirtualReaders,
     resetViewerToPickWorkspaceFile,
     failWorkspaceToSibling,
-    setCurrentFileUrl,
     navigateToFileRef,
     runSiblingScan,
     safePatch,
     stateRef,
     viewActions
   } = deps
+  let latestScanSignal = null
+
+  const startWorkspaceScan = () => {
+    latestScanSignal = workspaceScanSession.start()
+    return latestScanSignal
+  }
 
   const resetSiblingRefsForWorkspace = () => {
     refs.siblingTreeRef.current = null
@@ -65,12 +70,13 @@ export function createExplorerWorkspaceSession(deps) {
   }
 
   const enterWorkspaceScan = ({ displayLabel, progressHeadline }) => {
+    bridge?.readingPositions?.startWorkspace(null)
     bridge?.resetBrowserRoute?.()
     siblingScanSession?.abort?.()
     resetSiblingRefsForWorkspace()
     clearWorkspaceVirtualReaders()
     clearWorkspaceRootUrl()
-    const signal = workspaceScanSession.start()
+    const signal = startWorkspaceScan()
     const { maxScanDepth, maxFiles, maxFolders, respectGitignore } = getScanLimits()
     setExplorerMode('workspace')
     refs.explorerModeRef.current = 'workspace'
@@ -119,6 +125,7 @@ export function createExplorerWorkspaceSession(deps) {
         workspaceLabelOverride: dirHandle.name || localizedMessage('viewer.explorer.workspace')
       })
     } catch (error) {
+      if (signal !== latestScanSignal) return
       const aborted = isAbortError(error, signal)
       logger.warn('Workspace directory-handle scan failed.', error)
       if (aborted) await failWorkspaceToSibling('')
@@ -158,6 +165,7 @@ export function createExplorerWorkspaceSession(deps) {
         workspaceLabelOverride: tree.name || localizedMessage('viewer.explorer.workspace')
       })
     } catch (error) {
+      if (signal !== latestScanSignal) return
       const aborted = isAbortError(error, signal)
       logger.warn('Workspace webkitdirectory scan failed.', error)
       if (aborted) await failWorkspaceToSibling('')
@@ -171,13 +179,14 @@ export function createExplorerWorkspaceSession(deps) {
     const { restore = false } = opts
     if (!dirUrl) return
     const normalized = normalizeDirectoryUrl(dirUrl)
+    if (!opts.listOnly) bridge?.readingPositions?.startWorkspace(normalized)
     const previousState = stateRef?.current
     const previousTree = refs.workspaceTreeRef.current
     if (!opts.listOnly) bridge?.resetBrowserRoute?.()
     siblingScanSession?.abort?.()
     resetSiblingRefsForWorkspace()
     if (!opts.listOnly) clearWorkspaceVirtualReaders()
-    const signal = workspaceScanSession.start()
+    const signal = startWorkspaceScan()
     const { maxScanDepth, maxFiles, maxFolders, respectGitignore } = getScanLimits()
 
     setExplorerMode('workspace')
@@ -221,6 +230,7 @@ export function createExplorerWorkspaceSession(deps) {
       })
       return true
     } catch (error) {
+      if (signal !== latestScanSignal) return false
       const aborted = isAbortError(error, signal)
       if (opts.listOnly) {
         const activeSignal = workspaceScanSession.currentSignal()
@@ -270,6 +280,20 @@ export function createExplorerWorkspaceSession(deps) {
   }
 
   const exitWorkspace = async () => {
+    const wasWorkspaceVirtualDoc = isWorkspaceVirtualHref(refs.currentFileUrlRef.current)
+    const original = getOriginalFileUrl()
+    const restoreOriginalDoc =
+      Boolean(original) && (wasWorkspaceVirtualDoc || !isOnOriginalFile(refs.currentFileUrlRef.current))
+    if (restoreOriginalDoc) {
+      // Resolve dirty-draft confirmation before ending the workspace session.
+      const opened = await navigateToFileRef.current?.(original, {
+        replaceHistory: true,
+        forceReload: wasWorkspaceVirtualDoc
+      })
+      if (opened === false) return false
+    }
+    bridge?.readingPositions?.leaveWorkspace()
+    latestScanSignal = null
     workspaceScanSession.abort()
     clearWorkspaceVirtualReaders()
     clearWorkspaceRootUrl()
@@ -278,24 +302,12 @@ export function createExplorerWorkspaceSession(deps) {
     refs.workspaceTreeRef.current = null
     safePatch({ explorerMode: 'sibling' })
 
-    const wasWorkspaceVirtualDoc = isWorkspaceVirtualHref(refs.currentFileUrlRef.current)
-    if (wasWorkspaceVirtualDoc) {
-      setCurrentFileUrl(window.location.href)
-    }
-
-    const original = getOriginalFileUrl()
-    const restoreOriginalDoc =
-      Boolean(original) && (wasWorkspaceVirtualDoc || !isOnOriginalFile(refs.currentFileUrlRef.current))
-
     viewActions.showLoading({ filesContext: buildFilesContext() })
     if (restoreOriginalDoc) {
-      await navigateToFileRef.current?.(original, {
-        replaceHistory: true,
-        forceReload: wasWorkspaceVirtualDoc
-      })
-      return
+      bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
     }
     await runSiblingScan(refs.currentFileUrlRef.current)
+    bridge?.readingPositions?.resume()
   }
 
   const finalizeWorkspaceTree = async (tree, stats, opts) => {
@@ -340,6 +352,7 @@ export function createExplorerWorkspaceSession(deps) {
       expandedMap: opts.preserveExpandedState ? stateRef?.current?.expandedMap : storedExpandedMap,
       preserveExpandedState
     })
+    bridge?.readingPositions?.resume()
   }
 
   return {
@@ -347,7 +360,6 @@ export function createExplorerWorkspaceSession(deps) {
     openWorkspaceFromVirtualWebkitFiles,
     openWorkspaceFolder,
     pickAndOpenAnotherWorkspaceFolder,
-    exitWorkspace,
-    finalizeWorkspaceTree
+    exitWorkspace
   }
 }

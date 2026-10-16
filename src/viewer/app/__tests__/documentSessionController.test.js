@@ -24,6 +24,38 @@ function createSession(options = {}) {
 }
 
 describe('document session controller', () => {
+  it('does not show a placeholder after its workspace changes during confirmation', async () => {
+    const confirmation = deferred()
+    const onBeforeDocumentReplace = vi.fn()
+    const session = createSession({ beforeDocumentSwitch: () => confirmation.promise, onBeforeDocumentReplace })
+    const showing = session.showPlaceholder('Pick a file')
+    session.cancelPendingNavigation()
+    confirmation.resolve(true)
+    expect(await showing).toBe(false)
+    expect(session.getCurrentDocument().href).toBe('file:///docs/index.md')
+    expect(onBeforeDocumentReplace).not.toHaveBeenCalled()
+  })
+
+  it('reports an interrupted placeholder render as canceled', async () => {
+    const rendering = deferred()
+    const session = createSession({ render: () => rendering.promise })
+    const showing = session.showPlaceholder('Pick a file')
+    await Promise.resolve()
+    expect(session.getCurrentDocument()).toBeNull()
+    session.cancelPendingNavigation()
+    rendering.resolve(null)
+    expect(await showing).toBe(false)
+  })
+  it('does not start a load after its workspace changes during confirmation', async () => {
+    const confirmation = deferred()
+    const loadDocument = vi.fn()
+    const session = createSession({ beforeDocumentSwitch: () => confirmation.promise, loadDocument })
+    const opening = session.openDocument('file:///docs/next.md')
+    session.cancelPendingNavigation()
+    confirmation.resolve(true)
+    expect(await opening).toBe(false)
+    expect(loadDocument).not.toHaveBeenCalled()
+  })
   it('keeps placeholder UI messages separate from document source', async () => {
     const prompt = message('viewer.useexplorer.selectASupportedFileFromTheFilesPanel')
     const onDocumentLoaded = vi.fn()

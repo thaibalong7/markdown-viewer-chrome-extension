@@ -1,7 +1,7 @@
 import { t } from '../../i18n/index.js'
 import { mountDocumentState } from '../react/content/states/mount-document-state.js'
 import { clearContentUi } from '../react/content/mount-content-ui.jsx'
-import { captureReadingPosition, restoreReadingPosition } from '../navigation/reading-position.js'
+import { captureReadingPosition, restoreReadingPosition, trackReadingPosition } from '../navigation/reading-position.js'
 import { logger } from '../../shared/logger.js'
 import { getFileTypeById } from '../../shared/file-types.js'
 import { getDocumentRenderer } from '../documents/renderer-registry.js'
@@ -26,6 +26,8 @@ export function createRenderController({
   getReactHandle,
   getScrollRoot,
   onBusyChange,
+  onRenderStart,
+  onDocumentRendered,
   container
 }) {
   let smoothInitialHashScroll = false
@@ -150,6 +152,7 @@ export function createRenderController({
   }
 
   async function render({ preserveScroll = false, honorHash = true } = {}) {
+    onRenderStart?.()
     const reactHandle = getReactHandle()
     // Retain the current outline during an in-place update instead of flashing a skeleton.
     if (!preserveScroll) reactHandle?.setTocReady?.(false)
@@ -198,6 +201,7 @@ export function createRenderController({
       lastTocItems = Array.isArray(result?.tocItems) ? result.tocItems : []
 
       syncTocItems()
+      onDocumentRendered?.(loadedDocument)
       if (scrollSnapshot) {
         settleReadingPosition(scrollSnapshot, article)
         scrollSettled = true
@@ -215,6 +219,7 @@ export function createRenderController({
     } catch (error) {
       if (error?.name === 'AbortError' || signal.aborted || currentRenderToken !== renderToken) return null
       logger.error('Failed to render document.', error)
+      onDocumentRendered?.(null)
       reactHandle?.setTocReady?.(true)
       showRenderError(article)
       return null
@@ -242,8 +247,20 @@ export function createRenderController({
     render,
     syncTocItems,
     injectViewerStyles,
-    captureScrollPosition,
-    restoreScrollPosition,
+    restoreSavedPosition: (position) => {
+      const snapshot = trackReadingPosition(getScrollRoot(), position)
+      if (!snapshot) return false
+      readingCleanup?.()
+      settleReadingPosition(snapshot, getArticleEl())
+      return true
+    },
+    cancelReadingRestoration: () => readingCleanup?.(),
+    cancelPendingRender: () => {
+      readingCleanup?.()
+      ++renderToken
+      activeRenderController?.abort()
+      setArticleBusy(false)
+    },
     setSmoothInitialHashScroll: (value) => {
       smoothInitialHashScroll = Boolean(value)
     },

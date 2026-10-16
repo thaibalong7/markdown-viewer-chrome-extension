@@ -109,6 +109,7 @@ export function createHeadingScroller(bridge) {
     if (!(article instanceof HTMLElement)) return false
     const headingEl = findHeadingByHash(article, hash)
     if (!headingEl) return false
+    bridge?.readingPositions?.cancel()
 
     const scrollRoot = bridge?.getScrollRoot?.()
     if (!scrollRoot) return false
@@ -152,14 +153,9 @@ export function createExplorerNavigator(deps) {
   } = deps
   const scrollToHeadingHash = createHeadingScroller(bridge)
 
-  const afterSuccessfulNavigation = async ({ hash }) => {
-    if (refs.explorerModeRef.current === 'workspace') {
-      safePatch({ activeFileUrl: refs.currentFileUrlRef.current, filesContext: buildFilesContext() })
-      revealFileInTree({ refs, stateRef: deps.stateRef, safePatch }, refs.currentFileUrlRef.current)
-      syncExplorerBackButton()
-      return
-    }
+  const afterSuccessfulNavigation = async () => {
     if (
+      refs.explorerModeRef.current === 'workspace' ||
       shouldReuseSiblingTreeAfterNavigation({
         currentFileUrl: refs.currentFileUrlRef.current,
         siblingTree: refs.siblingTreeRef.current,
@@ -174,7 +170,7 @@ export function createExplorerNavigator(deps) {
     await runSiblingScan(refs.currentFileUrlRef.current)
   }
 
-  const finishNavigatedDocument = async (
+  const finishNavigatedDocument = (
     fileUrl,
     { hash = null, replaceHistory = false, updateHistory = true } = {}
   ) => {
@@ -188,31 +184,11 @@ export function createExplorerNavigator(deps) {
       })
     }
     const scrolledToHash = hash && scrollToHeadingHash(hash)
-    if (!scrolledToHash) {
+    if (!scrolledToHash && !bridge?.readingPositions?.restore(fileUrl)) {
       bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
     }
     focusAfterNavigation(bridge, hash)
     document.title = `${documentTitleFromUrl(fileUrl)} - Markdown Plus`
-  }
-
-  const navigateWorkspaceVirtualFile = async (fileUrl, { hash = null } = {}) => {
-    if (!fileUrl) return false
-    const current = normalizeFileUrlForCompare(refs.currentFileUrlRef.current)
-    const target = normalizeFileUrlForCompare(fileUrl)
-    if (current === target) return true
-
-    const entry = refs.workspaceVirtualReadersRef.current?.get(fileUrl)
-    if (!entry) {
-      bridge?.showToast?.('viewer.explorer.navigation.linkedFileIsNoLongerAvailable', { variant: 'error' })
-      return false
-    }
-
-    const opened = await bridge?.openDocument?.(fileUrl, { workspaceReader: entry })
-    if (!opened) return false
-    await finishNavigatedDocument(fileUrl, { hash })
-
-    await afterSuccessfulNavigation({ hash })
-    return true
   }
 
   const navigateToFile = async (
@@ -226,38 +202,38 @@ export function createExplorerNavigator(deps) {
     } = {}
   ) => {
     if (!fileUrl) return false
-    if (isWorkspaceVirtualHref(fileUrl)) {
-      return navigateWorkspaceVirtualFile(fileUrl, { hash })
-    }
-
     const current = normalizeFileUrlForCompare(refs.currentFileUrlRef.current)
     const target = normalizeFileUrlForCompare(fileUrl)
     if (!forceReload && current === target) {
-      const scrolledToHash = hash && scrollToHeadingHash(hash)
-      if (!scrolledToHash) bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
+      if (hash) scrollToHeadingHash(hash)
       focusAfterNavigation(bridge, hash)
       return true
     }
 
-    const opened = await bridge?.openDocument?.(fileUrl, { forceReload })
+    const openOptions = { forceReload }
+    if (isWorkspaceVirtualHref(fileUrl)) {
+      const reader = refs.workspaceVirtualReadersRef.current?.get(fileUrl)
+      if (!reader) {
+        bridge?.showToast?.('viewer.explorer.navigation.linkedFileIsNoLongerAvailable', { variant: 'error' })
+        return false
+      }
+      openOptions.workspaceReader = reader
+    }
+    const opened = await bridge?.openDocument?.(fileUrl, openOptions)
     if (!opened) return false
-    await finishNavigatedDocument(fileUrl, {
+    finishNavigatedDocument(fileUrl, {
       hash,
       replaceHistory,
       updateHistory: updateHistory && refs.explorerModeRef.current !== 'workspace'
     })
 
     if (syncExplorer) {
-      await afterSuccessfulNavigation({ hash })
+      await afterSuccessfulNavigation()
     }
     return true
   }
 
-  return {
-    navigateToFile,
-    navigateWorkspaceVirtualFile,
-    scrollToHeadingHash
-  }
+  return { navigateToFile }
 }
 
 export function workspaceDocumentStillValid({ currentFileUrl, tree, rootForInject }) {

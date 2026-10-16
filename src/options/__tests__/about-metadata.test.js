@@ -1,5 +1,11 @@
+import { t } from '../../i18n/index.js'
 import { describe, expect, it } from 'vitest'
 import { ABOUT_LINKS, getExtensionMetadata } from '../about-metadata.js'
+
+function localizedMetadata(runtime) {
+  return Object.fromEntries(Object.entries(getExtensionMetadata(runtime))
+    .map(([key, value]) => [key, t(value, {}, 'en')]))
+}
 
 describe('About metadata', () => {
   it('reads packaged extension information from the runtime manifest', () => {
@@ -12,7 +18,7 @@ describe('About metadata', () => {
       })
     }
 
-    expect(getExtensionMetadata(runtime)).toEqual({
+    expect(localizedMetadata(runtime)).toEqual({
       version: '1.2.3 beta',
       manifestLabel: 'Manifest V3',
       minimumChromeLabel: 'Chrome 109+'
@@ -20,7 +26,7 @@ describe('About metadata', () => {
   })
 
   it('provides non-misleading development fallbacks outside Chrome', () => {
-    expect(getExtensionMetadata(undefined)).toEqual({
+    expect(localizedMetadata(undefined)).toEqual({
       version: 'Development build',
       manifestLabel: 'Chrome extension',
       minimumChromeLabel: ''

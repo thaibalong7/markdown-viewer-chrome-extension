@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React, { useEffect, useMemo, useState } from 'react'
 import { AppIcon } from '../../shared/react/AppIcon.jsx'
 import { FileTypeIcon } from '../../shared/react/FileTypeIcon.jsx'
@@ -188,6 +190,7 @@ function getSceneStyle(scene, imageUrl) {
 }
 
 export function ThemePreview({ settings, theme, imageFile = null }) {
+  useLocale()
   const previewSettings = useMemo(
     () => createPreviewSettings(settings, theme),
     [settings, theme]
@@ -221,77 +224,71 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
   ].filter(Boolean).join(' ')
 
   return (
-    <aside className="settings-theme-preview" style={styleVars} aria-label="Live theme preview">
+    <aside className="settings-theme-preview" style={styleVars} aria-label={t('options.themes.preview.liveThemePreview')}>
       <div className="settings-theme-preview__header">
         <div>
           <span className="settings-theme-preview__eyebrow">
-            <span className="settings-theme-preview__live-dot" aria-hidden="true" />
-            Live preview
-          </span>
-          <strong>{theme.name?.trim() || 'Untitled theme'}</strong>
+            <span className="settings-theme-preview__live-dot" aria-hidden="true" />{t('options.themes.preview.livePreview')}</span>
+          <strong>{theme.name?.trim() || t('options.themes.preview.untitledTheme')}</strong>
         </div>
         <div className="settings-theme-preview__badges">
-          <span className="settings-theme-preview__base">Base: {resolvedTheme.baseId}</span>
-          <span className="settings-theme-preview__base">
-            Code: {syntaxTheme?.name || resolvedTheme.syntaxThemeId}
+          <span className="settings-theme-preview__base">{t('options.themes.preview.base')}{' '}{resolvedTheme.baseId}</span>
+          <span className="settings-theme-preview__base">{t('options.themes.preview.code')}{' '}{syntaxTheme?.name || resolvedTheme.syntaxThemeId}
           </span>
         </div>
       </div>
-      <p className="settings-theme-preview__hint">Every valid change appears here instantly. Saving is not required.</p>
+      <p className="settings-theme-preview__hint">{t('options.themes.preview.everyValidChangeAppearsHereInstantlySavingIs')}</p>
 
       <div className="settings-theme-preview__device">
         <div className="settings-theme-preview__device-bar" aria-hidden="true">
           <span />
           <span />
           <span />
-          <div>guide.md</div>
+          <div>{t('options.themes.preview.guideMd')}</div>
         </div>
         <div className={viewportClassName}>
-          {scene.visual ? (
-            <div className={sceneClassName} style={getSceneStyle(scene, allowImage ? image?.url : null)}>
+          {scene.visual ? <div className={sceneClassName} style={getSceneStyle(scene, allowImage ? image?.url : null)}>
               <div
                 className="settings-theme-preview__overlay"
                 style={{ backgroundColor: `rgb(3 7 18 / ${scene.overlayOpacity})` }}
               />
-            </div>
-          ) : null}
+            </div> : null}
 
           <div className="settings-theme-preview__viewer" aria-hidden="true">
             <div className={`settings-theme-preview__files${settings?.explorer?.showTreeIndentGuides === false ? ' settings-theme-preview__files--no-guides' : ''}`}>
               <div className="settings-theme-preview__panel-title">
-                <span>Files</span>
+                <span>{t('viewer.explorer.title')}</span>
                 <AppIcon name="collapse" className="settings-theme-preview__panel-action" size={14} />
               </div>
-              <div className="settings-theme-preview__workspace">MY NOTES</div>
+              <div className="settings-theme-preview__workspace">{t('options.themes.preview.myNOTES')}</div>
               <div className="settings-theme-preview__tree-row">
                 <FileTypeIcon name="folder-open" />
-                <strong>docs</strong>
+                <strong>{t('options.themes.preview.docs')}</strong>
               </div>
               <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--nested settings-theme-preview__tree-row--active">
                 <FileTypeIcon name="markdown" />
-                <strong>guide.md</strong>
+                <strong>{t('options.themes.preview.guideMd')}</strong>
               </div>
               <div className="settings-theme-preview__tree-row settings-theme-preview__tree-row--nested settings-theme-preview__tree-row--last">
                 <FileTypeIcon name="markdown" />
-                <strong>notes.md</strong>
+                <strong>{t('options.themes.preview.notesMd')}</strong>
               </div>
               <div className="settings-theme-preview__tree-row">
                 <FileTypeIcon name="markdown" />
-                <strong>README.md</strong>
+                <strong>{t('options.themes.preview.readmeMd')}</strong>
               </div>
             </div>
 
             <div className="settings-theme-preview__content">
               <article className="settings-theme-preview__article">
-                <span className="settings-theme-preview__kicker">MARKDOWN PLUS</span>
-                <h2>Design notes that feel like home.</h2>
-                <p>
-                  A calm reading space for ideas, snippets, and <span className="settings-theme-preview__link">useful links</span>.
+                <span className="settings-theme-preview__kicker">{t('common.productNameUppercase')}</span>
+                <h2>{t('options.themes.preview.designNotesThatFeelLikeHome')}</h2>
+                <p>{t('options.themes.preview.aCalmReadingSpaceForIdeasSnippetsAnd')}{' '}<span className="settings-theme-preview__link">{t('options.themes.preview.usefulLinks')}</span>.
                 </p>
-                <blockquote>“The smallest details make the biggest difference.”</blockquote>
+                <blockquote>{t('options.themes.preview.theSmallestDetailsMakeTheBiggestDifference')}</blockquote>
                 <div className="settings-theme-preview__code">
                   <div className="settings-theme-preview__code-meta">
-                    <span>JavaScript</span>
+                    <span>{t('options.themes.preview.javascript')}</span>
                     <span className="settings-theme-preview__code-copy">
                       <AppIcon name="copy" />
                     </span>
@@ -299,33 +296,33 @@ export function ThemePreview({ settings, theme, imageFile = null }) {
                   <SyntaxPreview highlighted={syntaxPreview} />
                 </div>
                 <div className="settings-theme-preview__table">
-                  <div><strong>Token</strong><strong>Role</strong></div>
-                  <div><span>Accent</span><span>Focus</span></div>
-                  <div><span>Surface</span><span>Reading</span></div>
+                  <div><strong>{t('options.themes.preview.token')}</strong><strong>{t('options.themes.preview.role')}</strong></div>
+                  <div><span>{t('options.themes.preview.accent')}</span><span>{t('options.themes.preview.focus')}</span></div>
+                  <div><span>{t('options.themes.preview.surface')}</span><span>{t('options.themes.preview.reading')}</span></div>
                 </div>
               </article>
             </div>
 
             <div className="settings-theme-preview__outline">
               <div className="settings-theme-preview__panel-title">
-                <span>Outline</span>
+                <span>{t('viewer.outline.title')}</span>
                 <span className="settings-theme-preview__panel-action">•••</span>
               </div>
-              <div className="settings-theme-preview__outline-item settings-theme-preview__outline-item--active">Overview</div>
-              <div className="settings-theme-preview__outline-item">Details</div>
-              <div className="settings-theme-preview__outline-item">Examples</div>
+              <div className="settings-theme-preview__outline-item settings-theme-preview__outline-item--active">{t('options.themes.preview.overview')}</div>
+              <div className="settings-theme-preview__outline-item">{t('options.themes.preview.details')}</div>
+              <div className="settings-theme-preview__outline-item">{t('options.themes.preview.examples')}</div>
               <div className="settings-theme-preview__outline-rule" />
-              <span className="settings-theme-preview__status-pill">Ready</span>
+              <span className="settings-theme-preview__status-pill">{t('common.status.ready')}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="settings-theme-preview__legend" aria-hidden="true">
-        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--surface" />Surface</span>
-        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--text" />Text</span>
-        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--link" />Link</span>
-        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--accent" />Accent</span>
+        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--surface" />{t('options.themes.preview.surface')}</span>
+        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--text" />{t('options.themes.preview.text')}</span>
+        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--link" />{t('options.themes.preview.link')}</span>
+        <span><i className="settings-theme-preview__swatch settings-theme-preview__swatch--accent" />{t('options.themes.preview.accent')}</span>
       </div>
     </aside>
   )

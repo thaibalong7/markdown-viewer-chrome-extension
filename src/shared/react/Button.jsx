@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React, { forwardRef } from 'react'
 import { Spinner } from './LoadingState.jsx'
 
@@ -13,6 +15,7 @@ export const Button = forwardRef(function Button({
   type = 'button',
   ...props
 }, ref) {
+  useLocale()
   const resolvedVariant = BUTTON_VARIANTS.has(variant) ? variant : 'secondary'
   const classes = [
     'mdp-ui-button',
@@ -30,7 +33,7 @@ export const Button = forwardRef(function Button({
       aria-busy={busy || undefined}
     >
       {busy ? <Spinner /> : null}
-      <span>{busy && busyLabel ? busyLabel : children}</span>
+      <span>{busy && busyLabel ? t(busyLabel) : t(children)}</span>
     </button>
   )
 })

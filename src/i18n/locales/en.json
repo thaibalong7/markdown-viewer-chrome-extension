@@ -1,0 +1,1448 @@
+{
+  "common": {
+    "actions": {
+      "backToOriginalFile": "Back to original file",
+      "backToTop": "Back to top",
+      "cancel": "Cancel",
+      "clear": "Clear",
+      "close": "Close",
+      "collapseFolders": "Collapse folders",
+      "copyContent": "Copy content",
+      "copyFileLink": "Copy file link",
+      "copyLink": "Copy link",
+      "delete": "Delete",
+      "edit": "Edit",
+      "explore": "Explore",
+      "focusMode": "Focus mode",
+      "leaveWorkspace": "Leave workspace",
+      "openExtensionDetails": "Open extension details",
+      "openSettings": "Open Settings",
+      "read": "Read",
+      "refreshFileList": "Refresh file list",
+      "retry": "Try again",
+      "saveChanges": "Save changes",
+      "viewChanges": "View changes",
+      "viewSource": "View source"
+    },
+    "backgroundImage": {
+      "imageIsEmpty": "The image is empty.",
+      "themeBackgroundImageDataIsInvalid": "The theme background image data is invalid.",
+      "usePNGJPEGWebPAVIFGIFOrAPNG": "Use PNG, JPEG, WebP, AVIF, GIF, or APNG."
+    },
+    "fileAccess": {
+      "allowed": "Allowed",
+      "blocked": "Not allowed"
+    },
+    "fileSchemeAccess": {
+      "extensionDetailsAreUnavailableOpenChromeExtensionsManually": "Extension details are unavailable. Open chrome://extensions manually."
+    },
+    "fileTypeIcons": {
+      "markdown": "Markdown"
+    },
+    "fileTypes": {
+      "dbmlDocument": "DBML document",
+      "image": "Image",
+      "markdownDocument": "Markdown document",
+      "mermaidDiagram": "Mermaid diagram",
+      "plainTextDocument": "Plain text document",
+      "sqlDocument": "SQL document",
+      "svgImage": "SVG image"
+    },
+    "languages": {
+      "browser": "Browser language",
+      "en": "English",
+      "vi": "Tiếng Việt"
+    },
+    "messages": {
+      "copiedFolderValue": "Copied folder {0}",
+      "settingsResetToDefault": "Settings reset to default.",
+      "settingsSaved": "Settings saved."
+    },
+    "productName": "Markdown Plus",
+    "productNameUppercase": "MARKDOWN PLUS",
+    "status": {
+      "active": "Active",
+      "checking": "Checking…",
+      "copied": "Copied",
+      "error": "Error",
+      "failed": "Failed",
+      "loading": "Loading…",
+      "modified": "Modified",
+      "ready": "Ready",
+      "rendering": "Rendering",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "savingChanges": "Saving changes…",
+      "unavailable": "Unavailable"
+    },
+    "themeModes": {
+      "dark": "dark",
+      "light": "light"
+    },
+    "themes": {
+      "dark": "Dark",
+      "highContrastDark": "High Contrast Dark",
+      "highContrastLight": "High Contrast Light",
+      "light": "Light",
+      "vscodeDark": "Dark (VS Code)"
+    },
+    "watchModes": {
+      "ask": "Ask before updating",
+      "auto": "Update automatically",
+      "off": "Off"
+    }
+  },
+  "viewer": {
+    "editor": {
+      "accessibility": {
+        "controlCharacter": "Control character",
+        "foldLine": "Fold line",
+        "foldedCode": "folded code",
+        "foldedLines": "Folded lines",
+        "selectionDeleted": "Selection deleted",
+        "unfold": "unfold",
+        "unfoldLine": "Unfold line",
+        "unfoldedLines": "Unfolded lines"
+      },
+      "search": {
+        "currentMatch": "current match",
+        "go": "go",
+        "goToLine": "Go to line",
+        "onLine": "on line",
+        "replacedMatchOnLine": "replaced match on line $",
+        "replacedMatches": "replaced $ matches",
+        "to": "to",
+        "all": "all",
+        "close": "close",
+        "find": "Find",
+        "matchCase": "match case",
+        "next": "next",
+        "previous": "previous",
+        "regexp": "regexp",
+        "replaceAction": "replace",
+        "replaceAll": "replace all",
+        "replaceFieldLabel": "Replace",
+        "wholeWord": "by word"
+      },
+      "browserCannotConnectALocalFileForSafe": "This browser cannot connect a local file for safe editing.",
+      "connectDialog": {
+        "checkBothItsFolderAndFilenameDoNot": "Check both its folder and filename; do not choose a copy with the same name.",
+        "chooseThisExactFileInChromeSPicker": "Choose this exact file in Chrome’s picker.",
+        "chromeDoesNotAutomaticallyGrantWriteAccessFrom": "Chrome does not automatically grant write access from a local file URL. Markdown Plus must verify an existing file before the editor can open.",
+        "connectTheOriginalFileBeforeEditing": "Connect the original file before editing",
+        "currentFile": "Current file",
+        "safeEditing": "Safe editing",
+        "unknownLocalFile": "Unknown local file",
+        "useSaveOrCtrlCmdSToWrite": "Use Save or Ctrl/Cmd+S to write back to the connected file.",
+        "verifyFileAndEdit": "Verify file and edit",
+        "verifyingFile": "Verifying file…"
+      },
+      "connectedSaveTargetValue": "Connected save target: {0}",
+      "discard": "Discard changes",
+      "exitConfirmation": {
+        "title": "Discard changes and exit edit mode?",
+        "yourUnsavedChangesWillBeLostTheSaved": "Your unsaved changes will be lost. The saved file will stay unchanged."
+      },
+      "file": "This file",
+      "keepEditing": "Keep editing",
+      "loadingEditor": "Loading editor…",
+      "originalFileIsNotConnectedExitEditMode": "The original file is not connected. Exit edit mode and connect it again before saving.",
+      "resizeHandle": {
+        "dragToResizeTheEditorAndPreviewWhen": "Drag to resize the editor and preview. When focused, use Left/Right Arrow keys (16px per step).",
+        "resizeEditorAndPreview": "Resize editor and preview"
+      },
+      "saveFailed": "Save failed.",
+      "saveFailedValue": "Save failed: {0}",
+      "savedToTheConnectedOriginalFile": "Saved to the connected original file",
+      "selectedFile": "The selected file",
+      "selectedFileValueIsNotTheFileYou": "The selected file (“{0}”) is not the file you are editing (“{1}”). Choose the original file shown in Markdown Plus.",
+      "statusBar": {
+        "col": ", Col",
+        "ln": "Ln",
+        "target": "Target:"
+      },
+      "updateConfirmation": {
+        "discardDraftAndLoadDiskVersion": "Discard draft and load disk version",
+        "editModeWillClose": "Edit mode will close",
+        "exitEditModeAndLoadDiskVersion": "Exit edit mode and load disk version",
+        "externalUpdateIsAlreadySavedOnDiskThis": "The external update is already saved on disk. This action only changes what is open in Markdown Plus.",
+        "latestVersionIsAlreadyOnDiskMarkdownPlus": "The latest version is already on disk. Markdown Plus will close the editor and reload that version.",
+        "loadingDiskVersion": "Loading disk version…",
+        "loadingTheDiskVersionClosesTheEditorAnd": "Loading the disk version closes the editor and reloads the file.",
+        "loadingTheDiskVersionPermanentlyReplacesYourDraft": "Loading the disk version permanently replaces your draft and closes the editor.",
+        "loadingThisUpdateWillCloseEditMode": "Loading this update will close edit mode",
+        "unsavedDraftWillBeDiscarded": "Unsaved draft will be discarded",
+        "versionOnDiskChangedOutsideMarkdownPlusLoading": "The version on disk changed outside Markdown Plus. Loading it will permanently replace your editor draft and close edit mode.",
+        "yourUnsavedDraftWillBeDiscarded": "Your unsaved draft will be discarded"
+      },
+      "valueChangedOnDiskAfterEditingStartedReload": "“{0}” changed on disk after editing started. Reload it before saving so external changes are not overwritten.",
+      "valueDoesNotMatchTheDocumentCurrentlyOpen": "“{0}” does not match the document currently open in Markdown Plus. Reload the viewer if the file changed, or choose the original file.",
+      "verifiedSaveTargetValue": "Verified save target: {0}",
+      "youHaveUnsavedChangesOpenAnotherDocumentAnd": "You have unsaved changes. Open another document and discard them?"
+    },
+    "actions": {
+      "checkGitConnectionExperimental": "Check Git connection (experimental)",
+      "copyLinkUnavailableForWorkspaceVirtualFiles": "Copy link unavailable for workspace virtual files",
+      "copyOpenFileLink": "Copy open file link",
+      "customDocumentActionMustBePinnedValue": "Custom document action must be pinned: {0}",
+      "duplicateDocumentActionValue": "Duplicate document action: {0}",
+      "editMarkdown": "Edit markdown",
+      "exitEditMode": "Exit edit mode",
+      "exitFocusMode": "Exit focus mode",
+      "export": {
+        "copiedFileLink": "Copied file link",
+        "exportHTML": "Export HTML",
+        "exportWordDoc": "Export Word (.doc)",
+        "exportedValue": "Exported {0}",
+        "nothingToExportYet": "Nothing to export yet."
+      },
+      "exportDocument": "Export document",
+      "exportHTMLOrWordDoc": "Export HTML or Word (.doc)",
+      "focusModeHidePreview": "Focus mode — hide preview",
+      "output": "Output",
+      "printSaveAsPDF": "Print / Save as PDF",
+      "printSaveAsPDFInTheDialogTo": "Print — Save as PDF in the dialog to export PDF.",
+      "quickAccess": "Quick access",
+      "saveCtrlS": "Save (Ctrl+S)",
+      "saveMarkdownFile": "Save markdown file",
+      "saveNoUnsavedChanges": "Save — no unsaved changes",
+      "theme": {
+        "switch": "Switch to {0} theme",
+        "switched": "Switched to {0} theme",
+        "switching": "Switching theme…"
+      },
+      "toolbar": {
+        "documentActions": "Document actions",
+        "moreDocumentActions": "More document actions"
+      },
+      "unknownDocumentActionGroupValue": "Unknown document action group: {0}",
+      "viewDiagram": "View diagram"
+    },
+    "app": {
+      "editModeWillCloseAndTheLatestVersion": "Edit mode will close and the latest version from disk will be loaded. Continue?",
+      "fileRouteInThisURLIsNotSupported": "The file route in this URL is not supported",
+      "yourUnsavedDraftWillBePermanentlyDiscardedAnd": "Your unsaved draft will be permanently discarded and edit mode will close. Load the latest version from disk?"
+    },
+    "articleInteractions": {
+      "copiedLink": "Copied link",
+      "openImageZoomView": "Open image zoom view",
+      "sectionLinksAreUnavailableForThisWorkspaceFile": "Section links are unavailable for this workspace file",
+      "zoomImageValue": "Zoom image: {0}"
+    },
+    "browserGit": {
+      "binaryFilesAreNotSupportedByTheGit": "Binary files are not supported by the Git probe.",
+      "chooseTheRepositoryRootFolderContainingAGit": "Choose the repository root folder containing a .git directory.",
+      "fileExceedsTheGitProbeLimit192KiB": "File exceeds the Git probe limit (192 KiB per source).",
+      "fileOrHEADChangedDuringTheCheckCheck": "The file or HEAD changed during the check. Check again.",
+      "gitProbeRequiresARealLocalMarkdownFile": "Git probe requires a real local Markdown file.",
+      "gitProbeSupportsUTF8MarkdownOnly": "Git probe supports UTF-8 Markdown only.",
+      "gitWorktreesSubmodulesWithAGitFileAre": "Git worktrees/submodules with a .git file are outside this probe scope.",
+      "selectedRepoFileDiffersFromTheOpenFile": "The selected repo file differs from the open file on disk. Choose the original repo or check again after the file stops changing.",
+      "selectedRepositoryDoesNotUniquelyMatchTheOpen": "The selected repository does not uniquely match the open file path. Choose its original repo folder."
+    },
+    "code": {
+      "copy": {
+        "ariaLabel": "Copy code to clipboard",
+        "label": "Copy code"
+      }
+    },
+    "colors": {
+      "colorFormatsForValue": "Color formats for {0}",
+      "copiedValue": "Copied {0}",
+      "copyValue": "Copy {0}",
+      "copyValueValue": "Copy {0}: {1}",
+      "opacityValue": "Opacity {0}",
+      "valueCopiedToClipboard": "{0} copied to clipboard"
+    },
+    "content": {
+      "controlCouldNotBeDisplayed": "This control could not be displayed."
+    },
+    "document": {
+      "fileTypeIsNotSupported": "This file type is not supported",
+      "imageKind": "image",
+      "textKind": "text file"
+    },
+    "documentLoader": {
+      "documentLoadWasAborted": "Document load was aborted.",
+      "documentTypeIsNotLoadableYet": "This document type is not loadable yet.",
+      "selectedWorkspaceFileHasAnUnsupportedImageType": "The selected workspace file has an unsupported image type.",
+      "selectedWorkspaceFileIsNotARegisteredImage": "The selected workspace file is not a registered image format."
+    },
+    "documents": {
+      "dbml": {
+        "colorPreviewsCouldNotBeDisplayedDBMLSource": "Color previews could not be displayed. DBML source is still available.",
+        "dbmlDocumentHostIsUnavailable": "The DBML document host is unavailable.",
+        "dbmlFileIsEmpty": "This DBML file is empty.",
+        "documentRenderWasAborted": "Document render was aborted."
+      },
+      "image": {
+        "imageDocumentHostIsUnavailable": "The image document host is unavailable.",
+        "loadingValue": "Loading {0}…"
+      },
+      "markdown": {
+        "emptyMarkdownDocument": "Empty Markdown document",
+        "someMarkdownEnhancementsCouldNotBeAppliedBasic": "Some Markdown enhancements could not be applied. Basic Markdown is still available.",
+        "useEditToStartWriting": "Use Edit to start writing."
+      },
+      "mermaid": {
+        "mermaidDocumentHostIsUnavailable": "The Mermaid document host is unavailable.",
+        "mermaidFileIsEmpty": "This Mermaid file is empty."
+      },
+      "sql": {
+        "sqlDocumentHostIsUnavailable": "The SQL document host is unavailable.",
+        "sqlFileIsEmpty": "This SQL file is empty."
+      },
+      "states": {
+        "diagramSource": "Diagram source",
+        "mermaidRenderError": "Mermaid render error"
+      },
+      "text": {
+        "textDocumentHostIsUnavailable": "The text document host is unavailable.",
+        "textFileIsEmpty": "This text file is empty."
+      }
+    },
+    "explorer": {
+      "accessibility": {
+        "supportedFilesInFolderTree": "Supported files in folder tree"
+      },
+      "actions": {
+        "copyFileName": "Copy file name",
+        "copyFolderName": "Copy folder name",
+        "copyFolderPath": "Copy folder path",
+        "fileDetailsActions": "File details actions",
+        "menuLabel": "Actions for {0}",
+        "moreFileActions": "More file actions",
+        "moreLabel": "More actions for {0}"
+      },
+      "context": {
+        "currentFolderLabel": "This file’s folder",
+        "document": "Document",
+        "noFileSelected": "No file selected",
+        "openFileIsNotListedInTheScanned": "The open file is not listed in the scanned tree (limits or listing). It was added at the top so you can still navigate.",
+        "openFileIsNotUnderThisWorkspaceTree": "The open file is not under this workspace tree. Pick a file from the list or exit workspace.",
+        "scanningFolder": "Scanning folder…",
+        "scanningWorkspace": "Scanning workspace…",
+        "workspaceFiles": "Workspace files"
+      },
+      "currentFolder": "Current folder",
+      "file": {
+        "copiedFileName": "Copied file name",
+        "openInNewTab": "Open in new tab",
+        "workspaceFileCannotOpenInABrowserTab": "This workspace file cannot open in a browser tab"
+      },
+      "fileCount": {
+        "one": "· {count} file",
+        "other": "· {count} files"
+      },
+      "folder": {
+        "collapseFolder": "Collapse folder",
+        "copiedFolderName": "Copied folder name",
+        "copiedFolderPath": "Copied folder path",
+        "expandFolder": "Expand folder",
+        "indexedFileCount": "{0} indexed files, including subfolders",
+        "toggleLabel": "Expand or collapse \"{0}\"."
+      },
+      "folderScanner": {
+        "file": "File"
+      },
+      "header": {
+        "adjustScanLimitsInSettings": "Adjust scan limits in Settings",
+        "hideFileDetails": "Hide file details",
+        "openFile": "Open file",
+        "openFileDetails": "Open file details",
+        "openFolder": "Open folder…",
+        "showFileDetails": "Show file details",
+        "switchFolder": "Switch folder…",
+        "thenRefresh": ", then refresh.",
+        "unavailableForWorkspaceVirtualFiles": "Unavailable for workspace virtual files",
+        "workspaceRoot": "Workspace root"
+      },
+      "hide": "Hide Files panel",
+      "listRefresh": {
+        "openASupportedFileBeforeRefreshingItsFolder": "Open a supported file before refreshing its folder list",
+        "refreshedFileList": "Refreshed file list",
+        "selectTheFolderAgainToRefreshItsFile": "Select the folder again to refresh its file list"
+      },
+      "navigation": {
+        "backToFile": "Back to {0}",
+        "linkedFileIsNoLongerAvailable": "Linked file is no longer available"
+      },
+      "panel": {
+        "filesInCurrentFolder": "Files in current folder",
+        "filesScrollbar": "Files scrollbar",
+        "noSupportedFilesFoundInThisDirectory": "No supported files found in this directory.",
+        "refreshIsAvailableAfterScanningFinishes": "Refresh is available after scanning finishes",
+        "refreshingFileList": "Refreshing file list",
+        "supportedFilesInFolder": "Supported files in folder"
+      },
+      "panelLabel": "Files panel",
+      "scan": {
+        "depthLimit": "Some folders were not scanned (depth limit).",
+        "depthLimitWithValue": "Some folders were not scanned (depth limit: {0}).",
+        "fileLimit": "Scan stopped: file limit reached.",
+        "folderLimit": "Scan stopped: folder limit reached.",
+        "notices": "{depth} {files} {folders}",
+        "progress": "Scanning… {files} files, {folders} folders{path}"
+      },
+      "scanSession": {
+        "scanCancelled": "Scan cancelled",
+        "scanningFolderTree": "Scanning folder tree…"
+      },
+      "show": "Show Files panel",
+      "title": "Files",
+      "toolbar": {
+        "allFoldersAreCollapsed": "All folders are collapsed",
+        "collapseAllFolders": "Collapse all folders",
+        "collapseFoldersOutsideTheOpenFilePath": "Collapse folders outside the open file path",
+        "fileListControls": "File list controls",
+        "scanning": "Scanning…"
+      },
+      "workspace": "Workspace",
+      "workspacePicker": {
+        "expectedADirectoryHandleGotAFileHandle": "Expected a directory handle, got a file handle",
+        "notADirectoryHandle": "Not a directory handle"
+      },
+      "workspaceSession": {
+        "scanningImportedFolder": "Scanning imported folder…",
+        "scanningPickedFolder": "Scanning picked folder…",
+        "scanningWorkspaceFileListing": "Scanning workspace (file listing)…"
+      }
+    },
+    "fileLinkActions": {
+      "noCurrentFileURLToCopy": "No current file URL to copy"
+    },
+    "fileRowActions": {
+      "noFileHrefToCopy": "No file href to copy",
+      "noFileNameToCopy": "No file name to copy"
+    },
+    "folderRowActions": {
+      "noFolderIdentityToCopy": "No folder identity to copy"
+    },
+    "git": {
+      "branch": "Branch",
+      "bytesLoaded": "bytes loaded",
+      "checkAgain": "Check again",
+      "checksTheSavedFileAgainstHEADUnsavedEditor": "Checks the saved file against HEAD. Unsaved editor changes are excluded.",
+      "chooseRepoFolder": "Choose repo folder",
+      "chooseTheCurrentFileSRepositoryFolderTo": "Choose the current file’s repository folder to grant read access for this tab.",
+      "clean": "Clean",
+      "comparison": "Comparison",
+      "connectedToGitInTheBrowser": "Connected to Git in the browser",
+      "detachedHEAD": "Detached HEAD",
+      "diffExceedsReviewLimits": "Diff exceeds review limits",
+      "diskSource": "Disk source",
+      "engine": "Engine",
+      "excludedIgnoredFile": "Excluded: ignored file",
+      "fileDoesNotExistInHEAD": "File does not exist in HEAD",
+      "gitCheckFailed": "Git check failed.",
+      "gitConnectionExperimental": "Git connection · Experimental",
+      "gitStatus": "Git status",
+      "headLabel": "HEAD",
+      "headSource": "HEAD source",
+      "ignoredByGit": "Ignored by Git",
+      "inspectHEADSourceReadOnly": "Inspect HEAD source (read-only)",
+      "lineChanges": "+{0} added / −{1} removed lines",
+      "loadedBytes": "{0} bytes loaded",
+      "modifiedStatus": "Modified ({0})",
+      "noCommitsYet": "No commits yet",
+      "readingGitInTheBrowser": "Reading Git in the browser…",
+      "readsGitInsideChromeChooseTheRepositoryRoot": "Reads Git inside Chrome. Choose the repository root containing .git; no helper installation is needed.",
+      "repository": "Repository",
+      "sourceChanges": "Source changes",
+      "untracked": "Untracked"
+    },
+    "gitProbe": {
+      "chromeContextDoesNotSupportSelectingAGit": "This Chrome context does not support selecting a Git folder.",
+      "folderReadAccessExpiredChooseTheRepositoryAgain": "Folder read access expired. Choose the repository again."
+    },
+    "imageRevision": {
+      "imageExceedsThe5MiBWatchLimit": "Image exceeds the 5 MiB Watch limit.",
+      "noImageBytesReceived": "No image bytes received."
+    },
+    "layout": {
+      "editorScrollbar": "Editor scrollbar",
+      "previewFontSizeAndLineHeightAreSynced": "Preview font size and line height are synced with editor while editing. Reader settings return when you exit edit mode.",
+      "previewScrollbar": "Preview scrollbar",
+      "resizeHandle": {
+        "dragToResizeValueWhenFocusedUseLeft": "Drag to resize {0}. When focused, use Left/Right Arrow keys (16px per step).",
+        "resizeValue": "Resize {0}"
+      },
+      "rightRail": {
+        "documentActionsAndOutline": "Document actions and outline"
+      }
+    },
+    "lineDiff": {
+      "noNewlineAtEndOfFile": "No newline at end of file"
+    },
+    "media": {
+      "bitmapLimit16384PxPerSide32": "Bitmap limit: 16,384 px per side / 32 Mi pixels.",
+      "bitmapLimit16384PxPerSideOr": "Bitmap limit: 16,384 px per side or 32 Mi pixels total.",
+      "closeImageZoomView": "Close image zoom view",
+      "closeMermaidChart": "Close Mermaid chart",
+      "decreaseRenderResolution": "Decrease render resolution",
+      "decreaseResolutionBy025": "Decrease resolution by 0.25",
+      "dragAnywhereToPanCtrlScrollPinchTo": "Drag anywhere to pan  |  Ctrl + Scroll / pinch to zoom  |  Two-finger scroll to pan  |  +/- to zoom  |  0 to re-center  |  Esc to close",
+      "dragToPanCtrlScrollPinchToZoom": "Drag to pan  |  Ctrl + Scroll / pinch to zoom  |  +/- to zoom  |  0 to fit  |  Esc to close",
+      "fitImageToView": "Fit image to view",
+      "higherResolutionUsesMoreMemoryLimit16384": "Higher resolution uses more memory. Limit: 16,384 px per side / 32 Mi pixels.",
+      "imageExceedsBitmapLimit16384PxPer": "Image exceeds bitmap limit: 16,384 px per side / 32 Mi pixels.",
+      "imageZoomView": "Image zoom view",
+      "increaseRenderResolution": "Increase render resolution",
+      "increaseResolutionBy025": "Increase resolution by 0.25",
+      "maximumForThisImage": ", maximum for this image",
+      "maximumValueForThisImage": "Maximum ×{0} for this image. ",
+      "mermaidChartZoomView": "Mermaid chart zoom view",
+      "openMermaidChartInZoomView": "Open Mermaid chart in zoom view",
+      "reCenterMermaidChart": "Re-center Mermaid chart",
+      "rendering2": ", rendering",
+      "resolution": {
+        "ariaLabel": "Adjust render resolution: {0}{1}{2}{3}",
+        "caption": "Resolution",
+        "label": "Render resolution",
+        "maximum": "Maximum",
+        "maximumShort": "Max",
+        "unavailableShort": "N/A"
+      },
+      "zoomInImage": "Zoom in image",
+      "zoomInMermaidChart": "Zoom in Mermaid chart",
+      "zoomOutImage": "Zoom out image",
+      "zoomOutMermaidChart": "Zoom out Mermaid chart"
+    },
+    "mermaid": {
+      "copyMermaidSource": "Copy Mermaid source",
+      "downloadPNG": "Download PNG",
+      "downloadSVG": "Download SVG",
+      "exportMermaidChart": "Export Mermaid chart",
+      "exportThisDiagramSVGVectorOrPNGAt": "Export this diagram: SVG (vector) or PNG at 1x–4x resolution.",
+      "mermaidChartActions": "Mermaid chart actions",
+      "mermaidSVGCouldNotBeSanitized": "The Mermaid SVG could not be sanitized.",
+      "openChartInFullScreenZoomView": "Open chart in full-screen zoom view.",
+      "png": "PNG",
+      "unknownError": "Unknown error."
+    },
+    "outline": {
+      "empty": "No headings found.",
+      "headingCount": {
+        "one": "{count} heading",
+        "other": "{count} headings"
+      },
+      "hide": "Hide Outline panel",
+      "outlineScrollbar": "Outline scrollbar",
+      "show": "Show Outline panel",
+      "summary": "On this page",
+      "tableOfContents": "Table of contents",
+      "title": "Outline"
+    },
+    "render": {
+      "documentCouldNotBeRendered": "Document could not be rendered",
+      "loadingDocument": "Loading document",
+      "noLoadableCurrentDocumentIsAvailable": "No loadable current document is available.",
+      "tryAgainIfTheProblemContinuesRefreshThe": "Try again. If the problem continues, refresh the file or disable optional rendering plugins."
+    },
+    "rendererRegistry": {
+      "documentRendererValueHasNoRenderFunction": "Document renderer \"{0}\" has no render() function.",
+      "noDocumentRendererIsRegisteredForValue": "No document renderer is registered for \"{0}\"."
+    },
+    "review": {
+      "aNewerComparisonIsReady": "A newer comparison is ready.",
+      "added": "Added",
+      "added2": "added ·",
+      "affectedSections": "Affected sections",
+      "alt": "Alt",
+      "area": "Area",
+      "areas": "Areas",
+      "beforeTheFirstHeading": "Before the first heading",
+      "calculatingChanges": "Calculating changes…",
+      "change": "Change",
+      "changeSummary": "Change summary",
+      "changedArea": "Changed area",
+      "changedAreaNavigation": "Changed area navigation",
+      "changedAreaValue": "Changed area {0}",
+      "changedAreasInThisComparison": "Changed areas in this comparison",
+      "changesAppliedInTheMostRecentDocumentUpdate": "Changes applied in the most recent document update.",
+      "checkLatest": "Check latest",
+      "comparisonIsNoLongerCurrent": "This comparison is no longer current.",
+      "deleted": "Deleted",
+      "detailedReviewIsUnavailableBecauseThisComparisonExceeds": "Detailed review is unavailable because this comparison exceeds the size, time or output limit. Use your editor’s diff tools for this file. Your document and draft are kept.",
+      "dialog": {
+        "closeReview": "Close review",
+        "openingReview": "Opening review…",
+        "reloadThisViewerAndTryAgain": "Reload this viewer and try again."
+      },
+      "lastUpdate": "Last update",
+      "loadDiskVersion": "Load disk version…",
+      "movesBetweenChangedAreasInThisComparison": "moves between changed areas in this comparison",
+      "newLine": "New line",
+      "newLineValue": "New line {0}",
+      "nextArea": "Next area →",
+      "nextChangedArea": "Next changed area",
+      "noNewLine": "No new line",
+      "noOldLine": "No old line",
+      "noSourceChangesInThisComparison": "No source changes in this comparison.",
+      "of": "of",
+      "oldLine": "Old line",
+      "oldLineValue": "Old line {0}",
+      "openDocument": "Open document",
+      "openInDocumentValue": "Open in document: {0}",
+      "previousArea": "← Previous area",
+      "previousChangedArea": "Previous changed area",
+      "removed": "Removed",
+      "removed2": "removed",
+      "reviewChanges": "Review changes",
+      "reviewLatest": "Review latest",
+      "reviewedVersionIsNotOpenYetUpdateThe": "The reviewed version is not open yet. Update the document to enable section links.",
+      "seeWhatChangedOnDiskBeforeUpdatingThis": "See what changed on disk before updating this document.",
+      "source": "Source",
+      "sourceLinesInChangedArea": "Source lines in changed area",
+      "updateCheckFailed": "Update check failed",
+      "updateDocument": "Update document",
+      "updateWaiting": "Update waiting",
+      "yourEditorDraftIsExcludedFromThisComparison": "Your editor draft is excluded from this comparison."
+    },
+    "scrollbar": {
+      "documentScrollbar": "Document scrollbar"
+    },
+    "statistics": {
+      "characters": {
+        "one": "{count} character",
+        "other": "{count} characters"
+      },
+      "readingTime": "{0} min read",
+      "summary": "Document statistics: {0}, {1}, {2}",
+      "words": {
+        "one": "{count} word",
+        "other": "{count} words"
+      }
+    },
+    "updates": {
+      "aNewDocumentVersionIsAvailable": "A new document version is available.",
+      "aNewDocumentVersionWillLoadAutomaticallyWhen": "A new document version will load automatically when you stop interacting.",
+      "aNewerVersionOfThisDocumentIsReady": "A newer version of this document is ready.",
+      "anUpdateIsReadyItWillLoadWhen": "An update is ready. It will load when the file is stable and you stop interacting.",
+      "applyingANewDocumentVersionAutomatically": "Applying a new document version automatically.",
+      "ask": "Ask",
+      "automatic": "Automatic",
+      "automaticChecksArePaused": "Automatic checks are paused.",
+      "checkNow": "Check now",
+      "documentUpdateCheckFailedOpenDocumentUpdatesTo": "Document update check failed. Open Document updates to retry.",
+      "documentUpdated": "Document updated.",
+      "documentUpdatesCheckFailed": "Document updates: check failed",
+      "documentUpdatesLiveWatchUnavailable": "Document updates: live watch unavailable",
+      "documentUpdatesLoadUpdate": "Document updates: load update",
+      "fileChangedOnDiskLoadItToLeave": "This file changed on disk. Load it to leave edit mode.",
+      "latestStableVersionIsBeingAppliedAutomatically": "The latest stable version is being applied automatically.",
+      "liveUpdatesUnavailable": "Live updates unavailable",
+      "newVersionAvailable": "New version available",
+      "newVersionsWaitUntilYouChooseToUpdate": "New versions wait until you choose to update.",
+      "notifications": {
+        "documentUpdated": "Document updated",
+        "documentUpdatesSupportsFilesUpTo5MiB": "Document updates supports files up to 5 MiB.",
+        "valueTheCurrentContentWasKept": "{0} The current content was kept."
+      },
+      "selectTheWorkspaceAgainToCheckForUpdated": "Select the workspace again to check for updated files.",
+      "title": "Document updates",
+      "updateNow": "Update now",
+      "updatesLoadWhenTheFileIsStableAnd": "Updates load when the file is stable and you stop interacting.",
+      "updatingAnnouncement": "Updating document.",
+      "updatingLabel": "Updating document…"
+    },
+    "useexplorer": {
+      "selectASupportedFileFromTheFilesPanel": "Select a supported file from the Files panel."
+    }
+  },
+  "errors": {
+    "common": {
+      "backgroundImage": {
+        "chooseAnImageFile": "Choose an image file.",
+        "readTheImage": "Could not read the image."
+      },
+      "messages": {
+        "checkTheCurrentDocumentForChanges": "Could not check the current document for changes.",
+        "cleanUpThePreviousDocumentRenderer": "Could not clean up the previous document renderer.",
+        "clearPersistedFileHandle": "Failed to clear persisted file handle.",
+        "connectTheOriginalMarkdownFileForEditing": "Could not connect the original markdown file for editing.",
+        "copyColorFormat": "Could not copy color format.",
+        "copyDetectedColor": "Could not copy detected color.",
+        "copyFolderValue": "Could not copy folder {0}",
+        "inspectTheThemePreviewImage": "Could not inspect the theme preview image.",
+        "loadTheActiveThemeBackground": "Could not load the active theme background.",
+        "loadTheThemePreviewImage": "Could not load the theme preview image.",
+        "mountViewerReactShell": "Failed to mount viewer React shell.",
+        "navigateBrowserHistory": "Failed to navigate browser history.",
+        "openDocument": "Failed to open document.",
+        "persistFileHandleToIndexedDB": "Failed to persist file handle to IndexedDB.",
+        "prepareALocalMarkdownSVGImage": "Could not prepare a local Markdown SVG image.",
+        "recordFileHistory": "Could not record file history.",
+        "refreshExplorerFileList": "Failed to refresh explorer file list.",
+        "releaseDocumentAssetURL": "Could not release document asset URL.",
+        "removeAnUnusedThemeAssetAfterSaveFailed": "Could not remove an unused theme asset after save failed.",
+        "removeTheDeletedThemeAsset": "Could not remove the deleted theme asset.",
+        "removeTheReplacedThemeAsset": "Could not remove the replaced theme asset.",
+        "renderDocument": "Failed to render document.",
+        "renderTheSyntaxThemePreview": "Could not render the syntax theme preview.",
+        "restoreFileHandleFromIndexedDB": "Failed to restore file handle from IndexedDB.",
+        "saveFilesDetailsPreferenceForThisTab": "Could not save Files details preference for this tab",
+        "saveMarkdownFile": "Failed to save markdown file.",
+        "switchReaderTheme": "Could not switch reader theme."
+      }
+    },
+    "documents": {
+      "readFailed": "Could not read {0}: {1}",
+      "tooLarge": "This text file is larger than the {0} MiB viewing limit."
+    },
+    "options": {
+      "general": {
+        "openExtensionDetails": "Could not open extension details."
+      },
+      "index": {
+        "missingRootElementForSettingsApp": "Missing #root element for settings app."
+      },
+      "notifications": {
+        "clearRecentFiles": "Failed to clear recent files.",
+        "exportSettings": "Failed to export settings.",
+        "importSettings": "Failed to import settings.",
+        "loadSettings": "Failed to load settings.",
+        "saveSettings": "Could not save settings."
+      },
+      "optionsActions": {
+        "chooseASettingsJSONFileToImport": "Choose a settings JSON file to import."
+      },
+      "settingsImport": {
+        "invalidJSONValue": "Invalid JSON: {0}",
+        "parseFile": "Could not parse file."
+      }
+    },
+    "popup": {
+      "index": {
+        "missingRootElementForPopupApp": "Missing #root element for popup app."
+      },
+      "loadSettings": "Could not load settings.",
+      "openAbout": "Could not open About.",
+      "openOptionsSection": {
+        "chooseAValidSettingsSection": "Choose a valid Settings section."
+      },
+      "openSettings": "Could not open Settings.",
+      "settings": {
+        "saveSettings": "Failed to save settings."
+      },
+      "usefilehistory": {
+        "clearFileHistory": "Could not clear file history.",
+        "loadFileHistory": "Could not load file history.",
+        "openFile": "Could not open file."
+      }
+    },
+    "services": {
+      "fileHistory": {
+        "invalidFileHistoryURL": "Invalid file history URL"
+      },
+      "messageRouter": {
+        "invalidOrMissingDataUrl": "Invalid or missing dataUrl",
+        "invalidUrl": "Invalid url",
+        "missingFilename": "Missing filename",
+        "missingUrl": "Missing url",
+        "onlyFileURLsAreAllowed": "Only file: URLs are allowed",
+        "onlyRegisteredImageFilesAreAllowed": "Only registered image files are allowed",
+        "unsupportedMessageTypeValue": "Unsupported message type: {0}"
+      },
+      "themeAsset": {
+        "invalidThemeAssetId": "Invalid theme asset id.",
+        "openThemeAssetStorage": "Could not open theme asset storage."
+      }
+    },
+    "settings": {
+      "language": "Choose a supported interface language.",
+      "validation": {
+        "chooseABuiltInBaseTheme": "Choose a built-in base theme.",
+        "chooseABundledCodeHighlightingTheme": "Choose a bundled code highlighting theme.",
+        "chooseASupportedBackgroundMotionPolicy": "Choose a supported background motion policy.",
+        "chooseASupportedBackgroundType": "Choose a supported background type.",
+        "chooseAValidHexadecimalColor": "Choose a valid hexadecimal color.",
+        "chooseAnAvailableTheme": "Choose an available theme.",
+        "chooseAnImageForThisTheme": "Choose an image for this theme.",
+        "resetSettings": "Failed to reset settings.",
+        "settingsAreInvalid": "Settings are invalid.",
+        "youCanSaveUpToValueCustomThemes": "You can save up to {0} custom themes."
+      }
+    },
+    "theme": {
+      "backgroundImageTooLarge": "The background image must be 5 MiB or smaller.",
+      "themeAssetClient": {
+        "loadTheThemeAsset": "Failed to load the theme asset.",
+        "removeTheThemeAsset": "Failed to remove the theme asset.",
+        "saveTheThemeAsset": "Failed to save the theme asset."
+      }
+    },
+    "validation": {
+      "boolean": "{0} must be true or false.",
+      "integer": "{0} must be a whole number.",
+      "range": "{0} must be between {1} and {2}."
+    },
+    "viewer": {
+      "actions": {
+        "copyFileLink": "Could not copy file link",
+        "exportHTML": "Could not export HTML",
+        "exportWordDocument": "Could not export Word document",
+        "switchTheme": "Could not switch theme."
+      },
+      "app": {
+        "restoreTheLinkedFileReturnedToTheOriginal": "Could not restore the linked file; returned to the original file",
+        "switchTheme": "Could not switch theme"
+      },
+      "articleInteractions": {
+        "copy": "Could not copy",
+        "copyLink": "Could not copy link"
+      },
+      "browserGit": {
+        "invalidLocalFilePath": "Invalid local file path.",
+        "invalidRepositoryFilePath": "Invalid repository file path.",
+        "onlyRegularGitFilesAreSupported": "Only regular Git files are supported.",
+        "unsupportedGitTreePath": "Unsupported Git tree path."
+      },
+      "colors": {
+        "copyColorSelectTheOriginalTextToCopy": "Could not copy color. Select the original text to copy manually.",
+        "copySelectAValueToCopyManually": "Could not copy. Select a value to copy manually.",
+        "copyTryAgain": "Could not copy. Try again."
+      },
+      "directoryFs": {
+        "readADirectoryAsAGitFile": "Cannot read a directory as a Git file.",
+        "unsupportedGitTextEncoding": "Unsupported Git text encoding."
+      },
+      "document": {
+        "openLinkedFile": "Could not open linked file",
+        "openThisValue": "Could not open this {0}.",
+        "readLinkedFile": "Could not read linked file",
+        "readThisValue": "Could not read this {0}."
+      },
+      "documentLoader": {
+        "onlyLocalImageFilesCanBeOpened": "Only local image files can be opened.",
+        "openDocument": "Could not open document.",
+        "readThisImageFile": "Could not read this image file."
+      },
+      "documents": {
+        "dbml": {
+          "displayThisDBMLFile": "Could not display this DBML file."
+        },
+        "image": {
+          "displayValue": "Could not display {0}."
+        },
+        "mermaid": {
+          "displayThisMermaidDocument": "Could not display this Mermaid document."
+        },
+        "sql": {
+          "displayThisSQLFile": "Could not display this SQL file."
+        },
+        "text": {
+          "displayThisTextFile": "Could not display this text file."
+        }
+      },
+      "editor": {
+        "connectTheOriginalFile": "Could not connect the original file.",
+        "openIndexedDB": "Failed to open IndexedDB",
+        "writePermissionWasNotGranted": "Write permission was not granted.",
+        "writePermissionWasNotGrantedForTheConnected": "Write permission was not granted for the connected file.",
+        "writePermissionWasNotGrantedForTheSelected": "Write permission was not granted for the selected file."
+      },
+      "explorer": {
+        "file": {
+          "copyFileName": "Could not copy file name"
+        },
+        "folder": {
+          "copyFolderName": "Could not copy folder name",
+          "copyFolderPath": "Could not copy folder path"
+        },
+        "listRefresh": {
+          "refreshFileListTheOpenDocumentWasKept": "Could not refresh file list. The open document was kept."
+        },
+        "workspacePicker": {
+          "missingDirectoryHandle": "Missing directory handle"
+        },
+        "workspaceSession": {
+          "openFolder": "Could not open folder",
+          "restoreWorkspace": "Could not restore workspace",
+          "scanFolder": "Could not scan folder"
+        }
+      },
+      "gitProbe": {
+        "readTheOpenFileOnDisk": "Could not read the open file on disk."
+      },
+      "imageRevision": {
+        "readImageBytes": "Could not read image bytes."
+      },
+      "markdownDocumentRenderer": {
+        "missingRenderTargetDocument": "Missing render target document."
+      },
+      "media": {
+        "decodeThisImageForResolutionRendering": "Could not decode this image for resolution rendering.",
+        "encodeThisResolution": "Could not encode this resolution.",
+        "initializeImageRendering": "Could not initialize image rendering.",
+        "parseThisSVGForResolutionRendering": "Could not parse this SVG for resolution rendering.",
+        "readThisSVGForResolutionRendering": "Could not read this SVG for resolution rendering.",
+        "renderThisResolution": "Could not render this resolution."
+      },
+      "mermaid": {
+        "missingMermaidRenderTarget": "Missing Mermaid render target."
+      },
+      "renderer": {
+        "missingRenderTargetElement": "Missing render target element."
+      },
+      "review": {
+        "calculateChangesCloseThisReviewAndTryAgain": "Could not calculate changes. Close this review and try again.",
+        "dialog": {
+          "openReview": "Could not open review"
+        }
+      },
+      "shikiHighlighter": {
+        "missingShikiLanguageModuleForValue": "Missing Shiki language module for \"{0}\".",
+        "missingShikiThemeModuleForValue": "Missing Shiki theme module for \"{0}\"."
+      },
+      "watch": {
+        "readTheFileTheCurrentContentWasKept": "Could not read the file. The current content was kept. Check file access and try again."
+      }
+    }
+  },
+  "options": {
+    "about": {
+      "aLocalFirstViewerAndEditorForMarkdown": "A local-first viewer and editor for Markdown and related files.",
+      "browseSiblingDocumentsOrOpenALocalWorkspace": "Browse sibling documents or open a local workspace.",
+      "developmentBuild": "Development build",
+      "extensionInformation": "Extension information",
+      "heading": "About Markdown Plus",
+      "learnWhatMarkdownPlusDoesHowItHandles": "Learn what Markdown Plus does, how it handles your files, and where to get help.",
+      "links": {
+        "license": {
+          "description": "Read the open-source license for Markdown Plus.",
+          "label": "MIT License"
+        },
+        "privacy": {
+          "description": "Review how local files and extension data are handled.",
+          "label": "Privacy policy"
+        },
+        "source": {
+          "description": "Explore the project and contribute on GitHub.",
+          "label": "Source code"
+        },
+        "support": {
+          "description": "Ask for help or report a reproducible problem.",
+          "label": "Report an issue"
+        },
+        "website": {
+          "description": "Visit the Markdown Plus project website.",
+          "label": "Website"
+        }
+      },
+      "localFirstByDesign": "Local-first by design",
+      "metadata": {
+        "chromeExtension": "Chrome extension",
+        "manifestVersion": "Manifest V{0}",
+        "minimumChromeVersion": "Chrome {0}+"
+      },
+      "openSource": "Open source",
+      "optInToEditingWithExactFileVerification": "Opt in to editing with exact-file verification and safe saves.",
+      "product": "Product",
+      "projectSupport": "Project & support",
+      "readThePrivacyPolicy": "Read the privacy policy",
+      "renderLocalMarkdownCodeMathDiagramsTextAnd": "Render local Markdown, code, math, diagrams, text, and images.",
+      "title": "About",
+      "version": "Version",
+      "whatMarkdownPlusDoes": "What Markdown Plus does",
+      "yourDocumentsAreProcessedInChromeAndAre": "Your documents are processed in Chrome and are not sent to a developer-operated service. Device-local data stays on this device; preferences may sync through Chrome."
+    },
+    "advanced": {
+      "chooseJSON": "Choose JSON",
+      "downloadTheCompleteNormalizedSettingsObjectAsJSON": "Download the complete, normalized settings object as JSON.",
+      "exportJSON": "Export JSON",
+      "exportSettings": "Export settings",
+      "exporting": "Exporting…",
+      "fileIsFullyParsedAndValidatedBeforeAny": "The file is fully parsed and validated before any settings are saved.",
+      "importSettings": "Import settings",
+      "importing": "Importing…",
+      "largeDocumentLoads": "Large document loads",
+      "largerFilesUseMoreMemoryAndMayTake": "Larger files use more memory and may take longer to render. Changes apply on the next document open and do not reload the current document.",
+      "limitExpensiveDocumentLoadsMoveSettingsBetweenBrowsers": "Limit expensive document loads, move settings between browsers, or restore defaults.",
+      "maximumUTF8SizeForStandaloneTxtSql": "Maximum UTF-8 size for standalone .txt, .sql, .dbml, and .mermaid files opened in the viewer. Markdown documents are not affected.",
+      "resetAllSettings": "Reset all settings",
+      "resetToDefault": "Reset to default",
+      "resetting": "Resetting…",
+      "resourcesRecovery": "Resources & recovery",
+      "restoreGeneralReaderEditorPluginsFilesWorkspacePrivacy": "Restore General, Reader, Editor, Plugins, Files & Workspace, Privacy, and document resource preferences. Local recent-file data is cleared separately.",
+      "title": "Advanced"
+    },
+    "documentTitle": "Markdown Plus Settings",
+    "explorer": {
+      "connectFoldersAndFilesWithHierarchyLinesChanges": "Connect folders and files with hierarchy lines. Changes apply immediately.",
+      "customizeTheFileTreeAndWorkspaceBehaviorScan": "Customize the file tree and workspace behavior. Scan limits apply on the next scan or refresh.",
+      "excludeFilesAndFoldersIgnoredByNestedGitignore": "Exclude files and folders ignored by nested .gitignore rules during workspace scans.",
+      "higherLimitsCanMakeLargeWorkspaceScansSlower": "Higher limits can make large workspace scans slower and use more memory. An active scan is never restarted automatically when these values change.",
+      "howManyFolderLevelsToScanBelowThe": "How many folder levels to scan below the selected root. Use 0 for the root only.",
+      "largeWorkspaceScans": "Large workspace scans",
+      "navigationScanning": "Navigation & scanning",
+      "reopenTheLastFileBackedWorkspaceWhenA": "Reopen the last file-backed workspace when a new viewer starts. Turning this off does not close the workspace currently in use.",
+      "resetSectionToDefaults": "Reset section to defaults",
+      "respectGitignoreFiles": "Respect .gitignore files",
+      "restoreLastWorkspace": "Restore last workspace",
+      "showTreeIndentGuides": "Show tree indent guides",
+      "stopIndexingAfterThisManySupportedDocumentsHave": "Stop indexing after this many supported documents have been found.",
+      "stopTheScanAfterThisManyFoldersHave": "Stop the scan after this many folders have been visited.",
+      "title": "Files & Workspace"
+    },
+    "general": {
+      "behavior": "Behavior",
+      "chooseHowToHandleChangesToTheOpen": "Choose how to handle changes to the open document, including text, diagrams and images. Updates never replace an active editor.",
+      "chooseMarkdownPlusDetailsThenEnableAllowAccess": ", choose Markdown Plus → Details, then enable “Allow access to file URLs”.",
+      "chromeControlsThisPermissionIfAccessIsBlocked": "Chrome controls this permission. If access is blocked, open",
+      "chromeExtensions": "chrome://extensions",
+      "controlMarkdownPlusActivationAndViewerBehavior": "Control Markdown Plus activation and viewer behavior.",
+      "enabled": {
+        "description": "Automatically open supported local Markdown files in the Markdown Plus viewer.",
+        "label": "Enable Markdown Plus"
+      },
+      "fileAccess": {
+        "label": "File URL access"
+      },
+      "language": {
+        "description": "Choose the language used across Settings, the Popup, and the Viewer. Document content stays in its original language.",
+        "label": "Interface language"
+      },
+      "scrollbars": {
+        "description": "Fade vertical scrollbars when idle and reveal them while scrolling, near the pane edge, or using the keyboard.",
+        "label": "Auto-hide document scrollbars"
+      },
+      "statistics": {
+        "description": "Show word count, character count (including spaces), and estimated reading time above Markdown documents.",
+        "label": "Show document statistics"
+      },
+      "title": "General"
+    },
+    "navigation": {
+      "activationAndAccess": "Activation and access",
+      "colorsAndBackgrounds": "Colors and backgrounds",
+      "folderAppearanceAndScanLimits": "Folder appearance and scan limits",
+      "limitsBackupAndReset": "Limits, backup, and reset",
+      "loadingSettings": "Loading settings",
+      "recentLocalFiles": "Recent local files",
+      "section": "Section",
+      "settingsCouldNotBeLoaded": "Settings could not be loaded",
+      "settingsSections": "Settings sections",
+      "versionPrivacyAndSupport": "Version, privacy, and support"
+    },
+    "notifications": {
+      "activeThemeUpdated": "Active theme updated.",
+      "allSettingsResetToDefaults": "All settings reset to defaults.",
+      "checkTheHighlightedField": "Check the highlighted field.",
+      "checkTheHighlightedFields": "Check the highlighted fields.",
+      "clearingRecentFiles": "Clearing recent files…",
+      "customThemeCreated": "Custom theme created.",
+      "customThemeDeleted": "Custom theme deleted.",
+      "customThemeSaved": "Custom theme saved.",
+      "documentScrollbarsWillAutoHide": "Document scrollbars will auto-hide.",
+      "documentScrollbarsWillStayVisible": "Document scrollbars will stay visible.",
+      "documentStatisticsWillBeHidden": "Document statistics will be hidden.",
+      "documentStatisticsWillBeShown": "Document statistics will be shown.",
+      "documentViewingLimitResetToTheDefault": "Document viewing limit reset to the default.",
+      "documentViewingLimitSavedTheChangeAppliesThe": "Document viewing limit saved. The change applies the next time a document is opened.",
+      "filesWorkspaceBehaviorSavedTheChangeAppliesTo": "Files & Workspace behavior saved. The change applies to the next scan or viewer open.",
+      "filesWorkspaceSettingsResetToDefaults": "Files & Workspace settings reset to defaults.",
+      "filesWorkspaceSettingsSavedNewLimitsApplyTo": "Files & Workspace settings saved. New limits apply to the next scan or refresh.",
+      "generalSettingsSaved": "General settings saved.",
+      "interfaceLanguageUpdated": "Interface language updated.",
+      "loadingSettings": "Loading settings…",
+      "recentFileHistoryClearedFromThisDevice": "Recent file history cleared from this device.",
+      "recentFileHistoryDisabledExistingEntriesWereKept": "Recent file history disabled. Existing entries were kept.",
+      "recentFileHistoryEnabled": "Recent file history enabled.",
+      "recentFileRetentionSavedTheLimitAppliesOn": "Recent file retention saved. The limit applies on the next history access.",
+      "settingsAreUpToDate": "Settings are up to date.",
+      "settingsExported": "Settings exported.",
+      "settingsImportedAndSaved": "Settings imported and saved.",
+      "treeIndentGuidesSavedOpenViewersUpdateImmediately": "Tree indent guides saved. Open viewers update immediately.",
+      "validatingSettingsFile": "Validating settings file…",
+      "watchModeUpdated": "Watch mode updated."
+    },
+    "optionsActions": {
+      "clearAllRecentFilePathsStoredByMarkdown": "Clear all recent file paths stored by Markdown Plus on this device? This cannot be undone.",
+      "resetAllMarkdownPlusSettingsToTheirDefaults": "Reset all Markdown Plus settings to their defaults? This includes reader, editor, plugin, and explorer preferences.",
+      "settingsFilesMustBeSmallerThan1MiB": "Settings files must be smaller than 1 MiB."
+    },
+    "privacy": {
+      "clearRecentFiles": "Clear recent files",
+      "clearRecentFilesNow": "Clear recent files now",
+      "clearing": "Clearing…",
+      "controlWhetherMarkdownPlusRemembersLocalDocumentsAnd": "Control whether Markdown Plus remembers local documents and how long that list can be.",
+      "keepOnlyTheNewestEntriesAfterTheNext": "Keep only the newest entries after the next history access.",
+      "localData": "Local data",
+      "recentFileURLsContainLocalPathsTheyAre": "Recent file URLs contain local paths. They are stored only in extension-local storage on this device, separately from synced preferences.",
+      "rememberLocalMarkdownFilesSoTheyCanBe": "Remember local Markdown files so they can be reopened from the Popup. Turning this off stops new entries; it does not delete entries already stored.",
+      "saveRecentFiles": "Save recent files",
+      "title": "Privacy & Data"
+    },
+    "themes": {
+      "background": {
+        "angle0360": "Angle (0–360°)",
+        "animate": "Animate",
+        "backgroundType": "Background type",
+        "bottom": "Bottom",
+        "center": "Center",
+        "dimming008": "Dimming (0–0.8)",
+        "endColor": "End color",
+        "fillCanvas": "Fill canvas",
+        "fitWithinCanvas": "Fit within canvas",
+        "followSystem": "Follow system",
+        "gradient": "Gradient",
+        "imageFile": "Image file",
+        "imageFit": "Image fit",
+        "imagePosition": "Image position",
+        "left": "Left",
+        "localImageOrAnimation": "Local image or animation",
+        "motion": "Motion",
+        "originalSize": "Original size",
+        "pngJPEGWebPAVIFGIFOrAPNGUp": "PNG, JPEG, WebP, AVIF, GIF, or APNG; up to 5 MiB.",
+        "repeatImage": "Repeat image",
+        "right": "Right",
+        "sceneColor": "Scene color",
+        "solidScene": "Solid scene",
+        "startColor": "Start color",
+        "still": "Still",
+        "storedOnThisDevice": "Stored on this device",
+        "themeColorOnly": "Theme color only",
+        "tileTheImageInsteadOfShowingOneCanvas": "Tile the image instead of showing one canvas.",
+        "top": "Top"
+      },
+      "colors": {
+        "borders": "Borders",
+        "contentSurface": "Content surface",
+        "documentText": "Document text",
+        "headings": "Headings",
+        "inlineFallbackCodeBackground": "Inline/fallback code background",
+        "inlineFallbackCodeText": "Inline/fallback code text",
+        "interfaceText": "Interface text",
+        "links": "Links",
+        "mutedText": "Muted text",
+        "pageBackground": "Page background",
+        "panelSurface": "Panel surface",
+        "valueColorPicker": "{0} color picker",
+        "valueHexValue": "{0} hex value"
+      },
+      "editor": {
+        "backToThemes": "← Back to themes",
+        "background": "Background",
+        "baseTheme": "Base theme",
+        "buildAReusableReaderThemeChangesStayIn": "Build a reusable reader theme. Changes stay in this draft until you save.",
+        "buildTheSceneBehindTheViewerAndTune": "Build the scene behind the Viewer and tune its readability.",
+        "chooseTheSyntaxColorsUsedForRenderedCode": "Choose the syntax colors used for rendered code blocks.",
+        "codeHighlighting": "Code highlighting",
+        "colors": "Colors",
+        "createCustomTheme": "Create custom theme",
+        "createTheme": "Create theme",
+        "discardYourUnsavedThemeChanges": "Discard your unsaved theme changes?",
+        "eGMidnightPaper": "e.g. Midnight Paper",
+        "editValue": "Edit {0}",
+        "identity": "Identity",
+        "nameTheThemeAndChooseTheBuiltIn": "Name the theme and choose the built-in foundation it starts from.",
+        "newDraft": "New draft",
+        "noChanges": "No changes",
+        "replacesTheColorsInSection02CodeHighlighting": "Replaces the colors in section 02. Code highlighting follows this base unless overridden below.",
+        "resetsColors": "Resets colors",
+        "savingTheme": "Saving theme…",
+        "shownInTheThemePickerAndPopup": "Shown in the theme picker and popup.",
+        "themeName": "Theme name",
+        "themeStudio": "Theme studio",
+        "tuneSemanticColorsSoTheViewerStaysVisually": "Tune semantic colors so the Viewer stays visually consistent. Inline/fallback code colors do not replace the rendered syntax theme in section 03.",
+        "unsavedChanges": "Unsaved changes"
+      },
+      "library": {
+        "activeReaderTheme": "Active reader theme",
+        "activeTheme": "Active theme",
+        "addCustomTheme": "Add custom theme",
+        "appearance": "Appearance",
+        "builtInThemes": "Built-in themes",
+        "chooseTheReaderThemeInUseThenManage": "Choose the reader theme in use, then manage your reusable custom themes.",
+        "createOneFromYourActiveThemeThenAdjust": "Create one from your active theme, then adjust its colors and background in Theme Studio.",
+        "createYourFirstTheme": "Create your first theme",
+        "customThemesCanBeSelectedInBothSettings": "Custom themes can be selected in both Settings and the Popup.",
+        "customThemesDeleteOneBeforeCreatingAnother": "custom themes. Delete one before creating another.",
+        "deleteValueThisCannotBeUndoneValue": "Delete “{0}”? This cannot be undone.{1}",
+        "gradientBackground": "Gradient background",
+        "itIsActiveSoValueWillBecomeActive": " It is active, so {0} will become active instead.",
+        "localImageBackground": "Local image background",
+        "myTheme": "My theme",
+        "myThemes": "My themes",
+        "noCustomThemesYet": "No custom themes yet",
+        "selectionIsAlsoShownInTheExtensionPopup": "This selection is also shown in the extension Popup.",
+        "solidBackground": "Solid background",
+        "themeColorBackground": "Theme color background",
+        "useTheme": "Use theme",
+        "youHaveReachedTheLimitOf": "You have reached the limit of"
+      },
+      "preview": {
+        "aCalmReadingSpaceForIdeasSnippetsAnd": "A calm reading space for ideas, snippets, and",
+        "accent": "Accent",
+        "base": "Base:",
+        "code": "Code:",
+        "designNotesThatFeelLikeHome": "Design notes that feel like home.",
+        "details": "Details",
+        "docs": "docs",
+        "everyValidChangeAppearsHereInstantlySavingIs": "Every valid change appears here instantly. Saving is not required.",
+        "examples": "Examples",
+        "focus": "Focus",
+        "guideMd": "guide.md",
+        "javascript": "JavaScript",
+        "link": "Link",
+        "livePreview": "Live preview",
+        "liveThemePreview": "Live theme preview",
+        "myNOTES": "MY NOTES",
+        "notesMd": "notes.md",
+        "overview": "Overview",
+        "reading": "Reading",
+        "readmeMd": "README.md",
+        "role": "Role",
+        "surface": "Surface",
+        "text": "Text",
+        "theSmallestDetailsMakeTheBiggestDifference": "“The smallest details make the biggest difference.”",
+        "token": "Token",
+        "untitledTheme": "Untitled theme",
+        "usefulLinks": "useful links"
+      },
+      "syntax": {
+        "appliesToRenderedFencedCodeAndSQLDocuments": "Applies to rendered fenced code and SQL documents. The Markdown editor keeps its own highlighting.",
+        "darkThemes": "Dark themes",
+        "followBaseTheme": "Follow base theme (",
+        "lightThemes": "Light themes",
+        "renderedCodeTheme": "Rendered code theme"
+      },
+      "title": "Themes"
+    },
+    "title": "Settings",
+    "validation": {
+      "fields": {
+        "appearanceSettingsMustBeAnObject": "Appearance settings must be an object.",
+        "backgroundAssetRevisionIsInvalid": "Background asset revision is invalid.",
+        "backgroundDimmingMustBeBetween0And0": "Background dimming must be between 0 and 0.8.",
+        "backgroundSettingsMustBeAnObject": "Background settings must be an object.",
+        "chooseAutoHideOrAlwaysVisibleScrollbars": "Choose auto-hide or always-visible scrollbars.",
+        "chooseAutomaticAskBeforeUpdatingOrOff": "Choose automatic, ask before updating, or off.",
+        "customThemeIdIsInvalid": "Custom theme id is invalid.",
+        "customThemeIdsMustBeUnique": "Custom theme ids must be unique.",
+        "customThemeMustBeAnObject": "Custom theme must be an object.",
+        "customThemesMustBeAList": "Custom themes must be a list.",
+        "documentSettingsMustBeAnObject": "Document settings must be an object.",
+        "editorSettingsMustBeAnObject": "Editor settings must be an object.",
+        "enableExperimentalEditorMustBeTrueOrFalse": "Enable experimental editor must be true or false.",
+        "enableMarkdownPlusMustBeTrueOrFalse": "Enable Markdown Plus must be true or false.",
+        "filesWorkspaceSettingsMustBeAnObject": "Files & Workspace settings must be an object.",
+        "folderScanDepth": "Folder scan depth",
+        "gradientAngleMustBeBetween0And360": "Gradient angle must be between 0 and 360.",
+        "maximumIndexedFiles": "Maximum indexed files",
+        "maximumRecentFiles": "Maximum recent files",
+        "maximumScannedFolders": "Maximum scanned folders",
+        "privacyDataSettingsMustBeAnObject": "Privacy & Data settings must be an object.",
+        "settingsMustBeAJSONObject": "Settings must be a JSON object.",
+        "showDocumentStatisticsMustBeTrueOrFalse": "Show document statistics must be true or false.",
+        "standaloneTextFileLimit": "Standalone text file limit",
+        "themeColorsMustBeAnObject": "Theme colors must be an object.",
+        "themeNameMustBeBetween1And48": "Theme name must be between 1 and 48 characters.",
+        "themeSettingsMustBeAnObject": "Theme settings must be an object."
+      }
+    }
+  },
+  "plugins": {
+    "alerts": {
+      "caution": "Caution",
+      "important": "Important",
+      "note": "Note",
+      "tip": "Tip",
+      "warning": "Warning"
+    },
+    "anchorHeading": {
+      "copyLinkToThisSection": "Copy link to this section",
+      "copySectionLinkClick": "Copy section link (click)"
+    },
+    "colorPreview": {
+      "copyColorValue": "Copy color {0}"
+    },
+    "taskList": {
+      "x": "x"
+    }
+  },
+  "popup": {
+    "editor": {
+      "editingIsOffByDefaultWhenEnabledMarkdown": "Editing is off by default. When enabled, Markdown Plus will ask you to connect the exact original file before an edit session starts.",
+      "editorFontSize": "Editor font size",
+      "enableEditor": "Enable editor",
+      "enableExperimentalEditor": "Enable experimental editor",
+      "experimentalEditor": "Experimental editor",
+      "lineNumbers": "Line numbers",
+      "optInToEditingLocalMarkdownFiles": "Opt in to editing local Markdown files.",
+      "resetEditorPreferences": "Reset editor preferences",
+      "resetEditorPreferencesToDefaultValues": "Reset editor preferences to default values?",
+      "tabSize": "Tab size",
+      "tabSizeRange": "2–8 spaces",
+      "wordWrap": "Word wrap"
+    },
+    "fileAccess": {
+      "allowAccessToLocalFiles": "Allow access to local files",
+      "checkingFileAccess": "Checking file access",
+      "confirmingWhetherMarkdownPlusCanOpenLocalFiles": "Confirming whether Markdown Plus can open local files.",
+      "enableAllowAccessToFileURLs": "Enable “Allow access to file URLs”.",
+      "fileAccessIsReady": "File access is ready",
+      "fileAccessStatusUnavailable": "File access status unavailable",
+      "openChromeExtensions": "Open chrome://extensions.",
+      "selectMarkdownPlusDetails": "Select Markdown Plus → Details."
+    },
+    "footer": {
+      "about": "About",
+      "allSettings": "All settings",
+      "saved": "Settings saved"
+    },
+    "history": {
+      "fileCount": {
+        "one": "{count} recent file",
+        "other": "{count} recent files"
+      },
+      "loadingRecentFiles": "Loading recent files…",
+      "noRecentFilesYet": "No recent files yet",
+      "openLocalMarkdownFilesWithMarkdownPlusAnd": "Open local Markdown files with Markdown Plus and they will appear here.",
+      "opening": "Opening…"
+    },
+    "page": {
+      "loadingQuickSettings": "Loading quick settings",
+      "quickControlSections": "Quick control sections",
+      "quickSettingsCouldNotBeLoaded": "Quick settings could not be loaded"
+    },
+    "plugins": {
+      "aCleanerCursorLikeLayoutPoweredByELK": "A cleaner, Cursor-like layout powered by ELK.",
+      "beautiful": "Beautiful",
+      "broadestMermaidSyntaxSupportAndTheSafestDefault": "Broadest Mermaid syntax support and the safest default.",
+      "cursorLike": "Cursor-like",
+      "i": "i",
+      "items": {
+        "anchorHeading": {
+          "hint": "Adds a “#” action to headings for copying deep links.",
+          "label": "Anchor heading",
+          "version": "Heading slug support: markdown-it-anchor 9.2.0."
+        },
+        "codeHighlight": {
+          "hint": "Highlights fenced code with Shiki; turn it off for a lighter plain-code view.",
+          "label": "Code highlight",
+          "version": "Syntax support: Shiki 4.0.2."
+        },
+        "colorPreview": {
+          "hint": "Shows color swatches and copies HEX, RGB or HSL values, including transparency.",
+          "label": "Color preview"
+        },
+        "emoji": {
+          "hint": "Converts supported :shortcode: text into emoji.",
+          "label": "Emoji",
+          "version": "Syntax support: markdown-it-emoji 3.0.0."
+        },
+        "footnote": {
+          "hint": "Adds footnote markers, definitions, and return links.",
+          "label": "Footnotes",
+          "version": "Syntax support: markdown-it-footnote 4.0.0."
+        },
+        "githubAlerts": {
+          "hint": "Styles GitHub-style notes, tips, important messages, warnings, and cautions.",
+          "label": "GitHub Alerts"
+        },
+        "math": {
+          "hint": "Renders LaTeX-style math with KaTeX when needed.",
+          "label": "Math (KaTeX)",
+          "version": "Syntax support: @mdit/plugin-katex 0.25.2, KaTeX 0.16.44."
+        },
+        "mermaid": {
+          "hint": "Renders Mermaid code fences as diagrams with export actions.",
+          "label": "Mermaid diagrams",
+          "version": "Syntax support: Mermaid 11.13.0 or Beautiful Mermaid 1.1.3."
+        },
+        "tableEnhance": {
+          "hint": "Makes wide tables scrollable with enhanced table styling.",
+          "label": "Table enhance"
+        },
+        "taskList": {
+          "hint": "Renders GitHub-style task lists with read-only checkboxes.",
+          "label": "Task list"
+        }
+      },
+      "mermaidOfficial": "Mermaid official",
+      "official": "Official",
+      "renderer": "Renderer"
+    },
+    "reader": {
+      "aboutFontFamily": "About font family",
+      "aboutLineHeight": "About line height",
+      "contentWidth": {
+        "label": "Content width"
+      },
+      "fontFamilies": {
+        "monoFira": "Monospace (Fira Code)",
+        "monospace": "Monospace",
+        "sansHumanist": "Sans (Humanist)",
+        "sansNeutral": "Sans (neutral)",
+        "sansOpenSans": "Sans (Open Sans)",
+        "sansRoboto": "Sans (Roboto / Arial)",
+        "sansVietnamese": "Sans (Readable / Vietnamese)",
+        "serifCharter": "Serif (Charter)",
+        "serifGeorgia": "Serif (Georgia)",
+        "serifMerriweather": "Serif (Merriweather)",
+        "serifNewYork": "Serif (New York / Georgia)",
+        "serifSource": "Serif (Source Serif)",
+        "serifVietnamese": "Serif (Noto / Vietnamese)",
+        "system": "System UI"
+      },
+      "fontFamily": {
+        "label": "Font family"
+      },
+      "fontSize": {
+        "label": "Font size"
+      },
+      "lineHeight": {
+        "label": "Line height"
+      },
+      "outline": {
+        "label": "Show table of contents"
+      },
+      "resetReaderUI": "Reset reader UI",
+      "resetReaderUISettingsToDefaultValues": "Reset reader UI settings to default values?",
+      "theme": "Theme",
+      "unitlessLineSpacingMultiplierEG17": "Unitless line-spacing multiplier (e.g. 1.7 ≈ 170% of font size). Not pixels.",
+      "usesFontsInstalledOnYourSystemPresetsList": "Uses fonts installed on your system. Presets list several fallbacks if the first choice is missing."
+    },
+    "tabs": {
+      "editor": {
+        "label": "Editor",
+        "title": "Editor preferences"
+      },
+      "history": {
+        "label": "Recent",
+        "title": "Recent files"
+      },
+      "plugins": {
+        "label": "Plugins",
+        "title": "Markdown features"
+      },
+      "reader": {
+        "label": "Reader",
+        "title": "Reading appearance"
+      }
+    }
+  },
+  "services": {
+    "fileHistory": {
+      "localFileHistoryStorageIsUnavailable": "Local file-history storage is unavailable.",
+      "tabsAPIIsUnavailable": "Tabs API is unavailable."
+    },
+    "messageRouter": {
+      "enableAllowAccessToFileURLsForMarkdown": "Enable “Allow access to file URLs” for Markdown Plus (chrome://extensions → this extension → Details)."
+    },
+    "offscreenFetch": {
+      "chromeOffscreenIsNotAvailableChrome109Required": "chrome.offscreen is not available (Chrome 109+ required).",
+      "offscreenFetchTimedOut": "Offscreen fetch timed out"
+    },
+    "optionsPage": {
+      "settingsPageIsUnavailableInThisBrowser": "The Settings page is unavailable in this browser."
+    },
+    "themeAsset": {
+      "themeAssetDatabaseRequestFailed": "Theme asset database request failed.",
+      "themeAssetStorageIsUnavailable": "Theme asset storage is unavailable.",
+      "themeAssetTransactionFailed": "Theme asset transaction failed."
+    }
+  }
+}

@@ -8,6 +8,8 @@ This directory documents the repository as it exists today. Runtime source remai
 - [`document-updates-and-change-review.md`](./document-updates-and-change-review.md) — current Watch modes, review workflow, editor safeguards, reading continuity, limits, and implementation map.
 - [`document-actions.md`](./document-actions.md) — Viewer commands, sidebar integration, overflow, focus, ownership, and verification.
 - [`theme-system.md`](./theme-system.md) — complete built-in/custom theme model, semantic colors, theme-owned backgrounds, local image assets, authoring workflows, extension guidance, and tests.
+- [`internationalization.md`](./internationalization.md) — interface-language ownership, semantic IDs, live switching, literal document boundaries, and locale integration/verification; use [`mdp-dev-add-language`](../.agents/skills/mdp-dev-add-language/SKILL.md) for the full translation workflow.
+- [`vietnamese-localization.md`](./vietnamese-localization.md) — Vietnamese editorial conventions, terminology, context-sensitive choices, and localized product references.
 - [`design-system/`](./design-system/README.md) — current visual contracts and maintenance guide. Open [Overview](./design-system/index.html) in a browser to browse foundations, [Components](./design-system/components.html), [Icons](./design-system/icons.html), and the [Viewer preview](./design-system/viewer.html).
 - [`gherkin-syntax.md`](./gherkin-syntax.md) — Gherkin syntax reference and the supported Markdown code-fence aliases; standalone `.feature` files are not Viewer document types.
 - [`../DEV.md`](../DEV.md) — local setup, entry points, scripts, verification matrix, manual smoke tests, and troubleshooting.

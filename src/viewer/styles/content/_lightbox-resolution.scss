@@ -3,6 +3,12 @@
   --mdp-resolution-control-height: 40px;
   --mdp-resolution-step-height: 32px;
   --mdp-resolution-trigger-width: 128px;
+  --mdp-resolution-caption-width: 60px;
+
+  &:lang(vi) {
+    --mdp-resolution-trigger-width: 152px;
+    --mdp-resolution-caption-width: 84px;
+  }
   display: inline-flex;
   align-items: center;
   max-width: 100%;
@@ -137,7 +143,7 @@
   }
 
   &__title {
-    flex: 0 0 60px;
+    flex: 0 0 var(--mdp-resolution-caption-width);
     text-align: left;
     color: var(--mdp-muted);
   }

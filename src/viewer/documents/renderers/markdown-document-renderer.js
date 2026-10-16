@@ -5,29 +5,32 @@ import { isEditorFeatureEnabled } from '../../../shared/constants/editor.js'
 import { prepareMarkdownImages } from '../markdown-images.js'
 
 const PLUGIN_WARNING_MESSAGE =
-  'Some Markdown enhancements could not be applied. Basic Markdown is still available.'
+  'viewer.documents.markdown.someMarkdownEnhancementsCouldNotBeAppliedBasic'
 
 function throwIfAborted(signal) {
-  if (signal?.aborted) throw new DOMException('Document render was aborted.', 'AbortError')
+  if (signal?.aborted) throw new DOMException("Document render was aborted.", 'AbortError')
 }
 
-function renderEmptyState(articleEl, { showEditHint = false } = {}) {
+function renderEmptyState(articleEl, { placeholderMessage, showEditHint = false } = {}) {
   const ownerDocument = articleEl?.ownerDocument || globalThis.document
   if (!ownerDocument?.createElement || typeof articleEl?.replaceChildren !== 'function') {
     throw new Error('Missing render target document.')
   }
 
   mountDocumentState(articleEl, {
-    className: 'mdp-ui-state mdp-document-empty', title: 'Empty Markdown document',
-    message: showEditHint ? 'Use Edit to start writing.' : undefined
+    className: 'mdp-ui-state mdp-document-empty',
+    title: placeholderMessage ? undefined : 'viewer.documents.markdown.emptyMarkdownDocument',
+    message: placeholderMessage || (showEditHint ? 'viewer.documents.markdown.useEditToStartWriting' : undefined)
   })
 }
 
 export async function render({ loadedDocument, articleEl, settings, services, signal }) {
   const source = String(loadedDocument?.text ?? '')
-  if (!source.trim()) {
+  const placeholderMessage = loadedDocument?.placeholderMessage
+  if (placeholderMessage || !source.trim()) {
     throwIfAborted(signal)
     renderEmptyState(articleEl, {
+      placeholderMessage,
       showEditHint:
         loadedDocument?.document?.sourceKind === 'file-url' && isEditorFeatureEnabled(settings)
     })

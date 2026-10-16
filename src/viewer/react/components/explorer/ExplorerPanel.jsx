@@ -1,3 +1,5 @@
+import { t } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { normalizeFileUrlForCompare } from '../../../explorer/url-utils.js'
@@ -28,6 +30,7 @@ const EMPTY_TREE_MOTION = Object.freeze({
 })
 
 export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, showTreeIndentGuides = true }) {
+  useLocale()
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
   const actualBusy = state.view === 'loading' || state.view === 'progress'
@@ -79,8 +82,8 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
   )
   const canCollapseAllFolders = Array.from(viewState.expandedMap.values()).some(Boolean)
   const collapseKeepsOpenFilePath = Array.from(collapseAllExpandedMap.values()).some(Boolean)
-  const refreshTooltip = isBusy ? 'Refresh is available after scanning finishes'
-    : refreshUnavailableReason || (state.isRefreshing ? 'Refreshing file list' : 'Refresh file list')
+  const refreshTooltip = isBusy ? 'viewer.explorer.panel.refreshIsAvailableAfterScanningFinishes'
+    : refreshUnavailableReason || (state.isRefreshing ? 'viewer.explorer.panel.refreshingFileList' : 'common.actions.refreshFileList')
   const treeRows = useMemo(
     () => flattenVisibleTree(viewState.tree?.children || [], viewState.expandedMap, activeNormalized),
     [viewState.tree, viewState.expandedMap, activeNormalized]
@@ -293,7 +296,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
     <div
       className={`mdp-explorer${showTreeIndentGuides ? '' : ' mdp-explorer--no-guides'}`}
       role="region"
-      aria-label="Supported files in folder"
+      aria-label={t('viewer.explorer.panel.supportedFilesInFolder')}
       aria-busy={isBusy}
     >
       <ExplorerHeader
@@ -331,9 +334,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
           <SkeletonBlock lines={loadingWidths.length} widths={loadingWidths} lineHeight={14} gap={10} />
         </div>
 
-        <div className="mdp-explorer__empty" hidden={presentedView !== 'empty'}>
-          No supported files found in this directory.
-        </div>
+        <div className="mdp-explorer__empty" hidden={presentedView !== 'empty'}>{t('viewer.explorer.panel.noSupportedFilesFoundInThisDirectory')}</div>
 
         <div
           className={`mdp-explorer__busy-view${!loadingVisible ? ' is-pending' : ''}`}
@@ -350,7 +351,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
         <ul
           className="mdp-explorer__list mdp-explorer__list--virtual"
           role="tree"
-          aria-label="Files in current folder"
+          aria-label={t('viewer.explorer.panel.filesInCurrentFolder')}
           hidden={presentedView !== 'files'}
           style={{ height: `${fileVirtualizer.getTotalSize()}px` }}
         >
@@ -373,7 +374,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
         <ul
           className={`mdp-explorer__list mdp-explorer__list--virtual mdp-explorer__list--tree${treeMotion.active ? ' is-tree-animating' : ''}`}
           role="tree"
-          aria-label={viewState.listAriaLabel || 'Workspace files'}
+          aria-label={t(viewState.listAriaLabel || 'viewer.explorer.context.workspaceFiles')}
           hidden={presentedView !== 'tree'}
           style={{ height: `${treeVirtualizer.getTotalSize()}px` }}
         >
@@ -439,7 +440,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
         </ul>
       </div>
       <ViewerScrollbar scrollElement={expanded ? scrollElement : null}
-        visibility={scrollbarVisibility} label="Files scrollbar" variant="sidebar"
+        visibility={scrollbarVisibility} label={t('viewer.explorer.panel.filesScrollbar')} variant="sidebar"
         contentSelector=".mdp-explorer__list:not([hidden]), .mdp-explorer__loading:not([hidden]), .mdp-explorer__busy-view:not([hidden])"
         contentVersion={`${presentedView}:${treeRows.length}:${viewState.files.length}`} />
     </div>

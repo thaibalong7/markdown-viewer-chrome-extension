@@ -1,19 +1,22 @@
+import { t } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React from 'react'
 import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
 
 /** The empty media canvas is a renderer-owned island; React owns its surroundings. */
 export function MediaLightbox({ kind, open, dragging, rasterized, refs, onZoomOut, onZoomIn, onFit, onClose }) {
+  useLocale()
   const base = `mdp-${kind}-lightbox`
   const image = kind === 'image'
   const controls = [
-    { ref: refs.zoomOutButton, icon: 'zoom-out', label: image ? 'Zoom out image' : 'Zoom out Mermaid chart', action: onZoomOut },
-    { ref: refs.zoomInButton, icon: 'zoom-in', label: image ? 'Zoom in image' : 'Zoom in Mermaid chart', action: onZoomIn },
-    { ref: refs.recenterButton, icon: 'recenter', label: image ? 'Fit image to view' : 'Re-center Mermaid chart', action: onFit },
-    { ref: refs.closeButton, icon: 'close', label: image ? 'Close image zoom view' : 'Close Mermaid chart', action: onClose }
+    { ref: refs.zoomOutButton, icon: 'zoom-out', label: image ? 'viewer.media.zoomOutImage' : 'viewer.media.zoomOutMermaidChart', action: onZoomOut },
+    { ref: refs.zoomInButton, icon: 'zoom-in', label: image ? 'viewer.media.zoomInImage' : 'viewer.media.zoomInMermaidChart', action: onZoomIn },
+    { ref: refs.recenterButton, icon: 'recenter', label: image ? 'viewer.media.fitImageToView' : 'viewer.media.reCenterMermaidChart', action: onFit },
+    { ref: refs.closeButton, icon: 'close', label: image ? 'viewer.media.closeImageZoomView' : 'viewer.media.closeMermaidChart', action: onClose }
   ]
   const hints = image
-    ? 'Drag to pan  |  Ctrl + Scroll / pinch to zoom  |  +/- to zoom  |  0 to fit  |  Esc to close'
-    : 'Drag anywhere to pan  |  Ctrl + Scroll / pinch to zoom  |  Two-finger scroll to pan  |  +/- to zoom  |  0 to re-center  |  Esc to close'
+    ? 'viewer.media.dragToPanCtrlScrollPinchToZoom'
+    : 'viewer.media.dragAnywhereToPanCtrlScrollPinchTo'
 
   return (
     <div
@@ -23,7 +26,7 @@ export function MediaLightbox({ kind, open, dragging, rasterized, refs, onZoomOu
       tabIndex={-1}
       role="dialog"
       aria-modal="true"
-      aria-label={image ? 'Image zoom view' : 'Mermaid chart zoom view'}
+      aria-label={image ? t('viewer.media.imageZoomView') : t('viewer.media.mermaidChartZoomView')}
       aria-hidden={!open}
     >
       <div ref={refs.viewport} className={`${base}__viewport`}>
@@ -40,7 +43,7 @@ export function MediaLightbox({ kind, open, dragging, rasterized, refs, onZoomOu
               key={control.icon}
               type="button"
               className={`${base}__button${!image && control.icon === 'close' ? ` ${base}__button--close` : ''}`}
-              aria-label={control.label}
+              aria-label={t(control.label)}
               onClick={control.action}
             >
               <AppIcon name={control.icon} size={16} />
@@ -48,7 +51,7 @@ export function MediaLightbox({ kind, open, dragging, rasterized, refs, onZoomOu
           ))}
         </div>
       </div>
-      <div className={`${base}__hints`}>{hints}</div>
+      <div className={`${base}__hints`}>{t(hints)}</div>
     </div>
   )
 }

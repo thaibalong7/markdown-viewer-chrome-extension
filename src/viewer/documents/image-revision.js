@@ -2,7 +2,7 @@ import { MESSAGE_TYPES, sendMessage } from '../../messaging/index.js'
 import { MAX_WATCH_BYTES } from '../../shared/constants/documents.js'
 
 function throwIfAborted(signal) {
-  if (signal?.aborted) throw new DOMException('Image read was aborted.', 'AbortError')
+  if (signal?.aborted) throw new DOMException("Image read was aborted.", 'AbortError')
 }
 
 function tooLarge() {

@@ -1,3 +1,4 @@
+import { t } from '../../i18n/index.js'
 import { mountDocumentState } from '../react/content/states/mount-document-state.js'
 import { clearContentUi } from '../react/content/mount-content-ui.jsx'
 import { captureReadingPosition, restoreReadingPosition } from '../navigation/reading-position.js'
@@ -108,7 +109,7 @@ export function createRenderController({
     const timer = setTimeout(() => {
       const ownerDocument = article.ownerDocument || globalThis.document
       if (signal?.aborted || !ownerDocument?.createElement || article.childElementCount > 0) return
-      article.setAttribute('aria-label', 'Loading document')
+      article.setAttribute('aria-label', t('viewer.render.loadingDocument'))
       skeletonUi = mountDocumentState(article, { skeleton: true })
       skeletonMounted = true
     }, 180)
@@ -131,8 +132,8 @@ export function createRenderController({
 
     mountDocumentState(article, {
       className: 'mdp-ui-state mdp-ui-state--error mdp-document-render-error', role: 'alert',
-      title: 'Document could not be rendered',
-      message: 'Try again. If the problem continues, refresh the file or disable optional rendering plugins.',
+      title: 'viewer.render.documentCouldNotBeRendered',
+      message: 'viewer.render.tryAgainIfTheProblemContinuesRefreshThe',
       onRetry: () => { void render({ preserveScroll: false, honorHash: false }) }
     })
   }

@@ -1,3 +1,5 @@
+import { t, translateMessage } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 
 export function NumberField({
@@ -11,6 +13,7 @@ export function NumberField({
   className = '',
   ...inputProps
 }) {
+  useLocale()
   const helperId = `${id}-helper`
   const errorId = `${id}-error`
   const describedBy = [helper ? helperId : '', error ? errorId : ''].filter(Boolean).join(' ')
@@ -19,10 +22,10 @@ export function NumberField({
     <div className={`mdp-ui-number-field ${className}`.trim()}>
       <div className="mdp-ui-field">
         <div className="mdp-ui-field__label-row">
-          <label className="mdp-ui-field__label" htmlFor={id}>{label}</label>
-          {labelAction || null}
+          <label className="mdp-ui-field__label" htmlFor={id}>{t(label)}</label>
+          {translateMessage(labelAction || null)}
         </div>
-        {helper ? <p className="mdp-ui-field__helper" id={helperId}>{helper}</p> : null}
+        {helper ? <p className="mdp-ui-field__helper" id={helperId}>{t(helper)}</p> : null}
       </div>
       <div className="mdp-ui-number-field__control">
         <input
@@ -34,10 +37,8 @@ export function NumberField({
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy || undefined}
         />
-        {rangeLabel ? <span className="mdp-ui-field__meta">{rangeLabel}</span> : null}
-        {error ? (
-          <span className="mdp-ui-field__error" id={errorId}>{error}</span>
-        ) : null}
+        {rangeLabel ? <span className="mdp-ui-field__meta">{t(rangeLabel)}</span> : null}
+        {error ? <span className="mdp-ui-field__error" id={errorId}>{translateMessage(error)}</span> : null}
       </div>
     </div>
   )

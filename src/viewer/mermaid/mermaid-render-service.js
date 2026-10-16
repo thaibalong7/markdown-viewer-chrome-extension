@@ -23,7 +23,7 @@ const GENERIC_FONT_FAMILIES = new Set([
 ])
 
 function abortError() {
-  return new DOMException('Mermaid render was aborted.', 'AbortError')
+  return new DOMException("Mermaid render was aborted.", 'AbortError')
 }
 
 function throwIfAborted(signal) {

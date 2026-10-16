@@ -1,3 +1,4 @@
+import { message } from '../../i18n/index.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { saveSettings } = vi.hoisted(() => ({
@@ -47,7 +48,7 @@ describe('MarkdownViewerApp light/dark quick toggle', () => {
 
     resolveSave({ ...app.settings, theme: { activeId: 'dark', customThemes: [] } })
     await togglePromise
-    expect(app.showToast).toHaveBeenCalledWith('Switched to dark theme', {
+    expect(app.showToast).toHaveBeenCalledWith(message('viewer.actions.theme.switched', { 0: message('common.themeModes.dark') }), {
       variant: 'success'
     })
   })
@@ -59,7 +60,7 @@ describe('MarkdownViewerApp light/dark quick toggle', () => {
     await app._toggleLightDarkTheme()
 
     expect(app.settings.theme.activeId).toBe('dark')
-    expect(app.showToast).toHaveBeenCalledWith('Could not switch theme', {
+    expect(app.showToast).toHaveBeenCalledWith('errors.viewer.app.switchTheme', {
       variant: 'error'
     })
   })

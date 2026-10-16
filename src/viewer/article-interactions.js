@@ -1,3 +1,4 @@
+import { t, message as localizedMessage } from '../i18n/index.js'
 import { logger } from '../shared/logger.js'
 import { copyTextToClipboard } from '../shared/clipboard.js'
 import { COPY_BUTTON_FEEDBACK_MS } from '../shared/constants/viewer.js'
@@ -54,7 +55,7 @@ export function createArticleInteractions({
     image.setAttribute('role', 'button')
     image.setAttribute(
       'aria-label',
-      image.alt ? `Zoom image: ${image.alt}` : 'Open image zoom view'
+      image.alt ? localizedMessage('viewer.articleInteractions.zoomImageValue', { 0: image.alt }) : 'viewer.articleInteractions.openImageZoomView'
     )
   }
 
@@ -84,7 +85,7 @@ export function createArticleInteractions({
       button.dataset.mdpCopyOrigAria = button.getAttribute('aria-label') || ''
     }
     button.classList.add('is-copied')
-    button.setAttribute('aria-label', 'Copied')
+    button.setAttribute('aria-label', t('common.status.copied'))
 
     const timerId = window.setTimeout(() => {
       copyButtonFeedbackTimers.delete(button)
@@ -138,7 +139,7 @@ export function createArticleInteractions({
     event.preventDefault()
     const url = updateDocumentHeading?.(id)
     if (url) void copySectionLinkWithToast(url)
-    else showToast('Section links are unavailable for this workspace file', { variant: 'warning' })
+    else showToast('viewer.articleInteractions.sectionLinksAreUnavailableForThisWorkspaceFile', { variant: 'warning' })
     return true
   }
 
@@ -220,10 +221,10 @@ export function createArticleInteractions({
   async function copySectionLinkWithToast(url) {
     try {
       await copyTextToClipboard(url)
-      showToast('Copied link', { variant: 'success' })
+      showToast('viewer.articleInteractions.copiedLink', { variant: 'success' })
     } catch (error) {
       logger.debug('Copy section link failed.', error)
-      showToast('Could not copy link', { variant: 'error' })
+      showToast('errors.viewer.articleInteractions.copyLink', { variant: 'error' })
     }
   }
 
@@ -237,12 +238,12 @@ export function createArticleInteractions({
       if (triggerButton instanceof HTMLButtonElement) {
         flashCopyButtonCopied(triggerButton)
       } else if (!inline) {
-        showToast('Copied', { variant: 'success' })
+        showToast('common.status.copied', { variant: 'success' })
       }
       return true
     } catch (error) {
       logger.debug('Copy code failed.', error)
-      showToast('Could not copy', { variant: 'error' })
+      showToast('errors.viewer.articleInteractions.copy', { variant: 'error' })
       return false
     }
   }

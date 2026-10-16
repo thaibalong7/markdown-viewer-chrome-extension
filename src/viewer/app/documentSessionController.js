@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../i18n/index.js'
 import { getDocumentCapabilities, getFileTypeFromUrl } from '../../shared/file-types.js'
 import { logger } from '../../shared/logger.js'
 import { loadDocument as defaultLoadDocument } from '../documents/document-loader.js'
@@ -17,10 +18,10 @@ function safeLoadError(error, fileType) {
   if (error?.code === 'document-too-large' && error?.userMessage) {
     return { code: error.code, message: error.userMessage }
   }
-  const kind = fileType?.contentKind === 'image' ? 'image' : 'text file'
+  const kind = localizedMessage(fileType?.contentKind === 'image' ? 'viewer.document.imageKind' : 'viewer.document.textKind')
   const message = /permission|denied|access/i.test(error?.message || '')
-    ? `Could not read this ${kind}.`
-    : `Could not open this ${kind}.`
+    ? localizedMessage('errors.viewer.document.readThisValue', { 0: kind })
+    : localizedMessage('errors.viewer.document.openThisValue', { 0: kind })
   return { code: 'document-load-failed', message }
 }
 
@@ -64,7 +65,7 @@ export function createDocumentSessionController({
     const fileType = getFileTypeFromUrl(href)
     const nextDocument = createDocumentIdentity(href)
     if (!fileType || !nextDocument) {
-      showToast?.('This file type is not supported', { variant: 'error' })
+      showToast?.('viewer.document.fileTypeIsNotSupported', { variant: 'error' })
       return false
     }
 
@@ -140,8 +141,8 @@ export function createDocumentSessionController({
         return !destroyed && token === navigationToken
       }
       const message = /permission|denied|access/i.test(error?.message || '')
-        ? 'Could not read linked file'
-        : 'Could not open linked file'
+        ? 'errors.viewer.document.readLinkedFile'
+        : 'errors.viewer.document.openLinkedFile'
       showToast?.(message, { variant: 'error' })
       publish({ error: message })
       return false
@@ -153,7 +154,7 @@ export function createDocumentSessionController({
     }
   }
 
-  async function showPlaceholder(text) {
+  async function showPlaceholder(placeholderMessage) {
     if (destroyed) return false
     const canSwitch = await beforeDocumentSwitch?.({ currentDocument, nextDocument: null })
     if (canSwitch === false) return false
@@ -168,7 +169,8 @@ export function createDocumentSessionController({
     ++revision
     loadedDocument = {
       document: { fileTypeId: 'markdown', rendererId: 'markdown' },
-      text: String(text ?? ''),
+      text: '',
+      placeholderMessage,
       assetUrl: null,
       revokeAssetUrl: null
     }

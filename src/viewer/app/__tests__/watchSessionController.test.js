@@ -1,3 +1,4 @@
+import { t } from '../../../i18n/index.js'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createWatchSessionController } from '../watchSessionController.js'
 
@@ -224,10 +225,10 @@ describe('Markdown watch lifecycle', () => {
     h.session.readCurrentRevision.mockRejectedValueOnce(new Error('access denied'))
     h.watch.start()
     await vi.advanceTimersByTimeAsync(2000)
-    expect(h.state().error).toContain('current content was kept')
+    expect(t(h.state().error, {}, 'en')).toContain('current content was kept')
     expect(h.session.readCurrentRevision).toHaveBeenCalledOnce()
     await h.watch.check()
-    expect(h.state().error).toBeNull()
+    expect(t(h.state().error, {}, 'en')).toBeNull()
     expect(h.session.applyCurrentRevision).not.toHaveBeenCalled()
     h.watch.destroy()
   })
@@ -255,7 +256,7 @@ describe('continuous changes while reading', () => {
     h.session.readCurrentRevision.mockRejectedValueOnce(new Error('temporarily unavailable'))
     h.watch.start()
     await vi.advanceTimersByTimeAsync(0)
-    expect(h.state().error).toBeTruthy()
+    expect(t(h.state().error, {}, 'en')).toBeTruthy()
     h.disk('recovered')
     await vi.advanceTimersByTimeAsync(5000)
     h.visibility.dispatchEvent(new Event('wheel'))

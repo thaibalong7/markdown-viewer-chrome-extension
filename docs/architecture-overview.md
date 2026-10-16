@@ -35,6 +35,7 @@ Direct activation is limited to local `file:` URLs with `.md`, `.markdown`, `.md
 | `src/plugins/` | Core and optional Markdown extensions |
 | `src/theme/` | Built-in themes, custom-theme resolution, theme-owned background descriptors, local theme-asset client, and runtime CSS variables |
 | `src/settings/` | Defaults, validation, persistence client, storage service |
+| `src/i18n/` | Shared language resolution, nested English/Vietnamese catalogs with semantic IDs such as `options.general.title` and `popup.footer.allSettings`, interpolation/plurals, formatting, React subscriptions, and CodeMirror phrases |
 | `src/popup/` | Recent files, theme selection, quick reader/editor/plugin controls, and Settings/About navigation |
 | `src/options/` | Full settings, file-access status, custom-theme management, policy controls, import/export, reset workflows, and About/support information |
 | `src/background/` | Message routing, local file reads, downloads, settings broadcasts, file history, and device-local theme assets |
@@ -254,6 +255,14 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 
 `src/background/message-router.js` routes settings, history, local reads, downloads, and theme-asset lifecycle calls. Offscreen fetch wire messages bypass that router. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown. The response confirms persistence after dispatching these notifications, without waiting for tab replies or Viewer rendering.
 
+## Interface languages
+
+`src/i18n/` owns a shared, locally bundled translation runtime for Settings, Popup, Viewer chrome and content controls. Both catalogs use nested semantic IDs, and callers resolve text with `t('options.general.title')` or an explicit message descriptor for dynamic UI state. The additive `settings.language` preference supports browser language (`auto`), English (`en`), and Vietnamese (`vi`), with regional matching and English fallback. The settings client initializes the locale after successful requests; Viewer initialization/settings updates apply it before render. The background settings broadcaster also notifies open extension pages. React components and content portals subscribe to locale changes, and the CodeMirror phrase compartment updates search/replace without replacing the draft or undo history. Document text, source diffs, filenames, paths, user theme names and copied values remain verbatim. Native extension metadata uses Chrome's `_locales` mechanism. See [Interface languages](./internationalization.md) for ownership, Vietnamese terminology, plural/interpolation contracts, and adding another language.
+
+UI messages displayed inside the article retain UI ownership: the workspace file-selection prompt is `loadedDocument.placeholderMessage` with empty source `text`, rendered through the subscribed `DocumentState` portal. It never enters Markdown parsing, source statistics, or the saved document baseline. A real document containing a semantic ID remains literal content.
+
+The scoped [internationalization rule](../.agents/rules/35-internationalization.md) governs new copy and locale handling. The shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md) covers adding a locale, researching terminology in the target language, and reviewing every translation for meaning and natural wording. Locale-specific editorial decisions live in [Vietnamese localization](./vietnamese-localization.md) and corresponding guides for future languages.
+
 ## Security and privacy boundaries
 
 - Direct activation and background file reads are restricted to local `file:` URLs.
@@ -285,6 +294,7 @@ Message names are centralized in `src/messaging/index.js`. UI/content callers us
 | Plugins | `src/plugins/plugin-manager.js`, `src/plugins/core/`, `src/plugins/optional/` |
 | Theme/background/Shiki | [`docs/theme-system.md`](./theme-system.md), `src/theme/index.js`, `src/theme/backgrounds.js`, `ThemeSettings.jsx`, `BackgroundScene.jsx`, `src/viewer/core/shiki-config.js` |
 | Settings | `src/settings/`, `src/background/message-router.js` |
+| Interface languages | [`internationalization.md`](./internationalization.md), `src/i18n/`, `public/_locales/` |
 | Popup/Options | `src/popup/`, `src/options/`, `src/shared/react/` |
 | Print/export | `src/viewer/actions/document-actions.js`, `src/shared/download.js` |
 | Content UI / ownership | [`viewer-content-ui.md`](./viewer-content-ui.md), `src/viewer/react/content/`, `src/viewer/colors/`, `src/viewer/media/` |

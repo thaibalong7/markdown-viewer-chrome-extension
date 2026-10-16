@@ -50,6 +50,8 @@ export function loadCodemirror() {
         search: cmSearch.search,
         searchKeymap: cmSearch.searchKeymap,
         openSearchPanel: cmSearch.openSearchPanel,
+        closeSearchPanel: cmSearch.closeSearchPanel,
+        searchPanelOpen: cmSearch.searchPanelOpen,
         highlightSelectionMatches: cmSearch.highlightSelectionMatches,
         tags: lezerHighlight.tags
       }

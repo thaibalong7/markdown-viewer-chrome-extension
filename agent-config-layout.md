@@ -75,6 +75,7 @@ Current skills:
 |---|---|---|
 | `mdp-dev-conventional-commit` | `generate-commit-message` command | Generate Conventional Commit candidates from the active diff and conversation |
 | `mdp-dev-review-fix-prune` | `review-fix-prune` command | Audit and prune a change set to the smallest safe issue fix |
+| [`mdp-dev-add-language`](.agents/skills/mdp-dev-add-language/SKILL.md) | — | Add an interface locale, research local terminology, and review every translated component for accurate, natural wording |
 
 ### Skill lifecycle
 
@@ -152,6 +153,8 @@ KiB. Do not duplicate complete rule bodies there.
 names and routes agent-config lifecycle work without copying their bodies.
 
 UI design requests, including proposals before files exist, are routed by `00-project-context.md` to [`25-ui-design-system.md`](.agents/rules/25-ui-design-system.md). That scoped rule owns the design review workflow and uses the [design-system lookup map](docs/design-system/README.md#find-the-relevant-contract) for selective reference reading. Its scope also includes [Document actions](docs/document-actions.md), the Viewer integration guide; visual dimensions remain in the design-system contracts rather than being duplicated in rules.
+
+Application copy and locale handling are scoped by [`35-internationalization.md`](.agents/rules/35-internationalization.md), covering runtime JavaScript/JSX/HTML, message catalogs, native Chrome metadata, and localization documentation. Its broad source scope reflects messages owned across UI, controllers, plugins, and services; unrelated logic does not trigger a translation audit. The rule owns durable message/content boundaries, [Interface languages](docs/internationalization.md) owns the current runtime map, and [`mdp-dev-add-language`](.agents/skills/mdp-dev-add-language/SKILL.md) owns the full language-addition workflow. Codex routes it through the existing frontmatter gate; Claude receives the matching scoped symlink and Cursor receives the generated adapter.
 
 A project `GEMINI.md` is unnecessary unless Antigravity needs a deliberate
 override that should not affect the other agents.

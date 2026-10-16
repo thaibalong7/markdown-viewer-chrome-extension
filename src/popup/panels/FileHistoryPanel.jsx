@@ -1,3 +1,5 @@
+import { getLocale, t, translateMessage } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { fileHistoryDirectoryFromUrl, fileHistoryTitleFromUrl } from '../../shared/file-history.js'
 import { Button } from '../../shared/react/Button.jsx'
@@ -6,7 +8,7 @@ import { LoadingState } from '../../shared/react/LoadingState.jsx'
 function formatOpenedAt(openedAt) {
   const date = new Date(Number(openedAt))
   if (Number.isNaN(date.getTime())) return ''
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(getLocale(), {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
@@ -25,18 +27,17 @@ function formatOpenedAt(openedAt) {
  * }} props
  */
 export function FileHistoryPanel({ history, loading, busyUrl, errorMessage, onOpen, onClear }) {
+  useLocale()
   if (loading) {
-    return <LoadingState label="Loading recent files…" />
+    return <LoadingState label={t('popup.history.loadingRecentFiles')} />
   }
 
   if (!history.length) {
     return (
       <div className="mdp-ui-state">
-        <strong className="mdp-ui-state__title">No recent files yet</strong>
-        <p className="mdp-ui-state__message">
-          Open local Markdown files with Markdown Plus and they will appear here.
-        </p>
-        {errorMessage ? <div className="popup-error-inline">{errorMessage}</div> : null}
+        <strong className="mdp-ui-state__title">{t('popup.history.noRecentFilesYet')}</strong>
+        <p className="mdp-ui-state__message">{t('popup.history.openLocalMarkdownFilesWithMarkdownPlusAnd')}</p>
+        {errorMessage ? <div className="popup-error-inline">{translateMessage(errorMessage)}</div> : null}
       </div>
     )
   }
@@ -44,10 +45,8 @@ export function FileHistoryPanel({ history, loading, busyUrl, errorMessage, onOp
   return (
     <div className="popup-history-panel">
       <div className="popup-history-actions">
-        <span className="popup-muted">{history.length} recent file{history.length === 1 ? '' : 's'}</span>
-        <Button variant="quiet" onClick={onClear}>
-          Clear
-        </Button>
+        <span className="popup-muted">{t('popup.history.fileCount', { count: history.length })}</span>
+        <Button variant="quiet" onClick={onClear}>{t('common.actions.clear')}</Button>
       </div>
 
       <div className="popup-history-list">
@@ -67,7 +66,7 @@ export function FileHistoryPanel({ history, loading, busyUrl, errorMessage, onOp
               title={entry.url}
             >
               <span className="popup-history-item__main">
-                <span className="popup-history-item__title">{isBusy ? 'Opening...' : title}</span>
+                <span className="popup-history-item__title">{isBusy ? t('popup.history.opening') : title}</span>
                 <span className="popup-history-item__path">{directory}</span>
               </span>
               {openedAt ? <span className="popup-history-item__time">{openedAt}</span> : null}
@@ -76,7 +75,7 @@ export function FileHistoryPanel({ history, loading, busyUrl, errorMessage, onOp
         })}
       </div>
 
-      {errorMessage ? <div className="popup-error-inline">{errorMessage}</div> : null}
+      {errorMessage ? <div className="popup-error-inline">{translateMessage(errorMessage)}</div> : null}
     </div>
   )
 }

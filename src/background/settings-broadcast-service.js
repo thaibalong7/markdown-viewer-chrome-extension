@@ -24,6 +24,13 @@ export async function broadcastSettingsUpdated(settings, options = {}) {
     }
   }
 
+  // Notify Popup/Options too; a closed extension page is an expected missing receiver.
+  try {
+    runtimeApi.sendMessage?.({ type: MESSAGE_TYPES.SETTINGS_UPDATED, payload: settings }, () => {
+      void runtimeApi.lastError
+    })
+  } catch (_error) { /* No extension-page receiver is open. */ }
+
   return { attempted: tabs.length }
 }
 

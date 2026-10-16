@@ -1,0 +1,1443 @@
+{
+  "common": {
+    "actions": {
+      "backToOriginalFile": "Quay lại tệp ban đầu",
+      "backToTop": "Lên đầu trang",
+      "cancel": "Hủy",
+      "clear": "Xóa",
+      "close": "Đóng",
+      "collapseFolders": "Thu gọn thư mục",
+      "copyContent": "Sao chép nội dung",
+      "copyFileLink": "Sao chép liên kết tệp",
+      "copyLink": "Sao chép liên kết",
+      "delete": "Xóa",
+      "edit": "Chỉnh sửa",
+      "explore": "Duyệt tệp",
+      "focusMode": "Chế độ tập trung",
+      "leaveWorkspace": "Thoát thư mục làm việc",
+      "openExtensionDetails": "Mở trang chi tiết tiện ích",
+      "openSettings": "Mở cài đặt",
+      "read": "Đọc",
+      "refreshFileList": "Làm mới danh sách tệp",
+      "retry": "Thử lại",
+      "saveChanges": "Lưu thay đổi",
+      "viewChanges": "Xem thay đổi",
+      "viewSource": "Xem mã nguồn"
+    },
+    "backgroundImage": {
+      "imageIsEmpty": "Tệp ảnh trống.",
+      "themeBackgroundImageDataIsInvalid": "Dữ liệu ảnh nền không hợp lệ.",
+      "usePNGJPEGWebPAVIFGIFOrAPNG": "Sử dụng ảnh PNG, JPEG, WebP, AVIF, GIF hoặc APNG."
+    },
+    "fileAccess": {
+      "allowed": "Đã cho phép",
+      "blocked": "Chưa cho phép"
+    },
+    "fileSchemeAccess": {
+      "extensionDetailsAreUnavailableOpenChromeExtensionsManually": "Không mở được trang chi tiết tiện ích. Hãy truy cập chrome://extensions."
+    },
+    "fileTypeIcons": {
+      "markdown": "Markdown"
+    },
+    "fileTypes": {
+      "dbmlDocument": "Tài liệu DBML",
+      "image": "Ảnh",
+      "markdownDocument": "Tài liệu Markdown",
+      "mermaidDiagram": "Sơ đồ Mermaid",
+      "plainTextDocument": "Tệp văn bản thuần",
+      "sqlDocument": "Tài liệu SQL",
+      "svgImage": "Ảnh SVG"
+    },
+    "languages": {
+      "browser": "Theo ngôn ngữ trình duyệt",
+      "en": "English",
+      "vi": "Tiếng Việt"
+    },
+    "messages": {
+      "copiedFolderValue": "Đã sao chép {0} của thư mục",
+      "settingsResetToDefault": "Đã khôi phục cài đặt mặc định.",
+      "settingsSaved": "Đã lưu cài đặt."
+    },
+    "productName": "Markdown Plus",
+    "productNameUppercase": "MARKDOWN PLUS",
+    "status": {
+      "active": "Đang dùng",
+      "checking": "Đang kiểm tra…",
+      "copied": "Đã sao chép",
+      "error": "Lỗi",
+      "failed": "Thất bại",
+      "loading": "Đang tải…",
+      "modified": "Đã sửa",
+      "ready": "Sẵn sàng",
+      "rendering": "Đang xử lý",
+      "saved": "Đã lưu",
+      "saving": "Đang lưu…",
+      "savingChanges": "Đang lưu thay đổi…",
+      "unavailable": "Không khả dụng"
+    },
+    "themeModes": {
+      "dark": "tối",
+      "light": "sáng"
+    },
+    "themes": {
+      "dark": "Tối",
+      "highContrastDark": "Tối (tương phản cao)",
+      "highContrastLight": "Sáng (tương phản cao)",
+      "light": "Sáng",
+      "vscodeDark": "Tối (VS Code)"
+    },
+    "watchModes": {
+      "ask": "Hỏi trước khi cập nhật",
+      "auto": "Tự động cập nhật",
+      "off": "Tắt"
+    }
+  },
+  "viewer": {
+    "editor": {
+      "accessibility": {
+        "controlCharacter": "Ký tự điều khiển",
+        "foldLine": "Thu gọn dòng",
+        "foldedCode": "Mã đã thu gọn",
+        "foldedLines": "Đã thu gọn các dòng",
+        "selectionDeleted": "Đã xóa vùng chọn",
+        "unfold": "Mở rộng",
+        "unfoldLine": "Mở rộng dòng",
+        "unfoldedLines": "Đã mở rộng các dòng"
+      },
+      "search": {
+        "currentMatch": "Kết quả hiện tại",
+        "go": "Đến",
+        "goToLine": "Đến dòng",
+        "onLine": "ở dòng",
+        "replacedMatchOnLine": "Đã thay thế kết quả ở dòng $",
+        "replacedMatches": "Đã thay thế $ kết quả",
+        "to": "đến",
+        "all": "Tất cả",
+        "close": "Đóng",
+        "find": "Tìm",
+        "matchCase": "Phân biệt chữ hoa, chữ thường",
+        "next": "Tiếp",
+        "previous": "Trước",
+        "regexp": "Biểu thức chính quy",
+        "replaceAction": "Thay thế",
+        "replaceAll": "Thay thế tất cả",
+        "replaceFieldLabel": "Thay thế bằng",
+        "wholeWord": "Khớp toàn bộ từ"
+      },
+      "browserCannotConnectALocalFileForSafe": "Trình duyệt này không hỗ trợ chọn tệp trên máy để chỉnh sửa an toàn.",
+      "connectDialog": {
+        "checkBothItsFolderAndFilenameDoNot": "Kiểm tra đúng tên tệp và thư mục chứa tệp. Không chọn bản sao trùng tên.",
+        "chooseThisExactFileInChromeSPicker": "Trong cửa sổ chọn tệp của Chrome, hãy chọn đúng tệp đang mở.",
+        "chromeDoesNotAutomaticallyGrantWriteAccessFrom": "Việc mở tệp trong Chrome không tự cấp quyền lưu thay đổi. Hãy chọn lại đúng tệp gốc để Markdown Plus kiểm tra trước khi mở trình soạn thảo.",
+        "connectTheOriginalFileBeforeEditing": "Chọn tệp gốc để chỉnh sửa",
+        "currentFile": "Tệp hiện tại",
+        "safeEditing": "Chỉnh sửa an toàn",
+        "unknownLocalFile": "Chưa xác định được tệp đang mở",
+        "useSaveOrCtrlCmdSToWrite": "Chọn Lưu hoặc nhấn Ctrl/Cmd+S để lưu thay đổi vào tệp gốc đã chọn.",
+        "verifyFileAndEdit": "Chọn tệp và chỉnh sửa",
+        "verifyingFile": "Đang kiểm tra tệp…"
+      },
+      "connectedSaveTargetValue": "Đã chọn tệp để lưu: {0}",
+      "discard": "Bỏ thay đổi",
+      "exitConfirmation": {
+        "title": "Bỏ thay đổi và thoát chế độ chỉnh sửa?",
+        "yourUnsavedChangesWillBeLostTheSaved": "Các thay đổi chưa lưu sẽ bị mất. Tệp đã lưu được giữ nguyên."
+      },
+      "file": "Tệp này",
+      "keepEditing": "Tiếp tục chỉnh sửa",
+      "loadingEditor": "Đang tải trình soạn thảo…",
+      "originalFileIsNotConnectedExitEditMode": "Chưa chọn tệp gốc để lưu. Hãy thoát chế độ chỉnh sửa và chọn lại tệp trước khi lưu.",
+      "resizeHandle": {
+        "dragToResizeTheEditorAndPreviewWhen": "Kéo để thay đổi độ rộng khung soạn thảo và xem trước. Khi thanh chia được chọn bằng bàn phím, dùng phím mũi tên trái/phải để điều chỉnh (mỗi lần 16 px).",
+        "resizeEditorAndPreview": "Điều chỉnh độ rộng khung soạn thảo và xem trước"
+      },
+      "saveFailed": "Không thể lưu tệp.",
+      "saveFailedValue": "Không thể lưu tệp: {0}",
+      "savedToTheConnectedOriginalFile": "Đã lưu vào tệp gốc",
+      "selectedFile": "Tệp đã chọn",
+      "selectedFileValueIsNotTheFileYou": "Bạn đã chọn “{0}”, nhưng tệp đang chỉnh sửa là “{1}”. Hãy chọn đúng tệp gốc đang mở trong Markdown Plus.",
+      "statusBar": {
+        "col": ", Cột",
+        "ln": "Dòng",
+        "target": "Lưu vào:"
+      },
+      "updateConfirmation": {
+        "discardDraftAndLoadDiskVersion": "Bỏ bản nháp và mở bản đã lưu",
+        "editModeWillClose": "Sẽ thoát chế độ chỉnh sửa",
+        "exitEditModeAndLoadDiskVersion": "Thoát chỉnh sửa và mở bản đã lưu",
+        "externalUpdateIsAlreadySavedOnDiskThis": "Các thay đổi bên ngoài đã được lưu trong tệp. Thao tác này chỉ cập nhật nội dung đang xem trong Markdown Plus.",
+        "latestVersionIsAlreadyOnDiskMarkdownPlus": "Tệp đã có phiên bản mới hơn. Markdown Plus sẽ thoát chế độ chỉnh sửa và mở lại bản đã lưu đó.",
+        "loadingDiskVersion": "Đang mở bản đã lưu…",
+        "loadingTheDiskVersionClosesTheEditorAnd": "Mở bản đã lưu sẽ thoát chế độ chỉnh sửa và tải lại tệp.",
+        "loadingTheDiskVersionPermanentlyReplacesYourDraft": "Bản đã lưu sẽ thay thế bản nháp và đóng trình soạn thảo. Các thay đổi chưa lưu sẽ mất và không thể khôi phục.",
+        "loadingThisUpdateWillCloseEditMode": "Mở bản cập nhật và thoát chỉnh sửa",
+        "unsavedDraftWillBeDiscarded": "Thay đổi chưa lưu sẽ bị mất",
+        "versionOnDiskChangedOutsideMarkdownPlusLoading": "Tệp đã được sửa bên ngoài Markdown Plus. Mở bản đã lưu sẽ thay thế bản nháp và thoát chế độ chỉnh sửa. Các thay đổi chưa lưu sẽ mất và không thể khôi phục.",
+        "yourUnsavedDraftWillBeDiscarded": "Các thay đổi chưa lưu của bạn sẽ bị mất"
+      },
+      "valueChangedOnDiskAfterEditingStartedReload": "“{0}” đã được sửa bên ngoài Markdown Plus sau khi bạn bắt đầu chỉnh sửa. Hãy tải lại tệp trước khi lưu để tránh ghi đè các thay đổi đó.",
+      "valueDoesNotMatchTheDocumentCurrentlyOpen": "Nội dung “{0}” khác với tài liệu đang mở trong Markdown Plus. Nếu tệp vừa được sửa, hãy tải lại trình xem. Nếu không, hãy chọn đúng tệp gốc.",
+      "verifiedSaveTargetValue": "Đã xác nhận tệp để lưu: {0}",
+      "youHaveUnsavedChangesOpenAnotherDocumentAnd": "Bạn còn thay đổi chưa lưu. Bạn có muốn bỏ các thay đổi này để mở tài liệu khác không?"
+    },
+    "actions": {
+      "checkGitConnectionExperimental": "Kiểm tra kết nối Git (thử nghiệm)",
+      "copyLinkUnavailableForWorkspaceVirtualFiles": "Không thể sao chép liên kết trực tiếp đến tệp này",
+      "copyOpenFileLink": "Sao chép liên kết tệp đang mở",
+      "customDocumentActionMustBePinnedValue": "Thao tác tài liệu tùy chỉnh phải được ghim: {0}",
+      "duplicateDocumentActionValue": "Thao tác tài liệu bị trùng: {0}",
+      "editMarkdown": "Chỉnh sửa Markdown",
+      "exitEditMode": "Thoát chế độ chỉnh sửa",
+      "exitFocusMode": "Thoát chế độ tập trung",
+      "export": {
+        "copiedFileLink": "Đã sao chép liên kết tệp",
+        "exportHTML": "Xuất HTML",
+        "exportWordDoc": "Xuất Word (.doc)",
+        "exportedValue": "Đã xuất {0}",
+        "nothingToExportYet": "Chưa có nội dung để xuất."
+      },
+      "exportDocument": "Xuất tài liệu",
+      "exportHTMLOrWordDoc": "Xuất HTML hoặc Word (.doc)",
+      "focusModeHidePreview": "Chế độ tập trung — ẩn khung xem trước",
+      "output": "In và xuất tệp",
+      "printSaveAsPDF": "In / Lưu dưới dạng PDF",
+      "printSaveAsPDFInTheDialogTo": "Để xuất PDF, chọn Lưu dưới dạng PDF trong hộp thoại in.",
+      "quickAccess": "Truy cập nhanh",
+      "saveCtrlS": "Lưu (Ctrl+S)",
+      "saveMarkdownFile": "Lưu tệp Markdown",
+      "saveNoUnsavedChanges": "Lưu — mọi thay đổi đã được lưu",
+      "theme": {
+        "switch": "Đổi sang giao diện {0}",
+        "switched": "Đã đổi sang giao diện {0}",
+        "switching": "Đang đổi giao diện…"
+      },
+      "toolbar": {
+        "documentActions": "Thao tác với tài liệu",
+        "moreDocumentActions": "Thao tác khác với tài liệu"
+      },
+      "unknownDocumentActionGroupValue": "Nhóm thao tác tài liệu không xác định: {0}",
+      "viewDiagram": "Xem sơ đồ"
+    },
+    "app": {
+      "editModeWillCloseAndTheLatestVersion": "Markdown Plus sẽ thoát chế độ chỉnh sửa và mở bản mới nhất đã lưu trong tệp. Bạn có muốn tiếp tục không?",
+      "fileRouteInThisURLIsNotSupported": "Đường dẫn tệp trong URL này không được hỗ trợ",
+      "yourUnsavedDraftWillBePermanentlyDiscardedAnd": "Các thay đổi chưa lưu sẽ mất và không thể khôi phục. Markdown Plus sẽ thoát chế độ chỉnh sửa. Bạn có muốn mở bản mới nhất đã lưu trong tệp không?"
+    },
+    "articleInteractions": {
+      "copiedLink": "Đã sao chép liên kết",
+      "openImageZoomView": "Xem ảnh phóng to",
+      "sectionLinksAreUnavailableForThisWorkspaceFile": "Không thể tạo liên kết đến từng mục của tệp này",
+      "zoomImageValue": "Phóng to ảnh: {0}"
+    },
+    "browserGit": {
+      "binaryFilesAreNotSupportedByTheGit": "Công cụ kiểm tra Git không hỗ trợ tệp nhị phân.",
+      "chooseTheRepositoryRootFolderContainingAGit": "Chọn thư mục gốc của kho mã có chứa thư mục .git.",
+      "fileExceedsTheGitProbeLimit192KiB": "Tệp vượt giới hạn kiểm tra Git (192 KiB cho mỗi bản mã nguồn).",
+      "fileOrHEADChangedDuringTheCheckCheck": "Tệp hoặc HEAD đã thay đổi trong lúc kiểm tra. Hãy kiểm tra lại.",
+      "gitProbeRequiresARealLocalMarkdownFile": "Để kiểm tra Git, hãy mở tệp Markdown có đường dẫn trên máy.",
+      "gitProbeSupportsUTF8MarkdownOnly": "Công cụ kiểm tra Git chỉ hỗ trợ Markdown mã hóa UTF-8.",
+      "gitWorktreesSubmodulesWithAGitFileAre": "Công cụ này chưa hỗ trợ Git worktree hoặc submodule sử dụng tệp .git.",
+      "selectedRepoFileDiffersFromTheOpenFile": "Nội dung tệp trong kho mã đã chọn khác với tệp đang mở. Hãy chọn đúng kho Git hoặc chờ tệp được ghi xong rồi kiểm tra lại.",
+      "selectedRepositoryDoesNotUniquelyMatchTheOpen": "Chưa xác định được tệp đang mở trong kho mã đã chọn. Hãy chọn đúng thư mục kho Git chứa tệp gốc."
+    },
+    "code": {
+      "copy": {
+        "ariaLabel": "Sao chép mã vào bộ nhớ tạm",
+        "label": "Sao chép mã"
+      }
+    },
+    "colors": {
+      "colorFormatsForValue": "Các định dạng màu của {0}",
+      "copiedValue": "Đã sao chép {0}",
+      "copyValue": "Sao chép {0}",
+      "copyValueValue": "Sao chép {0}: {1}",
+      "opacityValue": "Độ mờ {0}",
+      "valueCopiedToClipboard": "Đã sao chép {0} vào bộ nhớ tạm"
+    },
+    "content": {
+      "controlCouldNotBeDisplayed": "Không thể hiển thị công cụ này."
+    },
+    "document": {
+      "fileTypeIsNotSupported": "Loại tệp này không được hỗ trợ",
+      "imageKind": "ảnh",
+      "textKind": "tệp văn bản"
+    },
+    "documentLoader": {
+      "documentLoadWasAborted": "Đã hủy tải tài liệu.",
+      "documentTypeIsNotLoadableYet": "Chưa thể tải loại tài liệu này.",
+      "selectedWorkspaceFileHasAnUnsupportedImageType": "Định dạng ảnh của tệp đã chọn chưa được hỗ trợ.",
+      "selectedWorkspaceFileIsNotARegisteredImage": "Tệp đã chọn không thuộc định dạng ảnh được hỗ trợ."
+    },
+    "documents": {
+      "dbml": {
+        "colorPreviewsCouldNotBeDisplayedDBMLSource": "Không thể hiển thị phần xem trước màu. Bạn vẫn có thể xem mã nguồn DBML.",
+        "dbmlDocumentHostIsUnavailable": "Không tìm thấy vùng hiển thị tài liệu DBML.",
+        "dbmlFileIsEmpty": "Tệp DBML này trống.",
+        "documentRenderWasAborted": "Đã hủy hiển thị tài liệu."
+      },
+      "image": {
+        "imageDocumentHostIsUnavailable": "Không tìm thấy vùng hiển thị tài liệu ảnh.",
+        "loadingValue": "Đang tải {0}…"
+      },
+      "markdown": {
+        "emptyMarkdownDocument": "Tài liệu Markdown trống",
+        "someMarkdownEnhancementsCouldNotBeAppliedBasic": "Một số tính năng hiển thị Markdown không hoạt động. Bạn vẫn có thể đọc nội dung với định dạng cơ bản.",
+        "useEditToStartWriting": "Chọn Chỉnh sửa để bắt đầu viết."
+      },
+      "mermaid": {
+        "mermaidDocumentHostIsUnavailable": "Không tìm thấy vùng hiển thị tài liệu Mermaid.",
+        "mermaidFileIsEmpty": "Tệp Mermaid này trống."
+      },
+      "sql": {
+        "sqlDocumentHostIsUnavailable": "Không tìm thấy vùng hiển thị tài liệu SQL.",
+        "sqlFileIsEmpty": "Tệp SQL này trống."
+      },
+      "states": {
+        "diagramSource": "Mã nguồn sơ đồ",
+        "mermaidRenderError": "Không thể hiển thị sơ đồ Mermaid"
+      },
+      "text": {
+        "textDocumentHostIsUnavailable": "Không tìm thấy vùng hiển thị tài liệu văn bản.",
+        "textFileIsEmpty": "Tệp văn bản này trống."
+      }
+    },
+    "explorer": {
+      "accessibility": {
+        "supportedFilesInFolderTree": "Tệp được hỗ trợ trong cây thư mục"
+      },
+      "actions": {
+        "copyFileName": "Sao chép tên tệp",
+        "copyFolderName": "Sao chép tên thư mục",
+        "copyFolderPath": "Sao chép đường dẫn thư mục",
+        "fileDetailsActions": "Thao tác với tệp đang xem",
+        "menuLabel": "Thao tác với {0}",
+        "moreFileActions": "Thao tác khác với tệp",
+        "moreLabel": "Thao tác khác với {0}"
+      },
+      "context": {
+        "currentFolderLabel": "Thư mục chứa tệp này",
+        "document": "Tài liệu",
+        "noFileSelected": "Chưa chọn tệp",
+        "openFileIsNotListedInTheScanned": "Tệp đang mở chưa có trong kết quả quét, có thể do giới hạn quét hoặc danh sách thư mục không đầy đủ. Tệp đã được thêm lên đầu danh sách để bạn vẫn mở được.",
+        "openFileIsNotUnderThisWorkspaceTree": "Tệp đang mở không nằm trong thư mục làm việc này. Hãy mở một tệp trong danh sách hoặc thoát thư mục làm việc.",
+        "scanningFolder": "Đang quét thư mục…",
+        "scanningWorkspace": "Đang quét thư mục làm việc…",
+        "workspaceFiles": "Tệp trong thư mục làm việc"
+      },
+      "currentFolder": "Thư mục hiện tại",
+      "file": {
+        "copiedFileName": "Đã sao chép tên tệp",
+        "openInNewTab": "Mở trong thẻ mới",
+        "workspaceFileCannotOpenInABrowserTab": "Không thể mở tệp này trực tiếp trong thẻ trình duyệt"
+      },
+      "fileCount": {
+        "other": "· {count} tệp"
+      },
+      "folder": {
+        "collapseFolder": "Thu gọn thư mục",
+        "copiedFolderName": "Đã sao chép tên thư mục",
+        "copiedFolderPath": "Đã sao chép đường dẫn thư mục",
+        "expandFolder": "Mở rộng thư mục",
+        "indexedFileCount": "{0} tệp trong danh sách, tính cả thư mục con",
+        "toggleLabel": "Mở rộng hoặc thu gọn “{0}”."
+      },
+      "folderScanner": {
+        "file": "Tệp"
+      },
+      "header": {
+        "adjustScanLimitsInSettings": "Điều chỉnh giới hạn quét trong Cài đặt",
+        "hideFileDetails": "Ẩn chi tiết tệp",
+        "openFile": "Mở tệp",
+        "openFileDetails": "Mở chi tiết tệp",
+        "openFolder": "Mở thư mục…",
+        "showFileDetails": "Hiện chi tiết tệp",
+        "switchFolder": "Đổi thư mục…",
+        "thenRefresh": ", rồi làm mới.",
+        "unavailableForWorkspaceVirtualFiles": "Không có liên kết trực tiếp cho tệp này",
+        "workspaceRoot": "Thư mục gốc"
+      },
+      "hide": "Ẩn bảng tệp",
+      "listRefresh": {
+        "openASupportedFileBeforeRefreshingItsFolder": "Hãy mở một tệp được hỗ trợ trước khi làm mới danh sách tệp cùng thư mục",
+        "refreshedFileList": "Đã làm mới danh sách tệp",
+        "selectTheFolderAgainToRefreshItsFile": "Chọn lại thư mục để làm mới danh sách tệp"
+      },
+      "navigation": {
+        "backToFile": "Quay lại {0}",
+        "linkedFileIsNoLongerAvailable": "Không còn truy cập được tệp được liên kết"
+      },
+      "panel": {
+        "filesInCurrentFolder": "Tệp trong thư mục hiện tại",
+        "filesScrollbar": "Thanh cuộn danh sách tệp",
+        "noSupportedFilesFoundInThisDirectory": "Không tìm thấy tệp được hỗ trợ trong thư mục này.",
+        "refreshIsAvailableAfterScanningFinishes": "Có thể làm mới sau khi quét xong",
+        "refreshingFileList": "Đang làm mới danh sách tệp",
+        "supportedFilesInFolder": "Tệp được hỗ trợ trong thư mục"
+      },
+      "panelLabel": "Bảng tệp",
+      "scan": {
+        "depthLimit": "Một số thư mục chưa được quét do giới hạn độ sâu.",
+        "depthLimitWithValue": "Một số thư mục chưa được quét (giới hạn độ sâu: {0}).",
+        "fileLimit": "Đã dừng quét: đạt giới hạn số tệp.",
+        "folderLimit": "Đã dừng quét: đạt giới hạn số thư mục.",
+        "notices": "{depth} {files} {folders}",
+        "progress": "Đang quét… {files} tệp, {folders} thư mục{path}"
+      },
+      "scanSession": {
+        "scanCancelled": "Đã hủy quét",
+        "scanningFolderTree": "Đang quét cây thư mục…"
+      },
+      "show": "Hiện bảng tệp",
+      "title": "Tệp",
+      "toolbar": {
+        "allFoldersAreCollapsed": "Tất cả thư mục đã thu gọn",
+        "collapseAllFolders": "Thu gọn tất cả thư mục",
+        "collapseFoldersOutsideTheOpenFilePath": "Thu gọn các thư mục, giữ mở nhánh chứa tệp hiện tại",
+        "fileListControls": "Công cụ danh sách tệp",
+        "scanning": "Đang quét…"
+      },
+      "workspace": "Thư mục làm việc",
+      "workspacePicker": {
+        "expectedADirectoryHandleGotAFileHandle": "Bạn đã chọn một tệp. Hãy chọn thư mục.",
+        "notADirectoryHandle": "Hãy chọn thư mục thay vì tệp."
+      },
+      "workspaceSession": {
+        "scanningImportedFolder": "Đang quét thư mục đã nhập…",
+        "scanningPickedFolder": "Đang quét thư mục đã chọn…",
+        "scanningWorkspaceFileListing": "Đang quét thư mục làm việc (danh sách tệp)…"
+      }
+    },
+    "fileLinkActions": {
+      "noCurrentFileURLToCopy": "Không có URL tệp hiện tại để sao chép"
+    },
+    "fileRowActions": {
+      "noFileHrefToCopy": "Không có địa chỉ tệp để sao chép",
+      "noFileNameToCopy": "Không có tên tệp để sao chép"
+    },
+    "folderRowActions": {
+      "noFolderIdentityToCopy": "Không có thông tin thư mục để sao chép"
+    },
+    "git": {
+      "branch": "Nhánh",
+      "bytesLoaded": "byte đã tải",
+      "checkAgain": "Kiểm tra lại",
+      "checksTheSavedFileAgainstHEADUnsavedEditor": "So sánh nội dung đã lưu trong tệp với HEAD. Các thay đổi chưa lưu trong trình soạn thảo không được đưa vào so sánh.",
+      "chooseRepoFolder": "Chọn thư mục kho mã",
+      "chooseTheCurrentFileSRepositoryFolderTo": "Chọn thư mục kho Git chứa tệp đang mở để cấp quyền đọc cho thẻ này.",
+      "clean": "Không có thay đổi",
+      "comparison": "So sánh",
+      "connectedToGitInTheBrowser": "Đã kết nối Git trong trình duyệt",
+      "detachedHEAD": "HEAD tách rời (không ở nhánh nào)",
+      "diffExceedsReviewLimits": "Vượt giới hạn so sánh",
+      "diskSource": "Mã nguồn đã lưu trong tệp",
+      "engine": "Thư viện Git",
+      "excludedIgnoredFile": "Không so sánh tệp bị Git bỏ qua",
+      "fileDoesNotExistInHEAD": "Tệp không tồn tại trong HEAD",
+      "gitCheckFailed": "Không thể kiểm tra Git.",
+      "gitConnectionExperimental": "Kết nối Git · Thử nghiệm",
+      "gitStatus": "Trạng thái Git",
+      "headLabel": "HEAD",
+      "headSource": "Mã nguồn tại HEAD",
+      "ignoredByGit": "Git bỏ qua",
+      "inspectHEADSourceReadOnly": "Xem mã nguồn HEAD (chỉ đọc)",
+      "lineChanges": "+{0} dòng thêm / −{1} dòng xóa",
+      "loadedBytes": "Đã tải {0} byte",
+      "modifiedStatus": "Đã sửa ({0})",
+      "noCommitsYet": "Chưa có commit",
+      "readingGitInTheBrowser": "Đang đọc dữ liệu Git…",
+      "readsGitInsideChromeChooseTheRepositoryRoot": "Đọc dữ liệu Git ngay trong Chrome. Hãy chọn thư mục gốc của kho mã có chứa .git. Bạn không cần cài thêm công cụ.",
+      "repository": "Kho mã",
+      "sourceChanges": "Thay đổi mã nguồn",
+      "untracked": "Chưa được Git theo dõi"
+    },
+    "gitProbe": {
+      "chromeContextDoesNotSupportSelectingAGit": "Không thể chọn thư mục Git trong cửa sổ Chrome này.",
+      "folderReadAccessExpiredChooseTheRepositoryAgain": "Quyền đọc thư mục đã hết hạn. Hãy chọn lại kho mã."
+    },
+    "imageRevision": {
+      "imageExceedsThe5MiBWatchLimit": "Không thể theo dõi thay đổi vì ảnh lớn hơn 5 MiB.",
+      "noImageBytesReceived": "Không nhận được dữ liệu ảnh."
+    },
+    "layout": {
+      "editorScrollbar": "Thanh cuộn trình soạn thảo",
+      "previewFontSizeAndLineHeightAreSynced": "Khi chỉnh sửa, khung xem trước dùng cùng cỡ chữ và giãn dòng với trình soạn thảo. Khi thoát, cài đặt đọc ban đầu sẽ được áp dụng lại.",
+      "previewScrollbar": "Thanh cuộn khung xem trước",
+      "resizeHandle": {
+        "dragToResizeValueWhenFocusedUseLeft": "Kéo để thay đổi độ rộng {0}. Khi thanh chia được chọn bằng bàn phím, dùng phím mũi tên trái/phải để điều chỉnh (mỗi lần 16 px).",
+        "resizeValue": "Điều chỉnh độ rộng {0}"
+      },
+      "rightRail": {
+        "documentActionsAndOutline": "Thao tác với tài liệu và mục lục"
+      }
+    },
+    "lineDiff": {
+      "noNewlineAtEndOfFile": "Không có ký tự xuống dòng ở cuối tệp"
+    },
+    "media": {
+      "bitmapLimit16384PxPerSide32": "Giới hạn ảnh bitmap: 16.384 px mỗi cạnh / 32 Mi điểm ảnh.",
+      "bitmapLimit16384PxPerSideOr": "Giới hạn ảnh bitmap: 16.384 px mỗi cạnh hoặc tổng cộng 32 Mi điểm ảnh.",
+      "closeImageZoomView": "Đóng ảnh phóng to",
+      "closeMermaidChart": "Đóng sơ đồ Mermaid",
+      "decreaseRenderResolution": "Giảm độ phân giải hiển thị",
+      "decreaseResolutionBy025": "Giảm độ phân giải đi 0,25",
+      "dragAnywhereToPanCtrlScrollPinchTo": "Kéo để di chuyển  |  Ctrl + cuộn chuột hoặc chụm/tách hai ngón tay để thu phóng  |  Cuộn bằng hai ngón tay để di chuyển  |  +/- để thu phóng  |  0 để đưa về giữa  |  Esc để đóng",
+      "dragToPanCtrlScrollPinchToZoom": "Kéo để di chuyển  |  Ctrl + cuộn chuột hoặc chụm/tách hai ngón tay để thu phóng  |  +/- để thu phóng  |  0 để vừa khung  |  Esc để đóng",
+      "fitImageToView": "Hiển thị ảnh vừa khung",
+      "higherResolutionUsesMoreMemoryLimit16384": "Độ phân giải cao hơn dùng nhiều bộ nhớ hơn. Giới hạn: 16.384 px mỗi cạnh / 32 Mi điểm ảnh.",
+      "imageExceedsBitmapLimit16384PxPer": "Ảnh vượt giới hạn bitmap: 16.384 px mỗi cạnh / 32 Mi điểm ảnh.",
+      "imageZoomView": "Ảnh phóng to",
+      "increaseRenderResolution": "Tăng độ phân giải hiển thị",
+      "increaseResolutionBy025": "Tăng độ phân giải thêm 0,25",
+      "maximumForThisImage": ", tối đa cho ảnh này",
+      "maximumValueForThisImage": "Tối đa ×{0} cho ảnh này. ",
+      "mermaidChartZoomView": "Sơ đồ Mermaid phóng to",
+      "openMermaidChartInZoomView": "Xem sơ đồ Mermaid phóng to",
+      "reCenterMermaidChart": "Đưa sơ đồ Mermaid về giữa",
+      "rendering2": ", đang xử lý",
+      "resolution": {
+        "ariaLabel": "Điều chỉnh độ phân giải hiển thị: {0}{1}{2}{3}",
+        "caption": "Độ phân giải",
+        "label": "Độ phân giải hiển thị",
+        "maximum": "Tối đa",
+        "maximumShort": "Tối đa",
+        "unavailableShort": "—"
+      },
+      "zoomInImage": "Phóng to ảnh",
+      "zoomInMermaidChart": "Phóng to sơ đồ Mermaid",
+      "zoomOutImage": "Thu nhỏ ảnh",
+      "zoomOutMermaidChart": "Thu nhỏ sơ đồ Mermaid"
+    },
+    "mermaid": {
+      "copyMermaidSource": "Sao chép mã nguồn Mermaid",
+      "downloadPNG": "Tải PNG",
+      "downloadSVG": "Tải SVG",
+      "exportMermaidChart": "Xuất sơ đồ Mermaid",
+      "exportThisDiagramSVGVectorOrPNGAt": "Xuất sơ đồ dưới dạng SVG (vector) hoặc PNG với độ phân giải gấp 1–4 lần.",
+      "mermaidChartActions": "Thao tác với sơ đồ Mermaid",
+      "mermaidSVGCouldNotBeSanitized": "Không thể xử lý SVG Mermaid để hiển thị an toàn.",
+      "openChartInFullScreenZoomView": "Mở sơ đồ ở chế độ phóng to toàn màn hình.",
+      "png": "PNG",
+      "unknownError": "Lỗi không xác định."
+    },
+    "outline": {
+      "empty": "Không tìm thấy tiêu đề.",
+      "headingCount": {
+        "other": "{count} tiêu đề"
+      },
+      "hide": "Ẩn mục lục",
+      "outlineScrollbar": "Thanh cuộn mục lục",
+      "show": "Hiện mục lục",
+      "summary": "Trong trang này",
+      "tableOfContents": "Mục lục",
+      "title": "Mục lục"
+    },
+    "render": {
+      "documentCouldNotBeRendered": "Không thể hiển thị tài liệu",
+      "loadingDocument": "Đang tải tài liệu",
+      "noLoadableCurrentDocumentIsAvailable": "Không có tài liệu nào để tải.",
+      "tryAgainIfTheProblemContinuesRefreshThe": "Hãy thử lại. Nếu vẫn gặp lỗi, hãy tải lại tệp hoặc tắt bớt tính năng hiển thị Markdown trong cài đặt."
+    },
+    "rendererRegistry": {
+      "documentRendererValueHasNoRenderFunction": "Bộ hiển thị tài liệu “{0}” thiếu hàm render().",
+      "noDocumentRendererIsRegisteredForValue": "Chưa đăng ký bộ hiển thị tài liệu cho “{0}”."
+    },
+    "review": {
+      "aNewerComparisonIsReady": "Có bản so sánh mới hơn.",
+      "added": "Đã thêm",
+      "added2": "thêm ·",
+      "affectedSections": "Các mục có thay đổi",
+      "alt": "Alt",
+      "area": "Đoạn",
+      "areas": "Số đoạn",
+      "beforeTheFirstHeading": "Trước tiêu đề đầu tiên",
+      "calculatingChanges": "Đang so sánh thay đổi…",
+      "change": "Thay đổi",
+      "changeSummary": "Tóm tắt thay đổi",
+      "changedArea": "Đoạn thay đổi",
+      "changedAreaNavigation": "Di chuyển giữa các đoạn thay đổi",
+      "changedAreaValue": "Đoạn thay đổi {0}",
+      "changedAreasInThisComparison": "Các đoạn thay đổi trong lần so sánh này",
+      "changesAppliedInTheMostRecentDocumentUpdate": "Các thay đổi trong lần cập nhật tài liệu gần nhất.",
+      "checkLatest": "Kiểm tra bản mới nhất",
+      "comparisonIsNoLongerCurrent": "Kết quả so sánh này không còn khớp với phiên bản hiện tại.",
+      "deleted": "Đã xóa",
+      "detailedReviewIsUnavailableBecauseThisComparisonExceeds": "Nội dung so sánh vượt giới hạn dung lượng, thời gian hoặc số dòng hiển thị nên không thể xem chi tiết. Bạn có thể dùng công cụ so sánh trong trình soạn thảo khác. Tài liệu và bản nháp hiện tại vẫn được giữ nguyên.",
+      "dialog": {
+        "closeReview": "Đóng phần so sánh",
+        "openingReview": "Đang mở phần so sánh…",
+        "reloadThisViewerAndTryAgain": "Tải lại trình xem này rồi thử lại."
+      },
+      "lastUpdate": "Lần cập nhật gần nhất",
+      "loadDiskVersion": "Mở bản đã lưu…",
+      "movesBetweenChangedAreasInThisComparison": "để chuyển giữa các đoạn thay đổi",
+      "newLine": "Dòng mới",
+      "newLineValue": "Dòng mới {0}",
+      "nextArea": "Đoạn sau →",
+      "nextChangedArea": "Đoạn thay đổi tiếp theo",
+      "noNewLine": "Không có dòng mới",
+      "noOldLine": "Không có dòng cũ",
+      "noSourceChangesInThisComparison": "Không có thay đổi mã nguồn trong bản so sánh này.",
+      "of": "trên",
+      "oldLine": "Dòng cũ",
+      "oldLineValue": "Dòng cũ {0}",
+      "openDocument": "Mở tài liệu",
+      "openInDocumentValue": "Đến mục trong tài liệu: {0}",
+      "previousArea": "← Đoạn trước",
+      "previousChangedArea": "Đoạn thay đổi trước",
+      "removed": "Đã xóa",
+      "removed2": "xóa",
+      "reviewChanges": "Xem thay đổi",
+      "reviewLatest": "Xem bản mới nhất",
+      "reviewedVersionIsNotOpenYetUpdateThe": "Phiên bản đang xem thay đổi chưa được mở trong trình xem. Hãy cập nhật tài liệu để có thể chuyển đến từng mục.",
+      "seeWhatChangedOnDiskBeforeUpdatingThis": "Xem những gì đã thay đổi trong tệp trước khi cập nhật tài liệu đang mở.",
+      "source": "Mã nguồn",
+      "sourceLinesInChangedArea": "Các dòng mã nguồn trong vùng thay đổi",
+      "updateCheckFailed": "Không thể kiểm tra cập nhật",
+      "updateDocument": "Cập nhật tài liệu",
+      "updateWaiting": "Đang chờ cập nhật",
+      "yourEditorDraftIsExcludedFromThisComparison": "Phần so sánh này không bao gồm các thay đổi trong bản nháp đang soạn."
+    },
+    "scrollbar": {
+      "documentScrollbar": "Thanh cuộn tài liệu"
+    },
+    "statistics": {
+      "characters": {
+        "other": "{count} ký tự"
+      },
+      "readingTime": "Khoảng {0} phút đọc",
+      "summary": "Thống kê tài liệu: {0}, {1}, {2}",
+      "words": {
+        "other": "{count} từ"
+      }
+    },
+    "updates": {
+      "aNewDocumentVersionIsAvailable": "Có phiên bản tài liệu mới.",
+      "aNewDocumentVersionWillLoadAutomaticallyWhen": "Phiên bản mới sẽ được tải tự động khi bạn tạm ngừng thao tác.",
+      "aNewerVersionOfThisDocumentIsReady": "Có phiên bản mới hơn của tài liệu này.",
+      "anUpdateIsReadyItWillLoadWhen": "Đã có bản cập nhật. Tài liệu sẽ được tải lại khi tệp được ghi xong và bạn tạm ngừng thao tác.",
+      "applyingANewDocumentVersionAutomatically": "Đang tự động cập nhật tài liệu.",
+      "ask": "Hỏi trước",
+      "automatic": "Tự động",
+      "automaticChecksArePaused": "Đã tạm dừng kiểm tra tự động.",
+      "checkNow": "Kiểm tra ngay",
+      "documentUpdateCheckFailedOpenDocumentUpdatesTo": "Không thể kiểm tra cập nhật tài liệu. Mở phần Cập nhật tài liệu để thử lại.",
+      "documentUpdated": "Đã cập nhật tài liệu.",
+      "documentUpdatesCheckFailed": "Không thể kiểm tra cập nhật tài liệu",
+      "documentUpdatesLiveWatchUnavailable": "Không thể tự động theo dõi thay đổi của tệp",
+      "documentUpdatesLoadUpdate": "Mở bản cập nhật của tài liệu",
+      "fileChangedOnDiskLoadItToLeave": "Tệp đã được sửa bên ngoài Markdown Plus. Mở bản đã lưu để cập nhật nội dung và thoát chế độ chỉnh sửa.",
+      "latestStableVersionIsBeingAppliedAutomatically": "Đang tự động tải bản mới nhất sau khi tệp được ghi xong.",
+      "liveUpdatesUnavailable": "Không thể theo dõi thay đổi",
+      "newVersionAvailable": "Có phiên bản mới",
+      "newVersionsWaitUntilYouChooseToUpdate": "Chỉ tải phiên bản mới khi bạn chọn cập nhật.",
+      "notifications": {
+        "documentUpdated": "Đã cập nhật tài liệu",
+        "documentUpdatesSupportsFilesUpTo5MiB": "Chỉ có thể theo dõi thay đổi của tệp có dung lượng tối đa 5 MiB.",
+        "valueTheCurrentContentWasKept": "{0} Nội dung hiện tại được giữ nguyên."
+      },
+      "selectTheWorkspaceAgainToCheckForUpdated": "Chọn lại thư mục làm việc để kiểm tra các tệp đã thay đổi.",
+      "title": "Cập nhật tài liệu",
+      "updateNow": "Cập nhật ngay",
+      "updatesLoadWhenTheFileIsStableAnd": "Tự động tải bản cập nhật khi tệp được ghi xong và bạn tạm ngừng thao tác.",
+      "updatingAnnouncement": "Đang cập nhật tài liệu.",
+      "updatingLabel": "Đang cập nhật tài liệu…"
+    },
+    "useexplorer": {
+      "selectASupportedFileFromTheFilesPanel": "Chọn tệp được hỗ trợ từ bảng Tệp."
+    }
+  },
+  "errors": {
+    "common": {
+      "backgroundImage": {
+        "chooseAnImageFile": "Chọn một tệp ảnh.",
+        "readTheImage": "Không thể đọc ảnh."
+      },
+      "messages": {
+        "checkTheCurrentDocumentForChanges": "Không thể kiểm tra thay đổi của tài liệu hiện tại.",
+        "cleanUpThePreviousDocumentRenderer": "Không thể giải phóng bộ hiển thị tài liệu trước đó.",
+        "clearPersistedFileHandle": "Không thể xóa quyền truy cập tệp đã lưu.",
+        "connectTheOriginalMarkdownFileForEditing": "Không thể mở tệp Markdown gốc để chỉnh sửa.",
+        "copyColorFormat": "Không thể sao chép định dạng màu.",
+        "copyDetectedColor": "Không thể sao chép màu đã nhận diện.",
+        "copyFolderValue": "Không thể sao chép {0} của thư mục",
+        "inspectTheThemePreviewImage": "Không thể kiểm tra ảnh xem trước giao diện.",
+        "loadTheActiveThemeBackground": "Không thể tải nền của giao diện đang dùng.",
+        "loadTheThemePreviewImage": "Không thể tải ảnh xem trước giao diện.",
+        "mountViewerReactShell": "Không thể khởi tạo giao diện React của trình xem.",
+        "navigateBrowserHistory": "Không thể quay lại hoặc chuyển tiếp trong lịch sử trình duyệt.",
+        "openDocument": "Không thể mở tài liệu.",
+        "persistFileHandleToIndexedDB": "Không thể lưu quyền truy cập tệp vào IndexedDB.",
+        "prepareALocalMarkdownSVGImage": "Không thể chuẩn bị ảnh SVG trong tệp Markdown trên thiết bị.",
+        "recordFileHistory": "Không thể ghi lại lịch sử tệp.",
+        "refreshExplorerFileList": "Không thể làm mới danh sách tệp.",
+        "releaseDocumentAssetURL": "Không thể giải phóng URL tài nguyên tài liệu.",
+        "removeAnUnusedThemeAssetAfterSaveFailed": "Không thể xóa tài nguyên giao diện không dùng sau khi lưu thất bại.",
+        "removeTheDeletedThemeAsset": "Không thể xóa tài nguyên của giao diện đã xóa.",
+        "removeTheReplacedThemeAsset": "Không thể xóa tài nguyên giao diện đã thay thế.",
+        "renderDocument": "Không thể hiển thị tài liệu.",
+        "renderTheSyntaxThemePreview": "Không thể hiển thị bản xem trước màu cú pháp.",
+        "restoreFileHandleFromIndexedDB": "Không thể khôi phục quyền truy cập tệp từ IndexedDB.",
+        "saveFilesDetailsPreferenceForThisTab": "Không thể lưu tùy chọn hiển thị chi tiết tệp cho thẻ này",
+        "saveMarkdownFile": "Không thể lưu tệp Markdown.",
+        "switchReaderTheme": "Không thể đổi giao diện đọc."
+      }
+    },
+    "documents": {
+      "readFailed": "Không thể đọc {0}: {1}",
+      "tooLarge": "Tệp văn bản này lớn hơn mức cho phép ({0} MiB)."
+    },
+    "options": {
+      "general": {
+        "openExtensionDetails": "Không thể mở trang chi tiết tiện ích."
+      },
+      "index": {
+        "missingRootElementForSettingsApp": "Thiếu phần tử #root cho trang cài đặt."
+      },
+      "notifications": {
+        "clearRecentFiles": "Không thể xóa danh sách tệp đã mở gần đây.",
+        "exportSettings": "Không thể xuất cài đặt.",
+        "importSettings": "Không thể nhập cài đặt.",
+        "loadSettings": "Không thể tải cài đặt.",
+        "saveSettings": "Không thể lưu cài đặt."
+      },
+      "optionsActions": {
+        "chooseASettingsJSONFileToImport": "Chọn tệp JSON chứa cài đặt để nhập."
+      },
+      "settingsImport": {
+        "invalidJSONValue": "JSON không hợp lệ: {0}",
+        "parseFile": "Không thể đọc nội dung tệp cài đặt."
+      }
+    },
+    "popup": {
+      "index": {
+        "missingRootElementForPopupApp": "Thiếu phần tử #root cho cửa sổ tiện ích."
+      },
+      "loadSettings": "Không thể tải cài đặt.",
+      "openAbout": "Không thể mở phần Giới thiệu.",
+      "openOptionsSection": {
+        "chooseAValidSettingsSection": "Chọn một mục Cài đặt hợp lệ."
+      },
+      "openSettings": "Không thể mở Cài đặt.",
+      "settings": {
+        "saveSettings": "Không thể lưu cài đặt."
+      },
+      "usefilehistory": {
+        "clearFileHistory": "Không thể xóa danh sách tệp đã mở.",
+        "loadFileHistory": "Không thể tải lịch sử tệp.",
+        "openFile": "Không thể mở tệp."
+      }
+    },
+    "services": {
+      "fileHistory": {
+        "invalidFileHistoryURL": "URL trong lịch sử tệp không hợp lệ"
+      },
+      "messageRouter": {
+        "invalidOrMissingDataUrl": "Dữ liệu tải xuống bị thiếu hoặc không hợp lệ",
+        "invalidUrl": "URL không hợp lệ",
+        "missingFilename": "Thiếu tên tệp",
+        "missingUrl": "Thiếu URL",
+        "onlyFileURLsAreAllowed": "Chỉ cho phép URL tệp trên thiết bị (file:)",
+        "onlyRegisteredImageFilesAreAllowed": "Chỉ cho phép các định dạng ảnh được hỗ trợ",
+        "unsupportedMessageTypeValue": "Loại thông điệp không được hỗ trợ: {0}"
+      },
+      "themeAsset": {
+        "invalidThemeAssetId": "Mã định danh tài nguyên giao diện không hợp lệ.",
+        "openThemeAssetStorage": "Không thể mở bộ nhớ lưu tài nguyên giao diện."
+      }
+    },
+    "settings": {
+      "language": "Chọn một ngôn ngữ giao diện được hỗ trợ.",
+      "validation": {
+        "chooseABuiltInBaseTheme": "Chọn một giao diện gốc có sẵn.",
+        "chooseABundledCodeHighlightingTheme": "Chọn một giao diện tô màu mã có sẵn.",
+        "chooseASupportedBackgroundMotionPolicy": "Chọn chế độ chuyển động nền được hỗ trợ.",
+        "chooseASupportedBackgroundType": "Chọn loại nền được hỗ trợ.",
+        "chooseAValidHexadecimalColor": "Nhập mã màu thập lục phân hợp lệ.",
+        "chooseAnAvailableTheme": "Chọn một giao diện hiện có.",
+        "chooseAnImageForThisTheme": "Chọn ảnh cho giao diện này.",
+        "resetSettings": "Không thể khôi phục cài đặt mặc định.",
+        "settingsAreInvalid": "Cài đặt không hợp lệ.",
+        "youCanSaveUpToValueCustomThemes": "Bạn có thể lưu tối đa {0} giao diện tùy chỉnh."
+      }
+    },
+    "theme": {
+      "backgroundImageTooLarge": "Ảnh nền phải có kích thước tối đa 5 MiB.",
+      "themeAssetClient": {
+        "loadTheThemeAsset": "Không thể tải tài nguyên giao diện.",
+        "removeTheThemeAsset": "Không thể xóa tài nguyên giao diện.",
+        "saveTheThemeAsset": "Không thể lưu tài nguyên giao diện."
+      }
+    },
+    "validation": {
+      "boolean": "{0} phải là true hoặc false.",
+      "integer": "{0} phải là số nguyên.",
+      "range": "{0} phải nằm trong khoảng từ {1} đến {2}."
+    },
+    "viewer": {
+      "actions": {
+        "copyFileLink": "Không thể sao chép liên kết tệp",
+        "exportHTML": "Không thể xuất HTML",
+        "exportWordDocument": "Không thể xuất tài liệu Word",
+        "switchTheme": "Không thể đổi giao diện."
+      },
+      "app": {
+        "restoreTheLinkedFileReturnedToTheOriginal": "Không thể mở lại tệp được liên kết. Đã quay về tệp ban đầu.",
+        "switchTheme": "Không thể đổi giao diện"
+      },
+      "articleInteractions": {
+        "copy": "Không thể sao chép",
+        "copyLink": "Không thể sao chép liên kết"
+      },
+      "browserGit": {
+        "invalidLocalFilePath": "Đường dẫn tệp trên thiết bị không hợp lệ.",
+        "invalidRepositoryFilePath": "Đường dẫn tệp trong kho mã không hợp lệ.",
+        "onlyRegularGitFilesAreSupported": "Chỉ hỗ trợ tệp Git thông thường.",
+        "unsupportedGitTreePath": "Đường dẫn cây Git không được hỗ trợ."
+      },
+      "colors": {
+        "copyColorSelectTheOriginalTextToCopy": "Không thể sao chép màu. Hãy chọn văn bản gốc để sao chép thủ công.",
+        "copySelectAValueToCopyManually": "Không thể sao chép. Hãy chọn một giá trị để sao chép thủ công.",
+        "copyTryAgain": "Không thể sao chép. Vui lòng thử lại."
+      },
+      "directoryFs": {
+        "readADirectoryAsAGitFile": "Không thể đọc thư mục như một tệp Git.",
+        "unsupportedGitTextEncoding": "Mã hóa văn bản Git không được hỗ trợ."
+      },
+      "document": {
+        "openLinkedFile": "Không thể mở tệp được liên kết",
+        "openThisValue": "Không thể mở {0} này.",
+        "readLinkedFile": "Không thể đọc tệp được liên kết",
+        "readThisValue": "Không thể đọc {0} này."
+      },
+      "documentLoader": {
+        "onlyLocalImageFilesCanBeOpened": "Chỉ có thể mở tệp ảnh trên thiết bị.",
+        "openDocument": "Không thể mở tài liệu.",
+        "readThisImageFile": "Không thể đọc tệp ảnh này."
+      },
+      "documents": {
+        "dbml": {
+          "displayThisDBMLFile": "Không thể hiển thị tệp DBML này."
+        },
+        "image": {
+          "displayValue": "Không thể hiển thị {0}."
+        },
+        "mermaid": {
+          "displayThisMermaidDocument": "Không thể hiển thị tài liệu Mermaid này."
+        },
+        "sql": {
+          "displayThisSQLFile": "Không thể hiển thị tệp SQL này."
+        },
+        "text": {
+          "displayThisTextFile": "Không thể hiển thị tệp văn bản này."
+        }
+      },
+      "editor": {
+        "connectTheOriginalFile": "Không thể truy cập tệp gốc để chỉnh sửa.",
+        "openIndexedDB": "Không thể mở IndexedDB",
+        "writePermissionWasNotGranted": "Bạn chưa cấp quyền lưu thay đổi vào tệp.",
+        "writePermissionWasNotGrantedForTheConnected": "Bạn chưa cấp quyền lưu thay đổi vào tệp gốc đã chọn.",
+        "writePermissionWasNotGrantedForTheSelected": "Bạn chưa cấp quyền lưu thay đổi vào tệp đã chọn."
+      },
+      "explorer": {
+        "file": {
+          "copyFileName": "Không thể sao chép tên tệp"
+        },
+        "folder": {
+          "copyFolderName": "Không thể sao chép tên thư mục",
+          "copyFolderPath": "Không thể sao chép đường dẫn thư mục"
+        },
+        "listRefresh": {
+          "refreshFileListTheOpenDocumentWasKept": "Không thể làm mới danh sách tệp. Tài liệu đang mở được giữ nguyên."
+        },
+        "workspacePicker": {
+          "missingDirectoryHandle": "Thiếu quyền truy cập thư mục"
+        },
+        "workspaceSession": {
+          "openFolder": "Không thể mở thư mục",
+          "restoreWorkspace": "Không thể khôi phục thư mục làm việc",
+          "scanFolder": "Không thể quét thư mục"
+        }
+      },
+      "gitProbe": {
+        "readTheOpenFileOnDisk": "Không thể đọc nội dung đã lưu của tệp đang mở."
+      },
+      "imageRevision": {
+        "readImageBytes": "Không thể đọc dữ liệu ảnh."
+      },
+      "markdownDocumentRenderer": {
+        "missingRenderTargetDocument": "Thiếu tài liệu đích để hiển thị."
+      },
+      "media": {
+        "decodeThisImageForResolutionRendering": "Không thể giải mã ảnh này để hiển thị ở độ phân giải đã chọn.",
+        "encodeThisResolution": "Không thể tạo ảnh ở độ phân giải này.",
+        "initializeImageRendering": "Không thể khởi tạo việc hiển thị ảnh.",
+        "parseThisSVGForResolutionRendering": "Không thể phân tích SVG này để hiển thị ở độ phân giải đã chọn.",
+        "readThisSVGForResolutionRendering": "Không thể đọc SVG này để hiển thị ở độ phân giải đã chọn.",
+        "renderThisResolution": "Không thể hiển thị ở độ phân giải này."
+      },
+      "mermaid": {
+        "missingMermaidRenderTarget": "Thiếu vị trí hiển thị Mermaid."
+      },
+      "renderer": {
+        "missingRenderTargetElement": "Thiếu phần tử đích để hiển thị."
+      },
+      "review": {
+        "calculateChangesCloseThisReviewAndTryAgain": "Không thể so sánh thay đổi. Hãy đóng phần so sánh rồi thử lại.",
+        "dialog": {
+          "openReview": "Không thể mở phần so sánh"
+        }
+      },
+      "shikiHighlighter": {
+        "missingShikiLanguageModuleForValue": "Thiếu mô-đun ngôn ngữ Shiki cho “{0}”.",
+        "missingShikiThemeModuleForValue": "Thiếu mô-đun giao diện Shiki cho “{0}”."
+      },
+      "watch": {
+        "readTheFileTheCurrentContentWasKept": "Không thể đọc tệp. Nội dung hiện tại được giữ nguyên. Hãy kiểm tra quyền truy cập tệp rồi thử lại."
+      }
+    }
+  },
+  "options": {
+    "about": {
+      "aLocalFirstViewerAndEditorForMarkdown": "Đọc và chỉnh sửa Markdown cùng các định dạng liên quan ngay trên thiết bị của bạn.",
+      "browseSiblingDocumentsOrOpenALocalWorkspace": "Duyệt các tài liệu cùng thư mục hoặc mở một thư mục làm việc trên thiết bị.",
+      "developmentBuild": "Bản phát triển",
+      "extensionInformation": "Thông tin tiện ích",
+      "heading": "Giới thiệu Markdown Plus",
+      "learnWhatMarkdownPlusDoesHowItHandles": "Tìm hiểu chức năng của Markdown Plus, cách xử lý tệp và nơi nhận hỗ trợ.",
+      "links": {
+        "license": {
+          "description": "Đọc giấy phép mã nguồn mở của Markdown Plus.",
+          "label": "Giấy phép MIT"
+        },
+        "privacy": {
+          "description": "Tìm hiểu cách xử lý tệp trên thiết bị và dữ liệu tiện ích.",
+          "label": "Chính sách quyền riêng tư"
+        },
+        "source": {
+          "description": "Xem mã nguồn và đóng góp cho dự án trên GitHub.",
+          "label": "Mã nguồn"
+        },
+        "support": {
+          "description": "Gửi yêu cầu hỗ trợ hoặc báo lỗi kèm các bước gây ra lỗi.",
+          "label": "Báo lỗi"
+        },
+        "website": {
+          "description": "Truy cập trang web dự án Markdown Plus.",
+          "label": "Trang web"
+        }
+      },
+      "localFirstByDesign": "Xử lý tài liệu ngay trên thiết bị",
+      "metadata": {
+        "chromeExtension": "Tiện ích Chrome",
+        "manifestVersion": "Manifest V{0}",
+        "minimumChromeVersion": "Chrome {0} trở lên"
+      },
+      "openSource": "Mã nguồn mở",
+      "optInToEditingWithExactFileVerification": "Bật chỉnh sửa khi cần. Markdown Plus kiểm tra đúng tệp gốc trước khi cho phép lưu.",
+      "product": "Sản phẩm",
+      "projectSupport": "Dự án và hỗ trợ",
+      "readThePrivacyPolicy": "Đọc chính sách quyền riêng tư",
+      "renderLocalMarkdownCodeMathDiagramsTextAnd": "Đọc tệp Markdown, mã nguồn, công thức toán, sơ đồ, văn bản và hình ảnh trên thiết bị.",
+      "title": "Giới thiệu",
+      "version": "Phiên bản",
+      "whatMarkdownPlusDoes": "Markdown Plus làm được gì",
+      "yourDocumentsAreProcessedInChromeAndAre": "Tài liệu được xử lý ngay trong Chrome, không gửi đến máy chủ của nhà phát triển. Dữ liệu riêng của thiết bị chỉ được lưu tại đây; cài đặt có thể được đồng bộ qua Chrome."
+    },
+    "advanced": {
+      "chooseJSON": "Chọn tệp JSON",
+      "downloadTheCompleteNormalizedSettingsObjectAsJSON": "Tải xuống tệp JSON chứa toàn bộ cài đặt hiện tại.",
+      "exportJSON": "Xuất JSON",
+      "exportSettings": "Xuất cài đặt",
+      "exporting": "Đang xuất…",
+      "fileIsFullyParsedAndValidatedBeforeAny": "Nội dung tệp sẽ được kiểm tra đầy đủ trước khi lưu cài đặt.",
+      "importSettings": "Nhập cài đặt",
+      "importing": "Đang nhập…",
+      "largeDocumentLoads": "Tải tài liệu lớn",
+      "largerFilesUseMoreMemoryAndMayTake": "Tệp lớn hơn dùng nhiều bộ nhớ hơn và có thể mất thêm thời gian hiển thị. Thay đổi áp dụng từ lần mở tài liệu tiếp theo; tài liệu hiện tại không bị tải lại.",
+      "limitExpensiveDocumentLoadsMoveSettingsBetweenBrowsers": "Giới hạn dung lượng tài liệu được mở, sao lưu cài đặt để dùng trên trình duyệt khác hoặc khôi phục mặc định.",
+      "maximumUTF8SizeForStandaloneTxtSql": "Dung lượng tối đa khi mở các tệp .txt, .sql, .dbml và .mermaid, tính theo mã hóa UTF-8. Giới hạn này không áp dụng cho Markdown.",
+      "resetAllSettings": "Khôi phục toàn bộ cài đặt",
+      "resetToDefault": "Khôi phục mặc định",
+      "resetting": "Đang khôi phục…",
+      "resourcesRecovery": "Tài nguyên và khôi phục",
+      "restoreGeneralReaderEditorPluginsFilesWorkspacePrivacy": "Đưa các cài đặt chung, đọc, soạn thảo, tính năng Markdown, thư mục làm việc, quyền riêng tư và giới hạn tài liệu về mặc định. Danh sách tệp gần đây cần được xóa riêng.",
+      "title": "Nâng cao"
+    },
+    "documentTitle": "Cài đặt Markdown Plus",
+    "explorer": {
+      "connectFoldersAndFilesWithHierarchyLinesChanges": "Hiển thị đường nối để dễ nhận biết các cấp thư mục. Thay đổi có hiệu lực ngay.",
+      "customizeTheFileTreeAndWorkspaceBehaviorScan": "Tùy chỉnh cách hiển thị và duyệt thư mục. Giới hạn quét mới có hiệu lực từ lần quét hoặc làm mới tiếp theo.",
+      "excludeFilesAndFoldersIgnoredByNestedGitignore": "Loại trừ tệp và thư mục theo quy tắc trong các tệp .gitignore, kể cả ở thư mục con, khi quét thư mục làm việc.",
+      "higherLimitsCanMakeLargeWorkspaceScansSlower": "Tăng giới hạn có thể khiến việc quét thư mục lớn chậm hơn và tốn thêm bộ nhớ. Lượt quét đang chạy sẽ không tự bắt đầu lại khi bạn thay đổi các giá trị này.",
+      "howManyFolderLevelsToScanBelowThe": "Số cấp thư mục cần quét bên dưới thư mục gốc đã chọn. Đặt 0 để chỉ quét thư mục gốc.",
+      "largeWorkspaceScans": "Khi quét thư mục lớn",
+      "navigationScanning": "Điều hướng và quét",
+      "reopenTheLastFileBackedWorkspaceWhenA": "Tự mở lại thư mục làm việc gần nhất khi mở trình xem mới, nếu thư mục có đường dẫn trên máy. Tắt tùy chọn này không đóng thư mục đang dùng.",
+      "resetSectionToDefaults": "Khôi phục mục này về mặc định",
+      "respectGitignoreFiles": "Bỏ qua tệp theo .gitignore",
+      "restoreLastWorkspace": "Mở lại thư mục làm việc gần nhất",
+      "showTreeIndentGuides": "Hiện đường nối cây thư mục",
+      "stopIndexingAfterThisManySupportedDocumentsHave": "Số tệp được hỗ trợ tối đa sẽ thêm vào danh sách khi quét.",
+      "stopTheScanAfterThisManyFoldersHave": "Dừng quét khi đã duyệt đủ số thư mục này.",
+      "title": "Tệp và thư mục làm việc"
+    },
+    "general": {
+      "behavior": "Hoạt động",
+      "chooseHowToHandleChangesToTheOpen": "Chọn cách cập nhật khi tệp đang mở được sửa bên ngoài Markdown Plus. Áp dụng cho văn bản, sơ đồ và hình ảnh. Khi đang soạn thảo, bản cập nhật sẽ không tự thay thế nội dung của bạn.",
+      "chooseMarkdownPlusDetailsThenEnableAllowAccess": ", chọn Markdown Plus → Chi tiết, rồi bật “Cho phép truy cập vào các URL của tệp”.",
+      "chromeControlsThisPermissionIfAccessIsBlocked": "Chrome quản lý quyền này. Nếu quyền truy cập bị chặn, hãy mở",
+      "chromeExtensions": "chrome://extensions",
+      "controlMarkdownPlusActivationAndViewerBehavior": "Bật, tắt Markdown Plus và tùy chỉnh cách đọc tài liệu.",
+      "enabled": {
+        "description": "Tự động dùng Markdown Plus để mở các tệp Markdown được hỗ trợ trên thiết bị.",
+        "label": "Bật Markdown Plus"
+      },
+      "fileAccess": {
+        "label": "Quyền mở tệp trên thiết bị"
+      },
+      "language": {
+        "description": "Áp dụng cho Cài đặt, bảng tiện ích và trình xem. Nội dung tài liệu không bị dịch.",
+        "label": "Ngôn ngữ giao diện"
+      },
+      "scrollbars": {
+        "description": "Ẩn dần thanh cuộn dọc khi không dùng; hiện lại khi cuộn, đưa con trỏ đến gần cạnh khung hoặc dùng bàn phím.",
+        "label": "Tự động ẩn thanh cuộn tài liệu"
+      },
+      "statistics": {
+        "description": "Hiển thị số từ, số ký tự (kể cả khoảng trắng) và thời gian đọc ước tính phía trên tài liệu Markdown.",
+        "label": "Hiện thống kê tài liệu"
+      },
+      "title": "Chung"
+    },
+    "navigation": {
+      "activationAndAccess": "Bật tiện ích và cấp quyền",
+      "colorsAndBackgrounds": "Màu sắc và nền",
+      "folderAppearanceAndScanLimits": "Hiển thị thư mục và giới hạn quét",
+      "limitsBackupAndReset": "Giới hạn, sao lưu và khôi phục",
+      "loadingSettings": "Đang tải cài đặt",
+      "recentLocalFiles": "Lịch sử mở tệp trên thiết bị",
+      "section": "Mục",
+      "settingsCouldNotBeLoaded": "Không thể tải cài đặt",
+      "settingsSections": "Các mục cài đặt",
+      "versionPrivacyAndSupport": "Phiên bản, quyền riêng tư và hỗ trợ"
+    },
+    "notifications": {
+      "activeThemeUpdated": "Đã đổi giao diện đang dùng.",
+      "allSettingsResetToDefaults": "Đã khôi phục toàn bộ cài đặt mặc định.",
+      "checkTheHighlightedField": "Hãy kiểm tra ô được đánh dấu.",
+      "checkTheHighlightedFields": "Hãy kiểm tra các ô được đánh dấu.",
+      "clearingRecentFiles": "Đang xóa danh sách tệp gần đây…",
+      "customThemeCreated": "Đã tạo giao diện tùy chỉnh.",
+      "customThemeDeleted": "Đã xóa giao diện tùy chỉnh.",
+      "customThemeSaved": "Đã lưu giao diện tùy chỉnh.",
+      "documentScrollbarsWillAutoHide": "Thanh cuộn tài liệu sẽ tự động ẩn.",
+      "documentScrollbarsWillStayVisible": "Thanh cuộn tài liệu sẽ luôn hiển thị.",
+      "documentStatisticsWillBeHidden": "Đã ẩn thống kê tài liệu.",
+      "documentStatisticsWillBeShown": "Đã bật thống kê tài liệu.",
+      "documentViewingLimitResetToTheDefault": "Đã khôi phục giới hạn xem tài liệu mặc định.",
+      "documentViewingLimitSavedTheChangeAppliesThe": "Đã lưu giới hạn xem tài liệu. Thay đổi áp dụng từ lần mở tài liệu tiếp theo.",
+      "filesWorkspaceBehaviorSavedTheChangeAppliesTo": "Đã lưu tùy chọn tệp và thư mục làm việc. Thay đổi áp dụng từ lần quét hoặc mở trình xem tiếp theo.",
+      "filesWorkspaceSettingsResetToDefaults": "Đã khôi phục cài đặt tệp và thư mục làm việc mặc định.",
+      "filesWorkspaceSettingsSavedNewLimitsApplyTo": "Đã lưu cài đặt tệp và thư mục làm việc. Giới hạn mới áp dụng từ lần quét hoặc làm mới tiếp theo.",
+      "generalSettingsSaved": "Đã lưu cài đặt chung.",
+      "interfaceLanguageUpdated": "Đã đổi ngôn ngữ giao diện.",
+      "loadingSettings": "Đang tải cài đặt…",
+      "recentFileHistoryClearedFromThisDevice": "Đã xóa danh sách tệp đã mở gần đây trên thiết bị này.",
+      "recentFileHistoryDisabledExistingEntriesWereKept": "Đã tắt ghi nhớ tệp đã mở. Các mục có sẵn trong danh sách vẫn được giữ lại.",
+      "recentFileHistoryEnabled": "Đã bật ghi nhớ tệp đã mở.",
+      "recentFileRetentionSavedTheLimitAppliesOn": "Đã lưu số tệp tối đa trong danh sách gần đây. Giới hạn mới có hiệu lực từ lần mở danh sách tiếp theo.",
+      "settingsAreUpToDate": "Cài đặt đã được cập nhật.",
+      "settingsExported": "Đã xuất cài đặt.",
+      "settingsImportedAndSaved": "Đã nhập và lưu cài đặt.",
+      "treeIndentGuidesSavedOpenViewersUpdateImmediately": "Đã lưu tùy chọn đường nối cây thư mục. Các trình xem đang mở sẽ cập nhật ngay.",
+      "validatingSettingsFile": "Đang kiểm tra tệp cài đặt…",
+      "watchModeUpdated": "Đã đổi cách cập nhật khi tệp thay đổi."
+    },
+    "optionsActions": {
+      "clearAllRecentFilePathsStoredByMarkdown": "Xóa toàn bộ danh sách tệp đã mở gần đây trên thiết bị này? Thao tác này không xóa tệp gốc và không thể hoàn tác.",
+      "resetAllMarkdownPlusSettingsToTheirDefaults": "Khôi phục toàn bộ cài đặt Markdown Plus về mặc định? Bao gồm các tùy chọn đọc, soạn thảo, tiện ích bổ sung và duyệt tệp.",
+      "settingsFilesMustBeSmallerThan1MiB": "Tệp cài đặt phải nhỏ hơn 1 MiB."
+    },
+    "privacy": {
+      "clearRecentFiles": "Xóa danh sách",
+      "clearRecentFilesNow": "Xóa danh sách tệp gần đây",
+      "clearing": "Đang xóa…",
+      "controlWhetherMarkdownPlusRemembersLocalDocumentsAnd": "Chọn có ghi nhớ các tệp đã mở hay không và số mục tối đa trong danh sách gần đây.",
+      "keepOnlyTheNewestEntriesAfterTheNext": "Từ lần mở danh sách tiếp theo, chỉ giữ lại những tệp được mở gần đây nhất.",
+      "localData": "Dữ liệu trên thiết bị",
+      "recentFileURLsContainLocalPathsTheyAre": "Danh sách gần đây lưu đường dẫn đến các tệp trên thiết bị, không lưu bản sao của tệp. Danh sách chỉ được lưu trong tiện ích trên thiết bị này, không đồng bộ cùng cài đặt.",
+      "rememberLocalMarkdownFilesSoTheyCanBe": "Ghi nhớ các tệp Markdown đã mở để bạn có thể mở lại từ bảng tiện ích. Khi tắt, tệp mới sẽ không được ghi nhớ; các mục đã có vẫn được giữ lại.",
+      "saveRecentFiles": "Ghi nhớ tệp đã mở",
+      "title": "Quyền riêng tư và dữ liệu"
+    },
+    "themes": {
+      "background": {
+        "angle0360": "Góc (0–360°)",
+        "animate": "Bật chuyển động",
+        "backgroundType": "Loại nền",
+        "bottom": "Dưới",
+        "center": "Giữa",
+        "dimming008": "Làm tối nền (0–0,8)",
+        "endColor": "Màu cuối",
+        "fillCanvas": "Phủ kín khung",
+        "fitWithinCanvas": "Vừa khung",
+        "followSystem": "Theo hệ thống",
+        "gradient": "Chuyển sắc",
+        "imageFile": "Tệp ảnh",
+        "imageFit": "Cách hiển thị ảnh",
+        "imagePosition": "Vị trí ảnh",
+        "left": "Trái",
+        "localImageOrAnimation": "Ảnh hoặc ảnh động trên thiết bị",
+        "motion": "Chuyển động",
+        "originalSize": "Kích thước gốc",
+        "pngJPEGWebPAVIFGIFOrAPNGUp": "PNG, JPEG, WebP, AVIF, GIF hoặc APNG; tối đa 5 MiB.",
+        "repeatImage": "Lặp ảnh nền",
+        "right": "Phải",
+        "sceneColor": "Màu nền",
+        "solidScene": "Nền đơn sắc",
+        "startColor": "Màu đầu",
+        "still": "Tắt chuyển động",
+        "storedOnThisDevice": "Đã lưu trên thiết bị này",
+        "themeColorOnly": "Chỉ dùng màu giao diện",
+        "tileTheImageInsteadOfShowingOneCanvas": "Lặp ảnh thành các ô thay vì hiển thị một ảnh duy nhất.",
+        "top": "Trên"
+      },
+      "colors": {
+        "borders": "Đường viền",
+        "contentSurface": "Nền nội dung",
+        "documentText": "Chữ trong tài liệu",
+        "headings": "Tiêu đề",
+        "inlineFallbackCodeBackground": "Nền đoạn mã",
+        "inlineFallbackCodeText": "Chữ đoạn mã",
+        "interfaceText": "Chữ trên giao diện",
+        "links": "Liên kết",
+        "mutedText": "Chữ phụ",
+        "pageBackground": "Nền trang",
+        "panelSurface": "Nền bảng bên",
+        "valueColorPicker": "Chọn màu cho {0}",
+        "valueHexValue": "Mã màu HEX của {0}"
+      },
+      "editor": {
+        "backToThemes": "← Về danh sách giao diện",
+        "background": "Nền",
+        "baseTheme": "Giao diện gốc",
+        "buildAReusableReaderThemeChangesStayIn": "Tạo giao diện đọc của riêng bạn. Các thay đổi được giữ trong bản nháp cho đến khi bạn lưu.",
+        "buildTheSceneBehindTheViewerAndTune": "Thiết lập nền phía sau trình xem và điều chỉnh để nội dung dễ đọc.",
+        "chooseTheSyntaxColorsUsedForRenderedCode": "Chọn bộ màu để làm nổi bật cú pháp trong các khối mã.",
+        "codeHighlighting": "Màu cú pháp mã nguồn",
+        "colors": "Màu sắc",
+        "createCustomTheme": "Tạo giao diện tùy chỉnh",
+        "createTheme": "Tạo giao diện",
+        "discardYourUnsavedThemeChanges": "Bỏ các thay đổi giao diện chưa lưu?",
+        "eGMidnightPaper": "Ví dụ: Đêm dịu",
+        "editValue": "Chỉnh sửa {0}",
+        "identity": "Tên và giao diện gốc",
+        "nameTheThemeAndChooseTheBuiltIn": "Đặt tên và chọn một giao diện có sẵn để bắt đầu tùy chỉnh.",
+        "newDraft": "Bản nháp mới",
+        "noChanges": "Không có thay đổi",
+        "replacesTheColorsInSection02CodeHighlighting": "Chọn giao diện gốc sẽ đặt lại màu ở mục 02. Màu cú pháp cũng lấy theo giao diện này, trừ khi bạn chọn bộ màu khác bên dưới.",
+        "resetsColors": "Đặt lại màu",
+        "savingTheme": "Đang lưu giao diện…",
+        "shownInTheThemePickerAndPopup": "Tên này xuất hiện trong danh sách giao diện và bảng tiện ích.",
+        "themeName": "Tên giao diện",
+        "themeStudio": "Thiết kế giao diện",
+        "tuneSemanticColorsSoTheViewerStaysVisually": "Chọn màu cho từng thành phần của trình xem. Màu đoạn mã ở đây dùng cho mã trong dòng và các khối mã không tô màu cú pháp. Khối mã đã tô màu dùng bộ màu ở mục 03.",
+        "unsavedChanges": "Thay đổi chưa lưu"
+      },
+      "library": {
+        "activeReaderTheme": "Giao diện đọc đang dùng",
+        "activeTheme": "Giao diện đang dùng",
+        "addCustomTheme": "Thêm giao diện tùy chỉnh",
+        "appearance": "Hiển thị",
+        "builtInThemes": "Giao diện có sẵn",
+        "chooseTheReaderThemeInUseThenManage": "Chọn giao diện đọc hoặc tạo và quản lý giao diện của riêng bạn.",
+        "createOneFromYourActiveThemeThenAdjust": "Tạo từ giao diện đang dùng, rồi điều chỉnh màu sắc và nền trong trình thiết kế giao diện.",
+        "createYourFirstTheme": "Tạo giao diện đầu tiên",
+        "customThemesCanBeSelectedInBothSettings": "Giao diện tự tạo có thể được chọn trong Cài đặt và bảng tiện ích.",
+        "customThemesDeleteOneBeforeCreatingAnother": "giao diện tùy chỉnh. Hãy xóa một giao diện trước khi tạo mới.",
+        "deleteValueThisCannotBeUndoneValue": "Xóa “{0}”? Thao tác này không thể hoàn tác.{1}",
+        "gradientBackground": "Nền chuyển sắc",
+        "itIsActiveSoValueWillBecomeActive": " Giao diện này đang được dùng. Sau khi xóa, trình xem sẽ chuyển sang {0}.",
+        "localImageBackground": "Nền ảnh trên thiết bị",
+        "myTheme": "Giao diện của tôi",
+        "myThemes": "Giao diện của tôi",
+        "noCustomThemesYet": "Chưa có giao diện tùy chỉnh",
+        "selectionIsAlsoShownInTheExtensionPopup": "Giao diện đã chọn cũng được hiển thị trong bảng tiện ích.",
+        "solidBackground": "Nền đơn sắc",
+        "themeColorBackground": "Nền màu của giao diện",
+        "useTheme": "Dùng giao diện này",
+        "youHaveReachedTheLimitOf": "Bạn đã đạt giới hạn"
+      },
+      "preview": {
+        "aCalmReadingSpaceForIdeasSnippetsAnd": "Không gian đọc nhẹ nhàng cho ý tưởng, đoạn mã và",
+        "accent": "Màu nhấn",
+        "base": "Giao diện gốc:",
+        "code": "Bộ màu mã:",
+        "designNotesThatFeelLikeHome": "Góc ghi chú quen thuộc của bạn.",
+        "details": "Chi tiết",
+        "docs": "docs",
+        "everyValidChangeAppearsHereInstantlySavingIs": "Bạn có thể xem ngay các thay đổi hợp lệ tại đây mà chưa cần lưu.",
+        "examples": "Ví dụ",
+        "focus": "Tập trung",
+        "guideMd": "guide.md",
+        "javascript": "JavaScript",
+        "link": "Liên kết",
+        "livePreview": "Xem trước tức thì",
+        "liveThemePreview": "Xem trước thay đổi giao diện",
+        "myNOTES": "GHI CHÚ CỦA TÔI",
+        "notesMd": "notes.md",
+        "overview": "Tổng quan",
+        "reading": "Đọc tài liệu",
+        "readmeMd": "README.md",
+        "role": "Vai trò",
+        "surface": "Nền nội dung",
+        "text": "Văn bản",
+        "theSmallestDetailsMakeTheBiggestDifference": "“Đôi khi, chi tiết nhỏ lại tạo nên khác biệt lớn.”",
+        "token": "Thuộc tính",
+        "untitledTheme": "Giao diện chưa đặt tên",
+        "usefulLinks": "liên kết hữu ích"
+      },
+      "syntax": {
+        "appliesToRenderedFencedCodeAndSQLDocuments": "Dùng cho khối mã trong tài liệu và tệp SQL. Màu cú pháp trong trình soạn thảo Markdown được thiết lập riêng.",
+        "darkThemes": "Giao diện tối",
+        "followBaseTheme": "Theo giao diện gốc (",
+        "lightThemes": "Giao diện sáng",
+        "renderedCodeTheme": "Bộ màu cú pháp"
+      },
+      "title": "Giao diện"
+    },
+    "title": "Cài đặt",
+    "validation": {
+      "fields": {
+        "appearanceSettingsMustBeAnObject": "Cài đặt hiển thị phải là một đối tượng.",
+        "backgroundAssetRevisionIsInvalid": "Phiên bản tài nguyên nền không hợp lệ.",
+        "backgroundDimmingMustBeBetween0And0": "Độ tối của nền phải nằm trong khoảng từ 0 đến 0,8.",
+        "backgroundSettingsMustBeAnObject": "Cài đặt nền phải là một đối tượng.",
+        "chooseAutoHideOrAlwaysVisibleScrollbars": "Chọn thanh cuộn tự động ẩn hoặc luôn hiển thị.",
+        "chooseAutomaticAskBeforeUpdatingOrOff": "Chọn tự động cập nhật, hỏi trước khi cập nhật hoặc tắt.",
+        "customThemeIdIsInvalid": "Mã định danh giao diện tùy chỉnh không hợp lệ.",
+        "customThemeIdsMustBeUnique": "Mỗi giao diện tùy chỉnh phải có mã định danh riêng.",
+        "customThemeMustBeAnObject": "Giao diện tùy chỉnh phải là một đối tượng.",
+        "customThemesMustBeAList": "Các giao diện tùy chỉnh phải được khai báo dưới dạng danh sách.",
+        "documentSettingsMustBeAnObject": "Cài đặt tài liệu phải là một đối tượng.",
+        "editorSettingsMustBeAnObject": "Cài đặt trình soạn thảo phải là một đối tượng.",
+        "enableExperimentalEditorMustBeTrueOrFalse": "Tùy chọn bật trình soạn thảo thử nghiệm chỉ nhận giá trị true hoặc false.",
+        "enableMarkdownPlusMustBeTrueOrFalse": "Tùy chọn bật Markdown Plus chỉ nhận giá trị true hoặc false.",
+        "filesWorkspaceSettingsMustBeAnObject": "Cài đặt tệp và thư mục làm việc phải là một đối tượng.",
+        "folderScanDepth": "Số cấp thư mục cần quét",
+        "gradientAngleMustBeBetween0And360": "Góc chuyển sắc phải nằm trong khoảng từ 0 đến 360.",
+        "maximumIndexedFiles": "Số tệp tối đa trong danh sách",
+        "maximumRecentFiles": "Số tệp gần đây tối đa",
+        "maximumScannedFolders": "Số thư mục tối đa cần quét",
+        "privacyDataSettingsMustBeAnObject": "Cài đặt quyền riêng tư và dữ liệu phải là một đối tượng.",
+        "settingsMustBeAJSONObject": "Cài đặt phải là một đối tượng JSON.",
+        "showDocumentStatisticsMustBeTrueOrFalse": "Tùy chọn hiển thị thống kê tài liệu chỉ nhận giá trị true hoặc false.",
+        "standaloneTextFileLimit": "Dung lượng tối đa của tệp văn bản",
+        "themeColorsMustBeAnObject": "Màu giao diện phải là một đối tượng.",
+        "themeNameMustBeBetween1And48": "Tên giao diện phải dài từ 1 đến 48 ký tự.",
+        "themeSettingsMustBeAnObject": "Cài đặt giao diện phải là một đối tượng."
+      }
+    }
+  },
+  "plugins": {
+    "alerts": {
+      "caution": "Cẩn trọng",
+      "important": "Quan trọng",
+      "note": "Lưu ý",
+      "tip": "Mẹo",
+      "warning": "Cảnh báo"
+    },
+    "anchorHeading": {
+      "copyLinkToThisSection": "Sao chép liên kết đến mục này",
+      "copySectionLinkClick": "Sao chép liên kết đến mục (nhấp chuột)"
+    },
+    "colorPreview": {
+      "copyColorValue": "Sao chép màu {0}"
+    },
+    "taskList": {
+      "x": "x"
+    }
+  },
+  "popup": {
+    "editor": {
+      "editingIsOffByDefaultWhenEnabledMarkdown": "Mặc định, tính năng chỉnh sửa được tắt. Khi bật, bạn cần chọn đúng tệp gốc để Markdown Plus kiểm tra trước khi bắt đầu soạn thảo.",
+      "editorFontSize": "Cỡ chữ trình soạn thảo",
+      "enableEditor": "Bật trình soạn thảo",
+      "enableExperimentalEditor": "Bật trình soạn thảo thử nghiệm",
+      "experimentalEditor": "Trình soạn thảo thử nghiệm",
+      "lineNumbers": "Hiện số dòng",
+      "optInToEditingLocalMarkdownFiles": "Bật tính năng chỉnh sửa tệp Markdown trên thiết bị.",
+      "resetEditorPreferences": "Khôi phục tùy chọn soạn thảo",
+      "resetEditorPreferencesToDefaultValues": "Khôi phục tùy chọn soạn thảo về mặc định?",
+      "tabSize": "Độ rộng tab",
+      "tabSizeRange": "2–8 dấu cách",
+      "wordWrap": "Tự động xuống dòng"
+    },
+    "fileAccess": {
+      "allowAccessToLocalFiles": "Cho phép truy cập tệp trên thiết bị",
+      "checkingFileAccess": "Đang kiểm tra quyền truy cập tệp",
+      "confirmingWhetherMarkdownPlusCanOpenLocalFiles": "Đang kiểm tra xem Markdown Plus có quyền mở tệp trên thiết bị hay không.",
+      "enableAllowAccessToFileURLs": "Bật “Cho phép truy cập vào các URL của tệp”.",
+      "fileAccessIsReady": "Đã có quyền truy cập tệp",
+      "fileAccessStatusUnavailable": "Không xác định được quyền truy cập tệp",
+      "openChromeExtensions": "Mở chrome://extensions.",
+      "selectMarkdownPlusDetails": "Chọn Markdown Plus → Chi tiết."
+    },
+    "footer": {
+      "about": "Giới thiệu",
+      "allSettings": "Tất cả cài đặt",
+      "saved": "Đã lưu cài đặt"
+    },
+    "history": {
+      "fileCount": {
+        "other": "{count} tệp gần đây"
+      },
+      "loadingRecentFiles": "Đang tải danh sách tệp gần đây…",
+      "noRecentFilesYet": "Chưa có tệp trong danh sách",
+      "openLocalMarkdownFilesWithMarkdownPlusAnd": "Các tệp Markdown bạn mở bằng Markdown Plus sẽ xuất hiện ở đây.",
+      "opening": "Đang mở…"
+    },
+    "page": {
+      "loadingQuickSettings": "Đang tải cài đặt nhanh",
+      "quickControlSections": "Các mục cài đặt nhanh",
+      "quickSettingsCouldNotBeLoaded": "Không thể tải cài đặt nhanh"
+    },
+    "plugins": {
+      "aCleanerCursorLikeLayoutPoweredByELK": "Sắp xếp sơ đồ gọn hơn theo phong cách Cursor, sử dụng ELK.",
+      "beautiful": "Beautiful",
+      "broadestMermaidSyntaxSupportAndTheSafestDefault": "Hỗ trợ nhiều cú pháp Mermaid nhất. Đây là lựa chọn mặc định để đảm bảo tương thích.",
+      "cursorLike": "Phong cách Cursor",
+      "i": "i",
+      "items": {
+        "anchorHeading": {
+          "hint": "Thêm nút “#” vào tiêu đề để sao chép liên kết đến đúng mục.",
+          "label": "Liên kết tiêu đề",
+          "version": "Tạo mã liên kết tiêu đề: markdown-it-anchor 9.2.0."
+        },
+        "codeHighlight": {
+          "hint": "Làm nổi bật cú pháp trong khối mã bằng Shiki. Tắt nếu bạn muốn xem mã thuần và giảm xử lý.",
+          "label": "Tô màu cú pháp",
+          "version": "Hỗ trợ cú pháp: Shiki 4.0.2."
+        },
+        "colorPreview": {
+          "hint": "Hiển thị ô màu mẫu và cho phép sao chép mã HEX, RGB hoặc HSL, kể cả giá trị độ trong suốt.",
+          "label": "Xem trước màu"
+        },
+        "emoji": {
+          "hint": "Chuyển các mã :shortcode: được hỗ trợ thành biểu tượng cảm xúc.",
+          "label": "Biểu tượng cảm xúc",
+          "version": "Hỗ trợ cú pháp: markdown-it-emoji 3.0.0."
+        },
+        "footnote": {
+          "hint": "Hiển thị chú thích và liên kết để chuyển qua lại giữa chú thích với nội dung.",
+          "label": "Chú thích cuối trang",
+          "version": "Hỗ trợ cú pháp: markdown-it-footnote 4.0.0."
+        },
+        "githubAlerts": {
+          "hint": "Hiển thị các khối lưu ý, mẹo và cảnh báo theo cú pháp GitHub.",
+          "label": "Khối thông báo GitHub"
+        },
+        "math": {
+          "hint": "Hiển thị công thức toán theo cú pháp LaTeX bằng KaTeX khi cần.",
+          "label": "Công thức toán (KaTeX)",
+          "version": "Hỗ trợ cú pháp: @mdit/plugin-katex 0.25.2, KaTeX 0.16.44."
+        },
+        "mermaid": {
+          "hint": "Chuyển khối mã Mermaid thành sơ đồ có thể xuất ra tệp.",
+          "label": "Sơ đồ Mermaid",
+          "version": "Hỗ trợ cú pháp: Mermaid 11.13.0 hoặc Beautiful Mermaid 1.1.3."
+        },
+        "tableEnhance": {
+          "hint": "Trình bày bảng dễ đọc hơn và cho phép cuộn ngang khi bảng quá rộng.",
+          "label": "Hiển thị bảng nâng cao"
+        },
+        "taskList": {
+          "hint": "Hiển thị danh sách công việc theo cú pháp GitHub. Ô đánh dấu chỉ dùng để xem, không thể bấm để thay đổi.",
+          "label": "Danh sách công việc"
+        }
+      },
+      "mermaidOfficial": "Mermaid chính thức",
+      "official": "Chính thức",
+      "renderer": "Công cụ vẽ sơ đồ"
+    },
+    "reader": {
+      "aboutFontFamily": "Thông tin về phông chữ",
+      "aboutLineHeight": "Thông tin về giãn dòng",
+      "contentWidth": {
+        "label": "Chiều rộng nội dung"
+      },
+      "fontFamilies": {
+        "monoFira": "Chữ đơn cách (Fira Code)",
+        "monospace": "Chữ đơn cách",
+        "sansHumanist": "Chữ không chân (Humanist)",
+        "sansNeutral": "Chữ không chân (trung tính)",
+        "sansOpenSans": "Chữ không chân (Open Sans)",
+        "sansRoboto": "Chữ không chân (Roboto / Arial)",
+        "sansVietnamese": "Chữ không chân (dễ đọc / tiếng Việt)",
+        "serifCharter": "Chữ có chân (Charter)",
+        "serifGeorgia": "Chữ có chân (Georgia)",
+        "serifMerriweather": "Chữ có chân (Merriweather)",
+        "serifNewYork": "Chữ có chân (New York / Georgia)",
+        "serifSource": "Chữ có chân (Source Serif)",
+        "serifVietnamese": "Chữ có chân (Noto / tiếng Việt)",
+        "system": "Phông chữ hệ thống"
+      },
+      "fontFamily": {
+        "label": "Phông chữ"
+      },
+      "fontSize": {
+        "label": "Cỡ chữ"
+      },
+      "lineHeight": {
+        "label": "Giãn dòng"
+      },
+      "outline": {
+        "label": "Hiện mục lục"
+      },
+      "resetReaderUI": "Khôi phục giao diện đọc",
+      "resetReaderUISettingsToDefaultValues": "Khôi phục cài đặt giao diện đọc về mặc định?",
+      "theme": "Giao diện",
+      "unitlessLineSpacingMultiplierEG17": "Đặt giãn dòng theo cỡ chữ. Ví dụ: 1,7 tương đương 170% cỡ chữ. Giá trị này không tính bằng pixel.",
+      "usesFontsInstalledOnYourSystemPresetsList": "Dùng các phông chữ đã cài trên máy. Nếu phông đầu tiên không có, trình xem tự chuyển sang phông tiếp theo trong danh sách."
+    },
+    "tabs": {
+      "editor": {
+        "label": "Soạn thảo",
+        "title": "Tùy chọn soạn thảo"
+      },
+      "history": {
+        "label": "Gần đây",
+        "title": "Tệp gần đây"
+      },
+      "plugins": {
+        "label": "Tính năng",
+        "title": "Tính năng Markdown"
+      },
+      "reader": {
+        "label": "Đọc",
+        "title": "Giao diện đọc"
+      }
+    }
+  },
+  "services": {
+    "fileHistory": {
+      "localFileHistoryStorageIsUnavailable": "Không thể truy cập danh sách tệp đã mở trên thiết bị này.",
+      "tabsAPIIsUnavailable": "Không thể truy cập các thẻ trình duyệt."
+    },
+    "messageRouter": {
+      "enableAllowAccessToFileURLsForMarkdown": "Bật “Cho phép truy cập vào các URL của tệp” cho Markdown Plus (chrome://extensions → Markdown Plus → Chi tiết)."
+    },
+    "offscreenFetch": {
+      "chromeOffscreenIsNotAvailableChrome109Required": "Tính năng xử lý nền không khả dụng. Cần Chrome 109 trở lên.",
+      "offscreenFetchTimedOut": "Đã hết thời gian chờ đọc tệp trong nền"
+    },
+    "optionsPage": {
+      "settingsPageIsUnavailableInThisBrowser": "Không thể mở trang Cài đặt trong trình duyệt này."
+    },
+    "themeAsset": {
+      "themeAssetDatabaseRequestFailed": "Không thể truy cập cơ sở dữ liệu tài nguyên giao diện.",
+      "themeAssetStorageIsUnavailable": "Không thể truy cập nơi lưu dữ liệu giao diện.",
+      "themeAssetTransactionFailed": "Không thể hoàn tất thao tác với tài nguyên giao diện."
+    }
+  }
+}

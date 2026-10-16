@@ -1,3 +1,5 @@
+import { formatNumber, t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React from 'react'
 
 /**
@@ -15,33 +17,30 @@ export function StatusBar({
   saveStatus = 'saved',
   targetPath = ''
 }) {
+  useLocale()
   const saveLabel =
     saveStatus === 'saving'
-      ? 'Saving\u2026'
+      ? 'common.status.saving'
       : saveStatus === 'modified'
-        ? 'Modified'
-        : 'Saved'
+        ? 'common.status.modified'
+        : 'common.status.saved'
 
   return (
     <div className="mdp-status-bar" role="status" aria-live="polite" aria-atomic="true">
-      <span className="mdp-status-bar__item">
-        Ln {line}, Col {col}
+      <span className="mdp-status-bar__item">{t('viewer.editor.statusBar.ln')}{' '}{formatNumber(line)}{t('viewer.editor.statusBar.col')}{' '}{formatNumber(col)}
       </span>
       <span className="mdp-status-bar__sep" aria-hidden="true" />
       <span className="mdp-status-bar__item">
-        {wordCount.toLocaleString()} {wordCount === 1 ? 'word' : 'words'}
+        {t('viewer.statistics.words', { count: wordCount })}
       </span>
       <span className="mdp-status-bar__sep" aria-hidden="true" />
       <span
         className={`mdp-status-bar__item mdp-status-bar__save mdp-status-bar__save--${saveStatus}`}
       >
-        {saveLabel}
+        {t(saveLabel)}
       </span>
-      {targetPath ? (
-        <span className="mdp-status-bar__target" title={targetPath}>
-          Target: {targetPath}
-        </span>
-      ) : null}
+      {targetPath ? <span className="mdp-status-bar__target" title={targetPath}>{t('viewer.editor.statusBar.target')}{' '}{targetPath}
+        </span> : null}
     </div>
   )
 }

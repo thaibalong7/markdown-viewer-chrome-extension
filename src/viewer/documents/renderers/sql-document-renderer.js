@@ -5,7 +5,7 @@ import { highlightCode } from '../../core/shiki-highlighter.js'
 import { renderIntoElement, sanitizeHtml } from '../../core/renderer.js'
 
 function throwIfAborted(signal) {
-  if (signal?.aborted) throw new DOMException('Document render was aborted.', 'AbortError')
+  if (signal?.aborted) throw new DOMException("Document render was aborted.", 'AbortError')
 }
 
 
@@ -28,13 +28,13 @@ export async function render({ loadedDocument, articleEl, settings, signal }) {
 
   clearContentUi(articleEl)
   if (loadedDocument?.loadError) {
-    mountDocumentState(articleEl, { className: 'mdp-sql-document__state mdp-sql-document__state--error', message: loadedDocument.loadError.message || 'Could not display this SQL file.', role: 'alert' })
+    mountDocumentState(articleEl, { className: 'mdp-sql-document__state mdp-sql-document__state--error', message: loadedDocument.loadError.message || 'errors.viewer.documents.sql.displayThisSQLFile', role: 'alert' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 
   const source = String(loadedDocument?.text ?? '')
   if (!source) {
-    mountDocumentState(articleEl, { className: 'mdp-sql-document__state mdp-sql-document__state--empty', message: 'This SQL file is empty.' })
+    mountDocumentState(articleEl, { className: 'mdp-sql-document__state mdp-sql-document__state--empty', message: 'viewer.documents.sql.sqlFileIsEmpty' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 

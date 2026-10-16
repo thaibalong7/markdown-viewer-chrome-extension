@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../i18n/index.js'
 /**
  * @param {string} url
  * @returns {string}
@@ -23,16 +24,16 @@ export function shortenPath(url) {
  * @returns {string}
  */
 export function getDirectoryLabelFromUrl(fileUrl) {
-  if (!fileUrl) return 'Current folder'
+  if (!fileUrl) return ''
   try {
     const parsed = new URL(fileUrl)
-    if (parsed.protocol !== 'file:') return 'Current folder'
+    if (parsed.protocol !== 'file:') return ''
     const segments = parsed.pathname.split('/').filter(Boolean)
     if (segments.length <= 1) return '/'
     const folderPath = segments.slice(0, -1).join('/')
     return `/${decodeURIComponent(folderPath)}`
   } catch {
-    return 'Current folder'
+    return ''
   }
 }
 
@@ -70,13 +71,17 @@ export function buildDepthNotice(stats, maxScanDepth) {
   if (stats?.skippedByDepth > 0) {
     parts.push(
       maxScanDepth != null
-        ? `Some folders were not scanned (depth limit: ${maxScanDepth}).`
-        : 'Some folders were not scanned (depth limit).'
+        ? localizedMessage('viewer.explorer.scan.depthLimitWithValue', { 0: maxScanDepth })
+        : localizedMessage('viewer.explorer.scan.depthLimit')
     )
   }
-  if (stats?.hitFileLimit) parts.push('Scan stopped: file limit reached.')
-  if (stats?.hitFolderLimit) parts.push('Scan stopped: folder limit reached.')
-  return parts.join(' ')
+  if (stats?.hitFileLimit) parts.push(localizedMessage('viewer.explorer.scan.fileLimit'))
+  if (stats?.hitFolderLimit) parts.push(localizedMessage('viewer.explorer.scan.folderLimit'))
+  return parts.length ? localizedMessage('viewer.explorer.scan.notices', {
+    depth: stats?.skippedByDepth > 0 ? parts.shift() : '',
+    files: stats?.hitFileLimit ? parts.shift() : '',
+    folders: stats?.hitFolderLimit ? parts.shift() : ''
+  }) : ''
 }
 
 /**

@@ -134,7 +134,7 @@ export function createSiblingScanRunner(deps) {
           scannedFiles: 0,
           scannedFolders: 0,
           currentFolder: scanRootDirUrl,
-          progressHeadline: 'Scanning folder tree…',
+          progressHeadline: 'viewer.explorer.scanSession.scanningFolderTree',
           filesContext: buildFilesContext({ scanPhase: 'scanning' })
         })
 

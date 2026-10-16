@@ -1,7 +1,9 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React, { useMemo, useState } from 'react'
 import { Button } from '../../shared/react/Button.jsx'
 import {
-  BUILT_IN_THEME_LABELS,
+  BUILT_IN_THEME_LABEL_KEYS,
   createCustomThemeDraft,
   getThemeOptions,
   MAX_CUSTOM_THEMES,
@@ -11,10 +13,10 @@ import {
 import { ThemeEditor } from './ThemeEditor.jsx'
 
 function backgroundLabel(background = {}) {
-  if (background.type === 'solid') return 'Solid background'
-  if (background.type === 'gradient') return 'Gradient background'
-  if (background.type === 'image') return 'Local image background'
-  return 'Theme color background'
+  if (background.type === 'solid') return 'options.themes.library.solidBackground'
+  if (background.type === 'gradient') return 'options.themes.library.gradientBackground'
+  if (background.type === 'image') return 'options.themes.library.localImageBackground'
+  return 'options.themes.library.themeColorBackground'
 }
 
 function ThemeSwatches({ colors }) {
@@ -29,6 +31,7 @@ function ThemeSwatches({ colors }) {
 }
 
 function ThemeCard({ theme, settings, disabled, onActivate, onDelete, onEdit }) {
+  useLocale()
   const resolved = resolveThemeById(settings, theme.id)
   const active = settings.theme.activeId === theme.id
   return (
@@ -39,22 +42,17 @@ function ThemeCard({ theme, settings, disabled, onActivate, onDelete, onEdit }) 
       <div className="settings-theme-card__content">
         <div className="settings-theme-card__title-row">
           <h3>{theme.name}</h3>
-          {active ? <span className="settings-theme-card__active">Active</span> : null}
+          {active ? <span className="settings-theme-card__active">{t('common.status.active')}</span> : null}
         </div>
-        <p>
-          Base: {BUILT_IN_THEME_LABELS[theme.baseId] || theme.baseId}
+        <p>{t('options.themes.preview.base')}{' '}{t(BUILT_IN_THEME_LABEL_KEYS[theme.baseId] || theme.baseId)}
           <span aria-hidden="true"> · </span>
-          {backgroundLabel(theme.background)}
+          {t(backgroundLabel(theme.background))}
         </p>
       </div>
       <div className="settings-theme-card__actions">
-        {!active ? (
-          <Button variant="quiet" disabled={disabled} onClick={() => onActivate(theme.id)}>
-            Use theme
-          </Button>
-        ) : null}
-        <Button disabled={disabled} onClick={() => onEdit(theme)}>Edit</Button>
-        <Button variant="danger" disabled={disabled} onClick={() => onDelete(theme)}>Delete</Button>
+        {!active ? <Button variant="quiet" disabled={disabled} onClick={() => onActivate(theme.id)}>{t('options.themes.library.useTheme')}</Button> : null}
+        <Button disabled={disabled} onClick={() => onEdit(theme)}>{t('common.actions.edit')}</Button>
+        <Button variant="danger" disabled={disabled} onClick={() => onDelete(theme)}>{t('common.actions.delete')}</Button>
       </div>
     </article>
   )
@@ -67,6 +65,7 @@ export function ThemeSettings({
   onSaveTheme,
   onDeleteTheme
 }) {
+  useLocale()
   const options = useMemo(() => getThemeOptions(settings), [settings])
   const [editorTheme, setEditorTheme] = useState(null)
   const saving = busyAction !== ''
@@ -76,14 +75,14 @@ export function ThemeSettings({
   function createTheme() {
     if (atThemeLimit) return
     const activeTheme = resolveActiveTheme(settings)
-    setEditorTheme(createCustomThemeDraft(activeTheme.baseId))
+    setEditorTheme(createCustomThemeDraft(activeTheme.baseId, t('options.themes.library.myTheme')))
   }
 
   async function deleteTheme(theme) {
     const activeMessage = settings.theme.activeId === theme.id
-      ? ` It is active, so ${BUILT_IN_THEME_LABELS[theme.baseId] || theme.baseId} will become active instead.`
+      ? t('options.themes.library.itIsActiveSoValueWillBecomeActive', { 0: t(BUILT_IN_THEME_LABEL_KEYS[theme.baseId] || theme.baseId) })
       : ''
-    if (!window.confirm(`Delete “${theme.name}”? This cannot be undone.${activeMessage}`)) return
+    if (!window.confirm(t('options.themes.library.deleteValueThisCannotBeUndoneValue', { 0: theme.name, 1: activeMessage }))) return
     await onDeleteTheme(theme.id)
   }
 
@@ -104,22 +103,20 @@ export function ThemeSettings({
     <section className="settings-section settings-section--themes" aria-labelledby="themes-title">
       <div className="settings-section__heading settings-theme-library__heading">
         <div>
-          <p className="settings-eyebrow">Appearance</p>
-          <h2 id="themes-title">Themes</h2>
-          <p>Choose the reader theme in use, then manage your reusable custom themes.</p>
+          <p className="settings-eyebrow">{t('options.themes.library.appearance')}</p>
+          <h2 id="themes-title">{t('options.themes.title')}</h2>
+          <p>{t('options.themes.library.chooseTheReaderThemeInUseThenManage')}</p>
         </div>
-        <Button variant="primary" disabled={saving || atThemeLimit} onClick={createTheme}>
-          Add custom theme
-        </Button>
+        <Button variant="primary" disabled={saving || atThemeLimit} onClick={createTheme}>{t('options.themes.library.addCustomTheme')}</Button>
       </div>
 
       <div className="mdp-ui-card settings-theme-active-card">
         <div className="settings-theme-active-card__copy">
-          <strong>Active reader theme</strong>
-          <span>This selection is also shown in the extension Popup.</span>
+          <strong>{t('options.themes.library.activeReaderTheme')}</strong>
+          <span>{t('options.themes.library.selectionIsAlsoShownInTheExtensionPopup')}</span>
         </div>
         <div className="mdp-ui-field">
-          <label className="mdp-ui-visually-hidden" htmlFor="settings-active-theme">Active theme</label>
+          <label className="mdp-ui-visually-hidden" htmlFor="settings-active-theme">{t('options.themes.library.activeTheme')}</label>
           <select
             id="settings-active-theme"
             className="mdp-ui-select"
@@ -127,18 +124,16 @@ export function ThemeSettings({
             disabled={saving}
             onChange={(event) => void onActiveThemeChange(event.target.value)}
           >
-            <optgroup label="Built-in themes">
+            <optgroup label={t('options.themes.library.builtInThemes')}>
               {options.builtIn.map((theme) => (
-                <option key={theme.id} value={theme.id}>{theme.name}</option>
+                <option key={theme.id} value={theme.id}>{t(theme.nameKey || theme.name)}</option>
               ))}
             </optgroup>
-            {options.custom.length ? (
-              <optgroup label="My themes">
+            {options.custom.length ? <optgroup label={t('options.themes.library.myThemes')}>
                 {options.custom.map((theme) => (
                   <option key={theme.id} value={theme.id}>{theme.name}</option>
                 ))}
-              </optgroup>
-            ) : null}
+              </optgroup> : null}
           </select>
         </div>
       </div>
@@ -146,14 +141,13 @@ export function ThemeSettings({
       <div className="settings-theme-library">
         <div className="settings-theme-library__summary">
           <div>
-            <h3>My themes</h3>
-            <p>Custom themes can be selected in both Settings and the Popup.</p>
+            <h3>{t('options.themes.library.myThemes')}</h3>
+            <p>{t('options.themes.library.customThemesCanBeSelectedInBothSettings')}</p>
           </div>
           <span>{customThemes.length} / {MAX_CUSTOM_THEMES}</span>
         </div>
 
-        {customThemes.length ? (
-          <div className="settings-theme-list">
+        {customThemes.length ? <div className="settings-theme-list">
             {customThemes.map((theme) => (
               <ThemeCard
                 key={theme.id}
@@ -165,25 +159,18 @@ export function ThemeSettings({
                 onDelete={(selectedTheme) => void deleteTheme(selectedTheme)}
               />
             ))}
-          </div>
-        ) : (
-          <div className="mdp-ui-card settings-theme-library__empty">
+          </div> : <div className="mdp-ui-card settings-theme-library__empty">
             <div className="settings-theme-library__empty-visual" aria-hidden="true">
               <i /><i /><i />
             </div>
             <div>
-              <strong>No custom themes yet</strong>
-              <p>Create one from your active theme, then adjust its colors and background in Theme Studio.</p>
+              <strong>{t('options.themes.library.noCustomThemesYet')}</strong>
+              <p>{t('options.themes.library.createOneFromYourActiveThemeThenAdjust')}</p>
             </div>
-            <Button variant="primary" disabled={saving} onClick={createTheme}>Create your first theme</Button>
-          </div>
-        )}
+            <Button variant="primary" disabled={saving} onClick={createTheme}>{t('options.themes.library.createYourFirstTheme')}</Button>
+          </div>}
 
-        {atThemeLimit ? (
-          <p className="settings-theme-library__limit" role="status">
-            You have reached the limit of {MAX_CUSTOM_THEMES} custom themes. Delete one before creating another.
-          </p>
-        ) : null}
+        {atThemeLimit ? <p className="settings-theme-library__limit" role="status">{t('options.themes.library.youHaveReachedTheLimitOf')}{' '}{MAX_CUSTOM_THEMES}{' '}{t('options.themes.library.customThemesDeleteOneBeforeCreatingAnother')}</p> : null}
       </div>
     </section>
   )

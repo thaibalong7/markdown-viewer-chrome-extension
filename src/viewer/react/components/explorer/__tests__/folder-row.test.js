@@ -1,3 +1,5 @@
+import { t } from '../../../../../i18n/index.js'
+vi.mock('../../../../../i18n/react.js', () => ({ useLocale: () => 'en' }))
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
@@ -45,7 +47,7 @@ describe('Files folder count and More actions', () => {
     m.menu.props.onToggle()
     expect(m.onToggleFolder).not.toHaveBeenCalled()
     const item = m.menu.props.items[0]
-    expect(item.label).toBe('Expand folder')
+    expect(t(item.label, {}, 'en')).toBe('Expand folder')
     expect(item.restoreFocus).toBe(false)
     item.onClick()
     expect(m.onToggleFolder).toHaveBeenCalledExactlyOnceWith(node.href)
@@ -60,6 +62,6 @@ describe('Files folder count and More actions', () => {
     vi.mocked(copyFolderRowText).mockRejectedValueOnce(new Error('denied'))
     m.menu.props.items[1].onClick()
     await Promise.resolve()
-    expect(showToast).toHaveBeenCalledWith('Could not copy folder name', { variant: 'error' })
+    expect(showToast).toHaveBeenCalledWith('errors.viewer.explorer.folder.copyFolderName', { variant: 'error' })
   })
 })

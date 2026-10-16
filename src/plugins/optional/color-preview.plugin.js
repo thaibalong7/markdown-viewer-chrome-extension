@@ -1,3 +1,4 @@
+import { t } from '../../i18n/index.js'
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { findColors } from './color-values.js'
 import { createColorPopover } from '../../viewer/colors/color-popover-controller.js'
@@ -20,7 +21,7 @@ function decorate(nodes, matches, doc, swatches) {
     trigger.type = 'button'
     trigger.className = 'mdp-color-swatch'
     trigger.setAttribute('data-mdp-color', match.source)
-    trigger.setAttribute('aria-label', `Copy color ${match.source}`)
+    trigger.setAttribute('aria-label', t('plugins.colorPreview.copyColorValue', { 0: match.source }))
     trigger.setAttribute('aria-keyshortcuts', 'ArrowDown')
     trigger.setAttribute('aria-haspopup', 'dialog')
     trigger.setAttribute('aria-expanded', 'false')

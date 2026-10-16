@@ -1,0 +1,4 @@
+interface:
+  display_name: "Markdown Plus: Add Language"
+  short_description: "Add a locale with natural, context-aware UI copy"
+  default_prompt: "Use $mdp-dev-add-language to add the requested interface language and review every translation in context."

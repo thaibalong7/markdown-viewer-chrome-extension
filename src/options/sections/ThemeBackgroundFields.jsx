@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { Switch } from '../../shared/react/Switch.jsx'
 import {
@@ -7,6 +9,8 @@ import {
   BACKGROUND_TYPES,
   DEFAULT_THEME_BACKGROUND
 } from '../../theme/backgrounds.js'
+
+const IMAGE_LABELS = { cover: 'options.themes.background.fillCanvas', contain: 'options.themes.background.fitWithinCanvas', auto: 'options.themes.background.originalSize', center: 'options.themes.background.center', top: 'options.themes.background.top', bottom: 'options.themes.background.bottom', left: 'options.themes.background.left', right: 'options.themes.background.right' }
 
 function colorPickerValue(value, fallback = '#000000') {
   return /^#[0-9a-f]{6}$/i.test(String(value || '')) ? value : fallback
@@ -52,6 +56,7 @@ export function ThemeBackgroundFields({
   onBackgroundChange,
   onImageFileChange
 }) {
+  useLocale()
   const background = draft.background
 
   function update(patch) {
@@ -66,23 +71,22 @@ export function ThemeBackgroundFields({
   return (
     <div className="settings-theme-form-grid">
       <label className="mdp-ui-field">
-        <span className="mdp-ui-field__label">Background type</span>
+        <span className="mdp-ui-field__label">{t('options.themes.background.backgroundType')}</span>
         <select
           className="mdp-ui-select"
           value={background.type}
           disabled={disabled}
           onChange={(event) => updateType(event.target.value)}
         >
-          <option value={BACKGROUND_TYPES.NONE}>Theme color only</option>
-          <option value={BACKGROUND_TYPES.SOLID}>Solid scene</option>
-          <option value={BACKGROUND_TYPES.GRADIENT}>Gradient</option>
-          <option value={BACKGROUND_TYPES.IMAGE}>Local image or animation</option>
+          <option value={BACKGROUND_TYPES.NONE}>{t('options.themes.background.themeColorOnly')}</option>
+          <option value={BACKGROUND_TYPES.SOLID}>{t('options.themes.background.solidScene')}</option>
+          <option value={BACKGROUND_TYPES.GRADIENT}>{t('options.themes.background.gradient')}</option>
+          <option value={BACKGROUND_TYPES.IMAGE}>{t('options.themes.background.localImageOrAnimation')}</option>
         </select>
       </label>
 
-      {background.type === BACKGROUND_TYPES.SOLID ? (
-        <label className="mdp-ui-field">
-          <span className="mdp-ui-field__label">Scene color</span>
+      {background.type === BACKGROUND_TYPES.SOLID ? <label className="mdp-ui-field">
+          <span className="mdp-ui-field__label">{t('options.themes.background.sceneColor')}</span>
           <input
             type="color"
             className="settings-theme-wide-color"
@@ -90,13 +94,11 @@ export function ThemeBackgroundFields({
             disabled={disabled}
             onChange={(event) => update({ color: event.target.value })}
           />
-        </label>
-      ) : null}
+        </label> : null}
 
-      {background.type === BACKGROUND_TYPES.GRADIENT ? (
-        <>
+      {background.type === BACKGROUND_TYPES.GRADIENT ? <>
           <label className="mdp-ui-field">
-            <span className="mdp-ui-field__label">Start color</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.startColor')}</span>
             <input
               type="color"
               className="settings-theme-wide-color"
@@ -106,7 +108,7 @@ export function ThemeBackgroundFields({
             />
           </label>
           <label className="mdp-ui-field">
-            <span className="mdp-ui-field__label">End color</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.endColor')}</span>
             <input
               type="color"
               className="settings-theme-wide-color"
@@ -116,7 +118,7 @@ export function ThemeBackgroundFields({
             />
           </label>
           <label className="mdp-ui-field">
-            <span className="mdp-ui-field__label">Angle (0–360°)</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.angle0360')}</span>
             <input
               type="number"
               className="mdp-ui-input mdp-ui-input--technical"
@@ -127,13 +129,11 @@ export function ThemeBackgroundFields({
               onChange={(event) => update({ angle: event.target.value })}
             />
           </label>
-        </>
-      ) : null}
+        </> : null}
 
-      {background.type === BACKGROUND_TYPES.IMAGE ? (
-        <>
+      {background.type === BACKGROUND_TYPES.IMAGE ? <>
           <label className="mdp-ui-field settings-theme-image-field">
-            <span className="mdp-ui-field__label">Image file</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.imageFile')}</span>
             <input
               className="mdp-ui-input"
               type="file"
@@ -142,11 +142,11 @@ export function ThemeBackgroundFields({
               onChange={(event) => onImageFileChange(event.target.files?.[0] || null)}
             />
             <span className="mdp-ui-field__helper">
-              {imageFile?.name || (background.assetId ? 'Stored on this device' : 'PNG, JPEG, WebP, AVIF, GIF, or APNG; up to 5 MiB.')}
+              {imageFile?.name || t(background.assetId ? 'options.themes.background.storedOnThisDevice' : 'options.themes.background.pngJPEGWebPAVIFGIFOrAPNGUp')}
             </span>
           </label>
           <label className="mdp-ui-field">
-            <span className="mdp-ui-field__label">Image fit</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.imageFit')}</span>
             <select
               className="mdp-ui-select"
               value={background.fit}
@@ -154,12 +154,12 @@ export function ThemeBackgroundFields({
               onChange={(event) => update({ fit: event.target.value })}
             >
               {Object.values(BACKGROUND_IMAGE_FITS).map((value) => (
-                <option key={value} value={value}>{value}</option>
+                <option key={value} value={value}>{t(IMAGE_LABELS[value])}</option>
               ))}
             </select>
           </label>
           <label className="mdp-ui-field">
-            <span className="mdp-ui-field__label">Image position</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.imagePosition')}</span>
             <select
               className="mdp-ui-select"
               value={background.position}
@@ -167,43 +167,41 @@ export function ThemeBackgroundFields({
               onChange={(event) => update({ position: event.target.value })}
             >
               {Object.values(BACKGROUND_IMAGE_POSITIONS).map((value) => (
-                <option key={value} value={value}>{value}</option>
+                <option key={value} value={value}>{t(IMAGE_LABELS[value])}</option>
               ))}
             </select>
           </label>
           <div className="settings-theme-switch-field">
             <div>
-              <strong>Repeat image</strong>
-              <span>Tile the image instead of showing one canvas.</span>
+              <strong>{t('options.themes.background.repeatImage')}</strong>
+              <span>{t('options.themes.background.tileTheImageInsteadOfShowingOneCanvas')}</span>
             </div>
             <Switch
               id="settings-theme-image-repeat"
-              label="Repeat image"
+              label={t('options.themes.background.repeatImage')}
               checked={background.repeat === true}
               disabled={disabled}
               onChange={(event) => update({ repeat: event.target.checked })}
             />
           </div>
-        </>
-      ) : null}
+        </> : null}
 
-      {background.type !== BACKGROUND_TYPES.NONE ? (
-        <>
+      {background.type !== BACKGROUND_TYPES.NONE ? <>
           <label className="mdp-ui-field">
-            <span className="mdp-ui-field__label">Motion</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.motion')}</span>
             <select
               className="mdp-ui-select"
               value={background.motion}
               disabled={disabled}
               onChange={(event) => update({ motion: event.target.value })}
             >
-              <option value={BACKGROUND_MOTION.SYSTEM}>Follow system</option>
-              <option value={BACKGROUND_MOTION.ON}>Animate</option>
-              <option value={BACKGROUND_MOTION.OFF}>Still</option>
+              <option value={BACKGROUND_MOTION.SYSTEM}>{t('options.themes.background.followSystem')}</option>
+              <option value={BACKGROUND_MOTION.ON}>{t('options.themes.background.animate')}</option>
+              <option value={BACKGROUND_MOTION.OFF}>{t('options.themes.background.still')}</option>
             </select>
           </label>
           <label className="mdp-ui-field">
-            <span className="mdp-ui-field__label">Dimming (0–0.8)</span>
+            <span className="mdp-ui-field__label">{t('options.themes.background.dimming008')}</span>
             <input
               className="mdp-ui-input mdp-ui-input--technical"
               type="number"
@@ -215,8 +213,7 @@ export function ThemeBackgroundFields({
               onChange={(event) => update({ overlayOpacity: event.target.value })}
             />
           </label>
-        </>
-      ) : null}
+        </> : null}
     </div>
   )
 }

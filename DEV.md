@@ -61,6 +61,7 @@ Sau khi thay đổi entry point, manifest, service worker hoặc dependency, hã
 - **Settings:** `src/options/index.jsx` mount `OptionsApp.jsx` với General, Themes, Files & Workspace, Privacy & Data và Advanced sections.
 - **Background:** `src/background/service-worker.js` bọc response envelope và chuyển route thường sang `message-router.js`; offscreen fetch wire messages được xử lý riêng.
 - **Messaging/settings:** message type tập trung tại `src/messaging/index.js`; defaults, schema, migration và persistence nằm trong `src/settings/`.
+- **Ngôn ngữ giao diện:** `src/i18n/` sở hữu catalog theo key phân cấp, chọn ngôn ngữ, định dạng và cập nhật trực tiếp; `public/_locales/` dành cho thông tin extension do Chrome chọn ngôn ngữ. Xem [Interface languages](docs/internationalization.md) và [quy ước tiếng Việt](docs/vietnamese-localization.md).
 
 Viewer SCSS nằm trong `src/viewer/styles/**/*.scss` và được import bằng `?inline` từ `src/content/viewer-loader.js`. `src/content/host-print.scss` xử lý print ở host page. Không thêm hoặc sửa CSS sinh ra trong `dist/`.
 
@@ -110,6 +111,7 @@ npm run analyze
 | Shiki, Mermaid, Math, editor, plugin, dependency | Thêm `npm run size:report` |
 | Chrome API, file picker, history, Back/Forward, print/export | Load `dist/` và smoke-test thủ công |
 | Watch mode, Change Review, focus/keyboard và đọc file ngoài | `npm test`, `npm run build` và smoke-test extension unpacked |
+| Bản dịch / thêm ngôn ngữ giao diện | Kiểm thử i18n, đọc bản dịch theo từng thành phần và kiểm tra giao diện; thêm locale runtime cần toàn bộ test, build và so sánh size theo [hướng dẫn i18n](docs/internationalization.md#translation-review-and-verification) |
 
 Checklist smoke test thường dùng:
 
@@ -123,6 +125,11 @@ Checklist smoke test thường dùng:
 - Đổi built-in/custom theme, syntax theme và background; reload tab để kiểm tra persistence.
 - Print từng format phù hợp; export HTML/Word từ Markdown và kiểm tra file tải xuống.
 - Kiểm tra Popup recent files, Settings import/export/reset và trạng thái khi file-URL access bị tắt.
+- Đổi ngôn ngữ ở **Cài đặt → Chung → Ngôn ngữ giao diện**, thử tự động/Anh/Việt và đồng bộ các trang đang mở. Giữ nguyên bản nháp, undo và nội dung tài liệu khi đổi; kiểm tra cả tooltip, thông báo đang hiện, tìm/thay thế và lời nhắc chọn tệp trong vùng nội dung. Xem [ma trận i18n](docs/internationalization.md#translation-review-and-verification) để kiểm tra đủ các bề mặt.
+
+## Thêm ngôn ngữ giao diện
+
+Dùng shared skill [mdp-dev-add-language](.agents/skills/mdp-dev-add-language/SKILL.md), ví dụ: “Dùng $mdp-dev-add-language để thêm tiếng Nhật cho giao diện Markdown Plus”. Skill bao gồm tích hợp locale, đối chiếu thuật ngữ từ công cụ dùng ngôn ngữ đích, rà soát từng bản dịch cho đúng nghĩa và tự nhiên, cùng các bước kiểm tra. Key là nhãn phân cấp ổn định; không dùng câu tiếng Anh làm key. Khi chỉ sửa vài câu tiếng Việt, theo [quy ước biên tập](docs/vietnamese-localization.md) và kiểm tra những thành phần bị ảnh hưởng.
 
 ## Troubleshooting
 
@@ -135,6 +142,12 @@ Kiểm tra Chrome extension Details đã bật **Allow access to file URLs**, ex
 Chờ Vite/CRXJS build xong, reload extension tại `chrome://extensions`, rồi reload tab local file. Với service worker, có thể cần đóng/mở lại Popup hoặc Settings sau reload.
 
 Nếu source của tài liệu đang mở không theo kịp file trên disk, kiểm tra **Settings → General → Document updates**. Chế độ Off chỉ đọc khi bấm **Check now**; workspace mở bằng fallback `webkitdirectory` cần được chọn lại vì chỉ giữ snapshot `File`, không có handle để live reread.
+
+### Giao diện hiện key ngôn ngữ
+
+Nếu một control hiện chuỗi như `viewer.explorer.header.openFile`, kiểm tra key có tồn tại trong catalog tiếng Anh và ngôn ngữ đang chọn, rồi kiểm tra nơi hiển thị có gọi `t()` hoặc nhận message descriptor đúng không. `t()` trả nguyên key khi không tìm thấy; sửa câu chữ tiếng Anh không phải cách đăng ký key mới.
+
+Riêng lời nhắc chọn tệp trong vùng nội dung, kiểm tra `documentSessionController.showPlaceholder()` giữ thông báo ở `placeholderMessage` và để `text` rỗng; renderer phải chuyển sang `DocumentState`. Không dịch toàn bộ article để che lỗi vì tài liệu thật có thể chứa đúng key đó. Kiểm thử hồi quy nằm trong `src/i18n/__tests__/localized-ui.test.js` và các kiểm thử document session/Markdown renderer.
 
 ### Cảnh báo `rollupOptions` và `rolldownOptions`
 

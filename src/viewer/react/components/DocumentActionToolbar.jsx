@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useLayoutEffect, useRef } from 'react'
 import { DocumentActionIcon } from './DocumentActionIcon.jsx'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
@@ -7,6 +9,7 @@ import { DocumentActionsMenu } from './DocumentActionsMenu.jsx'
 import { getOverflowDocumentActions, partitionDocumentActions } from './document-actions-model.js'
 
 export function DocumentActionToolbar({ actions, visible, openMenu, onMenuChange, onLayoutChange }) {
+  useLocale()
   const toolbarRef = useRef(null)
   const focusedId = useRef(null)
   const metrics = useDocumentActionsLayout(toolbarRef)
@@ -33,7 +36,7 @@ export function DocumentActionToolbar({ actions, visible, openMenu, onMenuChange
   }, [layoutKey, onLayoutChange, onMenuChange])
 
   return <div ref={toolbarRef} className="mdp-floating-actions"
-    role="group" aria-label="Document actions" hidden={!visible} aria-hidden={!visible}
+    role="group" aria-label={t('viewer.actions.toolbar.documentActions')} hidden={!visible} aria-hidden={!visible}
     onFocusCapture={event => { focusedId.current = event.target.closest('[data-mdp-action]')?.dataset.mdpAction }}
     onBlurCapture={event => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) focusedId.current = null }}
     onClickCapture={event => {
@@ -45,8 +48,8 @@ export function DocumentActionToolbar({ actions, visible, openMenu, onMenuChange
         {action.control || (action.items ? <DocumentActionsMenu action={action} items={action.items}
           open={openMenu === action.id} onOpenChange={onMenuChange} /> :
           <IconButton ref={action.buttonRef} className={`mdp-fab-btn ${action.className || ''}`}
-            activeClassName="mdp-fab-btn--active" tooltip={action.tooltip || action.label}
-            showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS} aria-label={action.label}
+            activeClassName="mdp-fab-btn--active" tooltip={t(action.tooltip || action.label)}
+            showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS} aria-label={t(action.label)}
             aria-busy={action.busy || undefined} pressed={action.pressed} disabled={action.disabled}
             onClick={event => { onMenuChange(null); action.onClick?.(event) }}>
             <DocumentActionIcon action={action} className="mdp-fab-btn__icon" />
@@ -54,7 +57,7 @@ export function DocumentActionToolbar({ actions, visible, openMenu, onMenuChange
       </div>
     </React.Fragment>)}
     {overflow.length > 0 && <div className="mdp-document-actions__slot" data-mdp-action="more">
-      <DocumentActionsMenu action={{ id: 'more', icon: 'more', label: 'More document actions' }}
+      <DocumentActionsMenu action={{ id: 'more', icon: 'more', label: 'viewer.actions.toolbar.moreDocumentActions' }}
         items={getOverflowDocumentActions(overflow)} open={openMenu === 'more'} onOpenChange={onMenuChange} />
     </div>}
   </div>

@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 
 export function Spinner() {
@@ -13,6 +15,7 @@ export function LoadingState({
   label,
   className = ''
 }) {
+  useLocale()
   return (
     <div
       className={`mdp-ui-loading-state ${className}`.trim()}
@@ -21,7 +24,7 @@ export function LoadingState({
       aria-live="polite"
     >
       <Spinner />
-      <span>{label}</span>
+      <span>{t(label)}</span>
     </div>
   )
 }

@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React, { useRef } from 'react'
 import { Button } from '../../shared/react/Button.jsx'
 import { Notice } from '../../shared/react/Notice.jsx'
@@ -17,6 +19,7 @@ export function AdvancedSettings({
   onImport,
   onResetAll
 }) {
+  useLocale()
   const fileInputRef = useRef(null)
   const busy = Boolean(busyAction)
   const definition = DOCUMENT_FIELDS.maxStandaloneTextFileSizeMiB
@@ -25,9 +28,9 @@ export function AdvancedSettings({
   return (
     <section className="settings-section" aria-labelledby="advanced-title">
       <div className="settings-section__heading">
-        <p className="settings-eyebrow">Resources & recovery</p>
-        <h2 id="advanced-title">Advanced</h2>
-        <p>Limit expensive document loads, move settings between browsers, or restore defaults.</p>
+        <p className="settings-eyebrow">{t('options.advanced.resourcesRecovery')}</p>
+        <h2 id="advanced-title">{t('options.advanced.title')}</h2>
+        <p>{t('options.advanced.limitExpensiveDocumentLoadsMoveSettingsBetweenBrowsers')}</p>
       </div>
 
       <form
@@ -41,8 +44,8 @@ export function AdvancedSettings({
         <div className="settings-fields">
           <NumberField
             id={inputId}
-            label={definition.label}
-            helper="Maximum UTF-8 size for standalone .txt, .sql, .dbml, and .mermaid files opened in the viewer. Markdown documents are not affected."
+            label={t(definition.labelKey)}
+            helper='options.advanced.maximumUTF8SizeForStandaloneTxtSql'
             error={fieldError}
             rangeLabel={`${definition.min}–${definition.max} MiB`}
             min={definition.min}
@@ -54,53 +57,44 @@ export function AdvancedSettings({
           />
         </div>
 
-        <Notice variant="warning" title="Large document loads" className="settings-notice">
-          Larger files use more memory and may take longer to render. Changes apply on the next
-          document open and do not reload the current document.
-        </Notice>
+        <Notice variant="warning" title={t('options.advanced.largeDocumentLoads')} className="settings-notice">{t('options.advanced.largerFilesUseMoreMemoryAndMayTake')}</Notice>
 
         <div className="mdp-ui-action-footer">
           <Button
             type="submit"
             variant="primary"
             busy={busyAction === 'documentLimit'}
-            busyLabel="Saving…"
+            busyLabel={t('common.status.saving')}
             disabled={!dirty || busy}
-          >
-            Save changes
-          </Button>
+          >{t('common.actions.saveChanges')}</Button>
           <Button
             variant="quiet"
             onClick={onResetDocumentLimit}
             disabled={busy}
-          >
-            Reset to default
-          </Button>
+          >{t('options.advanced.resetToDefault')}</Button>
         </div>
       </form>
 
       <div className="mdp-ui-card settings-card--secondary">
         <div className="mdp-ui-setting-row settings-action-row">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Export settings</h3>
-            <p className="mdp-ui-setting-row__description">Download the complete, normalized settings object as JSON.</p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.advanced.exportSettings')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.advanced.downloadTheCompleteNormalizedSettingsObjectAsJSON')}</p>
           </div>
           <Button
             busy={busyAction === 'export'}
-            busyLabel="Exporting…"
+            busyLabel={t('options.advanced.exporting')}
             disabled={busy && busyAction !== 'export'}
             onClick={() => void onExport()}
-          >
-            Export JSON
-          </Button>
+          >{t('options.advanced.exportJSON')}</Button>
         </div>
 
         <div className="mdp-ui-divider" />
 
         <div className="mdp-ui-setting-row settings-action-row">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Import settings</h3>
-            <p className="mdp-ui-setting-row__description">The file is fully parsed and validated before any settings are saved.</p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.advanced.importSettings')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.advanced.fileIsFullyParsedAndValidatedBeforeAny')}</p>
           </div>
           <input
             ref={fileInputRef}
@@ -115,35 +109,28 @@ export function AdvancedSettings({
           />
           <Button
             busy={busyAction === 'import'}
-            busyLabel="Importing…"
+            busyLabel={t('options.advanced.importing')}
             disabled={busy && busyAction !== 'import'}
             onClick={() => fileInputRef.current?.click()}
-          >
-            Choose JSON
-          </Button>
+          >{t('options.advanced.chooseJSON')}</Button>
         </div>
 
         <div className="mdp-ui-divider" />
 
         <div className="mdp-ui-setting-row settings-action-row settings-action-row--danger">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Reset all settings</h3>
-            <p className="mdp-ui-setting-row__description">
-              Restore General, Reader, Editor, Plugins, Files & Workspace, Privacy, and document
-              resource preferences. Local recent-file data is cleared separately.
-            </p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.advanced.resetAllSettings')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.advanced.restoreGeneralReaderEditorPluginsFilesWorkspacePrivacy')}</p>
           </div>
           <Button
             variant="danger"
             busy={busyAction === 'resetAll'}
-            busyLabel="Resetting…"
+            busyLabel={t('options.advanced.resetting')}
             disabled={busy && busyAction !== 'resetAll'}
             onClick={() => {
               if (confirmResetAllSettings()) void onResetAll()
             }}
-          >
-            Reset all settings
-          </Button>
+          >{t('options.advanced.resetAllSettings')}</Button>
         </div>
       </div>
     </section>

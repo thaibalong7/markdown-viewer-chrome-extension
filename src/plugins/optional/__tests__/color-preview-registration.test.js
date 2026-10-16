@@ -1,3 +1,4 @@
+import { t } from '../../../i18n/index.js'
 import { describe, expect, it } from 'vitest'
 import { createRenderContext } from '../../../viewer/core/create-render-context.js'
 import { needsFullRender } from '../../../shared/settings-diff.js'
@@ -23,7 +24,7 @@ describe('color preview lifecycle and settings', () => {
   it('persists the toggle and describes it in the existing Popup plugin controls', () => {
     const settings = normalizeSettings({ ...DEFAULT_SETTINGS, plugins: { ...DEFAULT_SETTINGS.plugins, colorPreview: { enabled: false } } })
     expect(settings.plugins.colorPreview.enabled).toBe(false)
-    expect(PLUGIN_LABELS.colorPreview).toBe('Color preview')
-    expect(PLUGIN_HINTS.colorPreview).toContain('HEX, RGB or HSL')
+    expect(t(PLUGIN_LABELS.colorPreview, {}, 'en')).toBe('Color preview')
+    expect(t(PLUGIN_HINTS.colorPreview, {}, 'en')).toContain('HEX, RGB or HSL')
   })
 })

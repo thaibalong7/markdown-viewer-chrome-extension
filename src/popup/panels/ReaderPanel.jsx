@@ -1,3 +1,5 @@
+import { formatNumber, t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { Button } from '../../shared/react/Button.jsx'
 import { NumberField } from '../../shared/react/NumberField.jsx'
@@ -10,11 +12,10 @@ import {
 } from '../settings-constants.js'
 
 function InfoTooltip({ label, content }) {
+  useLocale()
   return (
     <Tooltip content={content}>
-      <button type="button" className="popup-info-button" aria-label={label}>
-        i
-      </button>
+      <button type="button" className="popup-info-button" aria-label={t(label)}>{t('popup.plugins.i')}</button>
     </Tooltip>
   )
 }
@@ -23,14 +24,15 @@ function InfoTooltip({ label, content }) {
  * @param {{ settings: object, onPatch: (partial: object) => void }} props
  */
 export function ReaderPanel({ settings, onPatch }) {
+  useLocale()
   const themeOptions = getThemeOptions(settings)
   const builtInThemeGroups = [
     {
-      label: 'Light themes',
+      label: 'options.themes.syntax.lightThemes',
       themes: themeOptions.builtIn.filter(({ id }) => BUILT_IN_THEMES[id]?.colorScheme !== 'dark')
     },
     {
-      label: 'Dark themes',
+      label: 'options.themes.syntax.darkThemes',
       themes: themeOptions.builtIn.filter(({ id }) => BUILT_IN_THEMES[id]?.colorScheme === 'dark')
     }
   ]
@@ -39,9 +41,7 @@ export function ReaderPanel({ settings, onPatch }) {
   return (
     <>
       <div className="mdp-ui-field">
-        <label className="mdp-ui-field__label" htmlFor="popup-reader-theme">
-          Theme
-        </label>
+        <label className="mdp-ui-field__label" htmlFor="popup-reader-theme">{t('popup.reader.theme')}</label>
         <div className="popup-theme-select-wrap">
           <span
             className="popup-theme-preview"
@@ -65,31 +65,27 @@ export function ReaderPanel({ settings, onPatch }) {
             }
           >
             {builtInThemeGroups.map((group) => (
-              <optgroup key={group.label} label={group.label}>
+              <optgroup key={group.label} label={t(group.label)}>
                 {group.themes.map((theme) => (
-                  <option key={theme.id} value={theme.id}>{theme.name}</option>
+                  <option key={theme.id} value={theme.id}>{t(theme.nameKey || theme.name)}</option>
                 ))}
               </optgroup>
             ))}
-            {themeOptions.custom.length ? (
-              <optgroup label="My themes">
+            {themeOptions.custom.length ? <optgroup label={t('options.themes.library.myThemes')}>
                 {themeOptions.custom.map((theme) => (
                   <option key={theme.id} value={theme.id}>{theme.name}</option>
                 ))}
-              </optgroup>
-            ) : null}
+              </optgroup> : null}
           </select>
         </div>
       </div>
 
       <div className="mdp-ui-field">
         <div className="mdp-ui-field__label-row">
-          <label className="mdp-ui-field__label" htmlFor="reader-font-family">
-            Font family
-          </label>
+          <label className="mdp-ui-field__label" htmlFor="reader-font-family">{t('popup.reader.fontFamily.label')}</label>
           <InfoTooltip
-            label="About font family"
-            content="Uses fonts installed on your system. Presets list several fallbacks if the first choice is missing."
+            label={t('popup.reader.aboutFontFamily')}
+            content={t('popup.reader.usesFontsInstalledOnYourSystemPresetsList')}
           />
         </div>
         <select
@@ -106,7 +102,7 @@ export function ReaderPanel({ settings, onPatch }) {
         >
           {FONT_FAMILY_PRESETS.map((preset) => (
             <option key={preset.value} value={preset.value}>
-              {preset.label}
+              {t(preset.label)}
             </option>
           ))}
         </select>
@@ -114,7 +110,7 @@ export function ReaderPanel({ settings, onPatch }) {
 
       <NumberField
         id="popup-reader-font-size"
-        label="Font size"
+        label={t('popup.reader.fontSize.label')}
         rangeLabel="12–28 px"
         min="12"
         max="28"
@@ -131,14 +127,14 @@ export function ReaderPanel({ settings, onPatch }) {
 
       <NumberField
         id="reader-line-height"
-        label="Line height"
+        label={t('popup.reader.lineHeight.label')}
         labelAction={(
           <InfoTooltip
-            label="About line height"
-            content="Unitless line-spacing multiplier (e.g. 1.7 ≈ 170% of font size). Not pixels."
+            label={t('popup.reader.aboutLineHeight')}
+            content={t('popup.reader.unitlessLineSpacingMultiplierEG17')}
           />
         )}
-        rangeLabel="1.2–2.2"
+        rangeLabel={`${formatNumber(1.2)}–${formatNumber(2.2)}`}
         inputMode="decimal"
         min="1.2"
         max="2.2"
@@ -155,8 +151,8 @@ export function ReaderPanel({ settings, onPatch }) {
 
       <NumberField
         id="popup-reader-content-width"
-        label="Content width"
-        rangeLabel="640–1,400 px"
+        label={t('popup.reader.contentWidth.label')}
+        rangeLabel={`${formatNumber(640)}–${formatNumber(1400)} px`}
         min="640"
         max="1400"
         step="10"
@@ -171,10 +167,10 @@ export function ReaderPanel({ settings, onPatch }) {
       />
 
       <div className="popup-setting-row">
-        <span className="popup-setting-row__label">Show table of contents</span>
+        <span className="popup-setting-row__label">{t('popup.reader.outline.label')}</span>
         <Switch
           id="popup-reader-show-toc"
-          label="Show table of contents"
+          label={t('popup.reader.outline.label')}
           checked={settings.layout?.showToc !== false}
           onChange={(event) =>
             onPatch({
@@ -191,13 +187,11 @@ export function ReaderPanel({ settings, onPatch }) {
           variant="danger"
           className="popup-reset-button"
           onClick={() => {
-            const ok = window.confirm('Reset reader UI settings to default values?')
+            const ok = window.confirm(t('popup.reader.resetReaderUISettingsToDefaultValues'))
             if (!ok) return
             void onPatch(createReaderUiDefaultsPatch())
           }}
-        >
-          Reset reader UI
-        </Button>
+        >{t('popup.reader.resetReaderUI')}</Button>
       </div>
     </>
   )

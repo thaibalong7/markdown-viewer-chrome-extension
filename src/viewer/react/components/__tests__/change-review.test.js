@@ -1,3 +1,4 @@
+import { t } from '../../../../i18n/index.js'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { expect, it, vi } from 'vitest'
@@ -134,6 +135,6 @@ it('makes leaving edit mode explicit and gives dirty drafts a destructive confir
   expect(confirmation).toContain('mdp-ui-card mdp-editor-update-confirmation')
   expect(confirmation).toContain('mdp-ui-action-footer')
   expect(confirmation).toContain('mdp-ui-badge--danger')
-  expect(getEditorUpdateCopy(false).confirmLabel).toBe('Exit edit mode and load disk version')
+  expect(t(getEditorUpdateCopy(false).confirmLabel, {}, 'en')).toBe('Exit edit mode and load disk version')
   expect(renderToStaticMarkup(React.createElement(EditorUpdateWarning, { dirty: false }))).toContain('role="alert"')
 })

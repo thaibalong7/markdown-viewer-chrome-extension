@@ -1,3 +1,4 @@
+import { useLanguageUpdates } from '../../i18n/react.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getSettings, saveSettings } from '../../settings/settings-client.js'
 import { deepMerge } from '../../shared/deep-merge.js'
@@ -9,6 +10,7 @@ const DEBOUNCE_MS = 360
  */
 export function useSettingsPersistence() {
   const [settings, setSettings] = useState(null)
+  useLanguageUpdates(setSettings)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -21,7 +23,7 @@ export function useSettingsPersistence() {
     try {
       setSettings(await getSettings())
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Failed to load settings.')
+      setErrorMessage(error instanceof Error ? error.message : 'errors.options.notifications.loadSettings')
     } finally {
       setLoading(false)
     }
@@ -37,7 +39,7 @@ export function useSettingsPersistence() {
     try {
       setSettings(await saveSettings(partial))
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Failed to save settings.')
+      setErrorMessage(error instanceof Error ? error.message : 'errors.popup.settings.saveSettings')
     } finally {
       setSaving(false)
     }

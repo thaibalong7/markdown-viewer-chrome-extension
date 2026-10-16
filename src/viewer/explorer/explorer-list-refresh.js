@@ -2,9 +2,9 @@ import { logger } from '../../shared/logger.js'
 import { isWorkspaceVirtualHref } from './url-utils.js'
 
 export function getFileListRefreshUnavailableReason({ mode, workspaceRootUrl, currentFileUrl }) {
-  if (mode === 'workspace') return workspaceRootUrl ? '' : 'Select the folder again to refresh its file list'
-  if (!currentFileUrl) return 'Open a supported file before refreshing its folder list'
-  return isWorkspaceVirtualHref(currentFileUrl) ? 'Select the folder again to refresh its file list' : ''
+  if (mode === 'workspace') return workspaceRootUrl ? '' : 'viewer.explorer.listRefresh.selectTheFolderAgainToRefreshItsFile'
+  if (!currentFileUrl) return 'viewer.explorer.listRefresh.openASupportedFileBeforeRefreshingItsFolder'
+  return isWorkspaceVirtualHref(currentFileUrl) ? 'viewer.explorer.listRefresh.selectTheFolderAgainToRefreshItsFile' : ''
 }
 
 /** List-only operation: intentionally has no document, navigation or editor dependencies. */
@@ -30,12 +30,12 @@ export async function refreshExplorerFileList({
       const refreshed = await runSiblingScan(currentFileUrl, siblingScanOptions)
       if (refreshed === false) return false
     }
-    showToast?.('Refreshed file list', { variant: 'success' })
+    showToast?.('viewer.explorer.listRefresh.refreshedFileList', { variant: 'success' })
     return true
   } catch (error) {
     if (error?.name === 'AbortError') return false
     logger.warn('Failed to refresh explorer file list.', error)
-    showToast?.('Could not refresh file list. The open document was kept.', { variant: 'error' })
+    showToast?.('errors.viewer.explorer.listRefresh.refreshFileListTheOpenDocumentWasKept', { variant: 'error' })
     return false
   }
 }

@@ -1,12 +1,13 @@
+import { t } from '../../i18n/index.js'
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { createAppIconSvg } from '../../shared/icons/create-app-icon.js'
 
 const ALERT_TYPES = {
-  NOTE: { label: 'Note', icon: 'info' },
-  TIP: { label: 'Tip', icon: 'check' },
-  IMPORTANT: { label: 'Important', icon: 'info' },
-  WARNING: { label: 'Warning', icon: 'warning' },
-  CAUTION: { label: 'Caution', icon: 'error' }
+  NOTE: { label: 'plugins.alerts.note', icon: 'info' },
+  TIP: { label: 'plugins.alerts.tip', icon: 'check' },
+  IMPORTANT: { label: 'plugins.alerts.important', icon: 'info' },
+  WARNING: { label: 'plugins.alerts.warning', icon: 'warning' },
+  CAUTION: { label: 'plugins.alerts.caution', icon: 'error' }
 }
 const MARKER_RE = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*(?:\n|$)/
 
@@ -36,7 +37,7 @@ function transformAlerts(state) {
     open.attrJoin('class', `mdp-alert mdp-alert--${type}`)
     open.attrSet('data-mdp-alert', type)
     open.attrSet('role', 'note')
-    open.attrSet('aria-label', ALERT_TYPES[match[1]].label)
+    open.attrSet('aria-label', t(ALERT_TYPES[match[1]].label))
 
     // Remove parsed marker tokens without reparsing footnotes, math or links.
     inline.content = inline.content.slice(match[0].length)
@@ -46,7 +47,7 @@ function transformAlerts(state) {
       paragraph.map = [paragraph.map[0] + 1, paragraph.map[1]]
     }
     const title = new state.Token('mdp_alert_title', '', 0)
-    title.content = ALERT_TYPES[match[1]].label
+    title.content = t(ALERT_TYPES[match[1]].label)
     tokens.splice(index + 1, inline.children.length ? 0 : 3, title)
   }
 }

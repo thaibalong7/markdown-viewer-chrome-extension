@@ -1,7 +1,10 @@
+import { translateMessage } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React from 'react'
 import { useToast } from '../contexts/ToastContext.jsx'
 
 export function Toast() {
+  useLocale()
   const { toastMessage, toastVariant, isVisible } = useToast()
   const variantClass = `mdp-toast--${toastVariant || 'info'}`
 
@@ -12,7 +15,7 @@ export function Toast() {
       aria-live="polite"
       aria-atomic="true"
     >
-      {toastMessage}
+      {translateMessage(toastMessage)}
     </div>
   )
 }

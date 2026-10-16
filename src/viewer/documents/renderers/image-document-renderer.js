@@ -1,8 +1,9 @@
+import { message as localizedMessage } from '../../../i18n/index.js'
 import { mountDocumentState } from '../../react/content/states/mount-document-state.js'
 import { clearContentUi } from '../../react/content/mount-content-ui.jsx'
 
 function abortError() {
-  return new DOMException('Document render was aborted.', 'AbortError')
+  return new DOMException("Document render was aborted.", 'AbortError')
 }
 
 export async function render({ loadedDocument, articleEl, services = {}, signal }) {
@@ -15,7 +16,7 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   clearContentUi(articleEl)
   const displayName = loadedDocument?.document?.displayName || 'image'
   if (loadedDocument?.loadError || !loadedDocument?.assetUrl) {
-    const message = loadedDocument?.loadError?.message || `Could not display ${displayName}.`
+    const message = loadedDocument?.loadError?.message || localizedMessage('errors.viewer.documents.image.displayValue', { 0: displayName })
     mountDocumentState(articleEl, { className: 'mdp-image-document__state mdp-image-document__state--error', message, role: 'alert' })
     return { tocItems: [], interactionProfile: 'none' }
   }
@@ -73,7 +74,7 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
     if (cleaned || signal?.aborted) return
     services.closeImageLightbox?.()
     loadingUi.destroy()
-    mountDocumentState(figure, { className: 'mdp-image-document__state mdp-image-document__state--error', message: `Could not display ${displayName}.`, role: 'alert' })
+    mountDocumentState(figure, { className: 'mdp-image-document__state mdp-image-document__state--error', message: localizedMessage('errors.viewer.documents.image.displayValue', { 0: displayName }), role: 'alert' })
     settleReady()
   }
   const handleAbort = () => {
@@ -86,7 +87,7 @@ export async function render({ loadedDocument, articleEl, services = {}, signal 
   signal?.addEventListener?.('abort', handleAbort, { once: true })
   figure.append(image)
   articleEl.replaceChildren(figure)
-  loadingUi = mountDocumentState(loadingSlot, { className: 'mdp-image-document__state mdp-image-document__state--loading', loading: true, message: `Loading ${displayName}…` })
+  loadingUi = mountDocumentState(loadingSlot, { className: 'mdp-image-document__state mdp-image-document__state--loading', loading: true, message: localizedMessage('viewer.documents.image.loadingValue', { 0: displayName }) })
   image.src = loadedDocument.assetUrl
   if (signal?.aborted) {
     cleanup()

@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
@@ -44,11 +46,12 @@ export function getScrollTopForThumbOffset({ thumbOffset, maxThumbOffset, maxScr
 export function ViewerScrollbar({
   scrollElement,
   visibility = SCROLLBAR_VISIBILITY.AUTO,
-  label = 'Document scrollbar',
+  label = 'viewer.scrollbar.documentScrollbar',
   variant = 'document',
   contentSelector = '.mdp-body, .mdp-markdown-body, .cm-content',
   contentVersion
 }) {
+  useLocale()
   const trackRef = useRef(null)
   const dragRef = useRef(null)
   const frameRef = useRef(0)
@@ -246,7 +249,7 @@ export function ViewerScrollbar({
       className={`mdp-viewer-scrollbar${variant === 'sidebar' ? ' mdp-viewer-scrollbar--sidebar' : ''}${isActive ? ' is-active' : ''}`}
       style={trackStyle}
       role="scrollbar"
-      aria-label={label}
+      aria-label={t(label)}
       aria-orientation="vertical"
       aria-valuemin={0}
       aria-valuemax={Math.round(metrics.maxScrollTop)}

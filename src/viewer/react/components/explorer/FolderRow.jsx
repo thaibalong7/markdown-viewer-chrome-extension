@@ -1,3 +1,5 @@
+import { t } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React, { useCallback, useRef, useState } from 'react'
 import { Tooltip } from '../Tooltip.jsx'
 import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
@@ -10,6 +12,7 @@ import { getTreeRowIndent, TreeGuides } from './TreeGuides.jsx'
 import { useExplorerRowMenuLayout } from '../../hooks/explorer/useExplorerRowMenuLayout.js'
 
 export function FolderRow({ treeRow, onToggleFolder, rowStyle, motionState = '' }) {
+  useLocale()
   const { node, expanded, depth, fileCount, path, containsActive } = treeRow
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -28,9 +31,9 @@ export function FolderRow({ treeRow, onToggleFolder, rowStyle, motionState = '' 
     try {
       await copyFolderRowText(text)
       setMenuOpen(false)
-      showToast?.(`Copied folder ${label}`, { variant: 'success' })
+      showToast?.(label === 'name' ? 'viewer.explorer.folder.copiedFolderName' : 'viewer.explorer.folder.copiedFolderPath', { variant: 'success' })
     } catch {
-      showToast?.(`Could not copy folder ${label}`, { variant: 'error' })
+      showToast?.(label === 'name' ? 'errors.viewer.explorer.folder.copyFolderName' : 'errors.viewer.explorer.folder.copyFolderPath', { variant: 'error' })
     }
   }
 
@@ -46,7 +49,7 @@ export function FolderRow({ treeRow, onToggleFolder, rowStyle, motionState = '' 
       style={{ ...rowStyle, '--mdp-tree-row-indent': `${getTreeRowIndent(depth)}px` }}
     >
       <TreeGuides row={treeRow} />
-      <Tooltip content={`Expand or collapse "${node.name}".`}>
+      <Tooltip content={t('viewer.explorer.folder.toggleLabel', { 0: node.name })}>
         <button
           ref={rowRef}
           type="button"
@@ -62,7 +65,7 @@ export function FolderRow({ treeRow, onToggleFolder, rowStyle, motionState = '' 
         </button>
       </Tooltip>
       <span className="mdp-explorer__folder-count" aria-hidden="true"
-        title={`${fileCount} indexed files, including subfolders`}>{fileCount}</span>
+        title={t('viewer.explorer.folder.indexedFileCount', { 0: fileCount })}>{fileCount}</span>
       <ActionMenu
         ref={menuRef}
         triggerRef={triggerRef}
@@ -71,16 +74,16 @@ export function FolderRow({ treeRow, onToggleFolder, rowStyle, motionState = '' 
         triggerClassName="mdp-explorer__row-action-btn"
         triggerOpenClassName="is-open"
         triggerIcon={<AppIcon name="more" className="mdp-explorer__row-action-icon" />}
-        triggerLabel={`More actions for ${node.name}`}
-        triggerTooltip={`More actions for ${node.name}`}
-        menuLabel={`Actions for ${node.name}`}
+        triggerLabel={t('viewer.explorer.actions.moreLabel', { 0: node.name })}
+        triggerTooltip={t('viewer.explorer.actions.moreLabel', { 0: node.name })}
+        menuLabel={t('viewer.explorer.actions.menuLabel', { 0: node.name })}
         menuStyle={menuStyle}
         menuClassName="mdp-explorer__row-menu"
         itemClassName="mdp-explorer__row-menu-item"
         onToggle={() => setMenuOpen((open) => !open)}
         items={[
           {
-            key: 'toggle', label: expanded ? 'Collapse folder' : 'Expand folder',
+            key: 'toggle', label: expanded ? 'viewer.explorer.folder.collapseFolder' : 'viewer.explorer.folder.expandFolder',
             icon: <AppIcon name={expanded ? 'collapse' : 'chevron-right'} size={16} />,
             restoreFocus: false,
             onClick: () => {
@@ -90,11 +93,11 @@ export function FolderRow({ treeRow, onToggleFolder, rowStyle, motionState = '' 
             }
           },
           {
-            key: 'copy-name', label: 'Copy folder name', icon: <AppIcon name="copy" size={16} />,
+            key: 'copy-name', label: 'viewer.explorer.actions.copyFolderName', icon: <AppIcon name="copy" size={16} />,
             onClick: () => void copyIdentity(node.name, 'name')
           },
           {
-            key: 'copy-path', label: 'Copy folder path', icon: <AppIcon name="link" size={16} />,
+            key: 'copy-path', label: 'viewer.explorer.actions.copyFolderPath', icon: <AppIcon name="link" size={16} />,
             onClick: () => void copyIdentity(getFolderCopyPath(node, path), 'path')
           }
         ]}

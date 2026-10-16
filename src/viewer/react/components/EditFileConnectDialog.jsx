@@ -1,8 +1,11 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { Button } from '../../../shared/react/Button.jsx'
 
 export function EditFileConnectDialog({ open, busy, filePath, onCancel, onConfirm }) {
+  useLocale()
   const dialogRef = useRef(null)
   const cancelButtonRef = useRef(null)
   const busyRef = useRef(busy)
@@ -61,36 +64,29 @@ export function EditFileConnectDialog({ open, busy, filePath, onCancel, onConfir
         aria-labelledby="mdp-editor-connect-title"
         aria-describedby="mdp-editor-connect-description"
       >
-        <p className="mdp-editor-connect-dialog__eyebrow">Safe editing</p>
-        <h2 id="mdp-editor-connect-title">Connect the original file before editing</h2>
-        <p id="mdp-editor-connect-description">
-          Chrome does not automatically grant write access from a local file URL. Markdown Plus
-          must verify an existing file before the editor can open.
-        </p>
+        <p className="mdp-editor-connect-dialog__eyebrow">{t('viewer.editor.connectDialog.safeEditing')}</p>
+        <h2 id="mdp-editor-connect-title">{t('viewer.editor.connectDialog.connectTheOriginalFileBeforeEditing')}</h2>
+        <p id="mdp-editor-connect-description">{t('viewer.editor.connectDialog.chromeDoesNotAutomaticallyGrantWriteAccessFrom')}</p>
 
         <div className="mdp-editor-connect-dialog__target">
-          <span>Current file</span>
-          <code title={filePath}>{filePath || 'Unknown local file'}</code>
+          <span>{t('viewer.editor.connectDialog.currentFile')}</span>
+          <code title={filePath}>{filePath || t('viewer.editor.connectDialog.unknownLocalFile')}</code>
         </div>
 
         <ol>
-          <li>Choose this exact file in Chrome’s picker.</li>
-          <li>Check both its folder and filename; do not choose a copy with the same name.</li>
-          <li>Use Save or Ctrl/Cmd+S to write back to the connected file.</li>
+          <li>{t('viewer.editor.connectDialog.chooseThisExactFileInChromeSPicker')}</li>
+          <li>{t('viewer.editor.connectDialog.checkBothItsFolderAndFilenameDoNot')}</li>
+          <li>{t('viewer.editor.connectDialog.useSaveOrCtrlCmdSToWrite')}</li>
         </ol>
 
         <div className="mdp-editor-connect-dialog__actions">
-          <Button ref={cancelButtonRef} variant="secondary" disabled={busy} onClick={onCancel}>
-            Cancel
-          </Button>
+          <Button ref={cancelButtonRef} variant="secondary" disabled={busy} onClick={onCancel}>{t('common.actions.cancel')}</Button>
           <Button
             variant="primary"
             busy={busy}
-            busyLabel="Verifying file…"
+            busyLabel={t('viewer.editor.connectDialog.verifyingFile')}
             onClick={onConfirm}
-          >
-            Verify file and edit
-          </Button>
+          >{t('viewer.editor.connectDialog.verifyFileAndEdit')}</Button>
         </div>
       </section>
     </div>

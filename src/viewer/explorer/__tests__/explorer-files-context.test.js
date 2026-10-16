@@ -1,3 +1,4 @@
+import { t } from '../../../i18n/index.js'
 import { describe, expect, it } from 'vitest'
 import {
   buildExplorerFilesContext,
@@ -12,7 +13,7 @@ describe('explorer files context labels', () => {
     })
 
     expect(context.currentLine).toBe('README.md')
-    expect(context.statusLine).toBe('This file’s folder')
+    expect(t(context.statusLine, {}, 'en')).toBe('This file’s folder')
   })
 
   it('uses a short progress label while scanning a workspace', () => {
@@ -23,7 +24,7 @@ describe('explorer files context labels', () => {
     })
 
     expect(context.currentLine).toBe('README.md')
-    expect(context.statusLine).toBe('Scanning workspace…')
+    expect(t(context.statusLine, {}, 'en')).toBe('Scanning workspace…')
   })
 })
 

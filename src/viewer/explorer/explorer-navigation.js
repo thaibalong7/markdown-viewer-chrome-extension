@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../i18n/index.js'
 import {
   findHeadingByHash,
   getToolbarHeightInScrollRoot,
@@ -24,7 +25,7 @@ export function createSiblingBackNavigationForUrl(openUrl, onNavigate) {
   if (!showBack) return { showBack: false }
   return {
     showBack: true,
-    backLabel: `Back to ${documentTitleFromUrl(original)}`,
+    backLabel: localizedMessage('viewer.explorer.navigation.backToFile', { 0: documentTitleFromUrl(original) }),
     onBack: () => {
       if (!original) return
       void onNavigate?.(original, { replaceHistory: true })
@@ -202,7 +203,7 @@ export function createExplorerNavigator(deps) {
 
     const entry = refs.workspaceVirtualReadersRef.current?.get(fileUrl)
     if (!entry) {
-      bridge?.showToast?.('Linked file is no longer available', { variant: 'error' })
+      bridge?.showToast?.('viewer.explorer.navigation.linkedFileIsNoLongerAvailable', { variant: 'error' })
       return false
     }
 

@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../i18n/index.js'
 import { colorDisplayValues } from './color-display-values.js'
 import { createColorSourceCopy } from './color-copy-controller.js'
 import { copyTextToClipboard } from '../../shared/clipboard.js'
@@ -127,21 +128,21 @@ export function createColorPopover({ articleEl, swatches }) {
       if (!button.isConnected) return
       row.copied = true
       tooltip.setText(`${format} copied`)
-      status = { text: `${format} copied to clipboard`, error: false }
+      status = { text: localizedMessage('viewer.colors.valueCopiedToClipboard', { 0: format }), error: false }
       publish()
       position()
       timers.set(button, win.setTimeout(() => {
         timers.delete(button)
         row.copied = false
-        tooltip.setText(`Copy ${format}: ${value}`)
+        tooltip.setText(localizedMessage('viewer.colors.copyValueValue', { 0: format, 1: value }))
         publish()
       }, COPY_BUTTON_FEEDBACK_MS))
     } catch (error) {
       logger.warn('Could not copy color format.', { errorName: error?.name || 'Error' })
       if (button.isConnected) {
         row.error = true
-        status = { text: 'Could not copy. Select a value to copy manually.', error: true }
-        tooltip.setText('Could not copy. Try again.')
+        status = { text: 'errors.viewer.colors.copySelectAValueToCopyManually', error: true }
+        tooltip.setText('errors.viewer.colors.copyTryAgain')
         publish()
         position()
       }
@@ -178,7 +179,7 @@ export function createColorPopover({ articleEl, swatches }) {
       for (const row of rows) {
         tooltips.push(attachTooltip(row.text, { text: row.value, showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS }))
         if (row.alpha) tooltips.push(attachTooltip(row.alpha, { text: `Opacity: ${opacity}`, showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS }))
-        row.tooltip = attachTooltip(row.button, { text: `Copy ${row.format}: ${row.value}`, showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS })
+        row.tooltip = attachTooltip(row.button, { text: localizedMessage('viewer.colors.copyValueValue', { 0: row.format, 1: row.value }), showDelayMs: VIEWER_TOOLTIP_DELAY_QUICK_MS })
         tooltips.push(row.tooltip)
       }
       trigger.setAttribute('aria-expanded', 'true')

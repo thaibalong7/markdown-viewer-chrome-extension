@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import { t, translateMessage } from '../i18n/index.js'
+import { useLocale } from '../i18n/react.js'
+import React, { useEffect, useMemo, useState } from 'react'
 import { mergePluginSettings } from '../plugins/plugin-types.js'
 import { openExtensionDetails } from '../shared/file-scheme-access.js'
 import { AppIcon } from '../shared/react/AppIcon.jsx'
@@ -18,6 +20,8 @@ import { openOptionsPage } from './actions/open-options-page.js'
 import { openOptionsSection } from './actions/open-options-section.js'
 
 export function PopupApp() {
+  const locale = useLocale()
+  useEffect(() => { document.documentElement.lang = locale }, [locale])
   const {
     settings,
     loading,
@@ -45,7 +49,7 @@ export function PopupApp() {
       await openOptionsPage()
       window.close()
     } catch (error) {
-      setOptionsError(error instanceof Error ? error.message : 'Could not open Settings.')
+      setOptionsError(error instanceof Error ? error.message : 'errors.popup.openSettings')
     }
   }
 
@@ -55,7 +59,7 @@ export function PopupApp() {
       await openOptionsSection('about')
       window.close()
     } catch (error) {
-      setOptionsError(error instanceof Error ? error.message : 'Could not open About.')
+      setOptionsError(error instanceof Error ? error.message : 'errors.popup.openAbout')
     }
   }
 
@@ -64,7 +68,7 @@ export function PopupApp() {
     try {
       await openExtensionDetails()
     } catch (error) {
-      setDetailsError(error instanceof Error ? error.message : 'Could not open extension details.')
+      setDetailsError(error instanceof Error ? error.message : 'errors.options.general.openExtensionDetails')
     }
   }
 
@@ -89,7 +93,7 @@ export function PopupApp() {
   if (loading) {
     return (
       <div className="popup-root">
-        <div className="mdp-ui-card popup-loading" aria-label="Loading quick settings" aria-busy="true">
+        <div className="mdp-ui-card popup-loading" aria-label={t('popup.page.loadingQuickSettings')} aria-busy="true">
           <SkeletonBlock lines={1} widths={['58%']} lineHeight={18} gap={0} />
           <SkeletonBlock
             lines={4}
@@ -107,12 +111,10 @@ export function PopupApp() {
     return (
       <div className="popup-root">
         <div className="mdp-ui-state mdp-ui-state--error popup-error">
-          <strong className="mdp-ui-state__title">Quick settings could not be loaded</strong>
-          <p className="mdp-ui-state__message">{errorMessage || 'Could not load settings.'}</p>
-          {optionsError ? <p className="mdp-ui-state__message">{optionsError}</p> : null}
-          <Button className="mdp-ui-state__action" onClick={() => void handleOpenSettings()}>
-            Open Settings
-          </Button>
+          <strong className="mdp-ui-state__title">{t('popup.page.quickSettingsCouldNotBeLoaded')}</strong>
+          <p className="mdp-ui-state__message">{translateMessage(errorMessage || 'errors.popup.loadSettings')}</p>
+          {optionsError ? <p className="mdp-ui-state__message">{translateMessage(optionsError)}</p> : null}
+          <Button className="mdp-ui-state__action" onClick={() => void handleOpenSettings()}>{t('common.actions.openSettings')}</Button>
         </div>
       </div>
     )
@@ -131,23 +133,19 @@ export function PopupApp() {
             aria-hidden="true"
             draggable="false"
           />
-          <strong>Markdown Plus</strong>
+          <strong>{t('common.productName')}</strong>
         </div>
-        {fileAccessReady ? (
-          <FileAccessCallout state={fileAccess.state} />
-        ) : null}
+        {fileAccessReady ? <FileAccessCallout state={fileAccess.state} /> : null}
       </header>
 
-      {!fileAccessReady ? (
-        <FileAccessCallout
+      {!fileAccessReady ? <FileAccessCallout
           state={fileAccess.state}
           errorMessage={detailsError}
           onOpenDetails={() => void handleOpenDetails()}
-        />
-      ) : null}
+        /> : null}
 
       <div className="popup-settings-panel">
-        <nav className="popup-settings-tabs" aria-label="Quick control sections" role="tablist">
+        <nav className="popup-settings-tabs" aria-label={t('popup.page.quickControlSections')} role="tablist">
           {SETTINGS_TABS.map((tab) => (
             <button
               key={tab.id}
@@ -161,14 +159,14 @@ export function PopupApp() {
               onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
             >
               <SettingsTabIcon name={tab.id} />
-              <span>{tab.label}</span>
+              <span>{t(tab.label)}</span>
             </button>
           ))}
         </nav>
 
         <div className="popup-settings-main">
           <div className="popup-settings-header">
-            <h1 className="popup-settings-title">{activeTabMeta?.title || 'Settings'}</h1>
+            <h1 className="popup-settings-title">{t(activeTabMeta?.title || 'options.title')}</h1>
           </div>
 
           <div
@@ -211,23 +209,19 @@ export function PopupApp() {
               role="status"
             >
               <span className="mdp-ui-status__dot" aria-hidden="true" />
-              {errorMessage || optionsError || (saving ? 'Saving changes…' : 'Settings saved')}
+              {translateMessage(errorMessage || optionsError || (saving ? 'common.status.savingChanges' : 'popup.footer.saved'))}
             </span>
             <div className="popup-footer__actions">
               <Button
                 variant="quiet"
                 className="popup-open-about"
                 onClick={() => void handleOpenAbout()}
-              >
-                About
-              </Button>
+              >{t('popup.footer.about')}</Button>
               <Button
                 variant="quiet"
                 className="popup-open-settings"
                 onClick={() => void handleOpenSettings()}
-              >
-                All settings
-                <AppIcon name="external" />
+              >{t('popup.footer.allSettings')}<AppIcon name="external" />
               </Button>
             </div>
           </div>

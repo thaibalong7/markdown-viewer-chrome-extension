@@ -1,3 +1,4 @@
+import { message } from '../../../i18n/index.js'
 import { describe, expect, it, vi } from 'vitest'
 import { createDocumentIdentity } from '../../documents/document-model.js'
 import { createDocumentSessionController } from '../documentSessionController.js'
@@ -23,6 +24,20 @@ function createSession(options = {}) {
 }
 
 describe('document session controller', () => {
+  it('keeps placeholder UI messages separate from document source', async () => {
+    const prompt = message('viewer.useexplorer.selectASupportedFileFromTheFilesPanel')
+    const onDocumentLoaded = vi.fn()
+    const session = createSession({ onDocumentLoaded })
+
+    await expect(session.showPlaceholder(prompt)).resolves.toBe(true)
+
+    expect(session.getCurrentDocument()).toBeNull()
+    expect(session.getWatchTarget()).toBeNull()
+    expect(onDocumentLoaded).toHaveBeenCalledWith(expect.objectContaining({
+      text: '', placeholderMessage: prompt
+    }))
+  })
+
   it('keeps the latest navigation when an older load finishes last', async () => {
     const first = deferred()
     const second = deferred()
@@ -211,7 +226,7 @@ describe('document session controller', () => {
     await expect(session.openDocument('file:///docs/photo.png')).resolves.toBe(true)
     expect(session.getLoadedDocument()).toMatchObject({
       document: { fileTypeId: 'raster-image' },
-      loadError: { code: 'document-load-failed', message: 'Could not open this image.' }
+      loadError: { code: 'document-load-failed', message: message('errors.viewer.document.openThisValue', { 0: message('viewer.document.imageKind') }) }
     })
     expect(render).toHaveBeenCalledOnce()
   })

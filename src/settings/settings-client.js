@@ -1,3 +1,4 @@
+import { setLanguage } from '../i18n/index.js'
 import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 
 async function requestSettings(message, failureMessage) {
@@ -5,6 +6,7 @@ async function requestSettings(message, failureMessage) {
   if (!response?.ok) {
     throw new Error(response?.error || failureMessage)
   }
+  setLanguage(response.data?.language)
   return response.data
 }
 

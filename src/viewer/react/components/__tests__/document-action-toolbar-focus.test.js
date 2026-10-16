@@ -1,3 +1,4 @@
+vi.mock('../../../../i18n/react.js', () => ({ useLocale: () => 'en' }))
 import { beforeEach, expect, it, vi } from 'vitest'
 import { DocumentActionToolbar } from '../DocumentActionToolbar.jsx'
 

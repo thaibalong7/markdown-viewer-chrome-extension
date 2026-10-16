@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { getFileSchemeAccess } from '../file-scheme-access.js'
 
-const INITIAL_STATE = Object.freeze({ state: 'checking', message: 'Checking…' })
+const INITIAL_STATE = Object.freeze({ state: 'checking', message: 'common.status.checking' })
 
 export function toFileSchemeAccessState(allowed) {
-  if (allowed === true) return { state: 'allowed', message: 'Allowed' }
-  if (allowed === false) return { state: 'blocked', message: 'Not allowed' }
-  return { state: 'unavailable', message: 'Unavailable' }
+  if (allowed === true) return { state: 'allowed', message: 'common.fileAccess.allowed' }
+  if (allowed === false) return { state: 'blocked', message: 'common.fileAccess.blocked' }
+  return { state: 'unavailable', message: 'common.status.unavailable' }
 }
 
 export function useFileSchemeAccess() {

@@ -1,3 +1,5 @@
+import { t, translateMessage } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React, { useState } from 'react'
 import { Badge } from '../../shared/react/Badge.jsx'
 import { Button } from '../../shared/react/Button.jsx'
@@ -5,6 +7,7 @@ import { Switch } from '../../shared/react/Switch.jsx'
 import { openExtensionDetails } from '../../shared/file-scheme-access.js'
 import { useFileSchemeAccess } from '../../shared/react/useFileSchemeAccess.js'
 import { SCROLLBAR_VISIBILITY } from '../../shared/constants/scrollbar.js'
+import { LANGUAGES } from '../../i18n/languages.js'
 
 export function GeneralSettings({
   settings,
@@ -12,8 +15,10 @@ export function GeneralSettings({
   onEnabledChange,
   onScrollbarAutoHideChange,
   onDocumentStatsVisibleChange,
-  onWatchModeChange
+  onWatchModeChange,
+  onLanguageChange
 }) {
+  useLocale()
   const fileAccess = useFileSchemeAccess()
   const [detailsError, setDetailsError] = useState('')
 
@@ -22,7 +27,7 @@ export function GeneralSettings({
     try {
       await openExtensionDetails()
     } catch (error) {
-      setDetailsError(error instanceof Error ? error.message : 'Could not open extension details.')
+      setDetailsError(error instanceof Error ? error.message : 'errors.options.general.openExtensionDetails')
     }
   }
 
@@ -35,20 +40,32 @@ export function GeneralSettings({
   return (
     <section className="settings-section" aria-labelledby="general-title">
       <div className="settings-section__heading">
-        <p className="settings-eyebrow">Behavior</p>
-        <h2 id="general-title">General</h2>
-        <p>Control Markdown Plus activation and viewer behavior.</p>
+        <p className="settings-eyebrow">{t('options.general.behavior')}</p>
+        <h2 id="general-title">{t('options.general.title')}</h2>
+        <p>{t('options.general.controlMarkdownPlusActivationAndViewerBehavior')}</p>
       </div>
 
       <div className="mdp-ui-card">
+        <div className="mdp-ui-setting-row settings-row--select">
+          <div>
+            <label htmlFor="general-language" className="mdp-ui-setting-row__title">{t('options.general.language.label')}</label>
+            <p id="general-language-description" className="mdp-ui-setting-row__description">{t('options.general.language.description')}</p>
+          </div>
+          <select id="general-language" className="mdp-ui-select" aria-describedby="general-language-description"
+            value={settings.language || 'auto'} disabled={saving}
+            onChange={event => void onLanguageChange(event.target.value)}>
+            {LANGUAGES.map(({ value, label }) => <option key={value} value={value}>{t(label)}</option>)}
+          </select>
+        </div>
+        <div className="mdp-ui-divider" />
         <div className="mdp-ui-setting-row settings-row--toggle">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Enable Markdown Plus</h3>
-            <p className="mdp-ui-setting-row__description">Automatically open supported local Markdown files in the Markdown Plus viewer.</p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.general.enabled.label')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.general.enabled.description')}</p>
           </div>
           <Switch
             id="general-enabled"
-            label="Enable Markdown Plus"
+            label={t('options.general.enabled.label')}
             checked={settings.enabled !== false}
             disabled={saving}
             onChange={(event) => void onEnabledChange(event.target.checked)}
@@ -59,12 +76,12 @@ export function GeneralSettings({
 
         <div className="mdp-ui-setting-row settings-row--toggle">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Auto-hide document scrollbars</h3>
-            <p className="mdp-ui-setting-row__description">Fade vertical scrollbars when idle and reveal them while scrolling, near the pane edge, or using the keyboard.</p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.general.scrollbars.label')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.general.scrollbars.description')}</p>
           </div>
           <Switch
             id="general-scrollbar-auto-hide"
-            label="Auto-hide document scrollbars"
+            label={t('options.general.scrollbars.label')}
             checked={settings.appearance?.scrollbarVisibility !== SCROLLBAR_VISIBILITY.ALWAYS}
             disabled={saving}
             onChange={(event) => void onScrollbarAutoHideChange(event.target.checked)}
@@ -75,12 +92,12 @@ export function GeneralSettings({
 
         <div className="mdp-ui-setting-row settings-row--toggle">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Show document statistics</h3>
-            <p className="mdp-ui-setting-row__description">Show word count, character count (including spaces), and estimated reading time above Markdown documents.</p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.general.statistics.label')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.general.statistics.description')}</p>
           </div>
           <Switch
             id="general-document-stats"
-            label="Show document statistics"
+            label={t('options.general.statistics.label')}
             checked={settings.appearance?.showDocumentStats !== false}
             disabled={saving}
             onChange={(event) => void onDocumentStatsVisibleChange(event.target.checked)}
@@ -91,8 +108,8 @@ export function GeneralSettings({
 
         <div className="mdp-ui-setting-row settings-row--select">
           <div>
-            <label htmlFor="general-watch-mode" className="mdp-ui-setting-row__title">Document updates</label>
-            <p id="general-watch-description" className="mdp-ui-setting-row__description">Choose how to handle changes to the open document, including text, diagrams and images. Updates never replace an active editor.</p>
+            <label htmlFor="general-watch-mode" className="mdp-ui-setting-row__title">{t('viewer.updates.title')}</label>
+            <p id="general-watch-description" className="mdp-ui-setting-row__description">{t('options.general.chooseHowToHandleChangesToTheOpen')}</p>
           </div>
           <select
             id="general-watch-mode"
@@ -102,30 +119,22 @@ export function GeneralSettings({
             disabled={saving}
             onChange={(event) => void onWatchModeChange(event.target.value)}
           >
-            <option value="ask">Ask before updating</option>
-            <option value="auto">Update automatically</option>
-            <option value="off">Off</option>
+            <option value="ask">{t('common.watchModes.ask')}</option>
+            <option value="auto">{t('common.watchModes.auto')}</option>
+            <option value="off">{t('common.watchModes.off')}</option>
           </select>
         </div>
         <div className="mdp-ui-divider" />
 
         <div className="mdp-ui-setting-row settings-row--access">
           <div>
-            <h3 className="mdp-ui-setting-row__title">File URL access</h3>
-            <p className="mdp-ui-setting-row__description">
-              Chrome controls this permission. If access is blocked, open
-              <strong> chrome://extensions</strong>, choose Markdown Plus → Details, then enable
-              “Allow access to file URLs”.
-            </p>
-            {detailsError ? <p className="settings-inline-error" role="alert">{detailsError}</p> : null}
+            <h3 className="mdp-ui-setting-row__title">{t('options.general.fileAccess.label')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.general.chromeControlsThisPermissionIfAccessIsBlocked')}<strong>{' '}{t('options.general.chromeExtensions')}</strong>{t('options.general.chooseMarkdownPlusDetailsThenEnableAllowAccess')}</p>
+            {detailsError ? <p className="settings-inline-error" role="alert">{translateMessage(detailsError)}</p> : null}
           </div>
           <div className="settings-access-actions">
-            <Badge variant={badgeVariant}>{fileAccess.message}</Badge>
-            {fileAccess.state === 'blocked' || fileAccess.state === 'unavailable' ? (
-              <Button variant="secondary" onClick={() => void handleOpenDetails()}>
-                Open extension details
-              </Button>
-            ) : null}
+            <Badge variant={badgeVariant}>{t(fileAccess.message)}</Badge>
+            {fileAccess.state === 'blocked' || fileAccess.state === 'unavailable' ? <Button variant="secondary" onClick={() => void handleOpenDetails()}>{t('common.actions.openExtensionDetails')}</Button> : null}
           </div>
         </div>
       </div>

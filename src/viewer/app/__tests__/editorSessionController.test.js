@@ -1,3 +1,4 @@
+import { message } from '../../../i18n/index.js'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createEditorSessionController } from '../editorSessionController.js'
 
@@ -78,7 +79,7 @@ describe('editor file connection and save safety', () => {
     expect(fileIoMocks.prepareFileForEditing).toHaveBeenCalledWith('# Original', {
       fileUrl: 'file:///docs/index.md'
     })
-    expect(showToast).toHaveBeenCalledWith('Connected save target: index.md', {
+    expect(showToast).toHaveBeenCalledWith(message('viewer.editor.connectedSaveTargetValue', { 0: 'index.md' }), {
       variant: 'success'
     })
   })
@@ -92,7 +93,7 @@ describe('editor file connection and save safety', () => {
     await controller.handleSave()
 
     expect(controller.isDirty()).toBe(true)
-    expect(showToast).toHaveBeenCalledWith('Save failed: File changed on disk', {
+    expect(showToast).toHaveBeenCalledWith(message('viewer.editor.saveFailedValue', { 0: 'File changed on disk' }), {
       variant: 'error'
     })
     controller.destroy()
@@ -107,7 +108,7 @@ describe('editor file connection and save safety', () => {
     await controller.handleSave()
 
     expect(controller.isDirty()).toBe(false)
-    expect(showToast).toHaveBeenCalledWith('Saved to the connected original file', {
+    expect(showToast).toHaveBeenCalledWith('viewer.editor.savedToTheConnectedOriginalFile', {
       variant: 'success'
     })
     controller.destroy()

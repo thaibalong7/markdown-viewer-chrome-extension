@@ -103,6 +103,20 @@ describe('Markdown document renderer', () => {
     expect(result).toMatchObject({ tocItems, interactionProfile: 'markdown', renderedText: '# Title' })
   })
 
+  it('preserves literal document text that happens to match an interface message key', async () => {
+    const source = 'viewer.useexplorer.selectASupportedFileFromTheFilesPanel'
+    const articleEl = createArticle()
+    mocks.renderDocument.mockResolvedValue({ html: `<p>${source}</p>` })
+
+    const result = await render({
+      loadedDocument: { text: source }, articleEl, settings: {}, services: {}
+    })
+
+    expect(mocks.renderDocument).toHaveBeenCalledWith(source, {}, expect.any(Object))
+    expect(mocks.renderIntoElement).toHaveBeenCalledWith(articleEl, `<p>${source}</p>`)
+    expect(result.renderedText).toBe(source)
+  })
+
   it('surfaces one warning toast while continuing after plugin hook failures', async () => {
     const afterRender = vi.fn(async ({ onPluginWarning }) => {
       onPluginWarning({ pluginId: 'first', hook: 'afterRender' })
@@ -133,7 +147,7 @@ describe('Markdown document renderer', () => {
     expect(mocks.renderIntoElement).toHaveBeenCalledWith({}, '<p>Basic Markdown</p>')
     expect(services.showToast).toHaveBeenCalledOnce()
     expect(services.showToast).toHaveBeenCalledWith(
-      'Some Markdown enhancements could not be applied. Basic Markdown is still available.',
+      'viewer.documents.markdown.someMarkdownEnhancementsCouldNotBeAppliedBasic',
       { variant: 'warning' }
     )
     expect(result.renderResult.warnings).toEqual([

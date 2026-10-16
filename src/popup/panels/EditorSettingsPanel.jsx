@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { DEFAULT_EDITOR_SETTINGS } from '../../shared/constants/editor.js'
 import { Button } from '../../shared/react/Button.jsx'
@@ -9,6 +11,7 @@ import { Notice } from '../../shared/react/Notice.jsx'
  * @param {{ settings: object, saving?: boolean, onPatch: (partial: object) => void, onImmediatePatch: (partial: object) => Promise<unknown> }} props
  */
 export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmediatePatch }) {
+  useLocale()
   const editor = {
     ...DEFAULT_EDITOR_SETTINGS,
     ...(settings.editor || {})
@@ -17,19 +20,16 @@ export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmed
 
   return (
     <>
-      <Notice variant="warning" title="Experimental editor" className="popup-editor-notice">
-        Editing is off by default. When enabled, Markdown Plus will ask you to connect the exact
-        original file before an edit session starts.
-      </Notice>
+      <Notice variant="warning" title={t('popup.editor.experimentalEditor')} className="popup-editor-notice">{t('popup.editor.editingIsOffByDefaultWhenEnabledMarkdown')}</Notice>
 
       <div className="popup-setting-row popup-setting-row--feature">
         <div>
-          <span className="popup-setting-row__label">Enable editor</span>
-          <p className="popup-setting-row__description">Opt in to editing local Markdown files.</p>
+          <span className="popup-setting-row__label">{t('popup.editor.enableEditor')}</span>
+          <p className="popup-setting-row__description">{t('popup.editor.optInToEditingLocalMarkdownFiles')}</p>
         </div>
         <Switch
           id="popup-editor-enabled"
-          label="Enable experimental editor"
+          label={t('popup.editor.enableExperimentalEditor')}
           checked={editorEnabled}
           disabled={saving}
           onChange={(event) => {
@@ -41,7 +41,7 @@ export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmed
       <div className={`popup-editor-preferences${editorEnabled ? '' : ' is-disabled'}`}>
       <NumberField
         id="popup-editor-font-size"
-        label="Editor font size"
+        label={t('popup.editor.editorFontSize')}
         rangeLabel="12–24 px"
         min="12"
         max="24"
@@ -59,8 +59,8 @@ export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmed
 
       <NumberField
         id="popup-editor-tab-size"
-        label="Tab size"
-        rangeLabel="2–8 spaces"
+        label={t('popup.editor.tabSize')}
+        rangeLabel='popup.editor.tabSizeRange'
         min="2"
         max="8"
         step="1"
@@ -76,10 +76,10 @@ export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmed
       />
 
       <div className="popup-setting-row">
-        <span className="popup-setting-row__label">Word wrap</span>
+        <span className="popup-setting-row__label">{t('popup.editor.wordWrap')}</span>
         <Switch
           id="popup-editor-word-wrap"
-          label="Word wrap"
+          label={t('popup.editor.wordWrap')}
           checked={editor.wordWrap !== false}
           disabled={!editorEnabled}
           onChange={(event) =>
@@ -93,10 +93,10 @@ export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmed
       </div>
 
       <div className="popup-setting-row">
-        <span className="popup-setting-row__label">Line numbers</span>
+        <span className="popup-setting-row__label">{t('popup.editor.lineNumbers')}</span>
         <Switch
           id="popup-editor-line-numbers"
-          label="Line numbers"
+          label={t('popup.editor.lineNumbers')}
           checked={editor.lineNumbers !== false}
           disabled={!editorEnabled}
           onChange={(event) =>
@@ -115,7 +115,7 @@ export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmed
           className="popup-reset-button"
           disabled={!editorEnabled}
           onClick={() => {
-            const ok = window.confirm('Reset editor preferences to default values?')
+            const ok = window.confirm(t('popup.editor.resetEditorPreferencesToDefaultValues'))
             if (!ok) return
             void onPatch({
               editor: {
@@ -126,9 +126,7 @@ export function EditorSettingsPanel({ settings, saving = false, onPatch, onImmed
               }
             })
           }}
-        >
-          Reset editor preferences
-        </Button>
+        >{t('popup.editor.resetEditorPreferences')}</Button>
       </div>
       </div>
     </>

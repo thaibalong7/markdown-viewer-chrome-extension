@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../i18n/index.js'
 import { logger } from '../../shared/logger.js'
 import {
   pickFilesWithWebkitDirectory,
@@ -24,7 +25,7 @@ import {
 import { isAbortError, throwIfAborted } from './explorer-scan-session.js'
 import { workspaceDocumentStillValid } from './explorer-navigation.js'
 
-function workspaceLabelFromNormalizedDirUrl(normalizedDirUrl, fallback = 'Workspace') {
+function workspaceLabelFromNormalizedDirUrl(normalizedDirUrl, fallback = localizedMessage('viewer.explorer.workspace')) {
   if (!normalizedDirUrl) return fallback
   try {
     const pathname = new URL(normalizedDirUrl).pathname.replace(/\/+$/, '')
@@ -91,7 +92,7 @@ export function createExplorerWorkspaceSession(deps) {
     if (!dirHandle) return
     const { signal, maxScanDepth, maxFiles, maxFolders, respectGitignore } = enterWorkspaceScan({
       displayLabel: dirHandle.name || 'Folder',
-      progressHeadline: 'Scanning picked folder…'
+      progressHeadline: 'viewer.explorer.workspaceSession.scanningPickedFolder'
     })
 
     try {
@@ -115,13 +116,13 @@ export function createExplorerWorkspaceSession(deps) {
       bridge?.updateWorkspaceReaders?.(readers)
       await finalizeWorkspaceTree(tree, stats, {
         maxScanDepth,
-        workspaceLabelOverride: dirHandle.name || 'Workspace'
+        workspaceLabelOverride: dirHandle.name || localizedMessage('viewer.explorer.workspace')
       })
     } catch (error) {
       const aborted = isAbortError(error, signal)
       logger.warn('Workspace directory-handle scan failed.', error)
       if (aborted) await failWorkspaceToSibling('')
-      else await failWorkspaceToSibling('Could not scan folder')
+      else await failWorkspaceToSibling('errors.viewer.explorer.workspaceSession.scanFolder')
     } finally {
       workspaceScanSession.clear(signal)
     }
@@ -130,8 +131,8 @@ export function createExplorerWorkspaceSession(deps) {
   const openWorkspaceFromVirtualWebkitFiles = async (files) => {
     if (!files?.length) return
     const { signal, maxScanDepth, maxFiles, maxFolders, respectGitignore } = enterWorkspaceScan({
-      displayLabel: 'Imported folder',
-      progressHeadline: 'Scanning imported folder…'
+      displayLabel: '',
+      progressHeadline: 'viewer.explorer.workspaceSession.scanningImportedFolder'
     })
 
     try {
@@ -154,13 +155,13 @@ export function createExplorerWorkspaceSession(deps) {
       bridge?.updateWorkspaceReaders?.(readers)
       await finalizeWorkspaceTree(tree, stats, {
         maxScanDepth,
-        workspaceLabelOverride: tree.name || 'Workspace'
+        workspaceLabelOverride: tree.name || localizedMessage('viewer.explorer.workspace')
       })
     } catch (error) {
       const aborted = isAbortError(error, signal)
       logger.warn('Workspace webkitdirectory scan failed.', error)
       if (aborted) await failWorkspaceToSibling('')
-      else await failWorkspaceToSibling('Could not scan folder')
+      else await failWorkspaceToSibling('errors.viewer.explorer.workspaceSession.scanFolder')
     } finally {
       workspaceScanSession.clear(signal)
     }
@@ -189,7 +190,7 @@ export function createExplorerWorkspaceSession(deps) {
       scannedFolders: 0,
       currentFolder: normalized,
       onCancel: () => workspaceScanSession.abort(),
-      progressHeadline: 'Scanning workspace (file listing)…',
+      progressHeadline: 'viewer.explorer.workspaceSession.scanningWorkspaceFileListing',
       filesContext: buildFilesContext({ scanPhase: 'scanning' })
     })
 
@@ -232,7 +233,7 @@ export function createExplorerWorkspaceSession(deps) {
       }
       logger.warn('Workspace folder scan failed.', error)
       if (aborted) await failWorkspaceToSibling('')
-      else await failWorkspaceToSibling(restore ? 'Could not restore workspace' : 'Could not scan folder')
+      else await failWorkspaceToSibling(restore ? 'errors.viewer.explorer.workspaceSession.restoreWorkspace' : 'errors.viewer.explorer.workspaceSession.scanFolder')
     } finally {
       workspaceScanSession.clear(signal)
     }
@@ -264,7 +265,7 @@ export function createExplorerWorkspaceSession(deps) {
       }
     } catch (error) {
       logger.warn('Open workspace folder failed.', error)
-      bridge?.showToast?.(error?.message || 'Could not open folder', { variant: 'error' })
+      bridge?.showToast?.(error?.message || 'errors.viewer.explorer.workspaceSession.openFolder', { variant: 'error' })
     }
   }
 
@@ -323,8 +324,8 @@ export function createExplorerWorkspaceSession(deps) {
     }
 
     const workspaceLabel = opts.normalizedDirUrl
-      ? workspaceLabelFromNormalizedDirUrl(opts.normalizedDirUrl, opts.workspaceLabelOverride || tree.name || 'Workspace')
-      : opts.workspaceLabelOverride || tree.name || 'Workspace'
+      ? workspaceLabelFromNormalizedDirUrl(opts.normalizedDirUrl, opts.workspaceLabelOverride || tree.name || localizedMessage('viewer.explorer.workspace'))
+      : opts.workspaceLabelOverride || tree.name || localizedMessage('viewer.explorer.workspace')
     const expandedStateRoot = getExplorerExpandedStateRoot(tree, opts.normalizedDirUrl || getWorkspaceRootUrl())
     const storedExpandedMap = getExplorerExpandedMap('workspace', expandedStateRoot)
     const preserveExpandedState = Boolean(opts.preserveExpandedState || storedExpandedMap)

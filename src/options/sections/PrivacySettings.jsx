@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { Button } from '../../shared/react/Button.jsx'
 import { NumberField } from '../../shared/react/NumberField.jsx'
@@ -16,6 +18,7 @@ export function PrivacySettings({
   onSave,
   onClear
 }) {
+  useLocale()
   const busy = Boolean(busyAction)
   const definition = HISTORY_FIELDS.maxEntries
   const inputId = 'history-maxEntries'
@@ -23,9 +26,9 @@ export function PrivacySettings({
   return (
     <section className="settings-section" aria-labelledby="privacy-title">
       <div className="settings-section__heading">
-        <p className="settings-eyebrow">Local data</p>
-        <h2 id="privacy-title">Privacy & Data</h2>
-        <p>Control whether Markdown Plus remembers local documents and how long that list can be.</p>
+        <p className="settings-eyebrow">{t('options.privacy.localData')}</p>
+        <h2 id="privacy-title">{t('options.privacy.title')}</h2>
+        <p>{t('options.privacy.controlWhetherMarkdownPlusRemembersLocalDocumentsAnd')}</p>
       </div>
 
       <form
@@ -38,15 +41,12 @@ export function PrivacySettings({
       >
         <div className="mdp-ui-setting-row settings-row--toggle">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Save recent files</h3>
-            <p className="mdp-ui-setting-row__description">
-              Remember local Markdown files so they can be reopened from the Popup. Turning this
-              off stops new entries; it does not delete entries already stored.
-            </p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.privacy.saveRecentFiles')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.privacy.rememberLocalMarkdownFilesSoTheyCanBe')}</p>
           </div>
           <Switch
             id="history-enabled"
-            label="Save recent files"
+            label={t('options.privacy.saveRecentFiles')}
             checked={settings.enabled !== false}
             disabled={busy}
             onChange={(event) => void onEnabledChange(event.target.checked)}
@@ -58,8 +58,8 @@ export function PrivacySettings({
         <div className="settings-fields">
           <NumberField
             id={inputId}
-            label={definition.label}
-            helper="Keep only the newest entries after the next history access."
+            label={t(definition.labelKey)}
+            helper='options.privacy.keepOnlyTheNewestEntriesAfterTheNext'
             error={fieldError}
             rangeLabel={`${definition.min}–${definition.max}`}
             min={definition.min}
@@ -76,34 +76,27 @@ export function PrivacySettings({
             type="submit"
             variant="primary"
             busy={busyAction === 'historyLimit'}
-            busyLabel="Saving…"
+            busyLabel={t('common.status.saving')}
             disabled={!dirty || busy}
-          >
-            Save changes
-          </Button>
+          >{t('common.actions.saveChanges')}</Button>
         </div>
       </form>
 
       <div className="mdp-ui-card settings-card--secondary">
         <div className="mdp-ui-setting-row settings-action-row settings-action-row--danger">
           <div>
-            <h3 className="mdp-ui-setting-row__title">Clear recent files now</h3>
-            <p className="mdp-ui-setting-row__description">
-              Recent file URLs contain local paths. They are stored only in extension-local
-              storage on this device, separately from synced preferences.
-            </p>
+            <h3 className="mdp-ui-setting-row__title">{t('options.privacy.clearRecentFilesNow')}</h3>
+            <p className="mdp-ui-setting-row__description">{t('options.privacy.recentFileURLsContainLocalPathsTheyAre')}</p>
           </div>
           <Button
             variant="danger"
             busy={busyAction === 'historyClear'}
-            busyLabel="Clearing…"
+            busyLabel={t('options.privacy.clearing')}
             disabled={busy && busyAction !== 'historyClear'}
             onClick={() => {
               if (confirmClearRecentFiles()) void onClear()
             }}
-          >
-            Clear recent files
-          </Button>
+          >{t('options.privacy.clearRecentFiles')}</Button>
         </div>
       </div>
     </section>

@@ -1,3 +1,4 @@
+import { useLanguageUpdates } from '../../i18n/react.js'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_SETTINGS } from '../../settings/default-settings.js'
 import { getSettings, resetSettings, saveSettings } from '../../settings/settings-client.js'
@@ -59,6 +60,7 @@ function documentFieldError(error) {
 
 export function useSettingsForm() {
   const [settings, setSettings] = useState(null)
+  useLanguageUpdates(setSettings)
   const [explorerDraft, setExplorerDraft] = useState(() => toExplorerDraft())
   const [historyDraft, setHistoryDraft] = useState(() => toHistoryDraft())
   const [documentDraft, setDocumentDraft] = useState(() => toDocumentDraft())
@@ -67,11 +69,11 @@ export function useSettingsForm() {
   const [documentError, setDocumentError] = useState('')
   const [loading, setLoading] = useState(true)
   const [busyAction, setBusyAction] = useState('')
-  const [status, setStatus] = useState({ type: 'idle', message: 'Loading settings…' })
+  const [status, setStatus] = useState({ type: 'idle', message: 'options.notifications.loadingSettings' })
 
   const load = useCallback(async () => {
     setLoading(true)
-    setStatus({ type: 'idle', message: 'Loading settings…' })
+    setStatus({ type: 'idle', message: 'options.notifications.loadingSettings' })
     try {
       const nextSettings = await getSettings()
       setSettings(nextSettings)
@@ -81,9 +83,9 @@ export function useSettingsForm() {
       setFieldErrors({})
       setHistoryError('')
       setDocumentError('')
-      setStatus({ type: 'success', message: 'Settings are up to date.' })
+      setStatus({ type: 'success', message: 'options.notifications.settingsAreUpToDate' })
     } catch (error) {
-      setStatus({ type: 'error', message: normalizeError(error, 'Failed to load settings.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'errors.options.notifications.loadSettings') })
     } finally {
       setLoading(false)
     }
@@ -126,14 +128,14 @@ export function useSettingsForm() {
 
   const persist = useCallback(async (action, successMessage, actionName = 'save') => {
     setBusyAction(actionName)
-    setStatus({ type: 'idle', message: 'Saving changes…' })
+    setStatus({ type: 'idle', message: 'common.status.savingChanges' })
     try {
       const nextSettings = await action()
       setSettings(nextSettings)
       setStatus({ type: 'success', message: successMessage })
       return nextSettings
     } catch (error) {
-      setStatus({ type: 'error', message: normalizeError(error, 'Could not save settings.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'errors.options.notifications.saveSettings') })
       return null
     } finally {
       setBusyAction('')
@@ -141,7 +143,7 @@ export function useSettingsForm() {
   }, [])
 
   const setEnabled = useCallback(
-    (enabled) => persist(() => saveSettings({ enabled }), 'General settings saved.', 'general'),
+    (enabled) => persist(() => saveSettings({ enabled }), 'options.notifications.generalSettingsSaved', 'general'),
     [persist]
   )
 
@@ -155,7 +157,7 @@ export function useSettingsForm() {
               : SCROLLBAR_VISIBILITY.ALWAYS
           }
         }),
-        enabled ? 'Document scrollbars will auto-hide.' : 'Document scrollbars will stay visible.',
+        enabled ? 'options.notifications.documentScrollbarsWillAutoHide' : 'options.notifications.documentScrollbarsWillStayVisible',
         'scrollbarVisibility'
       ),
     [persist]
@@ -166,22 +168,27 @@ export function useSettingsForm() {
       persist(
         () => saveSettings({ appearance: { showDocumentStats } }),
         showDocumentStats
-          ? 'Document statistics will be shown.'
-          : 'Document statistics will be hidden.',
+          ? 'options.notifications.documentStatisticsWillBeShown'
+          : 'options.notifications.documentStatisticsWillBeHidden',
         'documentStats'
       ),
     [persist]
   )
 
   const setWatchMode = useCallback(
-    (mode) => persist(() => saveSettings({ watch: { mode } }), 'Watch mode updated.', 'watchMode'),
+    (mode) => persist(() => saveSettings({ watch: { mode } }), 'options.notifications.watchModeUpdated', 'watchMode'),
+    [persist]
+  )
+
+  const setLanguage = useCallback(
+    (language) => persist(() => saveSettings({ language }), 'options.notifications.interfaceLanguageUpdated', 'language'),
     [persist]
   )
 
   const setActiveTheme = useCallback(
     (activeId) => persist(
       () => saveSettings({ theme: { activeId } }),
-      'Active theme updated.',
+      'options.notifications.activeThemeUpdated',
       'themeSelect'
     ),
     [persist]
@@ -212,7 +219,7 @@ export function useSettingsForm() {
         : [...settings.theme.customThemes, nextTheme]
       const theme = normalizeThemeSettings({ activeId: nextTheme.id, customThemes })
       return saveSettings({ theme })
-    }, existingTheme ? 'Custom theme saved.' : 'Custom theme created.', 'themeSave')
+    }, existingTheme ? 'options.notifications.customThemeSaved' : 'options.notifications.customThemeCreated', 'themeSave')
 
     if (!nextSettings && uploadedAssetId) {
       try {
@@ -242,7 +249,7 @@ export function useSettingsForm() {
     const customThemes = settings.theme.customThemes.filter(({ id }) => id !== themeId)
     const nextSettings = await persist(
       () => saveSettings({ theme: { activeId, customThemes } }),
-      'Custom theme deleted.',
+      'options.notifications.customThemeDeleted',
       'themeDelete'
     )
     if (nextSettings && existingTheme.background?.assetId) {
@@ -262,13 +269,13 @@ export function useSettingsForm() {
       setFieldErrors({})
     } catch (error) {
       setFieldErrors(explorerFieldErrors(error))
-      setStatus({ type: 'error', message: normalizeError(error, 'Check the highlighted fields.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'options.notifications.checkTheHighlightedFields') })
       return
     }
 
     const nextSettings = await persist(
       () => saveSettings({ explorer }),
-      'Files & Workspace settings saved. New limits apply to the next scan or refresh.',
+      'options.notifications.filesWorkspaceSettingsSavedNewLimitsApplyTo',
       'explorer'
     )
     if (nextSettings) setExplorerDraft(toExplorerDraft(nextSettings.explorer))
@@ -279,8 +286,8 @@ export function useSettingsForm() {
       persist(
         () => saveSettings({ explorer: { [field]: enabled } }),
         field === 'showTreeIndentGuides'
-          ? 'Tree indent guides saved. Open viewers update immediately.'
-          : 'Files & Workspace behavior saved. The change applies to the next scan or viewer open.',
+          ? 'options.notifications.treeIndentGuidesSavedOpenViewersUpdateImmediately'
+          : 'options.notifications.filesWorkspaceBehaviorSavedTheChangeAppliesTo',
         'explorerBehavior'
       ),
     [persist]
@@ -290,7 +297,7 @@ export function useSettingsForm() {
     setFieldErrors({})
     const nextSettings = await persist(
       () => saveSettings({ explorer: { ...DEFAULT_SETTINGS.explorer } }),
-      'Files & Workspace settings reset to defaults.',
+      'options.notifications.filesWorkspaceSettingsResetToDefaults',
       'explorerReset'
     )
     if (nextSettings) setExplorerDraft(toExplorerDraft(nextSettings.explorer))
@@ -301,8 +308,8 @@ export function useSettingsForm() {
       persist(
         () => saveSettings({ history: { enabled } }),
         enabled
-          ? 'Recent file history enabled.'
-          : 'Recent file history disabled. Existing entries were kept.',
+          ? 'options.notifications.recentFileHistoryEnabled'
+          : 'options.notifications.recentFileHistoryDisabledExistingEntriesWereKept',
         'historyEnabled'
       ),
     [persist]
@@ -315,13 +322,13 @@ export function useSettingsForm() {
       setHistoryError('')
     } catch (error) {
       setHistoryError(historyFieldError(error))
-      setStatus({ type: 'error', message: normalizeError(error, 'Check the highlighted field.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'options.notifications.checkTheHighlightedField') })
       return
     }
 
     const nextSettings = await persist(
       () => saveSettings({ history }),
-      'Recent file retention saved. The limit applies on the next history access.',
+      'options.notifications.recentFileRetentionSavedTheLimitAppliesOn',
       'historyLimit'
     )
     if (nextSettings) setHistoryDraft(toHistoryDraft(nextSettings.history))
@@ -329,12 +336,12 @@ export function useSettingsForm() {
 
   const clearHistory = useCallback(async () => {
     setBusyAction('historyClear')
-    setStatus({ type: 'idle', message: 'Clearing recent files…' })
+    setStatus({ type: 'idle', message: 'options.notifications.clearingRecentFiles' })
     try {
       await clearRecentFiles()
-      setStatus({ type: 'success', message: 'Recent file history cleared from this device.' })
+      setStatus({ type: 'success', message: 'options.notifications.recentFileHistoryClearedFromThisDevice' })
     } catch (error) {
-      setStatus({ type: 'error', message: normalizeError(error, 'Failed to clear recent files.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'errors.options.notifications.clearRecentFiles') })
     } finally {
       setBusyAction('')
     }
@@ -347,13 +354,13 @@ export function useSettingsForm() {
       setDocumentError('')
     } catch (error) {
       setDocumentError(documentFieldError(error))
-      setStatus({ type: 'error', message: normalizeError(error, 'Check the highlighted field.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'options.notifications.checkTheHighlightedField') })
       return
     }
 
     const nextSettings = await persist(
       () => saveSettings({ documents }),
-      'Document viewing limit saved. The change applies the next time a document is opened.',
+      'options.notifications.documentViewingLimitSavedTheChangeAppliesThe',
       'documentLimit'
     )
     if (nextSettings) setDocumentDraft(toDocumentDraft(nextSettings.documents))
@@ -363,7 +370,7 @@ export function useSettingsForm() {
     setDocumentError('')
     const nextSettings = await persist(
       () => saveSettings({ documents: { ...DEFAULT_SETTINGS.documents } }),
-      'Document viewing limit reset to the default.',
+      'options.notifications.documentViewingLimitResetToTheDefault',
       'documentReset'
     )
     if (nextSettings) setDocumentDraft(toDocumentDraft(nextSettings.documents))
@@ -374,9 +381,9 @@ export function useSettingsForm() {
     setBusyAction('export')
     try {
       await exportSettingsFile(normalizeSettings(settings))
-      setStatus({ type: 'success', message: 'Settings exported.' })
+      setStatus({ type: 'success', message: 'options.notifications.settingsExported' })
     } catch (error) {
-      setStatus({ type: 'error', message: normalizeError(error, 'Failed to export settings.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'errors.options.notifications.exportSettings') })
     } finally {
       setBusyAction('')
     }
@@ -384,7 +391,7 @@ export function useSettingsForm() {
 
   const importAll = useCallback(async (file) => {
     setBusyAction('import')
-    setStatus({ type: 'idle', message: 'Validating settings file…' })
+    setStatus({ type: 'idle', message: 'options.notifications.validatingSettingsFile' })
     try {
       const source = await readSettingsFile(file)
       const completeSettings = parseSettingsJson(source)
@@ -396,16 +403,16 @@ export function useSettingsForm() {
       setFieldErrors({})
       setHistoryError('')
       setDocumentError('')
-      setStatus({ type: 'success', message: 'Settings imported and saved.' })
+      setStatus({ type: 'success', message: 'options.notifications.settingsImportedAndSaved' })
     } catch (error) {
-      setStatus({ type: 'error', message: normalizeError(error, 'Failed to import settings.') })
+      setStatus({ type: 'error', message: normalizeError(error, 'errors.options.notifications.importSettings') })
     } finally {
       setBusyAction('')
     }
   }, [])
 
   const resetAll = useCallback(async () => {
-    const nextSettings = await persist(resetSettings, 'All settings reset to defaults.', 'resetAll')
+    const nextSettings = await persist(resetSettings, 'options.notifications.allSettingsResetToDefaults', 'resetAll')
     if (nextSettings) {
       setExplorerDraft(toExplorerDraft(nextSettings.explorer))
       setHistoryDraft(toHistoryDraft(nextSettings.history))
@@ -435,6 +442,7 @@ export function useSettingsForm() {
     setScrollbarAutoHide,
     setDocumentStatsVisible,
     setWatchMode,
+    setLanguage,
     setActiveTheme,
     saveCustomTheme,
     deleteCustomTheme,

@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../i18n/index.js'
 import {
   MDP_WS_FILE,
   fileUrlIsUnderDirectoryUrl,
@@ -122,14 +123,14 @@ export function injectCurrentDocumentAtRootIfMissing(tree, currentFileUrl, stats
  * @returns {string}
  */
 function currentFileLineLabel(fileUrl) {
-  if (!fileUrl) return 'No file selected'
+  if (!fileUrl) return localizedMessage('viewer.explorer.context.noFileSelected')
   if (typeof fileUrl === 'string' && fileUrl.startsWith(MDP_WS_FILE)) {
     try {
       const rel = decodeURIComponent(fileUrl.slice(MDP_WS_FILE.length))
       const base = rel.split('/').pop() || ''
-      return base || 'Document'
+      return base || localizedMessage('viewer.explorer.context.document')
     } catch {
-      return 'Document'
+      return localizedMessage('viewer.explorer.context.document')
     }
   }
   try {
@@ -142,9 +143,9 @@ function currentFileLineLabel(fileUrl) {
         return base
       }
     })()
-    return decoded || 'Document'
+    return decoded || localizedMessage('viewer.explorer.context.document')
   } catch {
-    return 'Document'
+    return localizedMessage('viewer.explorer.context.document')
   }
 }
 
@@ -172,11 +173,11 @@ export function buildExplorerFilesContext({
   const statusLine =
     explorerMode === 'workspace'
       ? scanPhase === 'scanning'
-        ? 'Scanning workspace…'
-        : 'Workspace files'
+        ? 'viewer.explorer.context.scanningWorkspace'
+        : 'viewer.explorer.context.workspaceFiles'
       : scanPhase === 'scanning'
-        ? 'Scanning folder…'
-        : 'This file’s folder'
+        ? 'viewer.explorer.context.scanningFolder'
+        : 'viewer.explorer.context.currentFolderLabel'
 
   /** @type {string | undefined} */
   let warningLine
@@ -189,8 +190,8 @@ export function buildExplorerFilesContext({
   ) {
     warningLine =
       explorerMode === 'workspace'
-        ? 'The open file is not under this workspace tree. Pick a file from the list or exit workspace.'
-        : 'The open file is not listed in the scanned tree (limits or listing). It was added at the top so you can still navigate.'
+        ? 'viewer.explorer.context.openFileIsNotUnderThisWorkspaceTree'
+        : 'viewer.explorer.context.openFileIsNotListedInTheScanned'
   }
 
   return {

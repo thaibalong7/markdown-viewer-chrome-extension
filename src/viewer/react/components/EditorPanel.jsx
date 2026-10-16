@@ -1,3 +1,6 @@
+import { getLocale, t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
+import { getEditorPhrases } from '../../../i18n/editor-phrases.js'
 import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 import { loadCodemirror } from '../../editor/codemirror-bundle.js'
 import { createEditorTheme } from '../../editor/editor-theme.js'
@@ -18,6 +21,7 @@ import { LoadingState } from '../../../shared/react/LoadingState.jsx'
  * @param {{ fontSize?: number, tabSize?: number, wordWrap?: boolean, lineNumbers?: boolean }} [props.editorSettings]
  */
 export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContentChange, onEditorReady, onEditorDestroy, onEditorScroll, onSave, onStatusChange, editorSettings }, ref) {
+  const locale = useLocale()
   const containerRef = useRef(null)
   const viewRef = useRef(null)
   const cmRef = useRef(null)
@@ -113,7 +117,8 @@ export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContent
         lineNumbers: new cm.Compartment(),
         wordWrap: new cm.Compartment(),
         tabSize: new cm.Compartment(),
-        theme: new cm.Compartment()
+        theme: new cm.Compartment(),
+        language: new cm.Compartment()
       }
       configCompartmentsRef.current = compartments
 
@@ -134,6 +139,7 @@ export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContent
       }
 
       const extensions = [
+        compartments.language.of(cm.EditorState.phrases.of(getEditorPhrases(getLocale()))),
         cm.updateListener.of((update) => {
           if (update.docChanged) {
             if (!suppressContentChangeRef.current) {
@@ -292,6 +298,27 @@ export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContent
   ])
 
   useEffect(() => {
+    const view = viewRef.current
+    const cm = cmRef.current
+    const language = configCompartmentsRef.current?.language
+    if (!view || !cm || !language || loading) return
+    const searchOpen = cm.searchPanelOpen(view.state)
+    const focused = view.dom.ownerDocument.activeElement
+    const fieldName = focused?.closest('.cm-search') ? focused.getAttribute('name') : null
+    const selection = typeof focused?.selectionStart === 'number'
+      ? [focused.selectionStart, focused.selectionEnd] : null
+    view.dispatch({ effects: language.reconfigure(cm.EditorState.phrases.of(getEditorPhrases(locale))) })
+    if (searchOpen) {
+      // Recreate native panel labels while retaining its query and the editor's undo/draft state.
+      cm.closeSearchPanel(view)
+      cm.openSearchPanel(view)
+      const target = fieldName ? view.dom.querySelector(`.cm-search [name="${fieldName}"]`) : focused
+      target?.focus({ preventScroll: true })
+      if (fieldName && selection) target?.setSelectionRange?.(...selection)
+    }
+  }, [locale, loading])
+
+  useEffect(() => {
     const v = viewRef.current
     if (!v || loading) return
     if (markdown === v.state.doc.toString()) return
@@ -309,7 +336,7 @@ export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContent
       ref={handleContainerRef}
     >
       {loading && (
-        <LoadingState className="mdp-editor-panel__loading" label="Loading editor…" />
+        <LoadingState className="mdp-editor-panel__loading" label={t('viewer.editor.loadingEditor')} />
       )}
     </div>
   )

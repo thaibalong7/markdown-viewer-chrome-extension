@@ -1,3 +1,5 @@
+import { useLocale } from '../../../i18n/react.js'
+import { t } from '../../../i18n/index.js'
 import React from 'react'
 import { createPortal, flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
@@ -6,6 +8,11 @@ import { logger } from '../../../shared/logger.js'
 const runtimes = new WeakMap()
 let nextEntryId = 0
 
+function ContentUiFallback() {
+  useLocale()
+  return <span role="alert">{t('viewer.content.controlCouldNotBeDisplayed')}</span>
+}
+
 class ContentUiBoundary extends React.Component {
   state = { failed: false }
   static getDerivedStateFromError() { return { failed: true } }
@@ -13,7 +20,7 @@ class ContentUiBoundary extends React.Component {
     logger.warn('Content UI failed.', { errorName: error?.name || 'Error' })
   }
   render() {
-    return this.state.failed ? <span role="alert">This control could not be displayed.</span> : this.props.children
+    return this.state.failed ? <ContentUiFallback /> : this.props.children
   }
 }
 

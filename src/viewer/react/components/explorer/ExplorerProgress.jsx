@@ -1,7 +1,10 @@
+import { t } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React from 'react'
 import { Spinner } from '../../../../shared/react/LoadingState.jsx'
 
 export function ExplorerProgress({ headline, text, showCancel, onCancel }) {
+  useLocale()
   return (
     <div
       className="mdp-explorer__progress"
@@ -12,17 +15,15 @@ export function ExplorerProgress({ headline, text, showCancel, onCancel }) {
     >
       <div className="mdp-explorer__progress-headline">
         <Spinner />
-        <span>{headline}</span>
+        <span>{t(headline)}</span>
       </div>
-      <div className="mdp-explorer__progress-text">{text}</div>
+      <div className="mdp-explorer__progress-text">{t(text)}</div>
       <button
         type="button"
         className="mdp-explorer__progress-cancel mdp-button"
         hidden={!showCancel}
         onClick={() => onCancel?.()}
-      >
-        Cancel
-      </button>
+      >{t('common.actions.cancel')}</button>
     </div>
   )
 }

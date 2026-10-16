@@ -470,6 +470,14 @@ export const BUILT_IN_THEME_LABELS = Object.freeze({
   'aurora-glass': 'Aurora Glass'
 })
 
+export const BUILT_IN_THEME_LABEL_KEYS = Object.freeze({
+  "light": 'common.themes.light',
+  "high-contrast-light": 'common.themes.highContrastLight',
+  "dark": 'common.themes.dark',
+  "high-contrast-dark": 'common.themes.highContrastDark',
+  "vscode-dark": 'common.themes.vscodeDark'
+})
+
 export const BUILT_IN_THEME_DEFINITIONS = Object.freeze(
   Object.fromEntries(
     Object.entries(BUILT_IN_THEMES).map(([id, colors]) => [
@@ -494,18 +502,18 @@ export const DEFAULT_THEME_SETTINGS = Object.freeze({
 export const MAX_CUSTOM_THEMES = 32
 
 export const EDITABLE_THEME_COLOR_FIELDS = Object.freeze([
-  Object.freeze({ key: 'background', label: 'Page background' }),
-  Object.freeze({ key: 'surface', label: 'Content surface' }),
-  Object.freeze({ key: 'panelBg', label: 'Panel surface' }),
-  Object.freeze({ key: 'text', label: 'Interface text' }),
-  Object.freeze({ key: 'bodyText', label: 'Document text' }),
-  Object.freeze({ key: 'heading', label: 'Headings' }),
-  Object.freeze({ key: 'muted', label: 'Muted text' }),
-  Object.freeze({ key: 'border', label: 'Borders' }),
-  Object.freeze({ key: 'codeBg', label: 'Inline/fallback code background' }),
-  Object.freeze({ key: 'codeText', label: 'Inline/fallback code text' }),
-  Object.freeze({ key: 'link', label: 'Links' }),
-  Object.freeze({ key: 'accent', label: 'Accent' })
+  Object.freeze({ key: 'background', label: 'Page background', labelKey: 'options.themes.colors.pageBackground' }),
+  Object.freeze({ key: 'surface', label: 'Content surface', labelKey: 'options.themes.colors.contentSurface' }),
+  Object.freeze({ key: 'panelBg', label: 'Panel surface', labelKey: 'options.themes.colors.panelSurface' }),
+  Object.freeze({ key: 'text', label: 'Interface text', labelKey: 'options.themes.colors.interfaceText' }),
+  Object.freeze({ key: 'bodyText', label: 'Document text', labelKey: 'options.themes.colors.documentText' }),
+  Object.freeze({ key: 'heading', label: 'Headings', labelKey: 'options.themes.colors.headings' }),
+  Object.freeze({ key: 'muted', label: 'Muted text', labelKey: 'options.themes.colors.mutedText' }),
+  Object.freeze({ key: 'border', label: 'Borders', labelKey: 'options.themes.colors.borders' }),
+  Object.freeze({ key: 'codeBg', label: 'Inline/fallback code background', labelKey: 'options.themes.colors.inlineFallbackCodeBackground' }),
+  Object.freeze({ key: 'codeText', label: 'Inline/fallback code text', labelKey: 'options.themes.colors.inlineFallbackCodeText' }),
+  Object.freeze({ key: 'link', label: 'Links', labelKey: 'options.themes.colors.links' }),
+  Object.freeze({ key: 'accent', label: 'Accent', labelKey: 'options.themes.preview.accent' })
 ])
 
 const EDITABLE_COLOR_KEYS = EDITABLE_THEME_COLOR_FIELDS.map(({ key }) => key)
@@ -590,7 +598,8 @@ export function getSyntaxThemeIdForSettings(settings = {}) {
 export function getThemeOptions(settings = {}) {
   const builtIn = Object.keys(BUILT_IN_THEMES).map((id) => ({
     id,
-    name: BUILT_IN_THEME_DEFINITIONS[id].name
+    name: BUILT_IN_THEME_DEFINITIONS[id].name,
+    nameKey: BUILT_IN_THEME_LABEL_KEYS[id]
   }))
   const custom = (Array.isArray(settings?.theme?.customThemes) ? settings.theme.customThemes : [])
     .map((theme) => ({

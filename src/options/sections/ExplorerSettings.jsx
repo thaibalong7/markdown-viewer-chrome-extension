@@ -1,3 +1,5 @@
+import { formatNumber, t, translateMessage } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { Button } from '../../shared/react/Button.jsx'
 import { Notice } from '../../shared/react/Notice.jsx'
@@ -7,13 +9,13 @@ import { EXPLORER_LIMIT_FIELDS } from '../../settings/settings-schema.js'
 
 const FIELD_COPY = {
   maxScanDepth: {
-    helper: 'How many folder levels to scan below the selected root. Use 0 for the root only.'
+    helper: 'options.explorer.howManyFolderLevelsToScanBelowThe'
   },
   maxFiles: {
-    helper: 'Stop indexing after this many supported documents have been found.'
+    helper: 'options.explorer.stopIndexingAfterThisManySupportedDocumentsHave'
   },
   maxFolders: {
-    helper: 'Stop the scan after this many folders have been visited.'
+    helper: 'options.explorer.stopTheScanAfterThisManyFoldersHave'
   }
 }
 
@@ -28,12 +30,13 @@ export function ExplorerSettings({
   onSave,
   onReset
 }) {
+  useLocale()
   return (
     <section className="settings-section" aria-labelledby="explorer-title">
       <div className="settings-section__heading">
-        <p className="settings-eyebrow">Navigation & scanning</p>
-        <h2 id="explorer-title">Files & Workspace</h2>
-        <p>Customize the file tree and workspace behavior. Scan limits apply on the next scan or refresh.</p>
+        <p className="settings-eyebrow">{t('options.explorer.navigationScanning')}</p>
+        <h2 id="explorer-title">{t('options.explorer.title')}</h2>
+        <p>{t('options.explorer.customizeTheFileTreeAndWorkspaceBehaviorScan')}</p>
       </div>
 
       <form
@@ -47,12 +50,12 @@ export function ExplorerSettings({
         <div className="settings-policy-fields">
           <div className="mdp-ui-setting-row settings-row--toggle">
             <div>
-              <h3 className="mdp-ui-setting-row__title">Show tree indent guides</h3>
-              <p className="mdp-ui-setting-row__description">Connect folders and files with hierarchy lines. Changes apply immediately.</p>
+              <h3 className="mdp-ui-setting-row__title">{t('options.explorer.showTreeIndentGuides')}</h3>
+              <p className="mdp-ui-setting-row__description">{t('options.explorer.connectFoldersAndFilesWithHierarchyLinesChanges')}</p>
             </div>
             <Switch
               id="explorer-show-tree-indent-guides"
-              label="Show tree indent guides"
+              label={t('options.explorer.showTreeIndentGuides')}
               checked={settings.showTreeIndentGuides !== false}
               disabled={saving}
               onChange={(event) =>
@@ -65,12 +68,12 @@ export function ExplorerSettings({
 
           <div className="mdp-ui-setting-row settings-row--toggle">
             <div>
-              <h3 className="mdp-ui-setting-row__title">Respect .gitignore files</h3>
-              <p className="mdp-ui-setting-row__description">Exclude files and folders ignored by nested .gitignore rules during workspace scans.</p>
+              <h3 className="mdp-ui-setting-row__title">{t('options.explorer.respectGitignoreFiles')}</h3>
+              <p className="mdp-ui-setting-row__description">{t('options.explorer.excludeFilesAndFoldersIgnoredByNestedGitignore')}</p>
             </div>
             <Switch
               id="explorer-respect-gitignore"
-              label="Respect .gitignore files"
+              label={t('options.explorer.respectGitignoreFiles')}
               checked={settings.respectGitignore !== false}
               disabled={saving}
               onChange={(event) =>
@@ -83,15 +86,12 @@ export function ExplorerSettings({
 
           <div className="mdp-ui-setting-row settings-row--toggle">
             <div>
-              <h3 className="mdp-ui-setting-row__title">Restore last workspace</h3>
-              <p className="mdp-ui-setting-row__description">
-                Reopen the last file-backed workspace when a new viewer starts. Turning this off
-                does not close the workspace currently in use.
-              </p>
+              <h3 className="mdp-ui-setting-row__title">{t('options.explorer.restoreLastWorkspace')}</h3>
+              <p className="mdp-ui-setting-row__description">{t('options.explorer.reopenTheLastFileBackedWorkspaceWhenA')}</p>
             </div>
             <Switch
               id="explorer-restore-workspace"
-              label="Restore last workspace"
+              label={t('options.explorer.restoreLastWorkspace')}
               checked={settings.restoreLastWorkspace !== false}
               disabled={saving}
               onChange={(event) =>
@@ -111,10 +111,10 @@ export function ExplorerSettings({
               <NumberField
                 key={field}
                 id={inputId}
-                label={definition.label}
+                label={t(definition.labelKey)}
                 helper={FIELD_COPY[field].helper}
-                error={error}
-                rangeLabel={`${definition.min.toLocaleString()}–${definition.max.toLocaleString()}`}
+                error={translateMessage(error)}
+                rangeLabel={`${formatNumber(definition.min)}–${formatNumber(definition.max)}`}
                 min={definition.min}
                 max={definition.max}
                 step="1"
@@ -126,10 +126,7 @@ export function ExplorerSettings({
           })}
         </div>
 
-        <Notice variant="warning" title="Large workspace scans" className="settings-notice">
-          Higher limits can make large workspace scans slower and use more memory. An active scan is
-          never restarted automatically when these values change.
-        </Notice>
+        <Notice variant="warning" title={t('options.explorer.largeWorkspaceScans')} className="settings-notice">{t('options.explorer.higherLimitsCanMakeLargeWorkspaceScansSlower')}</Notice>
 
         <div className="mdp-ui-action-footer">
           <Button
@@ -137,15 +134,13 @@ export function ExplorerSettings({
             variant="primary"
             disabled={!dirty || saving}
           >
-            {saving ? 'Saving…' : 'Save changes'}
+            {saving ? t('common.status.saving') : t('common.actions.saveChanges')}
           </Button>
           <Button
             variant="quiet"
             onClick={onReset}
             disabled={saving}
-          >
-            Reset section to defaults
-          </Button>
+          >{t('options.explorer.resetSectionToDefaults')}</Button>
         </div>
       </form>
     </section>

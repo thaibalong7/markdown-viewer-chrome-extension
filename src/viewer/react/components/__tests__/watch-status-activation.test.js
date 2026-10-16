@@ -1,3 +1,4 @@
+vi.mock('../../../../i18n/react.js', () => ({ useLocale: () => 'en' }))
 import React from 'react'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { WatchStatus } from '../WatchStatus.jsx'

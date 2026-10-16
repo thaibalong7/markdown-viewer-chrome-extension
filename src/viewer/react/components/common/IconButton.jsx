@@ -1,3 +1,5 @@
+import { t } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React, { forwardRef } from 'react'
 import { Tooltip } from '../Tooltip.jsx'
 
@@ -22,9 +24,11 @@ export const IconButton = forwardRef(function IconButton(
   },
   ref
 ) {
+  useLocale()
   const button = (
     <button
       {...buttonProps}
+      aria-label={t(buttonProps['aria-label'])}
       ref={ref}
       type={type}
       className={classNames(className, pressed ? activeClassName : '', copied ? copiedClassName : '')}

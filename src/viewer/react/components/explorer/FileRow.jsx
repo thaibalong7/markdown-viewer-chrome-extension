@@ -1,3 +1,5 @@
+import { t } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React, { useCallback, useRef, useState } from 'react'
 import {
   canCopyCurrentFileLink,
@@ -20,6 +22,7 @@ import { getTreeRowIndent, TreeGuides } from './TreeGuides.jsx'
 import { useExplorerRowMenuLayout } from '../../hooks/explorer/useExplorerRowMenuLayout.js'
 
 export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, motionState = '' }) {
+  useLocale()
   const menuRef = useRef(null)
   const { showToast } = useToast()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -27,7 +30,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
   const canOpenInNewTab = isBrowserOpenableFileHref(href)
   const canCopyLink = canCopyCurrentFileLink(href)
   const fileType = getFileTypeById(file?.fileTypeId)
-  const fileTypeLabel = fileType?.label || 'Document'
+  const fileTypeLabel = fileType?.labelKey || 'viewer.explorer.context.document'
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false)
@@ -44,7 +47,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
     if (!isPlainPrimaryClick(event)) {
       if (!canOpenInNewTab) {
         event.preventDefault()
-        showToast?.('This workspace file cannot open in a browser tab', { variant: 'warning' })
+        showToast?.('viewer.explorer.file.workspaceFileCannotOpenInABrowserTab', { variant: 'warning' })
       }
       return
     }
@@ -56,7 +59,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
     if (event.button !== 1) return
     if (canOpenInNewTab) return
     event.preventDefault()
-    showToast?.('This workspace file cannot open in a browser tab', { variant: 'warning' })
+    showToast?.('viewer.explorer.file.workspaceFileCannotOpenInABrowserTab', { variant: 'warning' })
   }
 
   const onOpenNewTab = () => {
@@ -64,7 +67,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
       setMenuOpen(false)
       return
     }
-    showToast?.('This workspace file cannot open in a browser tab', { variant: 'warning' })
+    showToast?.('viewer.explorer.file.workspaceFileCannotOpenInABrowserTab', { variant: 'warning' })
   }
 
   const onCopyLink = () => {
@@ -72,9 +75,9 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
       try {
         await copyFileRowLink(href)
         setMenuOpen(false)
-        showToast?.('Copied file link', { variant: 'success' })
+        showToast?.('viewer.actions.export.copiedFileLink', { variant: 'success' })
       } catch {
-        showToast?.('Could not copy file link', { variant: 'error' })
+        showToast?.('errors.viewer.actions.copyFileLink', { variant: 'error' })
       }
     })()
   }
@@ -84,9 +87,9 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
       try {
         await copyFileRowName(file.displayName)
         setMenuOpen(false)
-        showToast?.('Copied file name', { variant: 'success' })
+        showToast?.('viewer.explorer.file.copiedFileName', { variant: 'success' })
       } catch {
-        showToast?.('Could not copy file name', { variant: 'error' })
+        showToast?.('errors.viewer.explorer.file.copyFileName', { variant: 'error' })
       }
     })()
   }
@@ -106,7 +109,7 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
         className={`mdp-explorer__node-btn${isActive ? ' is-active' : ''}`}
         data-file-href={href}
         aria-current={isActive ? 'true' : 'false'}
-        title={`${file.displayName} — ${fileTypeLabel}`}
+        title={`${file.displayName} — ${t(fileTypeLabel)}`}
         data-file-type={file?.fileTypeId || undefined}
         onClick={onFileClick}
         onAuxClick={onFileAuxClick}
@@ -124,9 +127,9 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
         triggerClassName="mdp-explorer__row-action-btn"
         triggerOpenClassName="is-open"
         triggerIcon={<MoreIcon className="mdp-explorer__row-action-icon" />}
-        triggerLabel={`More actions for ${file.displayName}`}
-        triggerTooltip={`More actions for ${file.displayName}`}
-        menuLabel={`Actions for ${file.displayName}`}
+        triggerLabel={t('viewer.explorer.actions.moreLabel', { 0: file.displayName })}
+        triggerTooltip={t('viewer.explorer.actions.moreLabel', { 0: file.displayName })}
+        menuLabel={t('viewer.explorer.actions.menuLabel', { 0: file.displayName })}
         menuStyle={menuStyle}
         menuClassName="mdp-explorer__row-menu"
         itemClassName="mdp-explorer__row-menu-item"
@@ -134,21 +137,21 @@ export function FileRow({ file, depth, isActive, onPick, rowStyle, treeRow, moti
         items={[
           {
             key: 'open-new-tab',
-            label: 'Open in new tab',
+            label: 'viewer.explorer.file.openInNewTab',
             disabled: !canOpenInNewTab,
             icon: <OpenNewTabIcon className="mdp-explorer__row-menu-icon" />,
             onClick: onOpenNewTab
           },
           {
             key: 'copy-link',
-            label: 'Copy link',
+            label: 'common.actions.copyLink',
             disabled: !canCopyLink,
             icon: <CopyLinkIcon className="mdp-explorer__row-menu-icon" />,
             onClick: onCopyLink
           },
           {
             key: 'copy-name',
-            label: 'Copy file name',
+            label: 'viewer.explorer.actions.copyFileName',
             icon: <CopyIcon className="mdp-explorer__row-menu-icon" />,
             onClick: onCopyName
           }

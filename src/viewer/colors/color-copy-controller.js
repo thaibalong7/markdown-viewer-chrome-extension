@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../i18n/index.js'
 import { copyTextToClipboard } from '../../shared/clipboard.js'
 import { mountContentUi, getContentOverlayTarget } from '../react/content/mount-content-ui.jsx'
 import { ColorCopyFeedback, ColorCopyStatus } from '../react/content/colors/ColorCopyFeedback.jsx'
@@ -79,7 +80,7 @@ export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled
     try {
       await copyTextToClipboard(source)
       if (destroyed || !trigger.isConnected) return
-      status.update({ text: `Copied ${source}` })
+      status.update({ text: localizedMessage('viewer.colors.copiedValue', { 0: source }) })
       if (copySequence === sequence) {
         onSuccess?.(trigger)
         showVisual(point)
@@ -87,7 +88,7 @@ export function createColorSourceCopy({ articleEl, onError, onSuccess, onSettled
     } catch (error) {
       if (destroyed || !trigger.isConnected) return
       logger.warn('Could not copy detected color.', { errorName: error?.name || 'Error' })
-      const message = 'Could not copy color. Select the original text to copy manually.'
+      const message = 'errors.viewer.colors.copyColorSelectTheOriginalTextToCopy'
       if (copySequence === sequence && onError) onError(trigger, message)
       else status.update({ text: message })
     } finally {

@@ -1,3 +1,4 @@
+import { t } from '../../../i18n/index.js'
 import { describe, expect, it, vi } from 'vitest'
 import { getFileListRefreshUnavailableReason, refreshExplorerFileList } from '../explorer-list-refresh.js'
 
@@ -41,11 +42,11 @@ describe('file-list refresh ownership', () => {
     const h = harness()
     h.runSiblingScan.mockRejectedValue(new Error('access denied'))
     expect(await refreshExplorerFileList(h)).toBe(false)
-    expect(h.showToast).toHaveBeenCalledWith(expect.stringContaining('open document was kept'), { variant: 'error' })
+    expect(h.showToast).toHaveBeenCalledWith('errors.viewer.explorer.listRefresh.refreshFileListTheOpenDocumentWasKept', { variant: 'error' })
   })
 
   it('explains reselecting a handle/snapshot workspace instead of pretending it can rescan', () => {
-    expect(getFileListRefreshUnavailableReason({ mode: 'workspace', workspaceRootUrl: null })).toContain('Select the folder again')
+    expect(t(getFileListRefreshUnavailableReason({ mode: 'workspace', workspaceRootUrl: null }), {}, 'en')).toContain('Select the folder again')
     expect(getFileListRefreshUnavailableReason({ mode: 'workspace', workspaceRootUrl: 'file:///docs/' })).toBe('')
   })
 })

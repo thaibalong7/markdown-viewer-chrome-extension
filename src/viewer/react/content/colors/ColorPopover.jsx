@@ -1,3 +1,5 @@
+import { t, translateMessage } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React from 'react'
 import { IconSwap } from '../../components/common/IconSwap.jsx'
 
@@ -6,13 +8,14 @@ export function ColorPopover({
   id, source, color, rows, opacity, status,
   panelRef, onEnter, onLeave, onFocus, onCopy
 }) {
+  useLocale()
   return (
     <section
       ref={panelRef}
       className="mdp-color-popover"
       id={id}
       role="dialog"
-      aria-label={`Color formats for ${source}`}
+      aria-label={t('viewer.colors.colorFormatsForValue', { 0: source })}
       onPointerEnter={onEnter}
       onPointerLeave={onLeave}
       onFocus={onFocus}
@@ -32,7 +35,7 @@ export function ColorPopover({
               {row.error ? row.value : row.display}
             </span>
             {row.format === 'HEX' && opacity && (
-              <span ref={row.opacityRef} className="mdp-color-popover__opacity" aria-label={`Opacity ${opacity}`}>
+              <span ref={row.opacityRef} className="mdp-color-popover__opacity" aria-label={t('viewer.colors.opacityValue', { 0: opacity })}>
                 {opacity}
               </span>
             )}
@@ -41,7 +44,7 @@ export function ColorPopover({
             ref={row.buttonRef}
             type="button"
             className={`mdp-color-popover__copy${row.copied ? ' is-copied' : ''}${row.error ? ' is-error' : ''}`}
-            aria-label={`Copy ${row.format}`}
+            aria-label={t('viewer.colors.copyValue', { 0: row.format })}
             aria-busy={row.busy || undefined}
             disabled={row.busy}
             onClick={event => onCopy(row, event.currentTarget)}
@@ -55,7 +58,7 @@ export function ColorPopover({
         role="status"
         aria-live="polite"
       >
-        {status.text}
+        {translateMessage(status.text)}
       </p>
     </section>
   )

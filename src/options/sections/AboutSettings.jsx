@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { AppIcon } from '../../shared/react/AppIcon.jsx'
 import { Badge } from '../../shared/react/Badge.jsx'
@@ -6,29 +8,30 @@ import { ABOUT_LINKS, getExtensionMetadata } from '../about-metadata.js'
 
 const FEATURES = Object.freeze([
   Object.freeze({
-    title: 'Read',
-    description: 'Render local Markdown, code, math, diagrams, text, and images.'
+    title: 'common.actions.read',
+    description: 'options.about.renderLocalMarkdownCodeMathDiagramsTextAnd'
   }),
   Object.freeze({
-    title: 'Explore',
-    description: 'Browse sibling documents or open a local workspace.'
+    title: 'common.actions.explore',
+    description: 'options.about.browseSiblingDocumentsOrOpenALocalWorkspace'
   }),
   Object.freeze({
-    title: 'Edit',
-    description: 'Opt in to editing with exact-file verification and safe saves.'
+    title: 'common.actions.edit',
+    description: 'options.about.optInToEditingWithExactFileVerification'
   })
 ])
 
 export function AboutSettings({ metadata = getExtensionMetadata() }) {
-  const platformLabels = [metadata.manifestLabel, metadata.minimumChromeLabel, 'Open source']
+  useLocale()
+  const platformLabels = [metadata.manifestLabel, metadata.minimumChromeLabel, 'options.about.openSource']
     .filter(Boolean)
 
   return (
     <section className="settings-section settings-section--about" aria-labelledby="about-title">
       <div className="settings-section__heading">
-        <p className="settings-eyebrow">Product</p>
-        <h2 id="about-title">About Markdown Plus</h2>
-        <p>Learn what Markdown Plus does, how it handles your files, and where to get help.</p>
+        <p className="settings-eyebrow">{t('options.about.product')}</p>
+        <h2 id="about-title">{t('options.about.heading')}</h2>
+        <p>{t('options.about.learnWhatMarkdownPlusDoesHowItHandles')}</p>
       </div>
 
       <div className="mdp-ui-card settings-about-hero">
@@ -43,41 +46,36 @@ export function AboutSettings({ metadata = getExtensionMetadata() }) {
         />
         <div className="settings-about-hero__copy">
           <div className="settings-about-hero__title-row">
-            <h3>Markdown Plus</h3>
-            <Badge variant="info">Version {metadata.version}</Badge>
+            <h3>{t('common.productName')}</h3>
+            <Badge variant="info">{t('options.about.version')}{' '}{t(metadata.version)}</Badge>
           </div>
-          <p>A local-first viewer and editor for Markdown and related files.</p>
-          <ul className="settings-about-hero__meta" aria-label="Extension information">
-            {platformLabels.map((label) => <li key={label}>{label}</li>)}
+          <p>{t('options.about.aLocalFirstViewerAndEditorForMarkdown')}</p>
+          <ul className="settings-about-hero__meta" aria-label={t('options.about.extensionInformation')}>
+            {platformLabels.map((label) => <li key={label.messageKey || label}>{t(label)}</li>)}
           </ul>
         </div>
       </div>
 
-      <Notice variant="success" title="Local-first by design" className="settings-about-privacy">
-        <p>
-          Your documents are processed in Chrome and are not sent to a developer-operated
-          service. Device-local data stays on this device; preferences may sync through Chrome.
-        </p>
-        <a href={ABOUT_LINKS.find(({ id }) => id === 'privacy').href} target="_blank" rel="noreferrer">
-          Read the privacy policy
-          <AppIcon name="external" />
+      <Notice variant="success" title={t('options.about.localFirstByDesign')} className="settings-about-privacy">
+        <p>{t('options.about.yourDocumentsAreProcessedInChromeAndAre')}</p>
+        <a href={ABOUT_LINKS.find(({ id }) => id === 'privacy').href} target="_blank" rel="noreferrer">{t('options.about.readThePrivacyPolicy')}<AppIcon name="external" />
         </a>
       </Notice>
 
       <div className="settings-about-block" aria-labelledby="about-features-title">
-        <h3 id="about-features-title">What Markdown Plus does</h3>
+        <h3 id="about-features-title">{t('options.about.whatMarkdownPlusDoes')}</h3>
         <div className="settings-about-features">
           {FEATURES.map((feature) => (
             <article className="mdp-ui-card settings-about-feature" key={feature.title}>
-              <strong>{feature.title}</strong>
-              <p>{feature.description}</p>
+              <strong>{t(feature.title)}</strong>
+              <p>{t(feature.description)}</p>
             </article>
           ))}
         </div>
       </div>
 
       <div className="settings-about-block" aria-labelledby="about-links-title">
-        <h3 id="about-links-title">Project &amp; support</h3>
+        <h3 id="about-links-title">{t('options.about.projectSupport')}</h3>
         <div className="mdp-ui-card settings-about-links">
           {ABOUT_LINKS.map((link) => (
             <a
@@ -88,8 +86,8 @@ export function AboutSettings({ metadata = getExtensionMetadata() }) {
               key={link.id}
             >
               <span>
-                <strong>{link.label}</strong>
-                <small>{link.description}</small>
+                <strong>{t(link.label)}</strong>
+                <small>{t(link.description)}</small>
               </span>
               <AppIcon name="external" />
             </a>

@@ -7,7 +7,7 @@ export function parseSettingsJson(source) {
   try {
     parsed = JSON.parse(source)
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Could not parse file.'
+    const message = error instanceof Error ? error.message : 'errors.options.settingsImport.parseFile'
     throw new Error(`Invalid JSON: ${message}`)
   }
 

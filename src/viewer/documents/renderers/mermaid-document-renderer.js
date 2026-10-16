@@ -4,7 +4,7 @@ import { closeMermaidLightbox, destroyMermaidLightbox } from '../../media/mermai
 import { renderMermaidIntoNode } from '../../mermaid/mermaid-render-service.js'
 
 function abortError() {
-  return new DOMException('Document render was aborted.', 'AbortError')
+  return new DOMException("Document render was aborted.", 'AbortError')
 }
 
 
@@ -17,7 +17,7 @@ export async function render({ loadedDocument, articleEl, settings, services = {
 
   clearContentUi(articleEl)
   if (loadedDocument?.loadError) {
-    mountDocumentState(articleEl, { className: 'mdp-mermaid-document__state mdp-mermaid-document__state--error', message: loadedDocument.loadError.message || 'Could not display this Mermaid document.', role: 'alert' })
+    mountDocumentState(articleEl, { className: 'mdp-mermaid-document__state mdp-mermaid-document__state--error', message: loadedDocument.loadError.message || 'errors.viewer.documents.mermaid.displayThisMermaidDocument', role: 'alert' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 
@@ -33,7 +33,7 @@ export async function render({ loadedDocument, articleEl, settings, services = {
   }
 
   if (!source) {
-    mountDocumentState(articleEl, { className: 'mdp-mermaid-document__state mdp-mermaid-document__state--empty', message: 'This Mermaid file is empty.' })
+    mountDocumentState(articleEl, { className: 'mdp-mermaid-document__state mdp-mermaid-document__state--empty', message: 'viewer.documents.mermaid.mermaidFileIsEmpty' })
     return { tocItems: [], interactionProfile: 'none' }
   }
 

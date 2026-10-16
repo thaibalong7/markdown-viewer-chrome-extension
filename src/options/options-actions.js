@@ -1,16 +1,17 @@
+import { t } from '../i18n/index.js'
 import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
 import { triggerDownload } from '../shared/download.js'
 
 export function confirmResetAllSettings() {
-  return window.confirm(
-    'Reset all Markdown Plus settings to their defaults? This includes reader, editor, plugin, and explorer preferences.'
-  )
+  return window.confirm(t(
+    'options.optionsActions.resetAllMarkdownPlusSettingsToTheirDefaults'
+  ))
 }
 
 export function confirmClearRecentFiles() {
-  return window.confirm(
-    'Clear all recent file paths stored by Markdown Plus on this device? This cannot be undone.'
-  )
+  return window.confirm(t(
+    'options.optionsActions.clearAllRecentFilePathsStoredByMarkdown'
+  ))
 }
 
 export async function clearRecentFiles() {

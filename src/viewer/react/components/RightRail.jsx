@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useLayoutEffect, useRef, useState } from 'react'
 import { OutlinePanel } from './OutlinePanel.jsx'
 import { PanelToggleButton } from './PanelToggleButton.jsx'
@@ -15,6 +17,7 @@ export function RightRail({
   onTocClickInEditor,
   onHeadingNavigate
 }) {
+  useLocale()
   const [railEl, setRailEl] = useState(null)
   const [handleEl, setHandleEl] = useState(null)
   const [compactHeader, setCompactHeader] = useState(false)
@@ -60,7 +63,7 @@ export function RightRail({
         outlineAvailable && !outlineExpanded ? ' mdp-right-rail--outline-collapsed' : ''
       }`}
       data-compact-header={compactHeader ? 'true' : undefined}
-      aria-label={outlineAvailable ? 'Document actions and outline' : 'Document actions'}
+      aria-label={outlineAvailable ? t('viewer.layout.rightRail.documentActionsAndOutline') : t('viewer.actions.toolbar.documentActions')}
       ref={setRailEl}
     >
       {outlineAvailable && (
@@ -69,7 +72,7 @@ export function RightRail({
       )}
       <div className="mdp-right-rail__actions-row">
         <div className="mdp-right-rail__commands">{actions}</div>
-        {outlineExpanded && <strong className="mdp-right-rail__title">Outline</strong>}
+        {outlineExpanded && <strong className="mdp-right-rail__title">{t('viewer.outline.title')}</strong>}
       </div>
       {outlineAvailable && (
         <div

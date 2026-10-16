@@ -52,7 +52,7 @@ const FILE_TYPES = Object.freeze([
     activation: 'direct',
     contentKind: 'text',
     rendererId: 'markdown',
-    label: 'Markdown document',
+    label: 'Markdown document', labelKey: 'common.fileTypes.markdownDocument',
     explorerIcon: 'document',
     capabilities: MARKDOWN_CAPABILITIES
   }),
@@ -62,7 +62,7 @@ const FILE_TYPES = Object.freeze([
     activation: 'explorer-only',
     contentKind: 'text',
     rendererId: 'text',
-    label: 'Plain text document',
+    label: 'Plain text document', labelKey: 'common.fileTypes.plainTextDocument',
     explorerIcon: 'text',
     capabilities: TEXT_CAPABILITIES
   }),
@@ -72,7 +72,7 @@ const FILE_TYPES = Object.freeze([
     activation: 'explorer-only',
     contentKind: 'text',
     rendererId: 'sql',
-    label: 'SQL document',
+    label: 'SQL document', labelKey: 'common.fileTypes.sqlDocument',
     explorerIcon: 'database',
     capabilities: TEXT_CAPABILITIES
   }),
@@ -82,7 +82,7 @@ const FILE_TYPES = Object.freeze([
     activation: 'explorer-only',
     contentKind: 'text',
     rendererId: 'dbml',
-    label: 'DBML document',
+    label: 'DBML document', labelKey: 'common.fileTypes.dbmlDocument',
     explorerIcon: 'schema',
     capabilities: TEXT_CAPABILITIES
   }),
@@ -92,7 +92,7 @@ const FILE_TYPES = Object.freeze([
     activation: 'explorer-only',
     contentKind: 'text',
     rendererId: 'mermaid',
-    label: 'Mermaid diagram',
+    label: 'Mermaid diagram', labelKey: 'common.fileTypes.mermaidDiagram',
     explorerIcon: 'diagram',
     capabilities: MERMAID_CAPABILITIES
   }),
@@ -102,7 +102,7 @@ const FILE_TYPES = Object.freeze([
     activation: 'explorer-only',
     contentKind: 'image',
     rendererId: 'image',
-    label: 'Image',
+    label: 'Image', labelKey: 'common.fileTypes.image',
     explorerIcon: 'image',
     mimeTypes: Object.freeze([
       'image/png',
@@ -128,7 +128,7 @@ const FILE_TYPES = Object.freeze([
     activation: 'explorer-only',
     contentKind: 'image',
     rendererId: 'image',
-    label: 'SVG image',
+    label: 'SVG image', labelKey: 'common.fileTypes.svgImage',
     explorerIcon: 'vector-image',
     mimeTypes: Object.freeze(['image/svg+xml']),
     capabilities: Object.freeze({ ...IMAGE_CAPABILITIES, renderResolution: true })

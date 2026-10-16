@@ -1,9 +1,12 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useEffect, useState } from 'react'
 import { IconSwap } from './common/IconSwap.jsx'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
 import { IconButton } from './common/IconButton.jsx'
 
 export function PanelToggleButton({ panel, expanded, controls, onClick, buttonRef }) {
+  useLocale()
   const [switching, setSwitching] = useState(0)
   useEffect(() => {
     if (!switching) return undefined
@@ -11,21 +14,22 @@ export function PanelToggleButton({ panel, expanded, controls, onClick, buttonRe
     return () => clearTimeout(timer)
   }, [switching])
   const isFiles = panel === 'files'
-  const panelLabel = isFiles ? 'Files' : 'Outline'
   const direction = isFiles
     ? (expanded ? 'left' : 'right')
     : (expanded ? 'right' : 'left')
-  const label = `${expanded ? 'Hide' : 'Show'} ${panelLabel} panel`
+  const label = isFiles
+    ? expanded ? 'viewer.explorer.hide' : 'viewer.explorer.show'
+    : expanded ? 'viewer.outline.hide' : 'viewer.outline.show'
 
   return (
     <IconButton
       ref={buttonRef}
-      tooltip={label}
+      tooltip={t(label)}
       showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
       pointerPlacement
       className={`mdp-panel-toggle mdp-panel-toggle--${panel}${switching ? ' is-switching' : ''}`}
       style={{ '--mdp-toggle-direction': direction === 'left' ? -1 : 1 }}
-      aria-label={label}
+      aria-label={t(label)}
       aria-controls={controls}
       aria-expanded={expanded ? 'true' : 'false'}
       onClick={event => { setSwitching(value => value + 1); onClick?.(event) }}

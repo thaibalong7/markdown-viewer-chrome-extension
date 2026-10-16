@@ -1,3 +1,4 @@
+import { t } from '../../i18n/index.js'
 import { getDocumentCapabilities } from '../../shared/file-types.js'
 import { createMediaLightboxController } from './media-lightbox-controller.js'
 
@@ -55,7 +56,7 @@ export function attachMermaidLightbox(containerEl) {
   svg.classList.add('mdp-mermaid__zoom-target')
   svg.setAttribute('tabindex', '0')
   svg.setAttribute('role', 'button')
-  svg.setAttribute('aria-label', 'Open Mermaid chart in zoom view')
+  svg.setAttribute('aria-label', t('viewer.media.openMermaidChartInZoomView'))
 
   const onClick = (event) => {
     event.preventDefault()

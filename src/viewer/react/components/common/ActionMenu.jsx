@@ -1,3 +1,5 @@
+import { useLocale } from '../../../../i18n/react.js'
+import { t } from '../../../../i18n/index.js'
 import React, { forwardRef, useCallback, useEffect, useId, useRef } from 'react'
 import { Tooltip } from '../Tooltip.jsx'
 import { IconButton, classNames } from './IconButton.jsx'
@@ -28,6 +30,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
   },
   ref
 ) {
+  useLocale()
   const localTriggerRef = useRef(null)
   const menuRef = useRef(null)
   const menuId = useId()
@@ -105,7 +108,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
               type="button"
               className={classNames(itemClassName, item.copied ? 'is-copied' : '')}
               role={item.pressed === undefined ? 'menuitem' : 'menuitemcheckbox'}
-              aria-label={item.ariaLabel}
+              aria-label={t(item.ariaLabel)}
               disabled={item.disabled}
               aria-busy={item.busy || undefined}
               aria-checked={item.pressed === undefined ? undefined : Boolean(item.pressed)}
@@ -115,11 +118,11 @@ export const ActionMenu = forwardRef(function ActionMenu(
               }}
             >
               {item.icon}
-              {item.icon ? <span>{item.label}</span> : item.label}
+              {item.icon ? <span>{t(item.label)}</span> : t(item.label)}
             </button>
           )
           const content = item.tooltip ? (
-            <Tooltip content={item.tooltip}>
+            <Tooltip content={t(item.tooltip)}>
               <span className="mdp-action-menu__tooltip-anchor">{button}</span>
             </Tooltip>
           ) : button
@@ -127,7 +130,7 @@ export const ActionMenu = forwardRef(function ActionMenu(
           return <React.Fragment key={key}>
             {startsGroup && <>
               {index > 0 && <div className="mdp-action-menu__separator" role="separator" />}
-              <div className="mdp-action-menu__group-label" aria-hidden="true">{item.groupLabel}</div>
+              <div className="mdp-action-menu__group-label" aria-hidden="true">{t(item.groupLabel)}</div>
             </>}
             {content}
           </React.Fragment>

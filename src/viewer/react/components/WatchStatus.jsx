@@ -1,3 +1,5 @@
+import { t, translateMessage } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Badge } from '../../../shared/react/Badge.jsx'
 import { Button } from '../../../shared/react/Button.jsx'
@@ -15,21 +17,21 @@ import { EditorUpdateConfirmation, EditorUpdateWarning } from './EditorUpdateCon
 const UPDATE_NOTICE_DURATION_MS = 5200
 
 export function getWatchMessage(state, isEditMode) {
-  if (!state.supported) return 'Select the workspace again to check for updated files.'
+  if (!state.supported) return 'viewer.updates.selectTheWorkspaceAgainToCheckForUpdated'
   if (state.error) return state.error
   if (state.pending) {
-    if (isEditMode) return 'This file changed on disk. Load it to leave edit mode.'
+    if (isEditMode) return 'viewer.updates.fileChangedOnDiskLoadItToLeave'
     if (state.mode === 'auto') {
       return state.deferred
-        ? 'An update is ready. It will load when the file is stable and you stop interacting.'
-        : 'The latest stable version is being applied automatically.'
+        ? 'viewer.updates.anUpdateIsReadyItWillLoadWhen'
+        : 'viewer.updates.latestStableVersionIsBeingAppliedAutomatically'
     }
-    if (state.deferred) return 'An update is ready. It will load when the file is stable and you stop interacting.'
-    return 'A newer version of this document is ready.'
+    if (state.deferred) return 'viewer.updates.anUpdateIsReadyItWillLoadWhen'
+    return 'viewer.updates.aNewerVersionOfThisDocumentIsReady'
   }
-  return state.mode === 'off' ? 'Automatic checks are paused.'
-    : state.mode === 'auto' ? 'Updates load when the file is stable and you stop interacting.'
-      : 'New versions wait until you choose to update.'
+  return state.mode === 'off' ? 'viewer.updates.automaticChecksArePaused'
+    : state.mode === 'auto' ? 'viewer.updates.updatesLoadWhenTheFileIsStableAnd'
+      : 'viewer.updates.newVersionsWaitUntilYouChooseToUpdate'
 }
 
 export function getWatchTriggerPresentation(state, isEditMode) {
@@ -37,11 +39,11 @@ export function getWatchTriggerPresentation(state, isEditMode) {
     state.supported && state.pending && !state.error && !isEditMode &&
     (state.mode !== 'auto' || state.deferred)
   )
-  if (appliesOnClick) return { action: 'apply', label: 'Update document' }
-  if (state.error) return { action: 'details', label: 'Document updates: check failed' }
-  if (state.pending && isEditMode) return { action: 'details', label: 'Document updates: load update' }
-  if (!state.supported) return { action: 'details', label: 'Document updates: live watch unavailable' }
-  return { action: 'details', label: 'Document updates' }
+  if (appliesOnClick) return { action: 'apply', label: 'viewer.review.updateDocument' }
+  if (state.error) return { action: 'details', label: 'viewer.updates.documentUpdatesCheckFailed' }
+  if (state.pending && isEditMode) return { action: 'details', label: 'viewer.updates.documentUpdatesLoadUpdate' }
+  if (!state.supported) return { action: 'details', label: 'viewer.updates.documentUpdatesLiveWatchUnavailable' }
+  return { action: 'details', label: 'viewer.updates.title' }
 }
 
 function getWatchVisualPhase(state, feedbackPhase, appliesOnClick) {
@@ -53,6 +55,7 @@ function getWatchVisualPhase(state, feedbackPhase, appliesOnClick) {
 }
 
 export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onApply, disabled = false, dismissSignal }) {
+  useLocale()
   const [open, setOpen] = useState(false)
   const [confirmingApply, setConfirmingApply] = useState(false)
   const presentation = getWatchTriggerPresentation(state, isEditMode)
@@ -69,8 +72,8 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
   const visuallyBusy = visualPhase === 'busy'
   const updateBusy = visuallyBusy || state.manualChecking
   const triggerBusy = visuallyBusy || (appliesOnClick && state.manualChecking)
-  const triggerLabel = visuallyBusy ? 'Updating document…'
-    : visualPhase === 'success' ? 'Document updated' : presentation.label
+  const triggerLabel = t(visuallyBusy ? 'viewer.updates.updatingLabel'
+    : visualPhase === 'success' ? 'viewer.updates.notifications.documentUpdated' : presentation.label)
   const panelId = useId()
   const editorWarningId = useId()
   const close = useCallback(() => setOpen(false), [])
@@ -103,7 +106,7 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
   if (!state.available) return null
   const showNotice = noticeVisible && !disabled
   const attention = Boolean(state.pending || state.error || !state.supported)
-  const modeLabel = state.mode === 'off' ? 'Off' : state.mode === 'auto' ? 'Automatic' : 'Ask'
+  const modeLabel = state.mode === 'off' ? 'common.watchModes.off' : state.mode === 'auto' ? 'viewer.updates.automatic' : 'viewer.updates.ask'
   const modeVariant = state.mode === 'off' ? 'warning' : state.mode === 'auto' ? 'success' : 'info'
   const message = getWatchMessage(state, isEditMode)
   const editorUpdatePending = Boolean(state.supported && state.pending && isEditMode)
@@ -167,18 +170,12 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
           onMouseEnter={() => setNoticePaused(true)}
           onMouseLeave={() => setNoticePaused(false)}
         >
-          <strong>New version available</strong>
-          <span>Update now</span>
+          <strong>{t('viewer.updates.newVersionAvailable')}</strong>
+          <span>{t('viewer.updates.updateNow')}</span>
         </button>
       )}
       <span className="mdp-watch-status__announcement" role="status" aria-live="polite" aria-atomic="true">
-        {visuallyBusy ? 'Updating document.' : visualPhase === 'success' ? 'Document updated.'
-          : state.error ? 'Document update check failed. Open Document updates to retry.'
-          : state.pending && state.mode === 'auto' && !isEditMode
-            ? state.deferred
-              ? 'A new document version will load automatically when you stop interacting.'
-              : 'Applying a new document version automatically.'
-            : state.pending ? 'A new document version is available.' : ''}
+        {visuallyBusy ? t('viewer.updates.updatingAnnouncement') : visualPhase === 'success' ? t('viewer.updates.documentUpdated') : state.error ? t('viewer.updates.documentUpdateCheckFailedOpenDocumentUpdatesTo') : state.pending && state.mode === 'auto' && !isEditMode ? state.deferred ? t('viewer.updates.aNewDocumentVersionWillLoadAutomaticallyWhen') : t('viewer.updates.applyingANewDocumentVersionAutomatically') : state.pending ? t('viewer.updates.aNewDocumentVersionIsAvailable') : ''}
       </span>
       <section
         ref={panelRef}
@@ -186,22 +183,22 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
         className={`mdp-ui-card mdp-watch-status__panel${showPendingAction ? ' mdp-watch-status__panel--has-actions' : ''}${editorUpdatePending ? ' mdp-watch-status__panel--editor-update' : ''}`}
         hidden={!open}
         role="dialog"
-        aria-label="Document updates"
+        aria-label={t('viewer.updates.title')}
         tabIndex={-1}
       >
         <header className="mdp-watch-status__header">
           <div className="mdp-watch-status__heading">
-            <h3>Document updates</h3>
+            <h3>{t('viewer.updates.title')}</h3>
             {state.supported && (
-              <Badge variant={modeVariant} className="mdp-watch-status__mode">{modeLabel}</Badge>
+              <Badge variant={modeVariant} className="mdp-watch-status__mode">{t(modeLabel)}</Badge>
             )}
           </div>
           {state.supported && (
             <div className="mdp-watch-status__header-actions" aria-busy={state.manualChecking || undefined}>
               <IconButton
                 className={`mdp-fab-btn mdp-watch-status__check${state.error ? ' mdp-watch-status__check--error' : ''}`}
-                tooltip={state.error ? 'Try again' : 'Check now'}
-                aria-label={state.error ? 'Try again' : 'Check now'}
+                tooltip={state.error ? t('common.actions.retry') : t('viewer.updates.checkNow')}
+                aria-label={state.error ? t('common.actions.retry') : t('viewer.updates.checkNow')}
                 disabled={state.manualChecking}
                 onClick={onCheck}
               >
@@ -212,14 +209,14 @@ export function WatchStatus({ state = {}, isEditMode, editorDirty, onCheck, onAp
         </header>
         {!editorUpdatePending && (state.error || !state.supported
           ? <Notice variant={state.error ? 'danger' : 'warning'} className="mdp-watch-status__message"
-            title={state.error ? 'Update check failed' : 'Live updates unavailable'}>{message}</Notice>
-          : <p className="mdp-watch-status__message">{message}</p>)}
+            title={state.error ? t('viewer.review.updateCheckFailed') : t('viewer.updates.liveUpdatesUnavailable')}>{translateMessage(message)}</Notice>
+          : <p className="mdp-watch-status__message">{translateMessage(message)}</p>)}
         {editorUpdatePending && <EditorUpdateWarning id={editorWarningId} dirty={editorDirty} compact />}
         {showPendingAction && (
           <div className="mdp-watch-status__actions" aria-busy={state.manualChecking || undefined}>
             <Button ref={applyButtonRef} variant="primary" disabled={updateBusy} onClick={requestApply}
               aria-describedby={editorUpdatePending ? editorWarningId : undefined}>
-              {isEditMode ? 'Load disk version…' : state.mode === 'auto' ? 'Update now' : 'Update document'}
+              {isEditMode ? t('viewer.review.loadDiskVersion') : state.mode === 'auto' ? t('viewer.updates.updateNow') : t('viewer.review.updateDocument')}
             </Button>
           </div>
         )}

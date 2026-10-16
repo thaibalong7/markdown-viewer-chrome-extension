@@ -6,7 +6,7 @@ import { renderIntoElement, sanitizeHtml } from '../../core/renderer.js'
 import { logger } from '../../../shared/logger.js'
 
 function throwIfAborted(signal) {
-  if (signal?.aborted) throw new DOMException('Document render was aborted.', 'AbortError')
+  if (signal?.aborted) throw new DOMException("Document render was aborted.", 'AbortError')
 }
 
 function createPlainSource(document, source) {
@@ -43,8 +43,8 @@ export async function render({ loadedDocument, articleEl, settings, services = {
     const stateUi = mountDocumentState(articleEl, {
       className: `mdp-dbml-document__state mdp-dbml-document__state--${failed ? 'error' : 'empty'}`,
       message: failed
-        ? loadedDocument.loadError.message || 'Could not display this DBML file.'
-        : 'This DBML file is empty.',
+        ? loadedDocument.loadError.message || 'errors.viewer.documents.dbml.displayThisDBMLFile'
+        : 'viewer.documents.dbml.dbmlFileIsEmpty',
       role: failed ? 'alert' : 'status'
     })
     return { tocItems: [], interactionProfile: 'none', cleanup: () => stateUi.destroy() }
@@ -88,7 +88,7 @@ export async function render({ loadedDocument, articleEl, settings, services = {
       } catch (error) {
         throwIfAborted(signal)
         logger.warn('DBML color preview failed; source remains available.', { errorName: error?.name || 'Error' })
-        services.showToast?.('Color previews could not be displayed. DBML source is still available.', { variant: 'warning' })
+        services.showToast?.('viewer.documents.dbml.colorPreviewsCouldNotBeDisplayedDBMLSource', { variant: 'warning' })
       }
     }
     throwIfAborted(signal)

@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
 import { cancelViewerAnchorLock } from '../../scroll-utils.js'
@@ -25,6 +27,7 @@ function prefersReducedMotion() {
 }
 
 export function ScrollToTopButton({ scrollElement }) {
+  useLocale()
   const frameRef = useRef(0)
   const [visible, setVisible] = useState(false)
 
@@ -82,10 +85,10 @@ export function ScrollToTopButton({ scrollElement }) {
 
   return (
     <IconButton
-      tooltip="Back to top"
+      tooltip={t('common.actions.backToTop')}
       showDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS}
       className={`mdp-scroll-to-top${visible ? ' is-visible' : ''}`}
-      aria-label="Back to top"
+      aria-label={t('common.actions.backToTop')}
       aria-hidden={visible ? 'false' : 'true'}
       tabIndex={visible ? 0 : -1}
       onClick={handleClick}

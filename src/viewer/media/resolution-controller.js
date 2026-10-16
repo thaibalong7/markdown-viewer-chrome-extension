@@ -1,3 +1,4 @@
+import { t, translateMessage, subscribeLocale } from '../../i18n/index.js'
 import { attachTooltip } from '../dom-tooltip.js'
 import { mountContentUi } from '../react/content/mount-content-ui.jsx'
 import { ResolutionControls } from '../react/content/media/ResolutionControls.jsx'
@@ -16,13 +17,13 @@ export function createResolutionControls({ buttonClass, onChange, target = docum
   let tooltips = []
   let ui
   const state = { hidden: true, expanded: false, current: 1, busy: false, unavailable: false, maximum: 8, error: '' }
-  const advice = 'Higher resolution uses more memory. Limit: 16,384 px per side / 32 Mi pixels.'
+  const advice = 'viewer.media.higherResolutionUsesMoreMemoryLimit16384'
   const publish = () => {
     if (destroyed) return
     ui?.update(props())
     const atLimit = !state.unavailable && state.current >= state.maximum
-    const limit = atLimit ? `Maximum ×${state.maximum} for this image. ` : ''
-    const descriptions = [`${state.error ? `${state.error} ` : ''}${limit}${advice}`, 'Decrease resolution by 0.25', atLimit ? `${limit}Bitmap limit: 16,384 px per side / 32 Mi pixels.` : 'Increase resolution by 0.25']
+    const limit = atLimit ? t('viewer.media.maximumValueForThisImage', { 0: state.maximum }) : ''
+    const descriptions = [`${state.error ? `${translateMessage(state.error)} ` : ''}${limit}${t(advice)}`, t('viewer.media.decreaseResolutionBy025'), atLimit ? `${limit}${t('viewer.media.bitmapLimit16384PxPerSide32')}` : t('viewer.media.increaseResolutionBy025')]
     tooltips.forEach((tooltip, index) => tooltip.setText(state.busy ? '' : descriptions[index]))
   }
   const reveal = value => { state.expanded = value; publish() }
@@ -41,7 +42,7 @@ export function createResolutionControls({ buttonClass, onChange, target = docum
       if (token !== generation || destroyed) return
       if (applied !== false) state.current = next
     } catch (failure) {
-      if (token === generation && !destroyed) state.error = failure?.message || 'Could not render this resolution.'
+      if (token === generation && !destroyed) state.error = failure?.message || 'errors.viewer.media.renderThisResolution'
     } finally {
       if (token === generation && !destroyed) {
         state.busy = false
@@ -59,6 +60,7 @@ export function createResolutionControls({ buttonClass, onChange, target = docum
       onToggle: event => reveal(event.detail === 0 ? !state.expanded : true) }
   }
   ui = mountContentUi(target, ResolutionControls, props())
+  const unsubscribeLocale = subscribeLocale(publish)
   const hideHandlers = [nodes.trigger, nodes.down, nodes.up].map((button, index) => {
     const hide = () => tooltips.forEach((tip, other) => { if (index !== other) tip.hide() })
     button.addEventListener('pointerenter', hide)
@@ -74,10 +76,10 @@ export function createResolutionControls({ buttonClass, onChange, target = docum
       hovered = false
       clearTooltips()
       if (value == null) { publish(); return null }
-      tooltips = [nodes.trigger, nodes.down, nodes.up].map(button => attachTooltip(button, { text: 'Render resolution' }))
+      tooltips = [nodes.trigger, nodes.down, nodes.up].map(button => attachTooltip(button, { text: 'viewer.media.resolution.label' }))
       state.maximum = dimensions ? getMaxImageResolution(dimensions) : RESOLUTION_STEPS.at(-1)
       state.unavailable = state.maximum === 0
-      if (state.unavailable) state.error = 'Image exceeds bitmap limit: 16,384 px per side / 32 Mi pixels.'
+      if (state.unavailable) state.error = 'viewer.media.imageExceedsBitmapLimit16384PxPer'
       state.current = state.unavailable ? value : Math.min(value, state.maximum)
       publish()
       return state.unavailable ? null : state.current
@@ -90,6 +92,7 @@ export function createResolutionControls({ buttonClass, onChange, target = docum
       destroyed = true
       generation++
       clearTooltips()
+      unsubscribeLocale()
       hideHandlers.forEach(cleanup => cleanup())
       ui.destroy()
     }

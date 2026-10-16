@@ -19,6 +19,7 @@ import { DEFAULT_SHOW_DOCUMENT_STATS } from '../shared/constants/document-stats.
 
 export const DEFAULT_SETTINGS = {
   enabled: true,
+  language: 'auto',
   layout: {
     showToc: true,
     tocWidth: 280,

@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../../i18n/index.js'
 import React, { useEffect, useRef, useState } from 'react'
 import { getLightDarkThemeToggleTarget } from '../../../theme/index.js'
 import {
@@ -83,13 +84,13 @@ export function FloatingActions({
     void (async () => {
       const article = getArticleEl?.()
       if (!article) {
-        showToast?.('Nothing to export yet.', { variant: 'warning' })
+        showToast?.('viewer.actions.export.nothingToExportYet', { variant: 'warning' })
         return
       }
       const filename = buildExportFilename(getCurrentFileUrl?.(), ext)
       try {
         await exportFn(article, getSettings?.(), filename)
-        showToast?.(`Exported ${filename}`, { variant: 'success' })
+        showToast?.(localizedMessage('viewer.actions.export.exportedValue', { 0: filename }), { variant: 'success' })
       } catch {
         showToast?.(errorMsg, { variant: 'error' })
       }
@@ -125,7 +126,7 @@ export function FloatingActions({
         setConnectDialogOpen(false)
         editorDispatch({ type: 'ENTER_EDIT' })
       } catch {
-        showToast?.('Could not connect the original file.', { variant: 'error' })
+        showToast?.('errors.viewer.editor.connectTheOriginalFile', { variant: 'error' })
       } finally {
         setConnectingFile(false)
       }
@@ -137,9 +138,9 @@ export function FloatingActions({
       try {
         await copyCurrentFileLink(getCurrentFileUrl?.())
         flashCopyLinkCopied()
-        showToast?.('Copied file link', { variant: 'success' })
+        showToast?.('viewer.actions.export.copiedFileLink', { variant: 'success' })
       } catch {
-        showToast?.('Could not copy file link', { variant: 'error' })
+        showToast?.('errors.viewer.actions.copyFileLink', { variant: 'error' })
       }
     })()
   }
@@ -159,7 +160,7 @@ export function FloatingActions({
       try {
         await onThemeToggle()
       } catch {
-        showToast?.('Could not switch theme.', { variant: 'error' })
+        showToast?.('errors.viewer.actions.switchTheme', { variant: 'error' })
       } finally {
         setThemeSaving(false)
       }
@@ -173,10 +174,10 @@ export function FloatingActions({
     onThemeToggleClick, onEditClick, onSaveClick: onSave, onCopyLinkClick,
     onFocusToggleClick, onViewModeToggleClick, onPrintClick: printDocument,
     exportItems: [
-      { id: 'html', label: 'Export HTML', icon: 'export',
-        onClick: () => runExport('html', exportAsHtml, 'Could not export HTML') },
-      { id: 'word', label: 'Export Word (.doc)', icon: 'export',
-        onClick: () => runExport('doc', exportAsWord, 'Could not export Word document') }
+      { id: 'html', label: 'viewer.actions.export.exportHTML', icon: 'export',
+        onClick: () => runExport('html', exportAsHtml, 'errors.viewer.actions.exportHTML') },
+      { id: 'word', label: 'viewer.actions.export.exportWordDoc', icon: 'export',
+        onClick: () => runExport('doc', exportAsWord, 'errors.viewer.actions.exportWordDocument') }
     ],
     controls: {
       updates: <WatchStatus state={watchState} isEditMode={editorState.enabled}

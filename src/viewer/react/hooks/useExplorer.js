@@ -1,3 +1,4 @@
+import { t } from '../../../i18n/index.js'
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
 import { logger } from '../../../shared/logger.js'
 import { createExplorerViewActions } from './explorer/createExplorerViewActions.js'
@@ -195,7 +196,7 @@ export function useExplorer({ bridge }) {
   }, [bridge])
 
   const setBackNavigation = useCallback(
-    ({ showBack = false, backLabel = 'Back to original file', onBack = null } = {}) => {
+    ({ showBack = false, backLabel = 'common.actions.backToOriginalFile', onBack = null } = {}) => {
       backActionRef.current = typeof onBack === 'function' ? onBack : null
       safePatch({ showBack, backLabel })
     },
@@ -219,12 +220,12 @@ export function useExplorer({ bridge }) {
   )
 
   const resetViewerToPickWorkspaceFile = useCallback(async () => {
-    const shown = await bridge?.showPlaceholder?.('Select a supported file from the Files panel.')
+    const shown = await bridge?.showPlaceholder?.('viewer.useexplorer.selectASupportedFileFromTheFilesPanel')
     if (shown === false) return
     setCurrentFileUrl('')
     bridge?.setSmoothInitialHashScroll?.(false)
     bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
-    document.title = 'Markdown Plus'
+    document.title = t('common.productName')
   }, [bridge, setCurrentFileUrl])
 
   const syncExplorerBackButton = useCallback(() => {
@@ -259,7 +260,7 @@ export function useExplorer({ bridge }) {
         backLabel: nav.backLabel,
         onBack: nav.onBack,
         actionsMode: 'sibling',
-        listAriaLabel: 'Supported files in folder tree',
+        listAriaLabel: 'viewer.explorer.accessibility.supportedFilesInFolderTree',
         filesContext: buildFilesContext(),
         expandedMap: opts.preserveExpandedState ? stateRef.current.expandedMap : storedExpandedMap,
         preserveExpandedState

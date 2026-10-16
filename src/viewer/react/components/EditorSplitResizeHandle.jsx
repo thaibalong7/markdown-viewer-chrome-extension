@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React from 'react'
 import { useEditorSplitResize } from '../hooks/useEditorSplitResize.js'
 import { Tooltip } from './Tooltip.jsx'
@@ -9,17 +11,18 @@ export function EditorSplitResizeHandle({
   handleEl,
   setHandleEl
 }) {
+  useLocale()
   useEditorSplitResize({ rootEl, editorEl, previewEl, handleEl })
 
   return (
     <Tooltip
       pointerPlacement
-      content="Drag to resize the editor and preview. When focused, use Left/Right Arrow keys (16px per step)."
+      content={t('viewer.editor.resizeHandle.dragToResizeTheEditorAndPreviewWhen')}
     >
       <div
         className="mdp-editor-split__resize-handle"
         role="separator"
-        aria-label="Resize editor and preview"
+        aria-label={t('viewer.editor.resizeHandle.resizeEditorAndPreview')}
         aria-orientation="vertical"
         aria-valuemin="240"
         tabIndex={0}

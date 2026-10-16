@@ -1,3 +1,4 @@
+import { t } from '../../../../i18n/index.js'
 import { describe, expect, it, vi } from 'vitest'
 import { createDocumentActions, getDocumentActionsSize, getOverflowDocumentActions, orderDocumentActions, partitionDocumentActions } from '../document-actions-model.js'
 
@@ -31,7 +32,7 @@ describe('Direct icons action catalog', () => {
     const actions = createDocumentActions(context({ editorState: { enabled: true, dirty: true }, saving: true, canReview: true }))
     expect(ids(actions)).toEqual(['updates', 'theme', 'review', 'save', 'edit', 'focus', 'copy'])
     expect(actions.find(action => action.id === 'save')).toMatchObject({ disabled: true, busy: true })
-    expect(actions.find(action => action.id === 'edit')).toMatchObject({ disabled: true, label: 'Exit edit mode' })
+    expect(actions.find(action => action.id === 'edit')).toMatchObject({ disabled: true, label: 'viewer.actions.exitEditMode' })
     expect(ids(createDocumentActions(context({ canEdit: false, canExport: false })))).toEqual(['updates', 'theme', 'copy', 'print'])
   })
   it('keeps disabled commands in place and preserves their reason and callback', () => {
@@ -39,7 +40,7 @@ describe('Direct icons action catalog', () => {
     const actions = createDocumentActions(context({ canCopyLink: false, onCopyLinkClick, isLoading: true }))
     const copy = actions.find(action => action.id === 'copy')
     expect(copy.disabled).toBe(true)
-    expect(copy.tooltip).toContain('workspace virtual')
+    expect(t(copy.tooltip, {}, 'en')).toContain('workspace virtual')
     expect(copy.onClick).toBe(onCopyLinkClick)
     expect(actions.find(action => action.id === 'theme').disabled).not.toBe(true)
   })

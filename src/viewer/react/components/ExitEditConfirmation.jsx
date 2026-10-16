@@ -1,9 +1,12 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useId, useRef } from 'react'
 import { Badge } from '../../../shared/react/Badge.jsx'
 import { Button } from '../../../shared/react/Button.jsx'
 import { ModalDialog } from './common/ModalDialog.jsx'
 
 export function ExitEditConfirmation({ open, busy = false, returnFocusRef, onCancel, onConfirm }) {
+  useLocale()
   const cancelRef = useRef(null)
   const titleId = useId()
   const descriptionId = useId()
@@ -20,15 +23,13 @@ export function ExitEditConfirmation({ open, busy = false, returnFocusRef, onCan
     >
       <div className="mdp-ui-card mdp-exit-edit-confirmation">
         <div className="mdp-exit-edit-confirmation__content">
-          <Badge variant="warning">Unsaved changes</Badge>
-          <h2 id={titleId}>Discard changes and exit edit mode?</h2>
-          <p id={descriptionId}>
-            Your unsaved changes will be lost. The saved file will stay unchanged.
-          </p>
+          <Badge variant="warning">{t('options.themes.editor.unsavedChanges')}</Badge>
+          <h2 id={titleId}>{t('viewer.editor.exitConfirmation.title')}</h2>
+          <p id={descriptionId}>{t('viewer.editor.exitConfirmation.yourUnsavedChangesWillBeLostTheSaved')}</p>
         </div>
         <div className="mdp-ui-action-footer mdp-ui-action-footer--end mdp-exit-edit-confirmation__actions">
-          <Button ref={cancelRef} variant="secondary" onClick={onCancel}>Keep editing</Button>
-          <Button variant="danger" disabled={busy} onClick={onConfirm}>Discard changes</Button>
+          <Button ref={cancelRef} variant="secondary" onClick={onCancel}>{t('viewer.editor.keepEditing')}</Button>
+          <Button variant="danger" disabled={busy} onClick={onConfirm}>{t('viewer.editor.discard')}</Button>
         </div>
       </div>
     </ModalDialog>

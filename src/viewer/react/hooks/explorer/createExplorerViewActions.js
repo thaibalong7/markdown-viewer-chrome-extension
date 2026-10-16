@@ -1,3 +1,4 @@
+import { message as localizedMessage } from '../../../../i18n/index.js'
 import {
   buildDepthNotice,
   buildInitialExpandedMap,
@@ -25,7 +26,7 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
       depthNotice: '',
       files: [],
       tree: null,
-      listAriaLabel: 'Workspace files',
+      listAriaLabel: 'viewer.explorer.context.workspaceFiles',
       summaryFileCount: 0,
       filesContext: filesContext || stateRef.current.filesContext
     })
@@ -55,8 +56,8 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
       files: [],
       tree: null,
       filesContext: payload.filesContext || stateRef.current.filesContext,
-      progressHeadline: payload.progressHeadline || 'Scanning workspace…',
-      progressText: `Scanning… ${payload.scannedFiles} files, ${payload.scannedFolders} folders${cur}`,
+      progressHeadline: payload.progressHeadline || 'viewer.explorer.context.scanningWorkspace',
+      progressText: localizedMessage('viewer.explorer.scan.progress', { files: payload.scannedFiles, folders: payload.scannedFolders, path: cur }),
       showProgressCancel: Boolean(payload.onCancel)
     })
   }
@@ -67,7 +68,7 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
     safePatch({
       progressHeadline:
         payload.progressHeadline != null ? payload.progressHeadline : stateRef.current.progressHeadline,
-      progressText: `Scanning… ${payload.scannedFiles} files, ${payload.scannedFolders} folders${cur}`
+      progressText: localizedMessage('viewer.explorer.scan.progress', { files: payload.scannedFiles, folders: payload.scannedFolders, path: cur })
     })
   }
 
@@ -94,7 +95,7 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
       actionsMode: ctx.actionsMode || 'sibling',
       files: list,
       tree: null,
-      listAriaLabel: 'Files in current folder',
+      listAriaLabel: 'viewer.explorer.panel.filesInCurrentFolder',
       filesContext: ctx.filesContext || stateRef.current.filesContext,
       summaryDirectoryLabel: getDirectoryLabelFromUrl(ctx.currentFileUrl),
       summaryFileCount: list.length,
@@ -125,14 +126,14 @@ export function createExplorerViewActions({ stateRef, safePatch, setBackNavigati
       tree,
       files: [],
       listAriaLabel:
-        ctx.listAriaLabel || (ctx.actionsMode === 'sibling' ? 'Supported files in folder tree' : 'Workspace files'),
+        ctx.listAriaLabel || (ctx.actionsMode === 'sibling' ? 'viewer.explorer.accessibility.supportedFilesInFolderTree' : 'viewer.explorer.context.workspaceFiles'),
       expandedMap: shouldPreserveExpandedState
         ? buildPreservedExpandedMap(children, previousExpandedMap)
         : buildInitialExpandedMap(children),
       filesContext: ctx.filesContext || stateRef.current.filesContext,
       summaryDirectoryLabel: tree?.href?.startsWith('file:')
         ? getDirectoryLabelFromUrl(`${tree.href.replace(/\/$/, '')}/_`)
-        : ctx.workspaceLabel || tree?.name || 'Workspace',
+        : ctx.workspaceLabel || tree?.name || localizedMessage('viewer.explorer.workspace'),
       summaryFileCount: count,
       depthNotice,
       activeFileUrl: currentFileUrlRef.current

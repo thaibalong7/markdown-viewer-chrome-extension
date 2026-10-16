@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js'
+import { useLocale } from '../../i18n/react.js'
 import React from 'react'
 import { PLUGIN_IDS, MERMAID_RENDERERS } from '../../plugins/plugin-types.js'
 import { Switch } from '../../shared/react/Switch.jsx'
@@ -13,6 +15,7 @@ import {
  * @param {{ pluginsSnapshot: Record<string, { enabled?: boolean }>, onPatch: (partial: object) => void }} props
  */
 export function PluginsPanel({ pluginsSnapshot, onPatch }) {
+  useLocale()
   return (
     <>
       {Object.keys(pluginsSnapshot).map((pluginId) => {
@@ -34,25 +37,21 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
               <div className="popup-plugin-copy">
                 <div className="popup-plugin-title">
                   <span className="popup-setting-row__label">
-                    {PLUGIN_LABELS[pluginId] || pluginId}
+                    {t(PLUGIN_LABELS[pluginId] || pluginId)}
                   </span>
-                  {versionNote ? (
-                    <Tooltip content={versionNote}>
+                  {versionNote ? <Tooltip content={t(versionNote)}>
                       <button
                         type="button"
                         className="popup-info-button popup-plugin-info"
-                        aria-label={`${PLUGIN_LABELS[pluginId] || pluginId}: ${versionNote}`}
-                      >
-                        i
-                      </button>
-                    </Tooltip>
-                  ) : null}
+                        aria-label={`${t(PLUGIN_LABELS[pluginId] || pluginId)}: ${t(versionNote)}`}
+                      >{t('popup.plugins.i')}</button>
+                    </Tooltip> : null}
                 </div>
-                {hint ? <p className="popup-plugin-note">{hint}</p> : null}
+                {hint ? <p className="popup-plugin-note">{t(hint)}</p> : null}
               </div>
               <Switch
                 id={`popup-plugin-${pluginId}`}
-                label={PLUGIN_LABELS[pluginId] || pluginId}
+                label={t(PLUGIN_LABELS[pluginId] || pluginId)}
                 checked={mermaidEnabled}
                 onChange={(event) =>
                   onPatch({
@@ -65,9 +64,8 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
                 }
               />
             </div>
-            {isMermaid && mermaidEnabled ? (
-              <fieldset className="popup-mermaid-renderers">
-                <legend>Renderer</legend>
+            {isMermaid && mermaidEnabled ? <fieldset className="popup-mermaid-renderers">
+                <legend>{t('popup.plugins.renderer')}</legend>
                 <div className="popup-mermaid-renderers__options">
                   {MERMAID_RENDERER_OPTIONS.map((option) => {
                     const selected = mermaidRenderer === option.value
@@ -91,16 +89,15 @@ export function PluginsPanel({ pluginsSnapshot, onPatch }) {
                             })
                           }
                         />
-                        <span className="popup-mermaid-renderer__label">{option.shortLabel}</span>
+                        <span className="popup-mermaid-renderer__label">{t(option.shortLabel)}</span>
                       </label>
                     )
                   })}
                 </div>
                 <p className="popup-mermaid-renderers__hint">
-                  {selectedMermaidOption.description}
+                  {t(selectedMermaidOption.description)}
                 </p>
-              </fieldset>
-            ) : null}
+              </fieldset> : null}
           </div>
         )
       })}

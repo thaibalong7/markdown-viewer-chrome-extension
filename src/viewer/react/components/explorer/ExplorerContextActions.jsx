@@ -1,3 +1,5 @@
+import { t } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDismissableLayer } from '../../hooks/useDismissableLayer.js'
 import { ActionMenu } from '../common/ActionMenu.jsx'
@@ -6,6 +8,7 @@ import { MoreIcon } from '../icons/MoreIcon.jsx'
 import { partitionDetailsCommands } from './explorer-details-layout.js'
 
 export function ExplorerContextActions({ commands, layout, fallbackFocusRef }) {
+  useLocale()
   const { direct, overflow } = partitionDetailsCommands(commands, layout)
   const signature = commands.map(command => `${command.key}:${command.label}:${overflow.includes(command)}`).join('|')
   const [menuState, setMenuState] = useState({ signature: '', open: false })
@@ -34,8 +37,8 @@ export function ExplorerContextActions({ commands, layout, fallbackFocusRef }) {
           key={command.key}
           ref={index === 0 ? firstCommandRef : undefined}
           className="mdp-explorer__context-command"
-          tooltip={command.tooltip || command.label}
-          aria-label={command.ariaLabel || command.label}
+          tooltip={t(command.tooltip || command.label)}
+          aria-label={t(command.ariaLabel || command.label)}
           disabled={command.disabled}
           copied={command.copied}
           copiedClassName="is-copied"
@@ -44,8 +47,7 @@ export function ExplorerContextActions({ commands, layout, fallbackFocusRef }) {
           {command.icon}
         </IconButton>
       ))}
-      {overflow.length ? (
-        <ActionMenu
+      {overflow.length ? <ActionMenu
           ref={menuRef}
           triggerRef={menuTriggerRef}
           open={open}
@@ -53,10 +55,10 @@ export function ExplorerContextActions({ commands, layout, fallbackFocusRef }) {
           triggerClassName="mdp-explorer__context-command"
           triggerOpenClassName="is-open"
           triggerIcon={<MoreIcon className="mdp-explorer__context-command-icon" />}
-          triggerLabel="More file actions"
-          triggerTooltip="More file actions"
+          triggerLabel={t('viewer.explorer.actions.moreFileActions')}
+          triggerTooltip={t('viewer.explorer.actions.moreFileActions')}
           menuClassName="mdp-explorer__row-menu mdp-explorer__context-menu"
-          menuLabel="File details actions"
+          menuLabel={t('viewer.explorer.actions.fileDetailsActions')}
           itemClassName="mdp-explorer__row-menu-item"
           onToggle={() => setMenuState({ signature, open: !open })}
           items={overflow.map(command => ({
@@ -64,8 +66,7 @@ export function ExplorerContextActions({ commands, layout, fallbackFocusRef }) {
             icon: <span className="mdp-explorer__menu-icon">{command.icon}</span>,
             onClick: () => { closeMenu(); command.onClick?.() }
           }))}
-        />
-      ) : null}
+        /> : null}
     </div>
   )
 }

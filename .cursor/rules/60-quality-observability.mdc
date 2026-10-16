@@ -3,6 +3,8 @@ description: "Markdown Plus testing, error handling, logging, and change discipl
 alwaysApply: false
 globs:
   - "src/**/*.{js,jsx,scss,html}"
+  - "src/i18n/locales/*.json"
+  - "public/_locales/**/*.json"
   - "manifest.json"
   - "vite.config.mjs"
   - "package.json"
@@ -12,6 +14,8 @@ paths:
   - "src/**/*.jsx"
   - "src/**/*.scss"
   - "src/**/*.html"
+  - "src/i18n/locales/*.json"
+  - "public/_locales/**/*.json"
   - "manifest.json"
   - "vite.config.mjs"
   - "package.json"
@@ -27,5 +31,6 @@ trigger: glob
 - Log intent plus lightweight context, not full Markdown document content or sensitive data.
 - Prefer explicit failure paths in bootstrap/render flows: fail fast on missing critical data and exit early on unsupported states.
 - Add or update focused tests for file-type capabilities and renderers, URL/path logic, settings/schema invalidation, theme assets, explorer state transitions, editor dirty/save flow, Viewer interaction/accessibility behavior, and message routing when touching those areas.
+- For translation changes, run `npm test -- src/i18n/__tests__` and review affected wording in context. A new locale also needs resolution/settings coverage and full runtime verification; compare bundle size for the additional catalog. Key/placeholder tests do not prove natural language or visual fit. Use the [i18n verification matrix](../../docs/internationalization.md#translation-review-and-verification) and report manual checks that remain unverified.
 - For behavior changes, run `npm test`. For packaged/runtime changes, also run `npm run build`.
 - For bundle-sensitive changes, especially plugins, Shiki, editor, Mermaid, Math, document renderers, or content-script entry points, run a production build, then `npm run size:report`, and compare against the prior result.

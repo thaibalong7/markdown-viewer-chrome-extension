@@ -46,6 +46,8 @@ SVG image openings read detached XML metadata before choosing the lightbox's log
 
 For a document state, the state adapter clears existing scoped portals, empties the target and transfers its children to React. This temporary ownership ends before a renderer inserts document content. Image loading uses an empty state slot beside the renderer-owned image. The article node itself stays stable.
 
+Content controls and `DocumentState` subscribe to locale updates through `useLocale()`. Keep message IDs/descriptors in presentation state until rendering so an open tooltip, toast, dialog, or state can change language. The workspace file-selection prompt is session metadata (`loadedDocument.placeholderMessage`) with empty source `text`; the Markdown renderer routes it to `DocumentState`. Do not put this prompt into Markdown source or translate arbitrary article text. Source that happens to match an interface key stays literal. See [Interface languages](./internationalization.md) for message and diagnostic contracts.
+
 ## Registration and cleanup
 
 `mountContentUi(target, Component, props, { scope })` returns an idempotent `update`/`destroy` handle. `target` identifies the exclusive slot or overlay parent; `scope` identifies the document or anchor that owns its lifetime. Out-of-article feedback must use the article as scope. `getContentOverlayTarget(anchor)` selects the themed shell, falling back to the viewer root for standalone hosts.

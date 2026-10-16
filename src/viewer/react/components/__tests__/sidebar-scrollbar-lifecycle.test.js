@@ -1,3 +1,4 @@
+vi.mock('../../../../i18n/react.js', () => ({ useLocale: () => 'en' }))
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ViewerScrollbar } from '../ViewerScrollbar.jsx'
 

@@ -1,3 +1,4 @@
+import { t } from '../../i18n/index.js'
 import { PLUGIN_IDS } from '../plugin-types.js'
 import { hashTargetToUrlFragment } from '../../viewer/scroll-utils.js'
 
@@ -17,8 +18,8 @@ export const anchorHeadingPlugin = {
       const anchor = document.createElement('a')
       anchor.className = 'mdp-heading-anchor'
       anchor.href = hashTargetToUrlFragment(id)
-      anchor.setAttribute('aria-label', 'Copy section link (click)')
-      anchor.title = 'Copy link to this section'
+      anchor.setAttribute('aria-label', t('plugins.anchorHeading.copySectionLinkClick'))
+      anchor.title = t('plugins.anchorHeading.copyLinkToThisSection')
       anchor.textContent = '#'
       heading.appendChild(anchor)
     }

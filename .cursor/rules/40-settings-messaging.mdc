@@ -3,6 +3,7 @@ description: "Markdown Plus settings storage, runtime messaging, background rout
 alwaysApply: false
 globs:
   - "src/settings/**/*.js"
+  - "src/i18n/**/*.js"
   - "src/background/**/*.js"
   - "src/messaging/**/*.js"
   - "src/content/**/*.js"
@@ -12,6 +13,7 @@ globs:
   - "src/theme/**/*.js"
 paths:
   - "src/settings/**/*.js"
+  - "src/i18n/**/*.js"
   - "src/background/**/*.js"
   - "src/messaging/**/*.js"
   - "src/content/**/*.js"
@@ -47,9 +49,11 @@ trigger: glob
 - If the settings schema changes incompatibly, bump `settings.version` and add an explicit migration in the settings service.
 - Popup/Options/Viewer should persist settings through the settings client / `SAVE_SETTINGS`; do not read or write `chrome.storage` directly from those surfaces.
 - Keep recent-file history separate in `chrome.storage.local`, and keep custom-theme image blobs in IndexedDB rather than synchronized settings.
+- Keep `language` validation derived from `src/i18n/languages.js`: missing/invalid stored preferences recover to `auto`, while explicit unsupported save/import values are rejected. Initialize runtime language through the settings client only after successful load/save/reset; a failed request must not change the active locale. Follow [Internationalization](../../.agents/rules/35-internationalization.md) for catalog and presentation contracts.
 
 ## Live Updates
 
-- After save/reset, background broadcasts `MESSAGE_TYPES.SETTINGS_UPDATED` so content scripts can call `MarkdownViewerApp.updateSettings()` or teardown.
+- After save/reset, background broadcasts `MESSAGE_TYPES.SETTINGS_UPDATED` to content-script tabs and open extension pages. Content scripts call `MarkdownViewerApp.updateSettings()` or teardown; Settings and Popup refresh their snapshots through their existing subscriptions. Preserve extension-page delivery when changing broadcast targeting.
 - If optimizing broadcast targeting, prove existing Markdown viewer tabs still receive runtime updates.
 - `updateSettings()` should apply reader styles immediately and only trigger full Markdown render when `needsFullRender(previous, next)` requires it.
+- Apply the selected locale before publishing Viewer UI or rendering translated decorations. Preserve editor draft/undo state and independent content-portal subscriptions during language updates; do not rebuild the editor to change its phrases.

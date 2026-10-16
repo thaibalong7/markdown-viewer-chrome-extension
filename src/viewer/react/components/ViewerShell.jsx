@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useEditorDispatch, useEditorState } from '../contexts/EditorContext.jsx'
 import { Sidebar } from './Sidebar.jsx'
@@ -35,6 +37,7 @@ export function ViewerShell({
   saveStatus = 'saved',
   exitEditRequest = 0
 }) {
+  const locale = useLocale()
   const rootNodeRef = useRef(null)
   const wasSplitEditRef = useRef(false)
   const articleRef = useRef(null)
@@ -172,22 +175,22 @@ export function ViewerShell({
     !isEditMode
 
   return (
-    <div className={rootClassName} ref={handleRootRef}>
+    <div lang={locale} className={rootClassName} ref={handleRootRef}>
       <BackgroundScene scene={backgroundScene} />
       <ViewerScrollbar
         scrollElement={isEditMode ? null : rootEl}
         visibility={scrollbarVisibility}
-        label="Document scrollbar"
+        label={t('viewer.scrollbar.documentScrollbar')}
       />
       <ViewerScrollbar
         scrollElement={isSplitMode ? contentPaneEl : null}
         visibility={scrollbarVisibility}
-        label="Preview scrollbar"
+        label={t('viewer.layout.previewScrollbar')}
       />
       <ViewerScrollbar
         scrollElement={isEditMode ? editorScrollEl : null}
         visibility={scrollbarVisibility}
-        label="Editor scrollbar"
+        label={t('viewer.layout.editorScrollbar')}
       />
       <div className={bodyClassNames.join(' ')}>
         <ScrollToTopButton scrollElement={isEditMode ? null : scrollRootForSidebar} />
@@ -228,10 +231,7 @@ export function ViewerShell({
 
         <main className="mdp-content-pane" ref={setContentPaneRef}>
           {isSplitMode && (
-            <div className="mdp-edit-mode-note" role="note" aria-live="polite">
-              Preview font size and line height are synced with editor while editing. Reader settings return
-              when you exit edit mode.
-            </div>
+            <div className="mdp-edit-mode-note" role="note" aria-live="polite">{t('viewer.layout.previewFontSizeAndLineHeightAreSynced')}</div>
           )}
           {showDocumentStats ? <DocumentStats source={markdown} /> : null}
           <article className="mdp-markdown-body" ref={articleRef} />

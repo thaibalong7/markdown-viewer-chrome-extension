@@ -1,3 +1,4 @@
+import { t } from '../../../../i18n/index.js'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
@@ -77,9 +78,9 @@ it('keeps idle state and checking out of the announcement and attention badge', 
 
 it('makes a deferred automatic update available as a one-click fallback', () => {
   const state = { available: true, supported: true, pending: true, deferred: true, mode: 'auto' }
-  expect(getWatchMessage(state, false)).toContain('stop interacting')
-  expect(getWatchMessage(state, true)).toContain('leave edit mode')
-  expect(getWatchTriggerPresentation(state, false)).toEqual({ action: 'apply', label: 'Update document' })
+  expect(t(getWatchMessage(state, false), {}, 'en')).toContain('stop interacting')
+  expect(t(getWatchMessage(state, true), {}, 'en')).toContain('leave edit mode')
+  expect(getWatchTriggerPresentation(state, false)).toEqual({ action: 'apply', label: 'viewer.review.updateDocument' })
   const html = renderToStaticMarkup(React.createElement(WatchStatus, { state }))
   expect(html).toContain('trigger--attention')
   expect(html).toContain('data-mdp-watch-action="apply"')
@@ -91,10 +92,10 @@ it('makes a deferred automatic update available as a one-click fallback', () => 
 
 it('does not prompt while a stable automatic update is being applied', () => {
   const state = { available: true, supported: true, pending: true, deferred: false, mode: 'auto' }
-  expect(getWatchMessage(state, false)).toContain('being applied automatically')
+  expect(t(getWatchMessage(state, false), {}, 'en')).toContain('being applied automatically')
   expect(getWatchTriggerPresentation(state, false)).toEqual({
     action: 'details',
-    label: 'Document updates'
+    label: 'viewer.updates.title'
   })
   const html = renderToStaticMarkup(React.createElement(WatchStatus, { state }))
   expect(html).toContain('Applying a new document version automatically.')
@@ -141,7 +142,7 @@ it('uses shared notice semantics for unavailable and failed update states', () =
 
 it('turns the pending reader trigger into a one-click update action', () => {
   const state = { available: true, supported: true, pending: true, mode: 'ask' }
-  expect(getWatchTriggerPresentation(state, false)).toEqual({ action: 'apply', label: 'Update document' })
+  expect(getWatchTriggerPresentation(state, false)).toEqual({ action: 'apply', label: 'viewer.review.updateDocument' })
   const html = renderToStaticMarkup(React.createElement(WatchStatus, { state }))
   expect(html).toContain('data-mdp-watch-action="apply"')
   expect(html).toContain('aria-label="Update document"')
@@ -155,7 +156,7 @@ it('keeps pending editor updates behind the details panel', () => {
   const state = { available: true, supported: true, pending: true, mode: 'ask' }
   expect(getWatchTriggerPresentation(state, true)).toEqual({
     action: 'details',
-    label: 'Document updates: load update'
+    label: 'viewer.updates.documentUpdatesLoadUpdate'
   })
   const html = renderToStaticMarkup(React.createElement(WatchStatus, { state, isEditMode: true }))
   expect(html).toContain('data-mdp-watch-action="details"')

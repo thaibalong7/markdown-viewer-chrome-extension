@@ -1,3 +1,4 @@
+import { LANGUAGES } from '../i18n/languages.js'
 import {
   DEFAULT_EXPLORER_MAX_FILES,
   DEFAULT_EXPLORER_MAX_FOLDERS,
@@ -45,19 +46,19 @@ import { DEFAULT_SHOW_DOCUMENT_STATS } from '../shared/constants/document-stats.
 
 export const EXPLORER_LIMIT_FIELDS = Object.freeze({
   maxScanDepth: Object.freeze({
-    label: 'Folder scan depth',
+    label: 'Folder scan depth', labelKey: 'options.validation.fields.folderScanDepth',
     min: 0,
     max: 20,
     defaultValue: DEFAULT_EXPLORER_MAX_SCAN_DEPTH
   }),
   maxFiles: Object.freeze({
-    label: 'Maximum indexed files',
+    label: 'Maximum indexed files', labelKey: 'options.validation.fields.maximumIndexedFiles',
     min: 10,
     max: 20_000,
     defaultValue: DEFAULT_EXPLORER_MAX_FILES
   }),
   maxFolders: Object.freeze({
-    label: 'Maximum scanned folders',
+    label: 'Maximum scanned folders', labelKey: 'options.validation.fields.maximumScannedFolders',
     min: 1,
     max: 5_000,
     defaultValue: DEFAULT_EXPLORER_MAX_FOLDERS
@@ -66,26 +67,26 @@ export const EXPLORER_LIMIT_FIELDS = Object.freeze({
 
 export const EXPLORER_BEHAVIOR_FIELDS = Object.freeze({
   showTreeIndentGuides: Object.freeze({
-    label: 'Show tree indent guides',
+    label: 'Show tree indent guides', labelKey: 'options.explorer.showTreeIndentGuides',
     defaultValue: DEFAULT_EXPLORER_SHOW_TREE_INDENT_GUIDES
   }),
   respectGitignore: Object.freeze({
-    label: 'Respect .gitignore files',
+    label: 'Respect .gitignore files', labelKey: 'options.explorer.respectGitignoreFiles',
     defaultValue: DEFAULT_EXPLORER_RESPECT_GITIGNORE
   }),
   restoreLastWorkspace: Object.freeze({
-    label: 'Restore last workspace',
+    label: 'Restore last workspace', labelKey: 'options.explorer.restoreLastWorkspace',
     defaultValue: DEFAULT_EXPLORER_RESTORE_LAST_WORKSPACE
   })
 })
 
 export const HISTORY_FIELDS = Object.freeze({
   enabled: Object.freeze({
-    label: 'Save recent files',
+    label: 'Save recent files', labelKey: 'options.privacy.saveRecentFiles',
     defaultValue: DEFAULT_HISTORY_ENABLED
   }),
   maxEntries: Object.freeze({
-    label: 'Maximum recent files',
+    label: 'Maximum recent files', labelKey: 'options.validation.fields.maximumRecentFiles',
     min: MIN_HISTORY_MAX_ENTRIES,
     max: MAX_HISTORY_MAX_ENTRIES,
     defaultValue: DEFAULT_HISTORY_MAX_ENTRIES
@@ -94,7 +95,7 @@ export const HISTORY_FIELDS = Object.freeze({
 
 export const DOCUMENT_FIELDS = Object.freeze({
   maxStandaloneTextFileSizeMiB: Object.freeze({
-    label: 'Standalone text file limit',
+    label: 'Standalone text file limit', labelKey: 'options.validation.fields.standaloneTextFileLimit',
     min: MIN_STANDALONE_TEXT_FILE_SIZE_LIMIT_MIB,
     max: MAX_STANDALONE_TEXT_FILE_SIZE_LIMIT_MIB,
     defaultValue: DEFAULT_STANDALONE_TEXT_FILE_SIZE_LIMIT_MIB
@@ -368,7 +369,7 @@ function normalizeInteger(value, definition) {
 
   if (normalizedValue < definition.min || normalizedValue > definition.max) {
     return {
-      error: `${definition.label} must be between ${definition.min.toLocaleString()} and ${definition.max.toLocaleString()}.`
+      error: `${definition.label} must be between ${definition.min.toLocaleString('en')} and ${definition.max.toLocaleString('en')}.`
     }
   }
 
@@ -548,6 +549,11 @@ export function normalizeSettings(settings, options = {}) {
 
   const invalidPolicy = options.invalid || 'throw'
   const normalized = deepMerge({}, settings)
+
+  if (normalized.language !== undefined && !LANGUAGES.some(({ value }) => value === normalized.language)) {
+    if (invalidPolicy === 'default') normalized.language = 'auto'
+    else throw new SettingsValidationError({ language: 'Choose a supported interface language.' })
+  }
 
   if (normalized.enabled !== undefined && typeof normalized.enabled !== 'boolean') {
     if (invalidPolicy === 'default') normalized.enabled = true

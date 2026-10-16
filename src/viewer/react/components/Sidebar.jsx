@@ -1,9 +1,12 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useState } from 'react'
 import { FilesPanel } from './FilesPanel.jsx'
 import { PanelToggleButton } from './PanelToggleButton.jsx'
 import { ResizeHandle } from './ResizeHandle.jsx'
 
 export function Sidebar({ explorerBridge, rootEl, settings, expanded, onToggle }) {
+  useLocale()
   const [sidebarEl, setSidebarEl] = useState(null)
   const [handleEl, setHandleEl] = useState(null)
 
@@ -12,7 +15,7 @@ export function Sidebar({ explorerBridge, rootEl, settings, expanded, onToggle }
       className={`mdp-sidebar mdp-sidebar--files ${
         expanded ? 'mdp-sidebar--expanded' : 'mdp-sidebar--collapsed'
       }`}
-      aria-label="Files"
+      aria-label={t('viewer.explorer.title')}
       ref={setSidebarEl}
     >
       <div

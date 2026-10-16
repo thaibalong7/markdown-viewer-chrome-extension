@@ -1,3 +1,4 @@
+import { isMessage } from '../../i18n/index.js'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { ViewerApp } from './ViewerApp.jsx'
@@ -135,7 +136,7 @@ export function mountViewerReact(container, options = {}) {
       this.updateChromeState({ tocItems: nextTocItems })
     },
     showToast(message, options = {}) {
-      if (typeof message !== 'string') return
+      if (!isMessage(message) && typeof message !== 'string') return
       showToastBridge?.(message, options)
     },
     unmount() { root.unmount(); }

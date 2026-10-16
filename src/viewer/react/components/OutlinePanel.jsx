@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { getToolbarHeightInScrollRoot } from '../../scroll-utils.js'
@@ -23,6 +25,7 @@ export function OutlinePanel({
   onTocClickInEditor,
   onHeadingNavigate
 }) {
+  useLocale()
   const editorState = useEditorState()
   const editorEditActive = Boolean(editorState?.enabled)
   const tocScrollRef = useRef(null)
@@ -124,32 +127,25 @@ export function OutlinePanel({
       id="mdp-panel-outline"
     >
       <div className="mdp-outline__header">
-        <span>On this page</span>
-        <span className="mdp-outline__count">{loadingVisible
-          ? 'Loading…'
-          : outlineItems.length || tocReady
-            ? `${outlineItems.length} ${outlineItems.length === 1 ? 'heading' : 'headings'}`
-            : ''}</span>
+        <span>{t('viewer.outline.summary')}</span>
+        <span className="mdp-outline__count">{loadingVisible ? t('common.status.loading') : outlineItems.length || tocReady ? t('viewer.outline.headingCount', { count: outlineItems.length }) : ''}</span>
       </div>
       <nav
         className="mdp-toc"
-        aria-label="Table of contents"
+        aria-label={t('viewer.outline.tableOfContents')}
         aria-busy={!tocReady || loadingVisible}
         ref={handleScrollRef}
         onWheel={pauseAutoFollowForTocInteraction}
         onPointerDown={pauseAutoFollowForTocInteraction}
         onKeyDown={pauseAutoFollowForTocInteraction}
       >
-        {showLoadingPlaceholder ? (
-          <SkeletonBlock
+        {showLoadingPlaceholder ? <SkeletonBlock
             className={`mdp-toc__skeleton${loadingPlaceholderPending ? ' is-pending' : ''}`}
             lines={OUTLINE_SKELETON_WIDTHS.length}
             widths={OUTLINE_SKELETON_WIDTHS}
             lineHeight={14}
             gap={10}
-          />
-        ) : headings.length ? (
-          <ul className="mdp-toc__list mdp-toc__list--virtual" style={{ height: `${outlineVirtualizer.getTotalSize()}px` }}>
+          /> : headings.length ? <ul className="mdp-toc__list mdp-toc__list--virtual" style={{ height: `${outlineVirtualizer.getTotalSize()}px` }}>
             {virtualRows.map((virtualRow) => {
               const item = outlineItems[virtualRow.index]
               if (!item) return null
@@ -184,13 +180,10 @@ export function OutlinePanel({
                 </li>
               )
             })}
-          </ul>
-        ) : (
-          <div className="mdp-toc__empty">No headings found.</div>
-        )}
+          </ul> : <div className="mdp-toc__empty">{t('viewer.outline.empty')}</div>}
       </nav>
       <ViewerScrollbar scrollElement={expanded ? scrollElement : null}
-        visibility={scrollbarVisibility} label="Outline scrollbar" variant="sidebar"
+        visibility={scrollbarVisibility} label={t('viewer.outline.outlineScrollbar')} variant="sidebar"
         contentSelector=".mdp-toc__list, .mdp-toc__skeleton, .mdp-toc__empty"
         contentVersion={`${tocReady}:${showLoadingPlaceholder}:${outlineItems.length}`} />
     </div>

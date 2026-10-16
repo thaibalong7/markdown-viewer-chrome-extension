@@ -1,11 +1,15 @@
+import { t, translateMessage } from '../../../../i18n/index.js'
+import { useLocale } from '../../../../i18n/react.js'
 import React from 'react'
 import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
 
 export function ColorCopyStatus({ text }) {
-  return <span className="mdp-color-source-status" role="status" aria-live="polite">{text}</span>
+  useLocale()
+  return <span className="mdp-color-source-status" role="status" aria-live="polite">{translateMessage(text)}</span>
 }
 
 export function ColorCopyFeedback({ point, leaving, feedbackRef }) {
+  useLocale()
   return (
     <span
       ref={feedbackRef}
@@ -16,7 +20,7 @@ export function ColorCopyFeedback({ point, leaving, feedbackRef }) {
       <span className="mdp-color-copy-feedback__pulse" />
       <span className="mdp-color-copy-feedback__label">
         <AppIcon name="check" size={14} />
-        <span>Copied</span>
+        <span>{t('common.status.copied')}</span>
       </span>
     </span>
   )

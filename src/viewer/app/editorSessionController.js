@@ -1,3 +1,4 @@
+import { t, message as localizedMessage, diagnosticMessage } from '../../i18n/index.js'
 import { logger } from '../../shared/logger.js'
 import {
   prepareFileForEditing,
@@ -88,7 +89,7 @@ export function createEditorSessionController({
       clearDebounce()
       return true
     }
-    const discard = window.confirm('You have unsaved changes. Open another document and discard them?')
+    const discard = window.confirm(t('viewer.editor.youHaveUnsavedChangesOpenAnotherDocumentAnd'))
     if (!discard) return false
     clearDebounce()
     return true
@@ -125,8 +126,8 @@ export function createEditorSessionController({
       editPrepared = true
       showToast(
         result.reused
-          ? `Verified save target: ${result.filename}`
-          : `Connected save target: ${result.filename}`,
+          ? localizedMessage('viewer.editor.verifiedSaveTargetValue', { 0: result.filename })
+          : localizedMessage('viewer.editor.connectedSaveTargetValue', { 0: result.filename }),
         { variant: 'success' }
       )
       return true
@@ -135,7 +136,7 @@ export function createEditorSessionController({
       logger.warn('Could not connect the original markdown file for editing.', {
         message
       })
-      showToast(message || 'Could not connect the original file.', { variant: 'error' })
+      showToast(message || 'errors.viewer.editor.connectTheOriginalFile', { variant: 'error' })
       return false
     } finally {
       preparingEdit = false
@@ -189,11 +190,11 @@ export function createEditorSessionController({
       editBaselineMarkdown = content
       onSaveSucceeded?.(content, document)
       setDirty(getMarkdown() !== content)
-      showToast('Saved to the connected original file', { variant: 'success' })
+      showToast('viewer.editor.savedToTheConnectedOriginalFile', { variant: 'success' })
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       logger.error('Failed to save markdown file.', error)
-      showToast(message ? `Save failed: ${message}` : 'Save failed.', { variant: 'error' })
+      showToast(message ? localizedMessage('viewer.editor.saveFailedValue', { 0: diagnosticMessage(message) }) : 'viewer.editor.saveFailed', { variant: 'error' })
     } finally {
       saveInFlight = false
       syncSaveStatus()

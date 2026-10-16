@@ -1,3 +1,4 @@
+import { isMessage } from '../i18n/index.js'
 import { mountContentUi } from './react/content/mount-content-ui.jsx'
 import { TooltipBubble } from './react/content/TooltipBubble.jsx'
 import { VIEWER_TOOLTIP_DELAY_DEFAULT_MS } from '../shared/constants/tooltip.js'
@@ -104,7 +105,7 @@ export function attachTooltip(anchor, { text, showDelayMs = VIEWER_TOOLTIP_DELAY
   return {
     hide,
     setText(nextText) {
-      text = String(nextText || '')
+      text = isMessage(nextText) ? nextText : String(nextText || '')
       if (!text) {
         hide()
       } else if (tipEl) {

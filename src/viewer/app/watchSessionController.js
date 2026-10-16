@@ -1,3 +1,4 @@
+import { message as localizedMessage, diagnosticMessage } from '../../i18n/index.js'
 import { logger } from '../../shared/logger.js'
 import { createReadingActivityGuard } from './readingActivityGuard.js'
 
@@ -96,7 +97,7 @@ export function createWatchSessionController({
       pending = null
       lastApplied = Date.now()
       emit({ pending: false, deferred: false, error: null })
-      if (manual) showToast?.('Document updated', { variant: 'success' })
+      if (manual) showToast?.('viewer.updates.notifications.documentUpdated', { variant: 'success' })
     }
     return applied
   }
@@ -156,8 +157,8 @@ export function createWatchSessionController({
         message: error instanceof Error ? error.message : String(error)
       })
       emit({ pending: false, error: error?.code === 'document-too-large'
-        ? `${error.userMessage || 'Document updates supports files up to 5 MiB.'} The current content was kept.`
-        : 'Could not read the file. The current content was kept. Check file access and try again.' })
+        ? localizedMessage('viewer.updates.notifications.valueTheCurrentContentWasKept', { 0: error.userMessage ? diagnosticMessage(error.userMessage) : localizedMessage('viewer.updates.notifications.documentUpdatesSupportsFilesUpTo5MiB') })
+        : 'errors.viewer.watch.readTheFileTheCurrentContentWasKept' })
       return false
     } finally {
       if (request === controller) request = null

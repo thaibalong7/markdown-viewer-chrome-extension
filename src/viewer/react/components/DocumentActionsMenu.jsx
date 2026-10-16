@@ -1,3 +1,5 @@
+import { t } from '../../../i18n/index.js'
+import { useLocale } from '../../../i18n/react.js'
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { DocumentActionIcon } from './DocumentActionIcon.jsx'
 import { VIEWER_TOOLTIP_DELAY_QUICK_MS } from '../../../shared/constants/tooltip.js'
@@ -6,6 +8,7 @@ import { ActionMenu } from './common/ActionMenu.jsx'
 import { DOCUMENT_ACTION_GROUPS } from './document-actions-model.js'
 
 export function DocumentActionsMenu({ action, items, open, onOpenChange }) {
+  useLocale()
   const wrapRef = useRef(null)
   const triggerRef = useRef(null)
   const [position, setPosition] = useState({})
@@ -41,10 +44,10 @@ export function DocumentActionsMenu({ action, items, open, onOpenChange }) {
     className="mdp-document-actions-menu"
     triggerClassName="mdp-fab-btn" triggerOpenClassName="mdp-fab-btn--active"
     triggerIcon={<DocumentActionIcon action={action} className="mdp-fab-btn__icon" />}
-    triggerLabel={action.label} triggerTooltip={action.tooltip || action.label}
+    triggerLabel={t(action.label)} triggerTooltip={t(action.tooltip || action.label)}
     triggerShowDelayMs={VIEWER_TOOLTIP_DELAY_QUICK_MS} triggerDisabled={action.disabled}
     menuClassName="mdp-document-actions-menu__panel" menuStyle={position}
-    menuLabel={action.label} itemClassName="mdp-document-actions-menu__item"
+    menuLabel={t(action.label)} itemClassName="mdp-document-actions-menu__item"
     onToggle={() => onOpenChange(open ? null : action.id)}
     items={items.map(item => ({
       ...item, key: item.id, ariaLabel: item.label,

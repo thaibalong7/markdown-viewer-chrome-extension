@@ -1,3 +1,4 @@
+import { isMessage } from '../../../i18n/index.js'
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 const DEFAULT_TOAST_DURATION_MS = 2200
@@ -46,7 +47,7 @@ export function ToastProvider({ children, onShowToastReady }) {
 
   const showToast = useCallback(
     (message, optionsOrDuration = {}) => {
-      if (typeof message !== 'string' || !message.trim()) return
+      if (!isMessage(message) && (typeof message !== 'string' || !message.trim())) return
       const { durationMs, variant } = normalizeToastOptions(optionsOrDuration)
       const nextDuration =
         typeof durationMs === 'number' && durationMs > 0 ? durationMs : DEFAULT_TOAST_DURATION_MS

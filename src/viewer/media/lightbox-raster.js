@@ -5,7 +5,7 @@ import { logger } from '../../shared/logger.js'
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
 function throwIfAborted(signal) {
-  if (signal.aborted) throw new DOMException('Image rendering cancelled.', 'AbortError')
+  if (signal.aborted) throw new DOMException("Image rendering cancelled.", 'AbortError')
 }
 
 function loadImage(url, signal) {
@@ -19,7 +19,7 @@ function loadImage(url, signal) {
     const abort = () => {
       cleanup()
       image.src = ''
-      reject(new DOMException('Image rendering cancelled.', 'AbortError'))
+      reject(new DOMException("Image rendering cancelled.", 'AbortError'))
     }
     image.onload = () => { cleanup(); resolve(image) }
     image.onerror = () => { cleanup(); reject(new Error('Could not decode this image for resolution rendering.')) }
@@ -132,7 +132,7 @@ export function createLightboxRasterSession({ host, source, width, height, baseR
       } catch (error) {
         if (controller.signal.aborted || token !== generation) return false
         logger.warn('Lightbox resolution rendering failed.', { resolution, name: error?.name || 'Error' })
-        controls.setError(error?.message || 'Could not render this resolution.', { disable: !applied })
+        controls.setError(error?.message || 'errors.viewer.media.renderThisResolution', { disable: !applied })
         return false
       } finally {
         if (nextUrl) URL.revokeObjectURL(nextUrl)

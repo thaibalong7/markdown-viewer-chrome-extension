@@ -1,3 +1,4 @@
+import { setLanguage, t, message as localizedMessage } from '../i18n/index.js'
 import { destroyContentUi } from './react/content/mount-content-ui.jsx'
 import { logger } from '../shared/logger.js'
 import { deepMerge } from '../shared/deep-merge.js'
@@ -163,9 +164,9 @@ export class MarkdownViewerApp {
         if (this._editorSession.isSaving() || this._editorSession.isPreparingEdit()) return false
         if (this._editorSession.isEditModeActive() && !editorExitConfirmed) {
           const message = this._editorSession.isDirty()
-            ? 'Your unsaved draft will be permanently discarded and edit mode will close. Load the latest version from disk?'
-            : 'Edit mode will close and the latest version from disk will be loaded. Continue?'
-          if (!window.confirm(message)) return false
+            ? 'viewer.app.yourUnsavedDraftWillBePermanentlyDiscardedAnd'
+            : 'viewer.app.editModeWillCloseAndTheLatestVersion'
+          if (!window.confirm(t(message))) return false
         }
         return true
       },
@@ -195,6 +196,7 @@ export class MarkdownViewerApp {
   }
 
   async init() {
+    setLanguage(this.settings?.language)
     this._styleElements = this.styles.map(createStyleElement)
     for (const styleElement of this._styleElements) {
       this.container.appendChild(styleElement)
@@ -325,14 +327,14 @@ export class MarkdownViewerApp {
     if (this._initialRoute?.invalidFileTarget || getExplorerMode() === 'workspace') {
       this._resetBrowserRoute()
       if (this._initialRoute?.invalidFileTarget) {
-        this._initialRouteWarning = 'The file route in this URL is not supported'
+        this._initialRouteWarning = 'viewer.app.fileRouteInThisURLIsNotSupported'
       }
     } else if (this._initialRoute?.hasFileTarget) {
       const restored = await this._documentSession.openDocument(this._initialRoute.targetFileUrl)
       if (!restored) {
         this._resetBrowserRoute()
         this._initialRouteWarning =
-          'Could not restore the linked file; returned to the original file'
+          'errors.viewer.app.restoreTheLinkedFileReturnedToTheOriginal'
       } else {
         document.title = `${documentTitleFromUrl(this._currentFileUrl)} - Markdown Plus`
       }
@@ -428,6 +430,7 @@ export class MarkdownViewerApp {
   async updateSettings(nextSettings) {
     const prevSettings = this.settings
     this.settings = nextSettings
+    setLanguage(nextSettings?.language)
     this._reactHandle?.updateSettings(nextSettings)
     this._watchSession.settingsChanged()
     this.applyReaderStyles()
@@ -461,14 +464,14 @@ export class MarkdownViewerApp {
         // Reconcile with the canonical saved object in case another settings
         // field changed while the theme request was in flight.
         await this.updateSettings(savedSettings)
-        this.showToast(`Switched to ${targetPreset} theme`, { variant: 'success' })
+        this.showToast(localizedMessage('viewer.actions.theme.switched', { 0: localizedMessage(targetPreset === 'dark' ? 'common.themeModes.dark' : 'common.themeModes.light') }), { variant: 'success' })
         return savedSettings
       } catch (error) {
         if (!this._destroyed && this.settings?.theme?.activeId === targetPreset) {
           await this.updateSettings(previousSettings)
         }
         logger.warn('Could not switch reader theme.', error)
-        this.showToast('Could not switch theme', { variant: 'error' })
+        this.showToast('errors.viewer.app.switchTheme', { variant: 'error' })
         return null
       } finally {
         if (this._themeTogglePromise === operation) this._themeTogglePromise = null

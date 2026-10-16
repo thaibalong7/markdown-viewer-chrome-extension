@@ -53,6 +53,14 @@ it('switches mounted controls and independent portals both ways without replacin
   expect(host.querySelector('textarea')).toBe(draft)
   expect(draft.value).toBe('Settings'); expect(draft.selectionStart).toBe(3)
   expect(document.activeElement).toBe(draft); expect(article.textContent).toBe('Settings')
+  await act(async () => receiver({ type: MESSAGE_TYPES.SETTINGS_UPDATED, payload: { language: 'zh-CN' } }))
+  expect(host.querySelector('label[for="general-language"]').textContent).toBe('界面语言')
+  expect(host.querySelector('#general-language').value).toBe('zh-CN')
+  expect(host.querySelector('[aria-label="将代码复制到剪贴板"]')).not.toBeNull()
+  expect(host.textContent).toContain('2 个词')
+  expect(host.querySelector('textarea')).toBe(draft)
+  expect(draft.value).toBe('Settings'); expect(draft.selectionStart).toBe(3)
+  expect(document.activeElement).toBe(draft); expect(article.textContent).toBe('Settings')
   await act(async () => setLanguage('en'))
   expect(host.querySelector('[aria-label="Copy code to clipboard"]')).not.toBeNull()
   expect(host.textContent).toContain('2 words')
@@ -124,6 +132,11 @@ it('translates the workspace file prompt as live UI and removes it when a docume
     expect(session.getLoadedDocument().text).toBe('')
     expect(renderer.getLastSuccessfulRenderMarkdown()).toBe('')
 
+    await act(async () => setLanguage('zh-CN'))
+    expect(article.querySelector('[role="status"]')).toBe(prompt)
+    expect(prompt.textContent).toBe('请从文件面板中选择受支持的文件。')
+    expect(session.getLoadedDocument().text).toBe('')
+
     await act(async () => setLanguage('en'))
     expect(article.querySelector('[role="status"]')).toBe(prompt)
     expect(prompt.textContent).toBe('Select a supported file from the Files panel.')
@@ -149,6 +162,60 @@ it('keeps a visible parameterized toast translated across language changes', asy
   await act(async () => setLanguage('vi'))
   expect(host.querySelector('.mdp-toast').textContent).toBe('Đã xuất options.general.title.html')
   expect(host.querySelector('.mdp-toast').classList.contains('is-visible')).toBe(true)
+  await act(async () => setLanguage('zh-CN'))
+  expect(host.querySelector('.mdp-toast').textContent).toBe('已导出 options.general.title.html')
+  expect(host.querySelector('.mdp-toast').classList.contains('is-visible')).toBe(true)
+})
+
+it('shows Chinese history, literal diff source and distinct draft-loss warnings', async () => {
+  const { EditorUpdateWarning } = await import('../../viewer/react/components/EditorUpdateConfirmation.jsx')
+  setLanguage('zh-CN')
+  const history = renderToStaticMarkup(React.createElement(FileHistoryPanel, { history: [
+    { title: 'options.general.title', url: 'file:///tmp/options.general.title.md', openedAt: Date.UTC(2026, 9, 15) }
+  ] }))
+  expect(history).toContain('最近文件：1 个')
+  expect(history).toContain('popup-history-item__title">options.general.title</span>')
+  const review = { sections: [], hunks: [{ id: 0, rows: [
+    { type: 'added', text: 'options.general.title', newLine: 1, oldLine: null, ending: 'LF' },
+    { type: 'equal', text: '原文', newLine: 2, oldLine: 1, ending: 'LF' },
+    { type: 'removed', text: 'old', newLine: null, oldLine: 2, ending: 'LF' }
+  ] }], added: 1, removed: 0 }
+  const html = renderToStaticMarkup(React.createElement(ChangeReviewContent, { review, activeHunk: 0, registerHunk: () => {} }))
+  expect(html).toContain('<code>options.general.title</code>')
+  expect(html).toContain('更改区域')
+  expect(html).toContain('aria-label="新增"')
+  expect(html).toContain('aria-label="删除"')
+  expect(html).toContain('aria-label="未更改"')
+  const dirty = renderToStaticMarkup(React.createElement(EditorUpdateWarning, { dirty: true }))
+  expect(dirty).toContain('草稿无法恢复')
+  const clean = renderToStaticMarkup(React.createElement(EditorUpdateWarning, { dirty: false }))
+  expect(clean).toContain('关闭编辑器')
+  expect(clean).not.toContain('无法恢复')
+})
+
+it('resolves image accessibility messages to text and keeps key-like alt text literal', async () => {
+  const { createArticleInteractions } = await import('../../viewer/article-interactions.js')
+  const article = document.createElement('article')
+  article.className = 'mdp-markdown-body'
+  const images = ['options.general.title', ''].map(alt => {
+    const image = document.createElement('img')
+    image.alt = alt
+    Object.defineProperties(image, { naturalWidth: { value: 100 }, naturalHeight: { value: 100 } })
+    article.append(image)
+    return image
+  })
+  host.append(article)
+  const interactions = createArticleInteractions({ getArticle: () => article, getScrollRoot: () => host })
+  try {
+    setLanguage('zh-CN')
+    interactions.prepareZoomableImages()
+    expect(images[0].getAttribute('aria-label')).toBe('缩放图片：options.general.title')
+    expect(images[1].getAttribute('aria-label')).toBe('打开图片缩放视图')
+    setLanguage('en')
+    interactions.prepareZoomableImages()
+    expect(images[0].getAttribute('aria-label')).toBe('Zoom image: options.general.title')
+    expect(images[1].getAttribute('aria-label')).toBe('Open image zoom view')
+  } finally { interactions.destroy() }
 })
 
 it('localizes scan progress and combined limit notices with literal paths', async () => {

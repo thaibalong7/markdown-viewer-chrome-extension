@@ -51,7 +51,8 @@
     "languages": {
       "browser": "Browser language",
       "en": "English",
-      "vi": "Tiếng Việt"
+      "vi": "Tiếng Việt",
+      "zhCN": "简体中文（中国）"
     },
     "messages": {
       "copiedFolderValue": "Copied folder {0}",
@@ -597,7 +598,8 @@
       "updateCheckFailed": "Update check failed",
       "updateDocument": "Update document",
       "updateWaiting": "Update waiting",
-      "yourEditorDraftIsExcludedFromThisComparison": "Your editor draft is excluded from this comparison."
+      "yourEditorDraftIsExcludedFromThisComparison": "Your editor draft is excluded from this comparison.",
+      "unchanged": "Unchanged"
     },
     "scrollbar": {
       "documentScrollbar": "Document scrollbar"

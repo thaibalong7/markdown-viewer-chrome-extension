@@ -10,6 +10,7 @@ This directory documents the repository as it exists today. Runtime source remai
 - [`theme-system.md`](./theme-system.md) — complete built-in/custom theme model, semantic colors, theme-owned backgrounds, local image assets, authoring workflows, extension guidance, and tests.
 - [`internationalization.md`](./internationalization.md) — interface-language ownership, semantic IDs, live switching, literal document boundaries, and locale integration/verification; use [`mdp-dev-add-language`](../.agents/skills/mdp-dev-add-language/SKILL.md) for the full translation workflow.
 - [`vietnamese-localization.md`](./vietnamese-localization.md) — Vietnamese editorial conventions, terminology, context-sensitive choices, and localized product references.
+- [`zh-CN-localization.md`](./zh-CN-localization.md) — Simplified Chinese (China) vocabulary, script matching, two-pass review coverage, and verification results.
 - [`design-system/`](./design-system/README.md) — current visual contracts and maintenance guide. Open [Overview](./design-system/index.html) in a browser to browse foundations, [Components](./design-system/components.html), [Icons](./design-system/icons.html), and the [Viewer preview](./design-system/viewer.html).
 - [`gherkin-syntax.md`](./gherkin-syntax.md) — Gherkin syntax reference and the supported Markdown code-fence aliases; standalone `.feature` files are not Viewer document types.
 - [`../DEV.md`](../DEV.md) — local setup, entry points, scripts, verification matrix, manual smoke tests, and troubleshooting.

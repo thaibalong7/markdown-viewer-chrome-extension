@@ -34,3 +34,23 @@ it('renders catalog IDs in Vietnamese across Settings and Popup without exposing
     expect(html, Component.name).not.toMatch(/(?:common|options|popup|viewer)\.[a-zA-Z]+\./)
   }
 })
+
+it('renders Chinese controls, hints, errors and confirmations across Settings and Popup', () => {
+  setLanguage('zh-CN')
+  const cases = [
+    [ExplorerSettings, { settings: DEFAULT_SETTINGS.explorer, draft: DEFAULT_SETTINGS.explorer, fieldErrors: {} }, '文件夹扫描深度'],
+    [PrivacySettings, { settings: DEFAULT_SETTINGS.history, draft: 20 }, '清除最近文件记录'],
+    [AdvancedSettings, { draft: 10 }, '独立文本文件大小限制'],
+    [AboutSettings, {}, '关于 Markdown Plus'],
+    [ThemeSettings, { settings: DEFAULT_SETTINGS, busyAction: '' }, '内置主题'],
+    [ReaderPanel, { settings: DEFAULT_SETTINGS }, '行高'],
+    [EditorSettingsPanel, { settings: DEFAULT_SETTINGS }, '实验性编辑器'],
+    [PluginsPanel, { pluginsSnapshot: DEFAULT_SETTINGS.plugins }, '颜色预览'],
+    [FileAccessCallout, { state: 'blocked' }, '允许访问本地文件']
+  ]
+  for (const [Component, props, translated] of cases) {
+    const html = renderToStaticMarkup(React.createElement(Component, props))
+    expect(html, Component.name).toContain(translated)
+    expect(html, Component.name).not.toMatch(/(?:common|options|popup|viewer)\.[a-zA-Z]+\./)
+  }
+})

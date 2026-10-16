@@ -1,11 +1,12 @@
 import en from './locales/en.json'
 import vi from './locales/vi.json'
+import zhCN from './locales/zh-CN.json'
 import { resolveLocale, LANGUAGES } from './languages.js'
 import { DIAGNOSTIC_KEYS, VALIDATION_LABEL_KEYS } from './diagnostic-keys.js'
 
 export { resolveLocale, LANGUAGES } from './languages.js'
 
-export const catalogs = Object.freeze({ en, vi })
+export const catalogs = Object.freeze({ en, vi, 'zh-CN': zhCN })
 const listeners = new Set()
 let preference = 'auto'
 let locale = resolveLocale(preference)

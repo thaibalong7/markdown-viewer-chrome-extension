@@ -52,7 +52,7 @@ function DiffHunk({ hunk, active, registerHunk, onActivate }) {
       <tbody>{hunk.rows.map((row, index) => <tr key={index} className={`mdp-change-review__row--${row.type}`}>
         <td className="mdp-change-review__line-number" aria-label={row.oldLine == null ? t('viewer.review.noOldLine') : t('viewer.review.oldLineValue', { 0: row.oldLine })}>{row.oldLine ?? ''}</td>
         <td className="mdp-change-review__line-number" aria-label={row.newLine == null ? t('viewer.review.noNewLine') : t('viewer.review.newLineValue', { 0: row.newLine })}>{row.newLine ?? ''}</td>
-        <td className="mdp-change-review__marker"><span aria-label={row.type}>{row.type === 'added' ? '+' : row.type === 'removed' ? '−' : ' '}</span></td>
+        <td className="mdp-change-review__marker"><span aria-label={t(row.type === 'added' ? 'viewer.review.added' : row.type === 'removed' ? 'viewer.review.removed' : 'viewer.review.unchanged')}>{row.type === 'added' ? '+' : row.type === 'removed' ? '−' : ' '}</span></td>
         <td className="mdp-change-review__source"><code>{row.text || ' '}</code>{row.type !== 'equal' && row.ending !== 'LF' && <small> {row.ending === 'No newline at end of file' ? t('viewer.lineDiff.noNewlineAtEndOfFile') : row.ending}</small>}</td>
       </tr>)}</tbody>
     </table>

@@ -55,7 +55,7 @@ export function createArticleInteractions({
     image.setAttribute('role', 'button')
     image.setAttribute(
       'aria-label',
-      image.alt ? localizedMessage('viewer.articleInteractions.zoomImageValue', { 0: image.alt }) : 'viewer.articleInteractions.openImageZoomView'
+      image.alt ? t('viewer.articleInteractions.zoomImageValue', { 0: image.alt }) : t('viewer.articleInteractions.openImageZoomView')
     )
   }
 

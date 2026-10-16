@@ -34,6 +34,40 @@ describe('locale resolution and messages', () => {
     expect(received).toEqual(['vi'])
   })
 
+  it('resolves Simplified Chinese without treating Traditional Chinese as Simplified', () => {
+    for (const tag of ['zh', 'zh-CN', 'ZH_cn', 'zh-SG', 'zh-Hans', 'zh-Hans-CN', 'zh-Hans-TW', 'zh-CN-u-nu-hanidec']) {
+      expect(resolveLocale('auto', [tag, 'vi']), tag).toBe('zh-CN')
+    }
+    for (const tag of ['zh-TW', 'zh-HK', 'zh-MO', 'zh-Hant', 'zh-Hant-CN', 'zh-Latn', 'zh-US']) {
+      expect(resolveLocale('auto', [tag, 'vi']), tag).toBe('vi')
+      expect(resolveLocale('auto', [tag]), tag).toBe('en')
+    }
+    expect(resolveLocale('zh-CN', ['vi'])).toBe('zh-CN')
+    expect(resolveLocale('auto', ['fr', 'zh-Hant', 'zh-Hans', 'en'])).toBe('zh-CN')
+    expect(resolveLocale('auto', ['en', 'zh-CN'])).toBe('en')
+  })
+
+  it('formats Chinese counts and diagnostics while keeping Unicode and key-like filenames literal', () => {
+    setLanguage('zh-CN')
+    for (const count of [0, 1, 12, 1234]) {
+      const formatted = new Intl.NumberFormat('zh-CN').format(count)
+      expect(t('viewer.statistics.words', { count })).toBe(`${formatted} 个词`)
+      expect(t('popup.history.fileCount', { count })).toBe(`最近文件：${formatted} 个`)
+    }
+    expect(formatNumber(1234.5)).toBe('1,234.5')
+    expect(formatDate(new Date('2026-10-15T00:00:00Z'), { timeZone: 'UTC' })).toBe('2026/10/15')
+    for (const name of ['项目说明与设计评审—最终版本（2026年十月）.md', 'options.general.title']) {
+      expect(t('viewer.explorer.actions.menuLabel', { 0: name })).toBe(`${name} 的操作`)
+      expect(translateMessage(`Could not read /tmp/${name}: permission denied`)).toBe(`无法读取 /tmp/${name}：permission denied`)
+    }
+    const phrases = getEditorPhrases('zh-CN')
+    expect(phrases['replace all']).toBe('全部替换')
+    for (const [phrase, translated] of Object.entries(phrases)) {
+      expect(translated.match(/\$/g)?.length || 0).toBe(phrase.match(/\$/g)?.length || 0)
+    }
+    expect(t('options.title', {}, 'zh-TW')).toBe('Settings')
+  })
+
   it('interpolates plain text safely, retains missing placeholders and falls back predictably', () => {
     setLanguage('vi')
     expect(t('viewer.explorer.actions.menuLabel', { 0: '<script>{name}</script>' })).toBe('Thao tác với <script>{name}</script>')
@@ -155,6 +189,9 @@ describe('catalog and persisted language contract', () => {
 
   it('accepts additive settings, validates imports and defaults invalid stored preferences', () => {
     expect(normalizeSettings({ language: 'vi' }).language).toBe('vi')
+    expect(normalizeSettings({ language: 'zh-CN' }).language).toBe('zh-CN')
+    expect(parseSettingsJson('{"language":"zh-CN"}').language).toBe('zh-CN')
+    expect(() => normalizeSettings({ language: 'zh-TW' })).toThrow('Choose a supported interface language.')
     expect(normalizeSettings({ language: 'fr' }, { invalid: 'default' }).language).toBe('auto')
     expect(() => normalizeSettings({ language: 'fr' })).toThrow('Choose a supported interface language.')
     expect(parseSettingsJson('{"language":"vi"}').language).toBe('vi')

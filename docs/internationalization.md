@@ -1,15 +1,15 @@
 # Interface languages
 
-Markdown Plus ships English and Vietnamese across Settings, Popup, Viewer chrome, document controls, editor dialogs, and CodeMirror search/replace. Choose **Settings → General → Interface language**. The synchronized `language` preference accepts `auto` (default), `en`, or `vi`. Automatic mode walks the browser's preferred languages in order, resolves regional variants such as `vi-VN` to their base language, and falls back to English.
+Markdown Plus ships English, Vietnamese, and Simplified Chinese (China) across Settings, Popup, Viewer chrome, document controls, editor dialogs, and CodeMirror search/replace. Choose **Settings → General → Interface language**. The synchronized `language` preference accepts `auto` (default), `en`, `vi`, or `zh-CN`. Automatic mode walks the browser's preferred languages in order and falls back to English. English and Vietnamese regional variants resolve to their base language. Chinese uses script-aware matching: `zh`, `zh-CN`, `zh-SG`, and explicit `zh-Hans` variants resolve to `zh-CN`; `zh-Hant`, `zh-TW`, `zh-HK`, and `zh-MO` are skipped rather than mapped to Simplified Chinese. An explicit script takes precedence over region; other Chinese regions without a supported script are skipped.
 
-The coding contract is [Internationalization](../.agents/rules/35-internationalization.md). For an end-to-end locale addition, use the shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md). Language-specific vocabulary and research belong in `docs/<locale>-localization.md`; the current [Vietnamese editorial guide](./vietnamese-localization.md) is the first such reference.
+The coding contract is [Internationalization](../.agents/rules/35-internationalization.md). For an end-to-end locale addition, use the shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md). Language-specific vocabulary and research belong in `docs/<locale>-localization.md`; see the [Vietnamese editorial guide](./vietnamese-localization.md) and [Simplified Chinese editorial guide](./zh-CN-localization.md).
 
 ## Ownership and flow
 
 | Source | Responsibility |
 | --- | --- |
 | `src/i18n/languages.js` | Supported language options and browser-language resolution; dependency-free so schema validation stays lightweight |
-| `src/i18n/locales/en.json`, `vi.json` | Complete message catalogs, including counted forms and service diagnostics |
+| `src/i18n/locales/en.json`, `vi.json`, `zh-CN.json` | Complete message catalogs, including counted forms and service diagnostics |
 | `src/i18n/index.js` | Current preference/locale, subscriptions, plain-text interpolation, plural selection, number/date formatting, and diagnostic translation |
 | `src/i18n/diagnostic-keys.js` | Explicit catalog IDs for legacy service diagnostic adaptation and validation field labels |
 | `src/i18n/react.js` | React subscriptions, extension-page settings notifications, and browser `languagechange` handling |
@@ -24,7 +24,7 @@ The additive setting keeps schema version 2. Older settings merge with `language
 
 ## Writing translated UI
 
-Messages use semantic dot-separated IDs backed by nested JSON objects. IDs describe the surface, feature, and purpose; they stay unchanged when English or Vietnamese wording changes. Group shared actions/statuses under `common`, settings pages under `options`, popup tabs and controls under `popup`, document UI under `viewer`, rendered plugin labels under `plugins`, and service diagnostics under `errors` or the existing `services` namespaces. Put complete sentences in catalogs and interpolate dynamic values with `{name}` (numeric placeholders also exist in migrated messages). Render the result through React or safe DOM text/attribute APIs. Catalogs contain plain text, never HTML; the Markdown/SVG sanitization boundaries remain mandatory.
+Messages use semantic dot-separated IDs backed by nested JSON objects. IDs describe the surface, feature, and purpose; they stay unchanged when wording changes in any language. Group shared actions/statuses under `common`, settings pages under `options`, popup tabs and controls under `popup`, document UI under `viewer`, rendered plugin labels under `plugins`, and service diagnostics under `errors` or the existing `services` namespaces. Put complete sentences in catalogs and interpolate dynamic values with `{name}` (numeric placeholders also exist in migrated messages). Render the result through React or safe DOM text/attribute APIs. Catalogs contain plain text, never HTML; the Markdown/SVG sanitization boundaries remain mandatory.
 
 ```jsx
 import { t } from '../../i18n/index.js'
@@ -42,7 +42,7 @@ Store dynamic UI messages using `message(key, values)` rather than concatenating
 
 The workspace file-selection prompt is UI, even though it appears inside the article. The document session stores it as `placeholderMessage` with empty `text`; the Markdown renderer presents it through the subscribed `DocumentState` portal. Never put an interface key into document source or translate arbitrary Markdown text: a real document may legitimately contain the same key verbatim.
 
-Pass numeric interpolation values as numbers to obtain locale-aware formatting. A counted message can contain `zero`, `one`, `two`, `few`, `many`, and `other` variants; `other` is mandatory. `t()` selects the variant using `Intl.PluralRules` and `values.count`. English word counts have `one`/`other`; Vietnamese uses `other`. Do not append English `s` or assume every future language has two plural forms. Use `formatDate()` or an explicit resolved locale for dates; formatting does not alter stored timestamps or numeric settings.
+Pass numeric interpolation values as numbers to obtain locale-aware formatting. A counted message can contain `zero`, `one`, `two`, `few`, `many`, and `other` variants; `other` is mandatory. `t()` selects the variant using `Intl.PluralRules` and `values.count`. English word counts have `one`/`other`; Vietnamese and Simplified Chinese use `other`. Do not append English `s` or assume every future language has two plural forms. Use `formatDate()` or an explicit resolved locale for dates; formatting does not alter stored timestamps or numeric settings.
 
 Existing service `Error.message` contracts remain stable English at their ownership boundary. `diagnostic-keys.js` explicitly registers their semantic catalog IDs; `translateMessage()` adapts these diagnostics at UI presentation using the English catalog templates. New UI copy and controller presentation state use semantic IDs or message descriptors directly through `t()`. Unknown browser/third-party diagnostics remain verbatim. Use this adapter only for application UI messages. Never run document bodies, diff source, headings, filenames, paths, URLs, custom theme names, clipboard values, or syntax-language identities through translation. Native confirmation dialogs call `t()` before opening. Chrome's own permission/file/print dialogs follow Chrome's language independently of the application's preference.
 
@@ -70,7 +70,7 @@ The [shared skill](../.agents/skills/mdp-dev-add-language/SKILL.md) owns the res
 
 | Touchpoint | Required integration |
 | --- | --- |
-| `src/i18n/languages.js` | Register the base locale and language-label key; add that label to every runtime catalog |
+| `src/i18n/languages.js` | Register the locale and language-label key; add that label to every runtime catalog |
 | `src/i18n/locales/<locale>.json`, `index.js` | Complete every semantic leaf from `en.json`, preserve placeholders, provide appropriate plural forms with `other`, and register the catalog |
 | `public/_locales/<chrome-locale>/messages.json` | Add native extension metadata using Chrome's supported locale identifier, which can differ from the runtime identifier |
 | `src/i18n/editor-phrases.js` and the runtime catalog | Translate enabled CodeMirror phrases and retain `$` substitutions; extend the adapter only for newly enabled phrases |
@@ -78,7 +78,7 @@ The [shared skill](../.agents/skills/mdp-dev-add-language/SKILL.md) owns the res
 | `src/i18n/__tests__/` | Cover the added locale's resolution, preference handling, counts, and live UI; keep every catalog in generic parity checks |
 | Documentation and UI fit | Update supported-language facts, record the locale's terminology/sources, and inspect actual controls in the target language |
 
-The current resolver strips region/script suffixes before matching, so it cannot select separate regional or script catalogs. Existing language publication sets `lang`, not a complete right-to-left layout contract. A locale that requires those distinctions needs corresponding resolver or direction/layout work; adding a catalog alone does not establish support.
+The resolver preserves the Simplified/Traditional Chinese distinction before base-language matching for English and Vietnamese. The canonical runtime preference and HTML `lang` are `zh-CN`; Chrome metadata uses `public/_locales/zh_CN/`. Bare `zh` intentionally defaults to Simplified Chinese. Traditional Chinese is not yet supported. Existing language publication sets `lang`, not a complete right-to-left layout contract; an RTL locale still requires direction/layout work.
 
 Some tests deliberately use an unsupported language such as `fr` to exercise fallback and strict rejection. If adding that language, replace those fixtures with a still-unsupported identifier and retain their assertions. Do not remove negative coverage to make a new locale pass.
 
@@ -104,4 +104,4 @@ npm test -- src/i18n/__tests__
 
 For a completed runtime addition, run `npm test`, `npm run build`, and `npm run size:report`, comparing the bundle with the prior result. Catalog tests enforce nested leaf/key parity, semantic key syntax, nonempty translations, interpolation parity, plural fallback, and registration of literal `t()`/`message()` calls. Real-DOM tests cover live switching, portal updates, visible message descriptors, and preservation of draft/source text, including the workspace placeholder. These checks do not establish natural wording or visual fit. Complete the surface checks above and Chrome smoke checks for file access, editing/saving, and export; report any checks that remain unverified.
 
-Catalogs are bundled locally with no translation network request, new dependency, or additional permission. Adding many languages may justify lazy-loading catalogs behind an asynchronous initialization boundary; the current two catalogs use synchronous access so controls and native confirmations have translations available immediately.
+Catalogs are bundled locally with no translation network request, new dependency, or additional permission. Adding many languages may justify lazy-loading catalogs behind an asynchronous initialization boundary; the current three catalogs use synchronous access so controls and native confirmations have translations available immediately.

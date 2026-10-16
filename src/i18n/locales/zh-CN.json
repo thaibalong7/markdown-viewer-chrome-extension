@@ -1,0 +1,1445 @@
+{
+  "common": {
+    "actions": {
+      "backToOriginalFile": "返回原始文件",
+      "backToTop": "返回顶部",
+      "cancel": "取消",
+      "clear": "清除",
+      "close": "关闭",
+      "collapseFolders": "折叠文件夹",
+      "copyContent": "复制内容",
+      "copyFileLink": "复制文件链接",
+      "copyLink": "复制链接",
+      "delete": "删除",
+      "edit": "编辑",
+      "explore": "浏览文件",
+      "focusMode": "专注模式",
+      "leaveWorkspace": "退出工作区",
+      "openExtensionDetails": "打开扩展程序详情",
+      "openSettings": "打开设置",
+      "read": "阅读",
+      "refreshFileList": "刷新文件列表",
+      "retry": "重试",
+      "saveChanges": "保存更改",
+      "viewChanges": "查看更改",
+      "viewSource": "查看源代码"
+    },
+    "backgroundImage": {
+      "imageIsEmpty": "图片为空。",
+      "themeBackgroundImageDataIsInvalid": "主题背景图片数据无效。",
+      "usePNGJPEGWebPAVIFGIFOrAPNG": "请使用 PNG、JPEG、WebP、AVIF、GIF 或 APNG 格式。"
+    },
+    "fileAccess": {
+      "allowed": "已允许",
+      "blocked": "未允许"
+    },
+    "fileSchemeAccess": {
+      "extensionDetailsAreUnavailableOpenChromeExtensionsManually": "无法打开扩展程序详情。请手动打开 chrome://extensions。"
+    },
+    "fileTypeIcons": {
+      "markdown": "Markdown"
+    },
+    "fileTypes": {
+      "dbmlDocument": "DBML 文档",
+      "image": "图片",
+      "markdownDocument": "Markdown 文档",
+      "mermaidDiagram": "Mermaid 图表",
+      "plainTextDocument": "纯文本文档",
+      "sqlDocument": "SQL 文档",
+      "svgImage": "SVG 图片"
+    },
+    "languages": {
+      "browser": "跟随浏览器",
+      "en": "English",
+      "vi": "Tiếng Việt",
+      "zhCN": "简体中文（中国）"
+    },
+    "messages": {
+      "copiedFolderValue": "已复制文件夹 {0}",
+      "settingsResetToDefault": "设置已恢复为默认值。",
+      "settingsSaved": "设置已保存。"
+    },
+    "productName": "Markdown Plus",
+    "productNameUppercase": "MARKDOWN PLUS",
+    "status": {
+      "active": "使用中",
+      "checking": "正在检查…",
+      "copied": "已复制",
+      "error": "错误",
+      "failed": "失败",
+      "loading": "正在加载…",
+      "modified": "已修改",
+      "ready": "就绪",
+      "rendering": "正在渲染",
+      "saved": "已保存",
+      "saving": "正在保存…",
+      "savingChanges": "正在保存更改…",
+      "unavailable": "不可用"
+    },
+    "themeModes": {
+      "dark": "深色",
+      "light": "浅色"
+    },
+    "themes": {
+      "dark": "深色",
+      "highContrastDark": "高对比度深色",
+      "highContrastLight": "高对比度浅色",
+      "light": "浅色",
+      "vscodeDark": "深色（VS Code）"
+    },
+    "watchModes": {
+      "ask": "更新前询问",
+      "auto": "自动更新",
+      "off": "关闭"
+    }
+  },
+  "viewer": {
+    "editor": {
+      "accessibility": {
+        "controlCharacter": "控制字符",
+        "foldLine": "折叠行",
+        "foldedCode": "已折叠的代码",
+        "foldedLines": "已折叠行",
+        "selectionDeleted": "已删除所选内容",
+        "unfold": "展开",
+        "unfoldLine": "展开行",
+        "unfoldedLines": "已展开行"
+      },
+      "search": {
+        "currentMatch": "当前匹配项",
+        "go": "跳转",
+        "goToLine": "转到行",
+        "onLine": "所在行",
+        "replacedMatchOnLine": "已替换第 $ 行的匹配项",
+        "replacedMatches": "已替换 $ 处匹配项",
+        "to": "至",
+        "all": "全部",
+        "close": "关闭",
+        "find": "查找",
+        "matchCase": "区分大小写",
+        "next": "下一处",
+        "previous": "上一处",
+        "regexp": "正则表达式",
+        "replaceAction": "替换",
+        "replaceAll": "全部替换",
+        "replaceFieldLabel": "替换为",
+        "wholeWord": "全字匹配"
+      },
+      "browserCannotConnectALocalFileForSafe": "此浏览器无法关联本地文件以进行安全编辑。",
+      "connectDialog": {
+        "checkBothItsFolderAndFilenameDoNot": "请核对文件夹和文件名，不要选择同名副本。",
+        "chooseThisExactFileInChromeSPicker": "请在 Chrome 的文件选择器中选择此原始文件。",
+        "chromeDoesNotAutomaticallyGrantWriteAccessFrom": "通过本地文件网址打开文件并不会自动获得 Chrome 的写入权限。Markdown Plus 必须先验证现有文件，才能打开编辑器。",
+        "connectTheOriginalFileBeforeEditing": "编辑前关联原始文件",
+        "currentFile": "当前文件",
+        "safeEditing": "安全编辑",
+        "unknownLocalFile": "未知本地文件",
+        "useSaveOrCtrlCmdSToWrite": "点击“保存”或按 Ctrl/Cmd+S，将更改写回已关联的文件。",
+        "verifyFileAndEdit": "验证文件并编辑",
+        "verifyingFile": "正在验证文件…"
+      },
+      "connectedSaveTargetValue": "已关联的保存目标：{0}",
+      "discard": "放弃更改",
+      "exitConfirmation": {
+        "title": "放弃更改并退出编辑模式？",
+        "yourUnsavedChangesWillBeLostTheSaved": "未保存的更改将丢失。已保存的文件保持不变。"
+      },
+      "file": "此文件",
+      "keepEditing": "继续编辑",
+      "loadingEditor": "正在加载编辑器…",
+      "originalFileIsNotConnectedExitEditMode": "尚未关联原始文件。请退出编辑模式，重新关联文件后再保存。",
+      "resizeHandle": {
+        "dragToResizeTheEditorAndPreviewWhen": "拖动以调整编辑器和预览区域的大小。获得焦点后，可使用左右方向键调整（每次 16px）。",
+        "resizeEditorAndPreview": "调整编辑器和预览区域大小"
+      },
+      "saveFailed": "保存失败。",
+      "saveFailedValue": "保存失败：{0}",
+      "savedToTheConnectedOriginalFile": "已保存到关联的原始文件",
+      "selectedFile": "所选文件",
+      "selectedFileValueIsNotTheFileYou": "所选文件（“{0}”）不是正在编辑的文件（“{1}”）。请选择 Markdown Plus 中显示的原始文件。",
+      "statusBar": {
+        "col": "，列",
+        "ln": "行",
+        "target": "目标："
+      },
+      "updateConfirmation": {
+        "discardDraftAndLoadDiskVersion": "放弃草稿并加载磁盘版本",
+        "editModeWillClose": "即将退出编辑模式",
+        "exitEditModeAndLoadDiskVersion": "退出编辑模式并加载磁盘版本",
+        "externalUpdateIsAlreadySavedOnDiskThis": "外部更改已保存到磁盘。此操作只会更改 Markdown Plus 当前打开的内容。",
+        "latestVersionIsAlreadyOnDiskMarkdownPlus": "最新版本已保存在磁盘上。Markdown Plus 将关闭编辑器并重新加载该版本。",
+        "loadingDiskVersion": "正在加载磁盘版本…",
+        "loadingTheDiskVersionClosesTheEditorAnd": "加载磁盘版本将关闭编辑器并重新加载文件。",
+        "loadingTheDiskVersionPermanentlyReplacesYourDraft": "加载磁盘版本将丢弃当前草稿并关闭编辑器，草稿无法恢复。",
+        "loadingThisUpdateWillCloseEditMode": "加载此更新将退出编辑模式",
+        "unsavedDraftWillBeDiscarded": "未保存的草稿将被放弃",
+        "versionOnDiskChangedOutsideMarkdownPlusLoading": "磁盘上的文件已被其他程序修改。加载该版本将丢弃编辑器中的草稿并退出编辑模式，草稿无法恢复。",
+        "yourUnsavedDraftWillBeDiscarded": "未保存的草稿将被放弃"
+      },
+      "valueChangedOnDiskAfterEditingStartedReload": "“{0}”在开始编辑后已被其他程序修改。请先重新加载再保存，以免覆盖外部更改。",
+      "valueDoesNotMatchTheDocumentCurrentlyOpen": "“{0}”与 Markdown Plus 当前打开的文档不一致。如果文件已更改，请重新加载查看器；否则请选择原始文件。",
+      "verifiedSaveTargetValue": "已验证的保存目标：{0}",
+      "youHaveUnsavedChangesOpenAnotherDocumentAnd": "存在未保存的更改。要放弃这些更改并打开另一份文档吗？"
+    },
+    "actions": {
+      "checkGitConnectionExperimental": "检查 Git 连接（实验性）",
+      "copyLinkUnavailableForWorkspaceVirtualFiles": "工作区虚拟文件无法复制链接",
+      "copyOpenFileLink": "复制当前文件链接",
+      "customDocumentActionMustBePinnedValue": "自定义文档操作必须固定显示：{0}",
+      "duplicateDocumentActionValue": "重复的文档操作：{0}",
+      "editMarkdown": "编辑 Markdown",
+      "exitEditMode": "退出编辑模式",
+      "exitFocusMode": "退出专注模式",
+      "export": {
+        "copiedFileLink": "已复制文件链接",
+        "exportHTML": "导出 HTML",
+        "exportWordDoc": "导出 Word（.doc）",
+        "exportedValue": "已导出 {0}",
+        "nothingToExportYet": "暂无可导出的内容。"
+      },
+      "exportDocument": "导出文档",
+      "exportHTMLOrWordDoc": "导出 HTML 或 Word（.doc）",
+      "focusModeHidePreview": "专注模式 — 隐藏预览",
+      "output": "输出",
+      "printSaveAsPDF": "打印 / 另存为 PDF",
+      "printSaveAsPDFInTheDialogTo": "打印 — 在对话框中选择“另存为 PDF”即可导出 PDF。",
+      "quickAccess": "快捷操作",
+      "saveCtrlS": "保存（Ctrl+S）",
+      "saveMarkdownFile": "保存 Markdown 文件",
+      "saveNoUnsavedChanges": "保存 — 没有未保存的更改",
+      "theme": {
+        "switch": "切换到{0}主题",
+        "switched": "已切换到{0}主题",
+        "switching": "正在切换主题…"
+      },
+      "toolbar": {
+        "documentActions": "文档操作",
+        "moreDocumentActions": "更多文档操作"
+      },
+      "unknownDocumentActionGroupValue": "未知文档操作分组：{0}",
+      "viewDiagram": "查看图表"
+    },
+    "app": {
+      "editModeWillCloseAndTheLatestVersion": "即将退出编辑模式并加载磁盘上的最新版本。要继续吗？",
+      "fileRouteInThisURLIsNotSupported": "不支持此网址中的文件路径",
+      "yourUnsavedDraftWillBePermanentlyDiscardedAnd": "未保存的草稿将被永久丢弃，并退出编辑模式。要加载磁盘上的最新版本吗？"
+    },
+    "articleInteractions": {
+      "copiedLink": "已复制链接",
+      "openImageZoomView": "打开图片缩放视图",
+      "sectionLinksAreUnavailableForThisWorkspaceFile": "此工作区文件不支持章节链接",
+      "zoomImageValue": "缩放图片：{0}"
+    },
+    "browserGit": {
+      "binaryFilesAreNotSupportedByTheGit": "Git 检查不支持二进制文件。",
+      "chooseTheRepositoryRootFolderContainingAGit": "请选择包含 .git 目录的仓库根文件夹。",
+      "fileExceedsTheGitProbeLimit192KiB": "文件超出 Git 检查的大小限制（每份源文件 192 KiB）。",
+      "fileOrHEADChangedDuringTheCheckCheck": "检查期间文件或 HEAD 发生了变化。请重新检查。",
+      "gitProbeRequiresARealLocalMarkdownFile": "Git 检查需要真实的本地 Markdown 文件。",
+      "gitProbeSupportsUTF8MarkdownOnly": "Git 检查仅支持 UTF-8 编码的 Markdown 文件。",
+      "gitWorktreesSubmodulesWithAGitFileAre": "此检查不支持使用 .git 文件的 Git 工作树或子模块。",
+      "selectedRepoFileDiffersFromTheOpenFile": "所选仓库中的文件与当前打开的磁盘文件不一致。请选择原始仓库，或等待文件停止变化后重试。",
+      "selectedRepositoryDoesNotUniquelyMatchTheOpen": "所选仓库无法与当前打开的文件路径唯一匹配。请选择该文件所在的原始仓库文件夹。"
+    },
+    "code": {
+      "copy": {
+        "ariaLabel": "将代码复制到剪贴板",
+        "label": "复制代码"
+      }
+    },
+    "colors": {
+      "colorFormatsForValue": "{0} 的颜色格式",
+      "copiedValue": "已复制 {0}",
+      "copyValue": "复制 {0}",
+      "copyValueValue": "复制 {0}：{1}",
+      "opacityValue": "不透明度 {0}",
+      "valueCopiedToClipboard": "已将 {0} 复制到剪贴板"
+    },
+    "content": {
+      "controlCouldNotBeDisplayed": "无法显示此控件。"
+    },
+    "document": {
+      "fileTypeIsNotSupported": "不支持此文件类型",
+      "imageKind": "图片",
+      "textKind": "文本文件"
+    },
+    "documentLoader": {
+      "documentLoadWasAborted": "文档加载已中止。",
+      "documentTypeIsNotLoadableYet": "暂不支持加载此文档类型。",
+      "selectedWorkspaceFileHasAnUnsupportedImageType": "所选工作区文件的图片类型不受支持。",
+      "selectedWorkspaceFileIsNotARegisteredImage": "所选工作区文件不属于已注册的图片格式。"
+    },
+    "documents": {
+      "dbml": {
+        "colorPreviewsCouldNotBeDisplayedDBMLSource": "无法显示颜色预览。仍可查看 DBML 源代码。",
+        "dbmlDocumentHostIsUnavailable": "DBML 文档容器不可用。",
+        "dbmlFileIsEmpty": "此 DBML 文件为空。",
+        "documentRenderWasAborted": "文档渲染已中止。"
+      },
+      "image": {
+        "imageDocumentHostIsUnavailable": "图片文档容器不可用。",
+        "loadingValue": "正在加载 {0}…"
+      },
+      "markdown": {
+        "emptyMarkdownDocument": "Markdown 文档为空",
+        "someMarkdownEnhancementsCouldNotBeAppliedBasic": "部分 Markdown 增强功能无法应用。仍可查看基本 Markdown 内容。",
+        "useEditToStartWriting": "点击“编辑”开始写作。"
+      },
+      "mermaid": {
+        "mermaidDocumentHostIsUnavailable": "Mermaid 文档容器不可用。",
+        "mermaidFileIsEmpty": "此 Mermaid 文件为空。"
+      },
+      "sql": {
+        "sqlDocumentHostIsUnavailable": "SQL 文档容器不可用。",
+        "sqlFileIsEmpty": "此 SQL 文件为空。"
+      },
+      "states": {
+        "diagramSource": "图表源代码",
+        "mermaidRenderError": "Mermaid 渲染错误"
+      },
+      "text": {
+        "textDocumentHostIsUnavailable": "文本文档容器不可用。",
+        "textFileIsEmpty": "此文本文件为空。"
+      }
+    },
+    "explorer": {
+      "accessibility": {
+        "supportedFilesInFolderTree": "文件夹树中的受支持文件"
+      },
+      "actions": {
+        "copyFileName": "复制文件名",
+        "copyFolderName": "复制文件夹名",
+        "copyFolderPath": "复制文件夹路径",
+        "fileDetailsActions": "文件详情操作",
+        "menuLabel": "{0} 的操作",
+        "moreFileActions": "更多文件操作",
+        "moreLabel": "{0} 的更多操作"
+      },
+      "context": {
+        "currentFolderLabel": "此文件所在的文件夹",
+        "document": "文档",
+        "noFileSelected": "未选择文件",
+        "openFileIsNotListedInTheScanned": "当前文件未出现在扫描结果中（可能受扫描限制或列表范围影响）。已将其添加到顶部，方便导航。",
+        "openFileIsNotUnderThisWorkspaceTree": "当前文件不在此工作区目录树下。请从列表中选择文件，或退出工作区。",
+        "scanningFolder": "正在扫描文件夹…",
+        "scanningWorkspace": "正在扫描工作区…",
+        "workspaceFiles": "工作区文件"
+      },
+      "currentFolder": "当前文件夹",
+      "file": {
+        "copiedFileName": "已复制文件名",
+        "openInNewTab": "在新标签页中打开",
+        "workspaceFileCannotOpenInABrowserTab": "此工作区文件无法在浏览器标签页中打开"
+      },
+      "fileCount": {
+        "other": "· {count} 个文件"
+      },
+      "folder": {
+        "collapseFolder": "折叠文件夹",
+        "copiedFolderName": "已复制文件夹名",
+        "copiedFolderPath": "已复制文件夹路径",
+        "expandFolder": "展开文件夹",
+        "indexedFileCount": "已索引 {0} 个文件（含子文件夹）",
+        "toggleLabel": "展开或折叠“{0}”。"
+      },
+      "folderScanner": {
+        "file": "文件"
+      },
+      "header": {
+        "adjustScanLimitsInSettings": "在设置中调整扫描限制",
+        "hideFileDetails": "隐藏文件详情",
+        "openFile": "打开文件",
+        "openFileDetails": "打开文件详情",
+        "openFolder": "打开文件夹…",
+        "showFileDetails": "显示文件详情",
+        "switchFolder": "切换文件夹…",
+        "thenRefresh": "，然后刷新。",
+        "unavailableForWorkspaceVirtualFiles": "不适用于工作区虚拟文件",
+        "workspaceRoot": "工作区根目录"
+      },
+      "hide": "隐藏文件面板",
+      "listRefresh": {
+        "openASupportedFileBeforeRefreshingItsFolder": "请先打开受支持的文件，再刷新其所在文件夹的列表",
+        "refreshedFileList": "文件列表已刷新",
+        "selectTheFolderAgainToRefreshItsFile": "请重新选择文件夹以刷新文件列表"
+      },
+      "navigation": {
+        "backToFile": "返回 {0}",
+        "linkedFileIsNoLongerAvailable": "链接的文件已不可用"
+      },
+      "panel": {
+        "filesInCurrentFolder": "当前文件夹中的文件",
+        "filesScrollbar": "文件面板滚动条",
+        "noSupportedFilesFoundInThisDirectory": "此目录中未找到受支持的文件。",
+        "refreshIsAvailableAfterScanningFinishes": "扫描完成后即可刷新",
+        "refreshingFileList": "正在刷新文件列表",
+        "supportedFilesInFolder": "文件夹中的受支持文件"
+      },
+      "panelLabel": "文件面板",
+      "scan": {
+        "depthLimit": "部分文件夹未扫描（已达深度限制）。",
+        "depthLimitWithValue": "部分文件夹未扫描（深度限制：{0}）。",
+        "fileLimit": "扫描已停止：已达文件数量上限。",
+        "folderLimit": "扫描已停止：已达文件夹数量上限。",
+        "notices": "{depth} {files} {folders}",
+        "progress": "正在扫描… {files} 个文件，{folders} 个文件夹{path}"
+      },
+      "scanSession": {
+        "scanCancelled": "扫描已取消",
+        "scanningFolderTree": "正在扫描文件夹树…"
+      },
+      "show": "显示文件面板",
+      "title": "文件",
+      "toolbar": {
+        "allFoldersAreCollapsed": "所有文件夹均已折叠",
+        "collapseAllFolders": "折叠所有文件夹",
+        "collapseFoldersOutsideTheOpenFilePath": "折叠当前文件路径以外的文件夹",
+        "fileListControls": "文件列表控件",
+        "scanning": "正在扫描…"
+      },
+      "workspace": "工作区",
+      "workspacePicker": {
+        "expectedADirectoryHandleGotAFileHandle": "需要目录句柄，但收到的是文件句柄",
+        "notADirectoryHandle": "不是目录句柄"
+      },
+      "workspaceSession": {
+        "scanningImportedFolder": "正在扫描导入的文件夹…",
+        "scanningPickedFolder": "正在扫描所选文件夹…",
+        "scanningWorkspaceFileListing": "正在扫描工作区（文件列表）…"
+      }
+    },
+    "fileLinkActions": {
+      "noCurrentFileURLToCopy": "当前没有可复制的文件网址"
+    },
+    "fileRowActions": {
+      "noFileHrefToCopy": "没有可复制的文件链接",
+      "noFileNameToCopy": "没有可复制的文件名"
+    },
+    "folderRowActions": {
+      "noFolderIdentityToCopy": "没有可复制的文件夹标识"
+    },
+    "git": {
+      "branch": "分支",
+      "bytesLoaded": "字节已加载",
+      "checkAgain": "重新检查",
+      "checksTheSavedFileAgainstHEADUnsavedEditor": "将磁盘上已保存的文件与 HEAD 比较，不包含编辑器中未保存的更改。",
+      "chooseRepoFolder": "选择仓库文件夹",
+      "chooseTheCurrentFileSRepositoryFolderTo": "选择当前文件所在的仓库文件夹，为此标签页授予读取权限。",
+      "clean": "无更改",
+      "comparison": "比较",
+      "connectedToGitInTheBrowser": "已在浏览器中连接 Git",
+      "detachedHEAD": "分离的 HEAD",
+      "diffExceedsReviewLimits": "差异超出查看限制",
+      "diskSource": "磁盘源文件",
+      "engine": "Git 库",
+      "excludedIgnoredFile": "已排除：被忽略的文件",
+      "fileDoesNotExistInHEAD": "HEAD 中不存在此文件",
+      "gitCheckFailed": "Git 检查失败。",
+      "gitConnectionExperimental": "Git 连接 · 实验性",
+      "gitStatus": "Git 状态",
+      "headLabel": "HEAD",
+      "headSource": "HEAD 源文件",
+      "ignoredByGit": "已被 Git 忽略",
+      "inspectHEADSourceReadOnly": "查看 HEAD 源文件（只读）",
+      "lineChanges": "新增 +{0} 行 / 删除 −{1} 行",
+      "loadedBytes": "已加载 {0} 字节",
+      "modifiedStatus": "已修改（{0}）",
+      "noCommitsYet": "暂无提交",
+      "readingGitInTheBrowser": "正在浏览器中读取 Git…",
+      "readsGitInsideChromeChooseTheRepositoryRoot": "在 Chrome 内直接读取 Git。请选择包含 .git 的仓库根目录，无需安装辅助程序。",
+      "repository": "仓库",
+      "sourceChanges": "源文件更改",
+      "untracked": "未跟踪"
+    },
+    "gitProbe": {
+      "chromeContextDoesNotSupportSelectingAGit": "当前 Chrome 环境不支持选择 Git 文件夹。",
+      "folderReadAccessExpiredChooseTheRepositoryAgain": "文件夹读取权限已失效。请重新选择仓库。"
+    },
+    "imageRevision": {
+      "imageExceedsThe5MiBWatchLimit": "图片超出文档更新监测的 5 MiB 限制。",
+      "noImageBytesReceived": "未收到图片数据。"
+    },
+    "layout": {
+      "editorScrollbar": "编辑器滚动条",
+      "previewFontSizeAndLineHeightAreSynced": "编辑期间，预览区域的字号和行高与编辑器同步。退出编辑模式后将恢复阅读设置。",
+      "previewScrollbar": "预览滚动条",
+      "resizeHandle": {
+        "dragToResizeValueWhenFocusedUseLeft": "拖动以调整{0}大小。获得焦点后，可使用左右方向键调整（每次 16px）。",
+        "resizeValue": "调整{0}大小"
+      },
+      "rightRail": {
+        "documentActionsAndOutline": "文档操作和大纲"
+      }
+    },
+    "lineDiff": {
+      "noNewlineAtEndOfFile": "文件末尾没有换行符"
+    },
+    "media": {
+      "bitmapLimit16384PxPerSide32": "位图限制：单边 16,384 px / 总像素 32 Mi。",
+      "bitmapLimit16384PxPerSideOr": "位图限制：单边 16,384 px 或总像素 32 Mi。",
+      "closeImageZoomView": "关闭图片缩放视图",
+      "closeMermaidChart": "关闭 Mermaid 图表",
+      "decreaseRenderResolution": "降低渲染分辨率",
+      "decreaseResolutionBy025": "将分辨率降低 0.25",
+      "dragAnywhereToPanCtrlScrollPinchTo": "拖动任意位置平移  |  Ctrl + 滚动 / 捏合缩放  |  双指滚动平移  |  +/- 缩放  |  0 重新居中  |  Esc 关闭",
+      "dragToPanCtrlScrollPinchToZoom": "拖动平移  |  Ctrl + 滚动 / 捏合缩放  |  +/- 缩放  |  0 适应视图  |  Esc 关闭",
+      "fitImageToView": "使图片适应视图",
+      "higherResolutionUsesMoreMemoryLimit16384": "分辨率越高，内存占用越大。限制：单边 16,384 px / 总像素 32 Mi。",
+      "imageExceedsBitmapLimit16384PxPer": "图片超出位图限制：单边 16,384 px / 总像素 32 Mi。",
+      "imageZoomView": "图片缩放视图",
+      "increaseRenderResolution": "提高渲染分辨率",
+      "increaseResolutionBy025": "将分辨率提高 0.25",
+      "maximumForThisImage": "，已达此图片的上限",
+      "maximumValueForThisImage": "此图片最高支持 ×{0}。",
+      "mermaidChartZoomView": "Mermaid 图表缩放视图",
+      "openMermaidChartInZoomView": "在缩放视图中打开 Mermaid 图表",
+      "reCenterMermaidChart": "重新居中 Mermaid 图表",
+      "rendering2": "，正在渲染",
+      "resolution": {
+        "ariaLabel": "调整渲染分辨率：{0}{1}{2}{3}",
+        "caption": "分辨率",
+        "label": "渲染分辨率",
+        "maximum": "最高",
+        "maximumShort": "最高",
+        "unavailableShort": "不可用"
+      },
+      "zoomInImage": "放大图片",
+      "zoomInMermaidChart": "放大 Mermaid 图表",
+      "zoomOutImage": "缩小图片",
+      "zoomOutMermaidChart": "缩小 Mermaid 图表"
+    },
+    "mermaid": {
+      "copyMermaidSource": "复制 Mermaid 源代码",
+      "downloadPNG": "下载 PNG",
+      "downloadSVG": "下载 SVG",
+      "exportMermaidChart": "导出 Mermaid 图表",
+      "exportThisDiagramSVGVectorOrPNGAt": "导出此图表：SVG（矢量）或 1x–4x 分辨率的 PNG。",
+      "mermaidChartActions": "Mermaid 图表操作",
+      "mermaidSVGCouldNotBeSanitized": "无法对 Mermaid SVG 进行安全处理。",
+      "openChartInFullScreenZoomView": "在全屏缩放视图中打开图表。",
+      "png": "PNG",
+      "unknownError": "未知错误。"
+    },
+    "outline": {
+      "empty": "未找到标题。",
+      "headingCount": {
+        "other": "{count} 个标题"
+      },
+      "hide": "隐藏大纲面板",
+      "outlineScrollbar": "大纲滚动条",
+      "show": "显示大纲面板",
+      "summary": "本页内容",
+      "tableOfContents": "目录",
+      "title": "大纲"
+    },
+    "render": {
+      "documentCouldNotBeRendered": "无法渲染文档",
+      "loadingDocument": "正在加载文档",
+      "noLoadableCurrentDocumentIsAvailable": "当前没有可加载的文档。",
+      "tryAgainIfTheProblemContinuesRefreshThe": "请重试。如果问题仍然存在，请刷新文件或关闭可选渲染插件。"
+    },
+    "rendererRegistry": {
+      "documentRendererValueHasNoRenderFunction": "文档渲染器“{0}”没有 render() 函数。",
+      "noDocumentRendererIsRegisteredForValue": "尚未为“{0}”注册文档渲染器。"
+    },
+    "review": {
+      "aNewerComparisonIsReady": "已有更新的比较结果。",
+      "added": "新增",
+      "added2": "行新增 ·",
+      "affectedSections": "受影响的章节",
+      "alt": "Alt",
+      "area": "区域",
+      "areas": "区域数",
+      "beforeTheFirstHeading": "首个标题之前",
+      "calculatingChanges": "正在计算更改…",
+      "change": "更改",
+      "changeSummary": "更改摘要",
+      "changedArea": "更改区域",
+      "changedAreaNavigation": "更改区域导航",
+      "changedAreaValue": "更改区域 {0}",
+      "changedAreasInThisComparison": "本次比较中的更改区域",
+      "changesAppliedInTheMostRecentDocumentUpdate": "最近一次文档更新已应用的更改。",
+      "checkLatest": "检查最新版本",
+      "comparisonIsNoLongerCurrent": "此比较已不是最新结果。",
+      "deleted": "已删除",
+      "detailedReviewIsUnavailableBecauseThisComparisonExceeds": "本次比较超出大小、时间或输出限制，无法显示详细更改。请使用编辑器的差异比较工具查看此文件。文档和草稿均已保留。",
+      "dialog": {
+        "closeReview": "关闭更改视图",
+        "openingReview": "正在打开更改视图…",
+        "reloadThisViewerAndTryAgain": "请重新加载查看器后重试。"
+      },
+      "lastUpdate": "上次更新",
+      "loadDiskVersion": "加载磁盘版本…",
+      "movesBetweenChangedAreasInThisComparison": "在本次比较的更改区域之间切换",
+      "newLine": "新行号",
+      "newLineValue": "新版本第 {0} 行",
+      "nextArea": "下一区域 →",
+      "nextChangedArea": "下一个更改区域",
+      "noNewLine": "无新行号",
+      "noOldLine": "无旧行号",
+      "noSourceChangesInThisComparison": "本次比较中没有源文件更改。",
+      "of": "/",
+      "oldLine": "旧行号",
+      "oldLineValue": "旧版本第 {0} 行",
+      "openDocument": "打开文档",
+      "openInDocumentValue": "在文档中打开：{0}",
+      "previousArea": "← 上一区域",
+      "previousChangedArea": "上一个更改区域",
+      "removed": "删除",
+      "removed2": "行删除",
+      "reviewChanges": "查看更改",
+      "reviewLatest": "查看最新更改",
+      "reviewedVersionIsNotOpenYetUpdateThe": "尚未打开正在比较的新版本。更新文档后才能使用章节链接。",
+      "seeWhatChangedOnDiskBeforeUpdatingThis": "更新文档前，先查看磁盘上的更改。",
+      "source": "源代码",
+      "sourceLinesInChangedArea": "源代码行所在的更改区域：",
+      "updateCheckFailed": "更新检查失败",
+      "updateDocument": "更新文档",
+      "updateWaiting": "更新待加载",
+      "yourEditorDraftIsExcludedFromThisComparison": "本次比较不包含编辑器中的草稿。",
+      "unchanged": "未更改"
+    },
+    "scrollbar": {
+      "documentScrollbar": "文档滚动条"
+    },
+    "statistics": {
+      "characters": {
+        "other": "{count} 个字符"
+      },
+      "readingTime": "阅读约需 {0} 分钟",
+      "summary": "文档统计：{0}，{1}，{2}",
+      "words": {
+        "other": "{count} 个词"
+      }
+    },
+    "updates": {
+      "aNewDocumentVersionIsAvailable": "有新的文档版本可用。",
+      "aNewDocumentVersionWillLoadAutomaticallyWhen": "停止操作后，将自动加载新的文档版本。",
+      "aNewerVersionOfThisDocumentIsReady": "此文档已有更新版本。",
+      "anUpdateIsReadyItWillLoadWhen": "更新已就绪。文件稳定且停止操作后将自动加载。",
+      "applyingANewDocumentVersionAutomatically": "正在自动应用新的文档版本。",
+      "ask": "询问",
+      "automatic": "自动",
+      "automaticChecksArePaused": "自动检查已暂停。",
+      "checkNow": "立即检查",
+      "documentUpdateCheckFailedOpenDocumentUpdatesTo": "文档更新检查失败。请打开“文档更新”重试。",
+      "documentUpdated": "文档已更新。",
+      "documentUpdatesCheckFailed": "文档更新：检查失败",
+      "documentUpdatesLiveWatchUnavailable": "文档更新：实时监测不可用",
+      "documentUpdatesLoadUpdate": "文档更新：加载更新",
+      "fileChangedOnDiskLoadItToLeave": "磁盘上的文件已更改。加载该版本将退出编辑模式。",
+      "latestStableVersionIsBeingAppliedAutomatically": "正在自动应用最新的稳定版本。",
+      "liveUpdatesUnavailable": "实时更新不可用",
+      "newVersionAvailable": "有新版本",
+      "newVersionsWaitUntilYouChooseToUpdate": "新版本将等待您选择更新后再加载。",
+      "notifications": {
+        "documentUpdated": "文档已更新",
+        "documentUpdatesSupportsFilesUpTo5MiB": "文档更新支持最大 5 MiB 的文件。",
+        "valueTheCurrentContentWasKept": "{0} 已保留当前内容。"
+      },
+      "selectTheWorkspaceAgainToCheckForUpdated": "请重新选择工作区以检查文件更新。",
+      "title": "文档更新",
+      "updateNow": "立即更新",
+      "updatesLoadWhenTheFileIsStableAnd": "文件稳定且停止操作后，将加载更新。",
+      "updatingAnnouncement": "正在更新文档。",
+      "updatingLabel": "正在更新文档…"
+    },
+    "useexplorer": {
+      "selectASupportedFileFromTheFilesPanel": "请从文件面板中选择受支持的文件。"
+    }
+  },
+  "errors": {
+    "common": {
+      "backgroundImage": {
+        "chooseAnImageFile": "请选择图片文件。",
+        "readTheImage": "无法读取图片。"
+      },
+      "messages": {
+        "checkTheCurrentDocumentForChanges": "无法检查当前文档的更改。",
+        "cleanUpThePreviousDocumentRenderer": "无法清理上一个文档渲染器。",
+        "clearPersistedFileHandle": "无法清除已存储的文件句柄。",
+        "connectTheOriginalMarkdownFileForEditing": "无法关联原始 Markdown 文件进行编辑。",
+        "copyColorFormat": "无法复制颜色格式。",
+        "copyDetectedColor": "无法复制检测到的颜色。",
+        "copyFolderValue": "无法复制文件夹 {0}",
+        "inspectTheThemePreviewImage": "无法检查主题预览图片。",
+        "loadTheActiveThemeBackground": "无法加载当前主题的背景。",
+        "loadTheThemePreviewImage": "无法加载主题预览图片。",
+        "mountViewerReactShell": "无法挂载查看器的 React 界面。",
+        "navigateBrowserHistory": "无法切换浏览器历史记录。",
+        "openDocument": "无法打开文档。",
+        "persistFileHandleToIndexedDB": "无法将文件句柄存储到 IndexedDB。",
+        "prepareALocalMarkdownSVGImage": "无法准备本地 Markdown SVG 图片。",
+        "recordFileHistory": "无法记录文件历史。",
+        "refreshExplorerFileList": "无法刷新文件浏览器列表。",
+        "releaseDocumentAssetURL": "无法释放文档资源网址。",
+        "removeAnUnusedThemeAssetAfterSaveFailed": "保存失败后，无法移除未使用的主题资源。",
+        "removeTheDeletedThemeAsset": "无法移除已删除主题的资源。",
+        "removeTheReplacedThemeAsset": "无法移除已被替换的主题资源。",
+        "renderDocument": "文档渲染失败。",
+        "renderTheSyntaxThemePreview": "无法渲染语法主题预览。",
+        "restoreFileHandleFromIndexedDB": "无法从 IndexedDB 恢复文件句柄。",
+        "saveFilesDetailsPreferenceForThisTab": "无法保存此标签页的文件详情显示偏好",
+        "saveMarkdownFile": "Markdown 文件保存失败。",
+        "switchReaderTheme": "无法切换阅读主题。"
+      }
+    },
+    "documents": {
+      "readFailed": "无法读取 {0}：{1}",
+      "tooLarge": "此文本文件超出 {0} MiB 的查看限制。"
+    },
+    "options": {
+      "general": {
+        "openExtensionDetails": "无法打开扩展程序详情。"
+      },
+      "index": {
+        "missingRootElementForSettingsApp": "设置应用缺少 #root 元素。"
+      },
+      "notifications": {
+        "clearRecentFiles": "无法清除最近文件记录。",
+        "exportSettings": "设置导出失败。",
+        "importSettings": "设置导入失败。",
+        "loadSettings": "设置加载失败。",
+        "saveSettings": "无法保存设置。"
+      },
+      "optionsActions": {
+        "chooseASettingsJSONFileToImport": "请选择要导入的设置 JSON 文件。"
+      },
+      "settingsImport": {
+        "invalidJSONValue": "JSON 无效：{0}",
+        "parseFile": "无法解析文件。"
+      }
+    },
+    "popup": {
+      "index": {
+        "missingRootElementForPopupApp": "弹出窗口应用缺少 #root 元素。"
+      },
+      "loadSettings": "无法加载设置。",
+      "openAbout": "无法打开“关于”。",
+      "openOptionsSection": {
+        "chooseAValidSettingsSection": "请选择有效的设置分区。"
+      },
+      "openSettings": "无法打开设置。",
+      "settings": {
+        "saveSettings": "设置保存失败。"
+      },
+      "usefilehistory": {
+        "clearFileHistory": "无法清除文件历史记录。",
+        "loadFileHistory": "无法加载文件历史记录。",
+        "openFile": "无法打开文件。"
+      }
+    },
+    "services": {
+      "fileHistory": {
+        "invalidFileHistoryURL": "文件历史记录中的网址无效"
+      },
+      "messageRouter": {
+        "invalidOrMissingDataUrl": "dataUrl 无效或缺失",
+        "invalidUrl": "url 无效",
+        "missingFilename": "缺少 filename",
+        "missingUrl": "缺少 url",
+        "onlyFileURLsAreAllowed": "仅允许 file: 网址",
+        "onlyRegisteredImageFilesAreAllowed": "仅允许已注册的图片文件",
+        "unsupportedMessageTypeValue": "不支持的消息类型：{0}"
+      },
+      "themeAsset": {
+        "invalidThemeAssetId": "主题资源 ID 无效。",
+        "openThemeAssetStorage": "无法打开主题资源存储。"
+      }
+    },
+    "settings": {
+      "language": "请选择受支持的界面语言。",
+      "validation": {
+        "chooseABuiltInBaseTheme": "请选择内置基础主题。",
+        "chooseABundledCodeHighlightingTheme": "请选择随扩展程序提供的代码高亮主题。",
+        "chooseASupportedBackgroundMotionPolicy": "请选择受支持的背景动画策略。",
+        "chooseASupportedBackgroundType": "请选择受支持的背景类型。",
+        "chooseAValidHexadecimalColor": "请选择有效的十六进制颜色。",
+        "chooseAnAvailableTheme": "请选择可用的主题。",
+        "chooseAnImageForThisTheme": "请为此主题选择图片。",
+        "resetSettings": "设置重置失败。",
+        "settingsAreInvalid": "设置无效。",
+        "youCanSaveUpToValueCustomThemes": "最多可保存 {0} 个自定义主题。"
+      }
+    },
+    "theme": {
+      "backgroundImageTooLarge": "背景图片不能超过 5 MiB。",
+      "themeAssetClient": {
+        "loadTheThemeAsset": "主题资源加载失败。",
+        "removeTheThemeAsset": "主题资源移除失败。",
+        "saveTheThemeAsset": "主题资源保存失败。"
+      }
+    },
+    "validation": {
+      "boolean": "{0}必须为 true 或 false。",
+      "integer": "{0}必须为整数。",
+      "range": "{0}必须介于 {1} 和 {2} 之间。"
+    },
+    "viewer": {
+      "actions": {
+        "copyFileLink": "无法复制文件链接",
+        "exportHTML": "无法导出 HTML",
+        "exportWordDocument": "无法导出 Word 文档",
+        "switchTheme": "无法切换主题。"
+      },
+      "app": {
+        "restoreTheLinkedFileReturnedToTheOriginal": "无法恢复链接的文件，已返回原始文件",
+        "switchTheme": "无法切换主题"
+      },
+      "articleInteractions": {
+        "copy": "无法复制",
+        "copyLink": "无法复制链接"
+      },
+      "browserGit": {
+        "invalidLocalFilePath": "本地文件路径无效。",
+        "invalidRepositoryFilePath": "仓库文件路径无效。",
+        "onlyRegularGitFilesAreSupported": "仅支持 Git 中的常规文件。",
+        "unsupportedGitTreePath": "不支持此 Git 目录树路径。"
+      },
+      "colors": {
+        "copyColorSelectTheOriginalTextToCopy": "无法复制颜色。请选择原始文本手动复制。",
+        "copySelectAValueToCopyManually": "无法复制。请选择一个值手动复制。",
+        "copyTryAgain": "无法复制。请重试。"
+      },
+      "directoryFs": {
+        "readADirectoryAsAGitFile": "无法将目录作为 Git 文件读取。",
+        "unsupportedGitTextEncoding": "不支持此 Git 文本编码。"
+      },
+      "document": {
+        "openLinkedFile": "无法打开链接的文件",
+        "openThisValue": "无法打开此{0}。",
+        "readLinkedFile": "无法读取链接的文件",
+        "readThisValue": "无法读取此{0}。"
+      },
+      "documentLoader": {
+        "onlyLocalImageFilesCanBeOpened": "只能打开本地图片文件。",
+        "openDocument": "无法打开文档。",
+        "readThisImageFile": "无法读取此图片文件。"
+      },
+      "documents": {
+        "dbml": {
+          "displayThisDBMLFile": "无法显示此 DBML 文件。"
+        },
+        "image": {
+          "displayValue": "无法显示 {0}。"
+        },
+        "mermaid": {
+          "displayThisMermaidDocument": "无法显示此 Mermaid 文档。"
+        },
+        "sql": {
+          "displayThisSQLFile": "无法显示此 SQL 文件。"
+        },
+        "text": {
+          "displayThisTextFile": "无法显示此文本文件。"
+        }
+      },
+      "editor": {
+        "connectTheOriginalFile": "无法关联原始文件。",
+        "openIndexedDB": "无法打开 IndexedDB",
+        "writePermissionWasNotGranted": "未获得写入权限。",
+        "writePermissionWasNotGrantedForTheConnected": "未获得已关联文件的写入权限。",
+        "writePermissionWasNotGrantedForTheSelected": "未获得所选文件的写入权限。"
+      },
+      "explorer": {
+        "file": {
+          "copyFileName": "无法复制文件名"
+        },
+        "folder": {
+          "copyFolderName": "无法复制文件夹名",
+          "copyFolderPath": "无法复制文件夹路径"
+        },
+        "listRefresh": {
+          "refreshFileListTheOpenDocumentWasKept": "无法刷新文件列表。已保留当前打开的文档。"
+        },
+        "workspacePicker": {
+          "missingDirectoryHandle": "缺少目录句柄"
+        },
+        "workspaceSession": {
+          "openFolder": "无法打开文件夹",
+          "restoreWorkspace": "无法恢复工作区",
+          "scanFolder": "无法扫描文件夹"
+        }
+      },
+      "gitProbe": {
+        "readTheOpenFileOnDisk": "无法读取当前打开的磁盘文件。"
+      },
+      "imageRevision": {
+        "readImageBytes": "无法读取图片字节数据。"
+      },
+      "markdownDocumentRenderer": {
+        "missingRenderTargetDocument": "缺少渲染目标文档。"
+      },
+      "media": {
+        "decodeThisImageForResolutionRendering": "无法解码图片以按指定分辨率渲染。",
+        "encodeThisResolution": "无法按此分辨率编码。",
+        "initializeImageRendering": "无法初始化图片渲染。",
+        "parseThisSVGForResolutionRendering": "无法解析 SVG 以按指定分辨率渲染。",
+        "readThisSVGForResolutionRendering": "无法读取 SVG 以按指定分辨率渲染。",
+        "renderThisResolution": "无法按此分辨率渲染。"
+      },
+      "mermaid": {
+        "missingMermaidRenderTarget": "缺少 Mermaid 渲染目标。"
+      },
+      "renderer": {
+        "missingRenderTargetElement": "缺少渲染目标元素。"
+      },
+      "review": {
+        "calculateChangesCloseThisReviewAndTryAgain": "无法计算更改。请关闭此更改视图后重试。",
+        "dialog": {
+          "openReview": "无法打开更改视图"
+        }
+      },
+      "shikiHighlighter": {
+        "missingShikiLanguageModuleForValue": "缺少“{0}”的 Shiki 语言模块。",
+        "missingShikiThemeModuleForValue": "缺少“{0}”的 Shiki 主题模块。"
+      },
+      "watch": {
+        "readTheFileTheCurrentContentWasKept": "无法读取文件。已保留当前内容。请检查文件访问权限后重试。"
+      }
+    }
+  },
+  "options": {
+    "about": {
+      "aLocalFirstViewerAndEditorForMarkdown": "以本地处理为核心的 Markdown 及相关文件查看器和编辑器。",
+      "browseSiblingDocumentsOrOpenALocalWorkspace": "浏览同一文件夹中的文档，或打开本地工作区。",
+      "developmentBuild": "开发版本",
+      "extensionInformation": "扩展程序信息",
+      "heading": "关于 Markdown Plus",
+      "learnWhatMarkdownPlusDoesHowItHandles": "了解 Markdown Plus 的功能、文件处理方式以及获取帮助的途径。",
+      "links": {
+        "license": {
+          "description": "查看 Markdown Plus 的开源许可证。",
+          "label": "MIT 许可证"
+        },
+        "privacy": {
+          "description": "了解本地文件和扩展程序数据的处理方式。",
+          "label": "隐私政策"
+        },
+        "source": {
+          "description": "在 GitHub 上浏览项目并参与贡献。",
+          "label": "源代码"
+        },
+        "support": {
+          "description": "寻求帮助或报告可复现的问题。",
+          "label": "报告问题"
+        },
+        "website": {
+          "description": "访问 Markdown Plus 项目网站。",
+          "label": "网站"
+        }
+      },
+      "localFirstByDesign": "本地优先的设计",
+      "metadata": {
+        "chromeExtension": "Chrome 扩展程序",
+        "manifestVersion": "Manifest V{0}",
+        "minimumChromeVersion": "Chrome {0}+"
+      },
+      "openSource": "开源",
+      "optInToEditingWithExactFileVerification": "按需启用编辑功能，验证原始文件后安全保存。",
+      "product": "产品",
+      "projectSupport": "项目与支持",
+      "readThePrivacyPolicy": "阅读隐私政策",
+      "renderLocalMarkdownCodeMathDiagramsTextAnd": "渲染本地 Markdown、代码、公式、图表、文本和图片。",
+      "title": "关于",
+      "version": "版本",
+      "whatMarkdownPlusDoes": "Markdown Plus 的功能",
+      "yourDocumentsAreProcessedInChromeAndAre": "文档在 Chrome 中处理，不会发送到开发者运营的服务。设备本地数据保留在此设备上；偏好设置可能通过 Chrome 同步。"
+    },
+    "advanced": {
+      "chooseJSON": "选择 JSON 文件",
+      "downloadTheCompleteNormalizedSettingsObjectAsJSON": "将完整且经过规范化的设置对象下载为 JSON 文件。",
+      "exportJSON": "导出 JSON",
+      "exportSettings": "导出设置",
+      "exporting": "正在导出…",
+      "fileIsFullyParsedAndValidatedBeforeAny": "保存任何设置之前，会先完整解析并验证文件。",
+      "importSettings": "导入设置",
+      "importing": "正在导入…",
+      "largeDocumentLoads": "大文件加载",
+      "largerFilesUseMoreMemoryAndMayTake": "较大的文件会占用更多内存，渲染也可能更慢。更改将在下次打开文档时生效，不会重新加载当前文档。",
+      "limitExpensiveDocumentLoadsMoveSettingsBetweenBrowsers": "限制文档加载的资源占用，在浏览器之间迁移设置，或恢复默认设置。",
+      "maximumUTF8SizeForStandaloneTxtSql": "查看器打开独立 .txt、.sql、.dbml 和 .mermaid 文件时允许的最大 UTF-8 大小。不影响 Markdown 文档。",
+      "resetAllSettings": "重置所有设置",
+      "resetToDefault": "恢复默认设置",
+      "resetting": "正在重置…",
+      "resourcesRecovery": "资源与恢复",
+      "restoreGeneralReaderEditorPluginsFilesWorkspacePrivacy": "恢复常规、阅读、编辑器、插件、文件与工作区、隐私和文档资源偏好设置。本地最近文件记录需单独清除。",
+      "title": "高级"
+    },
+    "documentTitle": "Markdown Plus 设置",
+    "explorer": {
+      "connectFoldersAndFilesWithHierarchyLinesChanges": "用层级引导线连接文件夹和文件。更改立即生效。",
+      "customizeTheFileTreeAndWorkspaceBehaviorScan": "自定义文件树和工作区行为。扫描限制在下次扫描或刷新时生效。",
+      "excludeFilesAndFoldersIgnoredByNestedGitignore": "扫描工作区时，排除被各级 .gitignore 规则忽略的文件和文件夹。",
+      "higherLimitsCanMakeLargeWorkspaceScansSlower": "更高的限制可能使大型工作区扫描变慢，并占用更多内存。修改这些值不会自动重新启动正在进行的扫描。",
+      "howManyFolderLevelsToScanBelowThe": "设置从所选根目录向下扫描的文件夹层数。设为 0 时仅扫描根目录。",
+      "largeWorkspaceScans": "大型工作区扫描",
+      "navigationScanning": "导航与扫描",
+      "reopenTheLastFileBackedWorkspaceWhenA": "启动新的查看器时，重新打开上次关联本地文件的工作区。关闭此选项不会关闭当前工作区。",
+      "resetSectionToDefaults": "将此分区恢复为默认设置",
+      "respectGitignoreFiles": "遵循 .gitignore 规则",
+      "restoreLastWorkspace": "恢复上次的工作区",
+      "showTreeIndentGuides": "显示树形缩进引导线",
+      "stopIndexingAfterThisManySupportedDocumentsHave": "找到指定数量的受支持文档后停止索引。",
+      "stopTheScanAfterThisManyFoldersHave": "访问指定数量的文件夹后停止扫描。",
+      "title": "文件与工作区"
+    },
+    "general": {
+      "behavior": "行为",
+      "chooseHowToHandleChangesToTheOpen": "选择如何处理当前文档的更改，包括文本、图表和图片。更新不会替换正在编辑的内容。",
+      "chooseMarkdownPlusDetailsThenEnableAllowAccess": "，选择 Markdown Plus → 详情，然后开启“允许访问文件网址”。",
+      "chromeControlsThisPermissionIfAccessIsBlocked": "此权限由 Chrome 控制。如未获准访问，请打开",
+      "chromeExtensions": "chrome://extensions",
+      "controlMarkdownPlusActivationAndViewerBehavior": "控制 Markdown Plus 的启用状态和查看器行为。",
+      "enabled": {
+        "description": "自动使用 Markdown Plus 查看器打开受支持的本地 Markdown 文件。",
+        "label": "启用 Markdown Plus"
+      },
+      "fileAccess": {
+        "label": "文件网址访问权限"
+      },
+      "language": {
+        "description": "选择设置、弹出窗口和查看器使用的语言。文档内容保持原始语言。",
+        "label": "界面语言"
+      },
+      "scrollbars": {
+        "description": "空闲时淡出垂直滚动条；滚动、靠近面板边缘或使用键盘时显示。",
+        "label": "自动隐藏文档滚动条"
+      },
+      "statistics": {
+        "description": "在 Markdown 文档上方显示词数、字符数（含空格）和预计阅读时间。",
+        "label": "显示文档统计"
+      },
+      "title": "常规"
+    },
+    "navigation": {
+      "activationAndAccess": "启用与访问权限",
+      "colorsAndBackgrounds": "颜色与背景",
+      "folderAppearanceAndScanLimits": "文件夹外观与扫描限制",
+      "limitsBackupAndReset": "限制、备份与重置",
+      "loadingSettings": "正在加载设置",
+      "recentLocalFiles": "最近的本地文件",
+      "section": "分区",
+      "settingsCouldNotBeLoaded": "无法加载设置",
+      "settingsSections": "设置分区",
+      "versionPrivacyAndSupport": "版本、隐私与支持"
+    },
+    "notifications": {
+      "activeThemeUpdated": "当前主题已更新。",
+      "allSettingsResetToDefaults": "所有设置已恢复为默认值。",
+      "checkTheHighlightedField": "请检查突出显示的字段。",
+      "checkTheHighlightedFields": "请检查突出显示的字段。",
+      "clearingRecentFiles": "正在清除最近文件记录…",
+      "customThemeCreated": "已创建自定义主题。",
+      "customThemeDeleted": "已删除自定义主题。",
+      "customThemeSaved": "已保存自定义主题。",
+      "documentScrollbarsWillAutoHide": "文档滚动条将自动隐藏。",
+      "documentScrollbarsWillStayVisible": "文档滚动条将始终显示。",
+      "documentStatisticsWillBeHidden": "文档统计将隐藏。",
+      "documentStatisticsWillBeShown": "文档统计将显示。",
+      "documentViewingLimitResetToTheDefault": "文档查看大小限制已恢复为默认值。",
+      "documentViewingLimitSavedTheChangeAppliesThe": "文档查看大小限制已保存。将在下次打开文档时生效。",
+      "filesWorkspaceBehaviorSavedTheChangeAppliesTo": "文件与工作区行为已保存。将在下次扫描或打开查看器时生效。",
+      "filesWorkspaceSettingsResetToDefaults": "文件与工作区设置已恢复为默认值。",
+      "filesWorkspaceSettingsSavedNewLimitsApplyTo": "文件与工作区设置已保存。新限制将在下次扫描或刷新时生效。",
+      "generalSettingsSaved": "常规设置已保存。",
+      "interfaceLanguageUpdated": "界面语言已更新。",
+      "loadingSettings": "正在加载设置…",
+      "recentFileHistoryClearedFromThisDevice": "已清除此设备上的最近文件记录。",
+      "recentFileHistoryDisabledExistingEntriesWereKept": "已停用最近文件记录功能。现有记录已保留。",
+      "recentFileHistoryEnabled": "已启用最近文件记录功能。",
+      "recentFileRetentionSavedTheLimitAppliesOn": "最近文件保留数量已保存。将在下次访问历史记录时生效。",
+      "settingsAreUpToDate": "设置已是最新。",
+      "settingsExported": "设置已导出。",
+      "settingsImportedAndSaved": "设置已导入并保存。",
+      "treeIndentGuidesSavedOpenViewersUpdateImmediately": "树形缩进引导线设置已保存。已打开的查看器将立即更新。",
+      "validatingSettingsFile": "正在验证设置文件…",
+      "watchModeUpdated": "更新监测模式已更新。"
+    },
+    "optionsActions": {
+      "clearAllRecentFilePathsStoredByMarkdown": "要清除 Markdown Plus 在此设备上保存的所有最近文件路径记录吗？此操作无法撤销，不会删除原始文件。",
+      "resetAllMarkdownPlusSettingsToTheirDefaults": "要将 Markdown Plus 的所有设置恢复为默认值吗？包括阅读、编辑器、插件和文件浏览器偏好设置。",
+      "settingsFilesMustBeSmallerThan1MiB": "设置文件必须小于 1 MiB。"
+    },
+    "privacy": {
+      "clearRecentFiles": "清除最近文件记录",
+      "clearRecentFilesNow": "立即清除最近文件记录",
+      "clearing": "正在清除…",
+      "controlWhetherMarkdownPlusRemembersLocalDocumentsAnd": "控制 Markdown Plus 是否记录本地文档，以及最多保留多少条记录。",
+      "keepOnlyTheNewestEntriesAfterTheNext": "下次访问历史记录时，仅保留最新的指定数量记录。",
+      "localData": "本地数据",
+      "recentFileURLsContainLocalPathsTheyAre": "最近文件的网址包含本地路径，仅存储在此设备的扩展程序本地存储中，与同步的偏好设置分开保存。",
+      "rememberLocalMarkdownFilesSoTheyCanBe": "记录本地 Markdown 文件，便于从弹出窗口重新打开。关闭后将不再添加新记录，但不会删除已有记录。",
+      "saveRecentFiles": "记录最近文件",
+      "title": "隐私与数据"
+    },
+    "themes": {
+      "background": {
+        "angle0360": "角度（0–360°）",
+        "animate": "播放动画",
+        "backgroundType": "背景类型",
+        "bottom": "底部",
+        "center": "居中",
+        "dimming008": "调暗程度（0–0.8）",
+        "endColor": "结束颜色",
+        "fillCanvas": "填满画布",
+        "fitWithinCanvas": "适应画布",
+        "followSystem": "跟随系统",
+        "gradient": "渐变",
+        "imageFile": "图片文件",
+        "imageFit": "图片适应方式",
+        "imagePosition": "图片位置",
+        "left": "左侧",
+        "localImageOrAnimation": "本地图片或动画",
+        "motion": "动画效果",
+        "originalSize": "原始大小",
+        "pngJPEGWebPAVIFGIFOrAPNGUp": "PNG、JPEG、WebP、AVIF、GIF 或 APNG；最大 5 MiB。",
+        "repeatImage": "平铺图片",
+        "right": "右侧",
+        "sceneColor": "背景底色",
+        "solidScene": "纯色背景",
+        "startColor": "起始颜色",
+        "still": "静止",
+        "storedOnThisDevice": "存储在此设备上",
+        "themeColorOnly": "仅使用主题颜色",
+        "tileTheImageInsteadOfShowingOneCanvas": "重复平铺图片，而非显示单张图片。",
+        "top": "顶部"
+      },
+      "colors": {
+        "borders": "边框",
+        "contentSurface": "内容区域背景",
+        "documentText": "文档文字",
+        "headings": "标题",
+        "inlineFallbackCodeBackground": "行内及未高亮代码背景",
+        "inlineFallbackCodeText": "行内及未高亮代码文字",
+        "interfaceText": "界面文字",
+        "links": "链接",
+        "mutedText": "次要文字",
+        "pageBackground": "页面背景",
+        "panelSurface": "面板背景",
+        "valueColorPicker": "{0}颜色选择器",
+        "valueHexValue": "{0}十六进制值"
+      },
+      "editor": {
+        "backToThemes": "← 返回主题",
+        "background": "背景",
+        "baseTheme": "基础主题",
+        "buildAReusableReaderThemeChangesStayIn": "创建可重复使用的阅读主题。保存前，更改仅保留在此草稿中。",
+        "buildTheSceneBehindTheViewerAndTune": "设置查看器后方的背景，并调整以确保内容清晰易读。",
+        "chooseTheSyntaxColorsUsedForRenderedCode": "选择渲染代码块时使用的语法颜色。",
+        "codeHighlighting": "代码高亮",
+        "colors": "颜色",
+        "createCustomTheme": "创建自定义主题",
+        "createTheme": "创建主题",
+        "discardYourUnsavedThemeChanges": "要放弃尚未保存的主题更改吗？",
+        "eGMidnightPaper": "例如：午夜纸笺",
+        "editValue": "编辑 {0}",
+        "identity": "基本信息",
+        "nameTheThemeAndChooseTheBuiltIn": "为主题命名，并选择一个内置主题作为基础。",
+        "newDraft": "新草稿",
+        "noChanges": "无更改",
+        "replacesTheColorsInSection02CodeHighlighting": "替换第 02 部分中的颜色。除非在下方另行指定，代码高亮将跟随此基础主题。",
+        "resetsColors": "重置颜色",
+        "savingTheme": "正在保存主题…",
+        "shownInTheThemePickerAndPopup": "显示在主题选择器和弹出窗口中。",
+        "themeName": "主题名称",
+        "themeStudio": "主题工作室",
+        "tuneSemanticColorsSoTheViewerStaysVisually": "调整各类界面颜色，保持查看器的视觉一致性。行内及未高亮代码颜色不会替换第 03 部分的代码语法主题。",
+        "unsavedChanges": "未保存的更改"
+      },
+      "library": {
+        "activeReaderTheme": "当前阅读主题",
+        "activeTheme": "当前主题",
+        "addCustomTheme": "添加自定义主题",
+        "appearance": "外观",
+        "builtInThemes": "内置主题",
+        "chooseTheReaderThemeInUseThenManage": "选择当前使用的阅读主题，并管理可重复使用的自定义主题。",
+        "createOneFromYourActiveThemeThenAdjust": "以当前主题为基础创建一个主题，再到主题工作室调整颜色和背景。",
+        "createYourFirstTheme": "创建第一个主题",
+        "customThemesCanBeSelectedInBothSettings": "可在设置和弹出窗口中选择自定义主题。",
+        "customThemesDeleteOneBeforeCreatingAnother": "个自定义主题。请先删除一个，再创建新主题。",
+        "deleteValueThisCannotBeUndoneValue": "要删除“{0}”吗？此操作无法撤销。{1}",
+        "gradientBackground": "渐变背景",
+        "itIsActiveSoValueWillBecomeActive": "此主题正在使用，删除后将改用{0}。",
+        "localImageBackground": "本地图片背景",
+        "myTheme": "我的主题",
+        "myThemes": "我的主题",
+        "noCustomThemesYet": "暂无自定义主题",
+        "selectionIsAlsoShownInTheExtensionPopup": "此选择也会显示在扩展程序弹出窗口中。",
+        "solidBackground": "纯色背景",
+        "themeColorBackground": "主题颜色背景",
+        "useTheme": "使用主题",
+        "youHaveReachedTheLimitOf": "自定义主题数量已达上限："
+      },
+      "preview": {
+        "aCalmReadingSpaceForIdeasSnippetsAnd": "静心阅读，收纳灵感、代码片段与",
+        "accent": "强调色",
+        "base": "基础：",
+        "code": "代码：",
+        "designNotesThatFeelLikeHome": "让设计笔记也有归属感。",
+        "details": "详情",
+        "docs": "docs",
+        "everyValidChangeAppearsHereInstantlySavingIs": "每项有效更改都会立即显示在此处，无需保存。",
+        "examples": "示例",
+        "focus": "专注",
+        "guideMd": "guide.md",
+        "javascript": "JavaScript",
+        "link": "链接",
+        "livePreview": "实时预览",
+        "liveThemePreview": "主题实时预览",
+        "myNOTES": "我的笔记",
+        "notesMd": "notes.md",
+        "overview": "概览",
+        "reading": "阅读",
+        "readmeMd": "README.md",
+        "role": "用途",
+        "surface": "背景",
+        "text": "文字",
+        "theSmallestDetailsMakeTheBiggestDifference": "“细微之处，影响深远。”",
+        "token": "颜色标记",
+        "untitledTheme": "未命名主题",
+        "usefulLinks": "实用链接"
+      },
+      "syntax": {
+        "appliesToRenderedFencedCodeAndSQLDocuments": "用于渲染围栏代码块和 SQL 文档。Markdown 编辑器使用独立的高亮样式。",
+        "darkThemes": "深色主题",
+        "followBaseTheme": "跟随基础主题 (",
+        "lightThemes": "浅色主题",
+        "renderedCodeTheme": "代码渲染主题"
+      },
+      "title": "主题"
+    },
+    "title": "设置",
+    "validation": {
+      "fields": {
+        "appearanceSettingsMustBeAnObject": "外观设置必须为对象。",
+        "backgroundAssetRevisionIsInvalid": "背景资源修订号无效。",
+        "backgroundDimmingMustBeBetween0And0": "背景调暗程度必须介于 0 和 0.8 之间。",
+        "backgroundSettingsMustBeAnObject": "背景设置必须为对象。",
+        "chooseAutoHideOrAlwaysVisibleScrollbars": "请选择自动隐藏或始终显示滚动条。",
+        "chooseAutomaticAskBeforeUpdatingOrOff": "请选择自动更新、更新前询问或关闭。",
+        "customThemeIdIsInvalid": "自定义主题 ID 无效。",
+        "customThemeIdsMustBeUnique": "自定义主题 ID 不能重复。",
+        "customThemeMustBeAnObject": "自定义主题必须为对象。",
+        "customThemesMustBeAList": "自定义主题必须为列表。",
+        "documentSettingsMustBeAnObject": "文档设置必须为对象。",
+        "editorSettingsMustBeAnObject": "编辑器设置必须为对象。",
+        "enableExperimentalEditorMustBeTrueOrFalse": "启用实验性编辑器的值必须为 true 或 false。",
+        "enableMarkdownPlusMustBeTrueOrFalse": "启用 Markdown Plus 的值必须为 true 或 false。",
+        "filesWorkspaceSettingsMustBeAnObject": "文件与工作区设置必须为对象。",
+        "folderScanDepth": "文件夹扫描深度",
+        "gradientAngleMustBeBetween0And360": "渐变角度必须介于 0 和 360 之间。",
+        "maximumIndexedFiles": "最大索引文件数",
+        "maximumRecentFiles": "最近文件数量上限",
+        "maximumScannedFolders": "最大扫描文件夹数",
+        "privacyDataSettingsMustBeAnObject": "隐私与数据设置必须为对象。",
+        "settingsMustBeAJSONObject": "设置必须为 JSON 对象。",
+        "showDocumentStatisticsMustBeTrueOrFalse": "显示文档统计的值必须为 true 或 false。",
+        "standaloneTextFileLimit": "独立文本文件大小限制",
+        "themeColorsMustBeAnObject": "主题颜色必须为对象。",
+        "themeNameMustBeBetween1And48": "主题名称必须为 1 至 48 个字符。",
+        "themeSettingsMustBeAnObject": "主题设置必须为对象。"
+      }
+    }
+  },
+  "plugins": {
+    "alerts": {
+      "caution": "注意危险",
+      "important": "重要",
+      "note": "注意",
+      "tip": "提示",
+      "warning": "警告"
+    },
+    "anchorHeading": {
+      "copyLinkToThisSection": "复制此章节链接",
+      "copySectionLinkClick": "复制章节链接（点击）"
+    },
+    "colorPreview": {
+      "copyColorValue": "复制颜色 {0}"
+    },
+    "taskList": {
+      "x": "x"
+    }
+  },
+  "popup": {
+    "editor": {
+      "editingIsOffByDefaultWhenEnabledMarkdown": "编辑功能默认关闭。启用后，Markdown Plus 会在开始编辑前要求关联并验证原始文件。",
+      "editorFontSize": "编辑器字号",
+      "enableEditor": "启用编辑器",
+      "enableExperimentalEditor": "启用实验性编辑器",
+      "experimentalEditor": "实验性编辑器",
+      "lineNumbers": "行号",
+      "optInToEditingLocalMarkdownFiles": "按需启用本地 Markdown 文件编辑。",
+      "resetEditorPreferences": "重置编辑器偏好",
+      "resetEditorPreferencesToDefaultValues": "要将编辑器偏好恢复为默认值吗？",
+      "tabSize": "制表符宽度",
+      "tabSizeRange": "2–8 个空格",
+      "wordWrap": "自动换行"
+    },
+    "fileAccess": {
+      "allowAccessToLocalFiles": "允许访问本地文件",
+      "checkingFileAccess": "正在检查文件访问权限",
+      "confirmingWhetherMarkdownPlusCanOpenLocalFiles": "正在确认 Markdown Plus 是否可以打开本地文件。",
+      "enableAllowAccessToFileURLs": "开启“允许访问文件网址”。",
+      "fileAccessIsReady": "已获得文件访问权限",
+      "fileAccessStatusUnavailable": "无法获取文件访问权限状态",
+      "openChromeExtensions": "打开 chrome://extensions。",
+      "selectMarkdownPlusDetails": "选择 Markdown Plus → 详情。"
+    },
+    "footer": {
+      "about": "关于",
+      "allSettings": "所有设置",
+      "saved": "设置已保存"
+    },
+    "history": {
+      "fileCount": {
+        "other": "最近文件：{count} 个"
+      },
+      "loadingRecentFiles": "正在加载最近文件…",
+      "noRecentFilesYet": "暂无最近文件",
+      "openLocalMarkdownFilesWithMarkdownPlusAnd": "使用 Markdown Plus 打开本地 Markdown 文件后，文件将显示在此处。",
+      "opening": "正在打开…"
+    },
+    "page": {
+      "loadingQuickSettings": "正在加载快捷设置",
+      "quickControlSections": "快捷设置分区",
+      "quickSettingsCouldNotBeLoaded": "无法加载快捷设置"
+    },
+    "plugins": {
+      "aCleanerCursorLikeLayoutPoweredByELK": "由 ELK 驱动，提供更简洁、类似 Cursor 的布局。",
+      "beautiful": "Beautiful",
+      "broadestMermaidSyntaxSupportAndTheSafestDefault": "支持最广泛的 Mermaid 语法，是最稳妥的默认选择。",
+      "cursorLike": "类似 Cursor",
+      "i": "i",
+      "items": {
+        "anchorHeading": {
+          "hint": "为标题添加“#”操作，用于复制直达该标题的链接。",
+          "label": "标题锚点",
+          "version": "标题锚点支持：markdown-it-anchor 9.2.0。"
+        },
+        "codeHighlight": {
+          "hint": "使用 Shiki 高亮围栏代码块；关闭后以更轻量的纯代码形式显示。",
+          "label": "代码高亮",
+          "version": "语法支持：Shiki 4.0.2。"
+        },
+        "colorPreview": {
+          "hint": "显示色块，并可复制 HEX、RGB 或 HSL 值（含透明度）。",
+          "label": "颜色预览"
+        },
+        "emoji": {
+          "hint": "将受支持的 :shortcode: 文本转换为表情符号。",
+          "label": "表情符号",
+          "version": "语法支持：markdown-it-emoji 3.0.0。"
+        },
+        "footnote": {
+          "hint": "添加脚注标记、脚注内容和返回链接。",
+          "label": "脚注",
+          "version": "语法支持：markdown-it-footnote 4.0.0。"
+        },
+        "githubAlerts": {
+          "hint": "为 GitHub 风格的注意、提示、重要、警告和危险提示添加样式。",
+          "label": "GitHub 提示块"
+        },
+        "math": {
+          "hint": "按需使用 KaTeX 渲染 LaTeX 风格的数学公式。",
+          "label": "数学公式（KaTeX）",
+          "version": "语法支持：@mdit/plugin-katex 0.25.2、KaTeX 0.16.44。"
+        },
+        "mermaid": {
+          "hint": "将 Mermaid 代码块渲染为图表，并提供导出操作。",
+          "label": "Mermaid 图表",
+          "version": "语法支持：Mermaid 11.13.0 或 Beautiful Mermaid 1.1.3。"
+        },
+        "tableEnhance": {
+          "hint": "为表格添加增强样式，并使宽表格可以横向滚动。",
+          "label": "表格增强"
+        },
+        "taskList": {
+          "hint": "将 GitHub 风格的任务列表渲染为只读复选框。",
+          "label": "任务列表"
+        }
+      },
+      "mermaidOfficial": "Mermaid 官方",
+      "official": "官方",
+      "renderer": "渲染器"
+    },
+    "reader": {
+      "aboutFontFamily": "关于字体",
+      "aboutLineHeight": "关于行高",
+      "contentWidth": {
+        "label": "内容宽度"
+      },
+      "fontFamilies": {
+        "monoFira": "等宽字体（Fira Code）",
+        "monospace": "等宽字体",
+        "sansHumanist": "无衬线字体（人文风格）",
+        "sansNeutral": "无衬线字体（中性风格）",
+        "sansOpenSans": "无衬线字体（Open Sans）",
+        "sansRoboto": "无衬线字体（Roboto / Arial）",
+        "sansVietnamese": "无衬线字体（易读 / 越南语）",
+        "serifCharter": "衬线字体（Charter）",
+        "serifGeorgia": "衬线字体（Georgia）",
+        "serifMerriweather": "衬线字体（Merriweather）",
+        "serifNewYork": "衬线字体（New York / Georgia）",
+        "serifSource": "衬线字体（Source Serif）",
+        "serifVietnamese": "衬线字体（Noto / 越南语）",
+        "system": "系统界面字体"
+      },
+      "fontFamily": {
+        "label": "字体"
+      },
+      "fontSize": {
+        "label": "字号"
+      },
+      "lineHeight": {
+        "label": "行高"
+      },
+      "outline": {
+        "label": "显示目录"
+      },
+      "resetReaderUI": "重置阅读界面",
+      "resetReaderUISettingsToDefaultValues": "要将阅读界面设置恢复为默认值吗？",
+      "theme": "主题",
+      "unitlessLineSpacingMultiplierEG17": "行距相对于字号的倍数，无单位（如 1.7 ≈ 字号的 170%），并非像素值。",
+      "usesFontsInstalledOnYourSystemPresetsList": "使用系统已安装的字体。每个预设都包含多个备用字体，首选字体缺失时将依次使用。"
+    },
+    "tabs": {
+      "editor": {
+        "label": "编辑器",
+        "title": "编辑器偏好"
+      },
+      "history": {
+        "label": "最近",
+        "title": "最近文件"
+      },
+      "plugins": {
+        "label": "插件",
+        "title": "Markdown 功能"
+      },
+      "reader": {
+        "label": "阅读",
+        "title": "阅读外观"
+      }
+    }
+  },
+  "services": {
+    "fileHistory": {
+      "localFileHistoryStorageIsUnavailable": "本地文件历史存储不可用。",
+      "tabsAPIIsUnavailable": "标签页 API 不可用。"
+    },
+    "messageRouter": {
+      "enableAllowAccessToFileURLsForMarkdown": "请为 Markdown Plus 开启“允许访问文件网址”（chrome://extensions → 此扩展程序 → 详情）。"
+    },
+    "offscreenFetch": {
+      "chromeOffscreenIsNotAvailableChrome109Required": "chrome.offscreen 不可用（需要 Chrome 109 或更高版本）。",
+      "offscreenFetchTimedOut": "后台页面读取超时"
+    },
+    "optionsPage": {
+      "settingsPageIsUnavailableInThisBrowser": "此浏览器无法使用设置页面。"
+    },
+    "themeAsset": {
+      "themeAssetDatabaseRequestFailed": "主题资源数据库请求失败。",
+      "themeAssetStorageIsUnavailable": "主题资源存储不可用。",
+      "themeAssetTransactionFailed": "主题资源事务失败。"
+    }
+  }
+}

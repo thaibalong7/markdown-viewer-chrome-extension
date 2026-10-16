@@ -51,7 +51,8 @@
     "languages": {
       "browser": "Theo ngôn ngữ trình duyệt",
       "en": "English",
-      "vi": "Tiếng Việt"
+      "vi": "Tiếng Việt",
+      "zhCN": "简体中文（中国）"
     },
     "messages": {
       "copiedFolderValue": "Đã sao chép {0} của thư mục",
@@ -595,7 +596,8 @@
       "updateCheckFailed": "Không thể kiểm tra cập nhật",
       "updateDocument": "Cập nhật tài liệu",
       "updateWaiting": "Đang chờ cập nhật",
-      "yourEditorDraftIsExcludedFromThisComparison": "Phần so sánh này không bao gồm các thay đổi trong bản nháp đang soạn."
+      "yourEditorDraftIsExcludedFromThisComparison": "Phần so sánh này không bao gồm các thay đổi trong bản nháp đang soạn.",
+      "unchanged": "Không thay đổi"
     },
     "scrollbar": {
       "documentScrollbar": "Thanh cuộn tài liệu"

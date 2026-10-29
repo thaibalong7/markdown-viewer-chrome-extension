@@ -65,9 +65,11 @@ Use the Node version in `.nvmrc` before running project scripts.
 | --- | --- |
 | `npm run dev` | Start the Vite + CRXJS development server. |
 | `npm run watch` | Rebuild the extension in watch mode. |
-| `npm test` | Run the Vitest suite once. |
+| `npm test` | Run the Vitest suite, including release script integration tests, once. |
 | `npm run test:watch` | Run Vitest in watch mode. |
 | `npm run build` | Generate a production extension under `dist/`. |
+| `npm run release` | Ask about a version bump, run checks, and create a release ZIP under `releases/`. |
+| `npm run test:release` | Run the release script's isolated integration tests. |
 | `npm run preview` | Serve the built Vite output for inspection. |
 | `npm run analyze` | Build and write the bundle visualization to `dist/stats.html`. |
 | `npm run size:report` | Report total `dist/` size and the combined JavaScript asset size. |
@@ -77,6 +79,8 @@ Viewer styles live under `src/viewer/styles/**/*.scss` and are imported with `?i
 Runtime truth is `src/**`, `manifest.json`, `vite.config.mjs`, and `package.json`. Treat `dist/**` as generated output and never edit it by hand.
 
 See [DEV.md](DEV.md) for the development loop, architecture entry points, verification matrix, and troubleshooting notes.
+
+For version bumps, timestamped same-version builds, and release artifact checks, see [Building a release](docs/releasing.md).
 
 ## Project Structure
 

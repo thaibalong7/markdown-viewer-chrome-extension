@@ -307,6 +307,8 @@ The scoped [internationalization rule](../.agents/rules/35-internationalization.
 
 ## Verification
 
+`npm run release` owns local release preparation through `scripts/release.mjs` and `scripts/release-version.mjs`: it checks synchronized versions, offers patch/minor/major bumps or timestamped same-version builds, runs tests, and packages verified production output under `releases/` independently of the development `dist/`. Source version updates are retained only after a successful bumped build. See [Building a release](./releasing.md) for artifact contents, recovery, and publishing constraints.
+
 Use Node.js 20 or newer and the scripts in `package.json`:
 
 ```bash

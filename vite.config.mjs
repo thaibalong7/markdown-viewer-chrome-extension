@@ -39,7 +39,7 @@ export default defineConfig({
   // content-script module (chrome-extension://…/assets/…), not the host document (file:// or https).
   base: './',
   test: {
-    include: ['src/**/__tests__/**/*.test.{js,mjs}'],
+    include: ['src/**/__tests__/**/*.test.{js,mjs}', 'scripts/**/__tests__/**/*.test.mjs'],
     environment: 'node'
   },
   plugins: [

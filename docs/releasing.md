@@ -20,7 +20,7 @@ Choosing no keeps all source version files byte-for-byte unchanged. The build re
 
 `revision` creates a numeric Chrome version such as `0.1.0.1`, then `0.1.0.2`. Each numeric component must stay within Chrome's range of 0–65535. When a four-part version is present, patch/minor/major bumps keep four parts and reset the lower components: from `0.1.0.2`, patch produces `0.1.1.0`, minor produces `0.2.0.0`, and major produces `1.0.0.0`.
 
-Chrome accepts four numeric components, while npm expects SemVer. The script maps the fourth component to SemVer build metadata in `package.json` and both lockfile locations: Chrome `0.1.0.2` corresponds to npm `0.1.0+rev.2`. The consistency check validates this mapping; a four-number string is never written into the npm version field. Release filenames, the packaged manifest, and About use the numeric Chrome version. `release.json` records both `version` and `packageVersion`. Chrome compares the numeric components for extension updates; npm ignores build metadata when comparing SemVer precedence. See the [npm version requirement](https://docs.npmjs.com/cli/v10/configuring-npm/package-json/#version) and [SemVer build metadata](https://semver.org/#spec-item-10).
+The same numeric version is stored in `package.json`, both lockfile locations, and `manifest.json`: for example, all contain `0.1.0.2`. Release filenames, the packaged manifest, About, and `release.json` use that same version. This private extension project follows Chrome's numeric version convention; version changes are handled by this script rather than `npm version` or an npm publishing workflow. No SemVer metadata suffix or separate package-version mapping is used.
 
 ## Noninteractive workflow
 
@@ -46,7 +46,7 @@ releases/markdown-plus-v0.1.0-20261029T123456789Z/
   release.json
 ```
 
-Bumped builds use a directory and ZIP name such as `markdown-plus-v0.2.0` or `markdown-plus-v0.1.0.2`, without a timestamp. Existing release directories are never overwritten. `release.json` records the numeric/display/npm versions, bump choice, UTC build start time, Git commit, whether the working tree had changes before the bump, test status, archive filename, and SHA-256. Local changes are included in the build; the script reports them rather than requiring a clean worktree. Git fields are `null` when Git information is unavailable.
+Bumped builds use a directory and ZIP name such as `markdown-plus-v0.2.0` or `markdown-plus-v0.1.0.2`, without a timestamp. Existing release directories are never overwritten. `release.json` records the numeric/display versions, bump choice, UTC build start time, Git commit, whether the working tree had changes before the bump, test status, archive filename, and SHA-256. Local changes are included in the build; the script reports them rather than requiring a clean worktree. Git fields are `null` when Git information is unavailable.
 
 The script checks version consistency before starting, runs `npm test`, builds production output into a temporary release directory, checks the generated manifest version and referenced entry files, creates a ZIP containing the extension files directly at its root, and verifies archive integrity before publishing the completed directory. Analysis reports are disabled for this build. The normal development `dist/` directory is preserved.
 

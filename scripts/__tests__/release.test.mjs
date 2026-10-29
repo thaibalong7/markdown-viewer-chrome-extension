@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { setTimeout } from 'node:timers/promises'
 import { test } from 'vitest'
-import { bumpVersion, extensionVersionFor, packageVersionFor } from '../release-version.mjs'
+import { bumpVersion } from '../release-version.mjs'
 
 const json = async path => JSON.parse(await readFile(path, 'utf8'))
 
@@ -19,12 +19,12 @@ async function fixture(t, { testFails = false, buildFails = false, wrongBuildVer
     await cp(new URL(`../${name}`, import.meta.url), join(root, 'scripts', name))
   }
   const pkg = {
-    name: 'markdown-plus', version: packageVersionFor(version), private: true,
+    name: 'markdown-plus', version, private: true,
     scripts: { test: 'node check.cjs', build: 'node build.cjs' }
   }
   const lock = {
-    version: packageVersionFor(version), lockfileVersion: 3,
-    packages: { '': { version: packageVersionFor(version) }, 'node_modules/example': { version: '1.2.3' } }
+    version, lockfileVersion: 3,
+    packages: { '': { version }, 'node_modules/example': { version: '1.2.3' } }
   }
   const manifest = {
     manifest_version: 3, name: 'Test', version, version_name: 'old "display" name',
@@ -86,51 +86,40 @@ test('bump semantics reset lower components and enforce Chrome numeric limits', 
   assert.throws(() => bumpVersion('1.2.3', 'invalid'))
 })
 
-test('four-part Chrome versions map reversibly to valid npm version metadata', () => {
-  assert.equal(packageVersionFor('1.2.3.4'), '1.2.3+rev.4')
-  assert.equal(extensionVersionFor('1.2.3+rev.4'), '1.2.3.4')
-  assert.equal(extensionVersionFor('1.2.3'), '1.2.3')
-  assert.equal(packageVersionFor('1.2.3.0'), '1.2.3+rev.0')
-  for (const version of ['1.2.3.4', '1.2.3+rev.04', '1.2.3+rev.65536', '1.2.3-beta', '1.2.3+other.1']) {
-    assert.throws(() => extensionVersionFor(version))
-  }
-})
-
-test('revision releases synchronize numeric and npm versions across repeated builds', async t => {
+test('revision releases use the same four-part version across all source files and builds', async t => {
   const f = await fixture(t)
   for (const revision of [1, 2]) {
     const result = f.run(['--bump', 'revision', '--skip-tests'])
     assert.equal(result.status, 0, result.stdout + result.stderr)
     const numeric = `1.2.3.${revision}`
-    const npm = `1.2.3+rev.${revision}`
     const lock = await json(join(f.root, 'package-lock.json'))
-    assert.equal((await json(join(f.root, 'package.json'))).version, npm)
-    assert.equal(lock.version, npm)
-    assert.equal(lock.packages[''].version, npm)
+    assert.equal((await json(join(f.root, 'package.json'))).version, numeric)
+    assert.equal(lock.version, numeric)
+    assert.equal(lock.packages[''].version, numeric)
     assert.equal(lock.packages['node_modules/example'].version, '1.2.3')
     assert.equal((await json(join(f.root, 'manifest.json'))).version, numeric)
     const directory = join(f.root, 'releases', `markdown-plus-v${numeric}`)
     const metadata = await json(join(directory, 'release.json'))
     assert.equal(metadata.version, numeric)
-    assert.equal(metadata.packageVersion, npm)
+    assert.ok(!JSON.stringify(metadata).includes('+rev.'))
     assert.equal((await json(join(directory, 'extension', 'manifest.json'))).version, numeric)
   }
   const result = f.run(['--bump', 'patch', '--skip-tests'])
   assert.equal(result.status, 0, result.stdout + result.stderr)
   assert.equal((await json(join(f.root, 'manifest.json'))).version, '1.2.4.0')
-  assert.equal((await json(join(f.root, 'package.json'))).version, '1.2.4+rev.0')
+  assert.equal((await json(join(f.root, 'package.json'))).version, '1.2.4.0')
 })
 
-test('same-version four-part builds preserve source bytes and timestamp the numeric version', async t => {
-  const f = await fixture(t, { version: '1.2.3.4' })
+test('same-version builds accept 0.1.0.1 directly and preserve source bytes', async t => {
+  const f = await fixture(t, { version: '0.1.0.1' })
   const result = f.run(['--bump', 'none', '--skip-tests'])
   assert.equal(result.status, 0, result.stdout + result.stderr)
   await f.assertSourcesUnchanged()
   const [name] = await readdir(join(f.root, 'releases'))
-  assert.match(name, /^markdown-plus-v1\.2\.3\.4-\d{8}T\d{9}Z$/)
+  assert.match(name, /^markdown-plus-v0\.1\.0\.1-\d{8}T\d{9}Z$/)
 })
 
-test('failed revision build restores both npm and numeric source versions', async t => {
+test('failed revision build restores all four-part source versions', async t => {
   const f = await fixture(t, { version: '1.2.3.4', buildFails: true })
   const result = f.run(['--bump', 'revision', '--skip-tests'])
   assert.equal(result.status, 1)

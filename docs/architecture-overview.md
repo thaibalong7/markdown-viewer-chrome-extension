@@ -307,7 +307,7 @@ The scoped [internationalization rule](../.agents/rules/35-internationalization.
 
 ## Verification
 
-`npm run release` owns local release preparation through `scripts/release.mjs` and `scripts/release-version.mjs`: it checks synchronized versions, offers patch/minor/major/revision bumps or timestamped same-version builds, runs tests, and packages verified production output under `releases/` independently of the development `dist/`. A fourth Chrome version component maps to npm SemVer metadata (`0.1.0.2` in the manifest becomes `0.1.0+rev.2` in package/lock files). `scripts/release-prompt.mjs` owns keyboard selection, the numbered fallback, and terminal-state cleanup. Source version updates are retained only after a successful bumped build. See [Building a release](./releasing.md) for artifact contents, recovery, and publishing constraints.
+`npm run release` owns local release preparation through `scripts/release.mjs` and `scripts/release-version.mjs`: it checks synchronized versions, offers patch/minor/major/revision bumps or timestamped same-version builds, runs tests, and packages verified production output under `releases/` independently of the development `dist/`. Package, lockfile, and manifest versions use the same three- or four-part numeric string (`0.1.0.2` for a revision release). `scripts/release-prompt.mjs` owns keyboard selection, the numbered fallback, and terminal-state cleanup. Source version updates are retained only after a successful bumped build. See [Building a release](./releasing.md) for artifact contents, recovery, and publishing constraints.
 
 Use Node.js 20 or newer and the scripts in `package.json`:
 

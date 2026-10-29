@@ -27,20 +27,6 @@ export function bumpVersion(version, bump) {
   return next
 }
 
-export function packageVersionFor(version) {
-  const parts = validateVersion(version)
-  const base = parts.slice(0, 3).join('.')
-  return parts.length === 4 ? `${base}+rev.${parts[3]}` : base
-}
-
-export function extensionVersionFor(version) {
-  const match = /^(\d+\.\d+\.\d+)(?:\+rev\.(\d+))?$/.exec(version)
-  if (!match) throw new Error(`Expected an npm version major.minor.patch[+rev.N], received: ${version}`)
-  const numeric = match[2] === undefined ? match[1] : `${match[1]}.${match[2]}`
-  validateVersion(numeric)
-  return numeric
-}
-
 export async function readVersions(root) {
   const files = await Promise.all(['package.json', 'package-lock.json', 'manifest.json'].map(async name => {
     const path = join(root, name)
@@ -48,11 +34,11 @@ export async function readVersions(root) {
     return { path, name, original, data: JSON.parse(original) }
   }))
   const [pkg, lock, manifest] = files.map(file => file.data)
-  const version = extensionVersionFor(pkg.version)
-  if ([lock.version, lock.packages?.['']?.version].some(value => value !== pkg.version) || manifest.version !== version) {
-    throw new Error('Version mismatch: package.json and package-lock.json must agree; manifest.json must match the numeric extension version (npm +rev.N maps to .N).')
+  validateVersion(pkg.version)
+  if ([lock.version, lock.packages?.['']?.version, manifest.version].some(version => version !== pkg.version)) {
+    throw new Error('Version mismatch: package.json, package-lock.json (including packages[""]), and manifest.json must agree.')
   }
-  return { files, version, name: pkg.name }
+  return { files, version: pkg.version, name: pkg.name }
 }
 
 export function versionEdits(files, version) {
@@ -64,7 +50,7 @@ export function versionEdits(files, version) {
       updated = updated.replace(/("version_name"\s*:\s*)"(?:[^"\\]|\\.)*"/, (_, before) => `${before}${JSON.stringify(version)}`)
     } else {
       const data = structuredClone(file.data)
-      data.version = packageVersionFor(version)
+      data.version = version
       if (file.name === 'package-lock.json') data.packages[''].version = data.version
       updated = `${JSON.stringify(data, null, 2)}\n`
     }

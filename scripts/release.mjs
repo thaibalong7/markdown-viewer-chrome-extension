@@ -4,7 +4,7 @@ import { access, mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs
 import { join } from 'node:path'
 import { createInterface } from 'node:readline/promises'
 import { fileURLToPath } from 'node:url'
-import { BUMP_TYPES, bumpVersion, packageVersionFor, readVersions, restoreVersions, versionEdits, writeVersions } from './release-version.mjs'
+import { BUMP_TYPES, bumpVersion, readVersions, restoreVersions, versionEdits, writeVersions } from './release-version.mjs'
 import { selectBump } from './release-prompt.mjs'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
@@ -180,7 +180,6 @@ async function release(options) {
     if (await exists(destination)) throw new Error(`Release already exists: ${destination}`)
     const git = gitState()
     step(`Release: ${sources.version} -> ${versionName} (${bump})`)
-    if (packageVersionFor(version) !== version) console.log(`npm package version: ${packageVersionFor(version)}`)
     if (git.dirty) warn('Working tree has local changes; they will be included and recorded in release.json.')
     step('[1/4] Run tests')
     if (options.skipTests) warn('Skipping tests because --skip-tests was supplied.')
@@ -205,7 +204,7 @@ async function release(options) {
     const sha256 = createHash('sha256').update(await readFile(archive)).digest('hex')
     await writeFile(join(stage, `${filename}.sha256`), `${sha256}  ${filename}\n`)
     await writeFile(join(stage, 'release.json'), `${JSON.stringify({
-      version, packageVersion: packageVersionFor(version), versionName, bump, builtAt, git,
+      version, versionName, bump, builtAt, git,
       tests: options.skipTests ? 'skipped' : 'passed', archive: filename, sha256
     }, null, 2)}\n`)
     checkInterrupted()

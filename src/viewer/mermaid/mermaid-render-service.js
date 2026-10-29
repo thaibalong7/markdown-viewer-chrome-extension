@@ -96,6 +96,13 @@ async function ensureMermaidInitialized(themeConfig) {
         suppressErrorRendering: true,
         securityLevel: 'strict',
         ...themeConfig,
+        // Mermaid briefly mounts its own SVG while measuring it, before our
+        // output sanitizer. Documents cannot inject arbitrary CSS into that stage.
+        secure: [
+          ...(mermaid.mermaidAPI?.defaultConfig?.secure || []),
+          'secure', 'securityLevel', 'themeCSS', 'fontFamily', 'altFontFamily',
+          'themeVariables', 'htmlLabels'
+        ],
         htmlLabels: false
       })
       return mermaid

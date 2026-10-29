@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, it, vi } from 'vitest'
 import { createMarkdownEngine, injectSourceLineMapping } from '../../../viewer/core/markdown-engine.js'
 import { renderDocument } from '../../../viewer/core/renderer.js'

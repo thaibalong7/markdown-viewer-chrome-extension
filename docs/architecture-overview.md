@@ -112,6 +112,10 @@ source
 
 `renderDocument()` in `src/viewer/core/renderer.js` is the main safe-HTML boundary. Markdown and plugin HTML must pass through `sanitizeHtml()` before `renderIntoElement()` inserts it. Heading ids are shared by the Outline, hash navigation, and editor integration.
 
+HTML sanitization fails closed with empty output when the runtime DOMPurify instance is unavailable or unsupported. Raw HTML cannot supply stylesheets, resource-loading CSS, positioning styles, or Viewer chrome classes from the reserved `mdp-*` namespace; the small set of document classes used by Markdown plugins remains available. `core/content-css.js` uses CSS Tree's parser/generator/walker with explicit property and value allowlists. Ordinary inline styles retain cosmetic colors and text emphasis, including Shiki colors. Only KaTeX-generated nodes receive a private render-context marker permitting bounded formula geometry; the sanitizer consumes that marker and never emits it. The Math plugin explicitly sets `trust: false`. Arbitrary raw-HTML CSS and custom Mermaid CSS are intentionally restricted.
+
+`mermaid/mermaid-sanitizer.js` sanitizes into an inert DOM fragment, removes active/resource-bearing SVG elements, filters inline/presentation styles, namespaces IDs and local references, and rewrites every supported stylesheet selector to target only the SVG root or its descendants. All CSS at-rules and nonlocal URLs are removed, and SVG painting is clipped to the diagram viewport. Viewer chrome classes cannot be imported through diagram markup. The official Mermaid initializer locks document overrides of CSS/font/theme variables and security options because Mermaid mounts temporary measurement content before the final SVG sanitizer runs. Normal classDef colors, state diagrams, local arrow markers, accessibility references, lightbox clones and SVG/PNG exports retain the sanitized diagram styling.
+
 Other renderers use narrower paths:
 
 - plain text uses `<pre><code>` and text-only DOM APIs;

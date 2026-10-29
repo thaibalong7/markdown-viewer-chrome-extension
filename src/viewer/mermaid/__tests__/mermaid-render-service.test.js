@@ -98,6 +98,7 @@ describe('shared Mermaid render service', () => {
     if (renderer === 'official') {
       expect(mocks.initialize).toHaveBeenCalledWith(expect.objectContaining({
         securityLevel: 'strict',
+        secure: expect.arrayContaining(['secure', 'securityLevel', 'themeCSS', 'fontFamily', 'themeVariables', 'htmlLabels']),
         htmlLabels: false,
         theme: 'base',
         themeVariables: expect.objectContaining({

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Markdown Plus sanitizer security regression</title>
+</head>
+<body>
+  <h1>Sanitizer security regression</h1>
+  <pre id="results" role="status">Running…</pre>
+  <div id="mdp-viewer-root">
+    <div class="mdp-root">
+      <button id="security-chrome-sentinel" style="position:fixed;top:8px;right:8px;z-index:100">Viewer control</button>
+      <article class="mdp-markdown-body" id="article"></article>
+      <div id="diagrams"></div>
+    </div>
+  </div>
+  <script type="module" src="./sanitizer-security.js"></script>
+</body>
+</html>

@@ -1,5 +1,6 @@
+// @vitest-environment jsdom
 import { readFile } from 'node:fs/promises'
-import { fileURLToPath } from 'node:url'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { renderDocument } from '../renderer.js'
 
@@ -14,16 +15,13 @@ const SETTINGS = {
   }
 }
 
-const FIXTURE_ROOT = new URL(
-  '../../../../test/fixtures/multi-format-viewer/markdown-family/',
-  import.meta.url
-)
+const FIXTURE_ROOT = resolve('test/fixtures/multi-format-viewer/markdown-family')
 
 describe('Markdown-family rendering', () => {
   it('renders identical .md and .mdc bytes through the same pipeline', async () => {
     const [markdownSource, mdcSource] = await Promise.all(
       ['document.md', 'document.mdc'].map((name) =>
-        readFile(fileURLToPath(new URL(name, FIXTURE_ROOT)), 'utf8')
+        readFile(resolve(FIXTURE_ROOT, name), 'utf8')
       )
     )
 

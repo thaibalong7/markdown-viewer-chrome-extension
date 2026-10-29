@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
 import { hardenExternalWebsiteLink, renderDocument } from '../renderer.js'
 
@@ -17,9 +18,12 @@ describe('renderDocument render context metadata', () => {
   it('opens external website links in a safe new tab', async () => {
     const result = await renderDocument('[Website](//example.com/docs)', BASE_SETTINGS)
 
-    expect(result.html).toContain(
-      '<a href="//example.com/docs" target="_blank" rel="noopener noreferrer">Website</a>'
-    )
+    const template = document.createElement('template')
+    template.innerHTML = result.html
+    const link = template.content.querySelector('a')
+    expect(link.getAttribute('href')).toBe('//example.com/docs')
+    expect(link.target).toBe('_blank')
+    expect(link.rel).toBe('noopener noreferrer')
   })
 
   it('hardens external website links emitted from raw HTML', () => {

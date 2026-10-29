@@ -4,6 +4,10 @@ Tài liệu này theo dõi các việc cần hoàn thành trước khi phát hà
 
 Cập nhật sau xử lý mục 1 ngày **2026-10-29**: đã vá Markdown DoS và các advisory DOMPurify, clean install/tests/build/browser dependency smoke pass. Production audit còn 3 low từ một advisory KaTeX đã được đánh giá và chấp nhận có điều kiện tại mục 1. Bảng review ban đầu bên dưới được giữ làm baseline; P0 mục 2–5 và QA trên ZIP candidate vẫn chưa hoàn tất.
 
+Cập nhật sau xử lý mục 2 ngày **2026-10-29**: HTML sanitizer fail-closed, CSS HTML/SVG đã bị giới hạn và có DOM/browser security coverage; chi tiết implementation, kết quả và cách chạy lại nằm ở mục 2. P0 mục 3–5 và manual QA trên ZIP candidate vẫn chưa hoàn tất.
+
+Các nhận xét về cấu hình sanitizer/Math trong hồ sơ mục 1 phản ánh snapshot trước thay đổi mục 2; dùng mục 2 và runtime source để đối chiếu chính sách hiện tại.
+
 ## Kết quả review ngày 2026-10-29
 
 Đây là kết quả của worktree được kiểm tra trong phiên review, không phải chứng nhận cho release candidate sau các thay đổi tiếp theo. Chạy lại kiểm tra liên quan sau khi sửa lỗi và trên artifact cuối cùng.
@@ -70,21 +74,29 @@ Nguồn đã đối chiếu: [markdown-it link-reference DoS](https://github.com
 
 ### 2. Siết sanitizer và bổ sung DOM security tests
 
-Source liên quan: [`renderer.js`](../../src/viewer/core/renderer.js), [`mermaid-sanitizer.js`](../../src/viewer/mermaid/mermaid-sanitizer.js), [`renderer.test.js`](../../src/viewer/core/__tests__/renderer.test.js) và [`mermaid-sanitizer.test.js`](../../src/viewer/mermaid/__tests__/mermaid-sanitizer.test.js).
+Source liên quan: [`renderer.js`](../../src/viewer/core/renderer.js), [`content-css.js`](../../src/viewer/core/content-css.js), [`math.plugin.js`](../../src/plugins/optional/math.plugin.js), [`mermaid-sanitizer.js`](../../src/viewer/mermaid/mermaid-sanitizer.js) và [`mermaid-render-service.js`](../../src/viewer/mermaid/mermaid-render-service.js).
 
-`sanitizeHtml()` hiện trả nguyên HTML khi purifier không khởi tạo được. Khi có DOM, sanitizer loại bỏ script/event handler trong fixture cơ bản đã thử nhưng vẫn giữ raw `<style>` và inline style có thể ảnh hưởng toàn Viewer. Sanitizer SVG giữ global CSS và không loại bỏ dạng `@import "https://…"`. Đây là vấn đề CSS isolation đã tái hiện tại sanitizer boundary; không coi đó là bằng chứng thực thi JavaScript hoặc khai thác được qua mọi đầu vào Mermaid.
+Vấn đề trước khi sửa: `sanitizeHtml()` trả nguyên HTML khi thiếu purifier; raw `<style>`, inline overlay styles và global CSS trong SVG còn được giữ, trong đó có dạng `@import "https://…"`. Đây là vấn đề đã tái hiện tại sanitizer boundary, không phải bằng chứng thực thi JavaScript qua mọi đầu vào Mermaid.
 
-Repo đã có jsdom cho một số tests, nhưng renderer tests chạy mặc định trong Node; Mermaid sanitizer test chỉ kiểm tra trường hợp không có purifier, còn render-service tests mock sanitizer. Vì vậy bộ test xanh hiện tại chưa chứng minh đầy đủ DOMPurify production xử lý malicious HTML/SVG đúng cách.
+Implementation hiện tại trả rỗng khi DOMPurify không khả dụng/không hỗ trợ DOM; chặn stylesheet HTML, chỉ giữ CSS cosmetic cho raw HTML và bỏ các class có thể mượn style Viewer chrome. KaTeX dùng `trust: false` và marker nội bộ chỉ cho output Math do renderer tạo để giữ bounded geometry; marker bị xóa trước khi xuất HTML. Shiki giữ syntax colors.
 
-- [ ] Đổi HTML sanitizer thành fail-closed: báo lỗi an toàn hoặc trả nội dung an toàn khi purifier không khả dụng, không trả nguyên HTML đầu vào.
-- [ ] Chặn stylesheet từ raw HTML không tin cậy và giới hạn inline style có thể tạo overlay/che UI; bảo toàn style cần thiết của Shiki và KaTeX.
-- [ ] Kiểm soát CSS trong SVG Mermaid, gồm selector ảnh hưởng ngoài diagram, `@import` và URL từ xa; không dựa vào hai regex hiện tại như một CSS sanitizer hoàn chỉnh.
-- [ ] Thêm tests chạy sanitizer thật trong jsdom hoặc browser, không mock purifier/sanitizer tại security boundary.
-- [ ] Test `<script>`, inline event handlers, `javascript:`, unsafe `data:` và malicious SVG.
-- [ ] Test global `<style>`, inline fixed overlay, CSS remote resources và cả dạng `@import url(...)` lẫn `@import "..."`.
-- [ ] Test Mermaid `classDef`, state diagram và CSS injection regression qua đường render thực tế.
-- [ ] Test Shiki colors, KaTeX HTML/MathML và diagram hợp lệ vẫn render sau khi siết sanitizer.
-- [ ] Kiểm tra fixtures trong Chrome, gồm việc document không thể ẩn/che Viewer chrome bằng CSS đã bị cấm.
+SVG được DOMPurify parse thành fragment inert rồi lọc CSS bằng AST allowlist: bỏ mọi at-rule, URL không phải fragment nội bộ, thuộc tính positioning/resource loading và selector không hỗ trợ; giới hạn mọi selector còn lại trong SVG tương ứng, namespace IDs cùng local/ARIA references và clip nội dung vào viewport diagram. Official Mermaid khóa document override của `themeCSS`, fonts, theme variables và security options ở giai đoạn đo layout trước sanitizer. Custom stylesheet/positioning từ document không còn là tính năng được hỗ trợ.
+
+- [x] Đổi HTML sanitizer thành fail-closed: báo lỗi an toàn hoặc trả nội dung an toàn khi purifier không khả dụng, không trả nguyên HTML đầu vào.
+- [x] Chặn stylesheet từ raw HTML không tin cậy và giới hạn inline style có thể tạo overlay/che UI; bảo toàn style cần thiết của Shiki và KaTeX.
+- [x] Kiểm soát CSS trong SVG Mermaid, gồm selector ảnh hưởng ngoài diagram, `@import` và URL từ xa; không dựa vào hai regex hiện tại như một CSS sanitizer hoàn chỉnh.
+- [x] Thêm tests chạy sanitizer thật trong jsdom hoặc browser, không mock purifier/sanitizer tại security boundary.
+- [x] Test `<script>`, inline event handlers, `javascript:`, unsafe `data:` và malicious SVG.
+- [x] Test global `<style>`, inline fixed overlay, CSS remote resources và cả dạng `@import url(...)` lẫn `@import "..."`.
+- [x] Test Mermaid `classDef`, state diagram và CSS injection regression qua đường render thực tế.
+- [x] Test Shiki colors, KaTeX HTML/MathML và diagram hợp lệ vẫn render sau khi siết sanitizer.
+- [x] Kiểm tra fixtures trong Chrome, gồm việc document không thể ẩn/che Viewer chrome bằng CSS đã bị cấm.
+
+DOM coverage dùng DOMPurify thật ở [`renderer.security.test.js`](../../src/viewer/core/__tests__/renderer.security.test.js) và [`mermaid-sanitizer.security.test.js`](../../src/viewer/mermaid/__tests__/mermaid-sanitizer.security.test.js), cùng Node fail-closed coverage ở [`sanitizer-unavailable.test.js`](../../src/viewer/core/__tests__/sanitizer-unavailable.test.js). Các renderer tests liên quan đã chuyển sang jsdom để không vô tình dựa vào fallback không sanitize. Render-service unit tests vẫn mock dependency cho lifecycle; browser fixture dưới đây kiểm tra đường renderer/sanitizer thật.
+
+Xác minh trên Node pin `20.19.5`: `npm test` pass **188 files / 1.403 tests**; production build pass, vẫn có cảnh báo CRXJS Rollup/Rolldown và chunks >500 kB đã có trước. `size:report` giữ 12 MB `dist` / 11 MB JS theo `du`; JS chính xác tăng 11.191.333 → 11.276.791 bytes (+85.458 bytes, khoảng 0,76%), chunk lớn nhất giữ 1.525.521 bytes. Thêm `css-tree@3.2.1` cho parser/generator/walker, không bundle toàn bộ CSS grammar lexer; nâng transitive `source-map-js` 1.2.1 → 1.2.2 để vá advisory DoS khi dependency này trở thành production dependency. `npm audit --omit=dev` sau cùng còn đúng 3 low KaTeX đã đánh giá tại mục 1, không high/critical/moderate; audit exit code 1 do các low còn lại.
+
+Browser fixture [`sanitizer-security.html`](../../test/browser/sanitizer-security.html) pass **38 assertions trên Chrome 156.0.0.0 / macOS**: CSS không ẩn/che control sentinel nằm ngoài article/diagram, scoped SVG CSS vẫn áp dụng bên trong, Shiki/KaTeX còn màu/MathML/geometry, flowchart/state/classDef hợp lệ của cả official và beautiful vẫn render, SVG/PNG export pass; negative CSS/remote classDef được lọc hoặc từ chối an toàn. Fixture không ghi nhận resource fetch từ CSS bị cấm. Chạy lại bằng `source ~/.nvm/nvm.sh && nvm use && node scripts/security-smoke.mjs`, rồi mở URL localhost được in ra. Harness dùng module runtime và CSS Viewer thật, bắt download ở anchor boundary; đây chưa phải chứng nhận extension/Chrome minimum/ZIP candidate, và không thay thế manual release QA cuối cùng.
 
 Tiêu chí hoàn thành: test fail nếu sanitizer bị bypass/không khởi tạo; document không điều khiển CSS ngoài phạm vi được cho phép; script/event handler/unsafe URL bị loại bỏ và nội dung hợp lệ vẫn hiển thị đúng.
 

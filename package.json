@@ -41,6 +41,7 @@
     "@shikijs/themes": "^4.0.2",
     "@tanstack/react-virtual": "^3.13.23",
     "beautiful-mermaid": "^1.1.3",
+    "css-tree": "^3.2.1",
     "dompurify": "^3.4.17",
     "github-slugger": "^2.0.0",
     "markdown-it": "^14.3.3",

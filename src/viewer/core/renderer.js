@@ -3,6 +3,7 @@ import { renderMarkdown } from './markdown-engine.js'
 import { createRenderContext } from './create-render-context.js'
 import { applyShikiToFencedCode } from './shiki-highlighter.js'
 import DOMPurify from 'dompurify'
+import { sanitizeContentClasses, sanitizeContentStyle, sanitizeSvgPresentation } from './content-css.js'
 
 const createPurifier = typeof DOMPurify === 'function' ? DOMPurify : null
 const windowRef = typeof window !== 'undefined' ? window : null
@@ -27,7 +28,7 @@ export function hardenExternalWebsiteLink(node) {
   return true
 }
 
-if (purifier) {
+if (purifier?.isSupported) {
   purifier.addHook('afterSanitizeAttributes', (node) => {
     hardenExternalWebsiteLink(node)
   })
@@ -35,23 +36,51 @@ if (purifier) {
 
 /**
  * @param {string} html
- * @param {{ allowKatex?: boolean }} [options]
+ * @param {{ allowKatex?: boolean, mathStyleToken?: string }} [options]
  */
 const ALLOWED_URI_RE =
   /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp|file):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
 
 export function sanitizeHtml(html, options = {}) {
-  if (!purifier) return String(html || '')
+  if (!purifier?.isSupported) return ''
   const cfg = {
     // Keep source-line markers used by editor ↔ preview scroll sync.
     ADD_ATTR: ['style', 'tabindex', 'data-line'],
-    ALLOWED_URI_REGEXP: ALLOWED_URI_RE
+    ALLOWED_URI_REGEXP: ALLOWED_URI_RE,
+    USE_PROFILES: { html: true },
+    FORBID_TAGS: ['style', 'link', 'meta', 'base', 'foreignObject', 'image', 'use', 'feImage'],
+    FORBID_ATTR: ['srcset']
   }
   if (options.allowKatex) {
     // Keep normal HTML tags and extend with MathML/SVG required by KaTeX output.
-    cfg.USE_PROFILES = { html: true, mathMl: true, svg: true, svgFilters: true }
+    cfg.USE_PROFILES = { html: true, mathMl: true, svg: true }
   }
-  return purifier.sanitize(String(html || ''), cfg)
+  const cleanStyles = (node) => {
+    if (!node.getAttribute) return
+    sanitizeContentClasses(node)
+    const trustedMath = options.mathStyleToken &&
+      node.getAttribute('data-mdp-math-style') === options.mathStyleToken
+    if (node.hasAttribute('style')) {
+      const style = sanitizeContentStyle(node.getAttribute('style'), { kind: trustedMath ? 'math' : 'html' })
+      if (style) node.setAttribute('style', style)
+      else node.removeAttribute('style')
+    }
+    node.removeAttribute('data-mdp-math-style')
+    for (const name of ['src', 'href', 'xlink:href']) {
+      const value = node.getAttribute(name) || ''
+      if (/^\s*data:/i.test(value) && !(node.localName === 'img' && name === 'src' &&
+        /^data:image\/(?:png|jpeg|gif|webp|avif);base64,[a-z\d+/=\s]+$/i.test(value))) {
+        node.removeAttribute(name)
+      }
+    }
+    if (node.namespaceURI === 'http://www.w3.org/2000/svg') sanitizeSvgPresentation(node)
+  }
+  purifier.addHook('afterSanitizeAttributes', cleanStyles)
+  try {
+    return purifier.sanitize(String(html || ''), cfg)
+  } finally {
+    purifier.removeHook('afterSanitizeAttributes')
+  }
 }
 
 export function renderIntoElement(element, html) {
@@ -88,7 +117,7 @@ export async function renderDocument(markdown, settings = {}, runtimeContext = {
   }
 
   const mathOn = settings?.plugins?.math?.enabled === true
-  const safeHtml = sanitizeHtml(html, { allowKatex: mathOn })
+  const safeHtml = sanitizeHtml(html, { allowKatex: mathOn, mathStyleToken: markdownEngine.mathStyleToken })
 
   return {
     html: safeHtml,

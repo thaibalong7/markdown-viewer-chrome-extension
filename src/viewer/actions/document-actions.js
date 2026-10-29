@@ -5,7 +5,7 @@ import { createStyleVars } from '../../theme/index.js'
 import alertsCss from '../styles/content/_alerts.scss?inline'
 
 /** KaTeX CSS from CDN so exported files hide MathML duplicate / render math like the viewer (offline export would need bundled fonts). */
-const EXPORT_KATEX_CDN_CSS = 'https://cdn.jsdelivr.net/npm/katex@0.16.44/dist/katex.min.css'
+const EXPORT_KATEX_CDN_CSS = 'https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css'
 
 /**
  * Minimal markdown-body styles for standalone HTML / Word HTML export (no extension CSS bundle).

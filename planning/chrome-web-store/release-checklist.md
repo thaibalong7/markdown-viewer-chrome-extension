@@ -2,6 +2,8 @@
 
 Tài liệu này theo dõi các việc cần hoàn thành trước khi phát hành Markdown Plus lên Chrome Web Store. Cập nhật theo review ngày **2026-10-29**: nền tảng và quy trình đóng gói đã khá đầy đủ, nhưng **chưa nên submit bản hiện tại** vì còn vấn đề dependency, sanitizer, Chrome Sync quota và tương thích Chrome. Ưu tiên xử lý P0 trước khi thêm tính năng lớn.
 
+Cập nhật sau xử lý mục 1 ngày **2026-10-29**: đã vá Markdown DoS và các advisory DOMPurify, clean install/tests/build/browser dependency smoke pass. Production audit còn 3 low từ một advisory KaTeX đã được đánh giá và chấp nhận có điều kiện tại mục 1. Bảng review ban đầu bên dưới được giữ làm baseline; P0 mục 2–5 và QA trên ZIP candidate vẫn chưa hoàn tất.
+
 ## Kết quả review ngày 2026-10-29
 
 Đây là kết quả của worktree được kiểm tra trong phiên review, không phải chứng nhận cho release candidate sau các thay đổi tiếp theo. Chạy lại kiểm tra liên quan sau khi sửa lỗi và trên artifact cuối cùng.
@@ -29,19 +31,29 @@ Các vấn đề đã tái hiện trong review:
 
 ### 1. Cập nhật dependency và đánh giá advisory hiện tại
 
-Kết quả audit cũ ngày 2026-09-20 không còn đủ để kết luận an toàn. Lockfile được review đang dùng `markdown-it@14.3.2`, `dompurify@3.4.15`, `katex@0.16.47`, `mermaid@11.17.2` và `@mdit/plugin-katex@0.25.2`.
+Đã thực hiện ngày **2026-10-29**, dùng Node `20.19.5` / npm `10.8.2`. Lockfile hiện dùng `markdown-it@14.3.3`, `dompurify@3.4.17`, `katex@0.16.47`, `mermaid@11.17.2` và `@mdit/plugin-katex@0.25.2`; dependency gián tiếp `@ungap/structured-clone` được nâng từ `1.3.0` lên `1.4.0` trong dải `^1.0.0` của `mdast-util-to-hast` qua Shiki để xử lý cảnh báo CWE-502 khi clean install. CSS KaTeX của HTML/Word export được đồng bộ từ CDN `0.16.44` lên `0.16.47`. Kết quả dưới đây gắn với worktree đã kiểm tra; cần audit lại sau thay đổi dependency và trên candidate cuối cùng.
 
-| Package/chuỗi dependency | Đánh giá từ review | Việc cần làm |
+| Package/chuỗi dependency | Đánh giá sau cập nhật | Quyết định |
 | --- | --- | --- |
-| `markdown-it` | Bản 14.3.2 bị ảnh hưởng bởi lỗi render theo thời gian bình phương, có thể làm treo tab với đầu vào đặc biệt; extension sử dụng đường render này. | Nâng ít nhất lên 14.3.3 trong nhánh 14 và kiểm tra lại advisory mới tại thời điểm release. |
-| `dompurify` | Audit npm gắn mức critical cho package; các advisory đã đọc yêu cầu những chế độ như `IN_PLACE` hoặc `SAFE_FOR_TEMPLATES` kết hợp DOM output mà cấu hình sanitizer hiện tại không dùng. Chưa chứng minh XSS trong extension từ các advisory này. | Nâng tối thiểu lên 3.4.17 cho các advisory đã kiểm tra, đồng thời ghi rõ phân tích điều kiện ảnh hưởng. |
-| `katex` qua `mermaid` và `@mdit/plugin-katex` | Audit báo low liên quan trust restrictions khi đã có prototype pollution; ba package trong chuỗi không tương đương ba exploit độc lập. | Đánh giá đường gọi, bản vá và khả năng nâng tương thích; ghi quyết định cho advisory còn lại. |
+| `markdown-it@14.3.3` | Đã vá cả link reference nhiều dòng và inline HTML DoS; cả hai đường đều có thể tới parser của extension ở bản cũ. | Giữ nhánh 14, nâng minimum lên bản vá. |
+| `dompurify@3.4.17` | Không còn trong production audit. Các advisory cũ cần `IN_PLACE`, template/DOM output hoặc XHTML/SMIL mà hai sanitizer hiện tại không bật. | Đã vá; không coi việc nâng thư viện là hoàn tất CSS isolation/fail-closed ở mục 2. |
+| `katex@0.16.47` qua `mermaid@11.17.2` và `@mdit/plugin-katex@0.25.2` | Còn một advisory low cần prototype pollution từ trước; npm đếm ba package cùng chuỗi. HTML/SVG có sanitizer độc lập, chưa chứng minh exploit trong extension; chưa audit toàn ứng dụng về prototype pollution. | Chấp nhận có điều kiện như phân tích dưới đây; bản vá `0.18.2` ngoài dải hỗ trợ của cả hai package cha. Đánh giá lại trước submit và khi upstream có bản tương thích; không downgrade Mermaid/ép override chỉ để audit xanh. |
 
-- [ ] Cập nhật dependency và `package-lock.json` có chủ đích; không chạy `npm audit fix --force` máy móc hoặc downgrade Mermaid chỉ theo gợi ý tự động.
-- [ ] Với mỗi advisory còn lại, ghi package/version, điều kiện khai thác, đường runtime liên quan và quyết định xử lý/chấp nhận cùng lý do.
-- [ ] Chạy clean install bằng Node pin và kiểm tra cảnh báo engine/dependency.
-- [ ] Chạy lại full tests, production build, size report và production audit sau cập nhật.
-- [ ] Smoke-test Markdown, Shiki, Mermaid official/beautiful, Math và export sau nâng dependency.
+Advisory còn lại là [GHSA-238p-pmpm-9mq7](https://github.com/KaTeX/KaTeX/security/advisories/GHSA-238p-pmpm-9mq7), ảnh hưởng KaTeX `>=0.11.0 <0.18.2`. Attacker phải pollute `Object.prototype` hoặc ảnh hưởng prototype của renderer options từ trước rồi cung cấp biểu thức Math; KaTeX không tự tạo pollution. Inherited settings có thể đổi `trust`, namespace hoặc giới hạn render; theo upstream, XSS/resource injection còn phụ thuộc việc chèn output không có sanitizer độc lập. Ba package npm báo low là `katex@0.16.47`, `@mdit/plugin-katex@0.25.2` và `mermaid@11.17.2`, dùng chung một bản KaTeX dedupe.
+
+Đường runtime: `math.plugin.js` → plugin KaTeX → HTML/MathML → `renderDocument()` → `sanitizeHtml()` → article; Mermaid official đi qua `mermaid-render-service.js` → `sanitizeMermaidSvg()` → SVG. Options Math do code kiểm soát (`throwOnError: false`, `mathFence: true`), không lấy renderer options từ JSON của document, nhưng không đặt explicit `trust: false` nên default trust không đủ chống inherited properties. Mermaid official dùng `securityLevel: 'strict'`, `htmlLabels: false`; beautiful dùng renderer riêng. Chưa chứng minh exploit trong các đường gọi đã rà soát, nhưng tests và sanitizer không chứng minh mọi biến thể pollution đều an toàn. CSS isolation/fail-closed vẫn là blocker ở mục 2.
+
+Quyết định chấp nhận low có điều kiện cho vòng chuẩn bị release này: plugin hiện yêu cầu KaTeX `^0.16.44`, Mermaid yêu cầu `^0.16.47`, nên bản vá `0.18.2` nằm ngoài cả hai dải. Npm đề xuất nâng plugin lên `1.1.4` hoặc downgrade Mermaid xuống `10.8.0`; nâng riêng plugin vẫn để lại KaTeX cũ qua Mermaid. Đánh giá lại trước submit, khi cấu hình/advisory thay đổi hoặc upstream có bản tương thích/backport. Nếu tìm thấy prototype pollution có thể tới realm render, phải vá nguồn pollution hoặc nâng renderer tương thích trước release; quyết định này không miễn hoàn thành mục 2.
+
+- [x] Cập nhật dependency và `package-lock.json` có chủ đích; không chạy `npm audit fix --force` máy móc hoặc downgrade Mermaid chỉ theo gợi ý tự động.
+- [x] Với mỗi advisory còn lại, ghi package/version, điều kiện khai thác, đường runtime liên quan và quyết định xử lý/chấp nhận cùng lý do.
+- [x] Chạy clean install bằng Node pin và kiểm tra cảnh báo engine/dependency: `npm ci` pass, không `EBADENGINE`; chỉ còn deprecated `whatwg-encoding` trong jsdom dev/test.
+- [x] Chạy lại full tests (185 files, 1.380 tests), production build, size report và production audit sau cập nhật. Audit còn 3 low đã đánh giá, exit code 1; không còn high/critical. JS tăng 2.843 bytes, chunk lớn nhất không đổi.
+- [x] Smoke-test Markdown, Shiki, Mermaid official/beautiful, Math và HTML/Word/SVG/PNG export bằng module runtime thật trong Chrome 156 trên macOS qua localhost. Kiểm tra extension/`chrome.downloads` từ ZIP candidate trên clean profile vẫn thuộc manual release QA.
+
+Chi tiết xác minh: `npm ci --no-audit --no-fund` cài 366 packages; `npm ls` các dependency liên quan không có invalid/extraneous. Ba integration tests mới dùng renderer/Shiki/KaTeX/DOMPurify thật, chỉ mock download boundary. Production build vẫn có cảnh báo CRXJS Rollup/Rolldown và chunk >500 kB như baseline. `size:report` giữ 12 MB `dist` / 11 MB JS theo `du`; JS chính xác tăng 11.188.490 → 11.191.333 bytes (~0,025%), chunk lớn nhất giữ 1.525.521 bytes. Production audit không còn critical/high/moderate; exit code 1 phản ánh 3 low đã đánh giá, không phải zero-vulnerability pass.
+
+Browser smoke có 16 assertions pass: Unicode/duplicate heading IDs, local links chứa space, Shiki colors, inline/display Math và MathML, loại script/event handler; HTML/Word giữ Math/Shiki và CSS đúng version; cả hai renderer Mermaid tạo flowchart/state diagram, serialize SVG và tạo PNG 2x khác rỗng. Math-label input trong Mermaid hiện hiển thị literal, chưa kiểm chứng typesetting Math ở Mermaid. Harness dùng module runtime qua Vite và bắt Blob tại anchor download, không thay settings extension. Chưa xác minh ZIP trên clean profile, `chrome.downloads`, Chrome minimum, Word desktop, offline fonts hoặc toàn bộ scale export 1x–4x.
 
 ```bash
 nvm use
@@ -54,7 +66,7 @@ npm run size:report
 
 Tiêu chí hoàn thành: không còn advisory runtime chưa được đánh giá; lỗi Markdown gây treo tab đã được vá; advisory được chấp nhận phải có phân tích cụ thể, không dựa riêng vào việc tests pass hoặc package đã từng được cập nhật.
 
-Nguồn: [markdown-it DoS và bản vá 14.3.3](https://github.com/markdown-it/markdown-it/security/advisories/GHSA-gfr2-rv44-r23c), [DOMPurify SAFE_FOR_TEMPLATES](https://github.com/cure53/DOMPurify/security/advisories/GHSA-cg2g-xh64-v4q7), [DOMPurify IN_PLACE](https://github.com/cure53/DOMPurify/security/advisories/GHSA-mrv2-3pqr-j5jr).
+Nguồn đã đối chiếu: [markdown-it link-reference DoS](https://github.com/markdown-it/markdown-it/security/advisories/GHSA-gfr2-rv44-r23c), [markdown-it inline-HTML DoS](https://github.com/markdown-it/markdown-it/security/advisories/GHSA-vfgh-jcmw-g37q); DOMPurify [hook gỡ node](https://github.com/cure53/DOMPurify/security/advisories/GHSA-p98j-92pf-mc4p), [rawtext root](https://github.com/cure53/DOMPurify/security/advisories/GHSA-6688-9rhm-gjv2), [SAFE_FOR_TEMPLATES](https://github.com/cure53/DOMPurify/security/advisories/GHSA-cg2g-xh64-v4q7), [hook gỡ parent/sibling](https://github.com/cure53/DOMPurify/security/advisories/GHSA-mrv2-3pqr-j5jr), [XHTML/SMIL](https://github.com/cure53/DOMPurify/security/advisories/GHSA-c6gr-qvv4-5v3f). Hai sanitizer nhận/trả chuỗi, không dùng các mode `IN_PLACE`, template/DOM output hoặc XHTML/SMIL liên quan; hook HTML chỉ sửa thuộc tính link. DOMPurify đã được nâng bản vá dù chưa chứng minh các exploit này trong cấu hình hiện tại.
 
 ### 2. Siết sanitizer và bổ sung DOM security tests
 
@@ -179,7 +191,7 @@ Repo hiện có workflow deploy website; chưa có CI test/build cho extension.
 - [x] Privacy policy đã mô tả network behavior này.
 - [ ] Ghi limitation rõ trong thông tin export/known limitations trước launch; không hứa toàn bộ Math export hoạt động offline.
 - [ ] Kiểm tra export khi online và offline, ghi lại phần hiển thị bị ảnh hưởng.
-- [ ] Đối chiếu version stylesheet export với renderer KaTeX sau dependency update.
+- [x] Đối chiếu version stylesheet export với renderer KaTeX sau dependency update: cùng `0.16.47`, có integration tests HTML/Word để phát hiện lệch version.
 
 Việc nhúng đầy đủ CSS/fonts để Math export tự chứa có thể làm sau launch nếu limitation đã được công bố và không trái cam kết sản phẩm.
 

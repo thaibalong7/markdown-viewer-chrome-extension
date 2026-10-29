@@ -6,28 +6,28 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { setTimeout } from 'node:timers/promises'
 import { test } from 'vitest'
-import { bumpVersion } from '../release-version.mjs'
+import { bumpVersion, extensionVersionFor, packageVersionFor } from '../release-version.mjs'
 
 const json = async path => JSON.parse(await readFile(path, 'utf8'))
 
-async function fixture(t, { testFails = false, buildFails = false, wrongBuildVersion = false } = {}) {
+async function fixture(t, { testFails = false, buildFails = false, wrongBuildVersion = false, version = '1.2.3' } = {}) {
   const root = await mkdtemp(join(tmpdir(), 'mdp-release-test-'))
   t.onTestFinished(() => rm(root, { recursive: true, force: true }))
   await mkdir(join(root, 'scripts'))
   await mkdir(join(root, 'node_modules'))
-  for (const name of ['release.mjs', 'release-version.mjs']) {
+  for (const name of ['release.mjs', 'release-version.mjs', 'release-prompt.mjs']) {
     await cp(new URL(`../${name}`, import.meta.url), join(root, 'scripts', name))
   }
   const pkg = {
-    name: 'markdown-plus', version: '1.2.3', private: true,
+    name: 'markdown-plus', version: packageVersionFor(version), private: true,
     scripts: { test: 'node check.cjs', build: 'node build.cjs' }
   }
   const lock = {
-    version: '1.2.3', lockfileVersion: 3,
-    packages: { '': { version: '1.2.3' }, 'node_modules/example': { version: '1.2.3' } }
+    version: packageVersionFor(version), lockfileVersion: 3,
+    packages: { '': { version: packageVersionFor(version) }, 'node_modules/example': { version: '1.2.3' } }
   }
   const manifest = {
-    manifest_version: 3, name: 'Test', version: '1.2.3', version_name: 'old "display" name',
+    manifest_version: 3, name: 'Test', version, version_name: 'old "display" name',
     permissions: ['storage'], background: { service_worker: 'worker.js' },
     content_scripts: [{ js: ['content.js'], matches: ['file:///*'] }]
   }
@@ -72,12 +72,70 @@ test('bump semantics reset lower components and enforce Chrome numeric limits', 
   assert.equal(bumpVersion('1.2.3', 'patch'), '1.2.4')
   assert.equal(bumpVersion('1.2.3', 'minor'), '1.3.0')
   assert.equal(bumpVersion('1.2.3', 'major'), '2.0.0')
+  assert.equal(bumpVersion('1.2.3', 'revision'), '1.2.3.1')
+  assert.equal(bumpVersion('1.2.3.4', 'revision'), '1.2.3.5')
+  assert.equal(bumpVersion('1.2.3.4', 'patch'), '1.2.4.0')
+  assert.equal(bumpVersion('1.2.3.4', 'minor'), '1.3.0.0')
+  assert.equal(bumpVersion('1.2.3.4', 'major'), '2.0.0.0')
   assert.equal(bumpVersion('1.2.3', 'none'), '1.2.3')
-  for (const version of ['0.0.0', '01.2.3', '1.2.3-beta', '1.2.3.4', '1.2.65536']) {
+  for (const version of ['0.0.0', '0.0.0.0', '01.2.3', '1.2.3-beta', '1.2.3.4.5', '1.2.65536', '1.2.3.65536', '1.2.3.01']) {
     assert.throws(() => bumpVersion(version, 'none'))
   }
   assert.throws(() => bumpVersion('1.2.65535', 'patch'))
+  assert.throws(() => bumpVersion('1.2.3.65535', 'revision'))
   assert.throws(() => bumpVersion('1.2.3', 'invalid'))
+})
+
+test('four-part Chrome versions map reversibly to valid npm version metadata', () => {
+  assert.equal(packageVersionFor('1.2.3.4'), '1.2.3+rev.4')
+  assert.equal(extensionVersionFor('1.2.3+rev.4'), '1.2.3.4')
+  assert.equal(extensionVersionFor('1.2.3'), '1.2.3')
+  assert.equal(packageVersionFor('1.2.3.0'), '1.2.3+rev.0')
+  for (const version of ['1.2.3.4', '1.2.3+rev.04', '1.2.3+rev.65536', '1.2.3-beta', '1.2.3+other.1']) {
+    assert.throws(() => extensionVersionFor(version))
+  }
+})
+
+test('revision releases synchronize numeric and npm versions across repeated builds', async t => {
+  const f = await fixture(t)
+  for (const revision of [1, 2]) {
+    const result = f.run(['--bump', 'revision', '--skip-tests'])
+    assert.equal(result.status, 0, result.stdout + result.stderr)
+    const numeric = `1.2.3.${revision}`
+    const npm = `1.2.3+rev.${revision}`
+    const lock = await json(join(f.root, 'package-lock.json'))
+    assert.equal((await json(join(f.root, 'package.json'))).version, npm)
+    assert.equal(lock.version, npm)
+    assert.equal(lock.packages[''].version, npm)
+    assert.equal(lock.packages['node_modules/example'].version, '1.2.3')
+    assert.equal((await json(join(f.root, 'manifest.json'))).version, numeric)
+    const directory = join(f.root, 'releases', `markdown-plus-v${numeric}`)
+    const metadata = await json(join(directory, 'release.json'))
+    assert.equal(metadata.version, numeric)
+    assert.equal(metadata.packageVersion, npm)
+    assert.equal((await json(join(directory, 'extension', 'manifest.json'))).version, numeric)
+  }
+  const result = f.run(['--bump', 'patch', '--skip-tests'])
+  assert.equal(result.status, 0, result.stdout + result.stderr)
+  assert.equal((await json(join(f.root, 'manifest.json'))).version, '1.2.4.0')
+  assert.equal((await json(join(f.root, 'package.json'))).version, '1.2.4+rev.0')
+})
+
+test('same-version four-part builds preserve source bytes and timestamp the numeric version', async t => {
+  const f = await fixture(t, { version: '1.2.3.4' })
+  const result = f.run(['--bump', 'none', '--skip-tests'])
+  assert.equal(result.status, 0, result.stdout + result.stderr)
+  await f.assertSourcesUnchanged()
+  const [name] = await readdir(join(f.root, 'releases'))
+  assert.match(name, /^markdown-plus-v1\.2\.3\.4-\d{8}T\d{9}Z$/)
+})
+
+test('failed revision build restores both npm and numeric source versions', async t => {
+  const f = await fixture(t, { version: '1.2.3.4', buildFails: true })
+  const result = f.run(['--bump', 'revision', '--skip-tests'])
+  assert.equal(result.status, 1)
+  await f.assertSourcesUnchanged()
+  await f.assertNoRelease()
 })
 
 test('no-bump release preserves source bytes and packages a timestamped, verifiable ZIP', async t => {

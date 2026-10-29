@@ -4,12 +4,22 @@ import { access, mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs
 import { join } from 'node:path'
 import { createInterface } from 'node:readline/promises'
 import { fileURLToPath } from 'node:url'
-import { BUMP_TYPES, bumpVersion, readVersions, restoreVersions, versionEdits, writeVersions } from './release-version.mjs'
+import { BUMP_TYPES, bumpVersion, packageVersionFor, readVersions, restoreVersions, versionEdits, writeVersions } from './release-version.mjs'
+import { selectBump } from './release-prompt.mjs'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
-const help = `Usage: npm run release -- [--bump patch|minor|major|none] [--skip-tests]
+// Terminal-only styling; keep redirected logs and NO_COLOR output plain.
+const paint = (code, value, stream = process.stdout) =>
+  stream.isTTY && !('NO_COLOR' in process.env) && process.env.TERM !== 'dumb'
+    ? `\u001b[${code}m${value}\u001b[0m`
+    : String(value)
+const step = message => console.log(`\n${paint('1;36', message)}`)
+const warn = message => console.warn(paint('33', message, process.stderr))
+const bumpColors = { patch: '32', minor: '36', major: '35', revision: '34' }
+const help = `Usage: npm run release -- [--bump patch|minor|major|revision|none] [--skip-tests]
 
 Without --bump, ask whether to bump the version and which component to bump.
+--bump revision  Increment the fourth numeric component (e.g. 0.1.0 -> 0.1.0.1).
 --bump none    Keep source versions; timestamp the ZIP and packaged version_name.
 --skip-tests   Explicitly skip npm test (recorded in release.json).
 
@@ -31,21 +41,32 @@ function parseArgs(args) {
 }
 
 async function chooseBump(version) {
-  if (!process.stdin.isTTY) throw new Error('Interactive input requires a terminal. Use --bump patch|minor|major|none.')
+  if (!process.stdin.isTTY) throw new Error('Interactive input requires a terminal. Use --bump patch|minor|major|revision|none.')
   const prompt = createInterface({ input: process.stdin, output: process.stdout })
   try {
+    console.log(`\n${paint('1;36', 'Markdown Plus · Release')}`)
     let answer
     do {
-      answer = (await prompt.question(`Current version: ${version}. Bump version? [y/N] `)).trim().toLowerCase()
+      answer = (await prompt.question(`Current version: ${paint('1', version)}. ${paint('1;36', 'Bump version?')} ${paint('2', '[y/N]')} `)).trim().toLowerCase()
     } while (!['', 'y', 'yes', 'n', 'no'].includes(answer))
     if (!['y', 'yes'].includes(answer)) return 'none'
-    do {
-      answer = (await prompt.question('Bump type: patch, minor, major [patch]: ')).trim().toLowerCase() || 'patch'
-    } while (!['patch', 'minor', 'major'].includes(answer))
-    return answer
   } finally {
     prompt.close()
   }
+  console.log(`\n${paint('1', 'Choose a version bump')} ${paint('2', '(major.minor.patch[.revision])')}`)
+  const choices = [
+    ['patch', 'Bug fixes and small corrections'],
+    ['minor', 'New features that keep existing usage compatible'],
+    ['major', 'Breaking changes that require users to adjust or migrate'],
+    ['revision', 'A small follow-up release; increment only the fourth number']
+  ].map(([value, description]) => {
+    try {
+      return { value, description, next: `${version} -> ${bumpVersion(version, value)}` }
+    } catch {
+      return { value, description, next: 'unavailable (Chrome version limit)', disabled: true }
+    }
+  })
+  return selectBump({ choices, paint, colors: bumpColors })
 }
 
 async function exists(path) {
@@ -158,9 +179,11 @@ async function release(options) {
   try {
     if (await exists(destination)) throw new Error(`Release already exists: ${destination}`)
     const git = gitState()
-    console.log(`\nRelease: ${sources.version} -> ${versionName} (${bump})`)
-    if (git.dirty) console.log('Working tree has local changes; they will be included and recorded in release.json.')
-    if (options.skipTests) console.warn('Skipping tests because --skip-tests was supplied.')
+    step(`Release: ${sources.version} -> ${versionName} (${bump})`)
+    if (packageVersionFor(version) !== version) console.log(`npm package version: ${packageVersionFor(version)}`)
+    if (git.dirty) warn('Working tree has local changes; they will be included and recorded in release.json.')
+    step('[1/4] Run tests')
+    if (options.skipTests) warn('Skipping tests because --skip-tests was supplied.')
     else await npm(['test'])
     checkInterrupted()
     stage = await mkdtemp(join(releases, '.building-'))
@@ -169,26 +192,29 @@ async function release(options) {
       await writeVersions(edits)
     }
     const extension = join(stage, 'extension')
+    step('[2/4] Build production extension')
     await npm(['run', 'build', '--', '--outDir', extension])
     const manifest = await validateBuild(extension, version)
     manifest.version_name = versionName
     await writeFile(join(extension, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
     const filename = `${buildName}.zip`
     const archive = join(stage, filename)
+    step('[3/4] Create ZIP and verify integrity')
     await run('zip', ['-q', '-r', '-X', archive, '.', '-x', '*.DS_Store', '__MACOSX/*'], extension)
     await run('unzip', ['-tq', archive])
     const sha256 = createHash('sha256').update(await readFile(archive)).digest('hex')
     await writeFile(join(stage, `${filename}.sha256`), `${sha256}  ${filename}\n`)
     await writeFile(join(stage, 'release.json'), `${JSON.stringify({
-      version, versionName, bump, builtAt, git,
+      version, packageVersion: packageVersionFor(version), versionName, bump, builtAt, git,
       tests: options.skipTests ? 'skipped' : 'passed', archive: filename, sha256
     }, null, 2)}\n`)
     checkInterrupted()
     // Publish only a complete bundle. The lock prevents competing release writers.
     await rename(stage, destination)
     complete = true
-    console.log(`\nRelease ready: ${destination}\nZIP: ${join(destination, filename)}\nLoad unpacked: ${join(destination, 'extension')}`)
-    if (bump === 'none') console.log('Same-version builds are for testing; publishing an update requires a higher numeric version.')
+    console.log(`\n${paint('1;32', '[4/4] Release ready')}\n${destination}`)
+    console.log(`${paint('1', 'ZIP:')} ${join(destination, filename)}\n${paint('1', 'Load unpacked:')} ${join(destination, 'extension')}`)
+    if (bump === 'none') warn('Same-version builds are for testing; publishing an update requires a higher numeric version.')
   } finally {
     try {
       if (!complete) await restoreVersions(edits)
@@ -206,6 +232,6 @@ try {
   if (options.help) console.log(help)
   else await release(options)
 } catch (error) {
-  console.error(`Release failed: ${error.message}`)
+  console.error(paint('1;31', `Release failed: ${error.message}`, process.stderr))
   process.exitCode = 1
 }

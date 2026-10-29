@@ -1,11 +1,11 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-export const BUMP_TYPES = ['patch', 'minor', 'major', 'none']
+export const BUMP_TYPES = ['patch', 'minor', 'major', 'revision', 'none']
 
 export function validateVersion(version) {
-  if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(version)) {
-    throw new Error(`Expected a major.minor.patch version, received: ${version}`)
+  if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?$/.test(version)) {
+    throw new Error(`Expected a major.minor.patch[.revision] version, received: ${version}`)
   }
   const parts = version.split('.').map(Number)
   if (parts.some(part => part > 65535) || parts.every(part => part === 0)) {
@@ -18,12 +18,27 @@ export function bumpVersion(version, bump) {
   const parts = validateVersion(version)
   if (!BUMP_TYPES.includes(bump)) throw new Error(`Unknown bump type: ${bump}`)
   if (bump === 'none') return version
-  const index = { major: 0, minor: 1, patch: 2 }[bump]
+  if (bump === 'revision' && parts.length === 3) parts.push(0)
+  const index = { major: 0, minor: 1, patch: 2, revision: 3 }[bump]
   parts[index] += 1
   parts.fill(0, index + 1)
   const next = parts.join('.')
   validateVersion(next)
   return next
+}
+
+export function packageVersionFor(version) {
+  const parts = validateVersion(version)
+  const base = parts.slice(0, 3).join('.')
+  return parts.length === 4 ? `${base}+rev.${parts[3]}` : base
+}
+
+export function extensionVersionFor(version) {
+  const match = /^(\d+\.\d+\.\d+)(?:\+rev\.(\d+))?$/.exec(version)
+  if (!match) throw new Error(`Expected an npm version major.minor.patch[+rev.N], received: ${version}`)
+  const numeric = match[2] === undefined ? match[1] : `${match[1]}.${match[2]}`
+  validateVersion(numeric)
+  return numeric
 }
 
 export async function readVersions(root) {
@@ -33,11 +48,11 @@ export async function readVersions(root) {
     return { path, name, original, data: JSON.parse(original) }
   }))
   const [pkg, lock, manifest] = files.map(file => file.data)
-  validateVersion(pkg.version)
-  if ([lock.version, lock.packages?.['']?.version, manifest.version].some(version => version !== pkg.version)) {
-    throw new Error('Version mismatch: package.json, package-lock.json (including packages[""]), and manifest.json must agree.')
+  const version = extensionVersionFor(pkg.version)
+  if ([lock.version, lock.packages?.['']?.version].some(value => value !== pkg.version) || manifest.version !== version) {
+    throw new Error('Version mismatch: package.json and package-lock.json must agree; manifest.json must match the numeric extension version (npm +rev.N maps to .N).')
   }
-  return { files, version: pkg.version, name: pkg.name }
+  return { files, version, name: pkg.name }
 }
 
 export function versionEdits(files, version) {
@@ -49,8 +64,8 @@ export function versionEdits(files, version) {
       updated = updated.replace(/("version_name"\s*:\s*)"(?:[^"\\]|\\.)*"/, (_, before) => `${before}${JSON.stringify(version)}`)
     } else {
       const data = structuredClone(file.data)
-      data.version = version
-      if (file.name === 'package-lock.json') data.packages[''].version = version
+      data.version = packageVersionFor(version)
+      if (file.name === 'package-lock.json') data.packages[''].version = data.version
       updated = `${JSON.stringify(data, null, 2)}\n`
     }
     return { ...file, updated }

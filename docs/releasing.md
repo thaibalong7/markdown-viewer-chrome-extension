@@ -8,9 +8,19 @@ Run `nvm use` and install the locked dependencies with `npm ci` before releasing
 npm run release
 ```
 
-The script asks whether to bump the current version (default: no). If yes, choose `patch` (default), `minor`, or `major`. For example, from `0.1.0`, these produce `0.1.1`, `0.2.0`, or `1.0.0`. A successful bump updates `package.json`, the root version and `packages[""].version` in `package-lock.json`, and `manifest.json`. Dependency versions remain unchanged. If the source manifest already has `version_name`, a bump resets it to the new numeric version. About reads the packaged manifest, so no UI version constant needs updating.
+The script asks whether to bump the current version (default: no). If yes, choose `patch` (default), `minor`, `major`, or `revision`. For example, from `0.1.0`, these produce `0.1.1`, `0.2.0`, `1.0.0`, or `0.1.0.1`. A successful bump updates `package.json`, the root version and `packages[""].version` in `package-lock.json`, and `manifest.json`. Dependency versions remain unchanged. If the source manifest already has `version_name`, a bump resets it to the new numeric version. About reads the packaged manifest, so no UI version constant needs updating.
+
+The bump menu explains each choice and previews its result from the current version: `patch` for bug fixes and small corrections, `minor` for new features that keep existing usage compatible, `major` for breaking changes that require users to adjust or migrate, and `revision` for a small follow-up release that increments only the fourth number. Use Up/Down to move and Enter to confirm; `patch` is selected initially. Choices exceeding Chrome's version limits are disabled and skipped. Ctrl+C or Escape cancels before any source version changes. Terminals without cursor support (`TERM=dumb`) and redirected output use a numbered prompt instead, accepting `1`/`2`/`3`/`4` or the full name. Noninteractive input still requires `--bump`.
+
+Interactive terminals show colored choices, prompts, and numbered build steps: green for patch/success, cyan for minor/progress, magenta for major, blue for revision, yellow for warnings, and red for failures. Labels remain explicit without color. Colors are disabled for redirected output, `TERM=dumb`, or when `NO_COLOR` is set; for example, `NO_COLOR=1 npm run release`.
 
 Choosing no keeps all source version files byte-for-byte unchanged. The build receives a UTC timestamp with milliseconds, for example `0.1.0-20261029T123456789Z`, in the archive name and the packaged manifest's `version_name`. Chrome's numeric `version` stays `0.1.0`. The timestamp distinguishes local testing builds; publishing an update to Chrome Web Store requires increasing the numeric version. See Chrome's [version and version_name rules](https://developer.chrome.com/docs/extensions/reference/manifest/version).
+
+## Fourth version component
+
+`revision` creates a numeric Chrome version such as `0.1.0.1`, then `0.1.0.2`. Each numeric component must stay within Chrome's range of 0–65535. When a four-part version is present, patch/minor/major bumps keep four parts and reset the lower components: from `0.1.0.2`, patch produces `0.1.1.0`, minor produces `0.2.0.0`, and major produces `1.0.0.0`.
+
+Chrome accepts four numeric components, while npm expects SemVer. The script maps the fourth component to SemVer build metadata in `package.json` and both lockfile locations: Chrome `0.1.0.2` corresponds to npm `0.1.0+rev.2`. The consistency check validates this mapping; a four-number string is never written into the npm version field. Release filenames, the packaged manifest, and About use the numeric Chrome version. `release.json` records both `version` and `packageVersion`. Chrome compares the numeric components for extension updates; npm ignores build metadata when comparing SemVer precedence. See the [npm version requirement](https://docs.npmjs.com/cli/v10/configuring-npm/package-json/#version) and [SemVer build metadata](https://semver.org/#spec-item-10).
 
 ## Noninteractive workflow
 
@@ -18,6 +28,7 @@ Choosing no keeps all source version files byte-for-byte unchanged. The build re
 npm run release -- --bump patch
 npm run release -- --bump minor
 npm run release -- --bump major
+npm run release -- --bump revision
 npm run release -- --bump none
 ```
 
@@ -35,7 +46,7 @@ releases/markdown-plus-v0.1.0-20261029T123456789Z/
   release.json
 ```
 
-Bumped builds use a directory and ZIP name such as `markdown-plus-v0.2.0`, without a timestamp. Existing release directories are never overwritten. `release.json` records the numeric/display versions, bump choice, UTC build start time, Git commit, whether the working tree had changes before the bump, test status, archive filename, and SHA-256. Local changes are included in the build; the script reports them rather than requiring a clean worktree. Git fields are `null` when Git information is unavailable.
+Bumped builds use a directory and ZIP name such as `markdown-plus-v0.2.0` or `markdown-plus-v0.1.0.2`, without a timestamp. Existing release directories are never overwritten. `release.json` records the numeric/display/npm versions, bump choice, UTC build start time, Git commit, whether the working tree had changes before the bump, test status, archive filename, and SHA-256. Local changes are included in the build; the script reports them rather than requiring a clean worktree. Git fields are `null` when Git information is unavailable.
 
 The script checks version consistency before starting, runs `npm test`, builds production output into a temporary release directory, checks the generated manifest version and referenced entry files, creates a ZIP containing the extension files directly at its root, and verifies archive integrity before publishing the completed directory. Analysis reports are disabled for this build. The normal development `dist/` directory is preserved.
 

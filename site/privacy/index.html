@@ -54,7 +54,16 @@
             Reader, editor, explorer, theme, and plugin preferences are stored with
             <code>chrome.storage.sync</code> when it is available. Chrome may sync those settings
             through the Google account signed in to Chrome. If sync storage is unavailable, the
-            extension uses <code>chrome.storage.local</code> instead.
+            extension uses <code>chrome.storage.local</code> instead. A failed sync write does not
+            silently switch to local storage. The extension also keeps the last complete settings
+            snapshot in <code>chrome.storage.local</code> to display while synchronized settings
+            are incomplete.
+          </li>
+          <li>
+            Custom theme descriptions, colors, and background image references may sync with
+            preferences. Background image files you choose remain on the current device in
+            browser IndexedDB and are not uploaded to the developer. Image files do not sync;
+            you may need to choose a local image again on another device.
           </li>
           <li>
             If recent-file history is enabled, local file URLs, file names, and last-opened times

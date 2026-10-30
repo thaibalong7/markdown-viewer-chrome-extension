@@ -764,6 +764,13 @@
         "resetSettings": "Failed to reset settings.",
         "settingsAreInvalid": "Settings are invalid.",
         "youCanSaveUpToValueCustomThemes": "You can save up to {0} custom themes."
+      },
+      "storage": {
+        "quota": "Settings storage is full. Your previously saved settings have been kept.",
+        "rate": "Changes are being saved too quickly. Please try again later.",
+        "pending": "Settings are still syncing or could not be verified. Please wait and try again.",
+        "cached": "Showing the last complete settings while Chrome Sync catches up. New changes cannot be saved yet.",
+        "unavailable": "Settings storage is unavailable."
       }
     },
     "theme": {

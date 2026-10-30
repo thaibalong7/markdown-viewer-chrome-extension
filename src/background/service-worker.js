@@ -1,6 +1,9 @@
 import { MESSAGE_TYPES } from '../messaging/index.js'
 import { logger } from '../shared/logger.js'
 import { routeMessage } from './message-router.js'
+import { observeSettingsStorage } from './settings-sync-observer.js'
+
+observeSettingsStorage()
 
 const MESSAGE_TYPES_SKIP_SERVICE_ROUTING = new Set([
   MESSAGE_TYPES.OFFSCREEN_FETCH,

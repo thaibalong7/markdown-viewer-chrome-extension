@@ -2,6 +2,8 @@ import { t, translateMessage } from '../i18n/index.js'
 import { useLocale } from '../i18n/react.js'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../shared/react/Button.jsx'
+import { Notice } from '../shared/react/Notice.jsx'
+import { useSettingsStorageWarning } from '../settings/useSettingsStorageWarning.js'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { useSettingsForm } from './hooks/useSettingsForm.js'
 import { AboutSettings } from './sections/AboutSettings.jsx'
@@ -27,6 +29,7 @@ export function resolveSettingsSection(hash) {
 
 export function OptionsApp() {
   const locale = useLocale()
+  const storageWarning = useSettingsStorageWarning()
   const [activeSection, setActiveSection] = useState(() =>
     resolveSettingsSection(globalThis.location?.hash)
   )
@@ -124,6 +127,7 @@ export function OptionsApp() {
         </aside>
 
         <main className="settings-main">
+          {storageWarning ? <Notice variant="warning" role="status">{storageWarning}</Notice> : null}
           {activeSection === 'about' ? <AboutSettings /> : form.loading ? <div className="mdp-ui-card settings-loading" aria-label={t('options.navigation.loadingSettings')} aria-busy="true">
               <SkeletonBlock
                 lines={5}

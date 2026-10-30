@@ -6,6 +6,8 @@ Cập nhật sau xử lý mục 1 ngày **2026-10-29**: đã vá Markdown DoS v�
 
 Cập nhật sau xử lý mục 2 ngày **2026-10-29**: HTML sanitizer fail-closed, CSS HTML/SVG đã bị giới hạn và có DOM/browser security coverage; chi tiết implementation, kết quả và cách chạy lại nằm ở mục 2. P0 mục 3–5 và manual QA trên ZIP candidate vẫn chưa hoàn tất.
 
+Cập nhật sau triển khai mục 3 ngày **2026-10-30**: settings dùng index nhỏ và các theme records trong Chrome Sync, có byte budgeting, migration/cache và lỗi quota rõ ràng. Regression trên Chrome Storage thật và sau restart đã pass; kết quả cùng giới hạn kiểm chứng nằm ở mục 3. Mục 4–5, kiểm tra Sync giữa hai profile và manual QA trên ZIP candidate vẫn còn mở.
+
 Các nhận xét về cấu hình sanitizer/Math trong hồ sơ mục 1 phản ánh snapshot trước thay đổi mục 2; dùng mục 2 và runtime source để đối chiếu chính sách hiện tại.
 
 ## Kết quả review ngày 2026-10-29
@@ -102,16 +104,27 @@ Tiêu chí hoàn thành: test fail nếu sanitizer bị bypass/không khởi t�
 
 ### 3. Sửa Chrome Sync quota cho custom themes
 
-[`settings-service.js`](../../src/settings/settings-service.js) lưu toàn bộ settings trong key `mdViewer.settings`. [`theme/index.js`](../../src/theme/index.js) cho phép tối đa 32 custom themes, nhưng dữ liệu hợp lệ có thể vượt quota mỗi item trước khi đạt giới hạn này. `chrome.storage.sync || chrome.storage.local` chỉ fallback khi API sync không tồn tại, không xử lý lỗi quota từ `sync.set()`.
+Đã triển khai ngày **2026-10-30** theo [hồ sơ xử lý Sync quota](./sync-quota-plan.md). [`settings-storage-format.js`](../../src/settings/settings-storage-format.js) tách index `mdViewer.settings.index.v1` và theme records `mdViewer.theme.<sha256>`, kiểm tra refs/hash, byte/item, tổng bytes và số items. [`settings-storage.js`](../../src/settings/settings-storage.js) giữ current/previous refs, migrate legacy sau commit/readback, cache snapshot hoàn chỉnh ở local và chặn save/reset dựa trên dữ liệu sync còn thiếu. Không tự fallback khi quota/throttling; chỉ dùng local backend nếu API sync không tồn tại. Public settings/export schema vẫn version 2; ảnh nền tiếp tục ở IndexedDB.
 
-- [ ] Chọn cách lưu settings/themes phù hợp: chia thành các key có giới hạn dung lượng hoặc lưu local với chính sách sync/fallback rõ ràng.
-- [ ] Tính cả dung lượng JSON và key trước save/import; không chỉ giới hạn số themes.
-- [ ] Xử lý lỗi quota bằng thông báo dễ hiểu, không báo save thành công hoặc làm mất settings cũ.
-- [ ] Nếu có fallback sang local, bảo đảm lần đọc tiếp theo dùng đúng bản mới nhất và hành vi giữa các thiết bị được giải thích rõ.
-- [ ] Thêm tests sát ngưỡng 8.192 byte, đủ 32 themes, tên Unicode và background descriptors; kiểm tra import, update, delete và reset.
-- [ ] Cập nhật architecture/theme docs và privacy disclosure nếu thay đổi ownership hoặc chính sách lưu/sync.
+Lỗi baseline: trước thay đổi, [`settings-service.js`](../../src/settings/settings-service.js) ghi toàn bộ settings trong key `mdViewer.settings`; library hợp lệ vượt 8 KB trước giới hạn 32 themes, khiến cả partial saves khác thất bại. Key cũ nay chỉ là nguồn legacy đến lần commit format mới đầu tiên thành công.
 
-Tiêu chí hoàn thành: mọi cấu hình UI/schema cho phép đều lưu được theo chính sách đã chọn hoặc bị từ chối trước khi ghi bằng lỗi rõ ràng; lỗi quota không làm mất bản đã lưu. Xác minh thêm với Chrome Storage thật.
+- [x] Chọn cách lưu settings/themes phù hợp: giữ Sync, tách index và theme records có giới hạn dung lượng.
+- [x] Tính cả JSON, UTF-8, key/envelope, escaping Chromium và dự phòng số trước save/import; tính cả legacy/orphan/foreign items đang chiếm dung lượng.
+- [x] Quota/throttling có thông báo đã dịch; không báo thành công trước persistence. Cache/cleanup/notification lỗi sau commit không báo lỗi save giả hoặc rollback ảnh đã được dùng.
+- [x] Không fallback sau lỗi sync; local backend khi API không tồn tại và verified local cache có vai trò riêng, đã mô tả trong docs/privacy.
+- [x] Tests sát 8.192 byte, tổng 102.400 byte, 512 items, 32 themes Unicode/background, import/update/delete/reset, migration/reload, incomplete sync, mutation queue và image cleanup.
+- [x] Cập nhật architecture/theme docs, privacy disclosure và source public policy. Chưa deploy public policy trong task này.
+- [ ] Release QA: hai Chrome profile đăng nhập cùng tài khoản với Sync bật; kiểm tra truyền settings/theme refs, thay đổi đồng thời, image fallback và UI trên ZIP candidate. Mock concurrency và Chrome storage local-profile không thay thế bước này.
+
+Project checks sau Chrome UI QA ngày **2026-10-30**, Node `20.19.5`: `npm test` pass **194 files / 1.449 tests**; `npm run build` pass. Build vẫn có cảnh báo CRXJS Rollup/Rolldown và chunks lớn như baseline; không thay đổi dependency hoặc manifest trong mục này.
+
+Browser regression [`settings-storage.html`](../../test/browser/settings-storage.html) chạy runtime modules thật trong một extension/profile thử nghiệm riêng, trên **Chrome 156.0.0.0 / macOS**: **50 assertions storage + 1 assertion sau đóng/mở lại Chrome** pass. Chrome chấp nhận item 8.191/8.192 B, reject 8.193 B; estimator bao phủ Unicode/escaping và số trong fixture; 32 theme với tên CJK/ID/image descriptors dài dùng **35.761 B tổng**, index **3.793 B**. Save/import/error/update/delete/reset, legacy migration và restart giữ settings đúng. Chạy lại bằng `source ~/.nvm/nvm.sh && nvm use && node scripts/settings-storage-smoke.mjs` (có thể đặt `CHROME_BIN`); runner không sử dụng profile hoặc extension đang cài của người dùng. Đây chưa phải smoke toàn bộ extension/Chrome minimum/ZIP candidate hoặc xác minh Sync qua mạng.
+
+Packaged UI QA bằng runner tạm đã kiểm tra bản build `dist/` đầy đủ trong profile riêng trên **Chrome 156.0.8078.74 / macOS**, **22 assertions pass**: Theme Studio tạo theme Unicode với ảnh PNG thực, Viewer decode ảnh sau bật file access qua Chrome UI, Popup nhận theme; đầy Sync giữ draft/settings/ảnh cũ, retry thay ảnh và retire ảnh cũ đúng; import 32 themes, partial save qua Popup cập nhật Viewer, reload Options và terminate/restart MV3 worker vẫn giữ library; xóa active theme chọn fallback; snapshot thiếu hiển thị warning, chặn ghi và phục hồi; export JSON tải xuống đầy đủ, reset library/IndexedDB và không có uncaught exceptions ở các surface được kiểm tra. Runner và helper Chrome tạm đã được gỡ sau QA; giữ kết quả này cùng các regression tests Vitest trong repo. Đây là smoke unpacked build, chưa phải clean ZIP hoặc hai profile có Google Sync.
+
+Chrome UI QA đã phát hiện và sửa lỗi native form validation trong [`ThemeBackgroundFields.jsx`](../../src/options/sections/ThemeBackgroundFields.jsx): dimming mặc định `0.08` không khớp `step=0.05`, nên Chrome chặn submit khi dùng solid/image/gradient background mà không gọi save handler. Dimming và angle nay dùng `step="any"` đúng schema; ba regression cases solid/image/default dimming và gradient có angle/opacity thập phân fail trước fix, pass sau fix. Luồng tạo/lưu ảnh trong Chrome đã được chạy lại thành công sau sửa.
+
+Tiêu chí phần persistence: cấu hình UI/schema lưu được theo budget hoặc bị từ chối rõ trước khi ghi khi có thể; lỗi API thật vẫn giữ bản đã lưu. Snapshot thiếu không làm mất library hoặc tự ghi defaults; không coi `sync.set()` resolve là xác nhận thiết bị khác đã nhận đủ dữ liệu. Mục release QA phía trên vẫn phải hoàn thành trước submit.
 
 Nguồn: [Chrome storage.sync quota](https://developer.chrome.com/docs/extensions/reference/api/storage#property-sync-QUOTA_BYTES_PER_ITEM).
 

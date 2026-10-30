@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from '../default-settings.js'
 import { STORAGE_KEYS, settingsService } from '../settings-service.js'
+import { createStorageArea } from './storage-harness.js'
+import { decodeSettings } from '../settings-storage-format.js'
 
 describe('settingsService', () => {
   let storedSettings
@@ -16,12 +18,7 @@ describe('settingsService', () => {
         mermaid: { enabled: true }
       }
     }
-    storage = {
-      get: vi.fn(async (key) => ({ [key]: storedSettings })),
-      set: vi.fn(async (next) => {
-        storedSettings = next[STORAGE_KEYS.SETTINGS]
-      })
-    }
+    storage = createStorageArea({ [STORAGE_KEYS.SETTINGS]: storedSettings })
     globalThis.chrome = {
       storage: {
         sync: storage,
@@ -60,9 +57,8 @@ describe('settingsService', () => {
     expect(settings.theme.activeId).toBe('dark')
     expect(settings.layout.contentMaxWidth).toBe(860)
     expect(settings.layout.showToc).toBe(DEFAULT_SETTINGS.layout.showToc)
-    expect(storage.set).toHaveBeenCalledWith({
-      [STORAGE_KEYS.SETTINGS]: settings
-    })
+    expect(await decodeSettings(storage.items)).toEqual(settings)
+    expect(storage.items).not.toHaveProperty(STORAGE_KEYS.SETTINGS)
   })
 
   it('normalizes numeric strings before persisting', async () => {
@@ -110,7 +106,7 @@ describe('settingsService', () => {
   })
 
   it('uses safe defaults for corrupt stored explorer limits', async () => {
-    storedSettings = {
+    storage.items[STORAGE_KEYS.SETTINGS] = {
       explorer: {
         maxScanDepth: -1,
         maxFiles: 'many',
@@ -124,7 +120,7 @@ describe('settingsService', () => {
   })
 
   it('uses the safe default for a corrupt stored document limit', async () => {
-    storedSettings = {
+    storage.items[STORAGE_KEYS.SETTINGS] = {
       documents: { maxStandaloneTextFileSizeMiB: 500 }
     }
 

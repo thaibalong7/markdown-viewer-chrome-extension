@@ -5,6 +5,8 @@ import { mergePluginSettings } from '../plugins/plugin-types.js'
 import { openExtensionDetails } from '../shared/file-scheme-access.js'
 import { AppIcon } from '../shared/react/AppIcon.jsx'
 import { Button } from '../shared/react/Button.jsx'
+import { Notice } from '../shared/react/Notice.jsx'
+import { useSettingsStorageWarning } from '../settings/useSettingsStorageWarning.js'
 import { SkeletonBlock } from '../shared/react/Skeleton.jsx'
 import { useFileSchemeAccess } from '../shared/react/useFileSchemeAccess.js'
 import { SETTINGS_TAB_IDS, SETTINGS_TABS } from './settings-constants.js'
@@ -21,6 +23,7 @@ import { openOptionsSection } from './actions/open-options-section.js'
 
 export function PopupApp() {
   const locale = useLocale()
+  const storageWarning = useSettingsStorageWarning()
   useEffect(() => { document.documentElement.lang = locale }, [locale])
   const {
     settings,
@@ -137,6 +140,8 @@ export function PopupApp() {
         </div>
         {fileAccessReady ? <FileAccessCallout state={fileAccess.state} /> : null}
       </header>
+
+      {storageWarning ? <Notice variant="warning" role="status">{storageWarning}</Notice> : null}
 
       {!fileAccessReady ? <FileAccessCallout
           state={fileAccess.state}

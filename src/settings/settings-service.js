@@ -2,22 +2,12 @@ import { deepMerge } from '../shared/deep-merge.js'
 import { logger } from '../shared/logger.js'
 import { DEFAULT_SETTINGS } from './default-settings.js'
 import { normalizeSettings } from './settings-schema.js'
-
-export const STORAGE_KEYS = {
-  SETTINGS: 'mdViewer.settings'
-}
+import { createSettingsStorage } from './settings-storage.js'
+import { encodeSettings, STORAGE_KEYS } from './settings-storage-format.js'
+import { storageError } from './settings-storage-errors.js'
+export { STORAGE_KEYS } from './settings-storage-format.js'
 
 const CURRENT_SETTINGS_VERSION = 2
-
-function getStorageArea() {
-  return chrome.storage.sync || chrome.storage.local
-}
-
-async function getRawSettings() {
-  const storage = getStorageArea()
-  const data = await storage.get(STORAGE_KEYS.SETTINGS)
-  return data[STORAGE_KEYS.SETTINGS] || null
-}
 
 function migrateSettings(rawSettings) {
   const migrated = deepMerge({}, rawSettings || {})
@@ -38,39 +28,72 @@ function migrateSettings(rawSettings) {
   return migrated
 }
 
-async function getSettings() {
-  const raw = await getRawSettings()
+function loadSettings(raw) {
   const merged = deepMerge(DEFAULT_SETTINGS, migrateSettings(raw))
   return normalizeSettings(merged, { invalid: 'default' })
 }
 
-async function saveSettings(partialSettings) {
-  const storage = getStorageArea()
-  const current = await getSettings()
-  const nextSettings = normalizeSettings(deepMerge(current, partialSettings || {}))
-  nextSettings.version = CURRENT_SETTINGS_VERSION
+export function createSettingsService({ getStorageApi = () => chrome.storage, log = logger } = {}) {
+  const stores = new WeakMap()
+  let pending = Promise.resolve()
 
-  await storage.set({
-    [STORAGE_KEYS.SETTINGS]: nextSettings
-  })
+  function storage() {
+    const api = getStorageApi() || {}
+    const area = api.sync || api.local
+    if (!area) throw storageError('unavailable')
+    if (!stores.has(area)) stores.set(area, createSettingsStorage(area, {
+      backend: api.sync ? 'sync' : 'local', local: api.local, log
+    }))
+    return stores.get(area)
+  }
 
-  logger.info('Settings saved.')
-  return nextSettings
+  // Reads wait for preceding mutations too, including storage.onChanged work.
+  function serialize(action) {
+    const result = pending.then(action)
+    pending = result.catch(() => {})
+    return result
+  }
+
+  function getSettingsState() {
+    return serialize(async () => {
+      const store = storage()
+      const { raw, items, warning } = await store.read()
+      const settings = loadSettings(raw)
+      // Cache the legacy read too, without migrating/writing the sync backend.
+      if (raw && !warning && !Object.hasOwn(items, STORAGE_KEYS.INDEX)) {
+        await store.remember(await encodeSettings(settings))
+      }
+      return { settings, warning }
+    })
+  }
+
+  function saveSettings(partialSettings) {
+    return serialize(async () => {
+      const store = storage()
+      const { raw, items } = await store.read({ allowCached: false })
+      const next = normalizeSettings(deepMerge(loadSettings(raw), partialSettings || {}))
+      next.version = CURRENT_SETTINGS_VERSION
+      await store.write(next, items)
+      log.info('Settings saved.')
+      return next
+    })
+  }
+
+  function resetSettings() {
+    return serialize(async () => {
+      const store = storage()
+      const { items } = await store.read({ allowCached: false })
+      const fresh = normalizeSettings(deepMerge({}, DEFAULT_SETTINGS))
+      await store.write(fresh, items)
+      log.info('Settings reset to default.')
+      return fresh
+    })
+  }
+
+  return {
+    getSettings: async () => (await getSettingsState()).settings,
+    getSettingsState, saveSettings, resetSettings
+  }
 }
 
-async function resetSettings() {
-  const storage = getStorageArea()
-  const fresh = normalizeSettings(deepMerge({}, DEFAULT_SETTINGS))
-  await storage.set({
-    [STORAGE_KEYS.SETTINGS]: fresh
-  })
-
-  logger.info('Settings reset to default.')
-  return fresh
-}
-
-export const settingsService = {
-  getSettings,
-  saveSettings,
-  resetSettings
-}
+export const settingsService = createSettingsService()

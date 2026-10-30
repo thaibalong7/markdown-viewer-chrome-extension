@@ -3,15 +3,14 @@ import { DEFAULT_SETTINGS } from '../default-settings.js'
 import { normalizeExplorerSettings } from '../settings-schema.js'
 import { STORAGE_KEYS, settingsService } from '../settings-service.js'
 import { needsFullRender } from '../../shared/settings-diff.js'
+import { createStorageArea } from './storage-harness.js'
 
 afterEach(() => { delete globalThis.chrome })
 describe('tree indent guides settings', () => {
   it('defaults old settings to on, preserves false through partial saves and resets to on', async () => {
-    let stored = { version: 2, explorer: { maxFiles: 800 } }
-    globalThis.chrome = { storage: { sync: {
-      get: vi.fn(async () => ({ [STORAGE_KEYS.SETTINGS]: stored })),
-      set: vi.fn(async data => { stored = data[STORAGE_KEYS.SETTINGS] })
-    } } }
+    globalThis.chrome = { storage: { sync: createStorageArea({
+      [STORAGE_KEYS.SETTINGS]: { version: 2, explorer: { maxFiles: 800 } }
+    }) } }
     expect(DEFAULT_SETTINGS.explorer.showTreeIndentGuides).toBe(true)
     expect((await settingsService.getSettings()).explorer.showTreeIndentGuides).toBe(true)
     await settingsService.saveSettings({ explorer: { showTreeIndentGuides: false } })

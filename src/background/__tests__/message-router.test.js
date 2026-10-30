@@ -43,6 +43,20 @@ function createRouterHarness() {
 }
 
 describe('message router settings routes', () => {
+  it.each([MESSAGE_TYPES.SAVE_SETTINGS, MESSAGE_TYPES.RESET_SETTINGS])(
+    'keeps %s successful after notification failure and does not clean assets on persistence failure', async type => {
+      const h = createRouterHarness()
+      h.settingsBroadcastService.broadcastSettingsUpdated.mockRejectedValue(new Error('Notification unavailable'))
+      await expect(h.routeMessage({ type })).resolves.toBeDefined()
+      expect(h.logger.warn).toHaveBeenCalled()
+      h.themeAssetService.clearThemeAssets.mockClear()
+      const persist = type === MESSAGE_TYPES.SAVE_SETTINGS ? h.settingsService.saveSettings : h.settingsService.resetSettings
+      persist.mockRejectedValueOnce(new Error('QUOTA_BYTES quota exceeded'))
+      await expect(h.routeMessage({ type })).rejects.toThrow('QUOTA_BYTES')
+      expect(h.themeAssetService.clearThemeAssets).not.toHaveBeenCalled()
+    }
+  )
+
   it('routes GET_SETTINGS to settings service', async () => {
     const { routeMessage, settingsService } = createRouterHarness()
 

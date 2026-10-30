@@ -85,10 +85,12 @@ export function createMessageRouter(dependencies = {}) {
 
   const routes = {
     [MESSAGE_TYPES.PING]: () => createPingResponse(),
-    [MESSAGE_TYPES.GET_SETTINGS]: () => services.settings.getSettings(),
+    [MESSAGE_TYPES.GET_SETTINGS]: (message) => message.includeStorageStatus
+      ? services.settings.getSettingsState()
+      : services.settings.getSettings(),
     [MESSAGE_TYPES.SAVE_SETTINGS]: async (message) => {
       const nextSettings = await services.settings.saveSettings(message.payload || {})
-      await services.settingsBroadcast.broadcastSettingsUpdated(nextSettings)
+      await notifySettings(nextSettings)
       return nextSettings
     },
     [MESSAGE_TYPES.RESET_SETTINGS]: async () => {
@@ -98,7 +100,7 @@ export function createMessageRouter(dependencies = {}) {
       } catch (error) {
         services.log.warn('Could not clear theme assets during settings reset.', error)
       }
-      await services.settingsBroadcast.broadcastSettingsUpdated(nextSettings)
+      await notifySettings(nextSettings)
       return nextSettings
     },
     [MESSAGE_TYPES.SAVE_THEME_ASSET]: (message) => (
@@ -140,6 +142,16 @@ export function createMessageRouter(dependencies = {}) {
         saveAs: false
       })
       return { filename }
+    }
+  }
+
+  async function notifySettings(settings) {
+    try {
+      await services.settingsBroadcast.broadcastSettingsUpdated(settings)
+    } catch (error) {
+      // Persistence has already succeeded. Reporting a save failure here would
+      // make the Options hook delete an image the saved theme now references.
+      services.log.warn('Could not notify pages after settings were saved.', error)
     }
   }
 

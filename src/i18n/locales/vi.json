@@ -760,6 +760,13 @@
         "resetSettings": "Không thể khôi phục cài đặt mặc định.",
         "settingsAreInvalid": "Cài đặt không hợp lệ.",
         "youCanSaveUpToValueCustomThemes": "Bạn có thể lưu tối đa {0} giao diện tùy chỉnh."
+      },
+      "storage": {
+        "quota": "Bộ nhớ cài đặt đã đầy. Cài đặt đã lưu trước đó vẫn được giữ nguyên.",
+        "rate": "Bạn đang lưu thay đổi quá nhanh. Vui lòng thử lại sau.",
+        "pending": "Cài đặt vẫn đang đồng bộ hoặc chưa thể kiểm tra đầy đủ. Vui lòng chờ rồi thử lại.",
+        "cached": "Đang hiển thị cài đặt đầy đủ gần nhất trong khi chờ Chrome đồng bộ. Hiện chưa thể lưu thay đổi mới.",
+        "unavailable": "Hiện không thể truy cập bộ nhớ cài đặt."
       }
     },
     "theme": {

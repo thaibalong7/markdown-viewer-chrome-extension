@@ -2,14 +2,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { settingsService, STORAGE_KEYS } from '../../settings/settings-service.js'
 import { broadcastSettingsUpdated } from '../../background/settings-broadcast-service.js'
 import { MESSAGE_TYPES } from '../../messaging/index.js'
+import { createStorageArea } from '../../settings/__tests__/storage-harness.js'
 
 afterEach(() => { delete globalThis.chrome })
 
 describe('persisted interface language', () => {
   function storage(raw) {
-    let stored = raw
-    const area = { get: vi.fn(async () => ({ [STORAGE_KEYS.SETTINGS]: stored })),
-      set: vi.fn(async values => { stored = values[STORAGE_KEYS.SETTINGS] }) }
+    const area = createStorageArea({ [STORAGE_KEYS.SETTINGS]: raw })
     globalThis.chrome = { storage: { sync: area } }
     return area
   }

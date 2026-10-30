@@ -760,6 +760,13 @@
         "resetSettings": "设置重置失败。",
         "settingsAreInvalid": "设置无效。",
         "youCanSaveUpToValueCustomThemes": "最多可保存 {0} 个自定义主题。"
+      },
+      "storage": {
+        "quota": "设置存储空间已满。之前保存的设置仍然保留。",
+        "rate": "保存更改过于频繁。请稍后重试。",
+        "pending": "设置仍在同步或尚未通过完整性检查。请稍后重试。",
+        "cached": "正在显示最近一次完整的设置，等待 Chrome 同步完成。目前无法保存新的更改。",
+        "unavailable": "无法访问设置存储。"
       }
     },
     "theme": {

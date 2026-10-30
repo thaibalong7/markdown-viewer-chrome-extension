@@ -24,7 +24,8 @@ When the current Store form asks whether the extension **collects** user data, a
 - Local document or website content: processed on-device; not collected or transmitted to the developer.
 - Browsing history: not collected. Recent history is restricted to local `file:` Markdown URLs and stays in `chrome.storage.local`.
 - User activity, personal communications, location, financial information, health information, authentication information, personal identifiers: not collected.
-- Preferences: stored through Chrome storage for the extension's settings; Chrome may sync them through the user's signed-in Chrome profile.
+- Preferences and custom theme descriptors: stored in separate Chrome Sync items; Chrome may sync them through the user's signed-in Chrome profile. Failed sync writes do not silently switch to local storage. A verified complete-settings recovery cache is stored in `chrome.storage.local`; if the sync API does not exist, local storage is the settings backend.
+- Custom theme background images: chosen by the user and stored as Blobs in browser IndexedDB on the current device. Chrome Sync stores the theme's image reference and presentation settings, not the binary image. The image may be unavailable on another device; the user must choose a local image there. These images are not uploaded to the developer or a developer-operated service.
 - File handles: may be retained locally in browser IndexedDB after the user selects a file for saving.
 
 Certifications should state that data is not sold, used for advertising, used for creditworthiness or lending, or transferred for purposes unrelated to the extension's single purpose.

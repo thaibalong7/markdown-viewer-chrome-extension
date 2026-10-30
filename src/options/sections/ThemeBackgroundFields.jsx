@@ -124,6 +124,7 @@ export function ThemeBackgroundFields({
               className="mdp-ui-input mdp-ui-input--technical"
               min="0"
               max="360"
+              step="any"
               value={background.angle}
               disabled={disabled}
               onChange={(event) => update({ angle: event.target.value })}
@@ -207,7 +208,7 @@ export function ThemeBackgroundFields({
               type="number"
               min="0"
               max="0.8"
-              step="0.05"
+              step="any"
               value={background.overlayOpacity}
               disabled={disabled}
               onChange={(event) => update({ overlayOpacity: event.target.value })}

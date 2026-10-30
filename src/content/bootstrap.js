@@ -1,5 +1,5 @@
 import { logger } from '../shared/logger.js'
-import { MESSAGE_TYPES, sendMessage } from '../messaging/index.js'
+import { getSettings } from '../settings/settings-client.js'
 import { detectMarkdownPage } from './page-detector.js'
 import { extractRawMarkdown } from './raw-content-extractor.js'
 import { looksLikeMarkdownText } from '../shared/markdown-detect.js'
@@ -59,15 +59,7 @@ export async function bootstrap({
     }
   }
 
-  const response = await sendMessage({
-    type: MESSAGE_TYPES.GET_SETTINGS
-  })
-
-  if (!response?.ok) {
-    throw new Error(response?.error || 'Failed to load settings.')
-  }
-
-  const settings = response.data
+  const settings = await getSettings()
   if (!settings?.enabled) {
     logger.info('Viewer is disabled in settings.')
     return

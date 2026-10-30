@@ -3,6 +3,38 @@ import { MESSAGE_TYPES } from '../../messaging/index.js'
 import { broadcastSettingsUpdated } from '../settings-broadcast-service.js'
 
 describe('broadcastSettingsUpdated', () => {
+  it('dispatches successive commits in order when tab discovery for the first one is delayed', async () => {
+    let finishQuery
+    const runtimeApi = { sendMessage: vi.fn(), lastError: undefined }
+    const tabsApi = { query: vi.fn()
+      .mockImplementationOnce(() => new Promise(resolve => { finishQuery = resolve }))
+      .mockResolvedValue([]) }
+    const options = { runtimeApi, tabsApi }
+    const first = broadcastSettingsUpdated({ language: 'vi' }, options)
+    const second = broadcastSettingsUpdated({ language: 'en' }, options)
+    await vi.waitFor(() => expect(finishQuery).toBeDefined())
+    finishQuery([])
+    await Promise.all([first, second])
+    expect(runtimeApi.sendMessage.mock.calls.map(([message]) => message.payload.language)).toEqual(['vi', 'en'])
+  })
+  it('notifies extension pages even if tab discovery fails after persistence', async () => {
+    const runtimeApi = { sendMessage: vi.fn(), lastError: undefined }
+    const tabsApi = { query: vi.fn().mockRejectedValue(new Error('Unavailable')) }
+    await expect(broadcastSettingsUpdated({ language: 'vi' }, { runtimeApi, tabsApi })).resolves.toEqual({ attempted: 0 })
+    expect(runtimeApi.sendMessage).toHaveBeenCalled()
+  })
+
+  it('deduplicates local/remote echoes and publishes a change in cache warning', async () => {
+    const runtimeApi = { sendMessage: vi.fn(), lastError: undefined }
+    const tabsApi = { query: vi.fn(async () => []), sendMessage: vi.fn() }
+    const options = { runtimeApi, tabsApi }
+    await broadcastSettingsUpdated({ language: 'vi' }, options)
+    await broadcastSettingsUpdated({ language: 'vi' }, options)
+    expect(runtimeApi.sendMessage).toHaveBeenCalledTimes(1)
+    await broadcastSettingsUpdated({ language: 'vi' }, { ...options, warning: 'Waiting' })
+    expect(runtimeApi.sendMessage).toHaveBeenCalledTimes(2)
+  })
+
   it('broadcasts settings updates and ignores tabs that cannot receive messages', async () => {
     const tabsApi = {
       query: vi.fn(async () => [{ id: 1 }, { id: 2 }, { id: null }, {}]),

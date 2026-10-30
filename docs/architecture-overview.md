@@ -248,11 +248,17 @@ Settings ownership:
 
 - `src/settings/default-settings.js`: default shape;
 - `src/settings/settings-schema.js`: normalization, validation, and hard ranges;
-- `src/settings/settings-service.js`: storage key, safe merge, save, reset;
+- `src/settings/settings-service.js`: legacy schema migration, safe merge, serialized read/save/reset;
+- `src/settings/settings-storage-format.js`: versioned storage index, content-addressed theme records, completeness checks, and conservative UTF-8 quota budgeting;
+- `src/settings/settings-storage.js`: Chrome storage adapter, legacy retirement, verified local recovery cache, and record cleanup;
 - `src/settings/settings-client.js`: Popup/Options request client;
 - `src/settings/index.js`: compatibility exports.
 
-Preferences use `chrome.storage.sync` with local fallback. Recent local-file history is stored separately in `chrome.storage.local` and follows its privacy/retention policy.
+Preferences use `chrome.storage.sync`; `chrome.storage.local` is the backend only when the sync API does not exist. A rejected sync write never silently becomes a local save. Recent local-file history is stored separately in `chrome.storage.local` and follows its privacy/retention policy.
+
+Storage format 1 publishes `mdViewer.settings.index.v1` with preferences, the active theme id, ordered theme references and the preceding generation's references. Each `mdViewer.theme.<sha256>` contains one immutable normalized custom theme. The public settings/export schema remains version 2 with `theme.customThemes` inline. Reads verify all current references/hashes before normalization; saves preflight the 8,192-byte item, 102,400-byte total and 512-item sync limits, including legacy/obsolete/foreign items. The budget includes Chromium's extra string escapes and conservatively reserves numeric serialization space; Chrome's actual write can still reject quota races or rate limits.
+
+`mdViewer.settings.lastComplete.v1` in local storage caches a complete snapshot for the selected sync backend, without document content or image blobs. A missing/inconsistent incoming snapshot yields the last verified snapshot with a warning; writes/reset stay blocked until current references are complete. A fresh device without a verified cache receives an explicit load error. Exact cached content-addressed records can repair delayed remote deletions without rewriting the remote index. A successful save caches the new snapshot and retires the legacy inline key only after readback; cleanup preserves current/preceding theme references, removes only previously observed adapter-owned records and does not touch history. Cache/cleanup/notification failures after the durable commit do not become save errors or trigger image rollback.
 
 The current preference shape also owns Viewer activation, typography, TOC/content sizing, overlay-scrollbar visibility, Markdown document-stat visibility, the Document Updates mode, plugin states, explorer policies and scan limits, recent-file policy, standalone text-file limits, and opt-in editor preferences. The Settings page owns the full policy/import/export/reset surface; the Popup owns quick Reader, Editor, Plugins, and Recent controls.
 
@@ -263,6 +269,8 @@ Custom theme images are device-local assets. Settings validates supported raster
 Message names are centralized in `src/messaging/index.js`. UI/content callers use `sendMessage()`; background services own browser APIs. Normal responses use `{ ok: true, data }` or `{ ok: false, error }`.
 
 `src/background/message-router.js` routes settings, history, local reads, downloads, and theme-asset lifecycle calls. Offscreen fetch wire messages bypass that router. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown. The response confirms persistence after dispatching these notifications, without waiting for tab replies or Viewer rendering.
+
+`src/background/settings-sync-observer.js` also reconciles relevant `chrome.storage.onChanged` events, coalesces batches and publishes complete remote snapshots or a verified cached snapshot with `storageWarning`. The broadcaster serializes dispatch and deduplicates identical local/remote echoes. The settings client's optional status-aware GET keeps warnings outside the settings/export object; Settings/Popup reuse shared Notices and Viewer uses its warning Toast. Cross-device updates follow Chrome's winning complete index, without an application-level merge/transaction guarantee; incomplete snapshots never replace the library with defaults. Real two-profile Sync delivery and minimum-Chrome compatibility remain release QA checks.
 
 ## Interface languages
 

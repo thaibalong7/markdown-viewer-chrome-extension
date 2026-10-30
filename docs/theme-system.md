@@ -36,6 +36,8 @@ Một số nguyên tắc bất biến:
 | Default settings và settings version | `src/settings/default-settings.js` |
 | Validation và normalization | `src/settings/settings-schema.js` |
 | Migration, merge, save, reset | `src/settings/settings-service.js` |
+| Sync index, theme records, byte budget và completeness | `src/settings/settings-storage-format.js` |
+| Chrome storage, local recovery cache và record cleanup | `src/settings/settings-storage.js` |
 | Settings UI để quản lý custom theme | `src/options/sections/ThemeSettings.jsx` |
 | Dedicated custom-theme editor | `src/options/sections/ThemeEditor.jsx`, `ThemeColorFields.jsx`, `ThemeBackgroundFields.jsx` |
 | Live mini Viewer preview trong theme authoring | `src/options/sections/ThemePreview.jsx` |
@@ -71,9 +73,13 @@ Theme settings hiện dùng schema version `2` và có shape tối thiểu:
 }
 ```
 
-`DEFAULT_SETTINGS` nằm trong `src/settings/default-settings.js`. Toàn bộ settings được lưu dưới key `mdViewer.settings` bởi `src/settings/settings-service.js`.
+`DEFAULT_SETTINGS` nằm trong `src/settings/default-settings.js`. Public schema và JSON export vẫn dùng version `2` với `theme.customThemes` inline. Storage format `1` tách dữ liệu thành index `mdViewer.settings.index.v1` và từng descriptor `mdViewer.theme.<sha256>`; index chứa preferences, `theme.activeId`, danh sách theme refs theo thứ tự library và refs của thế hệ trước. Reader xác minh đủ records và hash trước khi dựng lại settings rồi chạy migrate → merge defaults → normalize safe.
 
-`settingsService` ưu tiên `chrome.storage.sync` và dùng `chrome.storage.local` làm fallback khi sync storage không tồn tại. Đây là storage của descriptor và preferences; nó không phải storage của binary image asset.
+`settingsService` ưu tiên `chrome.storage.sync` và chỉ dùng `chrome.storage.local` làm backend khi API sync không tồn tại. Lỗi quota hoặc ghi quá nhanh không tự chuyển backend. Save/import kiểm tra byte của key, JSON và envelope, từng item, tổng storage và số items; tính cả legacy/obsolete records và dữ liệu khác đang chiếm quota. Ước lượng bao gồm UTF-8, escaping của Chromium và dự phòng biểu diễn số; lỗi từ API Chrome vẫn được xử lý vì preflight không khóa được các writer khác. Binary image asset tiếp tục ở IndexedDB, không nằm trong theme records hoặc cache.
+
+Legacy `mdViewer.settings` vẫn đọc được qua migration version 1/2. Lần save/reset thành công đầu tiên publish format mới; chỉ retire key legacy sau readback thành công. Các thao tác read/merge/write/reset được serialize trong service worker để partial saves trên cùng thiết bị không ghi đè nhau. Cleanup sau commit giữ refs hiện tại và thế hệ trước, chỉ xóa records của adapter đã quan sát trước commit; không dùng `storage.clear()` và không xóa recent history. Lỗi cleanup/cache/notification sau khi đã persist được log, không trả lỗi save giả khiến UI rollback ảnh đã được tham chiếu.
+
+Local key `mdViewer.settings.lastComplete.v1` giữ snapshot hoàn chỉnh gần nhất cho backend sync. Nếu index hoặc refs đến khác thứ tự, Settings/Popup hiển thị cảnh báo qua shared Notice, Viewer dùng warning Toast; snapshot cache tiếp tục dùng để đọc nhưng save/reset bị chặn đến khi dữ liệu hiện tại hoàn chỉnh. Máy mới không có cache hợp lệ nhận lỗi tải rõ ràng, không tự ghi defaults lên remote. Record bị xóa muộn có thể được phục hồi từ cache khi nội dung khớp đúng hash đang được index tham chiếu; không ghi cache cũ đè index. Observer background nhận `storage.onChanged` và chỉ broadcast snapshot đã kiểm tra. Hai thiết bị sửa đồng thời không có application-level merge hoặc transaction; không coi `sync.set()` resolve là xác nhận thiết bị khác đã đồng bộ xong.
 
 ### `theme.activeId`
 
@@ -320,6 +326,8 @@ Các field chung:
 | `motion` | `system`, `on`, `off` | Motion policy của scene. |
 | `overlayOpacity` | Số từ `0` đến `0.8` | Lớp tối phủ trên scene để giữ độ đọc được. |
 
+Theme Studio cho phép số thập phân trong cả dimming và gradient angle bằng native input `step="any"`, khớp với schema. Giá trị mặc định `overlayOpacity: 0.08` và giá trị import như angle `135.25` phải submit được; không đặt bước `0.05` hoặc integer step khiến browser chặn lưu trước khi gọi validation/service.
+
 Default descriptor:
 
 ```js
@@ -430,7 +438,7 @@ Image descriptor và binary image được cố ý tách riêng:
 
 ```text
 Theme descriptor
-  -> chrome.storage.sync hoặc local fallback
+  -> Chrome Sync index + từng theme record; local backend chỉ khi API sync không tồn tại
   -> chỉ chứa assetId + presentation metadata
 
 Binary image
@@ -757,6 +765,9 @@ Error async không được nuốt im lặng. User-facing Settings flow đưa l�
 | Theme asset messaging client | `src/theme/__tests__/theme-asset-client.test.js` |
 | Settings normalization và validation | `src/settings/__tests__/settings-schema.test.js` |
 | Migration, merge, storage | `src/settings/__tests__/settings-service.test.js` |
+| Byte quota, codec, cache, migration failure, concurrency | `src/settings/__tests__/settings-storage-format.test.js`, `settings-storage.test.js` |
+| Remote storage events và incomplete snapshots | `src/background/__tests__/settings-sync-observer.test.js` |
+| Image rollback khi quota/import thất bại | `src/options/__tests__/settings-form-storage.test.js` |
 | Settings authoring markup | `src/options/__tests__/theme-settings.test.js` |
 | Popup selector | `src/popup/__tests__/popup-primitives.test.js` |
 | Full-render invalidation | `src/shared/__tests__/settings-diff.test.js` |

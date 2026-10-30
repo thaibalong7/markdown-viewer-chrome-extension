@@ -30,6 +30,25 @@
   });
 
   document.addEventListener('DOMContentLoaded', () => {
+    const languageControl = document.querySelector('.language-control');
+    document.querySelectorAll('[data-language-link]').forEach((link) => {
+      // Each edition has the same stable section IDs; keep the reader's place.
+      link.hash = window.location.hash;
+    });
+    window.addEventListener('hashchange', () => {
+      document.querySelectorAll('[data-language-link]').forEach((link) => {
+        link.hash = window.location.hash;
+      });
+    });
+    document.addEventListener('click', (event) => {
+      if (!languageControl?.contains(event.target)) languageControl?.removeAttribute('open');
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && languageControl?.open) {
+        languageControl.open = false;
+        languageControl.querySelector('summary').focus();
+      }
+    });
     applyTheme();
     document.querySelector('.theme-control')?.removeAttribute('hidden');
     document.querySelectorAll('[data-theme-choice]').forEach((button) => {

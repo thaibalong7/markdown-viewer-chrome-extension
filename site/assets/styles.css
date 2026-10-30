@@ -104,6 +104,17 @@ code { padding: 2px 6px; border: 1px solid var(--border); border-radius: 5px; ba
 .primary-nav a:hover, .primary-nav a[aria-current="page"] { color: var(--heading); }
 .primary-nav a[aria-current="page"]::after { position: absolute; content: ""; bottom: 1px; left: 50%; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); transform: translateX(-50%); }
 .header-actions { display: flex; align-items: center; gap: 16px; padding-left: 20px; border-left: 1px solid var(--border); }
+/* Website-only language disclosure reuses the header's surfaces and focus ring. */
+.language-control { position: relative; flex-shrink: 0; }
+.language-control summary { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 58px; min-height: 38px; padding: 6px 9px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); color: var(--text); font-size: 12px; font-weight: 600; list-style: none; }
+.language-control summary::-webkit-details-marker { display: none; }
+.language-control summary:hover, .language-control[open] summary { border-color: var(--accent); }
+.language-control nav { position: absolute; top: calc(100% + 8px); right: 0; display: grid; min-width: 190px; padding: 6px; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+.language-control a { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; border-radius: 6px; color: var(--text); font-size: 14px; text-decoration: none; white-space: nowrap; }
+.language-control a:hover { background: var(--panel-strong); }
+.language-control a[aria-current] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+h1:lang(vi), h2:lang(vi) { line-height: 1.25; }
+h1:lang(zh-CN), h2:lang(zh-CN), h3:lang(zh-CN) { line-height: 1.35; letter-spacing: 0; }
 .theme-control { display: flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: 30px; background: var(--panel); }
 .theme-control button { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); }
 .theme-control .icon { width: 16px; height: 16px; }
@@ -657,8 +668,26 @@ code { padding: 2px 6px; border: 1px solid var(--border); border-radius: 5px; ba
   .privacy-contact h2 { font-size: 25px; }
 }
 @media (pointer: coarse) {
+  .language-control summary { min-height: 44px; }
   .primary-nav a, .theme-control button, .demo-view-control button, .footer-main nav a, .policy-sidebar nav a, .text-link, .footer-bottom a, .policy-end a { min-height: 44px; }
   .theme-control button { min-width: 44px; }
+}
+@media (max-width: 1050px) {
+  .site-header { flex-wrap: wrap; gap: 8px 16px; }
+  .header-actions { margin-left: auto; gap: 10px; }
+  .primary-nav { order: 3; width: 100%; justify-content: center; margin-left: 0; }
+}
+@media (max-width: 800px) {
+  .hero-copy h1:lang(vi) { font-size: clamp(40px, 7vw, 56px); text-wrap: balance; }
+  .hero-copy h1:lang(zh-CN) { font-size: clamp(34px, 6.7vw, 52px); }
+}
+@media (max-width: 560px) {
+  .header-cta { display: none; }
+  .header-actions { gap: 8px; }
+  .language-control summary { min-width: 50px; }
+  :lang(vi) .hero-copy h1 { font-size: clamp(34px, 9vw, 50px); line-height: 1.25; }
+  :lang(vi) .privacy-hero h1 { font-size: 36px; line-height: 1.25; }
+  :lang(zh-CN) .hero-copy h1 { font-size: clamp(32px, 8.5vw, 48px); }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

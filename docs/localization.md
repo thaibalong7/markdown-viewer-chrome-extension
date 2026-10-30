@@ -1,6 +1,6 @@
 # Localization writing guide
 
-This is the shared editorial reference for Markdown Plus interface translations: how to write labels and messages, which terms each locale uses, and why those choices fit the product. It is intended for contributors and translation reviewers. The actual translations live in `src/i18n/locales/*.json` and Chrome metadata in `public/_locales/`; this document is not a translated user manual or a copy of those catalogs.
+This is the shared editorial reference for Markdown Plus interface translations: how to write labels and messages, which terms each locale uses, and why those choices fit the product. It is intended for contributors and translation reviewers. The actual translations live in `src/i18n/locales/*.json` and Chrome metadata in `public/_locales/`; website copy lives in `scripts/site/locales/`. This document is not a translated user manual or a copy of those catalogs.
 
 Read [Interface languages](./internationalization.md) for runtime ownership, locale selection, integration, and verification. The [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md) owns the complete language-addition workflow.
 
@@ -12,7 +12,7 @@ Keep technical behavior and the common test matrix in [Interface languages](./in
 
 | Locale | Editorial decisions |
 | --- | --- |
-| `en` | English is the source catalog; apply the shared principles below. |
+| `en` | English is the extension’s source catalog; website copy follows the independent editorial approach below. |
 | `vi` | [Tiếng Việt](#vi) |
 | `zh-CN` | [简体中文（中国）](#zh-cn) |
 
@@ -25,6 +25,12 @@ Keep technical behavior and the common test matrix in [Interface languages](./in
 - Preserve `{name}`, `{0}`, and CodeMirror `$` markers. Read complete messages with real interpolation values, including Unicode, long filenames, key-like text, and zero/one/many counts. Use the runtime's locale-aware number/date formatting and appropriate plural forms.
 - Use a consistent term for the same meaning, with context-specific exceptions when needed. Do not impose one locale's vocabulary on another; compare established tools in the target language.
 - Review every new locale in two passes: meaning/behavior first, then natural wording in context. Automated parity checks do not establish language quality or visual fit; use the [verification matrix](./internationalization.md#translation-review-and-verification). Machine-generated copy remains a draft until reviewed; identify AI review accurately and claim native-speaker review only when a person performed it.
+
+## Website writing
+
+Website editions are written for their own readers. The English site supplies message keys and markup placeholders, but its sentences and metaphors are not mandatory templates for Vietnamese or Chinese marketing copy. Lead with the practical reading experience, then support it with concrete capabilities: outline navigation, syntax highlighting, math/Mermaid, related-file browsing, update comparisons, custom themes, and optional editing/export. Use concise headings and clear installation actions. Avoid sweeping completeness claims, invented outcomes, or implying a Chrome Web Store listing. Keep the editor labeled experimental, distinguish Word-compatible export from PDF through Chrome printing, and retain the local-processing policy's network qualifications. Privacy messages may be rewritten for clarity, but their conditions, disclosures, and effective date must stay equivalent.
+
+English uses short, direct benefit statements such as “Your Markdown. A better read.” and follows them with actual features. Prefer specific actions such as building/loading the extension over installation metaphors. Keep source examples, filenames and technical identifiers literal across all editions.
 
 ## vi
 
@@ -63,9 +69,19 @@ Thuật ngữ có thể khác nhau theo ý nghĩa: “Engine” trong thông tin
 | Match case / Whole word | Phân biệt chữ hoa, chữ thường / Khớp toàn bộ từ |
 | Zoom in / Zoom out | Phóng to / Thu nhỏ |
 
+### Website copy
+
+Trang Home dùng giọng thân thiện, tự nhiên: “Mở Markdown. Đọc thật thoải mái.”, “Giao diện theo gu của bạn.”. Mô tả giải thích lợi ích cụ thể bằng mục lục, cây thư mục, tô màu cú pháp, đối chiếu thay đổi và soạn thảo có xem trước. Ưu tiên “tệp trên máy”, “giao diện sáng/tối”, “xem phần thay đổi”; hạn chế ẩn dụ về ánh sáng, ngôi nhà hoặc ý tưởng khi chúng không giúp người đọc hiểu sản phẩm. Phần cài đặt nói rõ việc tạo bản dựng và nạp tiện ích từ mã nguồn trên GitHub. Chính sách dùng câu rõ ràng, giải thích dữ liệu lưu ở đâu và khi nào có kết nối mạng, giữ đủ các điều kiện của bản gốc.
+
+Đã đọc [Chrome — Cài đặt và quản lý tiện ích](https://support.google.com/chrome/answer/2664769?hl=vi) để đối chiếu “tiện ích”, “Chi tiết”, “quyền truy cập”, cùng [Chrome — Xóa dữ liệu duyệt web](https://support.google.com/chrome/answer/2392709?hl=vi) để phân biệt việc xóa mục trong lịch sử với xóa dữ liệu lưu trữ. Câu chữ trên website được biên tập theo cách dùng của Markdown Plus, không sao chép các đoạn hướng dẫn.
+
+
+Đối chiếu [trang giới thiệu Microsoft Word bằng tiếng Việt](https://www.microsoft.com/vi-vn/microsoft-365/word) về cách dẫn từ lợi ích đọc/viết đến chức năng cụ thể và dùng động từ trực tiếp cho lời kêu gọi hành động. Chỉ tham khảo cách tổ chức thông điệp; không sao chép câu quảng bá hay đưa tính năng của Word vào Markdown Plus.
+
 ### References
 
 Các nguồn dưới đây dùng để đối chiếu thuật ngữ và cách đặt nhãn phổ biến. Câu chữ cuối cùng được biên tập theo chức năng thực tế của Markdown Plus; không sao chép cả đoạn hướng dẫn hay mặc định xem mọi bản dịch trợ giúp là chuẩn.
+
 
 | Nguồn | Phần tham khảo |
 | --- | --- |
@@ -106,6 +122,14 @@ Use concise verbs for actions, direct explanations for settings, `请` for actio
 Chinese counted entries use only `other`; examples are `0 个词`, `1 个词`, `1,234 个词`, and `最近文件：12 个`. Interpolate numbers as numbers through the runtime. Dates use `zh-CN` formatting, not manually translated timestamps. Word counts retain the existing document-statistics algorithm; the locale addition does not redefine Chinese word segmentation.
 
 Read existing fragment-based consumers as complete rendered groups: `行 12，列 3`, `区域 1 / 3`, `1 行新增 · 0 行删除`, `123 字节已加载`, theme-limit text around `32`, inherited syntax-theme labels and the linked Chrome permission instructions. Preserve the ASCII opening parenthesis in the inherited-theme prefix because its component supplies the closing `)`. The theme preview's Token column contains semantic color roles, so it uses 颜色标记. Sample filenames and the `docs` folder remain unchanged.
+
+### Website copy
+
+The website uses a friendly `你`, short clauses, and familiar Mainland software terms. Headings can have their own rhythm: “让 Markdown 更好读，也更好用” and “相关资料，一处浏览” connect the reader to practical benefits. Explain outline navigation, file browsing, update comparisons and live preview directly rather than carrying over English metaphors about light or ideas finding a home. Use 扩展程序、工作区、本地处理、浅色/深色主题 and 实时预览 consistently. The experimental editor remains explicitly 实验性; installation describes building/loading from GitHub. Preserve all policy qualifications about storage, synchronization, file handles, network and third-party requests, together with the original effective date.
+
+For the website wording, read [Chrome：安装和管理扩展程序](https://support.google.com/chrome/answer/2664769?hl=zh-Hans) for 扩展程序、详情 and 权限, and [Chrome：删除浏览数据](https://support.google.com/chrome/answer/2392709?hl=zh-Hans) for the distinction between browsing records, stored data and permissions. These are terminology comparisons; the final copy follows the actual Markdown Plus behavior.
+
+Also read [Microsoft Word's Chinese product page](https://www.microsoft.com/zh-cn/microsoft-365/word) for the progression from reading/writing benefits to specific functions and concise action headings. Use that as an editorial comparison, not as a source of claims or copied marketing sentences.
 
 ### References
 

@@ -1,6 +1,14 @@
 # Markdown Plus public website
 
-`site/` is the buildless GitHub Pages source. Home lives at `/`; the existing policy URL remains `/privacy/`. Both pages share `assets/styles.css`, `assets/site.js`, and the approved brand SVG copied from `assets/brand/markdown-plus-icon.svg`. Website changes do not modify the extension’s UI, processing, or permissions.
+`site/` is the buildless GitHub Pages output. English Home lives at `/`; the existing policy URL remains `/privacy/`. Vietnamese lives at `/vi/` and `/vi/privacy/`; Simplified Chinese lives at `/zh-CN/` and `/zh-CN/privacy/`. All editions share `assets/styles.css`, `assets/site.js`, and the approved brand SVG copied from `assets/brand/markdown-plus-icon.svg`. Website changes do not modify the extension’s UI, processing, or permissions.
+
+## Languages and editing
+
+The website supports the same locales as the extension: English, Tiếng Việt, and 简体中文（中国）. Its native disclosure in the header links to the equivalent page in each language; internal Home, Features, and Privacy links retain the chosen locale. With JavaScript, switching languages also retains the current section fragment. The URL selects the language, with English at the original URLs; there is no automatic redirect or stored language preference. Every edition has translated titles, descriptions, accessible names, and alternate-language metadata, and all content and language links work without JavaScript.
+
+Edit shared markup in `scripts/site/templates/` and copy in `scripts/site/locales/{en,vi,zh-CN}.json`, then run `python3 -B scripts/localize-site.py`. Commit the regenerated six HTML files with those sources. Message keys describe their purpose; complete sentences can change word order. Catalogs contain plain text and named placeholders. The generator escapes translations and inserts only the fixed inline markup/code/link slots in `scripts/site/slots.json`; translations cannot supply HTML or URLs. Missing keys, changed placeholders, and unbalanced markup fail validation. Tests compare the locale list with the extension registry and check that generated HTML is current.
+
+Marketing wording is adapted to each audience; the policy preserves the same disclosures and effective date. See the website notes under each locale in the [localization writing guide](../docs/localization.md). Illustrative document bodies, source code, filenames, and paths remain literal English examples, identified with `lang="en"` where appropriate. Interface labels around those samples are translated. The header language control is a website-only composition of the existing surface colors, borders, focus ring, and native disclosure behavior; it does not change extension controls. It supports keyboard use, Escape and outside-click dismissal with JavaScript, and touch-sized language links.
 
 ## Landing-page direction
 
@@ -26,11 +34,13 @@ Run the same automated preflight used by deployment from the repository root:
 
 ```bash
 python3 -B -m unittest discover -s scripts/__tests__ -p 'test_check_site.py'
+python3 -B -m unittest discover -s scripts/__tests__ -p 'test_site_localization.py'
+python3 -B scripts/localize-site.py --check
 python3 -B scripts/check-site.py
 node --check site/assets/site.js
 ```
 
-The checker verifies required pages, local HTML links and assets, target fragments, duplicate IDs, and paths that would lose the GitHub Pages project prefix. It does not fetch external destinations or replace browser checks.
+The checker verifies required pages, local HTML links and assets, target fragments, duplicate IDs, and paths that would lose the GitHub Pages project prefix. Locale checks verify catalogs, static editions, safe rendering, and cross-language links. The site's JavaScript interaction tests run with `npm test -- scripts/__tests__/site-localization.test.mjs` after selecting the pinned Node version. These checks do not fetch external destinations or replace browser checks; inspect all three languages, especially Vietnamese wrapping and Chinese font coverage.
 
 ## Deploy to GitHub Pages
 
@@ -42,7 +52,7 @@ The existing [Pages workflow](../.github/workflows/deploy-pages.yml) validates t
 | Privacy | `site/privacy/index.html` | [Privacy](https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/) |
 
 1. In the GitHub repository, open **Settings → Pages → Build and deployment** and select **GitHub Actions** as the source. This is a repository setting, not an HTML or workflow-file change; see the [GitHub guide](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
-2. Commit and push the website changes to `master`. The workflow runs when `site/**`, its workflow file, or the website checker/tests change. It publishes the complete `site/` directory, including both pages and shared assets.
+2. Commit and push the website changes to `master`. The workflow runs when `site/**`, its templates/catalogs, generator, workflow file, or website checker/tests change. It checks that localized output is current, then publishes the complete `site/` directory, including all six pages and shared assets.
 3. Open **Actions → Deploy public site to GitHub Pages** and wait for the deploy job to succeed. The deployment URL is attached to the `github-pages` environment.
 4. For a manual deployment, open the same workflow, select **Run workflow**, and choose `master`. A manual run publishes the files already on GitHub; it cannot publish uncommitted local edits.
 

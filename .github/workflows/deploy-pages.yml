@@ -8,6 +8,9 @@ on:
       - ".github/workflows/deploy-pages.yml"
       - "scripts/check-site.py"
       - "scripts/__tests__/test_check_site.py"
+      - "scripts/localize-site.py"
+      - "scripts/site/**"
+      - "scripts/__tests__/test_site_localization.py"
   workflow_dispatch:
 
 permissions:
@@ -32,6 +35,8 @@ jobs:
       - name: Validate public site
         run: |
           python3 -B -m unittest discover -s scripts/__tests__ -p 'test_check_site.py'
+          python3 -B -m unittest discover -s scripts/__tests__ -p 'test_site_localization.py'
+          python3 -B scripts/localize-site.py --check
           python3 -B scripts/check-site.py
           node --check site/assets/site.js
 

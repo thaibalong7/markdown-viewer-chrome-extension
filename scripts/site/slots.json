@@ -1,0 +1,83 @@
+{
+  "shared.footer.description": {
+    "br0": "<br>"
+  },
+  "home.hero.title": {
+    "br0": "<br>",
+    "span1Open": "<span class=\"gradient-text\">",
+    "span1Close": "</span>"
+  },
+  "home.hero.description": {
+    "br0": "<br>"
+  },
+  "home.features.title": {
+    "br0": "<br>",
+    "span1Open": "<span class=\"muted-heading\">",
+    "span1Close": "</span>"
+  },
+  "home.features.description": {
+    "br0": "<br>"
+  },
+  "home.privacy.title": {
+    "br0": "<br>",
+    "span1Open": "<span class=\"muted-heading\">",
+    "span1Close": "</span>"
+  },
+  "home.start.title": {
+    "br0": "<br>"
+  },
+  "home.start.permission.description": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "home.start.open.description": {
+    "code0": "<code>.md</code>"
+  },
+  "home.cta.title": {
+    "br0": "<br>"
+  },
+  "privacy.hero.title": {
+    "br0": "<br>",
+    "span1Open": "<span class=\"gradient-text\">",
+    "span1Close": "</span>"
+  },
+  "privacy.hero.caption": {
+    "br0": "<br>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "privacy.sections.information-stored-by-the-extension.body1": {
+    "code0": "<code>chrome.storage.sync</code>",
+    "code1": "<code>chrome.storage.local</code>",
+    "code2": "<code>chrome.storage.local</code>"
+  },
+  "privacy.sections.information-stored-by-the-extension.body3": {
+    "code0": "<code>chrome.storage.local</code>"
+  },
+  "privacy.sections.network-requests.body3": {
+    "code0": "<code>cdn.jsdelivr.net</code>"
+  },
+  "privacy.sections.permissions.body1": {
+    "code0": "<code>file:///*</code>"
+  },
+  "privacy.sections.permissions.body2": {
+    "code0": "<code>storage</code>"
+  },
+  "privacy.sections.permissions.body3": {
+    "code0": "<code>offscreen</code>"
+  },
+  "privacy.sections.permissions.body4": {
+    "code0": "<code>downloads</code>"
+  },
+  "privacy.sections.this-website.body1": {
+    "a0Open": "<a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">",
+    "a0Close": "</a>"
+  },
+  "privacy.sections.contact.body1": {
+    "a0Open": "<a href=\"https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues\">",
+    "a0Close": "</a>"
+  },
+  "home.demo.outlineHint": {
+    "br0": "<br>"
+  }
+}

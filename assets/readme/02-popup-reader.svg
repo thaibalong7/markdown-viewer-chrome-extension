@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">02 · Adjust reading preferences</title>
+<desc id="desc">Click the Markdown Plus toolbar icon, then choose Reader. Red outlines and numbered markers identify the controls explained in the accompanying guide. This is a simplified interface illustration, not a screenshot.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif} .ring{fill:none;stroke:#dc2626;stroke-width:3} </style>
+<rect x="0" y="0" width="1200" height="900" rx="0" fill="#f6f8fb"/>
+<text x="28" y="39" font-size="27" fill="#172033" font-weight="700">02 · Adjust reading preferences</text>
+<text x="28" y="72" font-size="18" fill="#667085" font-weight="400">Click the Markdown Plus toolbar icon, then choose Reader.</text>
+<text x="1172" y="37" font-size="12" fill="#667085" font-weight="700" text-anchor="end">INTERFACE ILLUSTRATION</text>
+<text x="926" y="138" font-size="13" fill="#dc2626" font-weight="700">RED MARKERS</text>
+<text x="28" y="880" font-size="14" fill="#667085" font-weight="400">Markdown Plus · User guide · Example values shown</text>
+<rect x="80" y="107" width="536" height="721" rx="14" fill="white" stroke="#dce2ea"/>
+<text x="104" y="146" font-size="23" fill="#172033" font-weight="700">Markdown Plus</text>
+<text x="594" y="146" font-size="13" fill="#047857" font-weight="400" text-anchor="end">File access is ready</text>
+<path d="M80 165H616" stroke="#dce2ea" stroke-width="1"/>
+<rect x="90" y="179" width="123" height="44" rx="8" fill="#eaf2ff"/>
+<text x="151" y="207" font-size="17" fill="#2563eb" font-weight="600" text-anchor="middle">Reader</text>
+<text x="281" y="207" font-size="17" fill="#667085" font-weight="600" text-anchor="middle">Editor</text>
+<text x="411" y="207" font-size="17" fill="#667085" font-weight="600" text-anchor="middle">Plugins</text>
+<text x="541" y="207" font-size="17" fill="#667085" font-weight="600" text-anchor="middle">Recent</text>
+<!-- Reader tab: 8 px outline padding. -->
+<rect x="82" y="171" width="139" height="60" rx="16" class="ring"/>
+<circle cx="237" cy="201" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="237" y="207" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<text x="105" y="264" font-size="25" fill="#172033" font-weight="700">Reading appearance</text>
+<text x="105" y="304" font-size="16" fill="#172033" font-weight="600">Theme</text>
+<rect x="105" y="316" width="486" height="42" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="117" y="343" font-size="17" fill="#172033" font-weight="400">Light</text>
+<path d="M565 333l6 6 6-6" fill="none" stroke="#667085" stroke-width="2"/>
+<!-- Theme select: 8 px outline padding. -->
+<rect x="97" y="308" width="502" height="58" rx="16" class="ring"/>
+<circle cx="615" cy="337" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="615" y="343" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<text x="105" y="397" font-size="16" fill="#172033" font-weight="600">Font family</text>
+<rect x="105" y="409" width="486" height="42" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="117" y="436" font-size="17" fill="#172033" font-weight="400">System UI</text>
+<path d="M565 426l6 6 6-6" fill="none" stroke="#667085" stroke-width="2"/>
+<text x="105" y="490" font-size="16" fill="#172033" font-weight="600">Font size</text>
+<rect x="105" y="502" width="225" height="42" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="117" y="529" font-size="17" fill="#172033" font-weight="400">16</text>
+<text x="354" y="490" font-size="16" fill="#172033" font-weight="600">Line height</text>
+<rect x="354" y="502" width="237" height="42" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="366" y="529" font-size="17" fill="#172033" font-weight="400">1.7</text>
+<!-- Typography labels and fields: 8 px outline padding. -->
+<rect x="97" y="466" width="502" height="86" rx="16" class="ring"/>
+<circle cx="615" cy="509" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="615" y="515" font-size="17" fill="white" font-weight="700" text-anchor="middle">3</text>
+<text x="105" y="583" font-size="16" fill="#172033" font-weight="600">Content width</text>
+<rect x="105" y="595" width="486" height="42" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="117" y="622" font-size="17" fill="#172033" font-weight="400">980</text>
+<text x="105" y="690" font-size="17" fill="#172033" font-weight="600">Show table of contents</text>
+<rect x="546" y="671" width="42" height="24" rx="12" fill="#2563eb"/>
+<circle cx="576" cy="683" r="8" fill="white"/>
+<rect x="105" y="720" width="158" height="38" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="184.0" y="745" font-size="16" fill="#172033" font-weight="600" text-anchor="middle">Reset reader UI</text>
+<path d="M80 777H616" stroke="#dce2ea" stroke-width="1"/>
+<text x="104" y="808" font-size="16" fill="#047857" font-weight="400">● Settings saved</text>
+<text x="463" y="808" font-size="17" fill="#2563eb" font-weight="600">All settings ↗</text>
+<!-- All settings link: 8 px outline padding. -->
+<rect x="455" y="785" width="136" height="36" rx="16" class="ring"/>
+<circle cx="607" cy="803" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="607" y="809" font-size="17" fill="white" font-weight="700" text-anchor="middle">4</text>
+<circle cx="940" cy="206" r="15" fill="#dc2626"/>
+<text x="940" y="212" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<text x="966" y="212" font-size="18" fill="#172033" font-weight="700">Select Reader</text>
+<text x="926" y="245" font-size="17" fill="#667085" font-weight="400">Use the tabs for Reader,</text>
+<text x="926" y="270" font-size="17" fill="#667085" font-weight="400">Editor, Plugins, or Recent.</text>
+<circle cx="940" cy="361" r="15" fill="#dc2626"/>
+<text x="940" y="367" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<text x="966" y="367" font-size="18" fill="#172033" font-weight="700">Pick a theme</text>
+<text x="926" y="400" font-size="17" fill="#667085" font-weight="400">Select a built-in theme</text>
+<text x="926" y="425" font-size="17" fill="#667085" font-weight="400">or one you have saved.</text>
+<circle cx="940" cy="517" r="15" fill="#dc2626"/>
+<text x="940" y="523" font-size="17" fill="white" font-weight="700" text-anchor="middle">3</text>
+<text x="966" y="523" font-size="18" fill="#172033" font-weight="700">Tune the text</text>
+<text x="926" y="556" font-size="17" fill="#667085" font-weight="400">Adjust fonts, font size,</text>
+<text x="926" y="581" font-size="17" fill="#667085" font-weight="400">spacing, and page width.</text>
+<circle cx="940" cy="726" r="15" fill="#dc2626"/>
+<text x="940" y="732" font-size="17" fill="white" font-weight="700" text-anchor="middle">4</text>
+<text x="966" y="732" font-size="18" fill="#172033" font-weight="700">Open full Settings</text>
+<text x="926" y="765" font-size="17" fill="#667085" font-weight="400">Wait for “Settings saved”,</text>
+<text x="926" y="790" font-size="17" fill="#667085" font-weight="400">then choose All settings</text>
+<text x="926" y="815" font-size="17" fill="#667085" font-weight="400">for more controls.</text>
+</svg>

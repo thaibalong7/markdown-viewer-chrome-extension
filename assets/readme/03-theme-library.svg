@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740" role="img" aria-labelledby="title desc">
+<title id="title">03 · Choose a theme or create one</title>
+<desc id="desc">All settings → Themes Red outlines and numbered markers identify the controls explained in the accompanying guide. This is a simplified interface illustration, not a screenshot.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif} .ring{fill:none;stroke:#dc2626;stroke-width:3} </style>
+<rect x="0" y="0" width="1200" height="740" rx="0" fill="#f6f8fb"/>
+<text x="28" y="39" font-size="27" fill="#172033" font-weight="700">03 · Choose a theme or create one</text>
+<text x="28" y="72" font-size="18" fill="#667085" font-weight="400">All settings → Themes</text>
+<text x="1172" y="37" font-size="12" fill="#667085" font-weight="700" text-anchor="end">INTERFACE ILLUSTRATION</text>
+<text x="926" y="138" font-size="13" fill="#dc2626" font-weight="700">RED MARKERS</text>
+<text x="28" y="720" font-size="14" fill="#667085" font-weight="400">Markdown Plus · User guide · Example values shown</text>
+<rect x="24" y="106" width="860" height="595" rx="16" fill="white" stroke="#dce2ea"/>
+<text x="48" y="147" font-size="21" fill="#172033" font-weight="700">Markdown Plus</text>
+<text x="218" y="147" font-size="17" fill="#667085" font-weight="400">Settings</text>
+<text x="858" y="147" font-size="13" fill="#047857" font-weight="400" text-anchor="end">Settings are up to date.</text>
+<path d="M24 171H884" stroke="#dce2ea" stroke-width="1"/>
+<rect x="25" y="172" width="204" height="528" rx="0" fill="#eef2f6"/>
+<text x="49" y="220" font-size="16" fill="#172033" font-weight="400">General</text>
+<rect x="37" y="258" width="179" height="43" rx="8" fill="#eaf2ff"/>
+<text x="49" y="283" font-size="16" fill="#2563eb" font-weight="600">Themes</text>
+<text x="49" y="346" font-size="16" fill="#172033" font-weight="400">Files &amp; Workspace</text>
+<text x="49" y="409" font-size="16" fill="#172033" font-weight="400">Privacy &amp; Data</text>
+<text x="49" y="472" font-size="16" fill="#172033" font-weight="400">Advanced</text>
+<text x="49" y="535" font-size="16" fill="#172033" font-weight="400">About</text>
+<text x="252" y="221" font-size="27" fill="#172033" font-weight="700">Themes</text>
+<rect x="688" y="192" width="171" height="38" rx="8" fill="#2563eb"/>
+<text x="773.5" y="217" font-size="16" fill="white" font-weight="600" text-anchor="middle">Add custom theme</text>
+<text x="252" y="264" font-size="17" fill="#667085" font-weight="400">Choose the reader theme in use.</text>
+<rect x="252" y="294" width="607" height="132" rx="12" fill="white" stroke="#dce2ea"/>
+<text x="273" y="325" font-size="18" fill="#172033" font-weight="600">Active reader theme</text>
+<rect x="273" y="343" width="564" height="48" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="290" y="374" font-size="18" fill="#172033" font-weight="400">Light</text>
+<text x="813" y="372" font-size="20" fill="#667085" font-weight="400">⌄</text>
+<text x="252" y="475" font-size="21" fill="#172033" font-weight="700">My themes</text>
+<rect x="252" y="495" width="607" height="134" rx="12" fill="#fafbfc" stroke="#dce2ea"/>
+<text x="274" y="530" font-size="19" fill="#172033" font-weight="600">No custom themes yet</text>
+<text x="274" y="563" font-size="16" fill="#667085" font-weight="400">Create one, then adjust its colors and background.</text>
+<rect x="274" y="582" width="196" height="38" rx="8" fill="#2563eb"/>
+<text x="372.0" y="607" font-size="16" fill="white" font-weight="600" text-anchor="middle">Create your first theme</text>
+<!-- Themes navigation item: 8 px outline padding. -->
+<rect x="29" y="250" width="195" height="59" rx="16" class="ring"/>
+<circle cx="216" cy="242" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="216" y="248" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<!-- Active reader theme select: 8 px outline padding. -->
+<rect x="265" y="335" width="580" height="64" rx="16" class="ring"/>
+<circle cx="861" cy="367" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="861" y="373" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<!-- Add custom theme button: 8 px outline padding. -->
+<rect x="680" y="184" width="187" height="54" rx="16" class="ring"/>
+<circle cx="883" cy="211" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="883" y="217" font-size="17" fill="white" font-weight="700" text-anchor="middle">3</text>
+<circle cx="940" cy="229" r="15" fill="#dc2626"/>
+<text x="940" y="235" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<text x="966" y="235" font-size="18" fill="#172033" font-weight="700">Open Themes</text>
+<text x="926" y="268" font-size="17" fill="#667085" font-weight="400">Choose Themes in the</text>
+<text x="926" y="293" font-size="17" fill="#667085" font-weight="400">Settings navigation.</text>
+<circle cx="940" cy="385" r="15" fill="#dc2626"/>
+<text x="940" y="391" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<text x="966" y="391" font-size="18" fill="#172033" font-weight="700">Switch themes</text>
+<text x="926" y="424" font-size="17" fill="#667085" font-weight="400">Active reader theme</text>
+<text x="926" y="449" font-size="17" fill="#667085" font-weight="400">changes the reader theme</text>
+<text x="926" y="474" font-size="17" fill="#667085" font-weight="400">across open documents.</text>
+<circle cx="940" cy="554" r="15" fill="#dc2626"/>
+<text x="940" y="560" font-size="17" fill="white" font-weight="700" text-anchor="middle">3</text>
+<text x="966" y="560" font-size="18" fill="#172033" font-weight="700">Create a theme</text>
+<text x="926" y="593" font-size="17" fill="#667085" font-weight="400">Choose Add custom theme</text>
+<text x="926" y="618" font-size="17" fill="#667085" font-weight="400">to open the theme editor.</text>
+</svg>

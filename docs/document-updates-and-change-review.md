@@ -1,5 +1,7 @@
 # Document Updates and Change Review
 
+Developer reference for update behavior, editor safeguards, review state, and implementation ownership. For everyday use, see the [user guide](../README.md#external-edits-and-change-review); for related technical references, see the [documentation index](./README.md).
+
 Markdown Plus can keep the active supported document synchronized with changes made by an external editor, script, Git operation, or coding agent. Document Updates detects a newer disk revision without reloading the page, while Change Review explains the source lines and sections that changed before or after that revision is applied.
 
 ## Availability and scope

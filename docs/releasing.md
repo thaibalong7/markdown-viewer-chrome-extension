@@ -1,5 +1,7 @@
 # Building a release
 
+This guide is for maintainers preparing and verifying Chrome Web Store packages. For local development, start with [DEV.md](../DEV.md); user installation and current Store availability belong in the [README](../README.md#quick-start). Unpacked builds below are for release QA.
+
 Run `nvm use` and install the locked dependencies with `npm ci` before releasing. The release script requires `zip` and `unzip` on PATH (available on macOS; install both on Linux). It builds locally and does not commit, tag, push, or upload anything.
 
 ## Interactive workflow

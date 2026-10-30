@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740" role="img" aria-labelledby="title desc">
+<title id="title">01 · Allow Chrome to open local Markdown</title>
+<desc id="desc">Chrome → Extensions → Markdown Plus → Details Red outlines and numbered markers identify the controls explained in the accompanying guide. This is a simplified interface illustration, not a screenshot.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif} .ring{fill:none;stroke:#dc2626;stroke-width:3} </style>
+<rect x="0" y="0" width="1200" height="740" rx="0" fill="#f6f8fb"/>
+<text x="28" y="39" font-size="27" fill="#172033" font-weight="700">01 · Allow Chrome to open local Markdown</text>
+<text x="28" y="72" font-size="18" fill="#667085" font-weight="400">Chrome → Extensions → Markdown Plus → Details</text>
+<text x="1172" y="37" font-size="12" fill="#667085" font-weight="700" text-anchor="end">INTERFACE ILLUSTRATION</text>
+<text x="926" y="138" font-size="13" fill="#dc2626" font-weight="700">RED MARKERS</text>
+<text x="28" y="720" font-size="14" fill="#667085" font-weight="400">Markdown Plus · User guide · Example values shown</text>
+<rect x="24" y="106" width="860" height="576" rx="16" fill="white" stroke="#dce2ea"/>
+<rect x="44" y="126" width="820" height="42" rx="8" fill="#eef2f6"/>
+<text x="64" y="154" font-size="18" fill="#172033" font-weight="400">chrome://extensions</text>
+<text x="52" y="209" font-size="25" fill="#172033" font-weight="700">Extensions</text>
+<rect x="48" y="233" width="812" height="120" rx="12" fill="white" stroke="#dce2ea"/>
+<rect x="70" y="257" width="54" height="54" rx="10" fill="#172033"/>
+<text x="97" y="295" font-size="35" fill="white" font-weight="700" text-anchor="middle">M</text>
+<text x="144" y="273" font-size="22" fill="#172033" font-weight="700">Markdown Plus</text>
+<text x="144" y="306" font-size="17" fill="#667085" font-weight="400">Read local Markdown files in Chrome.</text>
+<rect x="716" y="270" width="114" height="38" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="773.0" y="295" font-size="16" fill="#172033" font-weight="600" text-anchor="middle">Details</text>
+<!-- Details button: 8 px outline padding. -->
+<rect x="708" y="262" width="130" height="54" rx="16" class="ring"/>
+<circle cx="854" cy="289" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="854" y="295" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<text x="454" y="389" font-size="30" fill="#2563eb" font-weight="700" text-anchor="middle">↓</text>
+<rect x="48" y="412" width="812" height="218" rx="12" fill="white" stroke="#dce2ea"/>
+<text x="72" y="452" font-size="22" fill="#172033" font-weight="700">Markdown Plus · Details</text>
+<path d="M72 475H836" stroke="#dce2ea" stroke-width="1"/>
+<text x="72" y="517" font-size="20" fill="#172033" font-weight="600">Allow access to file URLs</text>
+<text x="72" y="552" font-size="17" fill="#667085" font-weight="400">Allow Markdown Plus to read local Markdown files</text>
+<text x="72" y="576" font-size="17" fill="#667085" font-weight="400">when you open them in Chrome.</text>
+<rect x="776" y="499" width="42" height="24" rx="12" fill="#2563eb"/>
+<circle cx="806" cy="511" r="8" fill="white"/>
+<!-- File URL access switch: 8 px outline padding. -->
+<rect x="768" y="491" width="58" height="40" rx="20" class="ring"/>
+<circle cx="842" cy="511" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="842" y="517" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<circle cx="940" cy="218" r="15" fill="#dc2626"/>
+<text x="940" y="224" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<text x="966" y="224" font-size="18" fill="#172033" font-weight="700">Open Details</text>
+<text x="926" y="257" font-size="17" fill="#667085" font-weight="400">Find Markdown Plus</text>
+<text x="926" y="282" font-size="17" fill="#667085" font-weight="400">at chrome://extensions,</text>
+<text x="926" y="307" font-size="17" fill="#667085" font-weight="400">then choose Details.</text>
+<circle cx="940" cy="401" r="15" fill="#dc2626"/>
+<text x="940" y="407" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<text x="966" y="407" font-size="18" fill="#172033" font-weight="700">Enable file access</text>
+<text x="926" y="440" font-size="17" fill="#667085" font-weight="400">Turn on “Allow access</text>
+<text x="926" y="465" font-size="17" fill="#667085" font-weight="400">to file URLs”. Then</text>
+<text x="926" y="490" font-size="17" fill="#667085" font-weight="400">reload your file tab.</text>
+</svg>

@@ -1,5 +1,7 @@
 # Markdown Plus public website
 
+Developer maintenance guide. Users should follow the [README](../README.md#quick-start) for Chrome Web Store availability, installation, and extension controls. See [DEV.md](../DEV.md) for development setup and the [technical documentation index](../docs/README.md) for other references.
+
 `site/` is the buildless GitHub Pages output. English Home lives at `/`; the existing policy URL remains `/privacy/`. Vietnamese lives at `/vi/` and `/vi/privacy/`; Simplified Chinese lives at `/zh-CN/` and `/zh-CN/privacy/`. All editions share `assets/styles.css`, `assets/site.js`, and the approved brand SVG copied from `assets/brand/markdown-plus-icon.svg`. Website changes do not modify the extension’s UI, processing, or permissions.
 
 ## Languages and editing
@@ -12,11 +14,22 @@ Marketing wording is adapted to each audience; the policy preserves the same dis
 
 ## Landing-page direction
 
-Home follows a product-demo-and-features structure: a centered display headline and installation CTA, a large illustrative workspace, supported formats, four feature illustrations, the local-processing story, installation steps, a closing CTA, and a complete footer. Different section compositions give the page a visual rhythm. Descriptions communicate real capabilities; the experimental editor is labeled, and installation links point to the repository’s actual Quick Start until a verified store listing is available. No ratings, customer counts, or testimonials are invented.
+Home follows a product-demo-and-features structure: a centered display headline and availability CTA, a large illustrative workspace, supported formats, four feature illustrations, the local-processing story, installation steps, a closing CTA, and a complete footer. Different section compositions give the page a visual rhythm. Descriptions communicate real capabilities; the experimental editor is labeled, and user installation follows Chrome Web Store. No ratings, customer counts, or testimonials are invented.
 
 The design takes its identity from the extension’s [design-system foundations](../docs/design-system/README.md): blue navigation, blue-gray surfaces, system typography, green positive states, and familiar product artwork. Application outlines are static snapshots of `src/shared/icons/application-icons.js` (24px, 1.8 stroke). File identities come from `src/shared/icons/file-type-icons.js` (16px, 1.25 stroke). Update affected snapshots if those canonical definitions change.
 
 Display typography, the floating header, blue ambient lighting, larger radii, bento compositions, and the navy closing CTA are explicit presentation choices local to `site/`. They adapt the extension’s visual identity for a public landing page and do not establish new Viewer, Popup, or Settings contracts. The marketing palette derives from the application palette and uses its own semantic variables for readable website surfaces in both themes.
+
+## Installation links and Store availability
+
+The Chrome Web Store listing is pending review. Header and primary CTA labels describe availability, and the hero announcement and closing note disclose that review is in progress. All installation links currently lead to the root [README Quick start](../README.md#quick-start), which is the canonical place for the pending status and eventual official Store link. Do not substitute a source build, Developer mode, or an unpacked download as the public installation route; those instructions belong in [DEV.md](../DEV.md).
+
+When the listing is approved:
+
+1. Verify the official listing URL and add it to the README Quick start. Replace the pending note and conditional installation wording there.
+2. Update availability labels, the hero announcement, installation descriptions, and closing note in all three `scripts/site/locales/` catalogs. Keep file-URL permission instructions after Store installation.
+3. Point installation CTAs in both `scripts/site/templates/home.html` and `privacy.html` to the verified Store URL; keep installation-guide links pointing to the README Quick start.
+4. Regenerate all six HTML pages and run the [website preflight](#preview-and-verification). Review the three languages together so no stale pending or source-install copy remains.
 
 ## Interaction and privacy
 

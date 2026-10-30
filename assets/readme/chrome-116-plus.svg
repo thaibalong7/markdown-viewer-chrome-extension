@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="126" height="24" viewBox="0 0 126 24" role="img" aria-labelledby="title desc">
+  <title id="title">Chrome 116+</title>
+  <desc id="desc">Markdown Plus requires Google Chrome 116 or newer, as declared in manifest.json.</desc>
+  <clipPath id="badge"><rect width="126" height="24" rx="5"/></clipPath>
+  <g clip-path="url(#badge)">
+    <path fill="#334155" d="M0 0h76v24H0z"/>
+    <path fill="#2563eb" d="M76 0h50v24H76z"/>
+  </g>
+  <g fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="12" text-anchor="middle">
+    <text x="38" y="16">Chrome</text>
+    <text x="101" y="16" font-weight="700">116+</text>
+  </g>
+</svg>

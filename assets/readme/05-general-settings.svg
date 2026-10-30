@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="840" viewBox="0 0 1200 840" role="img" aria-labelledby="title desc">
+<title id="title">05 · Set language and document behavior</title>
+<desc id="desc">All settings → General Red outlines and numbered markers identify the controls explained in the accompanying guide. This is a simplified interface illustration, not a screenshot.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif} .ring{fill:none;stroke:#dc2626;stroke-width:3} </style>
+<rect x="0" y="0" width="1200" height="840" rx="0" fill="#f6f8fb"/>
+<text x="28" y="39" font-size="27" fill="#172033" font-weight="700">05 · Set language and document behavior</text>
+<text x="28" y="72" font-size="18" fill="#667085" font-weight="400">All settings → General</text>
+<text x="1172" y="37" font-size="12" fill="#667085" font-weight="700" text-anchor="end">INTERFACE ILLUSTRATION</text>
+<text x="926" y="138" font-size="13" fill="#dc2626" font-weight="700">RED MARKERS</text>
+<text x="28" y="820" font-size="14" fill="#667085" font-weight="400">Markdown Plus · User guide · Example values shown</text>
+<rect x="24" y="106" width="860" height="695" rx="16" fill="white" stroke="#dce2ea"/>
+<text x="48" y="147" font-size="21" fill="#172033" font-weight="700">Markdown Plus</text>
+<text x="218" y="147" font-size="17" fill="#667085" font-weight="400">Settings</text>
+<text x="858" y="147" font-size="13" fill="#047857" font-weight="400" text-anchor="end">Settings are up to date.</text>
+<path d="M24 171H884" stroke="#dce2ea" stroke-width="1"/>
+<rect x="25" y="172" width="204" height="628" rx="0" fill="#eef2f6"/>
+<rect x="37" y="195" width="179" height="43" rx="8" fill="#eaf2ff"/>
+<text x="49" y="220" font-size="16" fill="#2563eb" font-weight="600">General</text>
+<text x="49" y="283" font-size="16" fill="#172033" font-weight="400">Themes</text>
+<text x="49" y="346" font-size="16" fill="#172033" font-weight="400">Files &amp; Workspace</text>
+<text x="49" y="409" font-size="16" fill="#172033" font-weight="400">Privacy &amp; Data</text>
+<text x="49" y="472" font-size="16" fill="#172033" font-weight="400">Advanced</text>
+<text x="49" y="535" font-size="16" fill="#172033" font-weight="400">About</text>
+<text x="252" y="221" font-size="27" fill="#172033" font-weight="700">General</text>
+<rect x="252" y="250" width="607" height="495" rx="12" fill="white" stroke="#dce2ea"/>
+<text x="273" y="293" font-size="17" fill="#172033" font-weight="600">Interface language</text>
+<rect x="659" y="265" width="177" height="40" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="673" y="291" font-size="16" fill="#172033" font-weight="400">English</text>
+<text x="811" y="291" font-size="18" fill="#667085" font-weight="400">⌄</text>
+<path d="M273 325H836" stroke="#dce2ea" stroke-width="1"/>
+<text x="273" y="370" font-size="17" fill="#172033" font-weight="600">Enable Markdown Plus</text>
+<rect x="792" y="352" width="42" height="24" rx="12" fill="#2563eb"/>
+<circle cx="822" cy="364" r="8" fill="white"/>
+<path d="M273 402H836" stroke="#dce2ea" stroke-width="1"/>
+<text x="273" y="447" font-size="17" fill="#172033" font-weight="600">Auto-hide document scrollbars</text>
+<rect x="792" y="429" width="42" height="24" rx="12" fill="#2563eb"/>
+<circle cx="822" cy="441" r="8" fill="white"/>
+<path d="M273 479H836" stroke="#dce2ea" stroke-width="1"/>
+<text x="273" y="524" font-size="17" fill="#172033" font-weight="600">Show document statistics</text>
+<rect x="792" y="506" width="42" height="24" rx="12" fill="#2563eb"/>
+<circle cx="822" cy="518" r="8" fill="white"/>
+<path d="M273 556H836" stroke="#dce2ea" stroke-width="1"/>
+<text x="273" y="601" font-size="17" fill="#172033" font-weight="600">Document updates</text>
+<rect x="659" y="573" width="177" height="40" rx="8" fill="white" stroke="#c5ced9"/>
+<text x="673" y="599" font-size="16" fill="#172033" font-weight="400">Ask</text>
+<text x="811" y="599" font-size="18" fill="#667085" font-weight="400">⌄</text>
+<path d="M273 633H836" stroke="#dce2ea" stroke-width="1"/>
+<text x="273" y="678" font-size="17" fill="#172033" font-weight="600">File URL access</text>
+<rect x="750" y="653" width="86" height="34" rx="17" fill="#ecfdf5"/>
+<text x="793" y="676" font-size="16" fill="#047857" font-weight="600" text-anchor="middle">Allowed</text>
+<!-- General navigation item: 8 px outline padding. -->
+<rect x="29" y="187" width="195" height="59" rx="16" class="ring"/>
+<circle cx="216" cy="179" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="216" y="185" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<!-- Interface language select: 8 px outline padding. -->
+<rect x="651" y="257" width="193" height="56" rx="16" class="ring"/>
+<circle cx="860" cy="285" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="860" y="291" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<!-- Document updates select: 8 px outline padding. -->
+<rect x="651" y="565" width="193" height="56" rx="16" class="ring"/>
+<circle cx="860" cy="593" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="860" y="599" font-size="17" fill="white" font-weight="700" text-anchor="middle">3</text>
+<!-- File access status: 8 px outline padding. -->
+<rect x="742" y="645" width="102" height="50" rx="25" class="ring"/>
+<circle cx="860" cy="670" r="15" fill="#dc2626" stroke="white" stroke-width="2"/>
+<text x="860" y="676" font-size="17" fill="white" font-weight="700" text-anchor="middle">4</text>
+<circle cx="940" cy="221" r="15" fill="#dc2626"/>
+<text x="940" y="227" font-size="17" fill="white" font-weight="700" text-anchor="middle">1</text>
+<text x="966" y="227" font-size="18" fill="#172033" font-weight="700">Open General</text>
+<text x="926" y="260" font-size="17" fill="#667085" font-weight="400">Start with the General</text>
+<text x="926" y="285" font-size="17" fill="#667085" font-weight="400">section in Settings.</text>
+<circle cx="940" cy="375" r="15" fill="#dc2626"/>
+<text x="940" y="381" font-size="17" fill="white" font-weight="700" text-anchor="middle">2</text>
+<text x="966" y="381" font-size="18" fill="#172033" font-weight="700">Interface language</text>
+<text x="926" y="414" font-size="17" fill="#667085" font-weight="400">Choose your language</text>
+<text x="926" y="439" font-size="17" fill="#667085" font-weight="400">or follow the browser.</text>
+<circle cx="940" cy="535" r="15" fill="#dc2626"/>
+<text x="940" y="541" font-size="17" fill="white" font-weight="700" text-anchor="middle">3</text>
+<text x="966" y="541" font-size="18" fill="#172033" font-weight="700">Document updates</text>
+<text x="926" y="574" font-size="17" fill="#667085" font-weight="400">Choose Ask, Automatic,</text>
+<text x="926" y="599" font-size="17" fill="#667085" font-weight="400">or Off for external edits.</text>
+<circle cx="940" cy="691" r="15" fill="#dc2626"/>
+<text x="940" y="697" font-size="17" fill="white" font-weight="700" text-anchor="middle">4</text>
+<text x="966" y="697" font-size="18" fill="#172033" font-weight="700">Check file access</text>
+<text x="926" y="730" font-size="17" fill="#667085" font-weight="400">Allowed means Chrome</text>
+<text x="926" y="755" font-size="17" fill="#667085" font-weight="400">has granted file URL access.</text>
+<text x="926" y="780" font-size="17" fill="#667085" font-weight="400">Enable it in Chrome if blocked.</text>
+</svg>

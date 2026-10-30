@@ -1,67 +1,67 @@
 # Markdown Plus — Theme System
 
-Tài liệu này là hướng dẫn kỹ thuật đầy đủ về hệ thống theme hiện tại của Markdown Plus, dành cho cả maintainer, contributor và AI coding agent. Nội dung mô tả trạng thái đang được triển khai trong source code, không phải roadmap. Nếu tài liệu và runtime code mâu thuẫn, ưu tiên `src/**`, sau đó cập nhật lại tài liệu trong cùng thay đổi.
+This is the complete technical guide to the current Markdown Plus theme system for maintainers, contributors, and AI coding agents. It describes the implementation in source code, rather than a roadmap. If documentation conflicts with runtime code, follow `src/**` and update the documentation in the same change.
 
-Để hiểu theme trong toàn bộ kiến trúc extension, đọc tài liệu này cùng [Architecture Overview](./architecture-overview.md). Tài liệu hiện tại đi sâu vào theme; Architecture Overview giữ bức tranh ownership và runtime flow cấp hệ thống.
+Read this alongside the [Architecture Overview](./architecture-overview.md) to understand themes within the extension. This guide covers theme details; the Architecture Overview documents system-wide ownership and runtime flows.
 
-## 1. Mục tiêu và nguyên tắc sản phẩm
+## 1. Product goals and principles
 
-Theme trong Markdown Plus là một thực thể hình ảnh hoàn chỉnh, không chỉ là một tên palette. Mỗi theme sở hữu màu sắc giao diện, theme nền dùng cho code highlighting, và background scene riêng của chính nó.
+A Markdown Plus theme is a complete visual definition. Each theme owns its interface colors, the theme used for code highlighting, and its own background scene.
 
-Hệ thống phân biệt hai nhóm theme:
+The system distinguishes two kinds of themes:
 
-- Built-in theme được đóng gói cùng extension, định nghĩa bằng source code và chỉ đọc đối với người dùng.
-- Custom theme do người dùng tạo, đặt tên, chỉnh màu, cấu hình background và lưu trong Settings.
+- Built-in themes are packaged with the extension, defined in source code, and read-only for users.
+- Custom themes are created, named, recolored, configured with backgrounds, and saved by users in Settings.
 
-Settings là nơi authoring theme. Popup chỉ làm nhiệm vụ chọn một theme đã tồn tại, bao gồm cả built-in theme và custom theme đã lưu. Popup không chứa input chỉnh màu, gradient hay ảnh nền.
+Settings owns theme authoring. Popup selects existing themes, including built-in themes and saved custom themes. Popup has no color, gradient, or background-image inputs.
 
-Một số nguyên tắc bất biến:
+The following invariants apply:
 
-- Background thuộc về từng theme, không phải một global appearance setting.
-- `theme.activeId` chỉ ra theme đang hoạt động.
-- Built-in theme và custom theme đi qua cùng một bước resolve trước khi Viewer sử dụng.
-- Custom theme kế thừa các token không cho chỉnh trực tiếp từ một built-in `baseId`; Shiki theme mặc định đi theo base nhưng có thể được override bằng một bundled syntax theme đã allowlist.
-- Dữ liệu settings có thể đồng bộ bằng `chrome.storage.sync`, nhưng binary image asset của custom theme chỉ được lưu trên thiết bị hiện tại trong IndexedDB.
-- Settings không nhận arbitrary CSS, inline SVG hoặc remote image URL.
+- Backgrounds belong to individual themes, rather than a global appearance setting.
+- `theme.activeId` identifies the active theme.
+- Built-in and custom themes pass through the same resolution step before the Viewer uses them.
+- Custom themes inherit non-editable tokens from a built-in `baseId`; the default Shiki theme follows that base but can be overridden with an allowlisted bundled syntax theme.
+- Settings can synchronize through `chrome.storage.sync`, while custom-theme binary image assets stay in IndexedDB on the current device.
+- Settings do not accept arbitrary CSS, inline SVG, or remote image URLs.
 
-## 2. Bản đồ source code
+## 2. Source map
 
-| Trách nhiệm | Source chính |
+| Responsibility | Primary source |
 | --- | --- |
-| Palette built-in, registry, resolve theme, CSS variables | `src/theme/index.js` |
+| Built-in palettes, registry, theme resolution, CSS variables | `src/theme/index.js` |
 | File identity hues and light/dark shades, published as `--mdp-file-icon-*` by `createStyleVars()` | `src/shared/icons/file-type-colors.js` |
-| Catalog syntax theme được phép chọn và mapping theo base | `src/theme/syntax-themes.js` |
-| Kiểu background và chuyển descriptor thành scene render | `src/theme/backgrounds.js` |
-| Client gọi background service để quản lý image asset | `src/theme/theme-asset-client.js` |
-| Default settings và settings version | `src/settings/default-settings.js` |
-| Validation và normalization | `src/settings/settings-schema.js` |
+| Selectable syntax-theme catalog and base mappings | `src/theme/syntax-themes.js` |
+| Background types and descriptor-to-scene resolution | `src/theme/backgrounds.js` |
+| Client for background-service image asset management | `src/theme/theme-asset-client.js` |
+| Default settings and settings version | `src/settings/default-settings.js` |
+| Validation and normalization | `src/settings/settings-schema.js` |
 | Migration, merge, save, reset | `src/settings/settings-service.js` |
-| Sync index, theme records, byte budget và completeness | `src/settings/settings-storage-format.js` |
-| Chrome storage, local recovery cache và record cleanup | `src/settings/settings-storage.js` |
-| Settings UI để quản lý custom theme | `src/options/sections/ThemeSettings.jsx` |
+| Sync index, theme records, byte budget, and completeness | `src/settings/settings-storage-format.js` |
+| Chrome storage, local recovery cache, and record cleanup | `src/settings/settings-storage.js` |
+| Settings UI for custom-theme management | `src/options/sections/ThemeSettings.jsx` |
 | Dedicated custom-theme editor | `src/options/sections/ThemeEditor.jsx`, `ThemeColorFields.jsx`, `ThemeBackgroundFields.jsx` |
-| Live mini Viewer preview trong theme authoring | `src/options/sections/ThemePreview.jsx` |
-| Workflow save theme và image asset | `src/options/hooks/useSettingsForm.js` |
+| Live miniature Viewer preview for theme authoring | `src/options/sections/ThemePreview.jsx` |
+| Theme and image asset save workflow | `src/options/hooks/useSettingsForm.js` |
 | Popup theme selector | `src/popup/panels/ReaderPanel.jsx` |
 | Background asset IndexedDB service | `src/background/theme-asset-service.js` |
-| Message route cho settings và asset | `src/background/message-router.js` |
-| Message type và caller wrapper | `src/messaging/index.js` |
+| Settings and asset message routes | `src/background/message-router.js` |
+| Message types and caller wrappers | `src/messaging/index.js` |
 | Validate/read/parse image | `src/shared/background-image.js` |
-| Resolve và render background trong Viewer | `src/viewer/react/components/BackgroundScene.jsx` |
-| Đặt background scene vào shell và bật glass surfaces | `src/viewer/react/components/ViewerShell.jsx` |
-| CSS của scene, animation và print behavior | `src/viewer/styles/_background-scene.scss` |
-| Surface transparency khi có visual background | `src/viewer/styles/layout.scss` |
-| Áp CSS variables lên Viewer | `src/viewer/app/viewerStyles.js` |
-| Quyết định style-only update hay full render | `src/shared/settings-diff.js` |
-| Shiki mapping và bundled theme loaders | `src/viewer/core/shiki-config.js` |
+| Background resolution and rendering in the Viewer | `src/viewer/react/components/BackgroundScene.jsx` |
+| Scene placement in the shell and glass-surface activation | `src/viewer/react/components/ViewerShell.jsx` |
+| Scene CSS, animation, and print behavior | `src/viewer/styles/_background-scene.scss` |
+| Surface transparency with visual backgrounds | `src/viewer/styles/layout.scss` |
+| Applying CSS variables to the Viewer | `src/viewer/app/viewerStyles.js` |
+| Choosing style-only updates or full renders | `src/shared/settings-diff.js` |
+| Shiki mappings and bundled theme loaders | `src/viewer/core/shiki-config.js` |
 | Mermaid theme variables | `src/viewer/mermaid/mermaid-render-service.js` |
-| Live settings broadcast vào content script | `src/content/viewer-loader.js` |
+| Live settings broadcasts to the content script | `src/content/viewer-loader.js` |
 
-Khi bắt đầu một thay đổi về theme, nên đọc theo thứ tự `src/theme/index.js` → `src/theme/backgrounds.js` → `src/settings/settings-schema.js` → surface UI hoặc renderer liên quan. Nếu thay đổi cấu trúc dữ liệu, phải đọc thêm `src/settings/settings-service.js` để quyết định có cần migration và tăng version hay không.
+For theme changes, read `src/theme/index.js` → `src/theme/backgrounds.js` → `src/settings/settings-schema.js` → the affected UI surface or renderer. For data-structure changes, also read `src/settings/settings-service.js` to determine whether migration and a version bump are needed.
 
-## 3. Mô hình settings được lưu
+## 3. Persisted settings model
 
-Theme settings hiện dùng schema version `2` và có shape tối thiểu:
+Theme settings currently use schema version `2`, with this minimal shape:
 
 ```js
 {
@@ -73,26 +73,26 @@ Theme settings hiện dùng schema version `2` và có shape tối thiểu:
 }
 ```
 
-`DEFAULT_SETTINGS` nằm trong `src/settings/default-settings.js`. Public schema và JSON export vẫn dùng version `2` với `theme.customThemes` inline. Storage format `1` tách dữ liệu thành index `mdViewer.settings.index.v1` và từng descriptor `mdViewer.theme.<sha256>`; index chứa preferences, `theme.activeId`, danh sách theme refs theo thứ tự library và refs của thế hệ trước. Reader xác minh đủ records và hash trước khi dựng lại settings rồi chạy migrate → merge defaults → normalize safe.
+`DEFAULT_SETTINGS` lives in `src/settings/default-settings.js`. The public schema and JSON export remain at version `2`, with inline `theme.customThemes`. Storage format `1` splits data into the `mdViewer.settings.index.v1` index and individual `mdViewer.theme.<sha256>` descriptors; the index contains preferences, `theme.activeId`, theme references in library order, and previous-generation references. The reader verifies record completeness and hashes before reconstructing settings, then runs migration → default merging → safe normalization.
 
-`settingsService` ưu tiên `chrome.storage.sync` và chỉ dùng `chrome.storage.local` làm backend khi API sync không tồn tại. Lỗi quota hoặc ghi quá nhanh không tự chuyển backend. Save/import kiểm tra byte của key, JSON và envelope, từng item, tổng storage và số items; tính cả legacy/obsolete records và dữ liệu khác đang chiếm quota. Ước lượng bao gồm UTF-8, escaping của Chromium và dự phòng biểu diễn số; lỗi từ API Chrome vẫn được xử lý vì preflight không khóa được các writer khác. Binary image asset tiếp tục ở IndexedDB, không nằm trong theme records hoặc cache.
+`settingsService` prefers `chrome.storage.sync` and uses `chrome.storage.local` as the backend only when the sync API is unavailable. Quota or write-rate errors do not switch backends automatically. Save/import checks byte sizes for keys, JSON, envelopes, individual items, total storage, and item counts, including legacy/obsolete records and other quota-consuming data. Estimates account for UTF-8, Chromium escaping, and number-representation overhead; Chrome API errors are still handled because preflight cannot lock out other writers. Binary image assets remain in IndexedDB, outside theme records and the cache.
 
-Legacy `mdViewer.settings` vẫn đọc được qua migration version 1/2. Lần save/reset thành công đầu tiên publish format mới; chỉ retire key legacy sau readback thành công. Các thao tác read/merge/write/reset được serialize trong service worker để partial saves trên cùng thiết bị không ghi đè nhau. Cleanup sau commit giữ refs hiện tại và thế hệ trước, chỉ xóa records của adapter đã quan sát trước commit; không dùng `storage.clear()` và không xóa recent history. Lỗi cleanup/cache/notification sau khi đã persist được log, không trả lỗi save giả khiến UI rollback ảnh đã được tham chiếu.
+Legacy `mdViewer.settings` remains readable through version 1/2 migration. The first successful save/reset publishes the new format; the legacy key is retired only after successful readback. Read/merge/write/reset operations are serialized in the service worker so partial saves on the same device do not overwrite each other. Post-commit cleanup keeps current and previous-generation references and deletes only adapter records observed before the commit; it does not use `storage.clear()` or remove recent history. Cleanup/cache/notification failures after persistence are logged, rather than reported as false save failures that would make the UI roll back an already-referenced image.
 
-Local key `mdViewer.settings.lastComplete.v1` giữ snapshot hoàn chỉnh gần nhất cho backend sync. Nếu index hoặc refs đến khác thứ tự, Settings/Popup hiển thị cảnh báo qua shared Notice, Viewer dùng warning Toast; snapshot cache tiếp tục dùng để đọc nhưng save/reset bị chặn đến khi dữ liệu hiện tại hoàn chỉnh. Máy mới không có cache hợp lệ nhận lỗi tải rõ ràng, không tự ghi defaults lên remote. Record bị xóa muộn có thể được phục hồi từ cache khi nội dung khớp đúng hash đang được index tham chiếu; không ghi cache cũ đè index. Observer background nhận `storage.onChanged` và chỉ broadcast snapshot đã kiểm tra. Hai thiết bị sửa đồng thời không có application-level merge hoặc transaction; không coi `sync.set()` resolve là xác nhận thiết bị khác đã đồng bộ xong.
+The local key `mdViewer.settings.lastComplete.v1` stores the latest complete snapshot for the sync backend. If the index or referenced records arrive out of order, Settings/Popup warn through the shared Notice and the Viewer uses a warning Toast; the cached snapshot remains readable, but save/reset is blocked until current data is complete. A new device without a valid cache receives an explicit load error and does not write defaults to remote storage. A late-deleted record can be restored from cache when its content exactly matches the hash referenced by the index; an old cache never overwrites the index. The background observer receives `storage.onChanged` and broadcasts only validated snapshots. Concurrent edits on two devices have no application-level merge or transaction; a resolved `sync.set()` does not confirm that another device has finished synchronizing.
 
 ### `theme.activeId`
 
-`activeId` phải trỏ đến một trong hai loại id:
+`activeId` must reference one of two kinds of IDs:
 
-- Một key có thật trong `BUILT_IN_THEMES`, ví dụ `light`, `dark`, `aurora-glass`.
-- Một `id` có thật trong `theme.customThemes`.
+- An existing key in `BUILT_IN_THEMES`, such as `light`, `dark`, or `aurora-glass`.
+- An existing `id` in `theme.customThemes`.
 
-Nếu dữ liệu được load với policy `invalid: 'default'` và active id không tồn tại, hệ thống quay về `light`. Khi save bình thường, active id không tồn tại sẽ tạo `SettingsValidationError`.
+When loading with `invalid: 'default'`, a missing active ID falls back to `light`. During ordinary saves, a missing active ID raises `SettingsValidationError`.
 
 ### `theme.customThemes`
 
-Mỗi custom theme có shape:
+Each custom theme has this shape:
 
 ```js
 {
@@ -125,30 +125,30 @@ Mỗi custom theme có shape:
 }
 ```
 
-Ý nghĩa từng field:
+Field meanings:
 
-| Field | Ý nghĩa |
+| Field | Meaning |
 | --- | --- |
-| `id` | Identity ổn định dùng để select, update và delete theme. Không dùng `name` làm identity. |
-| `name` | Tên hiển thị do người dùng đặt, dài từ 1 đến 48 ký tự sau khi trim. |
-| `baseId` | Built-in theme cung cấp các token không override và Shiki fallback khi không có syntax override. |
-| `syntaxThemeId` | `null` để theo Shiki mapping của `baseId`, hoặc id của một trong 30 bundled syntax themes. |
-| `colors` | Các semantic color override được phép chỉnh. Có thể sparse trong persisted data. |
-| `background` | Structured descriptor của background scene thuộc theme này. |
+| `id` | Stable identity for selecting, updating, and deleting a theme. Do not use `name` as identity. |
+| `name` | User-defined display name, 1–48 characters after trimming. |
+| `baseId` | Built-in theme supplying non-overridden tokens and the Shiki fallback when no syntax override is set. |
+| `syntaxThemeId` | `null` to follow the `baseId` Shiki mapping, or the ID of one of 30 bundled syntax themes. |
+| `colors` | Editable semantic color overrides. Persisted data may be sparse. |
+| `background` | Structured descriptor for this theme's background scene. |
 
-Custom theme id phải match `^custom:[a-z0-9][a-z0-9-]{7,127}$`. `createCustomThemeDraft()` sinh id bằng `crypto.randomUUID()` khi có, hoặc fallback từ timestamp và random value. Draft mới đặt `syntaxThemeId: null` để tiếp tục theo base; dữ liệu theme cũ không có field này cũng được normalize về cùng hành vi.
+Custom theme IDs must match `^custom:[a-z0-9][a-z0-9-]{7,127}$`. `createCustomThemeDraft()` generates an ID with `crypto.randomUUID()` when available, or falls back to a timestamp and random value. New drafts set `syntaxThemeId: null` to follow the base; older theme data without this field normalizes to the same behavior.
 
-Tối đa 32 custom theme được chấp nhận. Id phải duy nhất trong `customThemes`.
+At most 32 custom themes are accepted. IDs must be unique within `customThemes`.
 
-## 4. Mô hình built-in theme
+## 4. Built-in theme model
 
-Built-in theme được định nghĩa trong `src/theme/index.js` qua ba lớp:
+Built-in themes are defined in `src/theme/index.js` through three layers:
 
-1. Các palette constant như `LIGHT_THEME_COLORS`, `DARK_THEME_COLORS`, `AURORA_GLASS_THEME_COLORS`.
-2. `BUILT_IN_THEMES`, map từ built-in id sang palette.
-3. `BUILT_IN_THEME_DEFINITIONS`, registry đầy đủ gồm `id`, `name`, `colors`, và `background`.
+1. Palette constants such as `LIGHT_THEME_COLORS`, `DARK_THEME_COLORS`, and `AURORA_GLASS_THEME_COLORS`.
+2. `BUILT_IN_THEMES`, which maps built-in IDs to palettes.
+3. `BUILT_IN_THEME_DEFINITIONS`, the complete registry of `id`, `name`, `colors`, and `background`.
 
-Shape resolve của một built-in theme:
+A resolved built-in theme has this shape:
 
 ```js
 {
@@ -167,7 +167,7 @@ Shape resolve của một built-in theme:
 }
 ```
 
-Built-in themes hiện có:
+Current built-in themes:
 
 | Id | Label |
 | --- | --- |
@@ -185,37 +185,37 @@ Built-in themes hiện có:
 | `min-dark` | Min (Dark) |
 | `aurora-glass` | Aurora Glass |
 
-Mỗi built-in theme đã có background descriptor của riêng nó. Hiện tại `aurora-glass` dùng preset gradient `aurora`; các built-in còn lại dùng `DEFAULT_THEME_BACKGROUND`, tức `type: 'none'`.
+Each built-in theme has its own background descriptor. Currently, `aurora-glass` uses the `aurora` gradient preset; the others use `DEFAULT_THEME_BACKGROUND`, with `type: 'none'`.
 
-Về kiến trúc, built-in có thể dùng `none`, `solid` hoặc `gradient` giống custom theme chỉ bằng descriptor trong registry. Built-in image/animated image đóng gói cùng extension chưa được hỗ trợ đầy đủ ở thời điểm tài liệu này được viết; image renderer hiện chỉ biết tải `assetId` từ IndexedDB. Phần “Mở rộng background” bên dưới mô tả hướng đúng để bổ sung packaged asset.
+Architecturally, built-in themes can use `none`, `solid`, or `gradient`, just like custom themes, through registry descriptors. Packaged built-in images and animated images are not fully supported at the time of writing; the image renderer currently loads only IndexedDB `assetId` values. The [packaged-image extension section](#19-supporting-packaged-images-for-built-in-themes) below describes how to add packaged assets.
 
-Built-in theme không sửa trực tiếp trong Settings. Người dùng tạo custom theme dựa trên built-in, sau đó chỉnh bản custom. Điều này giữ built-in registry ổn định, giúp migration và fallback có hành vi dự đoán được.
+Built-in themes cannot be edited directly in Settings. Users create and edit custom themes based on a built-in theme. This keeps the built-in registry stable and makes migration and fallback behavior predictable.
 
-## 5. Palette và semantic color tokens
+## 5. Palettes and semantic color tokens
 
-Palette dùng semantic names thay vì đặt tên theo component cụ thể. Một palette built-in đầy đủ hiện có các nhóm token sau:
+Palettes use semantic names rather than component-specific names. A complete built-in palette currently contains these token groups:
 
-| Nhóm | Token |
+| Group | Tokens |
 | --- | --- |
-| Chế độ màu | `colorScheme` |
-| Nền và surface | `background`, `surface`, `panelBg`, `panelStrong` |
-| Chữ | `text`, `bodyText`, `heading`, `muted` |
+| Color scheme | `colorScheme` |
+| Backgrounds and surfaces | `background`, `surface`, `panelBg`, `panelStrong` |
+| Text | `text`, `bodyText`, `heading`, `muted` |
 | Border | `border`, `borderStrong` |
 | Code | `codeBg`, `codeText` |
-| Link và accent | `link`, `linkSoft`, `accent`, `accentSoft` |
-| Warning và danger | `warning`, `warningSoft`, `danger` |
+| Links and accents | `link`, `linkSoft`, `accent`, `accentSoft` |
+| Warning and danger | `warning`, `warningSoft`, `danger` |
 | Table | `tableBorder`, `tableHeaderBg`, `tableRowAltBg` |
 | Toast info | `toastInfoBg`, `toastInfoText`, `toastInfoBorder` |
 | Toast success | `toastSuccessBg`, `toastSuccessText`, `toastSuccessBorder` |
 | Toast warning | `toastWarningBg`, `toastWarningText`, `toastWarningBorder` |
 | Toast error | `toastErrorBg`, `toastErrorText`, `toastErrorBorder` |
-| Scrollbar tùy chọn | `scrollbarThumb`, `scrollbarThumbHover` |
+| Optional scrollbar colors | `scrollbarThumb`, `scrollbarThumbHover` |
 
-Porcelain #22 của Files/Outline dùng trực tiếp `--mdp-surface`, `--mdp-muted`, `--mdp-border`, `--mdp-link` và `--mdp-link-soft` trong `src/viewer/styles/layout.scss`. Không có palette/token riêng cho panel toggle; custom theme kế thừa cùng semantic mapping, không thay schema hay migration. Xem [contract panel toggle](./design-system/README.md#panel-toggles).
+The Files/Outline Porcelain #22 toggle directly uses `--mdp-surface`, `--mdp-muted`, `--mdp-border`, `--mdp-link`, and `--mdp-link-soft` in `src/viewer/styles/layout.scss`. Panel toggles have no separate palette or tokens; custom themes inherit the same semantic mapping without schema or migration changes. See the [panel-toggle contract](./design-system/README.md#panel-toggles).
 
-Scrollbar của Files/Outline dùng chung `ViewerScrollbar` và các màu `scrollbarThumb` / `scrollbarThumbHover` với viewer; variant sidebar chỉ đổi geometry. Tùy chọn auto-hide/always-visible hiện có điều khiển cả hai danh sách, không thêm preference riêng. Xem [contract sidebar scrolling](./design-system/README.md#sidebar-scrolling).
+Files/Outline share `ViewerScrollbar` and the Viewer's `scrollbarThumb` / `scrollbarThumbHover` colors; the sidebar variant changes only geometry. The existing auto-hide/always-visible option controls both lists, without another preference. See the [sidebar-scrolling contract](./design-system/README.md#sidebar-scrolling).
 
-Settings UI chỉ expose các token nằm trong `EDITABLE_THEME_COLOR_FIELDS`:
+Settings exposes only the tokens listed in `EDITABLE_THEME_COLOR_FIELDS`:
 
 - `background`
 - `surface`
@@ -230,30 +230,30 @@ Settings UI chỉ expose các token nằm trong `EDITABLE_THEME_COLOR_FIELDS`:
 - `link`
 - `accent`
 
-Trong Settings, `codeBg` và `codeText` được ghi nhãn là màu cho inline/fallback code để phân biệt với Shiki theme. Chúng áp dụng cho inline code, code fence không được Shiki highlight và các source/fallback view; màu của fenced code đã highlight được cấu hình riêng bằng `syntaxThemeId`.
+In Settings, `codeBg` and `codeText` are labeled as inline/fallback code colors to distinguish them from the Shiki theme. They apply to inline code, fences without Shiki highlighting, and source/fallback views; highlighted fenced-code colors are configured separately through `syntaxThemeId`.
 
-Các token còn lại được kế thừa từ `baseId`. `resolveThemeById()` merge theo thứ tự built-in base palette trước, sau đó custom `colors` override lên trên.
+Other tokens are inherited from `baseId`. `resolveThemeById()` merges the built-in base palette first, then applies custom `colors` overrides.
 
-GitHub Alerts trong nội dung Markdown dùng các bộ màu toast có sẵn theo cặp chữ/nền/viền: Note và Important dùng info, Tip dùng success, Warning dùng warning, Caution dùng error. Tiêu đề, văn bản, heading, link và list marker dùng status foreground trên nền status đặc, kể cả khi custom theme đổi màu document/link hoặc dùng background ảnh/gradient; code và bảng giữ palette chuyên biệt hiện có. Không thêm field màu hay migration: custom theme kế thừa các cặp status từ `baseId`, và CSS variables cập nhật alert khi đổi theme. Geometry và icon thuộc [Markdown alerts contract](./design-system/README.md#markdown-alerts).
+GitHub Alerts in Markdown use the existing toast text/background/border sets: Note and Important use info, Tip uses success, Warning uses warning, and Caution uses error. Titles, text, headings, links, and list markers use the status foreground on an opaque status background, including when custom themes change document/link colors or use image/gradient backgrounds; code and tables retain their existing specialized palettes. No new color fields or migration are needed: custom themes inherit status pairs from `baseId`, and CSS variables update alerts when themes change. Geometry and icons belong to the [Markdown alerts contract](./design-system/README.md#markdown-alerts).
 
-Mọi màu custom phải là hexadecimal 6 chữ số theo dạng `#RRGGBB`. Alpha hex, named color, `rgb()`, CSS variable và CSS expression không được schema chấp nhận.
+All custom colors must be six-digit hexadecimal values in `#RRGGBB` form. The schema rejects alpha hex, named colors, `rgb()`, CSS variables, and CSS expressions.
 
-### Phân biệt `colors.background` và `theme.background`
+### Distinguishing `colors.background` from `theme.background`
 
-Hai field này có tên gần giống nhưng trách nhiệm khác nhau:
+These similarly named fields have different responsibilities:
 
-- `colors.background` là semantic color token. Nó trở thành `--mdp-bg` và là nền cơ bản/fallback của Viewer.
-- `theme.background` là scene descriptor, ví dụ gradient hoặc local image được đặt phía sau Viewer surfaces.
+- `colors.background` is a semantic color token. It becomes `--mdp-bg` and supplies the Viewer's basic/fallback background.
+- `theme.background` is a scene descriptor, such as a gradient or local image placed behind Viewer surfaces.
 
-`background.type: 'none'` không có nghĩa Viewer mất nền; Viewer vẫn dùng `colors.background`. `background.type: 'solid'` tạo một visual scene riêng và đồng thời bật translucent/glass treatment cho các surface, vì vậy nó không hoàn toàn tương đương chỉ đổi `colors.background`.
+`background.type: 'none'` does not remove the Viewer's background; it still uses `colors.background`. `background.type: 'solid'` creates a separate visual scene and enables translucent/glass surfaces, so it is not equivalent to changing only `colors.background`.
 
-## 6. Từ palette đến CSS variables
+## 6. From palettes to CSS variables
 
-`createStyleVars(settings)` resolve active theme rồi tạo CSS custom properties. `applyThemeSettings(target, settings)` ghi chúng lên Viewer root.
+`createStyleVars(settings)` resolves the active theme and produces CSS custom properties. `applyThemeSettings(target, settings)` writes them to the Viewer root.
 
-Các mapping quan trọng:
+Key mappings:
 
-| Palette token hoặc setting | CSS variable |
+| Palette token or setting | CSS variable |
 | --- | --- |
 | `colorScheme` | `--mdp-color-scheme` |
 | `colors.background` | `--mdp-bg`, `--mdp-viewer-background` |
@@ -271,62 +271,62 @@ Các mapping quan trọng:
 | Typography settings | `--mdp-font-family`, `--mdp-font-size`, `--mdp-line-height` |
 | Layout settings | `--mdp-content-max-width`, `--mdp-toc-width` |
 
-Các token phụ có fallback an toàn trong `createStyleVars()`. Ví dụ, custom theme không cần lưu `accentSoft`; nếu thiếu, resolver dùng `panelBg` hoặc `background` theo fallback chain.
+Secondary tokens have safe fallbacks in `createStyleVars()`. For example, custom themes do not need to store `accentSoft`; when absent, the resolver uses `panelBg` or `background` according to the fallback chain.
 
-`applyReaderStyles()` trong `src/viewer/app/viewerStyles.js` áp theme variables, sidebar width và typography. Vì variables nằm ở Viewer root, cả article, Files panel, Outline, editor, floating actions, scrollbar và toast có thể dùng cùng semantic palette.
+`applyReaderStyles()` in `src/viewer/app/viewerStyles.js` applies theme variables, sidebar width, and typography. Because variables live on the Viewer root, the article, Files panel, Outline, editor, floating actions, scrollbars, and toasts can share one semantic palette.
 
 ## 7. Theme resolution
 
-Public helpers quan trọng trong `src/theme/index.js`:
+Key public helpers in `src/theme/index.js`:
 
-| Helper | Trách nhiệm |
+| Helper | Responsibility |
 | --- | --- |
-| `getActiveThemeId(settings)` | Đọc active id với fallback về default. |
-| `getCustomThemeById(settings, id)` | Tìm custom theme theo identity. |
-| `resolveThemeById(settings, id)` | Chuẩn hóa built-in hoặc custom thành một resolved theme đầy đủ. |
-| `resolveActiveTheme(settings)` | Resolve theme đang active. |
-| `getThemeColorsForSettings(settings)` | Lấy resolved colors cho Viewer/Mermaid. |
-| `getSyntaxThemeIdForSettings(settings)` | Lấy bundled syntax-theme id đã resolve, gồm custom override hoặc fallback theo base. |
-| `getThemeOptions(settings)` | Tạo hai danh sách option built-in/custom cho UI. |
-| `createCustomThemeDraft(baseId, name)` | Tạo draft custom theme mới từ built-in base. |
-| `createThemeAssetId()` | Sinh id riêng cho local image asset. |
-| `createStyleVars(settings)` | Chuyển resolved colors và layout/typography thành CSS variables. |
-| `applyThemeSettings(target, settings)` | Ghi variables lên DOM target. |
+| `getActiveThemeId(settings)` | Read the active ID, with a default fallback. |
+| `getCustomThemeById(settings, id)` | Find a custom theme by identity. |
+| `resolveThemeById(settings, id)` | Normalize a built-in or custom theme into a complete resolved theme. |
+| `resolveActiveTheme(settings)` | Resolve the active theme. |
+| `getThemeColorsForSettings(settings)` | Get resolved colors for the Viewer/Mermaid. |
+| `getSyntaxThemeIdForSettings(settings)` | Get the resolved bundled syntax-theme ID, including custom overrides or base fallbacks. |
+| `getThemeOptions(settings)` | Build separate built-in/custom option lists for the UI. |
+| `createCustomThemeDraft(baseId, name)` | Create a custom-theme draft from a built-in base. |
+| `createThemeAssetId()` | Generate a separate ID for a local image asset. |
+| `createStyleVars(settings)` | Convert resolved colors and layout/typography to CSS variables. |
+| `applyThemeSettings(target, settings)` | Write variables to a DOM target. |
 
-Luồng resolve:
+Resolution flow:
 
 ```text
 settings.theme.activeId
   -> built-in id?
        -> BUILT_IN_THEME_DEFINITIONS[id]
   -> custom id?
-       -> base palette từ BUILT_IN_THEMES[baseId]
+        -> base palette from BUILT_IN_THEMES[baseId]
        -> merge custom colors
-       -> dùng custom background
-  -> không tìm thấy
+        -> use custom background
+   -> not found
        -> resolve default `light`
 ```
 
-Resolved theme luôn có `id`, `name`, `source`, `baseId`, `colors` đầy đủ và `background`. Caller không nên tự merge palette hoặc tự tìm custom theme nếu helper hiện có đã bao phủ use case.
+A resolved theme always has `id`, `name`, `source`, `baseId`, a complete `colors` palette, and `background`. Callers should not merge palettes or look up custom themes themselves when an existing helper covers the use case.
 
 ## 8. Background descriptor
 
-Supported background types được khai báo bởi `BACKGROUND_TYPES` trong `src/theme/backgrounds.js`:
+Supported background types are declared by `BACKGROUND_TYPES` in `src/theme/backgrounds.js`:
 
 - `none`
 - `solid`
 - `gradient`
 - `image`
 
-Các field chung:
+Common fields:
 
-| Field | Giá trị | Ý nghĩa |
+| Field | Values | Meaning |
 | --- | --- | --- |
-| `type` | Một `BACKGROUND_TYPES` value | Chọn shape của descriptor. |
-| `motion` | `system`, `on`, `off` | Motion policy của scene. |
-| `overlayOpacity` | Số từ `0` đến `0.8` | Lớp tối phủ trên scene để giữ độ đọc được. |
+| `type` | A `BACKGROUND_TYPES` value | Selects the descriptor shape. |
+| `motion` | `system`, `on`, `off` | Scene motion policy. |
+| `overlayOpacity` | Number from `0` to `0.8` | Dark overlay over the scene to maintain readability. |
 
-Theme Studio cho phép số thập phân trong cả dimming và gradient angle bằng native input `step="any"`, khớp với schema. Giá trị mặc định `overlayOpacity: 0.08` và giá trị import như angle `135.25` phải submit được; không đặt bước `0.05` hoặc integer step khiến browser chặn lưu trước khi gọi validation/service.
+Theme Studio allows decimal dimming and gradient-angle values through native inputs with `step="any"`, matching the schema. The default `overlayOpacity: 0.08` and imported values such as angle `135.25` must submit successfully; do not use a `0.05` step or integer step that makes the browser block saving before validation/service calls.
 
 Default descriptor:
 
@@ -348,7 +348,7 @@ Default descriptor:
 }
 ```
 
-`resolveBackgroundScene()` trả `kind: 'none'` và `visual: false`. `BackgroundScene` không mount DOM scene, Viewer dùng surface đặc từ palette.
+`resolveBackgroundScene()` returns `kind: 'none'` and `visual: false`. `BackgroundScene` mounts no scene DOM, and the Viewer uses opaque palette surfaces.
 
 ### Solid
 
@@ -361,7 +361,7 @@ Default descriptor:
 }
 ```
 
-Solid scene không animate, nhưng vẫn có `visual: true`, nên Viewer bật translucent content/sidebar surfaces và backdrop blur.
+Solid scenes do not animate but still have `visual: true`, so the Viewer enables translucent content/sidebar surfaces and backdrop blur.
 
 ### Gradient
 
@@ -378,9 +378,9 @@ Custom linear gradient:
 }
 ```
 
-`angle` phải từ 0 đến 360. Resolver tự xây `linear-gradient(...)` từ các giá trị đã được validation; persisted settings không chứa raw CSS gradient.
+`angle` must be between 0 and 360. The resolver builds `linear-gradient(...)` from validated values; persisted settings contain no raw gradient CSS.
 
-Built-in Aurora dùng internal preset:
+Built-in Aurora uses an internal preset:
 
 ```js
 {
@@ -391,9 +391,9 @@ Built-in Aurora dùng internal preset:
 }
 ```
 
-`variant: 'aurora'` được resolver chuyển thành nhiều radial gradients và một linear gradient đã tin cậy trong source. Settings UI không expose arbitrary `variant`. Khi tạo custom theme từ Aurora, `createCustomThemeDraft()` chuyển preset Aurora thành một linear gradient editable thông thường.
+The resolver converts `variant: 'aurora'` into multiple radial gradients and a trusted linear gradient defined in source. Settings does not expose arbitrary `variant` values. When creating a custom theme from Aurora, `createCustomThemeDraft()` converts the Aurora preset into an ordinary editable linear gradient.
 
-### Image hoặc animated image
+### Image or animated image
 
 ```js
 {
@@ -410,141 +410,141 @@ Built-in Aurora dùng internal preset:
 
 | Field | Rule |
 | --- | --- |
-| `assetId` | Bắt buộc và match `^theme-asset:[a-z0-9][a-z0-9-]{7,127}$`. |
-| `assetRevision` | Safe integer không âm; dùng để invalidate image-loading effect khi asset đổi. |
-| `fit` | `cover`, `contain`, hoặc `auto`. |
-| `position` | `center`, `top`, `bottom`, `left`, hoặc `right`. |
-| `repeat` | Boolean; khi true dùng tiled CSS background thay vì `<img>`. |
+| `assetId` | Required; must match `^theme-asset:[a-z0-9][a-z0-9-]{7,127}$`. |
+| `assetRevision` | Non-negative safe integer; invalidates the image-loading effect when the asset changes. |
+| `fit` | `cover`, `contain`, or `auto`. |
+| `position` | `center`, `top`, `bottom`, `left`, or `right`. |
+| `repeat` | Boolean; when true, uses a tiled CSS background instead of `<img>`. |
 
-Accepted image MIME types là PNG, JPEG, WebP, AVIF, GIF và APNG. File phải có size lớn hơn 0 và không vượt quá 5 MiB. SVG không được chấp nhận làm custom background.
+Accepted image MIME types are PNG, JPEG, WebP, AVIF, GIF, and APNG. Files must be larger than 0 and no larger than 5 MiB. SVG is not accepted as a custom background.
 
-`isAnimatedImageBlob()` đánh dấu GIF và APNG là animated, kiểm tra chunk marker đối với animated PNG/WebP, và kiểm tra `avis` đối với AVIF. Đây là detection thực dụng phục vụ motion behavior, không phải full media parser.
+`isAnimatedImageBlob()` marks GIF and APNG as animated, checks chunk markers for animated PNG/WebP, and checks `avis` for AVIF. This is practical motion detection, rather than a complete media parser.
 
 ### Motion behavior
 
-Gradient và image scene được đánh dấu `animated: true` để nhận CSS drift, trừ khi `motion` là `off`. CSS `prefers-reduced-motion: reduce` luôn tắt drift. Animated image nội tại cũng bị ẩn khi motion bị tắt hoặc hệ điều hành yêu cầu reduced motion.
+Gradient and image scenes are marked `animated: true` to receive CSS drift unless `motion` is `off`. CSS `prefers-reduced-motion: reduce` always disables drift. Intrinsically animated images are also hidden when motion is disabled or the operating system requests reduced motion.
 
-Hiện tại `motion: 'on'` không override `prefers-reduced-motion`; accessibility preference vẫn thắng. Khi tab bị ẩn, class `is-paused` pause CSS drift. Browser tự quyết định việc throttle animation nội tại của GIF/APNG/WebP khi page không visible.
+Currently, `motion: 'on'` does not override `prefers-reduced-motion`; the accessibility preference still takes precedence. When a tab is hidden, `is-paused` pauses CSS drift. The browser controls throttling of intrinsic GIF/APNG/WebP animation on hidden pages.
 
 ### Visual surfaces
 
-Khi scene có `visual: true`, `ViewerShell` thêm class `mdp-root--has-visual-background`. `layout.scss` khi đó đổi sidebar và content surfaces sang `color-mix(..., transparent)` và bật `blur(16px) saturate(122%)`. Khi background là `none`, các surface trở về màu đặc của palette.
+When a scene has `visual: true`, `ViewerShell` adds `mdp-root--has-visual-background`. `layout.scss` then changes sidebar and content surfaces to `color-mix(..., transparent)` and enables `blur(16px) saturate(122%)`. With background `none`, surfaces return to opaque palette colors.
 
-Background scene có `position: fixed`, `z-index: 0`, không nhận pointer events. `.mdp-body` ở `z-index: 1`. Scene bị ẩn khi print.
+The background scene uses `position: fixed` and `z-index: 0`, and receives no pointer events. `.mdp-body` uses `z-index: 1`. The scene is hidden when printing.
 
-## 9. Vòng đời local image asset
+## 9. Local image asset lifecycle
 
-Image descriptor và binary image được cố ý tách riêng:
+Image descriptors and binary images are deliberately stored separately:
 
 ```text
 Theme descriptor
-  -> Chrome Sync index + từng theme record; local backend chỉ khi API sync không tồn tại
-  -> chỉ chứa assetId + presentation metadata
+  -> Chrome Sync index + individual theme records; local backend only when the sync API is unavailable
+  -> contains only assetId + presentation metadata
 
 Binary image
   -> IndexedDB `markdown-plus-assets`
   -> object store `background-assets`
-  -> record theo assetId trên thiết bị hiện tại
+  -> record keyed by assetId on the current device
 ```
 
-### Upload và save
+### Upload and save
 
-Luồng trong Settings:
+Settings flow:
 
 ```text
-ThemeSettings chọn File
+ThemeSettings selects a File
   -> useSettingsForm.saveCustomTheme()
   -> validateThemeBackgroundFile()
-  -> FileReader tạo data URL
+  -> FileReader creates a data URL
   -> SAVE_THEME_ASSET message
   -> background message router
   -> themeAssetService.saveThemeAsset()
-  -> parse lại data URL thành Blob và validate
-  -> ghi Blob + cờ animated vào IndexedDB
-  -> save theme descriptor với assetId và assetRevision
+  -> parse the data URL back into a Blob and validate it
+  -> write the Blob + animated flag to IndexedDB
+  -> save the theme descriptor with assetId and assetRevision
 ```
 
-Service chỉ lưu dữ liệu runtime cần dùng: `id`, `blob`, và cờ `animated`.
+The service stores only runtime data: `id`, `blob`, and the `animated` flag.
 
-Upload được lưu trước settings. Nếu save settings thất bại, Options cố xóa asset vừa upload để không tạo orphan. Khi thay ảnh, asset cũ được xóa sau khi settings mới save thành công.
+Uploads are stored before settings. If saving settings fails, Options attempts to delete the uploaded asset to avoid an orphan. When replacing an image, the old asset is deleted after the new settings are saved successfully.
 
-### Load trong Viewer
+### Loading in the Viewer
 
 ```text
 resolveActiveTheme()
   -> resolveBackgroundScene()
-  -> BackgroundScene thấy kind=image
+  -> BackgroundScene sees kind=image
   -> GET_THEME_ASSET message
-  -> IndexedDB record được chuyển thành data URL
-  -> Viewer parse data URL thành Blob
+  -> IndexedDB record is converted to a data URL
+  -> Viewer parses the data URL into a Blob
   -> URL.createObjectURL(blob)
-  -> render <img> hoặc tiled background
-  -> URL.revokeObjectURL() khi scene đổi hoặc component unmount
+  -> render <img> or a tiled background
+  -> URL.revokeObjectURL() when the scene changes or the component unmounts
 ```
 
-Nếu asset không tồn tại hoặc IndexedDB không khả dụng, Viewer ghi warning qua shared logger và không render image. Palette background vẫn tồn tại phía sau nên UI không mất toàn bộ nền.
+If an asset is missing or IndexedDB is unavailable, the Viewer logs a warning through the shared logger and omits the image. The palette background remains underneath, so the UI retains a background.
 
-### Delete và reset
+### Delete and reset
 
-Khi xóa custom theme, Options xóa asset mà theme đó tham chiếu sau khi settings save thành công. Nếu theme đang active, active id được chuyển về `baseId` trước khi xóa.
+When deleting a custom theme, Options deletes its referenced asset after settings are saved successfully. If the theme is active, the active ID switches to `baseId` before deletion.
 
-Khi reset toàn bộ settings, background router gọi cả `settingsService.resetSettings()` và `themeAssetService.clearThemeAssets()`. Nếu IndexedDB cleanup thất bại, settings vẫn được reset và lỗi cleanup được log như warning.
+A full settings reset makes the background router call both `settingsService.resetSettings()` and `themeAssetService.clearThemeAssets()`. If IndexedDB cleanup fails, settings still reset and the cleanup error is logged as a warning.
 
-### Sync, export và import
+### Sync, export, and import
 
-Binary asset không sync qua thiết bị. Một image theme descriptor có thể xuất hiện trên thiết bị khác qua sync trong khi IndexedDB ở thiết bị đó không có `assetId` tương ứng; khi đó image không hiển thị.
+Binary assets do not synchronize across devices. An image-theme descriptor can arrive on another device through sync without a matching IndexedDB `assetId`; the image will not display there.
 
-Settings export hiện chỉ xuất JSON settings và không bundle binary assets. Import JSON cũng không khôi phục image binary. Vì vậy image-backed themes chỉ portable đầy đủ khi tương lai có thêm asset packaging/export format.
+Settings export currently produces only settings JSON, without binary assets. JSON import does not restore image binaries either. Full portability for image-backed themes would require a future asset-packaging/export format.
 
-Import settings hiện không thực hiện garbage collection cho asset cũ bị bỏ tham chiếu. Save/delete theme qua Settings và reset toàn bộ có cleanup riêng; workflow mới tác động trực tiếp đến `customThemes` cần chủ động xử lý asset lifecycle.
+Settings import currently does not garbage-collect old assets that lose their references. Saving/deleting themes through Settings and full resets have their own cleanup; new workflows that modify `customThemes` directly must explicitly manage the asset lifecycle.
 
-## 10. Settings UI và custom theme workflow
+## 10. Settings UI and custom-theme workflow
 
-Theme authoring nằm ở Settings → Themes, được compose bởi `OptionsApp.jsx`, màn hình thư viện `ThemeSettings.jsx` và detail view `ThemeEditor.jsx`. Màn hình mặc định chỉ chứa active-theme selector và danh sách custom theme với các thao tác Use, Edit, Delete; Add hoặc Edit mới mở editor, còn Cancel/Save đưa người dùng trở lại thư viện.
+Theme authoring lives in Settings → Themes, composed of `OptionsApp.jsx`, the `ThemeSettings.jsx` library screen, and the `ThemeEditor.jsx` detail view. The default screen contains only the active-theme selector and custom-theme list with Use, Edit, and Delete actions; Add or Edit opens the editor, while Cancel/Save returns to the library.
 
-Theme editor dùng bố cục workbench hai cột trên màn hình rộng: controls ở bên trái và `ThemePreview` sticky ở bên phải; trên màn hình hẹp preview chuyển lên trên controls. Preview nhận trực tiếp custom-theme draft trong React state nên mọi giá trị hợp lệ được phản ánh ngay, không cần save và không thay đổi active theme thật. Editor cảnh báo trước khi Back hoặc Cancel làm mất draft đã thay đổi.
+The theme editor uses a two-column workbench on wide screens: controls on the left and a sticky `ThemePreview` on the right; on narrow screens, the preview moves above the controls. It receives the custom-theme draft directly from React state, so valid values appear immediately without saving or changing the actual active theme. The editor warns before Back or Cancel would discard a modified draft.
 
-`ThemePreview` là mô hình thu nhỏ có chủ đích của Viewer, gồm Files panel, document surface, Outline, heading, body text, link, blockquote, code block, table, border, accent state và background scene. Nó dùng `createStyleVars()` và `resolveBackgroundScene()` giống runtime Viewer thay vì tự duy trì một bảng màu riêng. Draft color tạm thời không phải hex hợp lệ sẽ fallback về token tương ứng của built-in base trong preview; schema validation khi save vẫn là source of truth.
+`ThemePreview` is a deliberate miniature of the Viewer, including Files, the document surface, Outline, headings, body text, links, blockquotes, code blocks, tables, borders, accent states, and the background scene. It uses `createStyleVars()` and `resolveBackgroundScene()` like the runtime Viewer instead of maintaining a separate palette. Draft colors that are temporarily invalid hex values fall back to their built-in base tokens in the preview; save-time schema validation remains authoritative.
 
-Gradient, solid scene, dimming, motion, image fit, position và repeat đều được phản ánh trong preview. File ảnh vừa chọn dùng object URL tạm thời và được revoke khi file hoặc component thay đổi; image asset đã lưu được đọc qua `theme-asset-client`. Preview không persist file, không thay đổi asset lifecycle và không broadcast settings. Animated image được ẩn khi draft đặt motion thành `off`, phù hợp với safety behavior của Viewer; CSS motion vẫn tôn trọng `prefers-reduced-motion`.
+The preview reflects gradients, solid scenes, dimming, motion, image fit, position, and repeat. Newly selected images use temporary object URLs that are revoked when the file changes or the component unmounts; saved image assets load through `theme-asset-client`. The preview does not persist files, alter asset lifecycles, or broadcast settings. Animated images are hidden when draft motion is `off`, matching Viewer safety behavior; CSS motion still respects `prefers-reduced-motion`.
 
-Người dùng có thể:
+Users can:
 
-- Chọn active theme.
-- Tạo custom theme mới từ base của active theme.
-- Đặt tên custom theme.
-- Chọn một built-in base theme.
-- Chỉnh 12 semantic color tokens được expose.
-- Chọn background type và cấu hình các field tương ứng.
-- Upload local static hoặc animated image.
-- Save hoặc delete custom theme.
+- Select the active theme.
+- Create a custom theme from the active theme's base.
+- Name a custom theme.
+- Choose a built-in base theme.
+- Edit the 12 exposed semantic color tokens.
+- Select a background type and configure its fields.
+- Upload a local static or animated image.
+- Save or delete a custom theme.
 
-Khi nhấn “Add custom theme”, `resolveActiveTheme(settings).baseId` được dùng làm base. Điều này có nghĩa nếu active theme là custom, custom theme mới dùng cùng built-in base chứ không clone toàn bộ custom theme đang active.
+Selecting “Add custom theme” uses `resolveActiveTheme(settings).baseId` as the base. If the active theme is custom, the new theme uses the same built-in base instead of cloning the entire active custom theme.
 
-`createCustomThemeDraft()` copy giá trị hiện tại của 12 editable token từ built-in base. Khi đổi `baseId`, `rebaseCustomThemeDraft()` nạp lại toàn bộ 12 color input từ built-in base mới và cập nhật nguồn của non-editable tokens. Nếu code highlighting đang ở “Follow base theme”, Shiki mapping đổi theo base mới; một explicit syntax-theme override được giữ nguyên.
+`createCustomThemeDraft()` copies the current values of the 12 editable tokens from the built-in base. When `baseId` changes, `rebaseCustomThemeDraft()` reloads all 12 color inputs from the new built-in base and updates the source of non-editable tokens. With “Follow base theme” selected for code highlighting, the Shiki mapping follows the new base; an explicit syntax-theme override is preserved.
 
-Theme editor cho phép chọn “Follow base theme” hoặc một trong 30 syntax themes đã được bundle. Catalog ưu tiên các family phổ biến trong hệ VS Code và cộng đồng theme như GitHub, VS Code Plus, One, Dracula, Monokai, Tokyo Night, Catppuccin, Nord, Solarized, Material, Ayu, Gruvbox, Night Owl, Rosé Pine và Everforest. Selector chia các lựa chọn theo light/dark và live preview tokenizes sample code bằng chính Shiki theme đã resolve; preview dùng JavaScript regex engine riêng để không phụ thuộc quyền thực thi WASM trên extension Options page. Lựa chọn này áp dụng cho fenced code và standalone SQL; CodeMirror editor vẫn sở hữu highlighting riêng.
+The theme editor offers “Follow base theme” or one of 30 bundled syntax themes. The catalog favors popular VS Code and community families such as GitHub, VS Code Plus, One, Dracula, Monokai, Tokyo Night, Catppuccin, Nord, Solarized, Material, Ayu, Gruvbox, Night Owl, Rosé Pine, and Everforest. The selector groups choices by light/dark, and the live preview tokenizes sample code with the resolved Shiki theme; it uses a separate JavaScript regex engine to avoid depending on WASM execution permission on the extension's Options page. This choice applies to fenced code and standalone SQL; CodeMirror retains its own highlighting.
 
-Khi save thành công, custom theme vừa save trở thành active theme. Việc create/update được phân biệt bằng cách kiểm tra id của draft đã tồn tại trong `settings.theme.customThemes` hay chưa.
+After a successful save, the saved custom theme becomes active. Creation and updates are distinguished by checking whether the draft ID already exists in `settings.theme.customThemes`.
 
-Built-in theme không xuất hiện trong custom theme editor và không thể bị rename/delete. Muốn thay đổi built-in cho mọi người dùng, maintainer sửa source. Muốn cá nhân hóa, người dùng tạo custom theme.
+Built-in themes do not appear in the custom-theme editor and cannot be renamed or deleted. Maintainers change source to update a built-in theme for everyone; users create custom themes for personalization.
 
-## 11. Popup và quick theme toggle
+## 11. Popup and quick theme toggle
 
-Popup Reader panel gọi `getThemeOptions(settings)` để tạo các option, sau đó chia built-in theme thành hai nhóm “Light themes” và “Dark themes” theo `colorScheme`; custom theme đã lưu nằm trong nhóm “My themes”. Khi chọn, Popup chỉ save `{ theme: { activeId } }`.
+Popup's Reader panel calls `getThemeOptions(settings)` to build options, then groups built-in themes into “Light themes” and “Dark themes” by `colorScheme`; saved custom themes appear under “My themes”. Selecting a theme saves only `{ theme: { activeId } }`.
 
-Popup có preview nhỏ dựa trên resolved `surface/background`, `text`, và `link`. Preview này không render background image hoặc gradient scene; nó chỉ giúp nhận biết palette.
+Popup shows a small preview based on resolved `surface/background`, `text`, and `link` colors. It identifies the palette without rendering background images or gradient scenes.
 
-“Reset reader UI” trong Popup reset `activeId`, typography và layout về default nhưng không xóa `customThemes`. Đây là reset selection và reader preferences, không phải reset toàn bộ theme library.
+“Reset reader UI” in Popup restores the default `activeId`, typography, and layout without deleting `customThemes`. It resets selection and reader preferences, rather than the entire theme library.
 
-Floating quick toggle trong Viewer được cố ý giới hạn ở cặp `light` ↔ `dark` bởi `getLightDarkThemeToggleTarget()`. Nếu active theme là custom hoặc một built-in khác, helper trả `null` và quick toggle không đổi theme. Popup/Settings selector vẫn chọn được mọi theme.
+The Viewer's floating quick toggle is deliberately limited to `light` ↔ `dark` by `getLightDarkThemeToggleTarget()`. If a custom theme or another built-in theme is active, the helper returns `null` and the toggle leaves the theme unchanged. Popup/Settings selectors can still select every theme.
 
-## 12. Persistence và live update flow
+## 12. Persistence and live update flow
 
-Popup và Options không truy cập `chrome.storage` trực tiếp. Chúng gọi `saveSettings()` trong `src/settings/settings-client.js`, client gửi `SAVE_SETTINGS`, background router gọi settings service, rồi broadcast `SETTINGS_UPDATED` đến các tab.
+Popup and Options do not access `chrome.storage` directly. They call `saveSettings()` in `src/settings/settings-client.js`; the client sends `SAVE_SETTINGS`, the background router calls the settings service, then broadcasts `SETTINGS_UPDATED` to tabs.
 
 ```text
-Popup hoặc Settings
+Popup or Settings
   -> saveSettings(partial)
   -> SAVE_SETTINGS
   -> settingsService.saveSettings()
@@ -556,19 +556,19 @@ Popup hoặc Settings
   -> MarkdownViewerApp.updateSettings()
 ```
 
-`MarkdownViewerApp.updateSettings()` cập nhật React state và CSS variables ngay, sau đó hỏi `needsFullRender()` có cần render lại Markdown hay không.
+`MarkdownViewerApp.updateSettings()` updates React state and CSS variables immediately, then asks `needsFullRender()` whether Markdown must be rendered again.
 
-Background-only change của active custom theme đi qua style-only path và không full-render Markdown. Palette, `baseId`, hoặc resolved `syntaxThemeId` change của active theme yêu cầu full render vì Shiki code colors được bake vào HTML và Mermaid có thể phụ thuộc theme colors.
+Background-only changes to the active custom theme take the style-only path without a full Markdown render. Changes to the active palette, `baseId`, or resolved `syntaxThemeId` require a full render because Shiki code colors are embedded in HTML and Mermaid can depend on theme colors.
 
-Thay đổi một custom theme không active vẫn làm settings object đổi, nhưng `needsFullRender()` so sánh resolved active theme nên có thể bỏ qua full render nếu active palette/base không đổi.
+Changing an inactive custom theme still changes the settings object, but `needsFullRender()` compares resolved active themes and can skip a full render when the active palette/base is unchanged.
 
-## 13. Shiki, Mermaid và editor
+## 13. Shiki, Mermaid, and the editor
 
 ### Shiki
 
-Shiki không dùng custom color token để tự tạo syntax theme. Theme resolver ưu tiên custom `syntaxThemeId` khi có; nếu field là `null` hoặc vắng mặt, `src/theme/syntax-themes.js` map built-in/base id sang một bundled Shiki theme. `src/viewer/core/shiki-config.js` chỉ cho phép các id trong catalog allowlist; runtime highlighter khởi tạo với fallback `github-light` và chỉ tải thêm theme đang active khi cần.
+Shiki does not build syntax themes from custom color tokens. The theme resolver prefers a custom `syntaxThemeId` when present; when it is `null` or absent, `src/theme/syntax-themes.js` maps the built-in/base ID to a bundled Shiki theme. `src/viewer/core/shiki-config.js` allows only catalog IDs; the runtime highlighter initializes with the `github-light` fallback and loads the active theme as needed.
 
-Ví dụ:
+Examples:
 
 | Reader base | Shiki theme |
 | --- | --- |
@@ -579,75 +579,75 @@ Ví dụ:
 | `vscode-dark` | `dark-plus` |
 | `aurora-glass` | `night-owl` |
 
-Mọi built-in id phải có mapping sang một Shiki theme đã nằm trong explicit loader allowlist. Custom theme chỉ được lưu `null` hoặc một id trong cùng allowlist; raw theme JSON, CSS và remote theme URL không được chấp nhận. Nếu thêm Shiki theme mới, phải cập nhật cả catalog metadata lẫn static import loader; không dùng variable dynamic import vì Vite có thể kéo toàn bộ theme set vào bundle.
+Every built-in ID must map to a Shiki theme in the explicit loader allowlist. Custom themes may store only `null` or an ID from that same allowlist; raw theme JSON, CSS, and remote theme URLs are rejected. Adding a Shiki theme requires updating both catalog metadata and static import loaders; do not use variable dynamic imports that could pull the entire theme set into the bundle.
 
 ### Mermaid
 
-Official Mermaid renderer dùng resolved theme colors để tạo `themeVariables`; `colorScheme` quyết định Mermaid base/default mode. Vì vậy custom color overrides có tác động đến diagram.
+The Official Mermaid renderer uses resolved theme colors to build `themeVariables`; `colorScheme` determines Mermaid's base/default mode. Custom color overrides therefore affect diagrams.
 
-Beautiful Mermaid đọc một phần CSS variables thực tế từ Viewer root, gồm font, background, foreground, border, accent, muted và panel background. Typography change có thể yêu cầu rerender khi Beautiful Mermaid đang active.
+Beautiful Mermaid reads actual CSS variables from the Viewer root, including font, background, foreground, border, accent, muted, and panel background. Typography changes can require rerendering when Beautiful Mermaid is active.
 
-### Editor và toàn bộ Viewer chrome
+### Editor and Viewer chrome
 
-CodeMirror editor theme và Viewer chrome dùng các `--mdp-*` variables thay vì một theme system riêng. Thay đổi semantic tokens vì vậy tác động nhất quán đến article, editor, panels, controls, toast và scrollbars.
+The CodeMirror editor theme and Viewer chrome use `--mdp-*` variables instead of a separate theme system. Semantic-token changes therefore consistently affect the article, editor, panels, controls, toasts, and scrollbars.
 
-## 14. Validation, migration và compatibility
+## 14. Validation, migration, and compatibility
 
-`normalizeSettings()` là schema boundary dùng cho save/import và safe loading. Với `invalid: 'throw'`, dữ liệu sai tạo `SettingsValidationError` kèm `fieldErrors`. Với `invalid: 'default'`, loader cố phục hồi bằng fallback an toàn và bỏ custom theme hỏng.
+`normalizeSettings()` is the schema boundary for save/import and safe loading. With `invalid: 'throw'`, invalid data produces `SettingsValidationError` with `fieldErrors`. With `invalid: 'default'`, the loader attempts recovery through safe fallbacks and discards invalid custom themes.
 
-Validation quan trọng:
+Key validation rules:
 
-- Theme object phải là plain object.
-- `customThemes` phải là array và tối đa 32 item.
-- Custom id đúng pattern và không trùng.
-- Name dài 1–48 ký tự.
-- `baseId` phải là built-in id có thật.
-- `syntaxThemeId` phải là `null`/vắng mặt hoặc một bundled syntax-theme id có trong allowlist.
-- Chỉ editable color keys được giữ lại; color phải là `#RRGGBB`.
-- Background type, motion, fit và position phải nằm trong allowlist.
-- Gradient angle từ 0 đến 360.
-- Overlay opacity từ 0 đến 0.8.
-- Image phải có asset id hợp lệ và revision không âm.
-- Legacy `appearance.background` bị xóa trong normalization.
+- Theme objects must be plain objects.
+- `customThemes` must be an array with at most 32 items.
+- Custom IDs must match the required pattern and be unique.
+- Names must contain 1–48 characters.
+- `baseId` must be an existing built-in ID.
+- `syntaxThemeId` must be `null`/absent or an allowlisted bundled syntax-theme ID.
+- Only editable color keys are retained; colors must use `#RRGGBB`.
+- Background type, motion, fit, and position must be allowlisted.
+- Gradient angles range from 0 to 360.
+- Overlay opacity ranges from 0 to 0.8.
+- Images must have a valid asset ID and a non-negative revision.
+- Legacy `appearance.background` is removed during normalization.
 
-Settings version 1 dùng `theme.preset` và có thể có global `appearance.background`. Migration lên version 2 thực hiện:
+Settings version 1 used `theme.preset` and could include global `appearance.background`. Migration to version 2 performs:
 
 ```text
 theme.preset -> theme.activeId
-theme.customThemes -> giữ nếu là array, nếu không dùng []
-appearance.background -> xóa
+theme.customThemes -> retain if an array, otherwise use []
+appearance.background -> remove
 version -> 2
 ```
 
-Nếu một thay đổi tương lai làm persisted shape không còn tương thích, phải tăng cả `DEFAULT_SETTINGS.version` và `CURRENT_SETTINGS_VERSION`, đồng thời thêm migration rõ ràng trong `migrateSettings()`. Không dựa vào deep merge để giả lập migration cho breaking schema.
+If a future change makes the persisted shape incompatible, bump both `DEFAULT_SETTINGS.version` and `CURRENT_SETTINGS_VERSION`, and add an explicit migration in `migrateSettings()`. Do not use deep merging as a substitute for migration across a breaking schema change.
 
-## 15. Security và privacy boundary
+## 15. Security and privacy boundaries
 
-Theme system chỉ cho phép structured data. Không thêm field nhận raw CSS, raw HTML, JavaScript URL, data URL tùy ý hoặc remote URL vào settings.
+The theme system permits only structured data. Do not add settings fields accepting raw CSS, raw HTML, JavaScript URLs, arbitrary data URLs, or remote URLs.
 
-Gradient CSS được tạo trong trusted resolver từ angle và hai hex colors đã validation. Built-in Aurora CSS nằm trong source code, không đến từ persisted input.
+Gradient CSS is built in a trusted resolver from a validated angle and two hex colors. Built-in Aurora CSS comes from source code, rather than persisted input.
 
-Custom image được giới hạn MIME allowlist và 5 MiB ở cả UI read boundary lẫn background storage boundary. Background service parse data URL lại trước khi ghi Blob vào IndexedDB; không tin dữ liệu chỉ vì nó đến từ Options page.
+Custom images are limited by a MIME allowlist and a 5 MiB cap at both the UI read boundary and background storage boundary. The background service reparses data URLs before writing Blobs to IndexedDB; data is not trusted simply because it came from Options.
 
-Custom SVG bị cấm vì SVG có bề mặt tấn công và hành vi external-resource phức tạp hơn raster image. Nếu tương lai hỗ trợ SVG, cần một threat model và sanitizer riêng thay vì chỉ thêm MIME type.
+Custom SVG is prohibited because SVG has a more complex attack surface and external-resource behavior than raster images. Future SVG support would require a dedicated threat model and sanitizer, rather than merely another MIME type.
 
-Remote image URL hiện không được hỗ trợ. Thêm remote URL sẽ kéo theo privacy, network permission, CSP, caching, tracking và availability concerns; không nên mở bằng một field string chung.
+Remote image URLs are not currently supported. Adding them introduces privacy, network-permission, CSP, caching, tracking, and availability concerns; do not enable them through a generic string field.
 
-## 16. Cách thêm built-in theme
+## 16. Adding a built-in theme
 
-Checklist tối thiểu:
+Minimum checklist:
 
-1. Tạo palette constant đầy đủ trong `src/theme/index.js` hoặc dùng helper phù hợp như `createDarkThemePalette()`.
-2. Thêm `id -> palette` vào `BUILT_IN_THEMES`.
-3. Thêm label vào `BUILT_IN_THEME_LABELS`.
-4. Cấu hình background descriptor trong `BUILT_IN_THEME_DEFINITIONS`. Khi số theme có background riêng tăng, nên thay ternary Aurora hiện tại bằng một explicit `BUILT_IN_THEME_BACKGROUNDS` map để registry dễ đọc.
-5. Thêm built-in/base id vào `BASE_THEME_TO_SYNTAX_THEME_ID` trong `src/theme/syntax-themes.js`.
-6. Nếu Shiki id mới chưa được bundle, thêm catalog entry vào `SYNTAX_THEME_DEFINITIONS`, explicit loader tương ứng vào `SHIKI_THEME_LOADERS` trong `src/viewer/core/shiki-config.js`, rồi đánh giá bundle size.
-7. Xác nhận `getThemeOptions()` tự đưa theme mới vào Popup và Settings selector.
-8. Thêm/cập nhật test cho palette, contrast, background, Shiki mapping và option rendering.
-9. Chạy test, production build và size report nếu thêm Shiki asset hoặc runtime asset.
+1. Create a complete palette constant in `src/theme/index.js` or use an appropriate helper such as `createDarkThemePalette()`.
+2. Add `id -> palette` to `BUILT_IN_THEMES`.
+3. Add a label to `BUILT_IN_THEME_LABELS`.
+4. Configure a background descriptor in `BUILT_IN_THEME_DEFINITIONS`. As more themes gain their own backgrounds, consider replacing the current Aurora ternary with an explicit `BUILT_IN_THEME_BACKGROUNDS` map to keep the registry readable.
+5. Add the built-in/base ID to `BASE_THEME_TO_SYNTAX_THEME_ID` in `src/theme/syntax-themes.js`.
+6. If the Shiki ID is not already bundled, add a catalog entry to `SYNTAX_THEME_DEFINITIONS` and an explicit loader to `SHIKI_THEME_LOADERS` in `src/viewer/core/shiki-config.js`, then assess bundle size.
+7. Confirm that `getThemeOptions()` automatically includes the new theme in Popup and Settings selectors.
+8. Add/update tests for palettes, contrast, backgrounds, Shiki mappings, and option rendering.
+9. Run tests, a production build, and a size report when adding Shiki or runtime assets.
 
-Ví dụ hướng cấu hình một built-in solid background:
+Example approach for a built-in solid background:
 
 ```js
 const BUILT_IN_THEME_BACKGROUNDS = Object.freeze({
@@ -660,48 +660,48 @@ const BUILT_IN_THEME_BACKGROUNDS = Object.freeze({
 })
 ```
 
-Registry sau đó chọn descriptor từ map và fallback về `DEFAULT_THEME_BACKGROUND`. Descriptor nên được freeze hoặc clone tại resolver boundary để built-in definition không bị caller mutate.
+The registry then selects the descriptor from the map, falling back to `DEFAULT_THEME_BACKGROUND`. Freeze or clone descriptors at the resolver boundary so callers cannot mutate built-in definitions.
 
-## 17. Cách thay đổi hoặc thêm editable color
+## 17. Changing or adding editable colors
 
-Để expose một token có sẵn cho custom theme:
+To expose an existing token to custom themes:
 
-1. Thêm entry `{ key, label }` vào `EDITABLE_THEME_COLOR_FIELDS`.
-2. Bảo đảm mọi built-in palette có giá trị hợp lệ cho key đó hoặc có fallback rõ ràng trong `createStyleVars()`.
-3. `ThemeSettings` sẽ tự render color input từ danh sách này.
-4. Schema sẽ tự allow key vì nó tạo `EDITABLE_COLOR_KEYS` từ cùng danh sách.
-5. Thêm test resolve và CSS variable mapping.
+1. Add a `{ key, label }` entry to `EDITABLE_THEME_COLOR_FIELDS`.
+2. Ensure every built-in palette supplies a valid value for that key or an explicit fallback in `createStyleVars()`.
+3. `ThemeSettings` automatically renders color inputs from this list.
+4. The schema automatically allows the key because it builds `EDITABLE_COLOR_KEYS` from the same list.
+5. Add resolution and CSS-variable mapping tests.
 
-Để tạo một semantic token hoàn toàn mới:
+To create an entirely new semantic token:
 
-1. Thêm token vào mọi built-in palette hoặc helper tạo palette.
-2. Map token sang CSS variable trong `createStyleVars()`.
-3. Dùng variable tại component/SCSS consumer.
-4. Quyết định token có được custom hay chỉ kế thừa từ base.
-5. Kiểm tra contrast và fallback của mọi theme.
+1. Add the token to every built-in palette or palette-building helper.
+2. Map the token to a CSS variable in `createStyleVars()`.
+3. Use the variable in the consuming component/SCSS.
+4. Decide whether the token is customizable or inherited only from the base.
+5. Verify contrast and fallbacks for every theme.
 
-Không nên để component đọc trực tiếp `BUILT_IN_THEMES` hoặc hard-code theme id. Component nên dùng CSS semantic variable hoặc resolved theme helper.
+Components should not read `BUILT_IN_THEMES` directly or hard-code theme IDs. Use semantic CSS variables or resolved-theme helpers.
 
-## 18. Cách thêm background type mới
+## 18. Adding a background type
 
-Một background capability mới phải đi qua đủ các boundary sau:
+A new background capability must cover all of these boundaries:
 
-1. Thêm enum/type và default liên quan trong `src/theme/backgrounds.js`.
-2. Mở rộng `normalizeBackgroundSettings()` bằng validation có allowlist và hard bounds.
-3. Mở rộng `resolveBackgroundScene()` để chuyển persisted descriptor thành render-only trusted scene.
-4. Thêm authoring controls trong `ThemeSettings.jsx`.
-5. Mở rộng `BackgroundScene.jsx` và `_background-scene.scss` nếu renderer mới cần DOM/style khác.
-6. Xem xét asset service/message routes nếu loại mới có binary resource.
-7. Cập nhật cleanup, reset, replace và import/export behavior.
-8. Xác nhận reduced motion, hidden-page behavior, print và fallback.
-9. Thêm unit tests cho schema, resolver, renderer styles, asset routing và Settings UI.
-10. Nếu persisted shape breaking, tăng settings version và migration.
+1. Add the enum/type and relevant defaults in `src/theme/backgrounds.js`.
+2. Extend `normalizeBackgroundSettings()` with allowlisted validation and hard bounds.
+3. Extend `resolveBackgroundScene()` to convert persisted descriptors into trusted render-only scenes.
+4. Add authoring controls in `ThemeSettings.jsx`.
+5. Extend `BackgroundScene.jsx` and `_background-scene.scss` if the new renderer needs different DOM/styles.
+6. Review asset services/message routes if the type uses binary resources.
+7. Update cleanup, reset, replacement, and import/export behavior.
+8. Verify reduced motion, hidden-page behavior, printing, and fallbacks.
+9. Add unit tests for schemas, resolvers, renderer styles, asset routing, and Settings UI.
+10. If the persisted shape changes incompatibly, bump the settings version and add a migration.
 
-Giữ descriptor declarative và serializable. Không lưu React props, DOM object, Blob, object URL hoặc CSS text tùy ý vào settings.
+Keep descriptors declarative and serializable. Do not store React props, DOM objects, Blobs, object URLs, or arbitrary CSS text in settings.
 
-## 19. Hướng hỗ trợ packaged image cho built-in theme
+## 19. Supporting packaged images for built-in themes
 
-Current image path chỉ hỗ trợ local `assetId`, vì vậy không nên giả lập built-in image bằng cách ghi asset vào IndexedDB của user. Hướng mở rộng bền vững là dùng discriminated source:
+The current image path supports only local `assetId` values, so do not simulate built-in images by writing assets into the user's IndexedDB. A durable extension would use a discriminated source:
 
 ```js
 // Custom/user asset
@@ -734,49 +734,49 @@ Current image path chỉ hỗ trợ local `assetId`, vì vậy không nên giả
 }
 ```
 
-Custom settings validation chỉ nên cho phép `source.kind: 'local'`. `source.kind: 'bundled'` chỉ đến từ trusted built-in registry và path phải được giới hạn vào một asset directory cụ thể, không nhận arbitrary URL.
+Custom-settings validation should permit only `source.kind: 'local'`. `source.kind: 'bundled'` must come only from the trusted built-in registry, with paths restricted to a specific asset directory rather than arbitrary URLs.
 
-`BackgroundScene` có thể dùng theme asset client cho local source và `chrome.runtime.getURL(path)` cho bundled source. Static packaged files nên đặt dưới `public/theme-backgrounds/`; nếu runtime access model yêu cầu, cập nhật `manifest.json` `web_accessible_resources` cùng thay đổi.
+`BackgroundScene` could use the theme asset client for local sources and `chrome.runtime.getURL(path)` for bundled sources. Static packaged files should live under `public/theme-backgrounds/`; update `manifest.json` `web_accessible_resources` in the same change if required by the runtime access model.
 
-Chuyển từ flat `assetId` sang nested `source` là schema change. Nếu thực hiện, tăng settings version và migrate custom image descriptor cũ thành `source: { kind: 'local', assetId, revision }`.
+Moving from flat `assetId` to nested `source` is a schema change. If implemented, bump the settings version and migrate old custom-image descriptors to `source: { kind: 'local', assetId, revision }`.
 
-## 20. Hành vi lỗi và fallback
+## 20. Errors and fallbacks
 
-| Tình huống | Hành vi hiện tại |
+| Situation | Current behavior |
 | --- | --- |
-| Active id không tồn tại khi safe load | Quay về `light`. |
-| Custom base id sai khi safe load | Quay về default base. |
-| Custom theme hỏng khi safe load | Bỏ item hỏng khỏi danh sách. |
-| Background type sai khi safe load | Quay về `none`. |
-| Image asset không tồn tại | Log warning, không render image, giữ palette background. |
-| Upload asset thành công nhưng save settings thất bại | Cố xóa asset vừa upload. |
-| Xóa active custom theme | Chuyển active id về base theme rồi xóa. |
-| Reset settings nhưng clear IndexedDB thất bại | Settings vẫn reset, cleanup failure được log. |
-| Theme id không resolve ở runtime helper | Resolve default `light`. |
+| Missing active ID during safe loading | Fall back to `light`. |
+| Invalid custom base ID during safe loading | Fall back to the default base. |
+| Invalid custom theme during safe loading | Remove the invalid item from the list. |
+| Invalid background type during safe loading | Fall back to `none`. |
+| Missing image asset | Log a warning, omit the image, and retain the palette background. |
+| Asset upload succeeds but settings save fails | Attempt to delete the uploaded asset. |
+| Deleting the active custom theme | Switch the active ID to its base theme, then delete it. |
+| Settings reset succeeds but IndexedDB cleanup fails | Keep the settings reset and log the cleanup failure. |
+| A runtime helper cannot resolve a theme ID | Resolve the default `light` theme. |
 
-Error async không được nuốt im lặng. User-facing Settings flow đưa lỗi vào status UI; background service trả response envelope `{ ok: false, error }`; Viewer asset load ghi warning qua `logger`.
+Do not silently swallow asynchronous errors. User-facing Settings flows put errors in status UI; the background service returns an `{ ok: false, error }` response envelope; Viewer asset loading logs warnings through `logger`.
 
 ## 21. Testing map
 
-| Phạm vi | Test chính |
+| Scope | Primary tests |
 | --- | --- |
 | Built-in palettes, resolution, CSS vars, contrast | `src/theme/__tests__/theme-vars.test.js` |
 | Background descriptor → scene | `src/theme/__tests__/backgrounds.test.js` |
 | Theme asset messaging client | `src/theme/__tests__/theme-asset-client.test.js` |
-| Settings normalization và validation | `src/settings/__tests__/settings-schema.test.js` |
+| Settings normalization and validation | `src/settings/__tests__/settings-schema.test.js` |
 | Migration, merge, storage | `src/settings/__tests__/settings-service.test.js` |
 | Byte quota, codec, cache, migration failure, concurrency | `src/settings/__tests__/settings-storage-format.test.js`, `settings-storage.test.js` |
-| Remote storage events và incomplete snapshots | `src/background/__tests__/settings-sync-observer.test.js` |
-| Image rollback khi quota/import thất bại | `src/options/__tests__/settings-form-storage.test.js` |
+| Remote storage events and incomplete snapshots | `src/background/__tests__/settings-sync-observer.test.js` |
+| Image rollback after quota/import failures | `src/options/__tests__/settings-form-storage.test.js` |
 | Settings authoring markup | `src/options/__tests__/theme-settings.test.js` |
 | Popup selector | `src/popup/__tests__/popup-primitives.test.js` |
 | Full-render invalidation | `src/shared/__tests__/settings-diff.test.js` |
 | Shiki mapping | `src/viewer/core/__tests__/shiki-config.test.js` |
 | Background layer/glass/scrollbar CSS | `src/viewer/styles/__tests__/background-scene.test.js` |
-| Asset message routes và reset cleanup | `src/background/__tests__/message-router.test.js` |
-| File validation và animation detection | `src/shared/__tests__/background-image.test.js` |
+| Asset message routes and reset cleanup | `src/background/__tests__/message-router.test.js` |
+| File validation and animation detection | `src/shared/__tests__/background-image.test.js` |
 
-Các lệnh verification chuẩn, sau khi bật Node.js 20 hoặc mới hơn:
+Standard verification commands, after selecting the Node.js version pinned in `.nvmrc`:
 
 ```bash
 npm test
@@ -784,41 +784,41 @@ npm run build
 npm run size:report
 ```
 
-Theme behavior thay đổi cần ít nhất chạy `npm test`. Thay đổi packaged/runtime asset cần thêm `npm run build`. Thêm Shiki theme, image bundle hoặc dependency cần thêm `npm run size:report` và so sánh output trước/sau.
+Theme behavior changes require at least `npm test`. Packaged/runtime asset changes also require `npm run build`. Adding Shiki themes, bundled images, or dependencies also requires `npm run size:report` and a before/after comparison.
 
-Manual smoke test nên bao gồm:
+Manual smoke tests should include:
 
-- Chọn từng built-in trong Popup và xác nhận Viewer cập nhật live.
-- Tạo, rename, edit và delete custom theme trong Settings.
-- Đổi base theme và xác nhận code block dùng Shiki mapping đúng.
-- Thử `none`, `solid`, `gradient`, static image và animated image.
-- Kiểm tra `cover`, `contain`, `auto`, position và repeat.
-- Kiểm tra motion `system/on/off` với reduced-motion của hệ điều hành.
-- Reload extension/tab và xác nhận descriptor cùng asset còn hoạt động trên cùng thiết bị.
-- Reset reader UI và xác nhận custom theme library không bị xóa.
-- Reset toàn bộ settings và xác nhận custom theme/assets bị xóa.
-- Print document và xác nhận visual background không xuất hiện.
+- Select every built-in theme in Popup and confirm live Viewer updates.
+- Create, rename, edit, and delete custom themes in Settings.
+- Change the base theme and confirm that code blocks use the correct Shiki mapping.
+- Try `none`, `solid`, `gradient`, static images, and animated images.
+- Check `cover`, `contain`, `auto`, position, and repeat.
+- Check `system/on/off` motion with operating-system reduced-motion preferences.
+- Reload the extension/tab and confirm that descriptors and assets still work on the same device.
+- Reset reader UI and confirm that the custom-theme library remains intact.
+- Reset all settings and confirm that custom themes/assets are deleted.
+- Print a document and confirm that visual backgrounds are absent.
 
-## 22. Quy tắc review dành cho người và AI
+## 22. Review checklist for people and AI agents
 
-Trước khi merge một thay đổi về theme, trả lời được các câu hỏi sau:
+Before merging a theme change, answer these questions:
 
-- Dữ liệu mới thuộc palette, background descriptor hay asset storage?
-- Nó thuộc từng theme hay vô tình trở thành global appearance state?
-- Built-in và custom có đi qua cùng resolver contract không?
-- Popup còn là selector-only hay đã bị kéo authoring control trở lại?
-- Schema có reject raw CSS, remote URL và invalid color không?
-- Asset có cleanup khi replace, delete, reset và save failure không?
-- Asset có cần sync/export/import hay chỉ local? UI/tài liệu đã nói rõ chưa?
-- Thay đổi có ảnh hưởng Shiki, Mermaid hoặc render invalidation không?
-- Có cần settings version bump và migration không?
-- Built-in id mới đã có Shiki mapping và test coverage chưa?
-- Reduced motion, tab visibility, print và missing-asset fallback đã được kiểm tra chưa?
-- Có preserve unrelated worktree changes và không sửa `dist/**` bằng tay không?
+- Does the new data belong to the palette, background descriptor, or asset storage?
+- Is it owned by each theme, or has it accidentally become global appearance state?
+- Do built-in and custom themes follow the same resolver contract?
+- Is Popup still selection-only, or have authoring controls crept back in?
+- Does the schema reject raw CSS, remote URLs, and invalid colors?
+- Are assets cleaned up on replacement, deletion, reset, and save failure?
+- Do assets need sync/export/import, or are they local-only? Do the UI and documentation make this clear?
+- Does the change affect Shiki, Mermaid, or render invalidation?
+- Does it require a settings-version bump and migration?
+- Does every new built-in ID have a Shiki mapping and test coverage?
+- Have reduced motion, tab visibility, printing, and missing-asset fallbacks been checked?
+- Are unrelated worktree changes preserved and generated `dist/**` files left unedited?
 
-## 23. Tóm tắt contract
+## 23. Contract summary
 
-Contract ngắn gọn nhất của hệ thống là:
+The system contract can be summarized as:
 
 ```text
 Theme = identity + base + semantic colors + owned background
@@ -840,4 +840,4 @@ Local asset service:
   store binary images by assetId on this device
 ```
 
-Khi thêm tính năng mới, giữ contract này sẽ tránh quay lại mô hình cũ nơi background là một setting toàn cục không gắn với theme.
+Preserve this contract when adding features to avoid returning to the old model of a global background setting unrelated to individual themes.

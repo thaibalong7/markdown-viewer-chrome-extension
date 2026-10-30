@@ -28,25 +28,25 @@ Keep technical behavior and the common test matrix in [Interface languages](./in
 
 ## Website writing
 
-Website editions are written for their own readers. The English site supplies message keys and markup placeholders, but its sentences and metaphors are not mandatory templates for Vietnamese or Chinese marketing copy. Lead with the practical reading experience, then support it with concrete capabilities: outline navigation, syntax highlighting, math/Mermaid, related-file browsing, update comparisons, custom themes, and optional editing/export. Use concise headings and clear installation actions. Avoid sweeping completeness claims, invented outcomes, or implying a Chrome Web Store listing. Keep the editor labeled experimental, distinguish Word-compatible export from PDF through Chrome printing, and retain the local-processing policy's network qualifications. Privacy messages may be rewritten for clarity, but their conditions, disclosures, and effective date must stay equivalent.
+Website editions are written for their own readers. The English site supplies message keys and markup placeholders, but its sentences and metaphors are not mandatory templates for Vietnamese or Chinese marketing copy. Lead with the practical reading experience, then support it with concrete capabilities: outline navigation, syntax highlighting, math/Mermaid, related-file browsing, update comparisons, custom themes, and optional editing/export. Use concise headings and clear installation actions. Avoid sweeping completeness claims or invented outcomes. User installation uses Chrome Web Store; while the listing is pending review, disclose that status and link to the README Quick start rather than imply it is already available. Keep the editor labeled experimental, distinguish Word-compatible export from PDF through Chrome printing, and retain the local-processing policy's network qualifications. Privacy messages may be rewritten for clarity, but their conditions, disclosures, and effective date must stay equivalent.
 
-English uses short, direct benefit statements such as “Your Markdown. A better read.” and follows them with actual features. Prefer specific actions such as building/loading the extension over installation metaphors. Keep source examples, filenames and technical identifiers literal across all editions.
+English uses short, direct benefit statements such as “Your Markdown. A better read.” and follows them with actual features. Prefer specific actions such as installing from Chrome Web Store and enabling file URL access over installation metaphors. Source builds and unpacked loading belong in developer setup and release QA, not public installation instructions. Keep source examples, filenames and technical identifiers literal across all editions.
 
 ## vi
 
 ### Tone and context
 
-Dùng câu chủ động, từ thông dụng và động từ cụ thể như “Mở”, “Chọn”, “Lưu”, “Sao chép”, “Thu gọn”. Tránh bê nguyên cấu trúc tiếng Anh như “phiên bản sẽ được áp dụng”, “bề mặt nội dung”, “ngữ cảnh Chrome” khi có thể nói cụ thể hơn. Đọc lại câu tiếng Việt độc lập, rồi cùng các thành phần xung quanh.
+Use active voice, familiar words, and concrete verbs such as “Mở” (Open), “Chọn” (Select), “Lưu” (Save), “Sao chép” (Copy), and “Thu gọn” (Collapse). Avoid literal English constructions such as “phiên bản sẽ được áp dụng”, “bề mặt nội dung”, or “ngữ cảnh Chrome” when more specific wording is available. Read Vietnamese sentences independently, then alongside neighboring controls.
 
-“Xóa danh sách” chỉ xóa các mục đã ghi nhớ; “Ghi nhớ tệp đã mở” không có nghĩa là tạo bản sao tệp. Phân biệt “Hủy” (đóng thao tác đang thực hiện) với “Bỏ thay đổi” (không giữ các chỉnh sửa). Không rút ngắn cảnh báo đến mức làm mất sự khác biệt này.
+“Xóa danh sách” removes only remembered entries; “Ghi nhớ tệp đã mở” does not mean creating file copies. Distinguish “Hủy” (cancel the current operation) from “Bỏ thay đổi” (discard edits). Do not shorten warnings until this distinction is lost.
 
-Khi đọc lại nội dung đã ghi vào tệp, dùng “Mở bản đã lưu”. Mô tả phải nói rõ tệp đã được sửa bên ngoài Markdown Plus và bản nháp hiện tại có bị thay thế hay không. Với quyền chỉnh sửa, giải thích việc chọn đúng tệp gốc và cấp quyền lưu; “Kết nối tệp” không phải cách giải thích chính cho người dùng.
+Use “Mở bản đã lưu” when loading content already written to disk. Descriptions must explain that the file changed outside Markdown Plus and whether the current draft will be replaced. For editing permissions, explain selecting the correct original file and granting save access; “Kết nối tệp” should not be the main user-facing explanation.
 
-Thuật ngữ có thể khác nhau theo ý nghĩa: “Engine” trong thông tin Git là “Thư viện Git”, còn công cụ hiển thị Mermaid là “Công cụ vẽ sơ đồ”. Giữ nguyên Markdown, Mermaid, KaTeX, Shiki, Git, HEX/RGB/HSL và tên giao diện riêng. Khi cân nhắc thuật ngữ mới, đối chiếu công cụ có giao diện hoặc trợ giúp tiếng Việt cùng ngữ cảnh và bổ sung nguồn đã đọc bên dưới.
+Terminology depends on meaning: “Engine” in Git information becomes “Thư viện Git”, while the Mermaid renderer is “Công cụ vẽ sơ đồ”. Preserve Markdown, Mermaid, KaTeX, Shiki, Git, HEX/RGB/HSL, and named themes. For new terminology, compare Vietnamese interfaces or help pages in the same context and record sources actually read below.
 
 ### Terminology
 
-| Khái niệm | Cách dùng trong Markdown Plus |
+| Concept | Chosen Vietnamese wording |
 | --- | --- |
 | Settings / General | Cài đặt / Chung |
 | Theme / Base theme | Giao diện / Giao diện gốc |
@@ -60,7 +60,7 @@ Thuật ngữ có thể khác nhau theo ý nghĩa: “Engine” trong thông tin
 | Files / Outline | Tệp / Mục lục |
 | Word count, character count, reading time | Thống kê tài liệu |
 | Tree indent guides | Đường nối cây thư mục |
-| Indexing files (trong cài đặt giới hạn quét) | Thêm tệp vào danh sách |
+| Indexing files (in scan-limit settings) | Thêm tệp vào danh sách |
 | Saved disk version / Load disk version | Bản đã lưu / Mở bản đã lưu |
 | Diff area | Đoạn thay đổi |
 | Content surface | Nền nội dung |
@@ -71,25 +71,25 @@ Thuật ngữ có thể khác nhau theo ý nghĩa: “Engine” trong thông tin
 
 ### Website copy
 
-Trang Home dùng giọng thân thiện, tự nhiên: “Mở Markdown. Đọc thật thoải mái.”, “Giao diện theo gu của bạn.”. Mô tả giải thích lợi ích cụ thể bằng mục lục, cây thư mục, tô màu cú pháp, đối chiếu thay đổi và soạn thảo có xem trước. Ưu tiên “tệp trên máy”, “giao diện sáng/tối”, “xem phần thay đổi”; hạn chế ẩn dụ về ánh sáng, ngôi nhà hoặc ý tưởng khi chúng không giúp người đọc hiểu sản phẩm. Phần cài đặt nói rõ việc tạo bản dựng và nạp tiện ích từ mã nguồn trên GitHub. Chính sách dùng câu rõ ràng, giải thích dữ liệu lưu ở đâu và khi nào có kết nối mạng, giữ đủ các điều kiện của bản gốc.
+The Home page uses a friendly, natural voice: “Mở Markdown. Đọc thật thoải mái.” and “Giao diện theo gu của bạn.” Descriptions explain concrete benefits through outlines, file trees, syntax highlighting, change comparisons, and editing with live preview. Prefer “tệp trên máy”, “giao diện sáng/tối”, and “xem phần thay đổi”; avoid metaphors about light, homes, or ideas when they do not explain the product. Installation uses Chrome Web Store and file-access permission; while approval is pending, state that clearly and direct readers to the README Quick start for availability. Source-build instructions belong only in developer documentation. The policy uses clear sentences explaining where data is stored and when network connections occur, preserving every qualification in the original.
 
-Đã đọc [Chrome — Cài đặt và quản lý tiện ích](https://support.google.com/chrome/answer/2664769?hl=vi) để đối chiếu “tiện ích”, “Chi tiết”, “quyền truy cập”, cùng [Chrome — Xóa dữ liệu duyệt web](https://support.google.com/chrome/answer/2392709?hl=vi) để phân biệt việc xóa mục trong lịch sử với xóa dữ liệu lưu trữ. Câu chữ trên website được biên tập theo cách dùng của Markdown Plus, không sao chép các đoạn hướng dẫn.
+The previous website wording review used [Chrome — Cài đặt và quản lý tiện ích](https://support.google.com/chrome/answer/2664769?hl=vi) to compare “tiện ích”, “Chi tiết”, and “quyền truy cập”, plus [Chrome — Xóa dữ liệu duyệt web](https://support.google.com/chrome/answer/2392709?hl=vi) to distinguish removing history entries from deleting stored data. Website copy is adapted to Markdown Plus usage rather than copied from help articles.
 
 
-Đối chiếu [trang giới thiệu Microsoft Word bằng tiếng Việt](https://www.microsoft.com/vi-vn/microsoft-365/word) về cách dẫn từ lợi ích đọc/viết đến chức năng cụ thể và dùng động từ trực tiếp cho lời kêu gọi hành động. Chỉ tham khảo cách tổ chức thông điệp; không sao chép câu quảng bá hay đưa tính năng của Word vào Markdown Plus.
+The review also compared [Microsoft Word’s Vietnamese product page](https://www.microsoft.com/vi-vn/microsoft-365/word) for its progression from reading/writing benefits to concrete functions and direct action verbs in calls to action. This informs message organization only; do not copy marketing sentences or attribute Word features to Markdown Plus.
 
 ### References
 
-Các nguồn dưới đây dùng để đối chiếu thuật ngữ và cách đặt nhãn phổ biến. Câu chữ cuối cùng được biên tập theo chức năng thực tế của Markdown Plus; không sao chép cả đoạn hướng dẫn hay mặc định xem mọi bản dịch trợ giúp là chuẩn.
+The references below inform terminology and common labels. Final wording follows actual Markdown Plus behavior; do not copy entire help passages or assume every translated help article is authoritative. These references record earlier research, rather than a new source review each time this guide is edited.
 
 
-| Nguồn | Phần tham khảo |
+| Reference | Editorial focus |
 | --- | --- |
-| [Google Tài liệu — Tìm và sử dụng tính năng tìm và thay thế](https://support.google.com/docs/answer/62754?co=GENIE.Platform%3DDesktop&hl=vi) | Nhãn tìm kiếm, trường thay thế và thao tác thay thế toàn bộ |
-| [Microsoft PowerPoint — Tìm và thay thế văn bản](https://support.microsoft.com/vi-vn/powerpoint/find-and-replace-text) | Cách phân biệt tìm, thay thế và thay thế tất cả |
-| [Mozilla — Tùy chọn và cài đặt của Firefox](https://support.mozilla.org/vi/kb/tuy-chon-va-cai-dat-cua-firefox) | Cài đặt, giao diện, phông chữ, thẻ và ngôn ngữ giao diện |
-| [Google Chrome — Đặt lại các chế độ cài đặt về mặc định](https://support.google.com/chrome/answer/3296214?hl=vi) | Cách nêu phạm vi của việc đưa cài đặt về mặc định |
-| [Google Chrome — Xóa dữ liệu duyệt web](https://support.google.com/chrome/answer/2392709?hl=vi) | Phân biệt dữ liệu bị xóa, dữ liệu được giữ lại và các mục trong lịch sử |
+| [Google Tài liệu — Tìm và sử dụng tính năng tìm và thay thế](https://support.google.com/docs/answer/62754?co=GENIE.Platform%3DDesktop&hl=vi) | Search labels, replacement fields, and Replace all actions |
+| [Microsoft PowerPoint — Tìm và thay thế văn bản](https://support.microsoft.com/vi-vn/powerpoint/find-and-replace-text) | Distinguishing Find, Replace, and Replace all |
+| [Mozilla — Tùy chọn và cài đặt của Firefox](https://support.mozilla.org/vi/kb/tuy-chon-va-cai-dat-cua-firefox) | Settings, themes, fonts, tabs, and interface language |
+| [Google Chrome — Đặt lại các chế độ cài đặt về mặc định](https://support.google.com/chrome/answer/3296214?hl=vi) | Explaining the scope of a settings reset |
+| [Google Chrome — Xóa dữ liệu duyệt web](https://support.google.com/chrome/answer/2392709?hl=vi) | Distinguishing removed data, retained data, and history entries |
 
 ## zh-CN
 
@@ -125,7 +125,7 @@ Read existing fragment-based consumers as complete rendered groups: `行 12，�
 
 ### Website copy
 
-The website uses a friendly `你`, short clauses, and familiar Mainland software terms. Headings can have their own rhythm: “让 Markdown 更好读，也更好用” and “相关资料，一处浏览” connect the reader to practical benefits. Explain outline navigation, file browsing, update comparisons and live preview directly rather than carrying over English metaphors about light or ideas finding a home. Use 扩展程序、工作区、本地处理、浅色/深色主题 and 实时预览 consistently. The experimental editor remains explicitly 实验性; installation describes building/loading from GitHub. Preserve all policy qualifications about storage, synchronization, file handles, network and third-party requests, together with the original effective date.
+The website uses a friendly `你`, short clauses, and familiar Mainland software terms. Headings can have their own rhythm: “让 Markdown 更好读，也更好用” and “相关资料，一处浏览” connect the reader to practical benefits. Explain outline navigation, file browsing, update comparisons and live preview directly rather than carrying over English metaphors about light or ideas finding a home. Use 扩展程序、工作区、本地处理、浅色/深色主题 and 实时预览 consistently. The experimental editor remains explicitly 实验性. Installation uses Chrome 应用商店; while review is pending, state 正在审核中 and link to the README Quick start for availability and setup. Source builds belong only in developer documentation. Preserve all policy qualifications about storage, synchronization, file handles, network and third-party requests, together with the original effective date.
 
 For the website wording, read [Chrome：安装和管理扩展程序](https://support.google.com/chrome/answer/2664769?hl=zh-Hans) for 扩展程序、详情 and 权限, and [Chrome：删除浏览数据](https://support.google.com/chrome/answer/2392709?hl=zh-Hans) for the distinction between browsing records, stored data and permissions. These are terminology comparisons; the final copy follows the actual Markdown Plus behavior.
 

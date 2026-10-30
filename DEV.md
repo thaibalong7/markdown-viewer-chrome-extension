@@ -1,161 +1,176 @@
-# Hướng dẫn phát triển Markdown Plus
+# Markdown Plus development guide
 
-Tài liệu này mô tả workflow phát triển hiện tại cho Chrome Extension MV3 dùng Vite, `@crxjs/vite-plugin`, React và SCSS. Kiến trúc chi tiết nằm trong [`docs/architecture-overview.md`](docs/architecture-overview.md).
+This guide is for developers and contributors working on the Chrome MV3 extension built with Vite, `@crxjs/vite-plugin`, React, and SCSS. For Chrome Web Store installation and everyday use, see the [README](README.md#quick-start), which also tracks release availability.
 
-## Yêu cầu
+## Find the right documentation
 
-- Node.js 20 trở lên; `.nvmrc` pin phiên bản được dự án ưu tiên.
+- [Contributing](README.md#contributing): report bugs, suggest improvements, improve documentation or translations, and submit pull requests.
+- [Technical documentation index](docs/README.md): find references by subsystem or type of change.
+- [Architecture](docs/architecture-overview.md): review entry flows, ownership, and security boundaries before changing runtime code.
+- [Website](site/README.md): edit copy, generate localized pages, and verify the website.
+- [Releases](docs/releasing.md): build and verify release packages for Chrome Web Store submission.
+
+## Requirements
+
+- Use the Node.js version pinned in `.nvmrc`; run `nvm use` before npm commands to meet the toolchain requirements.
 - `npm`.
-- Google Chrome 116 trở lên với Developer mode và quyền **Allow access to file URLs** cho extension; xem [browser compatibility audit](docs/browser-compatibility.md).
+- Google Chrome 116 or newer, with Developer mode and **Allow access to file URLs** enabled for the extension; see the [browser compatibility audit](docs/browser-compatibility.md).
 
-Stack runtime/build chính gồm Vite 8, CRXJS, React 19, Sass, Vitest, `markdown-it`, DOMPurify, Shiki, CodeMirror 6, Mermaid và KaTeX.
+The main runtime and build stack includes Vite 8, CRXJS, React 19, Sass, Vitest, `markdown-it`, DOMPurify, Shiki, CodeMirror 6, Mermaid, and KaTeX.
 
-## Thiết lập lần đầu
+## Initial setup
 
 ```bash
 nvm use
 npm install
 ```
 
-Kiểm tra phiên bản đang dùng nếu gặp lỗi engine hoặc native binding:
+Check the active versions if you encounter engine or native-binding errors:
 
 ```bash
 node -v
 npm -v
 ```
 
-## Chạy và load extension
+## Run and load a development build
 
-Chạy development server:
+Source builds and **Load unpacked** are for development, testing, and release QA. Users install the published extension through Chrome Web Store as described in the [README](README.md#quick-start).
+
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Hoặc rebuild liên tục vào output extension:
+Or continuously rebuild the extension output:
 
 ```bash
 npm run watch
 ```
 
-Trong Chrome:
+In Chrome:
 
-1. Mở `chrome://extensions` và bật **Developer mode**.
-2. Chọn **Load unpacked** rồi trỏ tới thư mục `dist/` của repository.
-3. Mở **Details** của Markdown Plus và bật **Allow access to file URLs**.
-4. Mở một file `.md`, `.markdown`, `.mdown` hoặc `.mdc` bằng Chrome.
+1. Open `chrome://extensions` and enable **Developer mode**.
+2. Choose **Load unpacked** and select the repository's `dist/` directory.
+3. Open Markdown Plus **Details** and enable **Allow access to file URLs**.
+4. Open a `.md`, `.markdown`, `.mdown`, or `.mdc` file in Chrome.
 
-Sau khi thay đổi entry point, manifest, service worker hoặc dependency, hãy reload extension tại `chrome://extensions` và reload tab file. HMR có thể xử lý một phần thay đổi UI, nhưng không thay thế bước reload cho mọi loại entry của extension.
+After changing an entry point, the manifest, the service worker, or a dependency, reload the extension at `chrome://extensions` and reload the file tab. HMR handles some UI updates, but it does not replace reloading for every extension entry type.
 
-## Bản đồ entry point
+To verify a production build, run `npm run build` and reload the extension from `dist/`. Use the [release workflow](docs/releasing.md) when you need a release archive and checksum.
 
-- **Content/Viewer:** `src/content/index.js` chỉ kiểm tra nhanh `file:` + Markdown-family, sau đó lazy-load `src/content/viewer-loader.js` → `src/content/bootstrap.js` → `src/viewer/app.js`.
-- **Viewer React:** `src/viewer/react/mount.js` mount `ViewerApp.jsx`; React sở hữu chrome, panel, action, editor shell và trạng thái UI, còn render pipeline sở hữu `.mdp-markdown-body`.
-- **Viewer actions và sidebar:** [`docs/document-actions.md`](docs/document-actions.md) mô tả catalog, overflow, focus và ownership; [`Viewer design system`](docs/design-system/README.md#viewer) ghi contract Outline, Porcelain toggle và scrollbar dùng chung.
-- **Document formats:** `src/shared/file-types.js` định nghĩa activation, renderer và capabilities; `src/viewer/documents/` chịu trách nhiệm load/model/render registry.
-- **Markdown:** `src/viewer/core/` quản lý markdown engine, Shiki, sanitize và render; `src/plugins/` mở rộng parser và post-render behavior.
-- **Explorer/navigation:** `src/viewer/explorer/` quản lý scan/workspace/session; `src/viewer/navigation/` phân loại link và route thật `?f=`.
-- **Editor:** `src/viewer/editor/` chứa CodeMirror bundle, file handle và scroll sync; session policy nằm trong `src/viewer/app/editorSessionController.js`.
-- **Document updates và review:** `src/viewer/app/watchSessionController.js` điều phối polling/apply, `src/viewer/navigation/reading-position.js` giữ vị trí đọc, còn `src/viewer/review/` và các component `ChangeReview*` sở hữu diff cùng review UI. Contract đầy đủ nằm trong [`docs/document-updates-and-change-review.md`](docs/document-updates-and-change-review.md).
-- **Popup:** `src/popup/index.jsx` mount `PopupApp.jsx` với Recent, Reader, Editor và Plugins panels.
-- **Settings:** `src/options/index.jsx` mount `OptionsApp.jsx` với General, Themes, Files & Workspace, Privacy & Data và Advanced sections.
-- **Background:** `src/background/service-worker.js` bọc response envelope và chuyển route thường sang `message-router.js`; offscreen fetch wire messages được xử lý riêng.
-- **Messaging/settings:** message type tập trung tại `src/messaging/index.js`; defaults, schema, migration và persistence nằm trong `src/settings/`.
-- **Ngôn ngữ giao diện:** `src/i18n/` sở hữu catalog theo key phân cấp, chọn ngôn ngữ, định dạng và cập nhật trực tiếp; `public/_locales/` dành cho thông tin extension do Chrome chọn ngôn ngữ. Xem [Interface languages](docs/internationalization.md) và [quy ước biên tập bản dịch](docs/localization.md).
+## Entry-point map
 
-Viewer SCSS nằm trong `src/viewer/styles/**/*.scss` và được import bằng `?inline` từ `src/content/viewer-loader.js`. `src/content/host-print.scss` xử lý print ở host page. Không thêm hoặc sửa CSS sinh ra trong `dist/`.
+- **Content/Viewer:** `src/content/index.js` performs a quick `file:` and Markdown-family check, then lazy-loads `src/content/viewer-loader.js` → `src/content/bootstrap.js` → `src/viewer/app.js`.
+- **Viewer React:** `src/viewer/react/mount.js` mounts `ViewerApp.jsx`; React owns chrome, panels, actions, the editor shell, and UI state, while the render pipeline owns `.mdp-markdown-body`.
+- **Viewer actions and sidebars:** [`docs/document-actions.md`](docs/document-actions.md) defines the catalog, overflow, focus, and ownership; the [Viewer design system](docs/design-system/README.md#viewer) documents Outline, Porcelain toggles, and shared scrollbars.
+- **Document formats:** `src/shared/file-types.js` defines activation, renderers, and capabilities; `src/viewer/documents/` owns loading, models, and the renderer registry.
+- **Markdown:** `src/viewer/core/` manages the Markdown engine, Shiki, sanitization, and rendering; `src/plugins/` extends parsing and post-render behavior.
+- **Explorer/navigation:** `src/viewer/explorer/` manages scans, workspaces, and sessions; `src/viewer/navigation/` classifies links and routes real `?f=` URLs.
+- **Editor:** `src/viewer/editor/` contains the CodeMirror bundle, file handles, and scroll synchronization; session policy lives in `src/viewer/app/editorSessionController.js`.
+- **Document updates and review:** `src/viewer/app/watchSessionController.js` coordinates polling and applying revisions, `src/viewer/navigation/reading-position.js` preserves reading position, and `src/viewer/review/` plus the `ChangeReview*` components own diffs and review UI. See the full contract in [`docs/document-updates-and-change-review.md`](docs/document-updates-and-change-review.md).
+- **Popup:** `src/popup/index.jsx` mounts `PopupApp.jsx` with Recent, Reader, Editor, and Plugins panels.
+- **Settings:** `src/options/index.jsx` mounts `OptionsApp.jsx` with General, Themes, Files & Workspace, Privacy & Data, Advanced, and About sections.
+- **Background:** `src/background/service-worker.js` wraps responses in envelopes and forwards ordinary routes to `message-router.js`; offscreen fetch wire messages are handled separately.
+- **Messaging/settings:** message types are centralized in `src/messaging/index.js`; defaults, schemas, migration, and persistence live in `src/settings/`.
+- **Interface languages:** `src/i18n/` owns hierarchical message catalogs, language selection, formatting, and live updates; `public/_locales/` provides extension metadata localized by Chrome. See [Interface languages](docs/internationalization.md) and the [localization writing guide](docs/localization.md).
+
+Viewer SCSS lives in `src/viewer/styles/**/*.scss` and is imported with `?inline` from `src/content/viewer-loader.js`. `src/content/host-print.scss` handles printing on the host page. Do not add or edit generated CSS in `dist/`.
 
 ## Scripts
 
-| Lệnh | Mục đích |
+| Command | Purpose |
 | --- | --- |
-| `npm run dev` | Chạy Vite + CRXJS development server. |
-| `npm run watch` | Production-style build ở watch mode. |
-| `npm test` | Chạy toàn bộ Vitest suite một lần. |
-| `npm run test:watch` | Chạy Vitest ở watch mode. |
-| `npm run build` | Tạo production extension trong `dist/`. |
-| `npm run preview` | Serve Vite build để kiểm tra output web. |
-| `npm run analyze` | Build với bundle visualizer và tạo `dist/stats.html`. |
-| `npm run size:report` | Báo tổng size `dist/` và các JavaScript asset. |
+| `npm run dev` | Start the Vite + CRXJS development server. |
+| `npm run watch` | Run a production-style build in watch mode. |
+| `npm test` | Run the complete Vitest suite once. |
+| `npm run test:watch` | Run Vitest in watch mode. |
+| `npm run build` | Build the production extension in `dist/`. |
+| `npm run release` | Create a release package, archive, and checksum using the [release guide](docs/releasing.md). |
+| `npm run test:release` | Run tooling tests in `scripts/__tests__/`, including release and website tests. |
+| `npm run preview` | Serve the Vite build to inspect web output. |
+| `npm run analyze` | Build with the bundle visualizer and generate `dist/stats.html`. |
+| `npm run size:report` | Report the total size of `dist/` and its JavaScript assets. |
 
-`vite.config.mjs` để Vite/CRXJS tự chia chunk, đặt `base: './'` để dynamic import của content script resolve từ URL extension, và chỉ bật visualizer khi `ANALYZE=1` qua script `npm run analyze`.
+`vite.config.mjs` lets Vite/CRXJS split chunks, sets `base: './'` so content-script dynamic imports resolve from the extension URL, and enables the visualizer only when `ANALYZE=1` through `npm run analyze`.
 
-## Quy tắc bundle quan trọng
+## Bundle rules
 
-- Shiki dùng explicit loader cho language/theme trong `src/viewer/core/shiki-config.js`; không đổi sang `shiki/bundle/web` hoặc variable dynamic import làm kéo toàn bộ catalog vào bundle.
-- Catalog syntax theme hiển thị cho custom theme nằm trong `src/theme/syntax-themes.js` và phải khớp với loader map của Shiki.
-- Các optional plugin Emoji, Footnote, Math và Mermaid được dynamic import khi enabled. Mặc định hiện tại là enabled cho tất cả plugin, nhưng implementation nặng vẫn ở chunk lazy.
-- Build vẫn emit các asset KaTeX vào `dist/`, nhưng browser chỉ fetch/evaluate JavaScript, CSS và fonts của KaTeX khi Math plugin hoạt động; `src/plugins/optional/math.plugin.js` inject CSS runtime.
-- CodeMirror chỉ được load sau khi người dùng bật editor và xác minh file gốc để bắt đầu edit session.
-- `dist/**` là generated output. Runtime source of truth là `src/**`, `manifest.json`, `vite.config.mjs` và `package.json`.
+- Shiki uses explicit language and theme loaders in `src/viewer/core/shiki-config.js`; do not switch to `shiki/bundle/web` or variable dynamic imports that pull in the entire catalog.
+- The syntax-theme catalog exposed to custom themes lives in `src/theme/syntax-themes.js` and must match Shiki's loader map.
+- Optional Emoji, Footnote, Math, and Mermaid plugins use dynamic imports when enabled. All plugins are currently enabled by default, while heavy implementations remain in lazy chunks.
+- Builds emit KaTeX assets into `dist/`, but the browser fetches and evaluates KaTeX JavaScript, CSS, and fonts only when the Math plugin runs; `src/plugins/optional/math.plugin.js` injects CSS at runtime.
+- CodeMirror loads only after the user enables the editor and verifies the original file to start an editing session.
+- `dist/**` is generated output. Runtime source of truth is `src/**`, `manifest.json`, `vite.config.mjs`, and `package.json`.
 
-Sau thay đổi bundle-sensitive ở Shiki, Mermaid, Math, editor, plugin hoặc content entry, chạy:
+After bundle-sensitive changes to Shiki, Mermaid, Math, the editor, plugins, or content entry points, run:
 
 ```bash
 npm run build
 npm run size:report
 ```
 
-Dùng treemap khi cần tìm chunk lớn:
+Use the treemap to investigate large chunks:
 
 ```bash
 npm run analyze
 ```
 
-## Verification theo loại thay đổi
+## Verification by change type
 
-| Thay đổi | Kiểm tra tối thiểu |
+| Change | Minimum verification |
 | --- | --- |
-| Logic thuần, schema, route, renderer, hook | `npm test` |
-| Runtime/package/manifest/entry/style | `npm test` và `npm run build` |
-| Shiki, Mermaid, Math, editor, plugin, dependency | Thêm `npm run size:report` |
-| Chrome API, file picker, history, Back/Forward, print/export | Load `dist/` và smoke-test thủ công |
-| Watch mode, Change Review, focus/keyboard và đọc file ngoài | `npm test`, `npm run build` và smoke-test extension unpacked |
-| Bản dịch / thêm ngôn ngữ giao diện | Kiểm thử i18n, đọc bản dịch theo từng thành phần và kiểm tra giao diện; thêm locale runtime cần toàn bộ test, build và so sánh size theo [hướng dẫn i18n](docs/internationalization.md#translation-review-and-verification) |
+| Pure logic, schemas, routes, renderers, hooks | `npm test` |
+| Runtime, packages, manifest, entry points, styles | `npm test` and `npm run build` |
+| Shiki, Mermaid, Math, editor, plugins, dependencies | Also run `npm run size:report` |
+| Chrome APIs, file pickers, history, Back/Forward, printing/export | Load `dist/` and perform manual smoke tests |
+| Watch modes, Change Review, focus/keyboard, external file reads | `npm test`, `npm run build`, and an unpacked-extension smoke test |
+| Translations or another interface language | Run i18n tests, review wording by component, and inspect the UI; a new runtime locale also requires full tests, a build, and a size comparison under the [i18n guide](docs/internationalization.md#translation-review-and-verification) |
+| Website content or templates | Regenerate HTML and run the [website preflight](site/README.md#preview-and-verification) |
 
-Checklist smoke test thường dùng:
+Typical smoke-test checklist:
 
-- Mở trực tiếp đủ bốn extension Markdown được hỗ trợ và xác nhận file khác không kích hoạt Viewer trực tiếp.
-- Mở sibling/workspace, refresh scan, điều hướng qua format, kiểm tra file có khoảng trắng/Unicode và Back/Forward cho route `?f=`.
-- Thử collapse/resize độc lập Files và Outline, header hai hàng đối xứng, viền ngoài Porcelain toggle ở cả hai phía/trạng thái, overflow của commands sau khi trừ nhãn OUTLINE, touch và reduced motion. Dùng [checklist sidebar/actions](docs/document-actions.md#verification) cho scrollbar auto-hide/always-visible, tree/heading loading và cleanup khi ẩn panel; kiểm tra thêm Back to top, document statistics và responsive layout.
-- Bật editor, chọn đúng/sai file gốc, sửa/live preview/save, kiểm tra dirty confirmation và external-change protection.
-- Thử Document Updates ở Ask/Automatic/Off, tab ẩn/hiện, update liên tục, file rỗng/mất/quá lớn, giữ vị trí đọc, edit clean/dirty và Save conflict; mở Change Review để kiểm tra diff, section, cặp review cố định, keyboard/focus và responsive layout.
-- Dùng [checklist Document Updates](planning/product-feature-roadmap/document-updates-manual-test.md) cho fixture, các ca Chrome chưa xác minh và lỗi kết nối cold-start cần tái hiện. Khi review đang mở, Auto vẫn có thể cập nhật article sau input idle; diff đã pin chỉ đổi khi chọn Review latest.
-- Bật/tắt plugin, đổi Mermaid renderer, mở lightbox và thử export Mermaid.
-- Đổi built-in/custom theme, syntax theme và background; reload tab để kiểm tra persistence.
-- Print từng format phù hợp; export HTML/Word từ Markdown và kiểm tra file tải xuống.
-- Kiểm tra Popup recent files, Settings import/export/reset và trạng thái khi file-URL access bị tắt.
-- Đổi ngôn ngữ ở **Cài đặt → Chung → Ngôn ngữ giao diện**, thử tự động/Anh/Việt và đồng bộ các trang đang mở. Giữ nguyên bản nháp, undo và nội dung tài liệu khi đổi; kiểm tra cả tooltip, thông báo đang hiện, tìm/thay thế và lời nhắc chọn tệp trong vùng nội dung. Xem [ma trận i18n](docs/internationalization.md#translation-review-and-verification) để kiểm tra đủ các bề mặt.
+- Open all four supported Markdown extensions directly and confirm that other file types do not activate the Viewer directly.
+- Open sibling files and workspaces, refresh scans, navigate across formats, and test filenames with spaces or Unicode plus Back/Forward for `?f=` routes.
+- Collapse and resize Files and Outline independently; check the symmetric two-row headers, outer Porcelain toggle borders on both sides and in both states, command overflow after reserving the OUTLINE label, touch input, and reduced motion. Use the [sidebar/actions checklist](docs/document-actions.md#verification) for auto-hide/always-visible scrollbars, tree/heading loading, and cleanup when panels are hidden; also check Back to top, document statistics, and responsive layout.
+- Enable the editor, select the correct and incorrect original files, edit, preview, and save; check unsaved-change confirmations and external-change protection.
+- Exercise Document Updates in Ask, Automatic, and Off modes, visible and hidden tabs, repeated updates, empty/missing/oversized files, reading-position continuity, clean/dirty editing sessions, and Save conflicts; open Change Review and check diffs, sections, pinned review pairs, keyboard/focus behavior, and responsive layout.
+- Use the [Document Updates checklist](planning/product-feature-roadmap/document-updates-manual-test.md) for fixtures, unverified Chrome cases, and the cold-start connection failure that needs reproduction. While review is open, Automatic mode can still update the article after input becomes idle; a pinned diff changes only when Review latest is selected.
+- Toggle plugins, switch Mermaid renderers, open the lightbox, and try Mermaid export.
+- Switch built-in and custom themes, syntax themes, and backgrounds; reload the tab to verify persistence.
+- Print applicable formats, export Markdown as HTML/Word, and inspect the downloaded files.
+- Check Popup recent files, Settings import/export/reset, and behavior with file URL access disabled.
+- Switch languages under **Settings → General → Interface language**, test automatic, English, and Vietnamese selections, and verify synchronization across open pages. Preserve drafts, undo history, and document content; also inspect tooltips, active messages, search/replace, and file-selection prompts in the content area. Use the [i18n matrix](docs/internationalization.md#translation-review-and-verification) to cover every surface.
 
-## Thêm ngôn ngữ giao diện
+## Adding an interface language
 
-Dùng shared skill [mdp-dev-add-language](.agents/skills/mdp-dev-add-language/SKILL.md), ví dụ: “Dùng $mdp-dev-add-language để thêm tiếng Nhật cho giao diện Markdown Plus”. Skill bao gồm tích hợp locale, đối chiếu thuật ngữ từ công cụ dùng ngôn ngữ đích, rà soát từng bản dịch cho đúng nghĩa và tự nhiên, cùng các bước kiểm tra. Quy ước và thuật ngữ của ngôn ngữ mới được bổ sung thành một mục trong [hướng dẫn biên tập chung](docs/localization.md), không cần tạo file Markdown riêng. Kết quả rà soát và kiểm thử của từng lần triển khai ghi trong task hoặc pull request. Key là nhãn phân cấp ổn định; không dùng câu tiếng Anh làm key. Khi chỉ sửa vài câu tiếng Việt, theo [nguyên tắc chung và mục tiếng Việt](docs/localization.md#vi) và kiểm tra những thành phần bị ảnh hưởng.
+Use the shared [mdp-dev-add-language](.agents/skills/mdp-dev-add-language/SKILL.md) skill, for example: “Use $mdp-dev-add-language to add Japanese to the Markdown Plus interface.” The skill covers locale integration, terminology research using tools in the target language, a complete review for meaning and natural wording, and verification. Add the new language's editorial conventions and terminology to a section in the [shared writing guide](docs/localization.md), without creating a separate Markdown file. Record each implementation's review and test results in its task or pull request. Keys are stable hierarchical identifiers; do not use English sentences as keys. For small Vietnamese wording changes, follow the [shared principles and Vietnamese section](docs/localization.md#vi) and inspect the affected components.
 
 ## Troubleshooting
 
-### Viewer không mở local Markdown
+### Viewer does not open local Markdown
 
-Kiểm tra Chrome extension Details đã bật **Allow access to file URLs**, extension đã được reload, và URL là `file:` có extension `.md`, `.markdown`, `.mdown` hoặc `.mdc`. Các format khác chỉ mở từ Files explorer sau khi Viewer đã active.
+Check that **Allow access to file URLs** is enabled in Chrome's extension Details, the extension has been reloaded, and the URL uses `file:` with a `.md`, `.markdown`, `.mdown`, or `.mdc` extension. Other formats open only through the Files explorer after the Viewer is active.
 
-### Thay đổi không xuất hiện
+### Changes do not appear
 
-Chờ Vite/CRXJS build xong, reload extension tại `chrome://extensions`, rồi reload tab local file. Với service worker, có thể cần đóng/mở lại Popup hoặc Settings sau reload.
+Wait for Vite/CRXJS to finish building, reload the extension at `chrome://extensions`, and reload the local file tab. For service-worker changes, you may also need to close and reopen Popup or Settings after reloading.
 
-Nếu source của tài liệu đang mở không theo kịp file trên disk, kiểm tra **Settings → General → Document updates**. Chế độ Off chỉ đọc khi bấm **Check now**; workspace mở bằng fallback `webkitdirectory` cần được chọn lại vì chỉ giữ snapshot `File`, không có handle để live reread.
+If an open document's source falls behind the file on disk, check **Settings → General → Document updates**. Off mode reads only when **Check now** is selected; a workspace opened through the `webkitdirectory` fallback must be selected again because it retains only `File` snapshots, without handles for live rereads.
 
-### Giao diện hiện key ngôn ngữ
+### The interface displays message keys
 
-Nếu một control hiện chuỗi như `viewer.explorer.header.openFile`, kiểm tra key có tồn tại trong catalog tiếng Anh và ngôn ngữ đang chọn, rồi kiểm tra nơi hiển thị có gọi `t()` hoặc nhận message descriptor đúng không. `t()` trả nguyên key khi không tìm thấy; sửa câu chữ tiếng Anh không phải cách đăng ký key mới.
+If a control displays a string such as `viewer.explorer.header.openFile`, check that the key exists in both the English catalog and the selected language, then verify that the rendering code calls `t()` or receives a message descriptor. `t()` returns the original key when no message is found; changing English wording does not register a new key.
 
-Riêng lời nhắc chọn tệp trong vùng nội dung, kiểm tra `documentSessionController.showPlaceholder()` giữ thông báo ở `placeholderMessage` và để `text` rỗng; renderer phải chuyển sang `DocumentState`. Không dịch toàn bộ article để che lỗi vì tài liệu thật có thể chứa đúng key đó. Kiểm thử hồi quy nằm trong `src/i18n/__tests__/localized-ui.test.js` và các kiểm thử document session/Markdown renderer.
+For file-selection prompts in the content area, check that `documentSessionController.showPlaceholder()` keeps the message in `placeholderMessage` and leaves `text` empty; the renderer must switch to `DocumentState`. Do not translate the entire article to hide the problem, because real documents can contain that exact key. Regression coverage lives in `src/i18n/__tests__/localized-ui.test.js` and the document-session/Markdown-renderer tests.
 
-### Cảnh báo `rollupOptions` và `rolldownOptions`
+### `rollupOptions` and `rolldownOptions` warnings
 
-Vite 8 hiện có thể in cảnh báo `Both rollupOptions and rolldownOptions were specified` từ các plugin CRXJS trong test hoặc build. Đây là cảnh báo tương thích plugin đã biết trong cấu hình hiện tại; xem exit code và dòng hoàn tất của lệnh để phân biệt với lỗi build thật.
+Vite 8 may print `Both rollupOptions and rolldownOptions were specified` from CRXJS plugins during tests or builds. This is a known plugin compatibility warning in the current configuration; check the exit code and completion message to distinguish it from an actual build failure.
 
-### Lỗi native binding hoặc optional dependency
+### Native-binding or optional-dependency errors
 
-Lỗi này thường xuất hiện khi `node_modules` được cài bằng Node version khác. Chuyển về `.nvmrc`, cài sạch theo lockfile, rồi build lại:
+These errors often occur when `node_modules` was installed under another Node version. Switch to `.nvmrc`, reinstall from the lockfile, and rebuild:
 
 ```bash
 nvm use
@@ -164,4 +179,4 @@ npm ci
 npm run build
 ```
 
-Không xóa hoặc tạo lại `package-lock.json` trừ khi chủ đích cập nhật dependency.
+Do not delete or regenerate `package-lock.json` unless intentionally updating dependencies.

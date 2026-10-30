@@ -1,5 +1,7 @@
 # Interface languages
 
+Developer reference for locale resolution, message ownership, integration, and verification. Users can find language selection in the [Quick start](../README.md#quick-start); other technical references are listed in the [documentation index](./README.md).
+
 Markdown Plus ships English, Vietnamese, and Simplified Chinese (China) across Settings, Popup, Viewer chrome, document controls, editor dialogs, and CodeMirror search/replace. Choose **Settings → General → Interface language**. The synchronized `language` preference accepts `auto` (default), `en`, `vi`, or `zh-CN`. Automatic mode walks the browser's preferred languages in order and falls back to English. English and Vietnamese regional variants resolve to their base language. Chinese uses script-aware matching: `zh`, `zh-CN`, `zh-SG`, and explicit `zh-Hans` variants resolve to `zh-CN`; `zh-Hant`, `zh-TW`, `zh-HK`, and `zh-MO` are skipped rather than mapped to Simplified Chinese. An explicit script takes precedence over region; other Chinese regions without a supported script are skipped.
 
 The coding contract is [Internationalization](../.agents/rules/35-internationalization.md). For an end-to-end locale addition, use the shared [mdp-dev-add-language skill](../.agents/skills/mdp-dev-add-language/SKILL.md). Shared writing principles, locale-specific terminology, and research references live in the [Localization writing guide](./localization.md).

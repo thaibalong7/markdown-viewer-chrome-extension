@@ -1,4 +1,5 @@
 import hostPrintCss from './host-print.scss?inline'
+import { applyViewerFavicon, restorePageFavicon } from './page-favicon.js'
 
 const ROOT_ID = 'mdp-viewer-root'
 const HOST_PRINT_STYLE_ID = 'mdp-viewer-host-print-style'
@@ -102,6 +103,7 @@ export function createViewerRoot() {
       ensureHostPrintStyles()
       lockBackgroundScroll(existing)
       hideOriginalPageChildren(existing)
+      applyViewerFavicon()
       return { root: existing }
     }
   }
@@ -117,11 +119,13 @@ export function createViewerRoot() {
   ensureHostPrintStyles()
   lockBackgroundScroll(host)
   hideOriginalPageChildren(host)
+  applyViewerFavicon()
 
   return { root: host }
 }
 
 export function teardownViewerRoot() {
+  restorePageFavicon()
   const host = document.getElementById(ROOT_ID)
   if (!host) return
 

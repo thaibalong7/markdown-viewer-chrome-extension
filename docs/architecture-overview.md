@@ -59,6 +59,12 @@ src/content/index.js
 
 The Viewer intentionally uses light DOM. This keeps document text visible to browser features and other extensions that inspect body content. A dedicated root and stable `mdp-*` class hierarchy provide application isolation.
 
+## Viewer tab icon
+
+Tabs with an active Viewer display the Markdown Plus extension icon as their favicon. `src/content/page-favicon.js` owns the head-level icon link, applied by `page-overrider.js` when creating or reusing the Viewer root. It reuses the packaged `icons/icon-32.png`, exposed to local `file:` pages through `web_accessible_resources`, without additional permissions or remote requests.
+
+The icon stays in place when Files navigation opens another supported document inside the Viewer, including explorer-only formats. Directly opening an unsupported file or leaving the Viewer disabled does not install the icon. Viewer teardown removes its icon and restores any original favicon links; repeated mounting or reinjection keeps a single Viewer icon.
+
 ## Viewer application ownership
 
 `src/viewer/app.js` exposes `MarkdownViewerApp`, the stable imperative boundary used by bootstrap. Focused responsibilities live under `src/viewer/app/`:
@@ -297,6 +303,7 @@ The scoped [internationalization rule](../.agents/rules/35-internationalization.
 | Task | Start with |
 | --- | --- |
 | Activation or detection | `src/content/index.js`, `page-detector.js`, `bootstrap.js` |
+| Viewer tab icon | `src/content/page-favicon.js`, `page-overrider.js`, `manifest.json` |
 | Raw extraction | `src/content/raw-content-extractor.js`, `text-sampling.js` |
 | Markdown/sanitization | `src/viewer/core/renderer.js`, `markdown-engine.js` |
 | Document type/capability | `src/shared/file-types.js` |

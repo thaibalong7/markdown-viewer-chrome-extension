@@ -6,10 +6,13 @@ const OFFSCREEN_PATH = 'offscreen.html'
 let offscreenReady = null
 
 async function hasOffscreenDocument() {
-  if (typeof chrome.offscreen?.hasDocument === 'function') {
-    return chrome.offscreen.hasDocument()
-  }
-  return false
+  // getContexts is available at our Chrome 116 minimum; offscreen.hasDocument
+  // only arrived in Chrome 150. Match our document instead of probing by creation.
+  const contexts = await chrome.runtime.getContexts({
+    contextTypes: ['OFFSCREEN_DOCUMENT'],
+    documentUrls: [chrome.runtime.getURL(OFFSCREEN_PATH)]
+  })
+  return contexts.length > 0
 }
 
 async function ensureOffscreenDocument() {

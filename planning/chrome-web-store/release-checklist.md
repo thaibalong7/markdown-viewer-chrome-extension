@@ -8,6 +8,8 @@ Cập nhật sau xử lý mục 2 ngày **2026-10-29**: HTML sanitizer fail-clos
 
 Cập nhật sau triển khai mục 3 ngày **2026-10-30**: settings dùng index nhỏ và các theme records trong Chrome Sync, có byte budgeting, migration/cache và lỗi quota rõ ràng. Regression trên Chrome Storage thật và sau restart đã pass; kết quả cùng giới hạn kiểm chứng nằm ở mục 3. Mục 4–5, kiểm tra Sync giữa hai profile và manual QA trên ZIP candidate vẫn còn mở.
 
+Cập nhật sau xử lý mục 4 ngày **2026-10-30**: chốt Chrome **116+**, đồng bộ manifest với JavaScript/CSS build targets, sửa offscreen discovery và hoàn thành production-extension smoke trên minimum **116.0.5845.96** cùng latest stable **156.0.8078.80**. Mỗi phiên bản pass 15 checks; full suite pass 196 files / 1.459 tests. Giới hạn file picker/ghi file native và QA ZIP cuối được giữ riêng bên dưới; mục 5 và Sync hai profile vẫn còn các bước release QA mở.
+
 Các nhận xét về cấu hình sanitizer/Math trong hồ sơ mục 1 phản ánh snapshot trước thay đổi mục 2; dùng mục 2 và runtime source để đối chiếu chính sách hiện tại.
 
 ## Kết quả review ngày 2026-10-29
@@ -130,16 +132,41 @@ Nguồn: [Chrome storage.sync quota](https://developer.chrome.com/docs/extension
 
 ### 4. Đồng bộ mức Chrome tối thiểu với build và runtime
 
-[`manifest.json`](../../manifest.json) khai báo Chrome 109 vì Offscreen API có từ phiên bản đó, nhưng đây chưa phải bằng chứng toàn extension hỗ trợ 109. [`vite.config.mjs`](../../vite.config.mjs) chưa đặt build target riêng, nên Vite 8 resolve về Chrome 111. Các token trong [`_tokens.scss`](../../src/shared/styles/_tokens.scss) và nhiều surface dùng `color-mix()` cần Chrome 111.
+Đã xử lý ngày **2026-10-30**; hồ sơ current-state và cách chạy lại tại [browser compatibility audit](../../docs/browser-compatibility.md). Chọn **Chrome 116+** làm support baseline có kiểm chứng; không giữ hỗ trợ 109–115. Đây là quyết định phạm vi hỗ trợ, không phải kết luận mọi tính năng đều bắt buộc 116. Baseline trước sửa chỉ dựa vào Offscreen API có từ 109, trong khi Vite mặc định target Chrome 111 và CSS dùng `color-mix()` cần 111.
 
-- [ ] Rà soát browser APIs, JavaScript từ dependency và CSS thực tế để chốt mức Chrome hỗ trợ.
-- [ ] Nếu giữ Chrome 109: đặt build target phù hợp, bổ sung CSS/runtime fallback cần thiết và kiểm thử trên 109; chỉ đổi `build.target` không đủ.
-- [ ] Nếu nâng minimum: cập nhật manifest và tài liệu sau khi hoàn thành compatibility audit; không mặc định rằng 111 đủ cho mọi dependency.
-- [ ] Kiểm thử trên phiên bản Chrome tối thiểu đã chốt và latest stable, gồm Popup, Settings, Theme Studio, Viewer, editor và lazy imports.
+[`manifest.json`](../../manifest.json) nay khai báo `minimum_chrome_version: "116"`; [`vite.config.mjs`](../../vite.config.mjs) lấy cả `build.target` và `build.cssTarget` từ giá trị đó, resolve thực tế đều là `chrome116`. README, DEV, architecture và shared build rule/adapters đã đồng bộ. Settings → About tiếp tục đọc packaged manifest nên tự hiển thị `Chrome 116+`.
+
+[`offscreen-fetch.js`](../../src/background/offscreen-fetch.js) dùng `runtime.getContexts()` (Chrome 116+) với exact offscreen URL, thay cho `offscreen.hasDocument()` (Chrome 150+) và nhánh cũ luôn trả `false`. Đường tạo document tiếp tục serialize concurrency. Ba regression tests kiểm tra reuse khi không có API mới, hai lượt đọc đồng thời chỉ tạo một document và propagation lỗi discovery.
+
+Audit phân biệt Shiki Viewer dùng Oniguruma/WASM với Theme Studio preview dùng JavaScript regex engine tự dò target; preview cần kiểm tra RegExp động thay vì chỉ transpilation. Chrome 116 có RegExp `v` (112+), `color-mix()` (111+), `:has()` và size container queries. `text-wrap: pretty` (117+) được phép về wrapping thường; standard scrollbar properties (121+) có WebKit/Viewer scrollbar fallback sẵn. Không thêm permission, dependency, WASM CSP capability hoặc polyfill.
+
+- [x] Rà soát browser APIs, JavaScript từ dependency và CSS thực tế; ghi rõ required features, progressive CSS và giới hạn audit.
+- [x] Chọn nâng minimum lên 116; không triển khai nhánh giữ 109 hoặc coi đổi target là bằng chứng tương thích.
+- [x] Đồng bộ manifest, JavaScript/CSS targets, tài liệu hỗ trợ và rule/adapters sau compatibility audit.
+- [x] Chạy production extension trên minimum và latest stable: Popup, Settings/About, Theme Studio, Viewer, editor và lazy imports đều pass trong phạm vi smoke mô tả dưới đây.
+
+| Kiểm chứng ngày 2026-10-30 | Kết quả |
+| --- | --- |
+| Node pin `20.19.5`, `npm test` | **196 files / 1.459 tests pass**, gồm 3 regression tests offscreen mới và cập nhật minimum trong manifest test. |
+| `npm run build`, resolved config | Pass; packaged minimum 116, JS/CSS targets `chrome116`. Còn cảnh báo CRXJS Rollup/Rolldown và chunks >500 kB như baseline. |
+| `npm run size:report` | Giữ mức làm tròn 12 MB `dist` / 11 MB JS như baseline; tổng JS **11.284.632 B**, chunk lớn nhất **1.525.521 B**. |
+| Minimum **Chrome for Testing 116.0.5845.96 / macOS arm64** | **15 checks pass**, không uncaught exception. |
+| Latest Stable **Chrome for Testing 156.0.8078.80 / macOS arm64** | **15 checks pass**, không uncaught exception; version đối chiếu official Stable metadata trong phiên kiểm tra. |
+| Shared rule adapters | `bash scripts/sync-cursor-rules.sh` và `bash scripts/check-agents.sh` pass. Không đổi catalog/activation. |
+
+Harness tạm đã copy build `dist/` đầy đủ vào thư mục tạm và dùng profile riêng chưa đăng nhập. Checks dùng Chrome storage/messaging/offscreen/file access thật; mở Popup, Settings/About, tạo Theme Studio draft và xác nhận colored JS-engine preview; Viewer render Unicode Markdown, WASM-backed Shiki, KaTeX và flowchart của cả official/Beautiful Mermaid; editor tải CodeMirror, nhận input và cập nhật live preview. Đã xem screenshots Theme Studio và editor ở cả hai phiên bản. Không dùng profile, settings hoặc file của người dùng. Harness đã được gỡ sau kiểm chứng; giữ kết quả audit và regression tests trong repo.
+
+Giới hạn: riêng native file picker/file handle của editor được thay bằng fixture in-memory; test không ghi file qua editor và discard draft trước reload. Native chooser/cấp quyền/Save, workspace permissions, toàn bộ loại diagram/grammar, exports, keyboard/accessibility matrix, cross-profile Sync và chính ZIP release candidate vẫn thuộc release QA; không đánh dấu các bước đó đã pass bằng smoke này. Hai browser chạy bản production unpacked, không phải ZIP cuối. Sau thay đổi dependency hoặc candidate, chạy các project checks dưới đây rồi thực hiện [manual production QA](../../docs/browser-compatibility.md#manual-production-qa) trên minimum và latest stable:
+
+```bash
+nvm use
+npm test
+npm run build
+```
 
 Tiêu chí hoàn thành: manifest, build target, CSS/runtime và thông tin hỗ trợ người dùng thống nhất; có kết quả chạy trên phiên bản tối thiểu thực sự hỗ trợ.
 
-Nguồn: [Vite 8 build target](https://v8.vite.dev/config/build-options), [Chrome color-mix() support](https://developer.chrome.com/docs/css-ui/css-color-mix).
+Nguồn: [Vite 8 build target](https://v8.vite.dev/config/build-options), [Offscreen/context discovery và API availability](https://developer.chrome.com/docs/extensions/reference/api/offscreen), [Chrome color-mix() support](https://developer.chrome.com/docs/css-ui/css-color-mix), [Shiki regex runtime targets](https://shiki.style/guide/regex-engines), [official Chrome-for-Testing metadata](https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json). Hồ sơ audit liên kết thêm nguồn RegExp/CSS và hướng dẫn tải binary.
 
 ### 5. Hoàn tất privacy, permissions và file-access onboarding
 

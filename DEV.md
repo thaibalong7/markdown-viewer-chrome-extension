@@ -6,7 +6,7 @@ Tài liệu này mô tả workflow phát triển hiện tại cho Chrome Extensi
 
 - Node.js 20 trở lên; `.nvmrc` pin phiên bản được dự án ưu tiên.
 - `npm`.
-- Google Chrome với Developer mode và quyền **Allow access to file URLs** cho extension.
+- Google Chrome 116 trở lên với Developer mode và quyền **Allow access to file URLs** cho extension; xem [browser compatibility audit](docs/browser-compatibility.md).
 
 Stack runtime/build chính gồm Vite 8, CRXJS, React 19, Sass, Vitest, `markdown-it`, DOMPurify, Shiki, CodeMirror 6, Mermaid và KaTeX.
 

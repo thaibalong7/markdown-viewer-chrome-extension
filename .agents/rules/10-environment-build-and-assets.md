@@ -11,5 +11,5 @@ trigger: always_on
 - Keep ESM import paths explicit with `.js` extensions where current source does so.
 - Prefer `.scss` for local style sources under `src/**`; do not add new local `.css` source files unless a package or platform constraint requires it.
 - Viewer styles live under `src/viewer/styles/**/*.scss` and are imported with `?inline` from `src/content/viewer-loader.js`; they are bundled into the content script rather than loaded as standalone CSS assets.
-- Treat `manifest.json` as high-risk config. Keep permissions minimal, explain any new permission by a concrete feature, preserve the declared Chrome 109 minimum unless compatibility is deliberately re-audited, and keep entry points plus `web_accessible_resources` aligned with actual runtime assets.
+- Treat `manifest.json` as high-risk config. Keep permissions minimal, explain any new permission by a concrete feature, preserve the declared Chrome 116 minimum unless compatibility is deliberately re-audited, derive Vite JavaScript/CSS targets from that manifest minimum, and keep entry points plus `web_accessible_resources` aligned with actual runtime assets. See `docs/browser-compatibility.md` for the audit and real-browser checks.
 - Treat `dist/**` as generated output. Never hand-edit it.

@@ -13,7 +13,7 @@ Direct activation is limited to local `file:` URLs with `.md`, `.markdown`, `.md
 ## Technology and source boundaries
 
 - Chrome Extension Manifest V3
-- Chrome 109 or newer, as declared by `minimum_chrome_version`
+- Chrome 116 or newer; manifest and Vite JavaScript/CSS targets share this baseline (see [browser compatibility](./browser-compatibility.md))
 - Vite with `@crxjs/vite-plugin`
 - React 19 for Viewer chrome, Popup, and Settings
 - JavaScript modules for services, document orchestration, rendering, and plugins

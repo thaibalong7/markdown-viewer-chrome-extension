@@ -56,6 +56,10 @@ export default defineConfig({
       : null
   ].filter(Boolean),
   build: {
+    // One support baseline for the manifest, emitted JavaScript and CSS.
+    // Runtime APIs and dependency behavior still need real-browser verification.
+    target: `chrome${manifest.minimum_chrome_version}`,
+    cssTarget: `chrome${manifest.minimum_chrome_version}`,
     chunkSizeWarningLimit: 500
   }
 })

@@ -11,7 +11,7 @@ describe('extension manifest permissions', () => {
   it('limits page access and runtime assets to local files', async () => {
     const manifest = await readManifest()
 
-    expect(manifest.minimum_chrome_version).toBe('109')
+    expect(manifest.minimum_chrome_version).toBe('116')
     expect(manifest.host_permissions).toEqual(['file:///*'])
     expect(manifest.content_scripts.map(({ matches }) => matches)).toEqual([['file:///*']])
     expect(manifest.web_accessible_resources.map(({ matches }) => matches)).toEqual([

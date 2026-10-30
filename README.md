@@ -38,7 +38,7 @@ Markdown Plus is a Chrome Manifest V3 extension that turns local Markdown files 
 ### Prerequisites
 
 - Node.js 20 or newer; the repository pins the preferred release in `.nvmrc`.
-- Google Chrome with Developer mode enabled.
+- Google Chrome 116 or newer with Developer mode enabled. See the [browser compatibility audit](docs/browser-compatibility.md).
 
 ### Install and build
 

@@ -6,6 +6,8 @@ on:
     paths:
       - "site/**"
       - ".github/workflows/deploy-pages.yml"
+      - "scripts/check-site.py"
+      - "scripts/__tests__/test_check_site.py"
   workflow_dispatch:
 
 permissions:
@@ -26,6 +28,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+
+      - name: Validate public site
+        run: |
+          python3 -B -m unittest discover -s scripts/__tests__ -p 'test_check_site.py'
+          python3 -B scripts/check-site.py
+          node --check site/assets/site.js
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

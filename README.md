@@ -9,6 +9,7 @@ Markdown Plus is a Chrome Manifest V3 extension that turns local Markdown files 
 - [Development](#development)
 - [Project Structure](#project-structure)
 - [Documentation](#documentation)
+- [Public website](#public-website)
 - [Privacy](#privacy)
 - [Contributing](#contributing)
 - [License](#license)
@@ -107,6 +108,12 @@ For version bumps, timestamped same-version builds, and release artifact checks,
 - [Viewer document actions](docs/document-actions.md) — command grouping, sidebar integration, overflow, focus, and verification.
 - [Design System](docs/design-system/README.md) — implementation guide and [visual reference](docs/design-system/index.html) covering foundations, components, current icons, and the Viewer preview.
 - [Gherkin Syntax](docs/gherkin-syntax.md) — Cucumber/Gherkin reference plus the Markdown fence integration supported by Markdown Plus.
+
+## Public website
+
+The [Markdown Plus website](https://thaibalong7.github.io/markdown-viewer-chrome-extension/) and [Privacy Policy](https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/) are published together from `site/` using [GitHub Actions](.github/workflows/deploy-pages.yml). Home, Privacy, and the extension’s About links already point to these destinations.
+
+See the [website guide](site/README.md#deploy-to-github-pages) for the one-time Pages setup, deployment steps, local validation, and relative-link examples. Website publishing does not require an extension build.
 
 ## Privacy
 

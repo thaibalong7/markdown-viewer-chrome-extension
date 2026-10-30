@@ -24,7 +24,7 @@ The sample workspace offers Reader and Source views of the same illustrative Mar
 
 Both pages share explicit light/dark controls. The website follows the system preference until a theme is chosen, then remembers only that choice under `mdp-site-theme` in local storage. Blocked storage falls back to a working selection for the current page. With JavaScript disabled, all website content, links, and the CSS system-theme fallback remain usable. Website theme preference is separate from extension settings and is disclosed in the policy.
 
-The complete policy article is preserved, including prior disclosures about sync storage, local snapshots, IndexedDB, remote resources, exported-file CDN requests, permissions, and user controls. Its effective date is retained. Desktop has sticky section navigation; narrower layouts use a native details disclosure with focus transferred to the chosen section. Shared navigation and the site footer are consistent across both pages.
+The complete policy article is preserved, including prior disclosures about sync storage, local snapshots, IndexedDB, remote resources, exported-file CDN requests, permissions, and user controls. The privacy update dated October 30, 2026 clarifies theme-image deletion, Editor Save, and Limited Use; keep the date in the shared template, locale catalogs, and localization test aligned when the policy changes. Desktop has sticky section navigation; narrower layouts use a native details disclosure with focus transferred to the chosen section. Shared navigation and the site footer are consistent across both pages.
 
 ## Preview and verification
 

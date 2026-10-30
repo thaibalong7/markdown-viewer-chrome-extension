@@ -13,6 +13,8 @@ This folder is the single destination for approved Chrome Web Store images. Uplo
 | `small-promo-tile.png` | 440 × 280 | Small promotional image. |
 | `marquee.png` | 1400 × 560 | Optional marquee promotional image. |
 
+Screenshot 05's file-access crop was corrected on October 30, 2026 to show the actual **File URL access** row, setup instructions, and **Allowed** status. It shows the configured state; new installations must still enable **Allow access to file URLs** as explained in the [Store listing copy](../../planning/chrome-web-store/store-listing.md). The retained Editorial Frost renderer uses the General Settings raw capture with SVG viewBox `930 1130 1800 612`; the old crop showed the activation switch instead of the permission row. Final comparison of all five screenshots with the ZIP candidate remains release QA.
+
 ## Visual direction
 
 Editorial Frost uses cool white and pale blue surfaces, navy sans-serif typography, blue accent rules, a faint structural grid, rounded screenshot frames, and the original approved icon. The promotional headline is **Your Markdown. A clearer view.** Interface images are crops from the approved screenshots rather than synthesized UI. Paths in the Store screenshots use clean demo locations.

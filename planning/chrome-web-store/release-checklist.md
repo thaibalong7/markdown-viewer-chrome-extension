@@ -143,20 +143,26 @@ Nguồn: [Vite 8 build target](https://v8.vite.dev/config/build-options), [Chrom
 
 ### 5. Hoàn tất privacy, permissions và file-access onboarding
 
+Đã xử lý phần source ngày **2026-10-30**: policy EN/VI/中文 thống nhất Save qua file handle, vòng đời xóa ảnh nền và Limited Use; disclosure có inventory dữ liệu local/Sync; Store description có one-time setup; screenshot 05 hiển thị đúng hàng File URL access. Full tests pass **195 files / 1.456 tests** và website preflight pass. Bằng chứng cùng các bước còn lại nằm trong [hồ sơ kiểm chứng mục 5](./privacy-permissions-verification.md). Mục này chưa đóng: policy sửa lần này chưa deploy, dashboard đang yêu cầu đăng ký nhà phát triển và clean-profile QA chưa được thực hiện.
+
 - [x] Privacy policy công khai trả HTTP 200 tại thời điểm review.
 - [x] Có policy source trong `site/privacy/` và workflow GitHub Pages.
 - [x] Policy mô tả xử lý document local, recent file paths trong local storage, preferences qua Chrome Sync và file handles trong IndexedDB.
 - [x] Policy nêu nội dung document không được gửi đến server do Markdown Plus vận hành và không hứa “zero network requests”.
-- [ ] Bổ sung ảnh nền custom theme: Blob được giữ trong IndexedDB trên thiết bị, settings đồng bộ chỉ mang descriptor/reference; mô tả cách thay thế/xóa/reset asset.
-- [ ] Kiểm tra lại disclosure sau quyết định xử lý Chrome Sync quota.
-- [ ] Deploy policy cập nhật, kiểm tra URL công khai và nội dung mới thực sự hiển thị.
+- [x] Bổ sung source policy về ảnh nền custom theme: Blob ở IndexedDB trên thiết bị, Sync chỉ mang descriptor/reference; mô tả thay thế/xóa/reset asset, cleanup failure và không xóa tài liệu gốc/export.
+- [x] Kiểm tra lại disclosure sau quyết định xử lý Chrome Sync quota: index/theme records, recovery cache local và không fallback khi Sync write thất bại.
+- [x] Sửa justification `downloads` trong policy/disclosure: chỉ cho exports; Editor Save ghi qua original file handle, không download fallback. Policy có Limited Use disclosure và ngày cập nhật 2026-10-30 ở cả ba ngôn ngữ.
+- [ ] Deploy policy sửa ngày 2026-10-30, kiểm tra URL công khai và nội dung mới thực sự hiển thị. URL đang HTTP 200 và đã có mô tả Sync/ảnh nền, nhưng bản kiểm tra còn câu Save fallback cũ.
 - [ ] Điền Privacy practices và single purpose trong Store dashboard nhất quán với policy/runtime; xử lý local không miễn nghĩa vụ disclosure.
 - [ ] Rà soát [`privacy-disclosure.md`](./privacy-disclosure.md) theo cách định nghĩa dữ liệu trong form hiện tại; không suy ra “không cần khai báo” chỉ vì không upload lên server của developer.
+- [x] Chuẩn bị inventory dữ liệu local/Sync, permission justifications và remote-code declaration trong [`privacy-disclosure.md`](./privacy-disclosure.md); final category selections chờ item form sau đăng ký.
 - [x] Manifest giới hạn activation/host/resources matches về `file:///*`, không còn `<all_urls>`.
 - [ ] Nhập justification cho từng permission trong dashboard và đối chiếu manifest của release candidate.
 - [x] Popup/Settings có kiểm tra file-scheme access, trạng thái allowed/blocked/unavailable, hướng dẫn bật quyền, nút mở Details và re-check khi focus lại.
+- [x] Regression tests cho blocked → allowed → blocked khi focus lại, visibility refresh, phục hồi sau API error và cleanup khi unmount. Tests dùng Chrome API giả lập trong jsdom, chưa thay thế browser QA.
 - [ ] Kiểm thử onboarding trên clean Chrome profile, với quyền file URL ban đầu đang tắt.
-- [ ] Đưa one-time setup vào Store description và xác nhận bộ screenshot trình bày đúng hành vi hiện tại.
+- [x] Chuẩn bị Store description có one-time setup và hướng dẫn reviewer trong [`store-listing.md`](./store-listing.md); sửa crop screenshot 05 để thấy đúng File URL access và hướng dẫn bật quyền.
+- [ ] Lưu description/screenshots trong Store dashboard và đối chiếu cả bộ với ZIP candidate; screenshot trạng thái Allowed không đại diện mặc định sau cài đặt.
 
 Justification cần đối chiếu khi submit:
 

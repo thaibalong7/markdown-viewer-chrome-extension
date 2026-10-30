@@ -65,7 +65,7 @@ class SiteLocalizationTests(unittest.TestCase):
             self.assertEqual(sample, source)
             self.assertIn('file:///Documents/my-workspace/README.md', home)
             policy = outputs[site.page_path(locale, 'privacy')]
-            self.assertIn('datetime="2026-09-20"', policy)
+            self.assertIn('datetime="2026-10-30"', policy)
             for literal in ['chrome.storage.sync', 'chrome.storage.local', 'cdn.jsdelivr.net', 'file:///*', 'offscreen', 'downloads']:
                 self.assertIn(f'<code>{literal}</code>', policy)
 

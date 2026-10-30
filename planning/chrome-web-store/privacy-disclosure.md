@@ -9,7 +9,7 @@ Use this document when completing the Chrome Web Store Privacy practices form. I
 - Support: `https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues`
 - Source: `https://github.com/thaibalong7/markdown-viewer-chrome-extension`
 
-The Pages URL becomes public after this change reaches `master`, the deployment workflow succeeds, and GitHub Pages is configured to use **GitHub Actions** as its source in the repository settings.
+The policy URL returned HTTP 200 on October 30, 2026. It already describes device-local background images and the current Sync recovery cache. The October 30 policy clarification in this checkout still needs deployment through the existing GitHub Pages workflow; a working URL alone does not prove that the latest text is published.
 
 ## Single purpose
 
@@ -19,13 +19,22 @@ The Pages URL becomes public after this change reaches `master`, the deployment 
 
 Markdown Plus processes local document content, file names, file URLs/paths, and user preferences only to provide its user-facing features. This information is not transmitted to the developer or a developer-operated server.
 
-When the current Store form asks whether the extension **collects** user data, answer consistently with the form's definition of collection/transmission:
+Disclose on-device handling as well as transmission. The [Chrome User Data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq) explicitly requires disclosure even when data is processed or stored only locally. “Not sent to the developer” is a statement about the destination, not a reason to omit a data category. The live dashboard currently stops at developer registration (agreement and USD 5 fee), so its item-level field definitions and saved selections have not been verified; compare them with this inventory before saving the form.
 
-- Local document or website content: processed on-device; not collected or transmitted to the developer.
-- Browsing history: not collected. Recent history is restricted to local `file:` Markdown URLs and stays in `chrome.storage.local`.
-- User activity, personal communications, location, financial information, health information, authentication information, personal identifiers: not collected.
+| Data handled | Actual use and destination | Dashboard mapping to review |
+| --- | --- | --- |
+| Local document text, markup, images, and user-selected theme images | Read/render/edit/export documents and display themes on the user's device; no developer upload. | Review **Website content** against the form's definition of text, images, and hyperlinks. Disclose local handling in the description even if the form uses different terminology for local documents. |
+| Local file URLs, names, paths, and last-opened times | Navigation and optional recent-file history in `chrome.storage.local`; no general web-browsing history or synced recent paths. | Review **Web history** against the form's URL/resource definition; do not answer “none” solely because these URLs use `file:`. |
+| Preferences and custom-theme names/descriptors | Chrome Sync and local recovery cache, as detailed below; image binaries stay local. | Describe Chrome-managed synchronization, including user-entered theme names. Do not imply that all extension data stays on one device. |
+| User-selected file handles | Browser IndexedDB for reconnecting the original file for editing; Chrome controls permission. | Explain the local persistence and purpose; no credentials or filesystem handles are uploaded to the developer. |
+
+The extension has no dedicated collection feature for personal identifiers, health, financial/payment information, authentication information, personal communications, location, or activity telemetry. A document can contain sensitive information; it is still handled as document content. Do not promise that user documents cannot contain those data types, or select every category merely because arbitrary document text could contain it. Resolve the category selections against the live form before submission.
+
+Storage details:
+
 - Preferences and custom theme descriptors: stored in separate Chrome Sync items; Chrome may sync them through the user's signed-in Chrome profile. Failed sync writes do not silently switch to local storage. A verified complete-settings recovery cache is stored in `chrome.storage.local`; if the sync API does not exist, local storage is the settings backend.
 - Custom theme background images: chosen by the user and stored as Blobs in browser IndexedDB on the current device. Chrome Sync stores the theme's image reference and presentation settings, not the binary image. The image may be unavailable on another device; the user must choose a local image there. These images are not uploaded to the developer or a developer-operated service.
+- Background-image deletion: after a successful theme save, replacing the image or choosing a non-image background removes the superseded asset. Deleting a custom theme removes its image; resetting settings clears the theme-image store. Cleanup errors can leave an unused local image; clearing extension site data or uninstalling removes extension-managed data according to Chrome's behavior. Original documents and exports are not deleted by these actions.
 - File handles: may be retained locally in browser IndexedDB after the user selects a file for saving.
 
 Certifications should state that data is not sold, used for advertising, used for creditworthiness or lending, or transferred for purposes unrelated to the extension's single purpose.
@@ -44,9 +53,13 @@ None of these requests send document content to a Markdown Plus-operated server.
 
 - `storage`: Stores reader, editor, explorer, theme, and plugin preferences. Recent local file paths are kept separately in `chrome.storage.local`.
 - `offscreen`: Reads local `file:` documents and directory listings used by the Files explorer.
-- `downloads`: Saves HTML, Word-compatible, and Mermaid image exports and provides a save fallback when direct file writing is unavailable.
+- `downloads`: Saves user-requested HTML, Word-compatible, and Mermaid SVG/PNG exports through Chrome's downloads API. Editor Save writes only through the original file handle explicitly connected by the user; there is no download fallback for saving edits.
 - `file:///*`: Recognizes, reads, and displays local supported documents. The user must separately enable **Allow access to file URLs** in Chrome.
 
 ## Final dashboard check
+
+Single purpose: use the statement above. Remote code: **No, I am not using remote code** for the current packaged runtime; JavaScript, renderers, and extension fonts/styles are bundled. User-authored image URLs and KaTeX CSS referenced by exported files are network/resource disclosures, not remotely executed extension JavaScript.
+
+Copy-ready Store description and reviewer onboarding steps are in [store-listing.md](./store-listing.md). Record the live dashboard's selected categories, permission justifications, candidate manifest/version, and save result in [privacy-permissions-verification.md](./privacy-permissions-verification.md); this document does not certify that dashboard fields have been saved.
 
 Before submitting, compare every selected Store checkbox with the deployed policy and the release candidate's `manifest.json`. Re-check this document if storage behavior, permissions, remote-resource handling, analytics, or any developer-operated service changes.

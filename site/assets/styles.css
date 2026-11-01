@@ -100,7 +100,7 @@ code { padding: 2px 6px; border: 1px solid var(--border); border-radius: 5px; ba
 .brand img { display: block; }
 .brand-plus { font-weight: 450; }
 .primary-nav { display: flex; align-items: center; gap: 24px; margin-left: auto; }
-.primary-nav a { position: relative; display: inline-flex; align-items: center; min-height: 38px; color: var(--muted); font-size: 13px; font-weight: 550; text-decoration: none; }
+.primary-nav a { position: relative; display: inline-flex; align-items: center; min-height: 38px; color: var(--muted); font-size: 13px; font-weight: 550; text-decoration: none; white-space: nowrap; }
 .primary-nav a:hover, .primary-nav a[aria-current="page"] { color: var(--heading); }
 .primary-nav a[aria-current="page"]::after { position: absolute; content: ""; bottom: 1px; left: 50%; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); transform: translateX(-50%); }
 .header-actions { display: flex; align-items: center; gap: 16px; padding-left: 20px; border-left: 1px solid var(--border); }
@@ -530,7 +530,7 @@ h1:lang(zh-CN), h2:lang(zh-CN), h3:lang(zh-CN) { line-height: 1.35; letter-spaci
   .brand { font-size: 14px; gap: 7px; }
   .brand img { width: 29px; height: 29px; }
   .header-actions { order: 2; margin-left: auto; padding-left: 0; border: 0; }
-  .primary-nav { order: 3; width: 100%; justify-content: center; gap: 29px; }
+  .primary-nav { order: 3; width: 100%; justify-content: center; gap: 16px; }
   .primary-nav a { min-height: 34px; font-size: 11px; }
   .primary-nav a[aria-current="page"]::after { bottom: 0; width: 3px; height: 3px; }
   .theme-control { padding: 2px; }

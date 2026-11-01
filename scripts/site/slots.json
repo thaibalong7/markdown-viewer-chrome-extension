@@ -79,5 +79,401 @@
   },
   "home.demo.outlineHint": {
     "br0": "<br>"
+  },
+  "guide.quick-start.install": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.quick-start.permission": {
+    "code0Open": "<code>",
+    "code0Close": "</code>",
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.quick-start.open": {
+    "code0Open": "<code>",
+    "code0Close": "</code>",
+    "code1Open": "<code>",
+    "code1Close": "</code>",
+    "code2Open": "<code>",
+    "code2Close": "</code>",
+    "code3Open": "<code>",
+    "code3Close": "</code>",
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.quick-start.pin": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.quick-start.practice.body": {
+    "code0Open": "<code>",
+    "code0Close": "</code>"
+  },
+  "guide.workspace.lead": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.workspace.folder.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.workspace.refresh": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "code0Open": "<code>",
+    "code0Close": "</code>",
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>"
+  },
+  "guide.workspace.outline": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.workspace.sourceFormats": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.reader.lead": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.reader.type.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.reader.layout.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.reader.reset": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>"
+  },
+  "guide.reader.navigation": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.rich-markdown.lead": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.rich-markdown.code.body": {
+    "code0Open": "<code>",
+    "code0Close": "</code>"
+  },
+  "guide.rich-markdown.notes.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.rich-markdown.math.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "code0Open": "<code>",
+    "code0Close": "</code>",
+    "code1Open": "<code>",
+    "code1Close": "</code>",
+    "code2Open": "<code>",
+    "code2Close": "</code>"
+  },
+  "guide.rich-markdown.practice": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "code0Open": "<code>",
+    "code0Close": "</code>"
+  },
+  "guide.diagrams.lead": {
+    "code0Open": "<code>",
+    "code0Close": "</code>"
+  },
+  "guide.diagrams.export": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.diagrams.renderer": {
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>",
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.diagrams.resolution": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.themes.lead": {
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>",
+    "path1Open": "<span class=\"guide-path\">",
+    "path1Close": "</span>"
+  },
+  "guide.themes.create.name": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.themes.create.colors": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.themes.create.syntax": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.themes.create.background": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.themes.background.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.themes.background.motion": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.themes.background.local": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.updates.lead": {
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>"
+  },
+  "guide.updates.off.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.updates.steps": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.updates.review": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.updates.limits": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.editor.lead": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.editor.enable": {
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>",
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.editor.connect": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.editor.edit": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.editor.save": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "kbd0Open": "<kbd>",
+    "kbd0Close": "</kbd>",
+    "kbd1Open": "<kbd>",
+    "kbd1Close": "</kbd>",
+    "kbd2Open": "<kbd>",
+    "kbd2Close": "</kbd>",
+    "kbd3Open": "<kbd>",
+    "kbd3Close": "</kbd>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.editor.safety": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.export.lead": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.export.pdf.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.export.document.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.export.note": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.settings.lead": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.settings.general": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.settings.files": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "code0Open": "<code>",
+    "code0Close": "</code>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.settings.history": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.settings.advanced": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
+  },
+  "guide.settings.about": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.settings.backup.body": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>",
+    "strong3Open": "<strong>",
+    "strong3Close": "</strong>"
+  },
+  "guide.settings.reset": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.settings.local": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.troubleshooting.plain.answer": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>"
+  },
+  "guide.troubleshooting.formats.answer": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.troubleshooting.missing.answer": {
+    "code0Open": "<code>",
+    "code0Close": "</code>",
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.troubleshooting.stale.answer": {
+    "path0Open": "<span class=\"guide-path\">",
+    "path0Close": "</span>",
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.troubleshooting.save.answer": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.troubleshooting.background.answer": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.troubleshooting.settings.answer": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.workspace.map.files": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.workspace.map.document": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.workspace.map.outline": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
+  },
+  "guide.workspace.map.actions": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>"
   }
 }

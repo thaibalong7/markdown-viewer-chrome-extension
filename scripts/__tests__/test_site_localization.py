@@ -24,7 +24,7 @@ class SiteLocalizationTests(unittest.TestCase):
 
     def test_all_generated_editions_are_current_and_have_valid_project_links(self):
         outputs = site.render_pages()
-        self.assertEqual(len(outputs), 6)
+        self.assertEqual(len(outputs), 9)
         for path, content in outputs.items():
             self.assertEqual((site.ROOT / 'site' / path).read_text(), content, str(path))
         with tempfile.TemporaryDirectory() as directory:
@@ -37,7 +37,7 @@ class SiteLocalizationTests(unittest.TestCase):
             (root / 'assets').mkdir()
             for path in (site.ROOT / 'site/assets').iterdir():
                 (root / 'assets' / path.name).write_bytes(path.read_bytes())
-            self.assertEqual(checker.check_site(root), ([], 6))
+            self.assertEqual(checker.check_site(root), ([], 9))
 
     def test_language_links_keep_the_current_page_and_internal_links_keep_the_locale(self):
         outputs = site.render_pages()
@@ -54,6 +54,35 @@ class SiteLocalizationTests(unittest.TestCase):
                     self.assertIn(f'href="{site.relative_url(path, site.page_path(locale, "privacy"))}"', content)
                 else:
                     self.assertIn(f'href="{site.relative_url(path, site.page_path(locale, "home"))}#features"', content)
+                self.assertIn(f'href="{site.relative_url(path, site.page_path(locale, "guide"))}"', content)
+
+    def test_guide_chapters_practice_file_and_illustrations_are_available_in_every_locale(self):
+        outputs = site.render_pages()
+        chapters = None
+        for locale in site.LANGUAGES:
+            html = outputs[site.page_path(locale, 'guide')]
+            current = re.findall(r'class="guide-section" id="([^"]+)"', html)
+            self.assertEqual(len(current), 11)
+            chapters = current if chapters is None else chapters
+            self.assertEqual(current, chapters)
+            contents = re.search(r'<aside class="policy-sidebar guide-sidebar">(.*?)</aside>', html, re.S)[1]
+            for chapter in current:
+                self.assertEqual(contents.count(f'href="#{chapter}"><span>'), 2)
+            self.assertIn('download="markdown-plus-tour.md"', html)
+            figures = re.findall(r'data-guide-scene="([^"]+)"', html)
+            self.assertEqual(len(figures), 18)
+            self.assertEqual(len(set(figures)), 18)
+            for chapter in current:
+                section = re.search(rf'<section class="guide-section" id="{chapter}".*?</section>', html, re.S)[0]
+                self.assertIn('data-guide-scene=', section, chapter)
+            for scene in figures:
+                self.assertIn(f'guide-{locale}-{scene}.jpg', html)
+            self.assertIn('<kbd>Ctrl</kbd> + <kbd>S</kbd> / <kbd>⌘</kbd> + <kbd>S</kbd>', html)
+        practice = (site.ROOT / 'site/assets/markdown-plus-tour.md').read_text()
+        for syntax in ['```mermaid', '```javascript', '> [!TIP]', '$E = mc^2$', '[^local]']:
+            self.assertIn(syntax, practice)
+        # The downloadable exercise must not initiate remote resource requests.
+        self.assertNotIn('https://', practice)
 
     def test_document_source_filenames_and_policy_technical_values_stay_literal(self):
         outputs = site.render_pages()

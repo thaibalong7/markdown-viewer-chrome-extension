@@ -74,23 +74,37 @@
       });
     });
 
-    const sections = [...document.querySelectorAll('.policy-section')];
-    if (!sections.length || !('IntersectionObserver' in window)) return;
+    document.querySelectorAll('.mobile-toc a').forEach((link) => {
+      link.addEventListener('click', () => {
+        link.closest('.mobile-toc').open = false;
+        document.querySelector(link.hash)?.focus({ preventScroll: true });
+      });
+    });
+
+    const sections = [...document.querySelectorAll('.policy-section, .guide-section')];
+    if (!sections.length) return;
     const links = [...document.querySelectorAll('.policy-sidebar a[href^="#"]')];
-    const observer = new IntersectionObserver(() => {
-      const threshold = Math.min(180, window.innerHeight * 0.25);
+    function updateCurrentSection() {
+      const threshold = Number.parseFloat(getComputedStyle(root).scrollPaddingTop) + 36;
       const current = sections.filter((section) => section.getBoundingClientRect().top <= threshold).at(-1) || sections[0];
       links.forEach((link) => {
         if (link.hash === `#${current.id}`) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       });
-    }, { rootMargin: '-10% 0px -65% 0px', threshold: 0 });
-    sections.forEach((section) => observer.observe(section));
-    document.querySelectorAll('.mobile-toc a').forEach((link) => {
-      link.addEventListener('click', () => {
-        document.querySelector('.mobile-toc').open = false;
-        document.querySelector(link.hash)?.focus({ preventScroll: true });
+    }
+    // Long chapters can cover the observer band without crossing a threshold.
+    // Measure at most once per frame so navigation stays accurate while scrolling.
+    let scheduled = false;
+    function scheduleCurrentSection() {
+      if (scheduled) return;
+      scheduled = true;
+      window.requestAnimationFrame(() => {
+        scheduled = false;
+        updateCurrentSection();
       });
-    });
+    }
+    window.addEventListener('scroll', scheduleCurrentSection, { passive: true });
+    window.addEventListener('resize', scheduleCurrentSection);
+    scheduleCurrentSection();
   });
 })();

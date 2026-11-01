@@ -12,7 +12,7 @@ import re
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'scripts' / 'site'
 LANGUAGES = {'en': ('English', 'EN'), 'vi': ('Tiếng Việt', 'VI'), 'zh-CN': ('简体中文（中国）', '简中')}
-PAGES = {'home': 'index.html', 'privacy': 'privacy/index.html'}
+PAGES = {'home': 'index.html', 'guide': 'guide/index.html', 'privacy': 'privacy/index.html'}
 MESSAGE = re.compile(r'\{\{([\w.-]+)\}\}')
 SLOT = re.compile(r'\{([A-Za-z][A-Za-z0-9]*)\}')
 
@@ -57,6 +57,7 @@ def relative_url(current, target):
 
 def render_pages(source=SOURCE):
     catalogs, slots = load_catalogs(source)
+    image_sizes = json.loads((source / 'guide-images.json').read_text(encoding='utf-8'))
     outputs = {}
     for locale, (name, short) in LANGUAGES.items():
         for page in PAGES:
@@ -75,8 +76,14 @@ def render_pages(source=SOURCE):
                 'language.alternates': '\n  '.join(alternates),
                 'paths.assets': relative_url(current, Path('assets/placeholder')).removesuffix('placeholder'),
                 'paths.home': relative_url(current, page_path(locale, 'home')),
+                'paths.guide': relative_url(current, page_path(locale, 'guide')),
                 'paths.privacy': relative_url(current, page_path(locale, 'privacy')),
             }
+            for scene, (width, height) in image_sizes[locale].items():
+                if any(type(size) is not int or not 0 < size <= 5000 for size in (width, height)):
+                    raise ValueError(f'Invalid guide image dimensions: {locale}/{scene}')
+                values[f'images.{scene}.width'] = str(width)
+                values[f'images.{scene}.height'] = str(height)
 
             def replace(match):
                 key = match[1]
@@ -110,7 +117,7 @@ def main():
             path.write_text(content, encoding='utf-8')
     if stale:
         parser.exit(1, 'Stale website pages: ' + ', '.join(stale) + '\nRun python3 -B scripts/localize-site.py\n')
-    print('OK: all six localized website pages ' + ('are current.' if args.check else 'generated.'))
+    print(f'OK: all {len(LANGUAGES) * len(PAGES)} localized website pages ' + ('are current.' if args.check else 'generated.'))
 
 
 if __name__ == '__main__':

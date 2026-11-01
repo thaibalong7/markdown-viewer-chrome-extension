@@ -30,10 +30,22 @@ Không chạy production build vì thay đổi runtime chỉ nằm trong test; p
 
 ## Các bước để đóng mục 5
 
-1. Deploy policy source qua workflow GitHub Pages hiện có. Task này không commit/push vì repository yêu cầu chỉ thực hiện khi được yêu cầu rõ ràng. Sau deploy, kiểm tra ngày 2026-10-30 và nội dung mới: Editor Save không download fallback, ảnh được dọn khi thay thế/xóa/reset, Limited Use. Kiểm tra EN/VI/中文; không dùng HTTP 200 làm bằng chứng duy nhất.
+1. **Đã xác minh deployment ngày 2026-10-30**: sau khi người dùng báo đã publish, fetch cả EN/VI/中文 thành công và đối chiếu byte-for-byte với source local. Cả ba bản có ngày 2026-10-30, Editor Save không download fallback, vòng đời ảnh và Limited Use. Hồ sơ SHA-256 bên dưới.
 2. Người dùng hoàn tất đăng ký Chrome Web Store trên tab dashboard đang mở. Sau đó tạo/mở item, đối chiếu live category definitions với inventory, nhập single purpose, permission justifications, remote-code declaration, policy URL và description/screenshots; lưu và ghi lại kết quả. Không tick các checkbox dữ liệu chỉ dựa vào phỏng đoán khi chưa có form.
 3. Thực hiện reviewer steps trong [store-listing.md](./store-listing.md) trên clean Chrome profile với release candidate: blocked ban đầu → Details đúng extension → người dùng bật file URL access → Settings focus cập nhật allowed → mở/reload fixture Markdown và có Viewer → thu hồi quyền và trở về blocked. Ghi Chrome/OS, ZIP/SHA-256, kết quả từng bước và so sánh cả bộ screenshot. File URL permission do Chrome quản lý; không chỉnh trực tiếp profile preferences để giả lập kết quả onboarding.
 
 Khi cả ba bước có bằng chứng, cập nhật checkbox tương ứng ở [release-checklist.md](./release-checklist.md#5-hoàn-tất-privacy-permissions-và-file-access-onboarding). Các bước ngoài repository chưa được đánh dấu hoàn tất.
 
 Nguồn chính sách đã đối chiếu: [User Data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq), [Privacy fields](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy).
+
+## Xác minh bổ sung sau khi người dùng publish policy
+
+Ngày **2026-10-30**, đọc trực tiếp các URL public bằng HTTPS GET thành công và so sánh toàn bộ response body với source tương ứng. Cả ba đều khớp; các nhận xét policy chưa deploy trong bảng kiểm tra trước đó là kết quả lịch sử trước lần publish này.
+
+| Locale / URL | Source khớp toàn bộ | SHA-256 response body |
+| --- | --- | --- |
+| [EN](https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/) | `site/privacy/index.html` | `26e6f4bbfd9a079859d8df6968cdc37b2f93a11764df25c00b63ab1f5d3546c7` |
+| [VI](https://thaibalong7.github.io/markdown-viewer-chrome-extension/vi/privacy/) | `site/vi/privacy/index.html` | `bdfe241f854222d3c19693067b4f7320cf181fe2c6372101d3789b52bd4c8549` |
+| [中文](https://thaibalong7.github.io/markdown-viewer-chrome-extension/zh-CN/privacy/) | `site/zh-CN/privacy/index.html` | `f730c7ca0653135dc6a79cee544ed12704a3989f5bfd9d24f3ef46b614558e38` |
+
+Deployment của policy đã đóng. Dashboard/account chưa được kiểm tra lại trong lần này; manual onboarding/ZIP QA vẫn chờ người dùng. Các bước thao tác nằm trong [submission-guide.md](./submission-guide.md).

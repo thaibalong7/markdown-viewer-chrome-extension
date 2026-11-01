@@ -6,7 +6,7 @@ Nghiên cứu ngày **2026-10-29**, chốt và triển khai ngày **2026-10-30**
 
 Giữ preferences và custom theme descriptors trong Chrome Sync, tách index nhỏ và từng theme record theo hash nội dung. Giữ ảnh nền trong IndexedDB trên mỗi thiết bị. Không fallback sang local khi ghi sync bị quota/throttling; chỉ dùng local backend nếu API sync không tồn tại. Public settings/import/export vẫn dùng schema version 2.
 
-Current-state contracts nằm trong [architecture overview](../../docs/architecture-overview.md#settings-storage-and-messaging) và [theme system](../../docs/theme-system.md#3-mô-hình-settings-được-lưu); dùng các tài liệu đó cùng runtime để xác định hành vi hiện tại.
+Current-state contracts nằm trong [architecture overview](../../docs/architecture-overview.md#settings-storage-and-messaging) và [theme system](../../docs/theme-system.md#3-persisted-settings-model); dùng các tài liệu đó cùng runtime để xác định hành vi hiện tại.
 
 ## Nghiên cứu và lý do chọn
 

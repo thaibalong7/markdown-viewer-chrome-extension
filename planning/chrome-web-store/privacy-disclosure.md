@@ -9,7 +9,7 @@ Use this document when completing the Chrome Web Store Privacy practices form. I
 - Support: `https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues`
 - Source: `https://github.com/thaibalong7/markdown-viewer-chrome-extension`
 
-The policy URL returned HTTP 200 on October 30, 2026. It already describes device-local background images and the current Sync recovery cache. The October 30 policy clarification in this checkout still needs deployment through the existing GitHub Pages workflow; a working URL alone does not prove that the latest text is published.
+The public EN/VI/中文 policies were fetched successfully on October 30, 2026 and matched their local `site/**/privacy/index.html` sources byte-for-byte. The deployed text includes the October 30 effective date, Chrome Sync recovery cache, device-local image deletion/replacement/reset, Editor Save without a download fallback, and Limited Use. Deployment is verified; dashboard selections and candidate QA remain separate gates.
 
 ## Single purpose
 
@@ -19,7 +19,7 @@ The policy URL returned HTTP 200 on October 30, 2026. It already describes devic
 
 Markdown Plus processes local document content, file names, file URLs/paths, and user preferences only to provide its user-facing features. This information is not transmitted to the developer or a developer-operated server.
 
-Disclose on-device handling as well as transmission. The [Chrome User Data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq) explicitly requires disclosure even when data is processed or stored only locally. “Not sent to the developer” is a statement about the destination, not a reason to omit a data category. The live dashboard currently stops at developer registration (agreement and USD 5 fee), so its item-level field definitions and saved selections have not been verified; compare them with this inventory before saving the form.
+Disclose on-device handling as well as transmission. The [Chrome User Data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq) explicitly requires disclosure even when data is processed or stored only locally. “Not sent to the developer” is a statement about the destination, not a reason to omit a data category. The previous dashboard inspection stopped at developer registration, so its item-level field definitions and saved selections have not been verified; compare them with this inventory before saving the form. Follow the [submission guide](./submission-guide.md) for account and dashboard steps.
 
 | Data handled | Actual use and destination | Dashboard mapping to review |
 | --- | --- | --- |

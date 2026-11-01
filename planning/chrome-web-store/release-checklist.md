@@ -1,5 +1,17 @@
 # Chrome Web Store Release Checklist
 
+## Trạng thái hiện tại — 2026-10-30
+
+Người dùng đã chốt numeric version public **1.0.0** và sẽ xác nhận manual QA sau. Policy EN/VI/中文 đã được fetch trực tiếp sau publish, khớp byte-for-byte với source hiện tại: ngày 2026-10-30, Editor Save không download fallback, vòng đời ảnh và Limited Use. **Chưa submit**: Store dashboard/disclosures và QA trên ZIP vẫn mở. Các nhận xét “chưa deploy” và version 0.1.x trong hồ sơ review bên dưới là lịch sử trước cập nhật này.
+
+Candidate `1.0.0-20261030T075747621Z` đã tạo bằng Node pin, clean install và release script: **197 files / 1.463 tests pass**, production build/archive/checksum pass. Production audit giữ 3 low đã phân tích; kết quả, source diff và checksum gắn artifact tại [hồ sơ candidate](./release-candidate-1.0.0.md). Chưa kiểm thử thủ công ZIP này.
+
+- [Hướng dẫn từng bước: đăng ký tài khoản, điền dashboard, submit và publish](./submission-guide.md).
+- [Release notes 1.0.0 và known limitations](./release-notes-1.0.0.md).
+- [Candidate 1.0.0, checksum và trạng thái QA](./release-candidate-1.0.0.md).
+
+## Hồ sơ review và xử lý
+
 Tài liệu này theo dõi các việc cần hoàn thành trước khi phát hành Markdown Plus lên Chrome Web Store. Cập nhật theo review ngày **2026-10-29**: nền tảng và quy trình đóng gói đã khá đầy đủ, nhưng **chưa nên submit bản hiện tại** vì còn vấn đề dependency, sanitizer, Chrome Sync quota và tương thích Chrome. Ưu tiên xử lý P0 trước khi thêm tính năng lớn.
 
 Cập nhật sau xử lý mục 1 ngày **2026-10-29**: đã vá Markdown DoS và các advisory DOMPurify, clean install/tests/build/browser dependency smoke pass. Production audit còn 3 low từ một advisory KaTeX đã được đánh giá và chấp nhận có điều kiện tại mục 1. Bảng review ban đầu bên dưới được giữ làm baseline; P0 mục 2–5 và QA trên ZIP candidate vẫn chưa hoàn tất.
@@ -179,7 +191,7 @@ Nguồn: [Vite 8 build target](https://v8.vite.dev/config/build-options), [Offsc
 - [x] Bổ sung source policy về ảnh nền custom theme: Blob ở IndexedDB trên thiết bị, Sync chỉ mang descriptor/reference; mô tả thay thế/xóa/reset asset, cleanup failure và không xóa tài liệu gốc/export.
 - [x] Kiểm tra lại disclosure sau quyết định xử lý Chrome Sync quota: index/theme records, recovery cache local và không fallback khi Sync write thất bại.
 - [x] Sửa justification `downloads` trong policy/disclosure: chỉ cho exports; Editor Save ghi qua original file handle, không download fallback. Policy có Limited Use disclosure và ngày cập nhật 2026-10-30 ở cả ba ngôn ngữ.
-- [ ] Deploy policy sửa ngày 2026-10-30, kiểm tra URL công khai và nội dung mới thực sự hiển thị. URL đang HTTP 200 và đã có mô tả Sync/ảnh nền, nhưng bản kiểm tra còn câu Save fallback cũ.
+- [x] Deploy policy sửa ngày 2026-10-30 và kiểm tra nội dung mới trên URL public. Sau người dùng publish, cả EN/VI/中文 khớp toàn bộ source local; bằng chứng/hash trong [hồ sơ mục 5](./privacy-permissions-verification.md#xác-minh-bổ-sung-sau-khi-người-dùng-publish-policy).
 - [ ] Điền Privacy practices và single purpose trong Store dashboard nhất quán với policy/runtime; xử lý local không miễn nghĩa vụ disclosure.
 - [ ] Rà soát [`privacy-disclosure.md`](./privacy-disclosure.md) theo cách định nghĩa dữ liệu trong form hiện tại; không suy ra “không cần khai báo” chỉ vì không upload lên server của developer.
 - [x] Chuẩn bị inventory dữ liệu local/Sync, permission justifications và remote-code declaration trong [`privacy-disclosure.md`](./privacy-disclosure.md); final category selections chờ item form sau đăng ký.
@@ -215,7 +227,7 @@ Quy trình chuẩn nằm trong [`docs/releasing.md`](../../docs/releasing.md). `
 - [x] Có release script và integration tests cho quy trình đóng gói.
 - [x] Đã kiểm tra cấu trúc, archive integrity và checksum của hai artifact hiện có.
 - [ ] Hoàn thành P0 mục 1–5, chốt source/version public và ghi release notes trước khi tạo candidate cuối cùng.
-- [ ] Dùng `npm ci` trên Node pin rồi chạy release script; không dùng `--skip-tests` cho candidate nếu chưa có kiểm tra tương đương được ghi nhận.
+- [x] Candidate 1.0.0: `npm ci` trên Node pin rồi chạy `npm run release -- --bump none`, không skip tests; xem [hồ sơ candidate](./release-candidate-1.0.0.md).
 - [ ] Ghi source commit, numeric/display version và trạng thái worktree; review mọi thay đổi local được đóng gói. Script cho phép dirty worktree nên build thành công không chứng minh source đã được chốt.
 - [ ] Giải nén chính ZIP candidate sang thư mục riêng và Load unpacked từ thư mục đó trên clean Chrome profile.
 - [ ] Kiểm tra manifest, icons, Popup, Settings, offscreen document, lazy chunks, fonts và runtime assets.
@@ -239,7 +251,7 @@ Repo hiện có workflow deploy website; chưa có CI test/build cho extension.
 
 - [ ] Thêm CI dùng Node pin, `npm ci`, `npm test` và `npm run build`.
 - [ ] Chạy production audit khi chuẩn bị release, lưu kết quả cùng phân tích advisory còn lại; không tự động sửa dependency trong bước kiểm tra.
-- [ ] Viết release notes cho version public: tính năng chính, yêu cầu setup, mức Chrome hỗ trợ và known limitations.
+- [x] Viết [release notes 1.0.0](./release-notes-1.0.0.md): tính năng chính, yêu cầu setup, Chrome 116+ và known limitations. Ngày publish còn chờ.
 - [ ] Ghi kết quả clean install, QA, nền tảng/Chrome version và artifact checksum cho từng candidate.
 
 ### Known limitations và Math export
@@ -247,7 +259,7 @@ Repo hiện có workflow deploy website; chưa có CI test/build cho extension.
 [`document-actions.js`](../../src/viewer/actions/document-actions.js) hiện tham chiếu KaTeX CSS trên jsDelivr trong HTML/Word export. Viewer dùng assets đã bundle, nhưng exported Math có thể cần mạng và liên hệ host bên thứ ba khi mở.
 
 - [x] Privacy policy đã mô tả network behavior này.
-- [ ] Ghi limitation rõ trong thông tin export/known limitations trước launch; không hứa toàn bộ Math export hoạt động offline.
+- [x] Ghi limitation trong [release notes](./release-notes-1.0.0.md#giới-hạn-cần-công-bố) và Store description: Math export chưa tự chứa đầy đủ CSS/fonts, không hứa offline đầy đủ.
 - [ ] Kiểm tra export khi online và offline, ghi lại phần hiển thị bị ảnh hưởng.
 - [x] Đối chiếu version stylesheet export với renderer KaTeX sau dependency update: cùng `0.16.47`, có integration tests HTML/Word để phát hiện lệch version.
 
@@ -267,7 +279,7 @@ Các mục này không còn là yêu cầu thêm tính năng mới; checkbox dư
 
 ### Metadata và nội dung
 
-- [ ] Chọn numeric version public và định vị beta/stable; số version tự nó không chứng minh độ ổn định.
+- [x] Người dùng chốt version public **1.0.0** cho lần phát hành đầu; Editor vẫn experimental như listing. Số version không thay thế QA.
 - [ ] Review native manifest descriptions trong các locale để nêu rõ giá trị local Markdown.
 - [ ] Hoàn thiện detailed description, category, ngôn ngữ listing và thông tin hỗ trợ.
 - [ ] Ghi one-time “Allow access to file URLs” setup và minimum Chrome đã chốt.
@@ -356,10 +368,10 @@ Chỉ submit khi tất cả điều kiện sau đạt trên candidate cuối cù
 - [ ] Minimum Chrome, build target và runtime tương thích đã được xác minh.
 - [ ] Manifest giữ permissions cần thiết; justification/dashboard disclosures hoàn chỉnh.
 - [ ] File-access onboarding pass trên clean Chrome profile.
-- [ ] Privacy policy cập nhật đã deploy và khớp storage/network behavior.
-- [ ] Clean install, full tests và production build pass sau các sửa lỗi.
+- [x] Privacy policy cập nhật đã deploy và khớp các source disclosures về storage/network; đã đối chiếu response body EN/VI/中文 với source ngày 2026-10-30.
+- [x] Clean install, full tests và production build pass trên candidate `1.0.0-20261030T075747621Z` (197 files / 1.463 tests).
 - [ ] Manual QA trên chính ZIP cuối cùng không còn blocker; có kết quả OS/Chrome version và checksum.
-- [ ] ZIP đúng cấu trúc, integrity/SHA-256 hợp lệ, runtime assets đầy đủ.
+- [x] Candidate 1.0.0 đúng cấu trúc, integrity/SHA-256 hợp lệ, referenced entry assets/icons có đủ; runtime load trong Chrome vẫn chờ QA.
 - [ ] Numeric/display version, release notes, source commit và mọi thay đổi được đóng gói đã được ghi lại.
 - [ ] Listing, Store assets, support/contact và reviewer instructions hoàn tất.
 

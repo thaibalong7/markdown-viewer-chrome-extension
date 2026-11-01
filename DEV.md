@@ -1,6 +1,6 @@
 # Markdown Plus development guide
 
-This guide is for developers and contributors working on the Chrome MV3 extension built with Vite, `@crxjs/vite-plugin`, React, and SCSS. For Chrome Web Store installation and everyday use, see the [README](README.md#quick-start), which also tracks release availability.
+This guide is for developers and contributors working on the Chrome MV3 extension built with Vite, `@crxjs/vite-plugin`, React, and SCSS. For Chrome Web Store installation and everyday use, see the [README](README.md#quick-start), with the official Store link and [release notes](CHANGELOG.md).
 
 ## Find the right documentation
 

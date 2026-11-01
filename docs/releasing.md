@@ -1,6 +1,6 @@
 # Building a release
 
-This guide is for maintainers preparing and verifying Chrome Web Store packages. For local development, start with [DEV.md](../DEV.md); user installation and current Store availability belong in the [README](../README.md#quick-start). Unpacked builds below are for release QA.
+This guide is for maintainers preparing and verifying Chrome Web Store packages. For local development, start with [DEV.md](../DEV.md); user installation and current Store availability belong in the [README](../README.md#quick-start). Unpacked builds below are for release QA. The published item and prepared listing/privacy copy are indexed in [Chrome Web Store release reference](./chrome-web-store/README.md); user-facing changes live in [release notes](../CHANGELOG.md).
 
 Run `nvm use` and install the locked dependencies with `npm ci` before releasing. The release script requires `zip` and `unzip` on PATH (available on macOS; install both on Linux). It builds locally and does not commit, tag, push, or upload anything.
 
@@ -55,3 +55,14 @@ The script checks version consistency before starting, runs `npm test`, builds p
 For caught errors or normal SIGINT/SIGTERM cancellation, the script removes partial output and restores version-file snapshots. It preserves concurrent manual edits and reports when a version needs restoring manually. A release lock prevents concurrent release scripts. A hard kill or power loss cannot run cleanup: ensure no release is active, review the three source version files, and remove stale `releases/.release.lock` and `releases/.building-*` directories before retrying. Do not blindly discard unrelated local changes.
 
 Load the generated `extension/` directory through Chrome's **Load unpacked** and smoke-test file access, opening Markdown, Popup/Settings, and any changed flows before uploading a bumped ZIP to the Web Store. Automated build and ZIP checks do not replace Chrome smoke testing.
+
+## Updating the published extension
+
+Use the existing Store item `afbdmkpldpbkmmhejjlajocpneaiipmk` for updates. Increase the numeric version above the published version; `--bump none` only distinguishes local candidates by display timestamp.
+
+1. Select the completed work from the [remaining backlog](../planning/chrome-web-store/README.md), update [CHANGELOG.md](../CHANGELOG.md) and all three website release-note catalogs, and keep known limitations accurate.
+2. Use pinned Node and the locked dependencies. Run the release script, review the production dependency audit, and record numeric/display version, source commit/worktree state, ZIP SHA-256, automated results, and browser QA against the exact archive. Use the [browser QA matrix](../planning/chrome-web-store/manual-qa.md) and [compatibility checks](./browser-compatibility.md#manual-production-qa) for the affected flows; record unperformed checks explicitly.
+3. Compare [listing copy](./chrome-web-store/store-listing.md), [privacy disclosures](./chrome-web-store/privacy-disclosure.md), policy, and [selected assets](../assets/chrome-web-store/README.md) with changed behavior. Record saved form changes with the release evidence.
+4. After Store publication, record its public version/date and URL in a version-specific release record. Regenerate the website and run its [preflight](../site/README.md#preview-and-verification). GitHub Pages publishes committed website changes after they are pushed to `master`.
+
+Keep first-time developer registration and account setup out of current release instructions. Preserve selected inputs and verification evidence; remove completed planning after durable facts are incorporated, and leave unfinished work in `planning/`.

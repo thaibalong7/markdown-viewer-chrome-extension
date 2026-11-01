@@ -1,6 +1,6 @@
 # Chrome Web Store — approved upload assets
 
-This folder is the single destination for approved Chrome Web Store images. Upload these eight PNG files in the corresponding Store listing fields. The five screenshot compositions and the first Editorial Frost promotional pair are selected; the promotional pair was approved on October 14, 2026.
+This folder is the single destination for approved Chrome Web Store images. These eight PNGs form the selected 1.0.0 release upload set; see the [release record](../../docs/chrome-web-store/release-1.0.0.md). The five screenshot compositions and the first Editorial Frost promotional pair are selected; the promotional pair was approved on October 14, 2026.
 
 | File | Dimensions | Store field / purpose |
 | --- | --- | --- |
@@ -13,7 +13,7 @@ This folder is the single destination for approved Chrome Web Store images. Uplo
 | `small-promo-tile.png` | 440 × 280 | Small promotional image. |
 | `marquee.png` | 1400 × 560 | Optional marquee promotional image. |
 
-Screenshot 05's file-access crop was corrected on October 30, 2026 to show the actual **File URL access** row, setup instructions, and **Allowed** status. It shows the configured state; new installations must still enable **Allow access to file URLs** as explained in the [Store listing copy](../../planning/chrome-web-store/store-listing.md). The retained Editorial Frost renderer uses the General Settings raw capture with SVG viewBox `930 1130 1800 612`; the old crop showed the activation switch instead of the permission row. Final comparison of all five screenshots with the ZIP candidate remains release QA.
+Screenshot 05's file-access crop was corrected on October 30, 2026 to show the actual **File URL access** row, setup instructions, and **Allowed** status. It shows the configured state; new installations must still enable **Allow access to file URLs** as explained in the [Store listing copy](../../docs/chrome-web-store/store-listing.md). The retained Editorial Frost renderer uses the General Settings raw capture with SVG viewBox `930 1130 1800 612`; the old crop showed the activation switch instead of the permission row. Unrecorded candidate comparisons remain in [post-launch QA](../../planning/chrome-web-store/manual-qa.md).
 
 The five screenshots were re-exported on October 30, 2026 as **24-bit RGB PNG without alpha**, matching the dashboard's screenshot upload requirement. All remain 1280 × 800. Their former alpha channels were entirely opaque; decoded RGB pixels are identical before and after conversion. Re-exporting from the composition renderer must preserve this RGB/no-alpha format before Store upload. The Store icon retains its existing transparency and continues to match the packaged icon.
 
@@ -25,4 +25,4 @@ Editorial Frost uses cool white and pale blue surfaces, navy sans-serif typograp
 
 The approved icon master lives at [`../brand/markdown-plus-icon.svg`](../brand/markdown-plus-icon.svg). Packaged icon variants live under [`../../public/icons/`](../../public/icons/).
 
-Editable promotional compositions and export instructions live under [`../../planning/chrome-web-store/promotional/`](../../planning/chrome-web-store/promotional/). Screenshot demo data and capture notes live under [`../../planning/chrome-web-store/screenshots/`](../../planning/chrome-web-store/screenshots/). Unselected icon concepts and promotional variants remain local, ignored planning material.
+Editable promotional compositions and export instructions live under [`./promotional/`](./promotional/). Screenshot demo data and capture notes live under [`./screenshots/`](./screenshots/). Unselected icon concepts and promotional variants remain local and ignored.

@@ -12,7 +12,7 @@ import re
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'scripts' / 'site'
 LANGUAGES = {'en': ('English', 'EN'), 'vi': ('Tiếng Việt', 'VI'), 'zh-CN': ('简体中文（中国）', '简中')}
-PAGES = {'home': 'index.html', 'guide': 'guide/index.html', 'privacy': 'privacy/index.html'}
+PAGES = {'home': 'index.html', 'guide': 'guide/index.html', 'privacy': 'privacy/index.html', 'releases': 'releases/index.html'}
 MESSAGE = re.compile(r'\{\{([\w.-]+)\}\}')
 SLOT = re.compile(r'\{([A-Za-z][A-Za-z0-9]*)\}')
 
@@ -71,6 +71,7 @@ def render_pages(source=SOURCE):
             alternates.append(f'<link rel="alternate" hreflang="x-default" href="{relative_url(current, page_path("en", page))}">')
             values = {
                 'locale': locale,
+                'links.store': 'https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk',
                 'language.short': short,
                 'language.links': ''.join(links),
                 'language.alternates': '\n  '.join(alternates),
@@ -78,6 +79,7 @@ def render_pages(source=SOURCE):
                 'paths.home': relative_url(current, page_path(locale, 'home')),
                 'paths.guide': relative_url(current, page_path(locale, 'guide')),
                 'paths.privacy': relative_url(current, page_path(locale, 'privacy')),
+                'paths.releases': relative_url(current, page_path(locale, 'releases')),
             }
             for scene, (width, height) in image_sizes[locale].items():
                 if any(type(size) is not int or not 0 < size <= 5000 for size in (width, height)):

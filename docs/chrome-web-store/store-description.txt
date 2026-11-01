@@ -1,0 +1,15 @@
+Markdown Plus turns local Markdown files into a document workspace in Chrome. Read with an outline, syntax highlighting, math, tables, and Mermaid diagrams. Browse related documents and images in the Files explorer, choose a built-in theme or create your own, and export your work.
+
+Enable the experimental editor to edit Markdown with a live preview. Before editing, connect the original file and grant Chrome permission to write it. Save updates that connected file and checks for external changes; it does not silently download a replacement copy.
+
+Export documents as HTML or Word-compatible files, export Mermaid diagrams as SVG or PNG, or use Chrome's print dialog to save a PDF.
+
+One-time local file setup
+
+1. Install Markdown Plus, then open its toolbar popup.
+2. Click Open extension details, or open chrome://extensions, find Markdown Plus, and select Details.
+3. Enable Allow access to file URLs. Chrome controls this setting; Markdown Plus cannot enable it automatically.
+4. Reopen the popup or return to Settings to confirm that file access is ready. Open or reload a local .md file in Chrome.
+
+Document content is processed in your browser and is not uploaded to a developer-operated server. Preferences may sync through your signed-in Chrome account. Recent-file paths and custom background-image files stay on the current device. Documents can load remote images, and exported math documents can reference external CSS. Read the privacy policy for storage details and controls:
+https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/

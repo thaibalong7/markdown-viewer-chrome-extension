@@ -11,7 +11,7 @@ dist
 
 # Local Chrome Web Store release and artwork working files.
 /markdown-plus*.zip
-/planning/chrome-web-store/screenshots/compositions/
-/planning/chrome-web-store/screenshots/raw/
-/planning/chrome-web-store/screenshots/raw-v2/
-/planning/chrome-web-store/promotional/explorations/
+/assets/chrome-web-store/screenshots/compositions/
+/assets/chrome-web-store/screenshots/raw/
+/assets/chrome-web-store/screenshots/raw-v2/
+/assets/chrome-web-store/promotional/explorations/

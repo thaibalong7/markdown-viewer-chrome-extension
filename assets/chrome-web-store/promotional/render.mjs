@@ -5,7 +5,7 @@ import { mkdir } from 'node:fs/promises'
 // Use an installed Playwright or the bundled desktop runtime; no project dependency is required.
 const { chromium } = await import(process.env.MDP_ARTWORK_PLAYWRIGHT || 'playwright')
 const root = path.dirname(fileURLToPath(import.meta.url))
-const output = path.resolve(root, '../../../assets/chrome-web-store')
+const output = path.resolve(root, '..')
 await mkdir(output, { recursive: true })
 const browser = await chromium.launch({ channel: 'chrome', headless: true })
 try {

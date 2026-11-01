@@ -25,13 +25,15 @@ This directory contains current technical references for developers and contribu
 ## Compatibility, release, and publishing
 
 - [`browser-compatibility.md`](./browser-compatibility.md) — declared Chrome minimum, build targets, API audit, and manual production QA.
+- [Release notes](../CHANGELOG.md) — published features, setup, and known limitations.
+- [Chrome Web Store release reference](./chrome-web-store/README.md) — selected listing copy, privacy-form text, assets, and 1.0.0 evidence.
 - [`releasing.md`](./releasing.md) — versioning, production archives, checksums, and release verification.
 - [Website maintenance](../site/README.md) — localized website sources, generation, checks, and GitHub Pages deployment.
 - [Source assets](../assets/README.md) — brand artwork, user-guide illustrations, and Chrome Web Store upload assets.
 
 ## Documentation policy
 
-- Keep the root [README](../README.md) as the user entry point: Store installation, essential workflows, illustrated controls, support, and contribution links. Keep Chrome Web Store availability there until the official listing is approved and linked.
+- Keep the root [README](../README.md) as the user entry point: Store installation, essential workflows, illustrated controls, support, and contribution links. Link the published Chrome Web Store listing directly and keep release notes current.
 - Keep [DEV.md](../DEV.md) as the developer entry point for setup and verification; keep `docs/` focused on current technical behavior, ownership, integration contracts, and maintenance. Detailed UI behavior here defines implementation expectations rather than a second user manual.
 - Keep source-build and **Load unpacked** instructions in developer setup or release QA. Public installation guidance in the README and website uses Chrome Web Store.
 - Keep website copy and installation status aligned across all three locale catalogs and regenerate the published HTML; see [website maintenance](../site/README.md#installation-links-and-store-availability).

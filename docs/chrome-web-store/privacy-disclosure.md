@@ -1,6 +1,6 @@
 # Chrome Web Store Privacy Disclosure
 
-Use this document when completing the Chrome Web Store Privacy practices form. It is a submission aid, not the public privacy policy.
+Use this document when completing the Chrome Web Store Privacy practices form. It retains the privacy-form wording and data inventory prepared for 1.0.0; the public policy remains the user-facing reference. The public listing checked on 2026-11-01 discloses **Web history** and **Website content**; other saved dashboard values were not exported.
 
 ## Public URLs
 
@@ -9,7 +9,7 @@ Use this document when completing the Chrome Web Store Privacy practices form. I
 - Support: `https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues`
 - Source: `https://github.com/thaibalong7/markdown-viewer-chrome-extension`
 
-The public EN/VI/中文 policies were fetched successfully on October 30, 2026 and matched their local `site/**/privacy/index.html` sources byte-for-byte. The deployed text includes the October 30 effective date, Chrome Sync recovery cache, device-local image deletion/replacement/reset, Editor Save without a download fallback, and Limited Use. Deployment is verified; dashboard selections and candidate QA remain separate gates.
+The public EN/VI/中文 policies were fetched successfully on October 30, 2026 and matched their local `site/**/privacy/index.html` sources byte-for-byte. The deployed text includes the October 30 effective date, Chrome Sync recovery cache, device-local image deletion/replacement/reset, Editor Save without a download fallback, and Limited Use. This verifies the policy deployment at that time; it does not establish exact dashboard selections or candidate QA results.
 
 ## Single purpose
 
@@ -19,7 +19,7 @@ The public EN/VI/中文 policies were fetched successfully on October 30, 2026 a
 
 Markdown Plus processes local document content, file names, file URLs/paths, and user preferences only to provide its user-facing features. This information is not transmitted to the developer or a developer-operated server.
 
-Disclose on-device handling as well as transmission. The [Chrome User Data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq) explicitly requires disclosure even when data is processed or stored only locally. “Not sent to the developer” is a statement about the destination, not a reason to omit a data category. The previous dashboard inspection stopped at developer registration, so its item-level field definitions and saved selections have not been verified; compare them with this inventory before saving the form. Follow the [submission guide](./submission-guide.md) for account and dashboard steps.
+Disclose on-device handling as well as transmission. The [Chrome User Data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq) explicitly requires disclosure even when data is processed or stored only locally. “Not sent to the developer” is a statement about the destination, not a reason to omit a data category. The published item is linked in the [release record](./release-1.0.0.md). Its public data categories are Web history and Website content; compare the live form with this inventory when updating disclosures.
 
 | Data handled | Actual use and destination | Dashboard mapping to review |
 | --- | --- | --- |
@@ -28,7 +28,7 @@ Disclose on-device handling as well as transmission. The [Chrome User Data FAQ](
 | Preferences and custom-theme names/descriptors | Chrome Sync and local recovery cache, as detailed below; image binaries stay local. | Describe Chrome-managed synchronization, including user-entered theme names. Do not imply that all extension data stays on one device. |
 | User-selected file handles | Browser IndexedDB for reconnecting the original file for editing; Chrome controls permission. | Explain the local persistence and purpose; no credentials or filesystem handles are uploaded to the developer. |
 
-The extension has no dedicated collection feature for personal identifiers, health, financial/payment information, authentication information, personal communications, location, or activity telemetry. A document can contain sensitive information; it is still handled as document content. Do not promise that user documents cannot contain those data types, or select every category merely because arbitrary document text could contain it. Resolve the category selections against the live form before submission.
+The extension has no dedicated collection feature for personal identifiers, health, financial/payment information, authentication information, personal communications, location, or activity telemetry. A document can contain sensitive information; it is still handled as document content. Do not promise that user documents cannot contain those data types, or select every category merely because arbitrary document text could contain it. Resolve category selections against the live form whenever updating disclosures.
 
 Storage details:
 
@@ -60,6 +60,6 @@ None of these requests send document content to a Markdown Plus-operated server.
 
 Single purpose: use the statement above. Remote code: **No, I am not using remote code** for the current packaged runtime; JavaScript, renderers, and extension fonts/styles are bundled. User-authored image URLs and KaTeX CSS referenced by exported files are network/resource disclosures, not remotely executed extension JavaScript.
 
-Copy-ready Store description and reviewer onboarding steps are in [store-listing.md](./store-listing.md). Record the live dashboard's selected categories, permission justifications, candidate manifest/version, and save result in [privacy-permissions-verification.md](./privacy-permissions-verification.md); this document does not certify that dashboard fields have been saved.
+Copy-ready Store description and reviewer onboarding steps are in [store-listing.md](./store-listing.md). Record future disclosure changes and their saved dashboard values with the corresponding release record; this document preserves prepared wording rather than a dashboard export.
 
-Before submitting, compare every selected Store checkbox with the deployed policy and the release candidate's `manifest.json`. Re-check this document if storage behavior, permissions, remote-resource handling, analytics, or any developer-operated service changes.
+When updating the listing, compare every selected Store checkbox with the deployed policy and the release candidate's `manifest.json`. Re-check this document if storage behavior, permissions, remote-resource handling, analytics, or any developer-operated service changes.

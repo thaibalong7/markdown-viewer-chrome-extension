@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <strong><a href="#quick-start">Quick start</a></strong> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/">Website</a> · <a href="https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues">Help &amp; feedback</a> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/">Privacy policy</a> · <a href="#contributing">Contribute</a> · <a href="#contributors">Contributors</a>
+  <strong><a href="https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk">Add to Chrome</a></strong> · <a href="#quick-start">Quick start</a> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/">Website</a> · <a href="https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues">Help &amp; feedback</a> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/">Privacy policy</a> · <a href="CHANGELOG.md">Release notes</a> · <a href="#contributing">Contribute</a> · <a href="#contributors">Contributors</a>
 </p>
 
 ---
@@ -26,6 +26,7 @@ Markdown Plus turns local Markdown files into formatted documents with a file br
 
 - [Features](#features)
 - [Quick start](#quick-start)
+- [Release notes](#release-notes)
 - [Reader controls](#reader-controls)
 - [Themes and backgrounds](#themes-and-backgrounds)
 - [Settings](#settings)
@@ -51,12 +52,7 @@ Markdown Plus turns local Markdown files into formatted documents with a file br
 
 Requires **Google Chrome 116 or newer**.
 
-> [!NOTE]
-> **Chrome Web Store review is in progress.** The official installation link will be added here once the listing is approved.
-
-Once the listing is available:
-
-1. Open the official **Chrome Web Store** listing linked here and choose **Add to Chrome**. Confirm **Add extension** when Chrome asks.
+1. Open [Markdown Plus on Chrome Web Store](https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk) and choose **Add to Chrome**. Confirm **Add extension** when Chrome asks.
 2. Open `chrome://extensions`, find **Markdown Plus**, and choose **Details**. Turn on **Allow access to file URLs**.
 3. Open a local `.md`, `.markdown`, `.mdown`, or `.mdc` file in Chrome. Drag it into a tab, or use <kbd>Ctrl</kbd> + <kbd>O</kbd> on Windows/Linux or <kbd>⌘</kbd> + <kbd>O</kbd> on macOS.
 4. Click the Markdown Plus toolbar icon to choose a theme and adjust reading preferences. Pin the icon from Chrome's Extensions menu for easier access.
@@ -69,6 +65,12 @@ Once the listing is available:
 *Red markers: **1** open extension details; **2** allow file URL access. The illustrations in this guide show simplified interfaces and example values.*
 
 **Choose your language:** open **All settings → General → Interface language** for English, Vietnamese, Simplified Chinese, or your browser's language. Document content stays in its original language. This guide uses English control names.
+
+## Release notes
+
+**1.0.0 — First Chrome Web Store release.** Local Markdown reading, Files and Outline navigation, rich rendering, custom themes, document updates and change review, experimental editing, and exports.
+
+See [release notes and known limitations](CHANGELOG.md) or the [website release notes](https://thaibalong7.github.io/markdown-viewer-chrome-extension/releases/).
 
 ## Reader controls
 

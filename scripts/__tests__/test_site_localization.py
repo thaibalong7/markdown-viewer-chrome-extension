@@ -24,7 +24,7 @@ class SiteLocalizationTests(unittest.TestCase):
 
     def test_all_generated_editions_are_current_and_have_valid_project_links(self):
         outputs = site.render_pages()
-        self.assertEqual(len(outputs), 9)
+        self.assertEqual(len(outputs), 12)
         for path, content in outputs.items():
             self.assertEqual((site.ROOT / 'site' / path).read_text(), content, str(path))
         with tempfile.TemporaryDirectory() as directory:
@@ -37,7 +37,7 @@ class SiteLocalizationTests(unittest.TestCase):
             (root / 'assets').mkdir()
             for path in (site.ROOT / 'site/assets').iterdir():
                 (root / 'assets' / path.name).write_bytes(path.read_bytes())
-            self.assertEqual(checker.check_site(root), ([], 9))
+            self.assertEqual(checker.check_site(root), ([], 12))
 
     def test_language_links_keep_the_current_page_and_internal_links_keep_the_locale(self):
         outputs = site.render_pages()

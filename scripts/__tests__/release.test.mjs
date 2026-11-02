@@ -117,6 +117,9 @@ test('same-version builds accept 0.1.0.1 directly and preserve source bytes', as
   await f.assertSourcesUnchanged()
   const [name] = await readdir(join(f.root, 'releases'))
   assert.match(name, /^markdown-plus-v0\.1\.0\.1-\d{8}T\d{9}Z$/)
+  const directory = join(f.root, 'releases', name)
+  assert.equal((await json(join(directory, 'release.json'))).versionName, '0.1.0.1')
+  assert.equal((await json(join(directory, 'extension', 'manifest.json'))).version_name, '0.1.0.1')
 })
 
 test('failed revision build restores all four-part source versions', async t => {
@@ -127,7 +130,7 @@ test('failed revision build restores all four-part source versions', async t => 
   await f.assertNoRelease()
 })
 
-test('no-bump release preserves source bytes and packages a timestamped, verifiable ZIP', async t => {
+test('no-bump release keeps a numeric display version in a timestamped, verifiable ZIP', async t => {
   const f = await fixture(t)
   await mkdir(join(f.root, 'dist'))
   await writeFile(join(f.root, 'dist', 'existing.txt'), 'keep development build')
@@ -141,7 +144,8 @@ test('no-bump release preserves source bytes and packages a timestamped, verifia
   const metadata = await json(join(directory, 'release.json'))
   assert.equal(metadata.tests, 'passed')
   assert.equal(metadata.version, '1.2.3')
-  assert.equal(metadata.versionName, name.replace('markdown-plus-v', ''))
+  assert.equal(metadata.versionName, '1.2.3')
+  assert.equal(metadata.archive, `${name}.zip`)
   const archive = join(directory, metadata.archive)
   const extracted = spawnSync('unzip', ['-p', archive, 'manifest.json'], { encoding: 'utf8' })
   assert.equal(extracted.status, 0, extracted.stderr)

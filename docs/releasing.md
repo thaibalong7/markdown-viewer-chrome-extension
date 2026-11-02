@@ -16,7 +16,7 @@ The bump menu explains each choice and previews its result from the current vers
 
 Interactive terminals show colored choices, prompts, and numbered build steps: green for patch/success, cyan for minor/progress, magenta for major, blue for revision, yellow for warnings, and red for failures. Labels remain explicit without color. Colors are disabled for redirected output, `TERM=dumb`, or when `NO_COLOR` is set; for example, `NO_COLOR=1 npm run release`.
 
-Choosing no keeps all source version files byte-for-byte unchanged. The build receives a UTC timestamp with milliseconds, for example `0.1.0-20261029T123456789Z`, in the archive name and the packaged manifest's `version_name`. Chrome's numeric `version` stays `0.1.0`. The timestamp distinguishes local testing builds; publishing an update to Chrome Web Store requires increasing the numeric version. See Chrome's [version and version_name rules](https://developer.chrome.com/docs/extensions/reference/manifest/version).
+Choosing no keeps all source version files byte-for-byte unchanged. The release directory and archive name receive a UTC timestamp with milliseconds, for example `markdown-plus-v0.1.0-20261029T123456789Z`. The packaged manifest's `version` and `version_name` both stay `0.1.0`, so the displayed version has no timestamp. The timestamp in filenames distinguishes local testing builds; publishing an update to Chrome Web Store requires increasing the numeric version. See Chrome's [version and version_name rules](https://developer.chrome.com/docs/extensions/reference/manifest/version).
 
 ## Fourth version component
 
@@ -58,7 +58,7 @@ Load the generated `extension/` directory through Chrome's **Load unpacked** and
 
 ## Updating the published extension
 
-Use the existing Store item `afbdmkpldpbkmmhejjlajocpneaiipmk` for updates. Increase the numeric version above the published version; `--bump none` only distinguishes local candidates by display timestamp.
+Use the existing Store item `afbdmkpldpbkmmhejjlajocpneaiipmk` for updates. Increase the numeric version above the published version; `--bump none` only distinguishes local candidates by timestamped directory and archive names, while keeping the displayed version unchanged.
 
 1. Select the completed work from the [remaining backlog](../planning/chrome-web-store/README.md), update [CHANGELOG.md](../CHANGELOG.md) and all three website release-note catalogs, and keep known limitations accurate.
 2. Use pinned Node and the locked dependencies. Run the release script, review the production dependency audit, and record numeric/display version, source commit/worktree state, ZIP SHA-256, automated results, and browser QA against the exact archive. Use the [browser QA matrix](../planning/chrome-web-store/manual-qa.md) and [compatibility checks](./browser-compatibility.md#manual-production-qa) for the affected flows; record unperformed checks explicitly.

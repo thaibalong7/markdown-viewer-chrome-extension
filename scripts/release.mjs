@@ -20,7 +20,7 @@ const help = `Usage: npm run release -- [--bump patch|minor|major|revision|none]
 
 Without --bump, ask whether to bump the version and which component to bump.
 --bump revision  Increment the fourth numeric component (e.g. 0.1.0 -> 0.1.0.1).
---bump none    Keep source versions; timestamp the ZIP and packaged version_name.
+--bump none    Keep source versions; timestamp only the release directory and ZIP.
 --skip-tests   Explicitly skip npm test (recorded in release.json).
 
 Requires the Node version in .nvmrc, installed dependencies, zip, and unzip.
@@ -120,8 +120,8 @@ async function release(options) {
   const version = bumpVersion(sources.version, bump)
   const builtAt = new Date().toISOString()
   const timestamp = builtAt.replace(/[-:]/g, '').replace('.', '')
-  const versionName = bump === 'none' ? `${version}-${timestamp}` : version
-  const buildName = `${sources.name}-v${versionName}`
+  const versionName = version
+  const buildName = `${sources.name}-v${version}${bump === 'none' ? `-${timestamp}` : ''}`
   if (!/^[a-zA-Z0-9._-]+$/.test(buildName)) throw new Error('Package name cannot be used as a release filename.')
   const releases = join(root, 'releases')
   const destination = join(releases, buildName)

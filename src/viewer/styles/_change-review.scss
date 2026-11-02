@@ -6,6 +6,7 @@
 .mdp-change-review-backdrop {
   @include modal-dialog.backdrop;
   padding: 20px;
+  overscroll-behavior: contain;
 }
 
 .mdp-change-review-error {
@@ -113,6 +114,7 @@
 
   &__metrics {
     display: grid;
+    flex-shrink: 0;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
     margin: 0 0 16px;
@@ -128,7 +130,12 @@
   &__metric--added dt, &__metric--added dd { color: var(--mdp-review-added-text); }
   &__metric--removed dt, &__metric--removed dd { color: var(--mdp-review-removed-text); }
 
-  &__sections { min-height: 0; }
+  &__sections {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
   &__sections h3 {
     margin: 0 8px 8px;
     color: var(--mdp-muted);
@@ -164,7 +171,7 @@
   &__section-open { padding: 0 8px 8px; color: var(--mdp-link); font-size: 11px; font-weight: 650; }
   &__section-open:hover { text-decoration: underline; }
 
-  &__shortcut { margin: auto 8px 0; padding-top: 16px; color: var(--mdp-muted); font-size: 11px; }
+  &__shortcut { flex-shrink: 0; margin: auto 8px 0; padding-top: 16px; color: var(--mdp-muted); font-size: 11px; }
   &__shortcut kbd { padding: 1px 4px; border: 1px solid var(--mdp-border); border-radius: 4px; background: var(--mdp-surface); box-shadow: 0 1px 0 var(--mdp-border); font: inherit; }
 
   &__main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
@@ -185,6 +192,8 @@
 
   &__diff { flex: 1; min-height: 0; padding: 16px 16px 24px; overflow: auto; background: color-mix(in srgb, var(--mdp-panel-bg) 32%, var(--mdp-surface)); }
   &__hunk {
+    // Keep absolute screen-reader table labels inside their own scroll container.
+    position: relative;
     margin: 0 0 16px;
     overflow: auto;
     transition: border-color 140ms ease, box-shadow 140ms ease;
@@ -227,7 +236,7 @@
   .mdp-change-review__top-actions { flex-wrap: wrap; justify-content: flex-end; }
   .mdp-change-review__messages { padding-inline: 12px; }
   .mdp-change-review__workspace { grid-template-columns: 1fr; overflow-y: auto; }
-  .mdp-change-review__overview { max-height: 240px; border-right: 0; border-bottom: 1px solid var(--mdp-border); }
+  .mdp-change-review__overview { height: 240px; border-right: 0; border-bottom: 1px solid var(--mdp-border); }
   .mdp-change-review__shortcut { display: none; }
   .mdp-change-review__main { min-height: 480px; }
 }

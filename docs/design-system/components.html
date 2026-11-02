@@ -1266,6 +1266,7 @@
 }
 .mdp-change-review-backdrop {
   padding: 20px;
+  overscroll-behavior: contain;
 }
 
 .mdp-change-review-error {
@@ -1386,6 +1387,7 @@
 }
 .mdp-change-review__metrics {
   display: grid;
+  flex-shrink: 0;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin: 0 0 16px;
@@ -1420,7 +1422,10 @@
   color: var(--mdp-review-removed-text);
 }
 .mdp-change-review__sections {
+  flex: 1 1 auto;
   min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .mdp-change-review__sections h3 {
   margin: 0 8px 8px;
@@ -1491,6 +1496,7 @@
   text-decoration: underline;
 }
 .mdp-change-review__shortcut {
+  flex-shrink: 0;
   margin: auto 8px 0;
   padding-top: 16px;
   color: var(--mdp-muted);
@@ -1545,6 +1551,7 @@
   background: color-mix(in srgb, var(--mdp-panel-bg) 32%, var(--mdp-surface));
 }
 .mdp-change-review__hunk {
+  position: relative;
   margin: 0 0 16px;
   overflow: auto;
   transition: border-color 140ms ease, box-shadow 140ms ease;
@@ -1662,7 +1669,7 @@
     overflow-y: auto;
   }
   .mdp-change-review__overview {
-    max-height: 240px;
+    height: 240px;
     border-right: 0;
     border-bottom: 1px solid var(--mdp-border);
   }

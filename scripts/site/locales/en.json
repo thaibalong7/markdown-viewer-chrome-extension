@@ -322,7 +322,7 @@
   "releases.meta.description": "What is included in Markdown Plus releases, how to get started, and known limitations.",
   "releases.eyebrow": "WHAT’S NEW",
   "releases.title": "Release notes",
-  "releases.description": "New features, setup essentials, and known limitations for each published version.",
+  "releases.description": "Version changes, release status, setup essentials, and known limitations.",
   "releases.version.title": "1.0.0 — First Store release",
   "releases.version.summary": "A local Markdown workspace for reading, browsing, editing, and exporting in Chrome.",
   "releases.features.read": "Read local Markdown with an outline, highlighted code, tables, task lists, math, footnotes, GitHub-style alerts, and Mermaid diagrams.",
@@ -343,5 +343,12 @@
   "releases.limitations.export": "Math in HTML/Word exports may need external CSS/fonts, so offline rendering can differ. Word-compatible .doc is not native DOCX.",
   "releases.limitations.updates": "Live document updates check the visible active document and support files up to 5 MiB. Snapshot-only workspaces may need to be selected again.",
   "releases.privacy": "Documents are processed locally without a developer-operated upload service. Preferences may sync through Chrome. Referenced remote resources and exported Math can contact third-party hosts.",
-  "releases.version.date": "Store updated November 1, 2026"
+  "releases.version.date": "Store updated November 1, 2026",
+  "releases.revision.title": "1.0.0.1 — Change review scrolling fix",
+  "releases.revision.summary": "A small bug-fix revision that keeps change review scrolling and long section lists contained.",
+  "releases.revision.date": "Packaged November 3, 2026",
+  "releases.revision.scroll": "Keep the change review dialog in view when scrolling over the area outside it.",
+  "releases.revision.sections": "Scroll the affected-section list independently so long lists do not push the keyboard hint out of view or overflow the comparison layout.",
+  "releases.revision.displayVersion": "Display the clean version 1.0.0.1 without a build timestamp.",
+  "releases.revision.status": "The local package is ready. Chrome Web Store publication has not been verified for this version."
 }

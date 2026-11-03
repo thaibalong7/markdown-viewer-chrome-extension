@@ -322,7 +322,7 @@
   "releases.meta.description": "了解 Markdown Plus 各版本的功能、使用准备和已知限制。",
   "releases.eyebrow": "版本动态",
   "releases.title": "更新日志",
-  "releases.description": "查看各个已发布版本的新功能、使用准备和已知限制。",
+  "releases.description": "查看各版本的更改、发布状态、使用准备和已知限制。",
   "releases.version.title": "1.0.0 — 首个商店版本",
   "releases.version.summary": "在 Chrome 中阅读本地 Markdown、浏览文件夹、编辑和导出文档。",
   "releases.features.read": "阅读本地 Markdown，支持大纲、代码高亮、表格、任务列表、数学公式、脚注、GitHub 提示块和 Mermaid 图表。",
@@ -343,5 +343,12 @@
   "releases.limitations.export": "HTML/Word 导出文件中的数学公式可能需要外部 CSS 和字体，离线显示效果可能不同。Word 兼容的 .doc 并非原生 DOCX 格式。",
   "releases.limitations.updates": "实时文档更新仅在标签页可见时检查当前文档，支持最大 5 MiB 的文件。以快照方式打开的工作区可能需要重新选择。",
   "releases.privacy": "文档在本地处理，不会上传至开发者运营的服务。偏好设置可能通过 Chrome 同步。文档引用的远程资源和导出文件中的数学公式可能连接第三方主机。",
-  "releases.version.date": "商店更新日期：2026年11月1日"
+  "releases.version.date": "商店更新日期：2026年11月1日",
+  "releases.revision.title": "1.0.0.1 — 修复更改对比窗口的滚动问题",
+  "releases.revision.summary": "小幅修复，避免更改对比窗口和较长的受影响章节列表在滚动时溢出。",
+  "releases.revision.date": "打包日期：2026年11月3日",
+  "releases.revision.scroll": "在窗口外的遮罩区域滚动时，更改对比窗口保持在视口内。",
+  "releases.revision.sections": "受影响的章节列表可独立滚动，较长的列表不会将快捷键提示挤出视野或超出对比布局。",
+  "releases.revision.displayVersion": "显示简洁的版本号 1.0.0.1，不再附带构建时间戳。",
+  "releases.revision.status": "本地安装包已生成，尚未确认此版本已在 Chrome 应用商店发布。"
 }

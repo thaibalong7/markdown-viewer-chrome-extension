@@ -68,7 +68,7 @@ Requires **Google Chrome 116 or newer**.
 
 ## Release notes
 
-**1.0.0 — First Chrome Web Store release.** Local Markdown reading, Files and Outline navigation, rich rendering, custom themes, document updates and change review, experimental editing, and exports.
+**1.0.0.1 — Change review scrolling fix.** Keeps the comparison dialog in view and long affected-section lists contained. Packaged November 3, 2026; Chrome Web Store publication has not been verified for this version.
 
 See [release notes and known limitations](CHANGELOG.md) or the [website release notes](https://thaibalong7.github.io/markdown-viewer-chrome-extension/releases/).
 

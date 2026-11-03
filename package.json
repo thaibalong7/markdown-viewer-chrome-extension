@@ -1,6 +1,6 @@
 {
   "name": "markdown-plus",
-  "version": "1.0.0",
+  "version": "1.0.0.1",
   "private": true,
   "license": "MIT",
   "description": "Chrome extension: Markdown Plus viewer (MV3)",

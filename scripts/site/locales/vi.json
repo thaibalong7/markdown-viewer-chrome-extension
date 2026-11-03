@@ -322,7 +322,7 @@
   "releases.meta.description": "Các tính năng trong từng phiên bản Markdown Plus, cách bắt đầu và những giới hạn cần biết.",
   "releases.eyebrow": "CÓ GÌ MỚI",
   "releases.title": "Ghi chú phát hành",
-  "releases.description": "Tính năng, cách bắt đầu và những giới hạn cần biết của từng phiên bản đã phát hành.",
+  "releases.description": "Thay đổi qua từng phiên bản, trạng thái phát hành, cách bắt đầu và những giới hạn cần biết.",
   "releases.version.title": "1.0.0 — Bản đầu tiên trên Store",
   "releases.version.summary": "Đọc Markdown, duyệt thư mục, chỉnh sửa và xuất tài liệu ngay trong Chrome.",
   "releases.features.read": "Đọc Markdown trên máy với mục lục, code có tô màu cú pháp, bảng, danh sách công việc, công thức, chú thích, khối thông báo kiểu GitHub và sơ đồ Mermaid.",
@@ -343,5 +343,12 @@
   "releases.limitations.export": "Công thức trong bản xuất HTML/Word có thể cần CSS/phông chữ từ bên ngoài nên hiển thị khi không có mạng có thể khác. Bản .doc tương thích Word không phải DOCX gốc.",
   "releases.limitations.updates": "Cập nhật tài liệu chỉ kiểm tra tệp đang mở khi tab hiển thị, với giới hạn 5 MiB. Thư mục mở dưới dạng bản chụp có thể cần được chọn lại.",
   "releases.privacy": "Tài liệu được xử lý trên máy, không tải lên dịch vụ do nhà phát triển vận hành. Cài đặt có thể đồng bộ qua Chrome. Tài nguyên từ xa trong tài liệu và công thức trong bản xuất có thể kết nối đến bên thứ ba.",
-  "releases.version.date": "Cập nhật trên Store ngày 1 tháng 11 năm 2026"
+  "releases.version.date": "Cập nhật trên Store ngày 1 tháng 11 năm 2026",
+  "releases.revision.title": "1.0.0.1 — Sửa lỗi cuộn trong Xem thay đổi",
+  "releases.revision.summary": "Bản vá nhỏ giúp cửa sổ Xem thay đổi và danh sách mục bị ảnh hưởng không bị tràn khi cuộn.",
+  "releases.revision.date": "Đóng gói ngày 3 tháng 11 năm 2026",
+  "releases.revision.scroll": "Giữ cửa sổ Xem thay đổi trong khung nhìn khi cuộn ở vùng bên ngoài cửa sổ.",
+  "releases.revision.sections": "Cho phép cuộn riêng danh sách mục bị ảnh hưởng, tránh danh sách dài đẩy phần gợi ý phím tắt ra ngoài hoặc làm tràn bố cục so sánh.",
+  "releases.revision.displayVersion": "Hiển thị số phiên bản 1.0.0.1 gọn hơn, bỏ dấu thời gian của bản dựng.",
+  "releases.revision.status": "Đã tạo xong gói cài đặt trên máy. Chưa xác minh phiên bản này đã được phát hành trên Chrome Web Store."
 }

@@ -1,10 +1,20 @@
 # Release notes
 
+## 1.0.0.1 — Change review scrolling fix
+
+Packaged on **November 3, 2026** as a small bug-fix revision of 1.0.0. Chrome Web Store publication has not been verified for this version.
+
+- Keep the change review dialog in view when scrolling over the area outside it.
+- Let the affected-section list scroll independently so long lists do not push the keyboard hint out of view or overflow the comparison layout.
+- Display the clean version `1.0.0.1` without a build timestamp.
+
+Maintainers: see the [1.0.0.1 release record](docs/chrome-web-store/release-1.0.0.1.md) for package metadata and verification status.
+
 ## 1.0.0 — First Chrome Web Store release
 
 [Install Markdown Plus](https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk) · [Website](https://thaibalong7.github.io/markdown-viewer-chrome-extension/) · [User guide](https://thaibalong7.github.io/markdown-viewer-chrome-extension/guide/)
 
-The public Store listing shows **Updated November 1, 2026** and display version `1.0.0-20261030T075747621Z`.
+The public Store listing checked on **November 1, 2026** showed **Updated November 1, 2026** and display version `1.0.0-20261030T075747621Z`.
 
 - Read local Markdown with an outline, syntax highlighting, tables, task lists, math, footnotes, GitHub-style alerts, and Mermaid diagrams.
 - Browse folders and related Markdown, text, SQL, DBML, Mermaid, and image files in Files.

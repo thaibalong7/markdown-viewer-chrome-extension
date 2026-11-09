@@ -10,6 +10,7 @@ This directory contains current technical references for developers and contribu
 
 ## Runtime and feature contracts
 
+- [`search.md`](./search.md) — document Find and workspace search, shortcuts/matching modes, result navigation, source fallback, RAM caches/Worker, freshness, limits, and manual QA.
 - [`document-updates-and-change-review.md`](./document-updates-and-change-review.md) — current Watch modes, review workflow, editor safeguards, reading continuity, limits, and implementation map.
 - [`document-actions.md`](./document-actions.md) — Viewer commands, sidebar integration, overflow, focus, ownership, and verification.
 - [`viewer-content-ui.md`](./viewer-content-ui.md) — ownership and integration rules for UI inside rendered document content.
@@ -20,7 +21,7 @@ This directory contains current technical references for developers and contribu
 
 - [`internationalization.md`](./internationalization.md) — interface-language ownership, semantic IDs, live switching, literal document boundaries, and locale integration/verification; use [`mdp-dev-add-language`](../.agents/skills/mdp-dev-add-language/SKILL.md) for the full translation workflow.
 - [`localization.md`](./localization.md) — shared interface-writing principles and locale-specific terminology, tone, exceptions, and research references; extend a locale section when adding languages.
-- [`design-system/`](./design-system/README.md) — current visual contracts and maintenance guide. Open [Overview](./design-system/index.html) in a browser to browse foundations, [Components](./design-system/components.html), [Icons](./design-system/icons.html), and the [Viewer preview](./design-system/viewer.html).
+- [`design-system/`](./design-system/README.md) — current visual contracts and maintenance guide. Open [Overview](./design-system/index.html) in a browser to browse foundations, [Components](./design-system/components.html), [Icons](./design-system/icons.html), the [Viewer preview](./design-system/viewer.html), and [Search states](./design-system/search.html).
 
 ## Compatibility, release, and publishing
 

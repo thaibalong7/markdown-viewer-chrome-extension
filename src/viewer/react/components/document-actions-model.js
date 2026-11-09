@@ -21,6 +21,8 @@ export function createDocumentActions(context) {
       className: 'mdp-fab-btn--theme', disabled: c.themeSaving, onClick: c.onThemeToggleClick },
     { id: 'review', group: 'document', order: 10, pinned: true,
       visible: c.canReview, control: c.controls.review },
+    { id: 'find', group: 'document', order: 15, visible: c.canFind,
+      label: 'viewer.search.inDocument', icon: 'search', disabled: c.isLoading, onClick: c.onFindClick },
     { id: 'save', group: 'document', order: 20, visible: c.canEdit && editing,
       label: 'viewer.actions.saveMarkdownFile', tooltip: c.saving ? 'common.status.saving' : c.editorState.dirty ? 'viewer.actions.saveCtrlS' : 'viewer.actions.saveNoUnsavedChanges',
       icon: 'save', className: `mdp-fab-btn--save${c.editorState.dirty ? ' is-dirty' : ''}`,

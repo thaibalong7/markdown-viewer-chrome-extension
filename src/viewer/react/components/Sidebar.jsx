@@ -5,17 +5,19 @@ import { FilesPanel } from './FilesPanel.jsx'
 import { PanelToggleButton } from './PanelToggleButton.jsx'
 import { ResizeHandle } from './ResizeHandle.jsx'
 
-export function Sidebar({ explorerBridge, rootEl, settings, expanded, onToggle }) {
+export function Sidebar({ explorerBridge, rootEl, settings, expanded, onToggle, available = true, searchOverlay = false }) {
   useLocale()
   const [sidebarEl, setSidebarEl] = useState(null)
   const [handleEl, setHandleEl] = useState(null)
 
   return (
     <aside
-      className={`mdp-sidebar mdp-sidebar--files ${
+      className={`mdp-sidebar mdp-sidebar--files ${searchOverlay ? 'mdp-sidebar--search-overlay' : ''} ${
         expanded ? 'mdp-sidebar--expanded' : 'mdp-sidebar--collapsed'
       }`}
       aria-label={t('viewer.explorer.title')}
+      style={available ? undefined : { display: 'none' }}
+      inert={!available || undefined}
       ref={setSidebarEl}
     >
       <div

@@ -38,7 +38,7 @@ Direct activation is limited to local `file:` URLs with `.md`, `.markdown`, `.md
 | `src/i18n/` | Shared language resolution, nested English/Vietnamese/Simplified Chinese catalogs with semantic IDs such as `options.general.title` and `popup.footer.allSettings`, interpolation/plurals, formatting, React subscriptions, and CodeMirror phrases |
 | `src/popup/` | Recent files, theme selection, quick reader/editor/plugin controls, and Settings/About navigation |
 | `src/options/` | Full settings, file-access status, custom-theme management, policy controls, import/export, reset workflows, and About/support information |
-| `src/background/` | Message routing, local file reads, downloads, settings broadcasts, file history, and device-local theme assets |
+| `src/background/` | Message routing, local file reads, search-Worker dispatch, downloads, settings broadcasts, file history, and device-local theme assets |
 | `src/messaging/` | Shared message names and caller wrapper |
 | `src/shared/` | File registry, utilities, constants, React primitives, and shared styles |
 
@@ -213,6 +213,16 @@ Automatic updates apply only in read mode. Edit mode, edit preparation, dirty dr
 
 `navigation/reading-position.js` preserves heading/text, section offset, and ratio fallback through render. Render lifecycle owns user-input listeners and a short ResizeObserver window for late layout changes; user navigation cancels restoration. Revision sources stay in tab memory.
 
+## Search
+
+`src/viewer/search/` owns configurable literal Unicode matching with original-source normalization maps, read-only rendered-text ranges/CSS Highlights, bounded reads through the document loader and exact result navigation. Search context/hooks and `react/components/search/` own the Find utility, workspace panel and read-only source fallback. The workspace hook separates the displayed snapshot from the active request so stale rows remain stable and non-actionable during updates; Enter/Search again bypasses typing debounce. `useSearchResultNavigation` owns visible-row keyboard/focus navigation. Guarded result activation preserves list focus and highlights the destination without opening Find. A themed React portal underlines the current range without modifying document nodes; its geometry hook owns observation and cleanup.
+
+Find is article-scoped; focused CodeMirror retains native Find/Replace. File-content search uses the current Folder/Workspace tree, ignore/scan boundaries, virtual readers and active unsaved draft; a flat sibling fallback is explicitly incomplete. Files headers/toolbar remain stable while only its tree body switches to Search. ViewerShell keeps Files mounted while editing so its workspace state/readers remain available; Search opens as an overlay in edit mode. Query cancellation discards stale completions; scope teardown clears source and worker namespaces. See [Find and workspace search](./search.md) for shortcuts, matching modes, result lifecycle and limits.
+
+`search-source-cache.js` owns the 16 MiB estimated source LRU; `search-text-store.js` owns prepared Unicode variants and typed source-offset maps. `search-matching-client.js` sends validated SEARCH_TEXT jobs through `background/search-matching-service.js` to `public/offscreen.js`, which creates the packaged `search-worker.js` module Worker and correlates replies. Its shared matching store is bounded to an estimated 32 MiB/256 entries. Offscreen creation adds the WORKERS reason alongside DOM_SCRAPING; extension permissions and the declared Chrome minimum stay unchanged. Production matching failures surface as failed searches, without moving bulk matching back to the reader thread.
+
+Every query still visits the existing searchable file list. Source caching and prepared maps reduce repeated reads/normalization; they do not create a persistent keyword index or discover new files. Search again bypasses content-cache reuse, whereas Refresh file list updates tree membership through the explorer workflow. Snapshot-only fallback readers cannot obtain later disk edits without folder reselection. Reading Find separately reuses a rendered-text index and a 16 MiB prepared-data cache until document identity or relevant DOM mutations change.
+
 ## Change Review
 
 Change Review is available for Markdown, TXT, SQL, DBML and Mermaid source. Images receive the same update actions without a source diff or previous-source review history. Non-Markdown text uses the bounded line diff without Markdown heading analysis or section navigation.
@@ -274,7 +284,7 @@ Custom theme images are device-local assets. Settings validates supported raster
 
 Message names are centralized in `src/messaging/index.js`. UI/content callers use `sendMessage()`; background services own browser APIs. Normal responses use `{ ok: true, data }` or `{ ok: false, error }`.
 
-`src/background/message-router.js` routes settings, history, local reads, downloads, and theme-asset lifecycle calls. Offscreen fetch wire messages bypass that router. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown. The response confirms persistence after dispatching these notifications, without waiting for tab replies or Viewer rendering.
+`src/background/message-router.js` routes settings, history, local reads, SEARCH_TEXT matching jobs, downloads, and theme-asset lifecycle calls. Offscreen fetch/search wire messages bypass that router to avoid recursive forwarding; ordinary callers retain the response envelope above. Successful settings save/reset broadcasts `SETTINGS_UPDATED` so viewers can update, rerender, mount, or teardown. The response confirms persistence after dispatching these notifications, without waiting for tab replies or Viewer rendering.
 
 `src/background/settings-sync-observer.js` also reconciles relevant `chrome.storage.onChanged` events, coalesces batches and publishes complete remote snapshots or a verified cached snapshot with `storageWarning`. The broadcaster serializes dispatch and deduplicates identical local/remote echoes. The settings client's optional status-aware GET keeps warnings outside the settings/export object; Settings/Popup reuse shared Notices and Viewer uses its warning Toast. Cross-device updates follow Chrome's winning complete index, without an application-level merge/transaction guarantee; incomplete snapshots never replace the library with defaults. Real two-profile Sync delivery and minimum-Chrome compatibility remain release QA checks.
 
@@ -297,6 +307,7 @@ The scoped [internationalization rule](../.agents/rules/35-internationalization.
 - Manifest permissions remain minimal and tied to concrete features.
 - Logs contain intent and lightweight context, not document bodies.
 - Local content is processed in the browser and is not sent to a developer-operated service. User-authored remote resources and exported Math assets can still contact their external hosts.
+- Search source and prepared Unicode maps are bounded RAM caches, never Chrome Sync/IndexedDB content indexes. Its matching Worker is packaged with the extension; no remote script, blob/eval Worker or new permission is introduced.
 
 ## Task-to-source map
 
@@ -312,6 +323,7 @@ The scoped [internationalization rule](../.agents/rules/35-internationalization.
 | Viewer lifecycle | `src/viewer/app.js`, `src/viewer/app/` |
 | Viewer chrome, stats, scrollbars | `src/viewer/react/components/ViewerShell.jsx`, `DocumentStats.jsx`, `ViewerScrollbar.jsx`, `ScrollToTopButton.jsx` |
 | Files/workspace | `src/viewer/explorer/`, `src/viewer/react/hooks/useExplorer.js` |
+| Document Find/workspace search | [`search.md`](./search.md), `src/viewer/search/`, `src/viewer/react/hooks/useWorkspaceSearch.js`, `src/background/search-matching-service.js` |
 | Links/history | `src/viewer/navigation/`, `explorer-navigation.js` |
 | Editor/save | `src/viewer/app/editorSessionController.js`, `src/viewer/editor/` |
 | Document updates/review | [`docs/document-updates-and-change-review.md`](./document-updates-and-change-review.md), `src/viewer/app/watchSessionController.js`, `src/viewer/review/` |

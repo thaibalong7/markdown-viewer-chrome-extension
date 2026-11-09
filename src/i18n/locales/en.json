@@ -650,6 +650,58 @@
     },
     "useexplorer": {
       "selectASupportedFileFromTheFilesPanel": "Select a supported file from the Files panel."
+    },
+    "search": {
+      "inDocument": "Find in document",
+      "workspace": "Search workspace",
+      "workspaceShortcut": "Search file contents · Control+Shift+F",
+      "title": "Search",
+      "scope": "Search scope",
+      "previous": "Previous match (Shift+Enter)",
+      "next": "Next match (Enter)",
+      "closeFind": "Close",
+      "closeWorkspace": "Close search",
+      "noDocumentResults": "No matches in this document.",
+      "findLimited": "Showing a limited set of matches. Narrow your search.",
+      "placeholder": "Search file contents…",
+      "sourceScope": "File contents, including the unsaved draft.",
+      "chooseWorkspace": "This folder could not be listed. Choose a folder to search.",
+      "chooseFolder": "Choose folder",
+      "waitForScan": "Waiting for the file scan…",
+      "stop": "Stop search",
+      "progress": {
+        "one": "{count} match · {scanned}/{total} files searched…",
+        "other": "{count} matches · {scanned}/{total} files searched…"
+      },
+      "summary": {
+        "one": "{count} match · {scanned}/{total} files searched",
+        "other": "{count} matches · {scanned}/{total} files searched"
+      },
+      "startTyping": "Type to search this folder.",
+      "searchAgain": "Search again",
+      "partial": "Search is incomplete: stopped, a scan/search limit was reached, or files were skipped ({skipped}). Refine your search or search again.",
+      "failed": "Search failed. Search again to retry.",
+      "noPartialResults": "No matches in the files searched so far.",
+      "noWorkspaceResults": "No matches in this folder. Try a different phrase.",
+      "unsaved": "Unsaved",
+      "resultLocation": "{path}, line {line}, column {column}",
+      "stale": "This file changed. Search again to update its results.",
+      "openFailed": "Could not open this result. Try again.",
+      "sourceTitle": "Match in source",
+      "line": "Line {line}",
+      "sourceExplanation": "This occurrence could not be mapped precisely to the rendered document. Its exact source location is highlighted below.",
+      "resultsScrollbar": "Search results scrollbar",
+      "inFolder": "Search folder",
+      "folderListPartial": "Only the current folder's file list is available; subfolders may be missing. Files skipped: {skipped}.",
+      "clearQuery": "Clear search query",
+      "matchOptions": "Search matching options",
+      "matchCase": "Match case",
+      "wholeWord": "Match whole word",
+      "matchDiacritics": "Match diacritics",
+      "updating": "Updating results…",
+      "outdatedResults": "Previous results. Search again to update.",
+      "cachedScope": "Includes cached file contents. Search again reads the latest files.",
+      "updatingProgress": "Updating results… {scanned}/{total} files checked."
     }
   },
   "errors": {

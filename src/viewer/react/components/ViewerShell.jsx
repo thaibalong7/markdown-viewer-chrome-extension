@@ -15,6 +15,9 @@ import { BackgroundScene, resolveBackgroundSceneForSettings } from './Background
 import { ViewerScrollbar } from './ViewerScrollbar.jsx'
 import { ScrollToTopButton } from './ScrollToTopButton.jsx'
 import { DocumentStats } from './DocumentStats.jsx'
+import { useSearch } from '../contexts/SearchContext.jsx'
+import { DocumentFind } from './search/DocumentFind.jsx'
+import { SearchSourceDialog } from './search/SearchSourceDialog.jsx'
 
 export function ViewerShell({
   children,
@@ -55,6 +58,7 @@ export function ViewerShell({
   const [editorReady, setEditorReady] = useState(false)
   const editorState = useEditorState()
   const editorDispatch = useEditorDispatch()
+  const search = useSearch()
 
   const capabilities = documentUiState?.capabilities || {}
   const supportsEditing =
@@ -68,8 +72,8 @@ export function ViewerShell({
 
   const isFocusMode = isEditMode && editorState.mode === 'focus'
   const isSplitMode = isEditMode && editorState.mode === 'split'
-  const filesAvailable = !isEditMode
-  const filesExpanded = filesAvailable && editorState.sidebarVisible
+  const filesAvailable = !isEditMode || search.workspace.open
+  const filesExpanded = filesAvailable && (editorState.sidebarVisible || search.workspace.open)
   const outlineAvailable = capabilities.outline === true && settings?.layout?.showToc !== false && !isEditMode
   const outlineExpanded = outlineAvailable && editorState.outlineVisible
 
@@ -143,8 +147,12 @@ export function ViewerShell({
   }, [onEditorDestroy])
 
   const handleFilesToggle = useCallback(() => {
+    if (search.workspace.open) {
+      search.closeWorkspace()
+      if (!editorState.sidebarVisible) return
+    }
     editorDispatch({ type: 'TOGGLE_SIDEBAR' })
-  }, [editorDispatch])
+  }, [editorDispatch, editorState.sidebarVisible, search.workspace.open, search.closeWorkspace])
 
   const handleOutlineToggle = useCallback(() => {
     editorDispatch({ type: 'TOGGLE_OUTLINE' })
@@ -195,15 +203,15 @@ export function ViewerShell({
       <div className={bodyClassNames.join(' ')}>
         <ScrollToTopButton scrollElement={isEditMode ? null : scrollRootForSidebar} />
 
-        {filesAvailable && (
-          <Sidebar
-            explorerBridge={explorerBridge}
-            rootEl={rootEl}
-            settings={settings}
-            expanded={filesExpanded}
-            onToggle={handleFilesToggle}
-          />
-        )}
+        <Sidebar
+          explorerBridge={explorerBridge}
+          rootEl={rootEl}
+          settings={settings}
+          expanded={filesExpanded}
+          onToggle={handleFilesToggle}
+          available={filesAvailable}
+          searchOverlay={isEditMode && search.workspace.open}
+        />
 
         {(isSplitMode || isFocusMode) && (
           <EditorPanel
@@ -230,6 +238,8 @@ export function ViewerShell({
         )}
 
         <main className="mdp-content-pane" ref={setContentPaneRef}>
+          <DocumentFind article={articleRef.current} root={rootEl} scrollRoot={scrollRootForSidebar}
+            documentKey={getCurrentFileUrl?.() || ''} isFocusMode={isFocusMode} bridge={explorerBridge} />
           {isSplitMode && (
             <div className="mdp-edit-mode-note" role="note" aria-live="polite">{t('viewer.layout.previewFontSizeAndLineHeightAreSynced')}</div>
           )}
@@ -260,6 +270,7 @@ export function ViewerShell({
           />
         )}
       </div>
+      <SearchSourceDialog />
       <Toast />
     </div>
   )

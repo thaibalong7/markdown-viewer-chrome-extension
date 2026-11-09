@@ -234,6 +234,12 @@ export class MarkdownViewerApp {
     this.container.appendChild(this._reactContainerEl)
 
     const explorerBridge = createExplorerBridge({
+      getSearchDocument: () => ({
+        href: this._currentFileUrl,
+        text: this.markdown,
+        dirty: this._editorSession.isDirty(),
+        editor: this._editorApi
+      }),
       getSettings: () => this.settings,
       setSmoothInitialHashScroll: (value) => this._renderController.setSmoothInitialHashScroll(value),
       openDocument: (href, opts) => this._documentSession.openDocument(href, opts),

@@ -8,6 +8,36 @@
  */
 const OFFSCREEN_FETCH = 'MDP_OFFSCREEN_FETCH'
 const OFFSCREEN_FETCH_DONE = 'MDP_OFFSCREEN_FETCH_DONE'
+const OFFSCREEN_SEARCH = 'MDP_OFFSCREEN_SEARCH'
+const OFFSCREEN_SEARCH_DONE = 'MDP_OFFSCREEN_SEARCH_DONE'
+let searchWorker = null
+const searchJobs = new Map()
+
+function handleSearch(message) {
+  const respond = (id, result, error) => chrome.runtime.sendMessage({ type: OFFSCREEN_SEARCH_DONE, id, ok: !error, result, error })
+  try {
+    const url = new URL(message.workerUrl)
+    const expected = new URL(chrome.runtime.getURL('offscreen.html'))
+    // The background supplies the packaged worker URL; never execute document URLs.
+    if (url.protocol !== expected.protocol || url.host !== expected.host || !url.pathname.startsWith('/assets/')) throw new Error('Invalid search worker URL')
+    if (!searchWorker) {
+      const worker = new Worker(url.href, { type: 'module' })
+      searchWorker = worker
+      worker.onmessage = ({ data }) => {
+        if (!searchJobs.delete(data.id)) return
+        void respond(data.id, data.result, data.error)
+      }
+      worker.onerror = () => {
+        if (searchWorker !== worker) return
+        worker.terminate(); searchWorker = null
+        for (const id of searchJobs.keys()) void respond(id, undefined, 'Search worker failed')
+        searchJobs.clear()
+      }
+    }
+    searchJobs.set(message.id, true)
+    searchWorker.postMessage({ id: message.id, payload: message.payload })
+  } catch (error) { searchJobs.delete(message.id); void respond(message.id, undefined, String(error?.message || error)) }
+}
 
 /**
  * @param {string} url
@@ -54,7 +84,10 @@ async function loadFileUrlAsTextFetchFallback(url) {
  * @param {string} url
  * @returns {Promise<string>}
  */
-async function loadFileUrlAsTextBestEffort(url) {
+async function loadFileUrlAsTextBestEffort(url, maxBytes) {
+  // Search/Watch reads have a byte budget: abort before decoding/serializing.
+  // Do not retry an oversized or failed bounded read via an unbounded fallback.
+  if (maxBytes !== undefined) return loadBoundedText(url, maxBytes)
   try {
     return await loadFileUrlAsText(url)
   } catch (xhrErr) {
@@ -66,6 +99,28 @@ async function loadFileUrlAsTextBestEffort(url) {
       throw new Error(`${a} | ${b}`)
     }
   }
+}
+
+function loadBoundedText(url, limit) {
+  return new Promise((resolve, reject) => {
+    if (!Number.isInteger(limit) || limit <= 0 || limit > 5 * 1024 * 1024) return reject(new Error('Invalid text byte limit'))
+    const xhr = new XMLHttpRequest()
+    const tooLarge = () => reject(Object.assign(new Error('Text exceeds the read limit'), { code: 'document-too-large' }))
+    xhr.open('GET', url, true)
+    xhr.responseType = 'arraybuffer'
+    xhr.onprogress = event => {
+      if (event.loaded > limit || (event.lengthComputable && event.total > limit)) { tooLarge(); xhr.abort() }
+    }
+    xhr.onload = () => {
+      if (xhr.status !== 0 && (xhr.status < 200 || xhr.status >= 300)) return reject(new Error(`XHR HTTP ${xhr.status}`))
+      if (!(xhr.response instanceof ArrayBuffer)) return reject(new Error('No text bytes received'))
+      if (xhr.response.byteLength > limit) return tooLarge()
+      resolve(new TextDecoder().decode(xhr.response))
+    }
+    xhr.onerror = () => reject(new Error('XHR failed (network or blocked)'))
+    xhr.onabort = () => reject(new Error('Text read aborted'))
+    xhr.send()
+  })
 }
 
 // Bound binary reads before serialization. Never decode image bytes as UTF-8.
@@ -101,6 +156,7 @@ function loadFileUrlAsBytes(url, maxBytes) {
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message?.type === OFFSCREEN_SEARCH) { handleSearch(message); return }
   if (message?.type !== OFFSCREEN_FETCH) return
 
   const { id, url } = message
@@ -119,7 +175,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       if (new URL(url).protocol !== 'file:') throw new Error('Only file: URLs are allowed')
       const payload = message.format === 'bytes'
         ? await loadFileUrlAsBytes(url, message.maxBytes)
-        : { text: await loadFileUrlAsTextBestEffort(url) }
+        : { text: await loadFileUrlAsTextBestEffort(url, message.maxBytes) }
       await chrome.runtime.sendMessage({
         type: OFFSCREEN_FETCH_DONE,
         id,

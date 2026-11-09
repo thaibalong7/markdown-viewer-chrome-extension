@@ -1,0 +1,287 @@
+// Viewer-local search surfaces compose the existing dense utility contract.
+.mdp-root {
+  // Opaque search-role pairs stay legible over reader themes and syntax colors.
+  --mdp-search-match-bg: #ffe066;
+  --mdp-search-match-fg: #241a00;
+  --mdp-search-current-bg: #f97316;
+  --mdp-search-current-fg: #241300;
+  --mdp-search-current-edge: #9a3412;
+}
+.mdp-explorer__files-view {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  &[hidden] { display: none; }
+}
+
+// Both bodies keep their geometry and scroll offsets; only their visibility changes.
+.mdp-explorer__body {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  margin-top: var(--mdp-sidebar-content-gap, 12px);
+  > .mdp-explorer__scroll-region {
+    grid-area: 1 / 1;
+    margin-top: 0;
+    opacity: 1;
+    visibility: visible;
+    &.is-search-inactive {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+}
+.mdp-explorer__toolbar-btn.is-search-active {
+  color: var(--mdp-link);
+  border-color: var(--mdp-border);
+  background: var(--mdp-link-soft);
+}
+
+.mdp-find-anchor {
+  position: sticky;
+  top: 16px;
+  z-index: 16;
+  pointer-events: none;
+}
+
+.mdp-find {
+  position: relative;
+  margin-left: auto;
+  width: min(480px, 100%);
+  padding: 6px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 8px;
+  background: var(--mdp-surface);
+  color: var(--mdp-text);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--mdp-text) 8%, transparent);
+  pointer-events: auto;
+  font-size: 12px;
+  &__row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+  &__row .mdp-search-field { width: 80px; flex: 1; }
+  &__count { color: var(--mdp-muted); min-width: 42px; text-align: center; font-variant-numeric: tabular-nums; }
+  &__hint { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 2px 0; }
+  &__hint button { border: 0; padding: 4px; color: var(--mdp-link); background: transparent; cursor: pointer; font: inherit; }
+}
+
+.mdp-search-field {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  min-width: 0;
+  border: 1px solid var(--mdp-border);
+  border-radius: 4px;
+  background: var(--mdp-surface);
+  &:focus-within { outline: 2px solid var(--mdp-focus-color); outline-offset: -2px; }
+  &__clear { display: grid; place-items: center; flex: 0 0 26px; width: 26px; height: 26px; border: 0; padding: 0; margin-right: 2px; color: var(--mdp-muted); background: transparent; border-radius: 2px; cursor: pointer; }
+  &__clear:hover { color: var(--mdp-text); background: var(--mdp-panel-bg); }
+}
+.mdp-search-field .mdp-search__input {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--mdp-text);
+  background: transparent;
+  box-shadow: none;
+  font: inherit;
+  font-size: 13px;
+  &::placeholder { color: var(--mdp-muted); opacity: 1; }
+  &::-webkit-search-cancel-button, &::-webkit-search-decoration { appearance: none; }
+}
+// One static field stroke replaces the global outer focus ring for these local inputs.
+.mdp-search-field .mdp-search__input:focus-visible,
+#mdp-viewer-root .mdp-search-field .mdp-search__input:focus-visible { outline: none; box-shadow: none; }
+#mdp-viewer-root .mdp-search-field__clear:focus-visible { outline-offset: -2px; }
+
+.mdp-search__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mdp-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  &:hover:not(:disabled) { color: var(--mdp-link); background: var(--mdp-link-soft); }
+  &:disabled { opacity: .45; cursor: default; }
+}
+
+.mdp-search-options {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  &__button {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--mdp-muted);
+    font: 600 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    cursor: pointer;
+    &:hover { background: var(--mdp-panel-bg); color: var(--mdp-text); }
+    &[aria-pressed='true'] { border-color: var(--mdp-link); color: var(--mdp-link); background: var(--mdp-link-soft); }
+  }
+  &__wholeWord > span { text-decoration: underline; text-underline-offset: 3px; }
+}
+
+.mdp-search__button {
+  min-height: 30px;
+  border: 1px solid var(--mdp-border);
+  border-radius: 6px;
+  background: var(--mdp-panel-bg);
+  padding: 4px 10px;
+  color: var(--mdp-text);
+  cursor: pointer;
+  font: inherit;
+  &:hover { color: var(--mdp-link); border-color: var(--mdp-link); }
+}
+
+.mdp-search__notice {
+  margin: 8px 0;
+  padding: 8px;
+  font-size: 12px;
+  color: var(--mdp-toast-warning-text);
+  background: var(--mdp-toast-warning-bg);
+  border: 1px solid var(--mdp-toast-warning-border);
+  border-radius: 6px;
+}
+
+.mdp-workspace-search {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  &.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  color: var(--mdp-text);
+  font-size: 13px;
+  &__controls { padding: 2px 2px 0; }
+  &__query-row { display: flex; align-items: center; gap: 4px; }
+  &__query-row .mdp-search-field { flex: 1; }
+  &__description { margin: 6px 0; color: var(--mdp-muted); font-size: 11px; line-height: 1.5; }
+  &__status { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 36px; padding-inline: 2px; color: var(--mdp-muted); font-size: 12px; }
+  &__empty { padding: 16px 4px; color: var(--mdp-muted); line-height: 1.6; }
+  &__results { overflow: auto; flex: 1; min-height: 0; padding: 2px 8px 20px 0; scrollbar-width: none; overscroll-behavior: contain; &::-webkit-scrollbar { display: none; } }
+  &__file + &__file { margin-top: 4px; }
+  &__file summary { display: flex; align-items: center; gap: 4px; min-height: 28px; padding: 2px 2px; cursor: pointer; font-size: 12px; white-space: nowrap; }
+  &__file summary::marker, &__file summary::-webkit-details-marker { display: none; content: ''; }
+  &__file summary:hover { color: var(--mdp-link); }
+  &__file summary > svg { flex-shrink: 0; }
+  &__caret { color: var(--mdp-muted); }
+  &__file[open] > summary &__caret { rotate: 90deg; }
+  &__filename { overflow: hidden; text-overflow: ellipsis; font-weight: 600; flex: 0 1 auto; }
+  &__parent { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--mdp-muted); font-size: 11px; }
+  &__badge { flex-shrink: 0; padding: 0 4px; background: var(--mdp-panel-bg); color: var(--mdp-muted); border-radius: 3px; font-size: 10px; font-variant-numeric: tabular-nums; }
+  &__file ul { padding: 0; margin: 0; list-style: none; }
+  // 12px caret + 16px file icon + two 4px gaps = the 28px gutter + 8px gap.
+  // Filename and snippet text therefore share one axis, without nested indents.
+  &__match { display: grid; grid-template-columns: 28px minmax(0, 1fr); width: 100%; gap: 8px; height: 28px; align-items: center; padding: 2px 2px; border: 0; border-radius: 3px; background: transparent; color: var(--mdp-text); text-align: left; font: 12px/20px ui-monospace, SFMono-Regular, Menlo, monospace; cursor: pointer; }
+  &__match:hover { background: var(--mdp-panel-bg); }
+  &__match[aria-current] { background: var(--mdp-link-soft); box-shadow: inset 2px 0 var(--mdp-link); }
+  &__match:disabled, &__match[aria-disabled='true'] { opacity: .6; cursor: progress; }
+  &__results[data-stale] &__match:disabled { cursor: default; }
+  &__line { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; color: var(--mdp-muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+  &__snippet { display: flex; min-width: 0; flex: 1; overflow: hidden; white-space: pre; }
+  &__before { flex: 0 1 auto; max-width: 7ch; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  &__after { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  &__snippet mark { flex: 0 0 auto; min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+}
+
+.mdp-workspace-search mark, .mdp-search-source mark {
+  background: var(--mdp-search-match-bg);
+  color: var(--mdp-search-match-fg);
+  text-decoration: none;
+  border-radius: 2px;
+}
+.mdp-workspace-search__match[aria-current] mark, .mdp-search-source mark {
+  background: var(--mdp-search-current-bg);
+  color: var(--mdp-search-current-fg);
+}
+
+::highlight(mdp-find) {
+  background-color: var(--mdp-search-match-bg);
+  color: var(--mdp-search-match-fg);
+  text-decoration: none;
+}
+::highlight(mdp-find-current) {
+  background-color: var(--mdp-search-current-bg);
+  color: var(--mdp-search-current-fg);
+  text-decoration: underline solid var(--mdp-search-current-edge) 2px;
+}
+
+.mdp-current-match { position: fixed; inset: 0; z-index: 13; pointer-events: none; }
+.mdp-current-match__box { position: absolute; border: 0; border-bottom: 2px solid var(--mdp-search-current-edge); background: transparent; }
+.mdp-current-match__gutter { position: absolute; width: 4px; border-radius: 2px; background: var(--mdp-search-current-bg); border: 1px solid var(--mdp-search-current-edge); }
+.mdp-root .cm-searchMatch, .mdp-root .cm-searchMatch * { color: var(--mdp-search-match-fg) !important; }
+.mdp-root .cm-searchMatch-selected, .mdp-root .cm-searchMatch-selected * { color: var(--mdp-search-current-fg) !important; }
+
+.mdp-sidebar.mdp-sidebar--search-overlay {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(340px, calc(100vw - 32px));
+  height: 100dvh;
+  z-index: 24;
+  background: var(--mdp-surface);
+  box-shadow: var(--mdp-shadow-float);
+  .mdp-sidebar__panel-clip { background: var(--mdp-surface); }
+  .mdp-resize-handle { display: none; }
+}
+
+.mdp-search-source {
+  width: min(920px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  color: var(--mdp-text);
+  background: var(--mdp-surface);
+  border: 1px solid var(--mdp-border);
+  border-radius: 12px;
+  > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  h2 { margin: 0; font-size: 16px; }
+  p { font-size: 12px; color: var(--mdp-muted); overflow-wrap: anywhere; }
+  pre { max-height: calc(100dvh - 220px); overflow: auto; margin: 16px 0 0; padding: 16px; background: var(--mdp-panel-bg); border: 1px solid var(--mdp-border); border-radius: 6px; font-size: 13px; line-height: 1.6; tab-size: 2; }
+}
+
+@media (pointer: coarse) {
+  .mdp-search-options { gap: 8px; }
+  .mdp-search-options__button { width: 44px; height: 44px; }
+  .mdp-search__icon { width: 44px; height: 44px; }
+  .mdp-search-field { height: 46px; }
+  .mdp-search-field__clear { flex-basis: 44px; width: 44px; height: 44px; }
+  .mdp-search__button, .mdp-workspace-search__match, .mdp-workspace-search__file summary { min-height: 44px; }
+  .mdp-find__row .mdp-search-field { flex-basis: 100%; }
+  .mdp-find__hint button { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdp-search__icon, .mdp-workspace-search, .mdp-explorer__body > .mdp-explorer__scroll-region {
+    transition: none;
+    transform: none;
+  }
+}
+@media print {
+  .mdp-find-anchor, .mdp-workspace-search, .mdp-search-source, .mdp-current-match { display: none !important; }
+  ::highlight(mdp-find), ::highlight(mdp-find-current) { background-color: transparent; color: inherit; text-decoration: none; }
+}

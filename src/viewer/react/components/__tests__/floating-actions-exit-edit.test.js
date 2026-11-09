@@ -22,6 +22,7 @@ vi.mock('../../contexts/EditorContext.jsx', () => ({
   useEditorDispatch: () => mocks.dispatch
 }))
 vi.mock('../../contexts/ToastContext.jsx', () => ({ useToast: () => ({ showToast: vi.fn() }) }))
+vi.mock('../../contexts/SearchContext.jsx', () => ({ useSearch: () => ({ openFind: vi.fn() }) }))
 
 function find(element, predicate) {
   if (!React.isValidElement(element)) return undefined

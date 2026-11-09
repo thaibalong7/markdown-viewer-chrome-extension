@@ -200,6 +200,16 @@ describe('message router settings routes', () => {
 })
 
 describe('bounded image reads', () => {
+  it('forwards and validates text-read budgets while retaining the file-access gate', async () => {
+    const fetchFileText = vi.fn(async () => ({ text: 'text' }))
+    const isAllowedFileSchemeAccess = vi.fn(async () => true)
+    const route = createMessageRouter({ fetchFileTextViaOffscreen: fetchFileText, extensionApi: { isAllowedFileSchemeAccess } })
+    await route({ type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT, payload: { url: 'file:///docs/a.md', maxBytes: 2 * 1024 * 1024 } })
+    expect(fetchFileText).toHaveBeenCalledWith('file:///docs/a.md', 2 * 1024 * 1024)
+    for (const maxBytes of [0, -1, '123', 6 * 1024 * 1024]) await expect(route({ type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT, payload: { url: 'file:///docs/a.md', maxBytes } })).rejects.toThrow('Invalid text byte limit')
+    isAllowedFileSchemeAccess.mockResolvedValue(false)
+    await expect(route({ type: MESSAGE_TYPES.FETCH_FILE_AS_TEXT, payload: { url: 'file:///docs/a.md', maxBytes: 100 } })).rejects.toThrow('Allow access to file URLs')
+  })
   it('restricts binary reads to registered local images and retains the file-access gate', async () => {
     const fetchFileBytes = vi.fn(async () => ({ base64: 'AA==', size: 1 }))
     const isAllowedFileSchemeAccess = vi.fn(async () => true)

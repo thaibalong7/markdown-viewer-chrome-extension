@@ -38,6 +38,9 @@ describe('document loader', () => {
     await expect(loadDocument({
       href: 'file:///docs/README.md', fileType: MARKDOWN_TYPE, maxWatchBytes: 4
     })).rejects.toMatchObject({ code: 'document-too-large' })
+    expect(mocks.sendMessage).toHaveBeenLastCalledWith({ type: 'FETCH_FILE_AS_TEXT', payload: { url: 'file:///docs/README.md', maxBytes: 4 } })
+    mocks.sendMessage.mockResolvedValue({ ok: false, error: 'Text exceeds the read limit', code: 'document-too-large' })
+    await expect(loadDocument({ href: 'file:///docs/README.md', fileType: MARKDOWN_TYPE, maxWatchBytes: 4 })).rejects.toMatchObject({ code: 'document-too-large' })
   })
 
   it('loads a real text document through the background route', async () => {

@@ -9,6 +9,7 @@ import { fileHistoryService } from './file-history-service.js'
 import { optionsPageService } from './options-page-service.js'
 import { settingsBroadcastService } from './settings-broadcast-service.js'
 import { themeAssetService } from './theme-asset-service.js'
+import { matchSearchText } from './search-matching-service.js'
 
 function createPingResponse() {
   return {
@@ -84,6 +85,7 @@ export function createMessageRouter(dependencies = {}) {
   }
 
   const routes = {
+    [MESSAGE_TYPES.SEARCH_TEXT]: (message, sender) => matchSearchText(message.payload, sender),
     [MESSAGE_TYPES.PING]: () => createPingResponse(),
     [MESSAGE_TYPES.GET_SETTINGS]: (message) => message.includeStorageStatus
       ? services.settings.getSettingsState()
@@ -126,6 +128,11 @@ export function createMessageRouter(dependencies = {}) {
     [MESSAGE_TYPES.FETCH_FILE_AS_TEXT]: async (message) => {
       const url = normalizeFileFetchUrl(message.payload)
       await assertFileSchemeAccess(getExtensionApi(services.extensionApi))
+      const maxBytes = message.payload?.maxBytes
+      if (maxBytes !== undefined) {
+        if (!Number.isInteger(maxBytes) || maxBytes <= 0 || maxBytes > MAX_WATCH_BYTES) throw new Error('Invalid text byte limit')
+        return services.fetchFileText(url, maxBytes)
+      }
       return services.fetchFileText(url)
     },
     [MESSAGE_TYPES.FETCH_FILE_AS_BYTES]: async (message) => {

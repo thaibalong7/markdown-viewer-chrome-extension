@@ -20,7 +20,7 @@ The right rail uses Direct icons beside the OUTLINE label, with On this page and
 
 ## Stable grouping
 
-Quick access contains Updates then Theme. Document contains View changes when a reviewable comparison exists, followed by Edit (or Save, Done and Focus while editing), applicable source/rendered controls, then Copy. Output contains Print and Export, supported only in read mode. View changes also remains available for existing accepted-history comparisons; the redesign does not remove that capability just because no revision is pending.
+Quick access contains Updates then Theme. Document contains View changes when a reviewable comparison exists, Find for registered text formats, followed by Edit (or Save, Done and Focus while editing), applicable source/rendered controls, then Copy. Find uses the same direct/overflow order and opens the reading utility or CodeMirror in focus mode; see [Find and workspace search](./search.md). Output contains Print and Export, supported only in read mode. View changes also remains available for existing accepted-history comparisons; the redesign does not remove that capability just because no revision is pending.
 
 The catalog filters unsupported commands before measuring. Temporarily disabled controls retain their place. Virtual workspace Copy remains disabled with an explanation; custom themes do not receive a fake light/dark toggle. Editor feature gates, file connection, dirty exit confirmation, save conflict checks and protected disk application remain owned by existing flows.
 
@@ -35,6 +35,8 @@ Follow the [sidebar composition](./design-system/README.md#sidebar-composition),
 `useDocumentActionsLayout` observes the allocated command wrapper, excluding the title, and reads the actual control/divider spacing from CSS. Expanded rows use width; collapsed rails use height. The collapsed rail aligns its first action with the Show/Hide toggle independently of expanded panel width or the adjacent Files state. Keep menus/dialogs mounted independently of responsive trigger placement and preserve list scroll/focus restoration.
 
 Both lists mount the same ViewerScrollbar with `variant="sidebar"`, the existing visibility preference, and their virtual-content selector/version. The overlay portals to `.mdp-root`; observing virtual content handles loading, scans, and folder expansion without requiring the viewport itself to resize. Collapsed lists remove the scrollbar and its listeners/observers. The standalone HTML reference uses a native-scrollbar simulation, while runtime integration and lifecycle behavior are exercised by component tests.
+
+Files' magnifier is a local toolbar action for content search, distinct from the document Find action in the right rail. Ctrl+Shift+F opens that same Files-body variant without replacing its header, details or toolbar. Closing it restores the tree state and return focus. Keep Search mounted with the explorer during editing so virtual readers and the active draft remain available. Result activation preserves list focus through the real navigator, including same-file reuse and guarded forced reload; it highlights the destination without opening the Find utility. See [search navigation and manual QA](./search.md#manual-qa).
 
 ## Add a standard action
 

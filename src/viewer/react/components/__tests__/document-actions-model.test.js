@@ -16,6 +16,13 @@ function context(overrides = {}) {
 const ids = actions => actions.map(action => action.id)
 
 describe('Direct icons action catalog', () => {
+  it('offers document Find for searchable formats through the same direct/overflow catalog', () => {
+    const onFindClick = vi.fn()
+    const actions = createDocumentActions(context({ canFind: true, onFindClick }))
+    expect(ids(actions)).toEqual(['updates', 'theme', 'find', 'edit', 'copy', 'print', 'export'])
+    expect(actions.find(action => action.id === 'find')).toMatchObject({ icon: 'search', onClick: onFindClick })
+    expect(ids(createDocumentActions(context({ canFind: false })))).not.toContain('find')
+  })
   it('keeps two quick actions followed by one cohesive Document group and Output', () => {
     const actions = createDocumentActions(context({ canReview: true }))
     expect(ids(actions)).toEqual(['updates', 'theme', 'review', 'edit', 'copy', 'print', 'export'])

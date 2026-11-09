@@ -23,7 +23,10 @@ export function useExplorerBridgeRegistration({ bridge, navigateToFileRef, works
   useEffect(() => {
     if (!bridge) return undefined
     bridge.virtualFileExists = bridgeVirtualFileExists
+    const getReader = (href) => workspaceVirtualReadersRef.current?.get(href)
+    bridge.getWorkspaceReader = getReader
     return () => {
+      if (bridge.getWorkspaceReader === getReader) bridge.getWorkspaceReader = null
       if (bridge.virtualFileExists === bridgeVirtualFileExists) {
         bridge.virtualFileExists = null
       }

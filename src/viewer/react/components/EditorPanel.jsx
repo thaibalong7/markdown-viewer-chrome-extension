@@ -223,6 +223,13 @@ export const EditorPanel = forwardRef(function EditorPanel({ markdown, onContent
       reportStatus(lineInfo.number, sel.head - lineInfo.from + 1, countWords(view.state.doc.toString()))
 
       const api = {
+        openFind() { const v = viewRef.current; if (v) cm.openSearchPanel(v) },
+        revealSearchMatch(from, to, { preserveFocus = false } = {}) {
+          const v = viewRef.current
+          if (!v || from < 0 || to > v.state.doc.length) return
+          v.dispatch({ selection: { anchor: from, head: to }, effects: cm.EditorView.scrollIntoView(from, { y: 'center' }) })
+          if (!preserveFocus) v.focus()
+        },
         /** @type {HTMLElement} */
         scrollDOM: view.scrollDOM,
         /** @param {number} line1Based */

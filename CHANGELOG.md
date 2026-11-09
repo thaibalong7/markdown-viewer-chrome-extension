@@ -1,5 +1,18 @@
 # Release notes
 
+## Unreleased — Find and workspace search
+
+Implemented in the current source; no release version or Chrome Web Store publication has been assigned to these changes.
+
+- Find in the reading surface with Cmd/Ctrl+F, while preserving the focused editor's native Find/Replace.
+- Search supported text-file contents in the current Files folder/workspace with Ctrl+Shift+F, including the active unsaved draft, without replacing the sidebar header or asking for the same folder again.
+- Combine case, whole-word and diacritic matching; use compact file-grouped excerpts, line numbers, keyboard navigation and distinct current-match highlighting.
+- Retain disabled prior results during debounced updates; run Enter/Search again immediately, revalidate selected hits, preserve list focus, and open a source fallback for matches hidden by Markdown rendering.
+- Reuse bounded RAM caches and prepared Unicode maps, run workspace matching in a packaged local Worker, batch result updates, and bound file reads before decoding/serialization.
+- Correct same-file result focus, outdated displayed-document navigation and Find indexing at its text limit. Cache reuse does not add persistent indexing or continuous workspace watching; Search again rereads known files, while Refresh file list updates membership. Snapshot-only workspaces require folder reselection for fresh contents.
+
+See the [user workflow](README.md#find-in-a-document-or-across-files) and [technical contract](docs/search.md) for defaults, shortcuts, limits and remaining release QA.
+
 ## 1.0.0.1 — Change review scrolling fix
 
 Packaged on **November 3, 2026** as a small bug-fix revision of 1.0.0. Chrome Web Store publication has not been verified for this version.

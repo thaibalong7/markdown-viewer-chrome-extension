@@ -19,6 +19,8 @@ import { EditFileConnectDialog } from './EditFileConnectDialog.jsx'
 import { ExitEditConfirmation } from './ExitEditConfirmation.jsx'
 import { createDocumentActions } from './document-actions-model.js'
 import { DocumentActionToolbar } from './DocumentActionToolbar.jsx'
+import { useSearch } from '../contexts/SearchContext.jsx'
+import { getFileTypeFromUrl } from '../../../shared/file-types.js'
 
 export function FloatingActions({
   getArticleEl,
@@ -39,6 +41,7 @@ export function FloatingActions({
   const { showToast } = useToast()
   const editorState = useEditorState()
   const editorDispatch = useEditorDispatch()
+  const { openFind } = useSearch()
   const [menuOpen, setMenuOpen] = useState(null)
   const [actionsLayout, setActionsLayout] = useState('')
   const [themeSaving, setThemeSaving] = useState(false)
@@ -168,6 +171,8 @@ export function FloatingActions({
   }
 
   const actionContext = {
+    canFind: getFileTypeFromUrl(currentFileUrl)?.contentKind === 'text',
+    onFindClick: () => { setMenuOpen(null); openFind() },
     editorState, watchState, canEdit, canToggleTheme, themeToggleTarget, themeSaving,
     canToggleViewMode, isRawMode, canCopyLink, copyLinkCopied, canPrint, canExport,
     isLoading, saving: saveStatus === 'saving', editButtonRef,

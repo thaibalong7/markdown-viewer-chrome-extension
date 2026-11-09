@@ -14,6 +14,9 @@ export const MESSAGE_TYPES = {
   OPEN_EXPLORER_SETTINGS: 'OPEN_EXPLORER_SETTINGS',
   /** Background fetches file: URLs (content scripts on file pages cannot; origin is opaque). */
   FETCH_FILE_AS_TEXT: 'FETCH_FILE_AS_TEXT',
+  SEARCH_TEXT: 'SEARCH_TEXT',
+  OFFSCREEN_SEARCH: 'MDP_OFFSCREEN_SEARCH',
+  OFFSCREEN_SEARCH_DONE: 'MDP_OFFSCREEN_SEARCH_DONE',
   /** Bounded image bytes, serialized as base64 through Chrome JSON messaging. */
   FETCH_FILE_AS_BYTES: 'FETCH_FILE_AS_BYTES',
   /**

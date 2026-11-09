@@ -646,6 +646,56 @@
     },
     "useexplorer": {
       "selectASupportedFileFromTheFilesPanel": "Chọn tệp được hỗ trợ từ bảng Tệp."
+    },
+    "search": {
+      "inDocument": "Tìm trong tài liệu",
+      "workspace": "Tìm trong workspace",
+      "workspaceShortcut": "Tìm nội dung tệp · Control+Shift+F",
+      "title": "Tìm kiếm",
+      "scope": "Phạm vi tìm kiếm",
+      "previous": "Kết quả trước (Shift+Enter)",
+      "next": "Kết quả tiếp (Enter)",
+      "closeFind": "Đóng",
+      "closeWorkspace": "Đóng tìm kiếm",
+      "noDocumentResults": "Không tìm thấy trong tài liệu này.",
+      "findLimited": "Chỉ hiển thị một phần kết quả. Hãy dùng từ khóa cụ thể hơn.",
+      "placeholder": "Tìm nội dung tệp…",
+      "sourceScope": "Tìm nội dung tệp, gồm bản sửa chưa lưu.",
+      "chooseWorkspace": "Chưa đọc được danh sách tệp. Chọn thư mục để tìm kiếm.",
+      "chooseFolder": "Chọn thư mục",
+      "waitForScan": "Đang chờ quét danh sách tệp…",
+      "stop": "Dừng tìm kiếm",
+      "progress": {
+        "other": "{count} kết quả · Đã tìm {scanned}/{total} tệp…"
+      },
+      "summary": {
+        "other": "{count} kết quả · Đã tìm {scanned}/{total} tệp"
+      },
+      "startTyping": "Nhập từ khóa để tìm trong thư mục này.",
+      "searchAgain": "Tìm lại",
+      "partial": "Chưa tìm hết: đã dừng, đạt giới hạn quét/tìm kiếm hoặc có tệp bị bỏ qua ({skipped}). Hãy thu hẹp phạm vi hoặc tìm lại.",
+      "failed": "Tìm kiếm thất bại. Hãy thử tìm lại.",
+      "noPartialResults": "Chưa có kết quả trong các tệp đã tìm.",
+      "noWorkspaceResults": "Không tìm thấy trong thư mục này. Hãy thử từ khóa khác.",
+      "unsaved": "Chưa lưu",
+      "resultLocation": "{path}, dòng {line}, cột {column}",
+      "stale": "Tệp đã thay đổi. Hãy tìm lại để cập nhật kết quả.",
+      "openFailed": "Không mở được kết quả này. Hãy thử lại.",
+      "sourceTitle": "Kết quả trong nội dung nguồn",
+      "line": "Dòng {line}",
+      "sourceExplanation": "Không thể xác định chính xác vị trí này trong bản hiển thị. Vị trí trong nội dung nguồn được đánh dấu bên dưới.",
+      "resultsScrollbar": "Thanh cuộn kết quả tìm kiếm",
+      "inFolder": "Tìm trong thư mục",
+      "folderListPartial": "Chỉ có danh sách tệp ở cấp hiện tại; chưa tìm hết thư mục con. Số tệp bị bỏ qua: {skipped}.",
+      "clearQuery": "Xóa từ khóa tìm kiếm",
+      "matchOptions": "Tùy chọn khớp kết quả",
+      "matchCase": "Phân biệt hoa/thường",
+      "wholeWord": "Khớp nguyên từ",
+      "matchDiacritics": "Phân biệt dấu",
+      "updating": "Đang cập nhật kết quả…",
+      "outdatedResults": "Kết quả cũ. Tìm lại để cập nhật.",
+      "cachedScope": "Có dùng dữ liệu đã lưu tạm. Tìm lại để đọc bản mới trên đĩa.",
+      "updatingProgress": "Đang cập nhật… Đã kiểm tra {scanned}/{total} tệp."
     }
   },
   "errors": {

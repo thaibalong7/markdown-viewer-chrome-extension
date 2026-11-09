@@ -21,6 +21,8 @@ import { FileRow } from './FileRow.jsx'
 import { buildTreeMotionPlan, flattenVisibleTree, getTreeRowKey } from './FileTree.jsx'
 import { FolderRow } from './FolderRow.jsx'
 import { ViewerScrollbar } from '../ViewerScrollbar.jsx'
+import { useSearch } from '../../contexts/SearchContext.jsx'
+import { WorkspaceSearch } from '../search/WorkspaceSearch.jsx'
 
 const TREE_MOTION_DURATION_MS = 180
 const EMPTY_TREE_MOTION = Object.freeze({
@@ -33,6 +35,7 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
   useLocale()
   const loadingWidths = ['92%', '74%', '86%', '68%', '81%', '63%']
   const { state, actions } = useExplorer({ bridge })
+  const search = useSearch()
   const actualBusy = state.view === 'loading' || state.view === 'progress'
   const loadingVisible = useDelayedBusyState(actualBusy)
   const lastSettledStateRef = useRef(null)
@@ -299,147 +302,156 @@ export function ExplorerPanel({ bridge, expanded = true, scrollbarVisibility, sh
       aria-label={t('viewer.explorer.panel.supportedFilesInFolder')}
       aria-busy={isBusy}
     >
-      <ExplorerHeader
-        filesContext={viewState.filesContext}
-        summaryDirectoryLabel={viewState.summaryDirectoryLabel}
-        depthNotice={viewState.depthNotice}
-        actionsMode={viewState.actionsMode}
-        showBack={viewState.showBack}
-        backLabel={viewState.backLabel}
-        actionsDisabled={isBusy}
-        onBack={actions.onBack}
-        onOpenAnotherFolder={actions.onOpenAnotherFolder}
-        onExitWorkspace={actions.onExitWorkspace}
-      />
+      <div className="mdp-explorer__files-view">
+        <ExplorerHeader
+          filesContext={viewState.filesContext}
+          summaryDirectoryLabel={viewState.summaryDirectoryLabel}
+          depthNotice={viewState.depthNotice}
+          actionsMode={viewState.actionsMode}
+          showBack={viewState.showBack}
+          backLabel={viewState.backLabel}
+          actionsDisabled={isBusy}
+          onBack={actions.onBack}
+          onOpenAnotherFolder={actions.onOpenAnotherFolder}
+          onExitWorkspace={actions.onExitWorkspace}
+        />
 
-      <ExplorerToolbar
-        summaryFileCount={viewState.summaryFileCount}
-        summaryDirectoryLabel={viewState.summaryDirectoryLabel}
-        isBusy={isBusy}
-        isRefreshing={state.isRefreshing}
-        refreshDisabled={refreshDisabled}
-        refreshTooltip={refreshTooltip}
-        showCollapseAllFolders={showCollapseAllFolders}
-        collapseAllFoldersDisabled={!canCollapseAllFolders}
-        collapseKeepsOpenFilePath={collapseKeepsOpenFilePath}
-        onRefresh={onRefreshFromExplorer}
-        onCollapseAllFolders={onCollapseAllFoldersFromExplorer}
-      />
+        <ExplorerToolbar
+          onSearch={() => search.workspace.open ? search.closeWorkspace() : search.openWorkspace()}
+          searchOpen={search.workspace.open}
+          searchLabel={state.explorerMode === 'workspace' ? 'viewer.search.workspace' : 'viewer.search.inFolder'}
+          summaryFileCount={viewState.summaryFileCount}
+          summaryDirectoryLabel={viewState.summaryDirectoryLabel}
+          isBusy={isBusy}
+          isRefreshing={state.isRefreshing}
+          refreshDisabled={refreshDisabled}
+          refreshTooltip={refreshTooltip}
+          showCollapseAllFolders={showCollapseAllFolders}
+          collapseAllFoldersDisabled={!canCollapseAllFolders}
+          collapseKeepsOpenFilePath={collapseKeepsOpenFilePath}
+          onRefresh={onRefreshFromExplorer}
+          onCollapseAllFolders={onCollapseAllFoldersFromExplorer}
+        />
 
-      <div className="mdp-explorer__scroll-region" ref={handleScrollElementRef}>
-        <div
-          className={`mdp-explorer__loading${!loadingVisible ? ' is-pending' : ''}`}
-          hidden={presentedView !== 'loading'}
-        >
-          <SkeletonBlock lines={loadingWidths.length} widths={loadingWidths} lineHeight={14} gap={10} />
-        </div>
+        <div className="mdp-explorer__body">
+        <div className={`mdp-explorer__scroll-region${search.workspace.open ? ' is-search-inactive' : ''}`} ref={handleScrollElementRef}
+          aria-hidden={search.workspace.open} inert={search.workspace.open || undefined}>
+          <div
+            className={`mdp-explorer__loading${!loadingVisible ? ' is-pending' : ''}`}
+            hidden={presentedView !== 'loading'}
+          >
+            <SkeletonBlock lines={loadingWidths.length} widths={loadingWidths} lineHeight={14} gap={10} />
+          </div>
 
-        <div className="mdp-explorer__empty" hidden={presentedView !== 'empty'}>{t('viewer.explorer.panel.noSupportedFilesFoundInThisDirectory')}</div>
+          <div className="mdp-explorer__empty" hidden={presentedView !== 'empty'}>{t('viewer.explorer.panel.noSupportedFilesFoundInThisDirectory')}</div>
 
-        <div
-          className={`mdp-explorer__busy-view${!loadingVisible ? ' is-pending' : ''}`}
-          hidden={presentedView !== 'progress'}
-        >
-          <ExplorerProgress
-            headline={viewState.progressHeadline}
-            text={viewState.progressText}
-            showCancel={viewState.showProgressCancel}
-            onCancel={actions.onCancelProgress}
-          />
-        </div>
+          <div
+            className={`mdp-explorer__busy-view${!loadingVisible ? ' is-pending' : ''}`}
+            hidden={presentedView !== 'progress'}
+          >
+            <ExplorerProgress
+              headline={viewState.progressHeadline}
+              text={viewState.progressText}
+              showCancel={viewState.showProgressCancel}
+              onCancel={actions.onCancelProgress}
+            />
+          </div>
 
-        <ul
-          className="mdp-explorer__list mdp-explorer__list--virtual"
-          role="tree"
-          aria-label={t('viewer.explorer.panel.filesInCurrentFolder')}
-          hidden={presentedView !== 'files'}
-          style={{ height: `${fileVirtualizer.getTotalSize()}px` }}
-        >
-          {fileVirtualItems.map((virtualItem) => {
-            const file = viewState.files[virtualItem.index]
-            if (!file) return null
-            return (
-              <FileRow
-                key={virtualItem.key}
-                file={{ displayName: file.displayName, href: file.href, fileTypeId: file.fileTypeId }}
-                depth={1}
-                rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
-                isActive={normalizeFileUrlForCompare(file.href || '') === activeNormalized}
-                onPick={onPickFileFromExplorer}
-              />
-            )
-          })}
-        </ul>
-
-        <ul
-          className={`mdp-explorer__list mdp-explorer__list--virtual mdp-explorer__list--tree${treeMotion.active ? ' is-tree-animating' : ''}`}
-          role="tree"
-          aria-label={t(viewState.listAriaLabel || 'viewer.explorer.context.workspaceFiles')}
-          hidden={presentedView !== 'tree'}
-          style={{ height: `${treeVirtualizer.getTotalSize()}px` }}
-        >
-          {treeVirtualItems.map((virtualItem) => {
-            const row = treeRows[virtualItem.index]
-            if (!row?.node) return null
-            const rowKey = getTreeRowKey(row)
-            const motionState = treeMotion.enteringKeys.has(rowKey) ? 'entering' : ''
-            if (row.type === 'folder') {
+          <ul
+            className="mdp-explorer__list mdp-explorer__list--virtual"
+            role="tree"
+            aria-label={t('viewer.explorer.panel.filesInCurrentFolder')}
+            hidden={presentedView !== 'files'}
+            style={{ height: `${fileVirtualizer.getTotalSize()}px` }}
+          >
+            {fileVirtualItems.map((virtualItem) => {
+              const file = viewState.files[virtualItem.index]
+              if (!file) return null
               return (
-                <FolderRow
+                <FileRow
+                  key={virtualItem.key}
+                  file={{ displayName: file.displayName, href: file.href, fileTypeId: file.fileTypeId }}
+                  depth={1}
+                  rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
+                  isActive={normalizeFileUrlForCompare(file.href || '') === activeNormalized}
+                  onPick={onPickFileFromExplorer}
+                />
+              )
+            })}
+          </ul>
+
+          <ul
+            className={`mdp-explorer__list mdp-explorer__list--virtual mdp-explorer__list--tree${treeMotion.active ? ' is-tree-animating' : ''}`}
+            role="tree"
+            aria-label={t(viewState.listAriaLabel || 'viewer.explorer.context.workspaceFiles')}
+            hidden={presentedView !== 'tree'}
+            style={{ height: `${treeVirtualizer.getTotalSize()}px` }}
+          >
+            {treeVirtualItems.map((virtualItem) => {
+              const row = treeRows[virtualItem.index]
+              if (!row?.node) return null
+              const rowKey = getTreeRowKey(row)
+              const motionState = treeMotion.enteringKeys.has(rowKey) ? 'entering' : ''
+              if (row.type === 'folder') {
+                return (
+                  <FolderRow
+                    key={rowKey}
+                    treeRow={row}
+                    motionState={motionState}
+                    rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
+                    onToggleFolder={onToggleFolderFromExplorer}
+                  />
+                )
+              }
+              return (
+                <FileRow
                   key={rowKey}
+                  file={{
+                    displayName: row.node.name,
+                    href: row.node.href,
+                    fileTypeId: row.node.fileTypeId
+                  }}
+                  depth={row.depth}
                   treeRow={row}
                   motionState={motionState}
                   rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
-                  onToggleFolder={onToggleFolderFromExplorer}
+                  isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
+                  onPick={onPickFileFromExplorer}
                 />
               )
-            }
-            return (
-              <FileRow
-                key={rowKey}
-                file={{
-                  displayName: row.node.name,
-                  href: row.node.href,
-                  fileTypeId: row.node.fileTypeId
-                }}
-                depth={row.depth}
-                treeRow={row}
-                motionState={motionState}
-                rowStyle={{ transform: `translateY(${virtualItem.start}px)` }}
-                isActive={normalizeFileUrlForCompare(row.node.href || '') === activeNormalized}
-                onPick={onPickFileFromExplorer}
-              />
-            )
-          })}
-          {treeMotion.exitingRows.map(({ key, row, start }) => {
-            if (row.type === 'folder') {
+            })}
+            {treeMotion.exitingRows.map(({ key, row, start }) => {
+              if (row.type === 'folder') {
+                return (
+                  <FolderRow
+                    key={`exiting:${key}`}
+                    treeRow={row}
+                    motionState="exiting"
+                    rowStyle={{ transform: `translateY(${start}px)` }}
+                  />
+                )
+              }
               return (
-                <FolderRow
+                <FileRow
                   key={`exiting:${key}`}
+                  file={{
+                    displayName: row.node.name,
+                    href: row.node.href,
+                    fileTypeId: row.node.fileTypeId
+                  }}
+                  depth={row.depth}
                   treeRow={row}
                   motionState="exiting"
                   rowStyle={{ transform: `translateY(${start}px)` }}
                 />
               )
-            }
-            return (
-              <FileRow
-                key={`exiting:${key}`}
-                file={{
-                  displayName: row.node.name,
-                  href: row.node.href,
-                  fileTypeId: row.node.fileTypeId
-                }}
-                depth={row.depth}
-                treeRow={row}
-                motionState="exiting"
-                rowStyle={{ transform: `translateY(${start}px)` }}
-              />
-            )
-          })}
-        </ul>
+            })}
+          </ul>
+        </div>
+        <WorkspaceSearch state={state} bridge={bridge} actions={actions} expanded={expanded} scrollbarVisibility={scrollbarVisibility} />
+        </div>
       </div>
-      <ViewerScrollbar scrollElement={expanded ? scrollElement : null}
+      <ViewerScrollbar scrollElement={expanded && !search.workspace.open ? scrollElement : null}
         visibility={scrollbarVisibility} label={t('viewer.explorer.panel.filesScrollbar')} variant="sidebar"
         contentSelector=".mdp-explorer__list:not([hidden]), .mdp-explorer__loading:not([hidden]), .mdp-explorer__busy-view:not([hidden])"
         contentVersion={`${presentedView}:${treeRows.length}:${viewState.files.length}`} />

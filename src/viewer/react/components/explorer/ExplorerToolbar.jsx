@@ -4,6 +4,7 @@ import React from 'react'
 import { IconButton } from '../common/IconButton.jsx'
 import { CollapseAllIcon } from '../icons/CollapseAllIcon.jsx'
 import { RefreshIcon } from '../icons/RefreshIcon.jsx'
+import { AppIcon } from '../../../../shared/react/AppIcon.jsx'
 
 export function ExplorerToolbar({
   summaryFileCount,
@@ -16,6 +17,9 @@ export function ExplorerToolbar({
   collapseAllFoldersDisabled,
   collapseKeepsOpenFilePath,
   onRefresh,
+  onSearch,
+  searchOpen = false,
+  searchLabel = 'viewer.search.workspace',
   onCollapseAllFolders
 }) {
   useLocale()
@@ -30,6 +34,11 @@ export function ExplorerToolbar({
         </span>
       </div>
       <div className="mdp-explorer__toolbar-actions">
+        <IconButton tooltip={t(searchOpen ? 'viewer.search.closeWorkspace' : 'viewer.search.workspaceShortcut')} aria-label={t(searchLabel)}
+          className="mdp-explorer__toolbar-btn" activeClassName="is-search-active" pressed={searchOpen}
+          aria-expanded={searchOpen} aria-controls="mdp-explorer-search" onClick={onSearch}>
+          <AppIcon name="search" size={16} />
+        </IconButton>
         {showCollapseAllFolders ? <IconButton
             tooltip={
               collapseAllFoldersDisabled ? t('viewer.explorer.toolbar.allFoldersAreCollapsed') : collapseKeepsOpenFilePath ? t('viewer.explorer.toolbar.collapseFoldersOutsideTheOpenFilePath') : t('viewer.explorer.toolbar.collapseAllFolders')

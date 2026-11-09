@@ -5,6 +5,7 @@ import { DirtySync } from './components/DirtySync.jsx'
 import { ViewerShell } from './components/ViewerShell.jsx'
 import { FloatingActions } from './components/FloatingActions.jsx'
 import { SettingsStorageWarning } from './components/SettingsStorageWarning.jsx'
+import { SearchProvider } from './contexts/SearchContext.jsx'
 
 export function shouldInitiallyShowFilesPanel(matchMedia = globalThis.window?.matchMedia) {
   if (typeof matchMedia !== 'function') return true
@@ -50,6 +51,7 @@ export function ViewerApp({
     <ToastProvider onShowToastReady={onShowToastReady}>
       <SettingsStorageWarning />
       <EditorProvider initialSidebarVisible={shouldInitiallyShowFilesPanel()}>
+        <SearchProvider>
         <DirtySync dirty={dirty} />
         <ViewerShell
           onShellReady={onShellReady}
@@ -87,6 +89,7 @@ export function ViewerApp({
             onThemeToggle={onThemeToggle}
           />
         </ViewerShell>
+        </SearchProvider>
       </EditorProvider>
     </ToastProvider>
   )

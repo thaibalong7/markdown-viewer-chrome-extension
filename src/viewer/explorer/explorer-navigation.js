@@ -172,7 +172,7 @@ export function createExplorerNavigator(deps) {
 
   const finishNavigatedDocument = (
     fileUrl,
-    { hash = null, replaceHistory = false, updateHistory = true } = {}
+    { hash = null, replaceHistory = false, updateHistory = true, preserveFocus = false } = {}
   ) => {
     bridge?.setSmoothInitialHashScroll?.(false)
     setCurrentFileUrl(fileUrl)
@@ -187,7 +187,7 @@ export function createExplorerNavigator(deps) {
     if (!scrolledToHash && !bridge?.readingPositions?.restore(fileUrl)) {
       bridge?.getScrollRoot?.()?.scrollTo({ top: 0, behavior: 'auto' })
     }
-    focusAfterNavigation(bridge, hash)
+    if (!preserveFocus) focusAfterNavigation(bridge, hash)
     document.title = `${documentTitleFromUrl(fileUrl)} - Markdown Plus`
   }
 
@@ -198,6 +198,7 @@ export function createExplorerNavigator(deps) {
       forceReload = false,
       hash = null,
       syncExplorer = true,
+      preserveFocus = false,
       updateHistory = true
     } = {}
   ) => {
@@ -206,7 +207,7 @@ export function createExplorerNavigator(deps) {
     const target = normalizeFileUrlForCompare(fileUrl)
     if (!forceReload && current === target) {
       if (hash) scrollToHeadingHash(hash)
-      focusAfterNavigation(bridge, hash)
+      if (!preserveFocus) focusAfterNavigation(bridge, hash)
       return true
     }
 
@@ -224,6 +225,7 @@ export function createExplorerNavigator(deps) {
     finishNavigatedDocument(fileUrl, {
       hash,
       replaceHistory,
+      preserveFocus,
       updateHistory: updateHistory && refs.explorerModeRef.current !== 'workspace'
     })
 

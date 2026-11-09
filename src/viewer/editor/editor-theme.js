@@ -117,14 +117,14 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
       height: `${EDITOR_TOOLBAR_CONTROL_HEIGHT_PX}px`,
       padding: '3px 8px',
       border: '1px solid var(--mdp-border-strong)',
-      borderRadius: '6px',
-      background: 'color-mix(in srgb, var(--mdp-surface) 82%, transparent)',
+      borderRadius: '4px',
+      background: 'var(--mdp-surface)',
       color: 'var(--mdp-text)',
       font: 'inherit',
       fontSize: '11px',
       lineHeight: '18px',
-      boxShadow: 'inset 0 1px 2px color-mix(in srgb, var(--mdp-text) 6%, transparent)',
-      transition: 'border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease'
+      boxShadow: 'none',
+      transition: 'none'
     },
     '.cm-panel.cm-search .cm-textfield:hover': {
       borderColor: 'color-mix(in srgb, var(--mdp-link) 36%, var(--mdp-border-strong))'
@@ -135,8 +135,9 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
     },
     '.cm-panel.cm-search .cm-textfield:focus-visible': {
       borderColor: 'var(--mdp-link)',
-      outline: 'none',
-      boxShadow: '0 0 0 3px color-mix(in srgb, var(--mdp-link) 24%, transparent)'
+      outline: '2px solid var(--mdp-focus-color)',
+      outlineOffset: '-2px',
+      boxShadow: 'none'
     },
     '.cm-panel.cm-search .cm-button': {
       appearance: 'none',
@@ -259,10 +260,13 @@ export function createEditorTheme(EditorView, editorSettings = {}) {
       }
     },
     '.cm-searchMatch': {
-      backgroundColor: 'color-mix(in srgb, var(--mdp-link) 22%, transparent)'
+      backgroundColor: 'var(--mdp-search-match-bg, #ffe066)',
+      color: 'var(--mdp-search-match-fg, #241a00)'
     },
     '.cm-searchMatch-selected': {
-      backgroundColor: 'color-mix(in srgb, var(--mdp-link) 38%, transparent)'
+      backgroundColor: 'var(--mdp-search-current-bg, #f97316)',
+      color: 'var(--mdp-search-current-fg, #241300)',
+      textDecoration: 'underline solid var(--mdp-search-current-edge, #9a3412) 2px'
     },
     '.cm-matchingBracket': {
       backgroundColor: 'color-mix(in srgb, var(--mdp-link) 18%, transparent)',

@@ -42,6 +42,7 @@ Markdown Plus turns local Markdown files into formatted documents with a file br
 | :--- | :--- |
 | 📖 **Read rich Markdown** | View highlighted code, tables, task lists, math, footnotes, emoji, and GitHub-style alerts. |
 | 🗂️ **Browse and navigate** | Open a folder as a workspace, jump between headings with Outline, and reopen recent Markdown files. |
+| 🔍 **Find text** — unreleased | Find in the open document or search file contents across the current folder/workspace, including the active unsaved draft. |
 | 🎨 **Make it yours** | Choose light, dark, or high-contrast themes; adjust typography; create your own colors and backgrounds. |
 | 🔎 **Explore diagrams and images** | View Mermaid diagrams, pan and zoom, and download diagrams as SVG or PNG. |
 | 🔄 **Follow file changes** | Detect external edits, choose when to load them, and review source differences. |
@@ -71,6 +72,8 @@ Requires **Google Chrome 116 or newer**.
 **1.0.0.1 — Change review scrolling fix.** Keeps the comparison dialog in view and long affected-section lists contained. Packaged November 3, 2026; Chrome Web Store publication has not been verified for this version.
 
 See [release notes and known limitations](CHANGELOG.md) or the [website release notes](https://thaibalong7.github.io/markdown-viewer-chrome-extension/releases/).
+
+The Find and workspace-search workflow below describes the current development source. It has not yet been assigned a release version or verified in the Chrome Web Store package.
 
 ## Reader controls
 
@@ -188,6 +191,24 @@ The **Files** panel lists supported files alongside the open document. Choose **
 Use **Refresh file list** after adding, removing, or renaming files. It rescans the list without reloading the current document. If files are missing, check `.gitignore` and scan limits in Files & Workspace, then refresh.
 
 Markdown statistics show word count, character count including spaces, and estimated reading time; hide them in General settings. Use Back to top on long documents. On smaller windows, look in the document actions' overflow menu for additional commands.
+
+### Find in a document or across files
+
+Press **Cmd/Ctrl+F**, or choose **Find in document** in the document actions, to find text in the reading surface. A focused editor keeps its own Find/Replace. For Chrome's page-wide Find, including visible sidebar text, use the browser menu; virtualized rows outside the DOM are not searchable there.
+
+Choose the magnifier in **Files**, or press **Ctrl+Shift+F** on every platform, to search the current folder/workspace. On macOS, use **Control**, not Command. Only the tree area changes; the Files header stays in place. No second folder selection is needed when Files already has a searchable scope. Search covers supported text formats and the active unsaved draft, respecting the current file-list exclusions and scan limits.
+
+| Control | Behavior |
+| :--- | :--- |
+| **Aa — Match case** | Distinguish uppercase and lowercase. Off by default. |
+| **ab — Match whole word** | Match a complete word. Off by default. |
+| **Á — Match diacritics** | Distinguish accents. On by default; turn it off so `hai` can match `hải` and `duong` can match `đường`. |
+
+Typing searches after a short pause: **100 ms** in the reader and **250 ms** across files. Enter in the workspace query or **Search again** runs immediately and bypasses the content cache. While results update, the previous rows stay visible but cannot be opened. Matching is literal; regular expressions are not supported.
+
+Results are grouped by file with line numbers and short, single-line excerpts. Select a result to open and highlight its location while retaining keyboard focus in the result list. Use **↑/↓** to move between rows, **Enter** to open a row, and **F4/Shift+F4** to open the next/previous visible result. A match in hidden Markdown syntax opens a read-only source view when it cannot be mapped reliably to rendered text. Yellow identifies matches; orange identifies the current match.
+
+Search reuses bounded, in-memory content and Unicode caches; workspace matching runs in a local Worker. **Search again** rereads the current file list, while **Refresh file list** discovers added, removed or renamed files. A workspace opened through the snapshot-only folder picker must be selected again to obtain newer file contents. Search does not continuously monitor every file or persist a content index. Files over **2 MiB**, searches reaching **2,000 matches**, and work exceeding a **15-second** processing budget produce partial-result notices. See [search behavior and limits](docs/search.md).
 
 ### Diagrams, images, and export
 

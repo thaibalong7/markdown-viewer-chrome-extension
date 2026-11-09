@@ -41,6 +41,8 @@ Certifications should state that data is not sold, used for advertising, used fo
 
 ## Network behavior to disclose
 
+The unreleased [Find/workspace-search implementation](../search.md) adds bounded RAM caches of document contents and Unicode matching data, plus a packaged local matching Worker. It adds no persistent content index, analytics, document upload or new manifest permission. These are current-source facts for the next release review, not evidence that the Store dashboard or deployed policy has been updated.
+
 Do not claim that the extension makes zero network requests:
 
 - User-authored Markdown may reference remote images or resources, which Chrome can request directly from the referenced host.
@@ -52,7 +54,7 @@ None of these requests send document content to a Markdown Plus-operated server.
 ## Permission justifications
 
 - `storage`: Stores reader, editor, explorer, theme, and plugin preferences. Recent local file paths are kept separately in `chrome.storage.local`.
-- `offscreen`: Reads local `file:` documents and directory listings used by the Files explorer.
+- `offscreen`: Reads local `file:` documents and directory listings used by the Files explorer; the unreleased search implementation also creates a packaged Worker there for local text matching, using the WORKERS creation reason alongside DOM_SCRAPING.
 - `downloads`: Saves user-requested HTML, Word-compatible, and Mermaid SVG/PNG exports through Chrome's downloads API. Editor Save writes only through the original file handle explicitly connected by the user; there is no download fallback for saving edits.
 - `file:///*`: Recognizes, reads, and displays local supported documents. The user must separately enable **Allow access to file URLs** in Chrome.
 

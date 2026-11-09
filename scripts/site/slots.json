@@ -475,5 +475,51 @@
   "guide.workspace.map.actions": {
     "strong0Open": "<strong>",
     "strong0Close": "</strong>"
+  },
+  "guide.workspace.search.document": {
+    "key0": "<kbd>Cmd/Ctrl</kbd>",
+    "key1": "<kbd>F</kbd>"
+  },
+  "guide.workspace.search.workspace": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "key0": "<kbd>Ctrl</kbd>",
+    "key1": "<kbd>Shift</kbd>",
+    "key2": "<kbd>F</kbd>"
+  },
+  "guide.workspace.search.modes": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>",
+    "code0Open": "<code>",
+    "code0Close": "</code>",
+    "code1Open": "<code>",
+    "code1Close": "</code>",
+    "code2Open": "<code>",
+    "code2Close": "</code>",
+    "code3Open": "<code>",
+    "code3Close": "</code>"
+  },
+  "guide.workspace.search.results": {
+    "key0": "<kbd>F4</kbd>",
+    "key1": "<kbd>Shift</kbd>",
+    "key2": "<kbd>F4</kbd>"
+  },
+  "guide.workspace.search.refresh": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>"
+  },
+  "guide.workspace.search.limits": {
+    "strong0Open": "<strong>",
+    "strong0Close": "</strong>",
+    "strong1Open": "<strong>",
+    "strong1Close": "</strong>",
+    "strong2Open": "<strong>",
+    "strong2Close": "</strong>"
   }
 }

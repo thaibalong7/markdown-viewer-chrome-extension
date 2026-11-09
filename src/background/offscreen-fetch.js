@@ -15,7 +15,7 @@ async function hasOffscreenDocument() {
   return contexts.length > 0
 }
 
-async function ensureOffscreenDocument() {
+export async function ensureOffscreenDocument() {
   if (typeof chrome.offscreen?.createDocument !== 'function') {
     throw new Error('chrome.offscreen is not available (Chrome 109+ required).')
   }
@@ -34,9 +34,9 @@ async function ensureOffscreenDocument() {
   offscreenReady = chrome.offscreen
     .createDocument({
       url,
-      reasons: ['DOM_SCRAPING'],
+      reasons: ['DOM_SCRAPING', 'WORKERS'],
       justification:
-        'Fetch local file:// directory listings for the Markdown Plus sibling files explorer.'
+        'Read local documents and run bounded text matching in a dedicated worker.'
     })
     .then(() => undefined)
     .finally(() => {
@@ -106,5 +106,5 @@ function fetchFileViaOffscreen(url, { format = 'text', maxBytes } = {}) {
   })
 }
 
-export const fetchFileTextViaOffscreen = (url) => fetchFileViaOffscreen(url)
+export const fetchFileTextViaOffscreen = (url, maxBytes) => fetchFileViaOffscreen(url, { maxBytes })
 export const fetchFileBytesViaOffscreen = (url, maxBytes) => fetchFileViaOffscreen(url, { format: 'bytes', maxBytes })

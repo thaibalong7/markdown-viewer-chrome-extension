@@ -646,6 +646,56 @@
     },
     "useexplorer": {
       "selectASupportedFileFromTheFilesPanel": "请从文件面板中选择受支持的文件。"
+    },
+    "search": {
+      "inDocument": "在文档中查找",
+      "workspace": "搜索工作区",
+      "workspaceShortcut": "搜索文件内容 · Control+Shift+F",
+      "title": "搜索",
+      "scope": "搜索范围",
+      "previous": "上一个匹配项（Shift+Enter）",
+      "next": "下一个匹配项（Enter）",
+      "closeFind": "关闭",
+      "closeWorkspace": "关闭搜索",
+      "noDocumentResults": "此文档中没有匹配项。",
+      "findLimited": "仅显示部分匹配项。请使用更具体的搜索词。",
+      "placeholder": "搜索文件内容…",
+      "sourceScope": "搜索文件内容，包括未保存的编辑内容。",
+      "chooseWorkspace": "无法列出此文件夹中的文件，请选择要搜索的文件夹。",
+      "chooseFolder": "选择文件夹",
+      "waitForScan": "正在等待文件扫描…",
+      "stop": "停止搜索",
+      "progress": {
+        "other": "{count} 个匹配项 · 已搜索 {scanned}/{total} 个文件…"
+      },
+      "summary": {
+        "other": "{count} 个匹配项 · 已搜索 {scanned}/{total} 个文件"
+      },
+      "startTyping": "输入搜索词以搜索当前文件夹。",
+      "searchAgain": "重新搜索",
+      "partial": "搜索尚未完成：搜索已停止、已达到扫描或搜索限制，或有文件被跳过（{skipped}）。请缩小范围或重新搜索。",
+      "failed": "搜索失败，请重新搜索以重试。",
+      "noPartialResults": "已搜索的文件中暂未找到匹配项。",
+      "noWorkspaceResults": "此文件夹中没有匹配项，请尝试其他搜索词。",
+      "unsaved": "未保存",
+      "resultLocation": "{path}，第 {line} 行，第 {column} 列",
+      "stale": "文件已更改，请重新搜索以更新结果。",
+      "openFailed": "无法打开此结果，请重试。",
+      "sourceTitle": "源文本中的匹配项",
+      "line": "第 {line} 行",
+      "sourceExplanation": "无法精确定位此匹配项在渲染文档中的位置。下方已高亮显示其在源文本中的确切位置。",
+      "resultsScrollbar": "搜索结果滚动条",
+      "inFolder": "搜索文件夹",
+      "folderListPartial": "仅能获取当前文件夹的文件列表，子文件夹可能未被搜索。已跳过 {skipped} 个文件。",
+      "clearQuery": "清除搜索词",
+      "matchOptions": "搜索匹配选项",
+      "matchCase": "区分大小写",
+      "wholeWord": "全字匹配",
+      "matchDiacritics": "区分变音符号",
+      "updating": "正在更新结果…",
+      "outdatedResults": "当前显示旧结果。请重新搜索以更新。",
+      "cachedScope": "部分内容来自缓存。重新搜索可读取最新文件。",
+      "updatingProgress": "正在更新结果… 已检查 {scanned}/{total} 个文件。"
     }
   },
   "errors": {

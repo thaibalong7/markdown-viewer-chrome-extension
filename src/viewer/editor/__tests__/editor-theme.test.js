@@ -39,9 +39,9 @@ describe('editor theme', () => {
       flex: '0 1 240px',
       maxWidth: '240px',
       height: `${EDITOR_TOOLBAR_CONTROL_HEIGHT_PX}px`,
-      background: 'color-mix(in srgb, var(--mdp-surface) 82%, transparent)',
+      background: 'var(--mdp-surface)',
       border: '1px solid var(--mdp-border-strong)',
-      borderRadius: '6px'
+      borderRadius: '4px'
     })
     expect(spec['.cm-panel.cm-search .cm-button']).toMatchObject({
       appearance: 'none',
@@ -57,7 +57,9 @@ describe('editor theme', () => {
 
     expect(spec['.cm-panel.cm-search .cm-textfield:focus-visible']).toMatchObject({
       borderColor: 'var(--mdp-link)',
-      outline: 'none'
+      outline: '2px solid var(--mdp-focus-color)',
+      outlineOffset: '-2px',
+      boxShadow: 'none'
     })
     expect(spec['.cm-panel.cm-search .cm-button:focus-visible']).toMatchObject({
       outline: '2px solid var(--mdp-focus-color)'
@@ -65,6 +67,10 @@ describe('editor theme', () => {
     expect(spec['.cm-panel.cm-search input[type="checkbox"]:checked']).toMatchObject({
       borderColor: 'var(--mdp-link)',
       backgroundColor: 'var(--mdp-link)'
+    })
+    expect(spec['.cm-searchMatch-selected']).toMatchObject({
+      backgroundColor: 'var(--mdp-search-current-bg, #f97316)',
+      textDecoration: 'underline solid var(--mdp-search-current-edge, #9a3412) 2px'
     })
   })
 

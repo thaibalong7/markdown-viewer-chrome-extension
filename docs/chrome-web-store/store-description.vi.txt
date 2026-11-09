@@ -1,0 +1,58 @@
+Markdown Plus là trình xem và đọc Markdown hoàn toàn miễn phí cho Chrome. Mở tệp .md trên máy ngay trong trình duyệt và đọc tài liệu đã được định dạng thay vì mã Markdown thô. Không cần tài khoản hay tải tài liệu lên máy chủ.
+
+TÍNH NĂNG
+
+• Mở tệp Markdown trên máy — Hỗ trợ .md, .markdown, .mdown và .mdc.
+• Duyệt thư mục — Mở thư mục làm việc và chuyển giữa các tài liệu trong bảng Tệp.
+• Di chuyển trong tài liệu dài — Chọn tiêu đề trong Mục lục để đến ngay phần cần đọc.
+• Đọc mã có tô màu cú pháp — Hiển thị các khối mã rõ ràng, dễ theo dõi.
+• Xem bảng và danh sách công việc — Đọc nội dung có cấu trúc với định dạng dễ nhìn.
+• Xem sơ đồ Mermaid — Hiển thị sơ đồ ngay trong tài liệu.
+• Hiển thị công thức toán — Đọc công thức trong dòng và công thức riêng dòng với KaTeX.
+• Đọc Markdown mở rộng — Hỗ trợ chú thích cuối trang, emoji và khối thông báo kiểu GitHub.
+• Chọn giao diện đọc — Có giao diện sáng, tối và tương phản cao.
+• Điều chỉnh cách hiển thị — Tùy chỉnh phông chữ, cỡ chữ, giãn dòng và chiều rộng nội dung.
+• Tạo giao diện riêng — Chọn màu sắc và thêm ảnh nền hoặc ảnh động.
+• Xem tệp liên quan — Mở tệp văn bản, SQL, DBML, Mermaid và hình ảnh qua bảng Tệp.
+• Xem rõ sơ đồ và hình ảnh — Mở trong khung xem lớn để phóng to, thu nhỏ và di chuyển.
+• Theo dõi thay đổi từ ứng dụng khác — Phát hiện thay đổi của tệp đang mở và chọn lúc tải lại.
+• Xem phần thay đổi — So sánh các dòng được thêm, xóa và xác định những phần Markdown bị ảnh hưởng.
+• Soạn thảo với bản xem trước trực tiếp — Bật trình soạn thảo thử nghiệm và lưu vào tệp gốc đã được chọn.
+• Xuất tài liệu — Xuất Markdown thành HTML hoặc tệp .doc tương thích với Word.
+• Xuất sơ đồ — Tải sơ đồ Mermaid về dưới dạng SVG hoặc PNG.
+• In hoặc lưu PDF — Sử dụng hộp thoại in của Chrome.
+• Mở lại tệp gần đây — Quay lại các tệp Markdown trên máy đã mở trước đó.
+• Sao lưu cài đặt — Xuất và khôi phục tùy chọn cùng cấu hình giao diện riêng bằng JSON; không bao gồm ảnh nền.
+• Chọn ngôn ngữ giao diện — Tiếng Anh, tiếng Việt hoặc tiếng Trung giản thể.
+
+HOÀN TOÀN MIỄN PHÍ
+
+Mọi tính năng đều miễn phí. Không cần đăng ký trả phí hay mua bản nâng cấp.
+
+BẮT ĐẦU SỬ DỤNG
+
+1. Cài đặt Markdown Plus.
+2. Mở chrome://extensions, tìm Markdown Plus - Free Markdown Viewer và chọn Chi tiết (Details).
+3. Bật Cho phép truy cập vào các URL của tệp (Allow access to file URLs).
+4. Mở hoặc tải lại một tệp Markdown trên máy bằng Chrome.
+
+Yêu cầu Chrome 116 trở lên. Markdown Plus hoạt động khi mở tệp Markdown trên máy. Để xem các định dạng khác được hỗ trợ, mở trình xem Markdown trước rồi chọn tệp qua bảng Tệp.
+
+Tính năng soạn thảo đang ở giai đoạn thử nghiệm và mặc định được tắt. Để lưu, bạn cần chọn đúng tệp gốc và cấp quyền ghi.
+
+QUYỀN RIÊNG TƯ
+
+Nội dung tài liệu được xử lý ngay trong trình duyệt, không tải lên máy chủ do nhà phát triển vận hành. Các tùy chọn có thể được đồng bộ qua Chrome. Đường dẫn tệp gần đây và ảnh nền được lưu trên thiết bị hiện tại. Tài liệu có thể tải ảnh từ bên ngoài; tài liệu toán đã xuất có thể tham chiếu CSS bên ngoài.
+
+Chính sách quyền riêng tư:
+https://thaibalong7.github.io/markdown-viewer-chrome-extension/vi/privacy/
+
+HỖ TRỢ VÀ MÃ NGUỒN
+
+Báo lỗi hoặc đề xuất tính năng:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues
+
+Vui lòng ghi rõ phiên bản Chrome và tiện ích, các bước tái hiện, kết quả mong đợi và kết quả thực tế. Xóa nội dung riêng tư khỏi tệp ví dụ và ảnh chụp trước khi chia sẻ.
+
+Xem mã nguồn trên GitHub:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension

@@ -1,15 +1,58 @@
-Markdown Plus turns local Markdown files into a document workspace in Chrome. Read with an outline, syntax highlighting, math, tables, and Mermaid diagrams. Browse related documents and images in the Files explorer, choose a built-in theme or create your own, and export your work.
+Markdown Plus is a completely free Markdown viewer and Markdown reader for Chrome. Open local .md files directly in your browser and read formatted documents instead of raw Markdown text. No account or document upload is required.
 
-Enable the experimental editor to edit Markdown with a live preview. Before editing, connect the original file and grant Chrome permission to write it. Save updates that connected file and checks for external changes; it does not silently download a replacement copy.
+FEATURES
 
-Export documents as HTML or Word-compatible files, export Mermaid diagrams as SVG or PNG, or use Chrome's print dialog to save a PDF.
+• Open local Markdown files — Support for .md, .markdown, .mdown, and .mdc.
+• Browse folders — Open a folder and switch between documents in the Files explorer.
+• Navigate long documents — Jump to sections with a heading outline.
+• Read highlighted code — Syntax highlighting for fenced code blocks.
+• View tables and task lists — Read structured content with clear formatting.
+• Render Mermaid diagrams — View diagrams directly inside your documents.
+• Display math formulas — Read inline and block equations with KaTeX.
+• Read extended Markdown — Support for footnotes, emoji, and GitHub-style alerts.
+• Choose reading themes — Light, dark, and high-contrast options.
+• Adjust reading comfort — Customize fonts, text size, line spacing, and content width.
+• Create custom themes — Personalize colors and add background images or animations.
+• Explore related files — Open text, SQL, DBML, Mermaid, and image files through the Files explorer.
+• Inspect diagrams and images — Open a larger viewer with pan and zoom.
+• Follow external edits — Detect changes to the open file and choose when to load them.
+• Review source changes — Compare added and removed lines and identify affected Markdown sections.
+• Edit with live preview — Enable the experimental editor and save to a connected original file.
+• Export documents — Export Markdown as HTML or Word-compatible .doc.
+• Export diagrams — Download Mermaid diagrams as SVG or PNG.
+• Print or save as PDF — Use Chrome's print dialog.
+• Reopen recent files — Return to previously opened local Markdown documents.
+• Back up preferences — Export and restore settings and custom-theme definitions as JSON; background images are excluded.
+• Choose your interface language — English, Vietnamese, or Simplified Chinese.
 
-One-time local file setup
+COMPLETELY FREE
 
-1. Install Markdown Plus, then open its toolbar popup.
-2. Click Open extension details, or open chrome://extensions, find Markdown Plus, and select Details.
-3. Enable Allow access to file URLs. Chrome controls this setting; Markdown Plus cannot enable it automatically.
-4. Reopen the popup or return to Settings to confirm that file access is ready. Open or reload a local .md file in Chrome.
+All features are free to use. No subscription or paid upgrade is required.
 
-Document content is processed in your browser and is not uploaded to a developer-operated server. Preferences may sync through your signed-in Chrome account. Recent-file paths and custom background-image files stay on the current device. Documents can load remote images, and exported math documents can reference external CSS. Read the privacy policy for storage details and controls:
+QUICK START
+
+1. Install Markdown Plus.
+2. Open chrome://extensions, find Markdown Plus - Free Markdown Viewer, and select Details.
+3. Enable “Allow access to file URLs”.
+4. Open or reload a local Markdown file in Chrome.
+
+Requires Chrome 116 or newer. Markdown Plus activates on local Markdown files. Other supported formats open through the Files explorer after the Markdown viewer is active.
+
+Experimental editing is optional and disabled by default. Saving requires selecting the original file and granting write permission.
+
+PRIVACY
+
+Document content is processed locally in your browser and is not uploaded to a developer-operated server. Preferences may sync through Chrome. Recent-file paths and background images remain on your device. Documents can load remote images, and exported math documents can reference external CSS.
+
+Privacy policy:
 https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/
+
+SUPPORT AND SOURCE CODE
+
+Report a bug or request a feature:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues
+
+Include your Chrome and extension versions, steps to reproduce, and expected versus actual behavior. Remove private content from example files and screenshots before sharing.
+
+View source code on GitHub:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension

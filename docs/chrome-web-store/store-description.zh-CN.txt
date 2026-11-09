@@ -1,0 +1,58 @@
+Markdown Plus 是完全免费的 Chrome Markdown 查看器和 MD 阅读器。直接在浏览器中打开本地 .md 文件，阅读排版后的文档，无需面对原始 Markdown 文本。无需注册账号，也无需上传文档。
+
+功能一览
+
+• 打开本地 Markdown 文件 — 支持 .md、.markdown、.mdown 和 .mdc。
+• 浏览文件夹 — 打开工作区文件夹，在“文件”面板中切换文档。
+• 快速定位章节 — 通过标题大纲跳转到需要阅读的部分。
+• 阅读高亮代码 — 为围栏代码块提供语法高亮。
+• 查看表格和任务列表 — 清晰呈现结构化内容。
+• 渲染 Mermaid 图表 — 直接在文档中查看图表。
+• 显示数学公式 — 使用 KaTeX 渲染行内公式和独立公式。
+• 阅读扩展 Markdown — 支持脚注、表情符号和 GitHub 风格提示块。
+• 选择阅读主题 — 提供浅色、深色和高对比度主题。
+• 调整阅读排版 — 自定义字体、字号、行距和内容宽度。
+• 创建自定义主题 — 调整配色，添加背景图片或动画。
+• 查看相关文件 — 通过“文件”面板打开文本、SQL、DBML、Mermaid 和图片文件。
+• 放大查看图表和图片 — 在大图查看器中缩放和平移。
+• 跟进外部修改 — 检测当前文件的变化，自行选择何时加载。
+• 比较源文件变化 — 查看新增和删除的行，定位受影响的 Markdown 章节。
+• 编辑并实时预览 — 启用实验性编辑器，将更改保存到已连接的原始文件。
+• 导出文档 — 将 Markdown 导出为 HTML 或兼容 Word 的 .doc 文件。
+• 导出图表 — 将 Mermaid 图表下载为 SVG 或 PNG。
+• 打印或保存为 PDF — 使用 Chrome 的打印对话框。
+• 重新打开最近文件 — 返回之前打开过的本地 Markdown 文档。
+• 备份偏好设置 — 通过 JSON 导出和恢复设置及自定义主题配置；不包含背景图片。
+• 选择界面语言 — 支持英语、越南语和简体中文。
+
+完全免费
+
+所有功能均可免费使用，无需付费订阅或购买升级。
+
+开始使用
+
+1. 安装 Markdown Plus。
+2. 打开 chrome://extensions，找到 Markdown Plus - Free Markdown Viewer，选择“详情”（Details）。
+3. 开启“允许访问文件网址”（Allow access to file URLs）。
+4. 在 Chrome 中打开或重新加载本地 Markdown 文件。
+
+需要 Chrome 116 或更高版本。Markdown Plus 在打开本地 Markdown 文件时启用。要查看其他支持的格式，请先打开 Markdown 查看器，再通过“文件”面板选择文件。
+
+编辑功能为实验性功能，默认关闭。保存前需要选择原始文件并授予写入权限。
+
+隐私
+
+文档内容在浏览器本地处理，不会上传到开发者运营的服务器。偏好设置可能通过 Chrome 同步。最近文件路径和背景图片保留在当前设备上。文档可以加载远程图片，导出的数学文档可能引用外部 CSS。
+
+隐私政策：
+https://thaibalong7.github.io/markdown-viewer-chrome-extension/zh-CN/privacy/
+
+支持与源代码
+
+报告问题或提出功能建议：
+https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues
+
+请提供 Chrome 和扩展程序版本、复现步骤、预期结果与实际结果。分享示例文件或截图前，请先移除私人内容。
+
+在 GitHub 上查看源代码：
+https://github.com/thaibalong7/markdown-viewer-chrome-extension

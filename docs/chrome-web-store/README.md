@@ -4,12 +4,15 @@ The latest local package is **1.0.0.1**, built on **2026-11-03** with a small ch
 
 Markdown Plus is available on [Chrome Web Store](https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk). The last recorded public listing check, on **2026-11-01**, showed **1.0.0**, **Updated November 1, 2026**, and display version `1.0.0-20261030T075747621Z`.
 
+The next-submission copy uses **Markdown Plus - Free Markdown Viewer**, a free-use summary, scannable feature lists, and GitHub support/source links. English, Vietnamese, and Simplified Chinese descriptions are prepared; the rename and revised copy have not been verified on the public Store. See the [submission form guide](./submission-form.md) for field-by-field inputs.
+
 | Reference | Contents |
 | --- | --- |
 | [Release notes](../../CHANGELOG.md) | User-facing changes, setup, and known limitations. |
 | [1.0.0.1 release record](./release-1.0.0.1.md) | Bug-fix scope, local package metadata, checksum, and verification status. |
 | [1.0.0 release record](./release-1.0.0.md) | Item identity, selected form metadata, local candidate evidence, and verification limits. |
-| [Store listing copy](./store-listing.md) | Detailed description, file-access onboarding, and reviewer instructions. |
+| [Store listing copy](./store-listing.md) | Next-submission name, localized summaries/descriptions, file-access onboarding, and reviewer instructions. |
+| [Submission form guide](./submission-form.md) | Copy-ready Dashboard inputs, package metadata, URLs, privacy justifications, and test instructions. |
 | [Privacy form reference](./privacy-disclosure.md) | Single purpose, permission justifications, data inventory, and remote-code declaration. |
 | [Approved images and editable sources](../../assets/chrome-web-store/README.md) | Icon, five screenshots in upload order, promo images, compositions, and reusable demo workspaces. |
 | [Packaging and update workflow](../releasing.md) | Version bumps, production ZIPs, checksums, and repeatable release checks. |

@@ -16,7 +16,7 @@
 | Default listing language | English |
 | Category | Tools under Productivity, confirmed on the public listing. |
 | Short description | `Auto-detect and render Markdown files in a readable viewer UI.` — English native manifest metadata. |
-| Detailed description / reviewer instructions | [Store listing copy](./store-listing.md); no account/password required. |
+| Detailed description / reviewer instructions | [Store listing copy](./store-listing.md), now maintained for the next submission; Git history retains the release-time text. No account/password required. |
 | Homepage | https://thaibalong7.github.io/markdown-viewer-chrome-extension/ |
 | Support | https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues |
 | Privacy policy | https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/ |

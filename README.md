@@ -2,23 +2,21 @@
   <img src="assets/brand/markdown-plus-icon.svg" width="112" height="112" alt="Markdown Plus logo">
 </p>
 
-<h1 align="center">Markdown Plus</h1>
+<h1 align="center">Markdown Plus - Free Markdown Viewer</h1>
 
-<p align="center"><strong>A comfortable home for your local Markdown.</strong></p>
-
-<p align="center">Read, browse, and personalize your documents right in Chrome.</p>
+<p align="center">Open local .md files directly in your browser, with readable formatting, diagrams, and customizable themes.</p>
 
 <p align="center">
   <a href="#quick-start"><img src="assets/readme/chrome-116-plus.svg" width="126" height="24" alt="Requires Google Chrome 116 or newer"></a>
 </p>
 
 <p align="center">
-  <strong><a href="https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk">Add to Chrome</a></strong> · <a href="#quick-start">Quick start</a> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/">Website</a> · <a href="https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues">Help &amp; feedback</a> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/">Privacy policy</a> · <a href="CHANGELOG.md">Release notes</a> · <a href="#contributing">Contribute</a> · <a href="#contributors">Contributors</a>
+  <strong><a href="https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk">Add to Chrome</a></strong> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/">Website</a> · <a href="https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues">Help &amp; feedback</a> · <a href="https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/">Privacy policy</a>
 </p>
 
 ---
 
-Markdown Plus turns local Markdown files into formatted documents with a file browser, heading outline, diagrams, and customizable reading themes. Use it for project documentation, personal notes, study material, or a whole folder of Markdown files.
+Use Markdown Plus for project documentation, personal notes, study material, or folders of `.md` files. All features are free to use, with no subscription or paid upgrade.
 
 **Your documents are processed locally in your browser.** No account or document upload is required.
 
@@ -38,23 +36,40 @@ Markdown Plus turns local Markdown files into formatted documents with a file br
 
 ## Features
 
-| Feature | What you can do |
-| :--- | :--- |
-| 📖 **Read rich Markdown** | View highlighted code, tables, task lists, math, footnotes, emoji, and GitHub-style alerts. |
-| 🗂️ **Browse and navigate** | Open a folder as a workspace, jump between headings with Outline, and reopen recent Markdown files. |
-| 🔍 **Find text** — unreleased | Find in the open document or search file contents across the current folder/workspace, including the active unsaved draft. |
-| 🎨 **Make it yours** | Choose light, dark, or high-contrast themes; adjust typography; create your own colors and backgrounds. |
-| 🔎 **Explore diagrams and images** | View Mermaid diagrams, pan and zoom, and download diagrams as SVG or PNG. |
-| 🔄 **Follow file changes** | Detect external edits, choose when to load them, and review source differences. |
-| ✏️ **Edit with live preview** | Opt in to the experimental Markdown editor and save back to a verified local file. |
-| 📤 **Print and share** | Print, save a PDF through Chrome, or export Markdown as HTML or Word (`.doc`). |
+- **Open local Markdown files** — Read `.md`, `.markdown`, `.mdown`, and `.mdc` directly in Chrome.
+- **Browse folders** — Open a folder and switch between documents in the Files explorer.
+- **Navigate long documents** — Jump to sections with a heading outline.
+- **Read highlighted code** — Syntax highlighting for fenced code blocks.
+- **View tables and task lists** — Read structured content with clear formatting.
+- **Render Mermaid diagrams** — View diagrams directly inside your documents.
+- **Display math formulas** — Read inline and block equations with KaTeX.
+- **Read extended Markdown** — Support for footnotes, emoji, and GitHub-style alerts.
+- **Choose reading themes** — Light, dark, and high-contrast options.
+- **Adjust reading comfort** — Customize fonts, text size, line spacing, and content width.
+- **Create custom themes** — Personalize colors and add background images or animations.
+- **Explore related files** — Open text, SQL, DBML, Mermaid, and image files through the Files explorer.
+- **Inspect diagrams and images** — Open a larger viewer with pan and zoom.
+- **Follow external edits** — Detect changes to the open file and choose when to load them.
+- **Review source changes** — Compare added and removed lines and identify affected Markdown sections.
+- **Edit with live preview — experimental** — Opt in to editing and save to a verified original file after granting write permission.
+- **Export documents** — Export Markdown as HTML or Word-compatible `.doc`.
+- **Export diagrams** — Download Mermaid diagrams as SVG or PNG.
+- **Print or save as PDF** — Use Chrome's print dialog.
+- **Reopen recent files** — Return to previously opened local Markdown documents.
+- **Back up preferences** — Export and restore settings and custom-theme definitions as JSON; background images are excluded.
+- **Choose your interface language** — English, Vietnamese, or Simplified Chinese.
+
+Available in the development source, **not yet released on Chrome Web Store**:
+
+- **Find in a document — unreleased** — Search text in the reading surface with case, whole-word, and diacritic matching.
+- **Search across files — unreleased** — Search supported text files in the current folder/workspace, including the active unsaved draft.
 
 ## Quick start
 
 Requires **Google Chrome 116 or newer**.
 
 1. Open [Markdown Plus on Chrome Web Store](https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk) and choose **Add to Chrome**. Confirm **Add extension** when Chrome asks.
-2. Open `chrome://extensions`, find **Markdown Plus**, and choose **Details**. Turn on **Allow access to file URLs**.
+2. Open `chrome://extensions`, find **Markdown Plus - Free Markdown Viewer**, and choose **Details**. Turn on **Allow access to file URLs**.
 3. Open a local `.md`, `.markdown`, `.mdown`, or `.mdc` file in Chrome. Drag it into a tab, or use <kbd>Ctrl</kbd> + <kbd>O</kbd> on Windows/Linux or <kbd>⌘</kbd> + <kbd>O</kbd> on macOS.
 4. Click the Markdown Plus toolbar icon to choose a theme and adjust reading preferences. Pin the icon from Chrome's Extensions menu for easier access.
 
@@ -286,8 +301,7 @@ Check the popup or Settings save status for an error. If Chrome reports a storag
 
 Markdown Plus processes documents locally and does not send their contents to a developer-operated service. Recent file paths, editor file connections, and custom background images stay on your device. Preferences may synchronize through Chrome. Remote resources referenced by documents can still contact their hosts; see the [Privacy Policy](https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/).
 
-- **Explore:** visit the [Markdown Plus website](https://thaibalong7.github.io/markdown-viewer-chrome-extension/).
-- **Get help or suggest a feature:** [open an issue](https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues). Include Chrome and extension versions, steps to reproduce, and an example with private content removed.
+For help, bug reports, or feature suggestions, see [Contributing](#contributing).
 
 ## Contributing
 
@@ -317,7 +331,7 @@ Created and maintained by [@thaibalong7](https://github.com/thaibalong7). Thank 
   <img src="https://contrib.rocks/image?repo=thaibalong7/markdown-viewer-chrome-extension" alt="GitHub contributors to Markdown Plus">
 </a>
 
-See the repository's [contributors](https://github.com/thaibalong7/markdown-viewer-chrome-extension/graphs/contributors) and [merged pull requests](https://github.com/thaibalong7/markdown-viewer-chrome-extension/pulls?q=is%3Apr%20is%3Amerged) for contribution history.
+See [merged pull requests](https://github.com/thaibalong7/markdown-viewer-chrome-extension/pulls?q=is%3Apr%20is%3Amerged) for contribution history.
 
 ---
 

@@ -74,9 +74,13 @@ test('bump semantics reset lower components and enforce Chrome numeric limits', 
   assert.equal(bumpVersion('1.2.3', 'major'), '2.0.0')
   assert.equal(bumpVersion('1.2.3', 'revision'), '1.2.3.1')
   assert.equal(bumpVersion('1.2.3.4', 'revision'), '1.2.3.5')
-  assert.equal(bumpVersion('1.2.3.4', 'patch'), '1.2.4.0')
-  assert.equal(bumpVersion('1.2.3.4', 'minor'), '1.3.0.0')
-  assert.equal(bumpVersion('1.2.3.4', 'major'), '2.0.0.0')
+  assert.equal(bumpVersion('1.2.3.4', 'patch'), '1.2.4')
+  assert.equal(bumpVersion('1.2.3.4', 'minor'), '1.3.0')
+  assert.equal(bumpVersion('1.2.3.4', 'major'), '2.0.0')
+  assert.equal(bumpVersion('1.0.0.1', 'patch'), '1.0.1')
+  assert.equal(bumpVersion('1.0.0.1', 'minor'), '1.1.0')
+  assert.equal(bumpVersion('1.0.0.1', 'major'), '2.0.0')
+  assert.equal(bumpVersion('1.2.3.0', 'patch'), '1.2.4')
   assert.equal(bumpVersion('1.2.3', 'none'), '1.2.3')
   for (const version of ['0.0.0', '0.0.0.0', '01.2.3', '1.2.3-beta', '1.2.3.4.5', '1.2.65536', '1.2.3.65536', '1.2.3.01']) {
     assert.throws(() => bumpVersion(version, 'none'))
@@ -106,8 +110,8 @@ test('revision releases use the same four-part version across all source files a
   }
   const result = f.run(['--bump', 'patch', '--skip-tests'])
   assert.equal(result.status, 0, result.stdout + result.stderr)
-  assert.equal((await json(join(f.root, 'manifest.json'))).version, '1.2.4.0')
-  assert.equal((await json(join(f.root, 'package.json'))).version, '1.2.4.0')
+  assert.equal((await json(join(f.root, 'manifest.json'))).version, '1.2.4')
+  assert.equal((await json(join(f.root, 'package.json'))).version, '1.2.4')
 })
 
 test('same-version builds accept 0.1.0.1 directly and preserve source bytes', async t => {

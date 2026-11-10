@@ -16,7 +16,7 @@ const paint = (code, value, stream = process.stdout) =>
 const step = message => console.log(`\n${paint('1;36', message)}`)
 const warn = message => console.warn(paint('33', message, process.stderr))
 const bumpColors = { patch: '32', minor: '36', major: '35', revision: '34' }
-const help = `Usage: npm run release -- [--bump patch|minor|major|revision|none] [--skip-tests]
+const help = `Usage: npm run release -- [--bump revision|patch|minor|major|none] [--skip-tests]
 
 Without --bump, ask whether to bump the version and which component to bump.
 --bump revision  Increment the fourth numeric component (e.g. 0.1.0 -> 0.1.0.1).
@@ -41,7 +41,7 @@ function parseArgs(args) {
 }
 
 async function chooseBump(version) {
-  if (!process.stdin.isTTY) throw new Error('Interactive input requires a terminal. Use --bump patch|minor|major|revision|none.')
+  if (!process.stdin.isTTY) throw new Error('Interactive input requires a terminal. Use --bump revision|patch|minor|major|none.')
   const prompt = createInterface({ input: process.stdin, output: process.stdout })
   try {
     console.log(`\n${paint('1;36', 'Markdown Plus · Release')}`)
@@ -55,10 +55,10 @@ async function chooseBump(version) {
   }
   console.log(`\n${paint('1', 'Choose a version bump')} ${paint('2', '(major.minor.patch[.revision])')}`)
   const choices = [
+    ['revision', 'A small follow-up release; increment only the fourth number'],
     ['patch', 'Bug fixes and small corrections'],
     ['minor', 'New features that keep existing usage compatible'],
-    ['major', 'Breaking changes that require users to adjust or migrate'],
-    ['revision', 'A small follow-up release; increment only the fourth number']
+    ['major', 'Breaking changes that require users to adjust or migrate']
   ].map(([value, description]) => {
     try {
       return { value, description, next: `${version} -> ${bumpVersion(version, value)}` }

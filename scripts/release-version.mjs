@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-export const BUMP_TYPES = ['patch', 'minor', 'major', 'revision', 'none']
+export const BUMP_TYPES = ['revision', 'patch', 'minor', 'major', 'none']
 
 export function validateVersion(version) {
   if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?$/.test(version)) {
@@ -22,6 +22,7 @@ export function bumpVersion(version, bump) {
   const index = { major: 0, minor: 1, patch: 2, revision: 3 }[bump]
   parts[index] += 1
   parts.fill(0, index + 1)
+  if (bump !== 'revision') parts.length = 3
   const next = parts.join('.')
   validateVersion(next)
   return next

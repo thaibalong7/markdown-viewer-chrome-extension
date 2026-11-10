@@ -200,7 +200,7 @@
   "guide.workspace.folder.body": "În Fișiere, alege {strong0Open}Deschide un dosar…{strong0Close}, selectează dosarul cu notițe sau documente și acordă acces când Chrome solicită. Extinde un dosar și selectează un fișier acceptat. După redeschiderea Chrome poate fi necesar să acorzi din nou permisiunea.",
   "guide.workspace.refresh": "După adăugarea, ștergerea sau redenumirea fișierelor, folosește {strong0Open}Actualizează lista de fișiere{strong0Close}. Arborele este scanat din nou; documentul deschis nu este reîncărcat. Dacă lipsesc fișiere, verifică excluderile {code0Open}.gitignore{code0Close} și limitele din {path0Open}Toate setările → Fișiere și spațiu de lucru{path0Close}, apoi actualizează lista.",
   "guide.workspace.search.title": "Caută în document sau în mai multe fișiere",
-  "guide.workspace.search.availability": "Acest mod de căutare este implementat în sursa de dezvoltare și nu are încă o versiune de lansare atribuită. Disponibilitatea sa în pachetul din Magazinul web Chrome nu a fost verificată.",
+  "guide.workspace.search.availability": "Disponibil în Markdown Plus 1.0.1 în Magazinul web Chrome.",
   "guide.workspace.search.document": "Apasă {key0} + {key1} pentru a căuta în zona de lectură. Când editorul are focalizarea, păstrează propria căutare și înlocuire. Folosește meniul Chrome pentru căutarea în toată pagina, inclusiv în textul vizibil din panourile laterale; rândurile care nu sunt încărcate în pagină nu pot fi găsite de browser.",
   "guide.workspace.search.workspace": "Alege lupa din {strong0Open}Fișiere{strong0Close} sau apasă {key0} + {key1} + {key2} pentru a căuta în conținutul fișierelor text acceptate din dosarul sau spațiul de lucru curent. Pe macOS folosește Control, nu Command. Dacă Fișiere are deja un domeniu de căutare, nu trebuie să selectezi din nou dosarul. Se schimbă doar zona arborelui; antetul rămâne. Sunt incluse ciorna activă nesalvată și fișierele din subdosare permise de excluderile și limitele curente.",
   "guide.workspace.search.modes": "Combină {strong0Open}Aa — Ține cont de majuscule{strong0Close}, {strong1Open}ab — Doar cuvinte întregi{strong1Close} și {strong2Open}Á — Ține cont de diacritice{strong2Close}. Implicit, căutarea ignoră majusculele, găsește și fragmente de cuvinte și distinge diacriticele. Dezactivează potrivirea diacriticelor pentru ca {code0Open}hai{code0Close} să găsească {code1Open}hải{code1Close}, iar {code2Open}duong{code2Close} să găsească {code3Open}đường{code3Close}. Expresiile regulate nu sunt acceptate.",
@@ -358,10 +358,10 @@
   "releases.revision.scroll": "Comparația rămâne vizibilă când derulezi în afara cardului.",
   "releases.revision.sections": "Lista secțiunilor afectate se derulează separat, astfel încât listele lungi să nu împingă indicațiile de tastatură sau să depășească zona comparației.",
   "releases.revision.displayVersion": "Versiunea este afișată ca 1.0.0.1, fără marcajul temporal al compilării.",
-  "releases.revision.status": "Pachetul local este pregătit. Publicarea acestei versiuni în Magazinul web Chrome nu a fost verificată.",
-  "releases.unreleased.title": "Nepublicat — Mai multe limbi pentru interfață",
-  "releases.unreleased.summary": "Aceste modificări sunt implementate în codul sursă actual. Nu au încă un număr de versiune, iar publicarea în Magazinul web Chrome nu a fost confirmată.",
-  "releases.unreleased.languages": "Interfața este disponibilă și în spaniolă, germană, japoneză și română: în Setări, fereastra extensiei, comenzile vizualizatorului, editor și căutare.",
-  "releases.unreleased.website": "Sunt pregătite paginile site-ului, traducerile politicii de confidențialitate și descrierile pentru Magazinul web Chrome în aceste limbi.",
-  "releases.unreleased.links": "Linkurile din secțiunea Despre deschid site-ul și politica de confidențialitate în limba selectată pentru interfață."
+  "releases.current.title": "1.0.1 — Căutare și mai multe limbi",
+  "releases.current.summary": "Publicat pe 10 noiembrie 2026 în Magazinul web Chrome.",
+  "releases.current.languages": "Interfața este disponibilă și în spaniolă, germană, japoneză și română: în Setări, fereastra extensiei, comenzile vizualizatorului, editor și căutare.",
+  "releases.current.website": "Sunt disponibile paginile site-ului, politicile de confidențialitate și descrierile pentru Magazinul web Chrome în aceste limbi.",
+  "releases.current.links": "Linkurile din secțiunea Despre deschid site-ul și politica de confidențialitate în limba selectată pentru interfață.",
+  "releases.current.search": "Caută în documentul citit și în fișierele text din spațiul de lucru, inclusiv în ciorna activă, cu opțiuni pentru majuscule, cuvinte întregi și diacritice."
 }

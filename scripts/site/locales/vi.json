@@ -200,7 +200,7 @@
   "guide.workspace.folder.body": "Trong bảng Tệp, nhấn {strong0Open}Mở thư mục…{strong0Close} rồi chọn thư mục ghi chú hoặc tài liệu dự án. Cho phép truy cập khi Chrome hỏi. Sau đó mở các thư mục con và chọn tệp cần đọc. Chrome có thể yêu cầu cấp quyền lại ở phiên làm việc sau.",
   "guide.workspace.refresh": "Vừa thêm, xóa hoặc đổi tên tệp? Nhấn {strong0Open}Làm mới danh sách tệp{strong0Close} để quét lại danh sách. Nút này chỉ cập nhật cây thư mục. Nếu vẫn thiếu tệp, kiểm tra {code0Open}.gitignore{code0Close} và giới hạn quét trong {path0Open}Tất cả cài đặt → Tệp và thư mục làm việc{path0Close}, rồi làm mới lần nữa.",
   "guide.workspace.search.title": "Tìm trong tài liệu hoặc nhiều tệp",
-  "guide.workspace.search.availability": "Tính năng tìm kiếm này đã có trong mã nguồn đang phát triển nhưng chưa được gán phiên bản phát hành. Chưa xác minh tính năng đã có trong gói trên Chrome Web Store.",
+  "guide.workspace.search.availability": "Có trong Markdown Plus 1.0.1 trên Chrome Web Store.",
   "guide.workspace.search.document": "Nhấn {key0} + {key1} để tìm trong nội dung đang đọc. Khi con trỏ nằm trong trình soạn thảo, phím tắt mở chức năng tìm/thay thế của trình soạn thảo. Muốn tìm trên toàn trang, gồm chữ đang hiển thị ở bảng bên, dùng menu của Chrome; trình duyệt không tìm được các dòng chưa được đưa lên trang.",
   "guide.workspace.search.workspace": "Nhấn kính lúp trong bảng {strong0Open}Tệp{strong0Close}, hoặc {key0} + {key1} + {key2}, để tìm nội dung các tệp văn bản được hỗ trợ trong thư mục làm việc hiện tại. Trên macOS cũng dùng Control, không dùng Command. Nếu bảng Tệp đã có phạm vi tìm kiếm, bạn không cần chọn lại thư mục. Chỉ vùng cây thư mục chuyển sang tìm kiếm, phần đầu bảng giữ nguyên. Kết quả gồm bản nháp chưa lưu đang mở và các tệp trong thư mục con, theo quy tắc loại trừ và giới hạn quét hiện tại.",
   "guide.workspace.search.modes": "Có thể kết hợp {strong0Open}Aa — Phân biệt chữ hoa, chữ thường{strong0Close}, {strong1Open}ab — Khớp toàn bộ từ{strong1Close} và {strong2Open}Á — Phân biệt dấu{strong2Close}. Mặc định không phân biệt chữ hoa, chữ thường, tìm cả một phần trong từ và có phân biệt dấu. Tắt phân biệt dấu để {code0Open}hai{code0Close} tìm được {code1Open}hải{code1Close}, hoặc {code2Open}duong{code2Close} tìm được {code3Open}đường{code3Close}. Chưa hỗ trợ biểu thức chính quy.",
@@ -358,10 +358,10 @@
   "releases.revision.scroll": "Giữ cửa sổ Xem thay đổi trong khung nhìn khi cuộn ở vùng bên ngoài cửa sổ.",
   "releases.revision.sections": "Cho phép cuộn riêng danh sách mục bị ảnh hưởng, tránh danh sách dài đẩy phần gợi ý phím tắt ra ngoài hoặc làm tràn bố cục so sánh.",
   "releases.revision.displayVersion": "Hiển thị số phiên bản 1.0.0.1 gọn hơn, bỏ dấu thời gian của bản dựng.",
-  "releases.revision.status": "Đã tạo xong gói cài đặt trên máy. Chưa xác minh phiên bản này đã được phát hành trên Chrome Web Store.",
-  "releases.unreleased.title": "Chưa phát hành — Thêm ngôn ngữ giao diện",
-  "releases.unreleased.summary": "Đã có trong mã nguồn hiện tại, chưa được gán phiên bản phát hành hoặc xác nhận phát hành trên Chrome Web Store.",
-  "releases.unreleased.languages": "Thêm tiếng Tây Ban Nha, Đức, Nhật và Romania cho trang Cài đặt, cửa sổ tiện ích, các nút điều khiển trình xem, trình soạn thảo và tìm kiếm.",
-  "releases.unreleased.website": "Chuẩn bị các trang website, chính sách riêng tư và mô tả Chrome Web Store bằng những ngôn ngữ này.",
-  "releases.unreleased.links": "Mở website và chính sách riêng tư từ mục Giới thiệu bằng ngôn ngữ giao diện đang chọn."
+  "releases.current.title": "1.0.1 — Tìm kiếm và thêm ngôn ngữ giao diện",
+  "releases.current.summary": "Đã phát hành trên Chrome Web Store ngày 10 tháng 11 năm 2026.",
+  "releases.current.languages": "Thêm tiếng Tây Ban Nha, Đức, Nhật và Romania cho trang Cài đặt, cửa sổ tiện ích, các nút điều khiển trình xem, trình soạn thảo và tìm kiếm.",
+  "releases.current.website": "Đã có các trang website, chính sách riêng tư và mô tả Chrome Web Store bằng những ngôn ngữ này.",
+  "releases.current.links": "Mở website và chính sách riêng tư từ mục Giới thiệu bằng ngôn ngữ giao diện đang chọn.",
+  "releases.current.search": "Tìm trong nội dung đang đọc và các tệp văn bản trong thư mục làm việc, kể cả bản nháp đang mở, với tùy chọn phân biệt hoa thường, nguyên từ và dấu."
 }

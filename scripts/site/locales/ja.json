@@ -200,7 +200,7 @@
   "guide.workspace.folder.body": "ファイルパネルの{strong0Open}フォルダを開く…{strong0Close}から、ノートや資料のあるフォルダを選び、Chrome の確認でアクセスを許可します。フォルダを展開して、対応するファイルを選んでください。Chrome を開き直すと、再度許可が必要になる場合があります。",
   "guide.workspace.refresh": "ファイルの追加・削除・名前変更をした後は、{strong0Open}ファイル一覧を更新{strong0Close}を使います。ツリーを読み直しますが、開いているドキュメントは再読み込みしません。ファイルが見つからない場合は、{path0Open}すべての設定 → ファイルとワークスペース{path0Close}で {code0Open}.gitignore{code0Close} の除外とスキャンの上限を確認し、一覧を更新してください。",
   "guide.workspace.search.title": "ドキュメント内や複数のファイルを検索する",
-  "guide.workspace.search.availability": "この検索機能は開発中のソースに実装されていますが、リリースバージョンはまだ割り当てられていません。Chrome ウェブストアの配布版で利用できるかは未確認です。",
+  "guide.workspace.search.availability": "Chrome ウェブストアの Markdown Plus 1.0.1 で利用できます。",
   "guide.workspace.search.document": "{key0} + {key1} で閲覧中の本文を検索できます。エディタにフォーカスがある場合は、エディタ独自の検索・置換が開きます。表示中のサイドバーも含めてページ全体を検索するには、Chrome のメニューを使ってください。ページ上に読み込まれていない行は、ブラウザの検索対象になりません。",
   "guide.workspace.search.workspace": "{strong0Open}ファイル{strong0Close}の虫眼鏡、または {key0} + {key1} + {key2} で、現在のフォルダやワークスペース内の対応テキストファイルを検索できます。macOS では Command ではなく Control を使います。ファイルパネルに検索可能な範囲がある場合、フォルダを選び直す必要はありません。ツリー部分だけが検索表示に変わり、ヘッダーはそのままです。編集中の未保存の下書きや、現在の除外設定とスキャン上限の範囲内にあるサブフォルダのファイルも対象です。",
   "guide.workspace.search.modes": "{strong0Open}Aa — 大文字と小文字を区別{strong0Close}、{strong1Open}ab — 単語単位で検索{strong1Close}、{strong2Open}Á — アクセント記号を区別{strong2Close}を組み合わせられます。初期設定では大文字と小文字を区別せず、部分一致で検索し、アクセント記号を区別します。アクセント記号の区別をオフにすると、{code0Open}hai{code0Close} で {code1Open}hải{code1Close}、{code2Open}duong{code2Close} で {code3Open}đường{code3Close} を検索できます。正規表現には対応していません。",
@@ -358,10 +358,10 @@
   "releases.revision.scroll": "比較カードの外側をスクロールしても、変更比較の画面が表示範囲内に残るようにしました。",
   "releases.revision.sections": "影響のあるセクション一覧を個別にスクロールできるようにし、一覧が長くてもキーボードの案内が押し出されたり、比較画面からはみ出したりしないようにしました。",
   "releases.revision.displayVersion": "バージョン表示を、ビルド日時を含まない 1.0.0.1 にしました。",
-  "releases.revision.status": "ローカルのパッケージは準備済みです。このバージョンが Chrome ウェブストアで公開されているかは未確認です。",
-  "releases.unreleased.title": "未リリース — 表示言語を追加",
-  "releases.unreleased.summary": "現在のソースコードには含まれていますが、リリースのバージョン番号は未定です。Chrome ウェブストアでの公開も確認されていません。",
-  "releases.unreleased.languages": "設定、拡張機能のポップアップ、ビューアの操作、エディタ、検索が、スペイン語、ドイツ語、日本語、ルーマニア語に対応します。",
-  "releases.unreleased.website": "各言語のウェブサイト、プライバシーポリシーの翻訳、Chrome ウェブストアの説明文を用意します。",
-  "releases.unreleased.links": "「製品情報」からウェブサイトやプライバシーポリシーを開くと、選択中の表示言語で表示されます。"
+  "releases.current.title": "1.0.1 — 検索機能と表示言語の追加",
+  "releases.current.summary": "2026年11月10日に Chrome ウェブストアで公開しました。",
+  "releases.current.languages": "設定、拡張機能のポップアップ、ビューアの操作、エディタ、検索が、スペイン語、ドイツ語、日本語、ルーマニア語に対応します。",
+  "releases.current.website": "各言語のウェブサイト、プライバシーポリシー、Chrome ウェブストアの説明文を提供しています。",
+  "releases.current.links": "「製品情報」からウェブサイトやプライバシーポリシーを開くと、選択中の表示言語で表示されます。",
+  "releases.current.search": "閲覧中の内容や現在のワークスペース内のテキストファイルを、編集中の下書きも含めて検索できます。大文字と小文字、単語単位、発音区別符号の一致を指定できます。"
 }

@@ -200,7 +200,7 @@
   "guide.workspace.folder.body": "En Archivos, selecciona {strong0Open}Abrir carpeta…{strong0Close}, elige la carpeta de tus notas o documentos y concede acceso cuando Chrome lo pida. Expande una carpeta y selecciona un archivo compatible. Es posible que se vuelva a pedir permiso al reiniciar Chrome.",
   "guide.workspace.refresh": "Si añades, eliminas o renombras archivos, usa {strong0Open}Actualizar lista de archivos{strong0Close}. Se vuelve a explorar el árbol, sin recargar el documento abierto. Si faltan archivos, revisa {code0Open}.gitignore{code0Close} y los límites en {path0Open}Toda la configuración → Archivos y espacio de trabajo{path0Close}, y actualiza la lista.",
   "guide.workspace.search.title": "Busca en el documento o en varios archivos",
-  "guide.workspace.search.availability": "Esta búsqueda está implementada en el código de desarrollo y aún no tiene una versión de lanzamiento asignada. No se ha verificado su disponibilidad en el paquete de Chrome Web Store.",
+  "guide.workspace.search.availability": "Disponible en Markdown Plus 1.0.1 en Chrome Web Store.",
   "guide.workspace.search.document": "Pulsa {key0} + {key1} para buscar en el área de lectura. Si el editor tiene el foco, conserva su propia búsqueda y reemplazo. Usa el menú de Chrome para buscar en toda la página, incluido el texto visible de los paneles; el buscador del navegador no puede encontrar filas que no estén cargadas en la página.",
   "guide.workspace.search.workspace": "Elige la lupa de {strong0Open}Archivos{strong0Close} o pulsa {key0} + {key1} + {key2} para buscar en archivos de texto compatibles de la carpeta o espacio de trabajo actual. En macOS, usa Control, no Command. Si Archivos ya tiene una carpeta donde buscar, no necesitas seleccionarla de nuevo. Solo cambia el área del árbol; la cabecera permanece. Se incluye el borrador activo sin guardar y los archivos de subcarpetas permitidos por las exclusiones y los límites actuales.",
   "guide.workspace.search.modes": "Combina {strong0Open}Aa — Distinguir mayúsculas y minúsculas{strong0Close}, {strong1Open}ab — Solo palabras completas{strong1Close} y {strong2Open}Á — Distinguir tildes y otros signos diacríticos{strong2Close}. De forma predeterminada, la búsqueda ignora mayúsculas, encuentra partes de palabras y distingue acentos. Desactiva la distinción de diacríticos para que {code0Open}hai{code0Close} coincida con {code1Open}hải{code1Close} y {code2Open}duong{code2Close} con {code3Open}đường{code3Close}. No se admiten expresiones regulares.",
@@ -358,10 +358,10 @@
   "releases.revision.scroll": "La comparación se mantiene visible al desplazarse fuera de la tarjeta.",
   "releases.revision.sections": "La lista de secciones afectadas se desplaza por separado para no ocultar la ayuda del teclado ni desbordar la comparación.",
   "releases.revision.displayVersion": "Se muestra la versión 1.0.0.1 sin fecha ni hora de compilación.",
-  "releases.revision.status": "El paquete local está listo. No se ha verificado la publicación de esta versión en Chrome Web Store.",
-  "releases.unreleased.title": "Sin publicar — Más idiomas de interfaz",
-  "releases.unreleased.summary": "Estos cambios ya están en el código fuente actual. Todavía no tienen una versión asignada ni se ha confirmado su publicación en Chrome Web Store.",
-  "releases.unreleased.languages": "Se añaden el español, el alemán, el japonés y el rumano a la configuración, la ventana de la extensión, los controles del visor, el editor y la búsqueda.",
-  "releases.unreleased.website": "Se preparan las páginas del sitio web, las traducciones de la política de privacidad y las descripciones de Chrome Web Store en esos idiomas.",
-  "releases.unreleased.links": "Los enlaces de «Acerca de» abren el sitio web y la política de privacidad en el idioma de interfaz seleccionado."
+  "releases.current.title": "1.0.1 — Búsqueda y más idiomas",
+  "releases.current.summary": "Publicado el 10 de noviembre de 2026 en Chrome Web Store.",
+  "releases.current.languages": "Se añaden el español, el alemán, el japonés y el rumano a la configuración, la ventana de la extensión, los controles del visor, el editor y la búsqueda.",
+  "releases.current.website": "Están disponibles las páginas del sitio web, las políticas de privacidad y las descripciones de Chrome Web Store en estos idiomas.",
+  "releases.current.links": "Los enlaces de «Acerca de» abren el sitio web y la política de privacidad en el idioma de interfaz seleccionado.",
+  "releases.current.search": "Busca en la lectura y en los archivos de texto del espacio de trabajo, incluido el borrador activo, con opciones de mayúsculas, palabras completas y diacríticos."
 }

@@ -1,6 +1,6 @@
 # Find and workspace search
 
-This is the current runtime contract, including unreleased source changes. Release/package availability is tracked separately in [CHANGELOG.md](../CHANGELOG.md). For everyday instructions, see [Find in a document or across files](../README.md#find-in-a-document-or-across-files).
+This is the current runtime contract, released in version 1.0.1. Release/package availability is tracked separately in [CHANGELOG.md](../CHANGELOG.md). For everyday instructions, see [Find in a document or across files](../README.md#find-in-a-document-or-across-files).
 
 ## Commands and scope
 

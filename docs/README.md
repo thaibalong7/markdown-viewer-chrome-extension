@@ -27,7 +27,7 @@ This directory contains current technical references for developers and contribu
 
 - [`browser-compatibility.md`](./browser-compatibility.md) — declared Chrome minimum, build targets, API audit, and manual production QA.
 - [Release notes](../CHANGELOG.md) — version changes, release status, setup, and known limitations.
-- [Chrome Web Store release reference](./chrome-web-store/README.md) — selected listing copy, privacy-form text, assets, and version-specific release evidence, including the 1.0.0.1 bug-fix package.
+- [Chrome Web Store release reference](./chrome-web-store/README.md) — selected listing copy, privacy-form text, assets, and version-specific release evidence, including the published 1.0.1 release.
 - [`releasing.md`](./releasing.md) — versioning, production archives, checksums, and release verification.
 - [Website maintenance](../site/README.md) — localized website sources, generation, checks, and GitHub Pages deployment.
 - [Source assets](../assets/README.md) — brand artwork, user-guide illustrations, and Chrome Web Store upload assets.

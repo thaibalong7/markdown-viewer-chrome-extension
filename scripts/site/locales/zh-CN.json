@@ -200,7 +200,7 @@
   "guide.workspace.folder.body": "在文件面板点击{strong0Open}打开文件夹…{strong0Close}，选择笔记或项目文档所在的目录，并按 Chrome 提示授权。之后就能展开子目录、选择文件。下次打开浏览器时，Chrome 可能要求重新授权。",
   "guide.workspace.refresh": "新增、删除或重命名文件后，点击{strong0Open}刷新文件列表{strong0Close}重新扫描目录。这个按钮只更新文件树。若仍有文件缺失，请检查{path0Open}所有设置 → 文件与工作区{path0Close}中的 {code0Open}.gitignore{code0Close} 规则及扫描限制，再刷新一次。",
   "guide.workspace.search.title": "在当前文档或多个文件中查找",
-  "guide.workspace.search.availability": "以下搜索流程已在开发源码中实现，尚未分配发布版本。尚未确认 Chrome 应用商店中的安装包是否包含此功能。",
+  "guide.workspace.search.availability": "Chrome 应用商店中的 Markdown Plus 1.0.1 已提供此功能。",
   "guide.workspace.search.document": "按 {key0} + {key1} 在阅读内容中查找。焦点位于编辑器时，仍使用编辑器自己的查找与替换。若要搜索整个页面（包括侧栏中可见的文字），请使用 Chrome 菜单中的查找；浏览器无法搜索尚未显示在页面中的行。",
   "guide.workspace.search.workspace": "点击{strong0Open}文件{strong0Close}面板中的放大镜，或按 {key0} + {key1} + {key2}，搜索当前文件夹或工作区内受支持的文本文件内容。macOS 上也使用 Control，而非 Command。文件面板已有可搜索范围时，无需再次选择文件夹。只有文件树区域切换为搜索，面板顶部保持原位。搜索包含当前未保存的编辑内容，以及现有排除规则和扫描限制允许的子目录文件。",
   "guide.workspace.search.modes": "可组合使用{strong0Open}Aa — 区分大小写{strong0Close}、{strong1Open}ab — 全字匹配{strong1Close}和{strong2Open}Á — 区分变音符号{strong2Close}。默认忽略大小写、允许子串匹配，并区分变音符号。关闭变音符号匹配后，{code0Open}hai{code0Close} 可匹配 {code1Open}hải{code1Close}，{code2Open}duong{code2Close} 可匹配 {code3Open}đường{code3Close}。暂不支持正则表达式。",
@@ -358,10 +358,10 @@
   "releases.revision.scroll": "在窗口外的遮罩区域滚动时，更改对比窗口保持在视口内。",
   "releases.revision.sections": "受影响的章节列表可独立滚动，较长的列表不会将快捷键提示挤出视野或超出对比布局。",
   "releases.revision.displayVersion": "显示简洁的版本号 1.0.0.1，不再附带构建时间戳。",
-  "releases.revision.status": "本地安装包已生成，尚未确认此版本已在 Chrome 应用商店发布。",
-  "releases.unreleased.title": "尚未发布 — 新增界面语言",
-  "releases.unreleased.summary": "这些更改已包含在当前源码中，尚未分配发布版本，也未确认在 Chrome 应用商店发布。",
-  "releases.unreleased.languages": "设置页、扩展弹出窗口、查看器控件以及编辑和搜索功能新增西班牙语、德语、日语和罗马尼亚语支持。",
-  "releases.unreleased.website": "准备了相应语言的网站页面、隐私政策译文和 Chrome 应用商店描述。",
-  "releases.unreleased.links": "从“关于”打开网站和隐私政策时，使用当前选择的界面语言。"
+  "releases.current.title": "1.0.1 — 搜索和更多界面语言",
+  "releases.current.summary": "2026 年 11 月 10 日已在 Chrome 应用商店发布。",
+  "releases.current.languages": "设置页、扩展弹出窗口、查看器控件以及编辑和搜索功能新增西班牙语、德语、日语和罗马尼亚语支持。",
+  "releases.current.website": "提供相应语言的网站页面、隐私政策译文和 Chrome 应用商店描述。",
+  "releases.current.links": "从“关于”打开网站和隐私政策时，使用当前选择的界面语言。",
+  "releases.current.search": "在阅读内容和当前工作区的文本文件中搜索，包括正在编辑的草稿，并支持区分大小写、全字匹配和变音符号匹配。"
 }

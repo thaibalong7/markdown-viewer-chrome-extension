@@ -200,7 +200,7 @@
   "guide.workspace.folder.body": "Wähle unter Dateien {strong0Open}Ordner öffnen…{strong0Close}, dann den Ordner mit deinen Notizen oder Projektdokumenten und erlaube den Zugriff, wenn Chrome fragt. Klappe einen Ordner auf und wähle eine unterstützte Datei. Nach einem Chrome-Neustart kann erneut eine Berechtigung nötig sein.",
   "guide.workspace.refresh": "Verwende nach dem Hinzufügen, Entfernen oder Umbenennen von Dateien {strong0Open}Dateiliste aktualisieren{strong0Close}. Dies liest den Dateibaum neu ein, lädt aber das offene Dokument nicht neu. Prüfe bei fehlenden Dateien {code0Open}.gitignore{code0Close} und die Grenzen unter {path0Open}Alle Einstellungen → Dateien und Arbeitsbereich{path0Close} und aktualisiere die Liste.",
   "guide.workspace.search.title": "Im Dokument oder über mehrere Dateien suchen",
-  "guide.workspace.search.availability": "Diese Suche ist im Entwicklungsstand implementiert und noch keiner Veröffentlichungsversion zugeordnet. Ihre Verfügbarkeit im Chrome-Web-Store-Paket wurde nicht überprüft.",
+  "guide.workspace.search.availability": "Verfügbar in Markdown Plus 1.0.1 im Chrome Web Store.",
   "guide.workspace.search.document": "Drücke {key0} + {key1}, um im Lesebereich zu suchen. Hat der Editor den Fokus, bleibt seine eigene Suche mit Ersetzen aktiv. Über das Chrome-Menü kannst du auf der gesamten Seite einschließlich sichtbarer Seitenbereichstexte suchen. Nicht in die Seite eingebundene Zeilen sind für die Browsersuche nicht verfügbar.",
   "guide.workspace.search.workspace": "Wähle die Lupe in {strong0Open}Dateien{strong0Close} oder drücke {key0} + {key1} + {key2}, um Inhalte unterstützter Textdateien im aktuellen Ordner oder Arbeitsbereich zu durchsuchen. Unter macOS verwendest du Control, nicht Command. Ist in Dateien bereits ein durchsuchbarer Bereich vorhanden, musst du keinen zweiten Ordner auswählen. Nur der Baumbereich ändert sich; die Kopfzeile bleibt. Der aktive ungespeicherte Entwurf sowie Unterordnerdateien innerhalb der aktuellen Ausschlüsse und Scan-Grenzen werden berücksichtigt.",
   "guide.workspace.search.modes": "Kombiniere {strong0Open}Aa — Groß-/Kleinschreibung beachten{strong0Close}, {strong1Open}ab — Nur ganze Wörter{strong1Close} und {strong2Open}Á — Diakritische Zeichen beachten{strong2Close}. Standardmäßig ignoriert die Suche die Groß-/Kleinschreibung, findet Teilzeichenfolgen und unterscheidet Akzente. Schalte die Unterscheidung diakritischer Zeichen aus, damit {code0Open}hai{code0Close} auch {code1Open}hải{code1Close} und {code2Open}duong{code2Close} auch {code3Open}đường{code3Close} findet. Reguläre Ausdrücke werden nicht unterstützt.",
@@ -358,10 +358,10 @@
   "releases.revision.scroll": "Der Änderungsvergleich bleibt sichtbar, wenn außerhalb der Karte gescrollt wird.",
   "releases.revision.sections": "Die Liste betroffener Abschnitte scrollt unabhängig, sodass lange Listen weder den Tastaturhinweis verdrängen noch über die Vergleichsansicht hinausragen.",
   "releases.revision.displayVersion": "Die Versionsanzeige lautet 1.0.0.1 ohne Build-Zeitstempel.",
-  "releases.revision.status": "Das lokale Paket ist fertig. Die Veröffentlichung dieser Version im Chrome Web Store wurde nicht überprüft.",
-  "releases.unreleased.title": "Noch nicht veröffentlicht — Weitere Oberflächensprachen",
-  "releases.unreleased.summary": "Diese Änderungen sind im aktuellen Quellcode enthalten. Eine Versionsnummer wurde noch nicht vergeben; eine Veröffentlichung im Chrome Web Store ist noch nicht bestätigt.",
-  "releases.unreleased.languages": "Die Oberfläche ist nun auch auf Spanisch, Deutsch, Japanisch und Rumänisch verfügbar: in den Einstellungen, im Erweiterungsfenster, im Viewer sowie im Editor und in der Suche.",
-  "releases.unreleased.website": "Website-Seiten, Übersetzungen der Datenschutzerklärung und Beschreibungen für den Chrome Web Store liegen für diese Sprachen bereit.",
-  "releases.unreleased.links": "Die Links unter „Info“ öffnen Website und Datenschutzerklärung in der ausgewählten Oberflächensprache."
+  "releases.current.title": "1.0.1 — Suche und weitere Sprachen",
+  "releases.current.summary": "Am 10. November 2026 im Chrome Web Store veröffentlicht.",
+  "releases.current.languages": "Die Oberfläche ist nun auch auf Spanisch, Deutsch, Japanisch und Rumänisch verfügbar: in den Einstellungen, im Erweiterungsfenster, im Viewer sowie im Editor und in der Suche.",
+  "releases.current.website": "Website-Seiten, Datenschutzerklärungen und Beschreibungen im Chrome Web Store sind in diesen Sprachen verfügbar.",
+  "releases.current.links": "Die Links unter „Info“ öffnen Website und Datenschutzerklärung in der ausgewählten Oberflächensprache.",
+  "releases.current.search": "Durchsuche den Lesebereich und Textdateien im aktuellen Arbeitsbereich, einschließlich des aktiven Entwurfs, mit Optionen für Groß-/Kleinschreibung, ganze Wörter und diakritische Zeichen."
 }

@@ -59,10 +59,10 @@ Use Markdown Plus for project documentation, personal notes, study material, or 
 - **Back up preferences** — Export and restore settings and custom-theme definitions as JSON; background images are excluded.
 - **Choose your interface language** — English, Vietnamese, Simplified Chinese, Spanish, German, Japanese, or Romanian.
 
-Available in the development source, **not yet released on Chrome Web Store**:
+Available in **1.0.1 on Chrome Web Store**:
 
-- **Find in a document — unreleased** — Search text in the reading surface with case, whole-word, and diacritic matching.
-- **Search across files — unreleased** — Search supported text files in the current folder/workspace, including the active unsaved draft.
+- **Find in a document** — Search text in the reading surface with case, whole-word, and diacritic matching.
+- **Search across files** — Search supported text files in the current folder/workspace, including the active unsaved draft.
 
 ## Quick start
 
@@ -84,11 +84,11 @@ Requires **Google Chrome 116 or newer**.
 
 ## Release notes
 
-**1.0.0.1 — Change review scrolling fix.** Keeps the comparison dialog in view and long affected-section lists contained. Packaged November 3, 2026; Chrome Web Store publication has not been verified for this version.
+**1.0.1 — Search and more interface languages.** Released November 10, 2026. Find in a document, search across workspace text files, and use Spanish, German, Japanese, or Romanian alongside English, Vietnamese, and Simplified Chinese.
 
 See [release notes and known limitations](CHANGELOG.md) or the [website release notes](https://thaibalong7.github.io/markdown-viewer-chrome-extension/releases/).
 
-The Find and workspace-search workflow below describes the current development source. It has not yet been assigned a release version or verified in the Chrome Web Store package.
+Find and workspace search are available in Markdown Plus 1.0.1 on Chrome Web Store.
 
 ## Reader controls
 

@@ -1,6 +1,6 @@
 # Chrome Web Store submission form
 
-Prepared on **2026-11-09** for the existing item `afbdmkpldpbkmmhejjlajocpneaiipmk`. This is a copy-ready guide, not a saved Dashboard export or a completed release. Field labels may vary with the Dashboard language. The name and summaries below are already updated in source; no new version number, upload ZIP, or publication is assigned by this copy change.
+Reference for **1.0.1**, released on **2026-11-10**, for the existing item `afbdmkpldpbkmmhejjlajocpneaiipmk`. See the [release record](./release-1.0.1.md). The field-by-field instructions below remain a reusable guide for future updates, not a saved Dashboard export.
 
 ## Package
 
@@ -9,11 +9,11 @@ Open the existing Markdown Plus item and choose **Package → Upload new package
 | Field | Value / action |
 | --- | --- |
 | ZIP file | A newly built release ZIP containing the updated manifest and native locale metadata. Follow [Building a release](../releasing.md); do not reuse an older ZIP. |
-| Version | Taken from the ZIP's `manifest.json → version`. Increase it above the currently published version before packaging; this task leaves the source version at `1.0.0.1`. |
+| Version | Taken from the ZIP's `manifest.json → version`. Increase it above the currently published version before packaging; the current released version is `1.0.1`. |
 | Name / title | `Markdown Plus - Free Markdown Viewer`, read from the uploaded manifest. |
 | Short description / summary | Read from the uploaded `_locales/<locale>/messages.json`; use the values below to verify the preview. |
 
-The development source also contains unreleased Find/workspace-search work and pre-existing local edits. A build from the current worktree includes them; these listing changes do not identify or approve a release candidate. Select the intended release contents and run its checks before uploading.
+Release 1.0.1 includes Find/workspace search and all seven interface languages.
 
 ## Store listing
 
@@ -53,7 +53,7 @@ Keep this screenshot order:
 4. [04-preview-zoom-export.png](../../assets/chrome-web-store/04-preview-zoom-export.png)
 5. [05-make-it-yours.png](../../assets/chrome-web-store/05-make-it-yours.png)
 
-After uploading a package containing `_locales/en`, `vi`, `zh_CN`, `es`, `de`, `ja`, and `ro`, select each matching language in the Store listing dropdown and paste its description. The runtime language code `zh-CN` maps to Chrome's `zh_CN` directory. Check each localized preview before saving. These seven listings match the interface languages in the current source; their publication is not yet verified.
+After uploading a package containing `_locales/en`, `vi`, `zh_CN`, `es`, `de`, `ja`, and `ro`, select each matching language in the Store listing dropdown and paste its description. The runtime language code `zh-CN` maps to Chrome's `zh_CN` directory. Check each localized preview before saving. These seven listings match the interface languages in the current source; they are included in the 1.0.1 release.
 
 There is no separate source-code URL needed for this proposal: the full GitHub repository URL is included in all seven detailed descriptions. The Support URL points directly to issues. The four new descriptions link to their matching localized privacy pages. Publish and verify those website pages before using the URLs in a Store submission.
 
@@ -79,7 +79,7 @@ Stores interface-language, reader, editor, explorer, theme, and plugin preferenc
 Uses a packaged offscreen document to read local file: documents and directory listings for the Files explorer.
 ```
 
-If the candidate includes the current Find/workspace-search implementation, use this expanded offscreen justification instead:
+For 1.0.1 and later packages containing Find/workspace search, use this expanded offscreen justification:
 
 ```text
 Uses a packaged offscreen document to read local file: documents and directory listings for the Files explorer, and to create a packaged local Worker for searching supported text files in the user's selected folder/workspace. Matching and temporary content caches remain on the device.
@@ -149,7 +149,7 @@ These are instructions for reviewers, not a claim that manual browser QA has alr
 | Publish automatically after review | Enable to publish when approved; disable to choose a later manual publication time. |
 | Submit for review | Use after uploading the versioned ZIP, saving localized descriptions, and checking the preview and disclosures. |
 
-After publication, record the actual public version/date and saved Dashboard changes in the release record. Do not mark this copy as published before that verification.
+For future releases, record the released version/date and saved Dashboard changes in a new release record. Release 1.0.1 is closed as published on November 10, 2026.
 
 ## Official form references
 

@@ -1,16 +1,14 @@
 # Release notes
 
-## Unreleased — More interface languages
+## 1.0.1 — Search and more interface languages
 
-Implemented in the current source; no release version or Chrome Web Store publication has been assigned to these changes.
+Released on **November 10, 2026** on Chrome Web Store. See the [1.0.1 release record](docs/chrome-web-store/release-1.0.1.md) for package metadata.
 
 - Add Spanish, German, Japanese, and Romanian across Settings, Popup, Viewer controls, and editor/search labels.
 - Prepare matching website pages, translated privacy policies, and Chrome Web Store descriptions.
 - Open the website and privacy policy in the selected interface language from About; unsupported languages fall back to English.
 
-## Unreleased — Find and workspace search
-
-Implemented in the current source; no release version or Chrome Web Store publication has been assigned to these changes.
+### Find and workspace search
 
 - Find in the reading surface with Cmd/Ctrl+F, while preserving the focused editor's native Find/Replace.
 - Search supported text-file contents in the current Files folder/workspace with Ctrl+Shift+F, including the active unsaved draft, without replacing the sidebar header or asking for the same folder again.
@@ -23,7 +21,7 @@ See the [user workflow](README.md#find-in-a-document-or-across-files) and [techn
 
 ## 1.0.0.1 — Change review scrolling fix
 
-Packaged on **November 3, 2026** as a small bug-fix revision of 1.0.0. Chrome Web Store publication has not been verified for this version.
+Packaged on **November 3, 2026** as a small bug-fix revision of 1.0.0.
 
 - Keep the change review dialog in view when scrolling over the area outside it.
 - Let the affected-section list scroll independently so long lists do not push the keyboard hint out of view or overflow the comparison layout.

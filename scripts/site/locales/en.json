@@ -200,7 +200,7 @@
   "guide.workspace.folder.body": "In Files, choose {strong0Open}Open folder…{strong0Close}, select the folder containing your notes or project docs, and grant access when Chrome asks. Expand a folder and select a supported file. The workspace may need permission again after reopening Chrome.",
   "guide.workspace.refresh": "After adding, removing or renaming files, use {strong0Open}Refresh file list{strong0Close}. It rescans the tree; it does not reload the open document. Missing files? Check {code0Open}.gitignore{code0Close} exclusions and scan limits in {path0Open}All settings → Files & Workspace{path0Close}, then refresh.",
   "guide.workspace.search.title": "Find text in this document or across files",
-  "guide.workspace.search.availability": "This search workflow is implemented in the development source and is not yet assigned a release version. Availability in the Chrome Web Store package has not been verified.",
+  "guide.workspace.search.availability": "Available in Markdown Plus 1.0.1 on Chrome Web Store.",
   "guide.workspace.search.document": "Press {key0} + {key1} to find text in the reading surface. When the editor has focus, it keeps its own Find/Replace. Use Chrome’s menu for page-wide Find, including visible sidebar text; rows not currently mounted on the page are unavailable to browser Find.",
   "guide.workspace.search.workspace": "Choose the magnifier in {strong0Open}Files{strong0Close}, or press {key0} + {key1} + {key2}, to search supported text-file contents in the current folder/workspace. On macOS, use Control, not Command. No second folder selection is needed when Files already has a searchable scope. Only the tree area changes; the header stays in place. The active unsaved draft is included, along with nested files allowed by the current exclusions and scan limits.",
   "guide.workspace.search.modes": "Combine {strong0Open}Aa — Match case{strong0Close}, {strong1Open}ab — Match whole word{strong1Close} and {strong2Open}Á — Match diacritics{strong2Close}. Defaults ignore case, match substrings and distinguish accents. Turn off diacritic matching so {code0Open}hai{code0Close} can match {code1Open}hải{code1Close} and {code2Open}duong{code2Close} can match {code3Open}đường{code3Close}. Regular expressions are not supported.",
@@ -358,10 +358,10 @@
   "releases.revision.scroll": "Keep the change review dialog in view when scrolling over the area outside it.",
   "releases.revision.sections": "Scroll the affected-section list independently so long lists do not push the keyboard hint out of view or overflow the comparison layout.",
   "releases.revision.displayVersion": "Display the clean version 1.0.0.1 without a build timestamp.",
-  "releases.revision.status": "The local package is ready. Chrome Web Store publication has not been verified for this version.",
-  "releases.unreleased.title": "Unreleased — More interface languages",
-  "releases.unreleased.summary": "Implemented in the current source. No release version or Chrome Web Store publication has been assigned yet.",
-  "releases.unreleased.languages": "Add Spanish, German, Japanese, and Romanian across Settings, Popup, Viewer controls, and editor/search labels.",
-  "releases.unreleased.website": "Prepare matching website pages, translated privacy policies, and Chrome Web Store descriptions.",
-  "releases.unreleased.links": "Open the website and privacy policy from About in the selected interface language."
+  "releases.current.title": "1.0.1 — Search and more interface languages",
+  "releases.current.summary": "Released November 10, 2026 on Chrome Web Store.",
+  "releases.current.languages": "Add Spanish, German, Japanese, and Romanian across Settings, Popup, Viewer controls, and editor/search labels.",
+  "releases.current.website": "Matching website pages, translated privacy policies, and Chrome Web Store descriptions are available.",
+  "releases.current.links": "Open the website and privacy policy from About in the selected interface language.",
+  "releases.current.search": "Find in the reading surface and search text files across the current workspace, including the active draft, with case, whole-word, and diacritic matching."
 }

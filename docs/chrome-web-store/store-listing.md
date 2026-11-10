@@ -1,6 +1,6 @@
 # Store listing copy and reviewer setup
 
-Prepared for the next submission on **2026-11-09**. These files are proposed upload inputs, not evidence of publication. The last recorded public metadata remains in the [1.0.0 release record](./release-1.0.0.md); Git history preserves the previous description.
+Release listing reference for **1.0.1**, released on **2026-11-10**. See the [release record](./release-1.0.1.md); Git history preserves previous descriptions.
 
 ## Name and short descriptions
 
@@ -28,7 +28,7 @@ Copy the complete plain-text file into the Description field for its matching St
 - [Japanese](./store-description.ja.txt)
 - [Romanian](./store-description.ro.txt)
 
-Each description uses a short introduction, a vertical feature list, free-use terms, file-access setup, privacy qualifications, an issue-report URL, and a source-code URL. Find/workspace search is deliberately absent while its Store publication remains unverified. The README labels those development features as unreleased. Reconcile these descriptions with the exact package selected for submission.
+Each description uses a short introduction, a vertical feature list, free-use terms, file-access setup, privacy qualifications, an issue-report URL, and a source-code URL. Find/workspace search is available in 1.0.1; these descriptions focus on the broader reading features.
 
 The Spanish, German, Japanese, and Romanian descriptions link to their corresponding website privacy pages. Those editions are prepared in the local website output; verify that the matching policy URLs are published before using these descriptions for a Store submission.
 

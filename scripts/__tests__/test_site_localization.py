@@ -98,17 +98,20 @@ class SiteLocalizationTests(unittest.TestCase):
             for scene, (width, height) in site.json.loads((site.SOURCE / 'guide-images.json').read_text())['en'].items():
                 self.assertRegex(html, rf'guide-en-{scene}\.jpg" width="{width}" height="{height}"')
 
-    def test_unreleased_language_changes_are_separate_from_historical_release_notes(self):
+    def test_released_101_changes_are_separate_from_historical_release_notes(self):
         catalogs, _ = site.load_catalogs()
         outputs = site.render_pages()
         for locale in site.LANGUAGES:
             html = outputs[site.page_path(locale, 'releases')]
-            upcoming = re.search(r'<section class="policy-section" id="unreleased".*?</section>', html, re.S)[0]
-            self.assertIn(catalogs[locale]['releases.unreleased.languages'], upcoming)
-            self.assertIn(catalogs[locale]['releases.unreleased.summary'], upcoming)
+            current = re.search(r'<section class="policy-section" id="v1-0-1".*?</section>', html, re.S)[0]
+            self.assertIn(catalogs[locale]['releases.current.languages'], current)
+            self.assertIn(catalogs[locale]['releases.current.summary'], current)
             historical = re.search(r'<section class="policy-section" id="v1-0-0".*?</section>', html, re.S)[0]
-            self.assertNotIn(catalogs[locale]['releases.unreleased.languages'], historical)
-            self.assertEqual(html.count('href="#unreleased"'), 3)
+            self.assertNotIn(catalogs[locale]['releases.current.languages'], historical)
+            self.assertEqual(html.count('href="#v1-0-1"'), 3)
+            self.assertIn(catalogs[locale]['releases.current.search'], current)
+            self.assertIn('datetime="2026-11-10"', current)
+            self.assertNotIn('href="#unreleased"', html)
 
     def test_document_source_filenames_and_policy_technical_values_stay_literal(self):
         outputs = site.render_pages()

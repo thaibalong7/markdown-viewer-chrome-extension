@@ -32,7 +32,7 @@ The extension has no dedicated collection feature for personal identifiers, heal
 
 Storage details:
 
-- Preferences and custom theme descriptors: stored in separate Chrome Sync items; Chrome may sync them through the user's signed-in Chrome profile. Failed sync writes do not silently switch to local storage. A verified complete-settings recovery cache is stored in `chrome.storage.local`; if the sync API does not exist, local storage is the settings backend.
+- Preferences, including the interface language, and custom theme descriptors: stored in separate Chrome Sync items; Chrome may sync them through the user's signed-in Chrome profile. Failed sync writes do not silently switch to local storage. A verified complete-settings recovery cache is stored in `chrome.storage.local`; if the sync API does not exist, local storage is the settings backend.
 - Custom theme background images: chosen by the user and stored as Blobs in browser IndexedDB on the current device. Chrome Sync stores the theme's image reference and presentation settings, not the binary image. The image may be unavailable on another device; the user must choose a local image there. These images are not uploaded to the developer or a developer-operated service.
 - Background-image deletion: after a successful theme save, replacing the image or choosing a non-image background removes the superseded asset. Deleting a custom theme removes its image; resetting settings clears the theme-image store. Cleanup errors can leave an unused local image; clearing extension site data or uninstalling removes extension-managed data according to Chrome's behavior. Original documents and exports are not deleted by these actions.
 - File handles: may be retained locally in browser IndexedDB after the user selects a file for saving.
@@ -42,6 +42,8 @@ Certifications should state that data is not sold, used for advertising, used fo
 ## Network behavior to disclose
 
 The unreleased [Find/workspace-search implementation](../search.md) adds bounded RAM caches of document contents and Unicode matching data, plus a packaged local matching Worker. It adds no persistent content index, analytics, document upload or new manifest permission. These are current-source facts for the next release review, not evidence that the Store dashboard or deployed policy has been updated.
+
+The seven interface-language catalogs in the current source are packaged locally. Selecting a language does not translate document content, contact a translation service, or add a manifest permission. The language preference uses the settings storage described above; this does not introduce another data category.
 
 Do not claim that the extension makes zero network requests:
 
@@ -53,7 +55,7 @@ None of these requests send document content to a Markdown Plus-operated server.
 
 ## Permission justifications
 
-- `storage`: Stores reader, editor, explorer, theme, and plugin preferences. Recent local file paths are kept separately in `chrome.storage.local`.
+- `storage`: Stores interface-language, reader, editor, explorer, theme, and plugin preferences. Recent local file paths are kept separately in `chrome.storage.local`.
 - `offscreen`: Reads local `file:` documents and directory listings used by the Files explorer; the unreleased search implementation also creates a packaged Worker there for local text matching, using the WORKERS creation reason alongside DOM_SCRAPING.
 - `downloads`: Saves user-requested HTML, Word-compatible, and Mermaid SVG/PNG exports through Chrome's downloads API. Editor Save writes only through the original file handle explicitly connected by the user; there is no download fallback for saving edits.
 - `file:///*`: Recognizes, reads, and displays local supported documents. The user must separately enable **Allow access to file URLs** in Chrome.

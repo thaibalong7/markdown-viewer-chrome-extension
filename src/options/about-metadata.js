@@ -1,10 +1,12 @@
-import { message as localizedMessage } from '../i18n/index.js'
-export const ABOUT_LINKS = Object.freeze([
+import { getLocale, message as localizedMessage, resolveLocale } from '../i18n/index.js'
+
+const WEBSITE_URL = 'https://thaibalong7.github.io/markdown-viewer-chrome-extension/'
+const ABOUT_LINKS = Object.freeze([
   Object.freeze({
     id: 'website',
     label: 'options.about.links.website.label',
     description: 'options.about.links.website.description',
-    href: 'https://thaibalong7.github.io/markdown-viewer-chrome-extension/'
+    href: WEBSITE_URL
   }),
   Object.freeze({
     id: 'source',
@@ -22,7 +24,7 @@ export const ABOUT_LINKS = Object.freeze([
     id: 'privacy',
     label: 'options.about.links.privacy.label',
     description: 'options.about.links.privacy.description',
-    href: 'https://thaibalong7.github.io/markdown-viewer-chrome-extension/privacy/'
+    href: `${WEBSITE_URL}privacy/`
   }),
   Object.freeze({
     id: 'license',
@@ -31,6 +33,17 @@ export const ABOUT_LINKS = Object.freeze([
     href: 'https://github.com/thaibalong7/markdown-viewer-chrome-extension/blob/master/LICENSE'
   })
 ])
+
+export function getAboutLinks(locale = getLocale()) {
+  const language = resolveLocale(locale)
+  const prefix = language === 'en' ? '' : `${language}/`
+  return ABOUT_LINKS.map(link => {
+    if (link.id === 'website' || link.id === 'privacy') {
+      return { ...link, href: `${WEBSITE_URL}${prefix}${link.id === 'privacy' ? 'privacy/' : ''}` }
+    }
+    return link
+  })
+}
 
 export function getExtensionMetadata(runtime = globalThis.chrome?.runtime) {
   const getManifest = runtime?.getManifest

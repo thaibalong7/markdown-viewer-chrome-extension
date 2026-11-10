@@ -11,6 +11,10 @@ Use **Markdown Plus - Free Markdown Viewer** as the extension name. The Store na
 | English (`en`, default) | Free Markdown viewer and MD reader for Chrome. Open local .md files with themes, syntax highlighting, math, and Mermaid diagrams. |
 | Vietnamese (`vi`) | Đọc tệp Markdown (.md) ngay trong Chrome, hoàn toàn miễn phí. Hỗ trợ giao diện tùy chỉnh, tô màu mã, công thức và sơ đồ Mermaid. |
 | Simplified Chinese (`zh_CN`) | 完全免费的 Chrome Markdown 查看器和 MD 阅读器。直接打开本地 .md 文件，支持自定义主题、代码高亮、数学公式和 Mermaid 图表。 |
+| Spanish (`es`) | Visor Markdown gratuito para Chrome. Abre archivos .md locales con temas, resaltado de código, fórmulas y diagramas Mermaid. |
+| German (`de`) | Kostenloser Markdown-Viewer für Chrome. Lokale .md-Dateien mit Designs, Codehervorhebung, Formeln und Mermaid-Diagrammen öffnen. |
+| Japanese (`ja`) | Chrome 用の無料 Markdown ビューア。ローカルの .md ファイルを開けます。テーマ、コードハイライト、数式、Mermaid の図に対応しています。 |
+| Romanian (`ro`) | Vizualizator Markdown gratuit pentru Chrome. Deschide fișiere .md locale cu teme, evidențierea codului, formule și diagrame Mermaid. |
 
 ## Detailed descriptions
 
@@ -19,8 +23,20 @@ Copy the complete plain-text file into the Description field for its matching St
 - [English](./store-description.txt)
 - [Vietnamese](./store-description.vi.txt)
 - [Simplified Chinese](./store-description.zh-CN.txt)
+- [Spanish](./store-description.es.txt)
+- [German](./store-description.de.txt)
+- [Japanese](./store-description.ja.txt)
+- [Romanian](./store-description.ro.txt)
 
 Each description uses a short introduction, a vertical feature list, free-use terms, file-access setup, privacy qualifications, an issue-report URL, and a source-code URL. Find/workspace search is deliberately absent while its Store publication remains unverified. The README labels those development features as unreleased. Reconcile these descriptions with the exact package selected for submission.
+
+The Spanish, German, Japanese, and Romanian descriptions link to their corresponding website privacy pages. Those editions are prepared in the local website output; verify that the matching policy URLs are published before using these descriptions for a Store submission.
+
+## Interface and listing languages
+
+The current source supports English, Vietnamese, Simplified Chinese, Spanish, German, Japanese, and Romanian. Choose **Settings → General → Interface language**; **Browser language** follows the browser's preferred languages with English fallback. This changes Settings, Popup, Viewer controls, and editor/search labels; document content remains literal. Chrome's own file, permission, and print dialogs follow Chrome's language independently. Runtime details and terminology are documented in [Interface languages](../internationalization.md) and the [Localization writing guide](../localization.md).
+
+For the next submission, upload a package containing all seven native locale directories before selecting each listing language in the Dashboard and pasting its description. Runtime `zh-CN` uses Chrome's `zh_CN` directory; the other codes match the summary table. Store descriptions and the interface-language preference are separate: changing one does not update the other. Follow Chrome's [localized listing workflow](https://developer.chrome.com/docs/webstore/cws-dashboard-listing#localize-your-listing) and keep the described features consistent across languages.
 
 See the [submission form guide](./submission-form.md) for each Dashboard field, copy-ready permission justifications, URLs, and test instructions.
 

@@ -1,0 +1,58 @@
+Markdown Plus este un vizualizator și cititor Markdown complet gratuit pentru Chrome. Deschide fișiere .md locale direct în browser și citește documente formatate în locul textului Markdown brut. Nu ai nevoie de cont și nu trebuie să încarci documentele pe un server.
+
+FUNCȚII
+
+• Deschide fișiere Markdown locale — Acceptă .md, .markdown, .mdown și .mdc.
+• Răsfoiește dosare — Deschide un dosar și treci de la un document la altul din panoul Fișiere.
+• Navighează în documente lungi — Sari direct la o secțiune din panoul Schiță.
+• Citește cod evidențiat — Evidențierea sintaxei în blocurile de cod.
+• Vezi tabele și liste de activități — Conținut structurat, formatat clar.
+• Vezi diagrame Mermaid — Afișează diagramele direct în documente.
+• Citește formule matematice — Ecuații în text sau în blocuri separate, cu KaTeX.
+• Citește conținut Markdown extins — Note de subsol, emoji și alerte în stil GitHub.
+• Alege teme de lectură — Variante luminoase, întunecate și cu contrast ridicat.
+• Ajustează afișarea — Schimbă fontul, dimensiunea textului, spațierea rândurilor și lățimea conținutului.
+• Creează teme proprii — Personalizează culorile și adaugă imagini sau animații de fundal.
+• Deschide fișiere asociate — Text, SQL, DBML, Mermaid și imagini din panoul Fișiere.
+• Examinează diagrame și imagini — Mărește-le și deplasează imaginea pentru a vedea detaliile.
+• Urmărește modificările externe — Detectează modificările fișierului deschis și alege când să le încarci.
+• Compară modificările — Verifică liniile adăugate și eliminate și secțiunile Markdown afectate.
+• Editează cu previzualizare în timp real — Activează editorul experimental și salvează în fișierul original selectat.
+• Exportă documente — Salvează Markdown ca HTML sau .doc compatibil cu Word.
+• Exportă diagrame — Descarcă diagrame Mermaid ca SVG sau PNG.
+• Imprimă sau salvează ca PDF — Folosește fereastra de imprimare din Chrome.
+• Redeschide fișiere recente — Revino la documentele Markdown locale deschise anterior.
+• Creează o copie de siguranță — Exportă și restaurează preferințele și configurațiile temelor personalizate în JSON; imaginile de fundal nu sunt incluse.
+• Alege limba interfeței — Engleză, vietnameză, chineză simplificată, spaniolă, germană, japoneză sau română. O poți schimba din Setări → General.
+
+COMPLET GRATUIT
+
+Toate funcțiile sunt gratuite. Nu ai nevoie de abonament sau de un upgrade contra cost.
+
+PRIMII PAȘI
+
+1. Instalează Markdown Plus.
+2. Deschide chrome://extensions, găsește Markdown Plus - Free Markdown Viewer și alege Detalii.
+3. Activează „Permite accesul la adresele URL ale fișierelor” (Allow access to file URLs).
+4. Deschide sau reîncarcă un fișier Markdown local în Chrome.
+
+Necesită Chrome 116 sau o versiune ulterioară. Markdown Plus se activează pentru fișiere Markdown locale. Pentru alte formate acceptate, deschide mai întâi vizualizatorul Markdown, apoi alege fișierul din panoul Fișiere.
+
+Editorul este experimental, opțional și dezactivat implicit. Pentru a salva, trebuie să selectezi fișierul original și să acorzi permisiunea de scriere.
+
+CONFIDENȚIALITATE
+
+Documentele sunt procesate local în browser și nu sunt încărcate pe un server administrat de dezvoltator. Preferințele se pot sincroniza prin Chrome. Căile fișierelor recente și imaginile de fundal rămân pe dispozitivul tău. Documentele pot încărca imagini externe, iar documentele exportate cu formule pot folosi CSS extern.
+
+Politica de confidențialitate:
+https://thaibalong7.github.io/markdown-viewer-chrome-extension/ro/privacy/
+
+ASISTENȚĂ ȘI COD SURSĂ
+
+Raportează o problemă sau propune o funcție:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues
+
+Include versiunea Chrome, versiunea extensiei, pașii de reproducere, rezultatul așteptat și cel obținut. Elimină informațiile private din fișierele de exemplu și capturile de ecran înainte de a le distribui.
+
+Cod sursă pe GitHub:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension

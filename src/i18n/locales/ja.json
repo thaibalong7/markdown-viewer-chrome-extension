@@ -1,0 +1,1444 @@
+{
+  "common": {
+    "actions": {
+      "backToOriginalFile": "元のファイルに戻る",
+      "backToTop": "先頭に戻る",
+      "cancel": "キャンセル",
+      "clear": "クリア",
+      "close": "閉じる",
+      "collapseFolders": "フォルダを折りたたむ",
+      "copyContent": "内容をコピー",
+      "copyFileLink": "ファイルのリンクをコピー",
+      "copyLink": "リンクをコピー",
+      "delete": "削除",
+      "edit": "編集",
+      "explore": "ファイルを探す",
+      "focusMode": "集中モード",
+      "leaveWorkspace": "ワークスペースを閉じる",
+      "openExtensionDetails": "拡張機能の詳細を開く",
+      "openSettings": "設定を開く",
+      "read": "読む",
+      "refreshFileList": "ファイル一覧を更新",
+      "retry": "再試行",
+      "saveChanges": "変更を保存",
+      "viewChanges": "変更を表示",
+      "viewSource": "ソースを表示"
+    },
+    "backgroundImage": {
+      "imageIsEmpty": "画像が空です。",
+      "themeBackgroundImageDataIsInvalid": "テーマの背景画像のデータが無効です。",
+      "usePNGJPEGWebPAVIFGIFOrAPNG": "PNG、JPEG、WebP、AVIF、GIF、APNG を使用してください。"
+    },
+    "fileAccess": {
+      "allowed": "許可済み",
+      "blocked": "許可されていません"
+    },
+    "fileSchemeAccess": {
+      "extensionDetailsAreUnavailableOpenChromeExtensionsManually": "拡張機能の詳細を開けません。chrome://extensions を手動で開いてください。"
+    },
+    "fileTypeIcons": {
+      "markdown": "Markdown"
+    },
+    "fileTypes": {
+      "dbmlDocument": "DBML ドキュメント",
+      "image": "画像",
+      "markdownDocument": "Markdown ドキュメント",
+      "mermaidDiagram": "Mermaid 図",
+      "plainTextDocument": "テキストドキュメント",
+      "sqlDocument": "SQL ドキュメント",
+      "svgImage": "SVG 画像"
+    },
+    "languages": {
+      "browser": "ブラウザの言語に合わせる",
+      "en": "English",
+      "vi": "Tiếng Việt",
+      "zhCN": "简体中文（中国）",
+      "es": "Español",
+      "de": "Deutsch",
+      "ja": "日本語",
+      "ro": "Română"
+    },
+    "messages": {
+      "copiedFolderValue": "フォルダ {0} をコピーしました",
+      "settingsResetToDefault": "設定を初期値に戻しました。",
+      "settingsSaved": "設定を保存しました。"
+    },
+    "productName": "Markdown Plus",
+    "productNameUppercase": "MARKDOWN PLUS",
+    "status": {
+      "active": "使用中",
+      "checking": "確認中…",
+      "copied": "コピーしました",
+      "error": "エラー",
+      "failed": "失敗",
+      "loading": "読み込み中…",
+      "modified": "変更あり",
+      "ready": "準備完了",
+      "rendering": "描画中",
+      "saved": "保存済み",
+      "saving": "保存中…",
+      "savingChanges": "変更を保存中…",
+      "unavailable": "利用不可"
+    },
+    "themeModes": {
+      "dark": "ダーク",
+      "light": "ライト"
+    },
+    "themes": {
+      "dark": "ダーク",
+      "highContrastDark": "ハイコントラスト（ダーク）",
+      "highContrastLight": "ハイコントラスト（ライト）",
+      "light": "ライト",
+      "vscodeDark": "ダーク（VS Code）"
+    },
+    "watchModes": {
+      "ask": "更新前に確認する",
+      "auto": "自動更新",
+      "off": "オフ"
+    }
+  },
+  "viewer": {
+    "editor": {
+      "accessibility": {
+        "controlCharacter": "制御文字",
+        "foldLine": "行を折りたたむ",
+        "foldedCode": "折りたたまれたコード",
+        "foldedLines": "折りたたんだ行:",
+        "selectionDeleted": "選択範囲を削除しました",
+        "unfold": "展開",
+        "unfoldLine": "行を展開",
+        "unfoldedLines": "展開した行:"
+      },
+      "search": {
+        "currentMatch": "現在の一致箇所",
+        "go": "移動",
+        "goToLine": "行に移動",
+        "onLine": "行",
+        "replacedMatchOnLine": "$ 行目の一致箇所を置換しました",
+        "replacedMatches": "$ 件を置換しました",
+        "to": "〜",
+        "all": "すべて",
+        "close": "閉じる",
+        "find": "検索",
+        "matchCase": "大文字と小文字を区別",
+        "next": "次へ",
+        "previous": "前へ",
+        "regexp": "正規表現",
+        "replaceAction": "置換",
+        "replaceAll": "すべて置換",
+        "replaceFieldLabel": "置換後の文字列",
+        "wholeWord": "単語単位"
+      },
+      "browserCannotConnectALocalFileForSafe": "このブラウザでは、ローカルファイルを安全に編集するための機能を利用できません。",
+      "connectDialog": {
+        "checkBothItsFolderAndFilenameDoNot": "フォルダとファイル名の両方を確認してください。同じ名前のコピーは選ばないでください。",
+        "chooseThisExactFileInChromeSPicker": "Chrome のファイル選択画面で、このファイルを選んでください。",
+        "chromeDoesNotAutomaticallyGrantWriteAccessFrom": "ローカルファイルの URL を開くだけでは、Chrome の書き込み権限は付与されません。編集を始める前に、Markdown Plus で元のファイルを確認する必要があります。",
+        "connectTheOriginalFileBeforeEditing": "編集する元のファイルを選択",
+        "currentFile": "現在のファイル",
+        "safeEditing": "安全に編集するために",
+        "unknownLocalFile": "不明なローカルファイル",
+        "useSaveOrCtrlCmdSToWrite": "「保存」または Ctrl/Cmd+S で、選択した元のファイルに変更を保存できます。",
+        "verifyFileAndEdit": "ファイルを確認して編集",
+        "verifyingFile": "ファイルを確認中…"
+      },
+      "connectedSaveTargetValue": "保存先のファイル: {0}",
+      "discard": "変更を破棄",
+      "exitConfirmation": {
+        "title": "変更を破棄して編集を終了しますか？",
+        "yourUnsavedChangesWillBeLostTheSaved": "未保存の変更は失われます。保存済みのファイルは変更されません。"
+      },
+      "file": "このファイル",
+      "keepEditing": "編集を続ける",
+      "loadingEditor": "エディタを読み込み中…",
+      "originalFileIsNotConnectedExitEditMode": "元のファイルにアクセスできません。編集を終了し、ファイルを選び直してから保存してください。",
+      "resizeHandle": {
+        "dragToResizeTheEditorAndPreviewWhen": "ドラッグしてエディタとプレビューの幅を調整できます。フォーカス中は左右の矢印キーでも調整できます（1 回につき 16 px）。",
+        "resizeEditorAndPreview": "エディタとプレビューの幅を調整"
+      },
+      "saveFailed": "保存できませんでした。",
+      "saveFailedValue": "保存できませんでした: {0}",
+      "savedToTheConnectedOriginalFile": "選択した元のファイルに保存しました",
+      "selectedFile": "選択したファイル",
+      "selectedFileValueIsNotTheFileYou": "選択したファイル（「{0}」）は編集中のファイル（「{1}」）と異なります。Markdown Plus に表示されている元のファイルを選んでください。",
+      "statusBar": {
+        "col": "、列",
+        "ln": "行",
+        "target": "保存先:"
+      },
+      "updateConfirmation": {
+        "discardDraftAndLoadDiskVersion": "下書きを破棄して保存済みの版を開く",
+        "editModeWillClose": "編集を終了します",
+        "exitEditModeAndLoadDiskVersion": "編集を終了して保存済みの版を開く",
+        "externalUpdateIsAlreadySavedOnDiskThis": "外部での変更はすでにディスクに保存されています。この操作では、Markdown Plus に表示する内容だけが変わります。",
+        "latestVersionIsAlreadyOnDiskMarkdownPlus": "最新の版はすでにディスクに保存されています。エディタを閉じ、その版を読み込み直します。",
+        "loadingDiskVersion": "保存済みの版を読み込み中…",
+        "loadingTheDiskVersionClosesTheEditorAnd": "保存済みの版を開くと、エディタが閉じられ、ファイルが読み込み直されます。",
+        "loadingTheDiskVersionPermanentlyReplacesYourDraft": "保存済みの版を開くと、下書きは完全に破棄され、エディタが閉じられます。",
+        "loadingThisUpdateWillCloseEditMode": "この更新を読み込むと編集を終了します",
+        "unsavedDraftWillBeDiscarded": "未保存の下書きは破棄されます",
+        "versionOnDiskChangedOutsideMarkdownPlusLoading": "ファイルが Markdown Plus の外部で変更されました。ディスクの版を開くと、編集中の下書きは完全に置き換えられ、編集を終了します。",
+        "yourUnsavedDraftWillBeDiscarded": "未保存の下書きは破棄されます"
+      },
+      "valueChangedOnDiskAfterEditingStartedReload": "編集開始後に、ディスク上の「{0}」が変更されました。外部での変更を上書きしないよう、保存前にファイルを読み込み直してください。",
+      "valueDoesNotMatchTheDocumentCurrentlyOpen": "「{0}」は Markdown Plus で開いているドキュメントと一致しません。ファイルが変更されている場合はビューアを再読み込みするか、元のファイルを選んでください。",
+      "verifiedSaveTargetValue": "確認済みの保存先: {0}",
+      "youHaveUnsavedChangesOpenAnotherDocumentAnd": "未保存の変更があります。変更を破棄して別のドキュメントを開きますか？"
+    },
+    "actions": {
+      "copyLinkUnavailableForWorkspaceVirtualFiles": "ワークスペース内の仮想ファイルはリンクをコピーできません",
+      "copyOpenFileLink": "開いているファイルのリンクをコピー",
+      "customDocumentActionMustBePinnedValue": "カスタムドキュメント操作は固定する必要があります: {0}",
+      "duplicateDocumentActionValue": "ドキュメント操作が重複しています: {0}",
+      "editMarkdown": "Markdown を編集",
+      "exitEditMode": "編集を終了",
+      "exitFocusMode": "集中モードを終了",
+      "export": {
+        "copiedFileLink": "ファイルのリンクをコピーしました",
+        "exportHTML": "HTML にエクスポート",
+        "exportWordDoc": "Word（.doc）にエクスポート",
+        "exportedValue": "{0} をエクスポートしました",
+        "nothingToExportYet": "エクスポートする内容がありません。"
+      },
+      "exportDocument": "ドキュメントをエクスポート",
+      "exportHTMLOrWordDoc": "HTML または Word（.doc）にエクスポート",
+      "focusModeHidePreview": "集中モード — プレビューを隠す",
+      "output": "出力",
+      "printSaveAsPDF": "印刷 / PDF に保存",
+      "printSaveAsPDFInTheDialogTo": "印刷画面で「PDF に保存」を選ぶと、PDF を出力できます。",
+      "quickAccess": "クイックアクセス",
+      "saveCtrlS": "保存（Ctrl+S）",
+      "saveMarkdownFile": "Markdown ファイルを保存",
+      "saveNoUnsavedChanges": "保存 — 未保存の変更はありません",
+      "theme": {
+        "switch": "{0}テーマに切り替え",
+        "switched": "{0}テーマに切り替えました",
+        "switching": "テーマを切り替え中…"
+      },
+      "toolbar": {
+        "documentActions": "ドキュメントの操作",
+        "moreDocumentActions": "その他のドキュメント操作"
+      },
+      "unknownDocumentActionGroupValue": "不明なドキュメント操作グループ: {0}",
+      "viewDiagram": "図を表示"
+    },
+    "app": {
+      "editModeWillCloseAndTheLatestVersion": "編集を終了し、ディスクに保存された最新の版を開きます。続行しますか？",
+      "fileRouteInThisURLIsNotSupported": "この URL のファイルパスには対応していません",
+      "yourUnsavedDraftWillBePermanentlyDiscardedAnd": "未保存の下書きを完全に破棄して編集を終了します。ディスクに保存された最新の版を開きますか？"
+    },
+    "articleInteractions": {
+      "copiedLink": "リンクをコピーしました",
+      "openImageZoomView": "画像を拡大表示",
+      "sectionLinksAreUnavailableForThisWorkspaceFile": "このワークスペースファイルではセクションへのリンクを利用できません",
+      "zoomImageValue": "画像を拡大: {0}"
+    },
+    "code": {
+      "copy": {
+        "ariaLabel": "コードをクリップボードにコピー",
+        "label": "コードをコピー"
+      }
+    },
+    "colors": {
+      "colorFormatsForValue": "{0} の色形式",
+      "copiedValue": "{0} をコピーしました",
+      "copyValue": "{0} をコピー",
+      "copyValueValue": "{0} をコピー: {1}",
+      "opacityValue": "不透明度 {0}",
+      "valueCopiedToClipboard": "{0} をクリップボードにコピーしました"
+    },
+    "content": {
+      "controlCouldNotBeDisplayed": "このコントロールを表示できませんでした。"
+    },
+    "document": {
+      "fileTypeIsNotSupported": "このファイル形式には対応していません",
+      "imageKind": "画像",
+      "textKind": "テキストファイル"
+    },
+    "documentLoader": {
+      "documentLoadWasAborted": "ドキュメントの読み込みを中止しました。",
+      "documentTypeIsNotLoadableYet": "この種類のドキュメントはまだ読み込めません。",
+      "selectedWorkspaceFileHasAnUnsupportedImageType": "選択したワークスペースファイルの画像形式には対応していません。",
+      "selectedWorkspaceFileIsNotARegisteredImage": "選択したワークスペースファイルは、登録された画像形式ではありません。"
+    },
+    "documents": {
+      "dbml": {
+        "colorPreviewsCouldNotBeDisplayedDBMLSource": "色のプレビューを表示できませんでした。DBML ソースは引き続き表示できます。",
+        "dbmlDocumentHostIsUnavailable": "DBML ドキュメントの表示先がありません。",
+        "dbmlFileIsEmpty": "この DBML ファイルは空です。",
+        "documentRenderWasAborted": "ドキュメントの描画を中止しました。"
+      },
+      "image": {
+        "imageDocumentHostIsUnavailable": "画像の表示先がありません。",
+        "loadingValue": "{0} を読み込み中…"
+      },
+      "markdown": {
+        "emptyMarkdownDocument": "空の Markdown ドキュメント",
+        "someMarkdownEnhancementsCouldNotBeAppliedBasic": "Markdown の一部の拡張表示を適用できませんでした。基本的な Markdown 表示は引き続き利用できます。",
+        "useEditToStartWriting": "「編集」を選ぶと書き始められます。"
+      },
+      "mermaid": {
+        "mermaidDocumentHostIsUnavailable": "Mermaid ドキュメントの表示先がありません。",
+        "mermaidFileIsEmpty": "この Mermaid ファイルは空です。"
+      },
+      "sql": {
+        "sqlDocumentHostIsUnavailable": "SQL ドキュメントの表示先がありません。",
+        "sqlFileIsEmpty": "この SQL ファイルは空です。"
+      },
+      "states": {
+        "diagramSource": "図のソース",
+        "mermaidRenderError": "Mermaid の描画エラー"
+      },
+      "text": {
+        "textDocumentHostIsUnavailable": "テキストドキュメントの表示先がありません。",
+        "textFileIsEmpty": "このテキストファイルは空です。"
+      }
+    },
+    "explorer": {
+      "accessibility": {
+        "supportedFilesInFolderTree": "フォルダツリー内の対応ファイル"
+      },
+      "actions": {
+        "copyFileName": "ファイル名をコピー",
+        "copyFolderName": "フォルダ名をコピー",
+        "copyFolderPath": "フォルダのパスをコピー",
+        "fileDetailsActions": "ファイル詳細の操作",
+        "menuLabel": "{0} の操作",
+        "moreFileActions": "その他のファイル操作",
+        "moreLabel": "{0} のその他の操作"
+      },
+      "context": {
+        "currentFolderLabel": "このファイルのフォルダ",
+        "document": "ドキュメント",
+        "noFileSelected": "ファイルが選択されていません",
+        "openFileIsNotListedInTheScanned": "開いているファイルが一覧にありません（スキャンの上限または一覧の制約によるものです）。引き続き開けるよう、先頭に追加しました。",
+        "openFileIsNotUnderThisWorkspaceTree": "開いているファイルはこのワークスペースに含まれていません。一覧からファイルを選ぶか、ワークスペースを閉じてください。",
+        "scanningFolder": "フォルダをスキャン中…",
+        "scanningWorkspace": "ワークスペースをスキャン中…",
+        "workspaceFiles": "ワークスペースのファイル"
+      },
+      "currentFolder": "現在のフォルダ",
+      "file": {
+        "copiedFileName": "ファイル名をコピーしました",
+        "openInNewTab": "新しいタブで開く",
+        "workspaceFileCannotOpenInABrowserTab": "このワークスペースファイルはブラウザのタブで開けません"
+      },
+      "fileCount": {
+        "other": "· {count} ファイル"
+      },
+      "folder": {
+        "collapseFolder": "フォルダを折りたたむ",
+        "copiedFolderName": "フォルダ名をコピーしました",
+        "copiedFolderPath": "フォルダのパスをコピーしました",
+        "expandFolder": "フォルダを展開",
+        "indexedFileCount": "サブフォルダを含め {0} ファイルを登録済み",
+        "toggleLabel": "「{0}」を展開または折りたたむ。"
+      },
+      "folderScanner": {
+        "file": "ファイル"
+      },
+      "header": {
+        "adjustScanLimitsInSettings": "設定でスキャンの上限を調整",
+        "hideFileDetails": "ファイルの詳細を隠す",
+        "openFile": "ファイルを開く",
+        "openFileDetails": "ファイルの詳細を開く",
+        "openFolder": "フォルダを開く…",
+        "showFileDetails": "ファイルの詳細を表示",
+        "switchFolder": "フォルダを切り替え…",
+        "thenRefresh": "してから一覧を更新してください。",
+        "unavailableForWorkspaceVirtualFiles": "ワークスペース内の仮想ファイルでは利用できません",
+        "workspaceRoot": "ワークスペースのルート"
+      },
+      "hide": "ファイルパネルを隠す",
+      "listRefresh": {
+        "openASupportedFileBeforeRefreshingItsFolder": "対応ファイルを開いてから、そのフォルダの一覧を更新してください",
+        "refreshedFileList": "ファイル一覧を更新しました",
+        "selectTheFolderAgainToRefreshItsFile": "フォルダを選び直してファイル一覧を更新してください"
+      },
+      "navigation": {
+        "backToFile": "{0} に戻る",
+        "linkedFileIsNoLongerAvailable": "リンク先のファイルは利用できなくなりました"
+      },
+      "panel": {
+        "filesInCurrentFolder": "現在のフォルダのファイル",
+        "filesScrollbar": "ファイル一覧のスクロールバー",
+        "noSupportedFilesFoundInThisDirectory": "このフォルダに対応ファイルはありません。",
+        "refreshIsAvailableAfterScanningFinishes": "スキャンが完了すると更新できます",
+        "refreshingFileList": "ファイル一覧を更新中",
+        "supportedFilesInFolder": "フォルダ内の対応ファイル"
+      },
+      "panelLabel": "ファイルパネル",
+      "scan": {
+        "depthLimit": "深さの上限により、一部のフォルダをスキャンしていません。",
+        "depthLimitWithValue": "深さの上限（{0}）により、一部のフォルダをスキャンしていません。",
+        "fileLimit": "ファイル数の上限に達したため、スキャンを停止しました。",
+        "folderLimit": "フォルダ数の上限に達したため、スキャンを停止しました。",
+        "notices": "{depth} {files} {folders}",
+        "progress": "スキャン中… {files} ファイル、{folders} フォルダ{path}"
+      },
+      "scanSession": {
+        "scanCancelled": "スキャンをキャンセルしました",
+        "scanningFolderTree": "フォルダツリーをスキャン中…"
+      },
+      "show": "ファイルパネルを表示",
+      "title": "ファイル",
+      "toolbar": {
+        "allFoldersAreCollapsed": "すべてのフォルダが折りたたまれています",
+        "collapseAllFolders": "すべてのフォルダを折りたたむ",
+        "collapseFoldersOutsideTheOpenFilePath": "開いているファイルのパス以外のフォルダを折りたたむ",
+        "fileListControls": "ファイル一覧の操作",
+        "scanning": "スキャン中…"
+      },
+      "workspace": "ワークスペース",
+      "workspacePicker": {
+        "expectedADirectoryHandleGotAFileHandle": "フォルダのハンドルが必要ですが、ファイルのハンドルが渡されました",
+        "notADirectoryHandle": "フォルダのハンドルではありません"
+      },
+      "workspaceSession": {
+        "scanningImportedFolder": "取り込んだフォルダをスキャン中…",
+        "scanningPickedFolder": "選択したフォルダをスキャン中…",
+        "scanningWorkspaceFileListing": "ワークスペースをスキャン中（ファイル一覧）…"
+      }
+    },
+    "fileLinkActions": {
+      "noCurrentFileURLToCopy": "コピーできる現在のファイル URL がありません"
+    },
+    "fileRowActions": {
+      "noFileHrefToCopy": "コピーできるファイルのリンクがありません",
+      "noFileNameToCopy": "コピーできるファイル名がありません"
+    },
+    "folderRowActions": {
+      "noFolderIdentityToCopy": "コピーできるフォルダ情報がありません"
+    },
+    "imageRevision": {
+      "imageExceedsThe5MiBWatchLimit": "画像が更新監視の上限（5 MiB）を超えています。",
+      "noImageBytesReceived": "画像データを受信できませんでした。"
+    },
+    "layout": {
+      "editorScrollbar": "エディタのスクロールバー",
+      "previewFontSizeAndLineHeightAreSynced": "編集中は、プレビューの文字サイズと行の高さがエディタと同期します。編集を終了すると、閲覧時の設定に戻ります。",
+      "previewScrollbar": "プレビューのスクロールバー",
+      "resizeHandle": {
+        "dragToResizeValueWhenFocusedUseLeft": "ドラッグして {0} の幅を調整できます。フォーカス中は左右の矢印キーでも調整できます（1 回につき 16 px）。",
+        "resizeValue": "{0} のサイズを調整"
+      },
+      "rightRail": {
+        "documentActionsAndOutline": "ドキュメントの操作とアウトライン"
+      }
+    },
+    "lineDiff": {
+      "noNewlineAtEndOfFile": "ファイル末尾に改行がありません"
+    },
+    "media": {
+      "bitmapLimit16384PxPerSide32": "ビットマップ上限: 1 辺 16,384 px / 合計 32 Mi ピクセル。",
+      "bitmapLimit16384PxPerSideOr": "ビットマップ上限: 1 辺 16,384 px、または合計 32 Mi ピクセル。",
+      "closeImageZoomView": "画像の拡大表示を閉じる",
+      "closeMermaidChart": "Mermaid 図を閉じる",
+      "decreaseRenderResolution": "描画解像度を下げる",
+      "decreaseResolutionBy025": "解像度を 0.25 下げる",
+      "dragAnywhereToPanCtrlScrollPinchTo": "ドラッグで移動  |  Ctrl + スクロール / ピンチで拡大縮小  |  2 本指スクロールで移動  |  +/- で拡大縮小  |  0 で中央に戻す  |  Esc で閉じる",
+      "dragToPanCtrlScrollPinchToZoom": "ドラッグで移動  |  Ctrl + スクロール / ピンチで拡大縮小  |  +/- で拡大縮小  |  0 で全体を表示  |  Esc で閉じる",
+      "fitImageToView": "画像全体を表示",
+      "higherResolutionUsesMoreMemoryLimit16384": "解像度を上げるとメモリ使用量が増えます。上限: 1 辺 16,384 px / 合計 32 Mi ピクセル。",
+      "imageExceedsBitmapLimit16384PxPer": "画像がビットマップの上限を超えています: 1 辺 16,384 px / 合計 32 Mi ピクセル。",
+      "imageZoomView": "画像の拡大表示",
+      "increaseRenderResolution": "描画解像度を上げる",
+      "increaseResolutionBy025": "解像度を 0.25 上げる",
+      "maximumForThisImage": "、この画像の上限",
+      "maximumValueForThisImage": "この画像の上限は ×{0} です。 ",
+      "mermaidChartZoomView": "Mermaid 図の拡大表示",
+      "openMermaidChartInZoomView": "Mermaid 図を拡大表示で開く",
+      "reCenterMermaidChart": "Mermaid 図を中央に戻す",
+      "rendering2": "、描画中",
+      "resolution": {
+        "ariaLabel": "描画解像度を調整: {0}{1}{2}{3}",
+        "caption": "解像度",
+        "label": "描画解像度",
+        "maximum": "上限",
+        "maximumShort": "上限",
+        "unavailableShort": "対象外"
+      },
+      "zoomInImage": "画像を拡大",
+      "zoomInMermaidChart": "Mermaid 図を拡大",
+      "zoomOutImage": "画像を縮小",
+      "zoomOutMermaidChart": "Mermaid 図を縮小"
+    },
+    "mermaid": {
+      "copyMermaidSource": "Mermaid ソースをコピー",
+      "downloadPNG": "PNG をダウンロード",
+      "downloadSVG": "SVG をダウンロード",
+      "exportMermaidChart": "Mermaid 図をエクスポート",
+      "exportThisDiagramSVGVectorOrPNGAt": "この図をエクスポート: SVG（ベクター）、または 1〜4 倍の解像度の PNG。",
+      "mermaidChartActions": "Mermaid 図の操作",
+      "mermaidSVGCouldNotBeSanitized": "Mermaid の SVG を安全な形式に処理できませんでした。",
+      "openChartInFullScreenZoomView": "図を全画面の拡大表示で開きます。",
+      "png": "PNG",
+      "unknownError": "不明なエラー。"
+    },
+    "outline": {
+      "empty": "見出しがありません。",
+      "headingCount": {
+        "other": "見出し {count} 件"
+      },
+      "hide": "アウトラインを隠す",
+      "outlineScrollbar": "アウトラインのスクロールバー",
+      "show": "アウトラインを表示",
+      "summary": "このページの内容",
+      "tableOfContents": "目次",
+      "title": "アウトライン"
+    },
+    "render": {
+      "documentCouldNotBeRendered": "ドキュメントを表示できませんでした",
+      "loadingDocument": "ドキュメントを読み込み中",
+      "noLoadableCurrentDocumentIsAvailable": "読み込み可能なドキュメントがありません。",
+      "tryAgainIfTheProblemContinuesRefreshThe": "再試行してください。解決しない場合は、ファイルを再読み込みするか、任意の表示機能をオフにしてください。"
+    },
+    "rendererRegistry": {
+      "documentRendererValueHasNoRenderFunction": "ドキュメントレンダラー「{0}」に render() 関数がありません。",
+      "noDocumentRendererIsRegisteredForValue": "「{0}」のドキュメントレンダラーは登録されていません。"
+    },
+    "review": {
+      "aNewerComparisonIsReady": "新しい比較結果があります。",
+      "added": "追加",
+      "added2": "行追加 ·",
+      "affectedSections": "影響するセクション",
+      "alt": "Alt",
+      "area": "範囲",
+      "areas": "変更範囲",
+      "beforeTheFirstHeading": "最初の見出しより前",
+      "calculatingChanges": "変更を計算中…",
+      "change": "変更",
+      "changeSummary": "変更の概要",
+      "changedArea": "変更範囲",
+      "changedAreaNavigation": "変更範囲の移動",
+      "changedAreaValue": "変更範囲 {0}",
+      "changedAreasInThisComparison": "この比較の変更範囲",
+      "changesAppliedInTheMostRecentDocumentUpdate": "直近のドキュメント更新で適用された変更です。",
+      "checkLatest": "ファイルの変更を確認",
+      "comparisonIsNoLongerCurrent": "この比較結果は古くなっています。",
+      "deleted": "削除済み",
+      "detailedReviewIsUnavailableBecauseThisComparisonExceeds": "比較がサイズ・時間・出力の上限を超えたため、詳細を表示できません。お使いのエディタの差分機能を利用してください。ドキュメントと下書きは保持されています。",
+      "dialog": {
+        "closeReview": "比較を閉じる",
+        "openingReview": "比較を開いています…",
+        "reloadThisViewerAndTryAgain": "ビューアを再読み込みして、もう一度お試しください。"
+      },
+      "lastUpdate": "前回の更新",
+      "loadDiskVersion": "保存済みの版を開く…",
+      "movesBetweenChangedAreasInThisComparison": "で、この比較の変更範囲を移動できます",
+      "newLine": "変更後の行番号",
+      "newLineValue": "変更後の {0} 行目",
+      "nextArea": "次の範囲 →",
+      "nextChangedArea": "次の変更範囲",
+      "noNewLine": "変更後の行なし",
+      "noOldLine": "変更前の行なし",
+      "noSourceChangesInThisComparison": "この比較にソースの変更はありません。",
+      "of": "/",
+      "oldLine": "変更前の行番号",
+      "oldLineValue": "変更前の {0} 行目",
+      "openDocument": "ドキュメントを開く",
+      "openInDocumentValue": "ドキュメント内で開く: {0}",
+      "previousArea": "← 前の範囲",
+      "previousChangedArea": "前の変更範囲",
+      "removed": "削除",
+      "removed2": "行削除",
+      "reviewChanges": "変更を確認",
+      "reviewLatest": "最新の比較を表示",
+      "reviewedVersionIsNotOpenYetUpdateThe": "比較した版はまだ開かれていません。ドキュメントを更新すると、セクションへのリンクが使えるようになります。",
+      "seeWhatChangedOnDiskBeforeUpdatingThis": "ドキュメントを更新する前に、ディスク上の変更を確認できます。",
+      "source": "ソース",
+      "sourceLinesInChangedArea": "変更範囲のソース行",
+      "updateCheckFailed": "更新の確認に失敗しました",
+      "updateDocument": "ドキュメントを更新",
+      "updateWaiting": "更新待ち",
+      "yourEditorDraftIsExcludedFromThisComparison": "編集中の下書きは比較に含まれません。",
+      "unchanged": "変更なし"
+    },
+    "scrollbar": {
+      "documentScrollbar": "ドキュメントのスクロールバー"
+    },
+    "statistics": {
+      "characters": {
+        "other": "{count} 文字"
+      },
+      "readingTime": "読了目安 {0} 分",
+      "summary": "ドキュメントの統計: {0}、{1}、{2}",
+      "words": {
+        "other": "{count} 語"
+      }
+    },
+    "updates": {
+      "aNewDocumentVersionIsAvailable": "ドキュメントの新しい版があります。",
+      "aNewDocumentVersionWillLoadAutomaticallyWhen": "操作を止めると、ドキュメントの新しい版が自動的に読み込まれます。",
+      "aNewerVersionOfThisDocumentIsReady": "このドキュメントの新しい版を開く準備ができました。",
+      "anUpdateIsReadyItWillLoadWhen": "更新の準備ができました。ファイルの変更が落ち着き、操作を止めると読み込まれます。",
+      "applyingANewDocumentVersionAutomatically": "ドキュメントの新しい版を自動的に適用しています。",
+      "ask": "確認する",
+      "automatic": "自動",
+      "automaticChecksArePaused": "自動確認は一時停止中です。",
+      "checkNow": "今すぐ確認",
+      "documentUpdateCheckFailedOpenDocumentUpdatesTo": "ドキュメントの更新を確認できませんでした。「ドキュメントの更新」を開いて再試行してください。",
+      "documentUpdated": "ドキュメントを更新しました。",
+      "documentUpdatesCheckFailed": "ドキュメントの更新: 確認に失敗",
+      "documentUpdatesLiveWatchUnavailable": "ドキュメントの更新: リアルタイム監視は利用できません",
+      "documentUpdatesLoadUpdate": "ドキュメントの更新: 更新を読み込む",
+      "fileChangedOnDiskLoadItToLeave": "このファイルはディスク上で変更されました。保存済みの版を開くと編集を終了します。",
+      "latestStableVersionIsBeingAppliedAutomatically": "ファイルの変更が落ち着いたため、最新の内容を自動的に読み込んでいます。",
+      "liveUpdatesUnavailable": "リアルタイム更新は利用できません",
+      "newVersionAvailable": "新しい版があります",
+      "newVersionsWaitUntilYouChooseToUpdate": "更新を選ぶまで、新しい版は読み込まれません。",
+      "notifications": {
+        "documentUpdated": "ドキュメントを更新しました",
+        "documentUpdatesSupportsFilesUpTo5MiB": "更新の監視に対応するファイルサイズは 5 MiB までです。",
+        "valueTheCurrentContentWasKept": "{0} 現在の内容は保持されています。"
+      },
+      "selectTheWorkspaceAgainToCheckForUpdated": "ワークスペースを選び直して、ファイルの更新を確認してください。",
+      "title": "ドキュメントの更新",
+      "updateNow": "今すぐ更新",
+      "updatesLoadWhenTheFileIsStableAnd": "ファイルの変更が落ち着き、操作を止めると更新が読み込まれます。",
+      "updatingAnnouncement": "ドキュメントを更新しています。",
+      "updatingLabel": "ドキュメントを更新中…"
+    },
+    "useexplorer": {
+      "selectASupportedFileFromTheFilesPanel": "ファイルパネルから対応ファイルを選んでください。"
+    },
+    "search": {
+      "inDocument": "ドキュメント内を検索",
+      "workspace": "ワークスペース内を検索",
+      "workspaceShortcut": "ファイルの内容を検索 · Control+Shift+F",
+      "title": "検索",
+      "scope": "検索範囲",
+      "previous": "前の一致箇所（Shift+Enter）",
+      "next": "次の一致箇所（Enter）",
+      "closeFind": "閉じる",
+      "closeWorkspace": "検索を閉じる",
+      "noDocumentResults": "このドキュメントに一致する箇所はありません。",
+      "findLimited": "一致箇所の一部のみ表示しています。検索条件を絞り込んでください。",
+      "placeholder": "ファイルの内容を検索…",
+      "sourceScope": "未保存の下書きを含むファイルの内容が対象です。",
+      "chooseWorkspace": "このフォルダの一覧を取得できませんでした。検索するフォルダを選んでください。",
+      "chooseFolder": "フォルダを選択",
+      "waitForScan": "ファイルのスキャンを待っています…",
+      "stop": "検索を停止",
+      "progress": {
+        "other": "{count} 件一致 · {scanned}/{total} ファイルを検索中…"
+      },
+      "summary": {
+        "other": "{count} 件一致 · {scanned}/{total} ファイルを検索済み"
+      },
+      "startTyping": "検索する文字列を入力してください。",
+      "searchAgain": "再検索",
+      "partial": "検索は未完了です。停止、スキャン・検索の上限到達、またはファイルのスキップ（{skipped} 件）が発生しました。条件を絞り込むか、再検索してください。",
+      "failed": "検索に失敗しました。再検索してください。",
+      "noPartialResults": "ここまでに検索したファイルに一致する箇所はありません。",
+      "noWorkspaceResults": "このフォルダに一致する箇所はありません。別の文字列をお試しください。",
+      "unsaved": "未保存",
+      "resultLocation": "{path}、{line} 行目、{column} 列目",
+      "stale": "このファイルは変更されています。再検索して結果を更新してください。",
+      "openFailed": "この検索結果を開けませんでした。もう一度お試しください。",
+      "sourceTitle": "ソース内の一致箇所",
+      "line": "{line} 行目",
+      "sourceExplanation": "表示中のドキュメントでは、この一致箇所の位置を正確に特定できませんでした。ソース内の正確な位置を下に強調表示しています。",
+      "resultsScrollbar": "検索結果のスクロールバー",
+      "inFolder": "フォルダ内を検索",
+      "folderListPartial": "現在のフォルダの一覧のみ利用できます。サブフォルダが含まれていない可能性があります。スキップしたファイル: {skipped}。",
+      "clearQuery": "検索語をクリア",
+      "matchOptions": "検索の一致条件",
+      "matchCase": "大文字と小文字を区別",
+      "wholeWord": "単語単位で検索",
+      "matchDiacritics": "アクセント記号を区別",
+      "updating": "結果を更新中…",
+      "outdatedResults": "前回の検索結果です。再検索すると更新されます。",
+      "cachedScope": "キャッシュ済みのファイル内容も含まれます。再検索すると最新のファイルを読み込みます。",
+      "updatingProgress": "結果を更新中… {scanned}/{total} ファイルを確認済み。"
+    }
+  },
+  "errors": {
+    "common": {
+      "backgroundImage": {
+        "chooseAnImageFile": "画像ファイルを選んでください。",
+        "readTheImage": "画像を読み取れませんでした。"
+      },
+      "messages": {
+        "checkTheCurrentDocumentForChanges": "現在のドキュメントの変更を確認できませんでした。",
+        "cleanUpThePreviousDocumentRenderer": "前のドキュメントレンダラーのリソースを解放できませんでした。",
+        "clearPersistedFileHandle": "保存済みのファイルハンドルを削除できませんでした。",
+        "connectTheOriginalMarkdownFileForEditing": "編集する元の Markdown ファイルにアクセスできませんでした。",
+        "copyColorFormat": "色形式をコピーできませんでした。",
+        "copyDetectedColor": "検出した色をコピーできませんでした。",
+        "copyFolderValue": "フォルダ {0} をコピーできませんでした",
+        "inspectTheThemePreviewImage": "テーマのプレビュー画像を確認できませんでした。",
+        "loadTheActiveThemeBackground": "使用中のテーマの背景を読み込めませんでした。",
+        "loadTheThemePreviewImage": "テーマのプレビュー画像を読み込めませんでした。",
+        "mountViewerReactShell": "ビューアの React UI をマウントできませんでした。",
+        "navigateBrowserHistory": "ブラウザの履歴を移動できませんでした。",
+        "openDocument": "ドキュメントを開けませんでした。",
+        "persistFileHandleToIndexedDB": "ファイルハンドルを IndexedDB に保存できませんでした。",
+        "prepareALocalMarkdownSVGImage": "Markdown 内のローカル SVG 画像を準備できませんでした。",
+        "recordFileHistory": "ファイルの履歴を記録できませんでした。",
+        "refreshExplorerFileList": "エクスプローラーのファイル一覧を更新できませんでした。",
+        "releaseDocumentAssetURL": "ドキュメントのリソース URL を解放できませんでした。",
+        "removeAnUnusedThemeAssetAfterSaveFailed": "保存の失敗後に、未使用のテーマリソースを削除できませんでした。",
+        "removeTheDeletedThemeAsset": "削除したテーマのリソースを削除できませんでした。",
+        "removeTheReplacedThemeAsset": "置き換えたテーマのリソースを削除できませんでした。",
+        "renderDocument": "ドキュメントを描画できませんでした。",
+        "renderTheSyntaxThemePreview": "シンタックステーマのプレビューを描画できませんでした。",
+        "restoreFileHandleFromIndexedDB": "IndexedDB からファイルハンドルを復元できませんでした。",
+        "saveFilesDetailsPreferenceForThisTab": "このタブのファイル詳細の表示設定を保存できませんでした",
+        "saveMarkdownFile": "Markdown ファイルを保存できませんでした。",
+        "switchReaderTheme": "閲覧テーマを切り替えられませんでした。"
+      }
+    },
+    "documents": {
+      "readFailed": "{0} を読み取れませんでした: {1}",
+      "tooLarge": "このテキストファイルは表示サイズの上限（{0} MiB）を超えています。"
+    },
+    "options": {
+      "general": {
+        "openExtensionDetails": "拡張機能の詳細を開けませんでした。"
+      },
+      "index": {
+        "missingRootElementForSettingsApp": "設定画面の #root 要素がありません。"
+      },
+      "notifications": {
+        "clearRecentFiles": "最近使ったファイルの一覧を消去できませんでした。",
+        "exportSettings": "設定をエクスポートできませんでした。",
+        "importSettings": "設定をインポートできませんでした。",
+        "loadSettings": "設定を読み込めませんでした。",
+        "saveSettings": "設定を保存できませんでした。"
+      },
+      "optionsActions": {
+        "chooseASettingsJSONFileToImport": "インポートする設定の JSON ファイルを選んでください。"
+      },
+      "settingsImport": {
+        "invalidJSONValue": "無効な JSON: {0}",
+        "parseFile": "ファイルを解析できませんでした。"
+      }
+    },
+    "popup": {
+      "index": {
+        "missingRootElementForPopupApp": "ポップアップ画面の #root 要素がありません。"
+      },
+      "loadSettings": "設定を読み込めませんでした。",
+      "openAbout": "製品情報を開けませんでした。",
+      "openOptionsSection": {
+        "chooseAValidSettingsSection": "有効な設定セクションを選んでください。"
+      },
+      "openSettings": "設定を開けませんでした。",
+      "settings": {
+        "saveSettings": "設定を保存できませんでした。"
+      },
+      "usefilehistory": {
+        "clearFileHistory": "ファイル履歴を消去できませんでした。",
+        "loadFileHistory": "ファイル履歴を読み込めませんでした。",
+        "openFile": "ファイルを開けませんでした。"
+      }
+    },
+    "services": {
+      "fileHistory": {
+        "invalidFileHistoryURL": "ファイル履歴の URL が無効です"
+      },
+      "messageRouter": {
+        "invalidOrMissingDataUrl": "dataUrl が無効か、指定されていません",
+        "invalidUrl": "URL が無効です",
+        "missingFilename": "ファイル名が指定されていません",
+        "missingUrl": "URL が指定されていません",
+        "onlyFileURLsAreAllowed": "file: URL のみ利用できます",
+        "onlyRegisteredImageFilesAreAllowed": "登録された画像形式のファイルのみ利用できます",
+        "unsupportedMessageTypeValue": "未対応のメッセージ形式: {0}"
+      },
+      "themeAsset": {
+        "invalidThemeAssetId": "テーマリソースの ID が無効です。",
+        "openThemeAssetStorage": "テーマリソースの保存領域を開けませんでした。"
+      }
+    },
+    "settings": {
+      "language": "対応している表示言語を選んでください。",
+      "validation": {
+        "chooseABuiltInBaseTheme": "組み込みの基本テーマを選んでください。",
+        "chooseABundledCodeHighlightingTheme": "同梱のコードハイライトテーマを選んでください。",
+        "chooseASupportedBackgroundMotionPolicy": "対応している背景アニメーションの設定を選んでください。",
+        "chooseASupportedBackgroundType": "対応している背景の種類を選んでください。",
+        "chooseAValidHexadecimalColor": "有効な 16 進数の色を指定してください。",
+        "chooseAnAvailableTheme": "利用可能なテーマを選んでください。",
+        "chooseAnImageForThisTheme": "このテーマの画像を選んでください。",
+        "resetSettings": "設定を初期値に戻せませんでした。",
+        "settingsAreInvalid": "設定が無効です。",
+        "youCanSaveUpToValueCustomThemes": "カスタムテーマは {0} 個まで保存できます。"
+      },
+      "storage": {
+        "quota": "設定の保存領域がいっぱいです。前回の設定は保持されています。",
+        "rate": "短時間に保存が繰り返されています。しばらくしてからお試しください。",
+        "pending": "設定の同期中か、保存を確認できていません。少し待ってから再試行してください。",
+        "cached": "Chrome の同期が完了するまで、前回の完全な設定を表示しています。新しい変更はまだ保存できません。",
+        "unavailable": "設定の保存領域を利用できません。"
+      }
+    },
+    "theme": {
+      "backgroundImageTooLarge": "背景画像は 5 MiB 以下にしてください。",
+      "themeAssetClient": {
+        "loadTheThemeAsset": "テーマリソースを読み込めませんでした。",
+        "removeTheThemeAsset": "テーマリソースを削除できませんでした。",
+        "saveTheThemeAsset": "テーマリソースを保存できませんでした。"
+      }
+    },
+    "validation": {
+      "boolean": "「{0}」は true または false にしてください。",
+      "integer": "「{0}」は整数にしてください。",
+      "range": "「{0}」は {1} から {2} の範囲で指定してください。"
+    },
+    "viewer": {
+      "actions": {
+        "copyFileLink": "ファイルのリンクをコピーできませんでした",
+        "exportHTML": "HTML をエクスポートできませんでした",
+        "exportWordDocument": "Word ドキュメントをエクスポートできませんでした",
+        "switchTheme": "テーマを切り替えられませんでした。"
+      },
+      "app": {
+        "restoreTheLinkedFileReturnedToTheOriginal": "リンク先のファイルを復元できなかったため、元のファイルに戻りました",
+        "switchTheme": "テーマを切り替えられませんでした"
+      },
+      "articleInteractions": {
+        "copy": "コピーできませんでした",
+        "copyLink": "リンクをコピーできませんでした"
+      },
+      "colors": {
+        "copyColorSelectTheOriginalTextToCopy": "色をコピーできませんでした。元のテキストを選択して手動でコピーしてください。",
+        "copySelectAValueToCopyManually": "コピーできませんでした。値を選択して手動でコピーしてください。",
+        "copyTryAgain": "コピーできませんでした。もう一度お試しください。"
+      },
+      "document": {
+        "openLinkedFile": "リンク先のファイルを開けませんでした",
+        "openThisValue": "この {0} を開けませんでした。",
+        "readLinkedFile": "リンク先のファイルを読み取れませんでした",
+        "readThisValue": "この {0} を読み取れませんでした。"
+      },
+      "documentLoader": {
+        "onlyLocalImageFilesCanBeOpened": "ローカルの画像ファイルのみ開けます。",
+        "openDocument": "ドキュメントを開けませんでした。",
+        "readThisImageFile": "この画像ファイルを読み取れませんでした。"
+      },
+      "documents": {
+        "dbml": {
+          "displayThisDBMLFile": "この DBML ファイルを表示できませんでした。"
+        },
+        "image": {
+          "displayValue": "{0} を表示できませんでした。"
+        },
+        "mermaid": {
+          "displayThisMermaidDocument": "この Mermaid ドキュメントを表示できませんでした。"
+        },
+        "sql": {
+          "displayThisSQLFile": "この SQL ファイルを表示できませんでした。"
+        },
+        "text": {
+          "displayThisTextFile": "このテキストファイルを表示できませんでした。"
+        }
+      },
+      "editor": {
+        "connectTheOriginalFile": "元のファイルにアクセスできませんでした。",
+        "openIndexedDB": "IndexedDB を開けませんでした",
+        "writePermissionWasNotGranted": "書き込みが許可されませんでした。",
+        "writePermissionWasNotGrantedForTheConnected": "保存先のファイルへの書き込みが許可されませんでした。",
+        "writePermissionWasNotGrantedForTheSelected": "選択したファイルへの書き込みが許可されませんでした。"
+      },
+      "explorer": {
+        "file": {
+          "copyFileName": "ファイル名をコピーできませんでした"
+        },
+        "folder": {
+          "copyFolderName": "フォルダ名をコピーできませんでした",
+          "copyFolderPath": "フォルダのパスをコピーできませんでした"
+        },
+        "listRefresh": {
+          "refreshFileListTheOpenDocumentWasKept": "ファイル一覧を更新できませんでした。開いているドキュメントは保持されています。"
+        },
+        "workspacePicker": {
+          "missingDirectoryHandle": "フォルダのハンドルがありません"
+        },
+        "workspaceSession": {
+          "openFolder": "フォルダを開けませんでした",
+          "restoreWorkspace": "ワークスペースを復元できませんでした",
+          "scanFolder": "フォルダをスキャンできませんでした"
+        }
+      },
+      "imageRevision": {
+        "readImageBytes": "画像データを読み取れませんでした。"
+      },
+      "markdownDocumentRenderer": {
+        "missingRenderTargetDocument": "描画先のドキュメントがありません。"
+      },
+      "media": {
+        "decodeThisImageForResolutionRendering": "解像度を変更するための画像のデコードに失敗しました。",
+        "encodeThisResolution": "この解像度で画像をエンコードできませんでした。",
+        "initializeImageRendering": "画像の描画を初期化できませんでした。",
+        "parseThisSVGForResolutionRendering": "解像度を変更するための SVG の解析に失敗しました。",
+        "readThisSVGForResolutionRendering": "解像度を変更するための SVG の読み取りに失敗しました。",
+        "renderThisResolution": "この解像度で描画できませんでした。"
+      },
+      "mermaid": {
+        "missingMermaidRenderTarget": "Mermaid の描画先がありません。"
+      },
+      "renderer": {
+        "missingRenderTargetElement": "描画先の要素がありません。"
+      },
+      "review": {
+        "calculateChangesCloseThisReviewAndTryAgain": "変更を計算できませんでした。比較を閉じて、もう一度お試しください。",
+        "dialog": {
+          "openReview": "比較を開けませんでした"
+        }
+      },
+      "shikiHighlighter": {
+        "missingShikiLanguageModuleForValue": "「{0}」の Shiki 言語モジュールがありません。",
+        "missingShikiThemeModuleForValue": "「{0}」の Shiki テーマモジュールがありません。"
+      },
+      "watch": {
+        "readTheFileTheCurrentContentWasKept": "ファイルを読み取れませんでした。現在の内容は保持されています。ファイルへのアクセスを確認して再試行してください。"
+      }
+    }
+  },
+  "options": {
+    "about": {
+      "aLocalFirstViewerAndEditorForMarkdown": "ローカルでの利用を中心に設計された、Markdown と関連ファイルのビューア兼エディタです。",
+      "browseSiblingDocumentsOrOpenALocalWorkspace": "同じフォルダのドキュメントを参照したり、ローカルのワークスペースを開いたりできます。",
+      "developmentBuild": "開発版",
+      "extensionInformation": "拡張機能の情報",
+      "heading": "Markdown Plus について",
+      "learnWhatMarkdownPlusDoesHowItHandles": "Markdown Plus の機能やファイルの扱い、サポート窓口を確認できます。",
+      "links": {
+        "license": {
+          "description": "Markdown Plus のオープンソースライセンスを確認できます。",
+          "label": "MIT ライセンス"
+        },
+        "privacy": {
+          "description": "ローカルファイルと拡張機能のデータの扱いを確認できます。",
+          "label": "プライバシーポリシー"
+        },
+        "source": {
+          "description": "GitHub でプロジェクトを確認し、開発に参加できます。",
+          "label": "ソースコード"
+        },
+        "support": {
+          "description": "使い方の相談や、再現できる不具合の報告はこちら。",
+          "label": "問題を報告"
+        },
+        "website": {
+          "description": "Markdown Plus の公式サイトを開きます。",
+          "label": "ウェブサイト"
+        }
+      },
+      "localFirstByDesign": "ローカルで使うための設計",
+      "metadata": {
+        "chromeExtension": "Chrome 拡張機能",
+        "manifestVersion": "Manifest V{0}",
+        "minimumChromeVersion": "Chrome {0}+"
+      },
+      "openSource": "オープンソース",
+      "optInToEditingWithExactFileVerification": "元のファイルを確認したうえで、安全な編集と保存を有効にできます。",
+      "product": "製品",
+      "projectSupport": "プロジェクトとサポート",
+      "readThePrivacyPolicy": "プライバシーポリシーを読む",
+      "renderLocalMarkdownCodeMathDiagramsTextAnd": "ローカルの Markdown、コード、数式、図、テキスト、画像を表示できます。",
+      "title": "製品情報",
+      "version": "バージョン",
+      "whatMarkdownPlusDoes": "Markdown Plus でできること",
+      "yourDocumentsAreProcessedInChromeAndAre": "ドキュメントは Chrome 内で処理され、開発者が運営するサービスには送信されません。端末内のデータはこの端末に保存され、設定は Chrome 経由で同期される場合があります。"
+    },
+    "advanced": {
+      "chooseJSON": "JSON を選択",
+      "downloadTheCompleteNormalizedSettingsObjectAsJSON": "正規化された設定全体を JSON としてダウンロードします。",
+      "exportJSON": "JSON をエクスポート",
+      "exportSettings": "設定をエクスポート",
+      "exporting": "エクスポート中…",
+      "fileIsFullyParsedAndValidatedBeforeAny": "設定を保存する前に、ファイル全体を解析して検証します。",
+      "importSettings": "設定をインポート",
+      "importing": "インポート中…",
+      "largeDocumentLoads": "大きなドキュメントの読み込み",
+      "largerFilesUseMoreMemoryAndMayTake": "大きなファイルはメモリを多く使い、表示に時間がかかる場合があります。変更は次にドキュメントを開くときに適用され、現在のドキュメントは再読み込みされません。",
+      "limitExpensiveDocumentLoadsMoveSettingsBetweenBrowsers": "負荷の高いドキュメントの読み込みを制限したり、設定を別のブラウザに移したり、初期値に戻したりできます。",
+      "maximumUTF8SizeForStandaloneTxtSql": "ビューアで個別に開く .txt、.sql、.dbml、.mermaid ファイルの UTF-8 サイズの上限です。Markdown ドキュメントには影響しません。",
+      "resetAllSettings": "すべての設定をリセット",
+      "resetToDefault": "初期値に戻す",
+      "resetting": "リセット中…",
+      "resourcesRecovery": "リソースと復元",
+      "restoreGeneralReaderEditorPluginsFilesWorkspacePrivacy": "全般、閲覧、エディタ、プラグイン、ファイルとワークスペース、プライバシー、ドキュメントのリソース設定を初期値に戻します。最近使ったファイルの履歴は別途消去してください。",
+      "title": "詳細設定"
+    },
+    "documentTitle": "Markdown Plus の設定",
+    "explorer": {
+      "connectFoldersAndFilesWithHierarchyLinesChanges": "フォルダとファイルの階層を線で表示します。変更はすぐに反映されます。",
+      "customizeTheFileTreeAndWorkspaceBehaviorScan": "ファイルツリーとワークスペースの動作を設定します。スキャンの上限は、次のスキャンまたは一覧更新時に適用されます。",
+      "excludeFilesAndFoldersIgnoredByNestedGitignore": "ワークスペースのスキャン時に、サブフォルダ内を含む .gitignore のルールに従ってファイルとフォルダを除外します。",
+      "higherLimitsCanMakeLargeWorkspaceScansSlower": "上限を大きくすると、大規模なワークスペースのスキャンが遅くなり、メモリ使用量も増える場合があります。値を変えても、実行中のスキャンが自動的に最初からやり直されることはありません。",
+      "howManyFolderLevelsToScanBelowThe": "選択したルートから何階層下までスキャンするかを指定します。0 にするとルートのみが対象です。",
+      "largeWorkspaceScans": "大規模なワークスペースのスキャン",
+      "navigationScanning": "ファイルの参照とスキャン",
+      "reopenTheLastFileBackedWorkspaceWhenA": "新しいビューアを開いたときに、前回のファイルベースのワークスペースを復元します。オフにしても、現在のワークスペースは閉じません。",
+      "resetSectionToDefaults": "このセクションを初期値に戻す",
+      "respectGitignoreFiles": ".gitignore に従う",
+      "restoreLastWorkspace": "前回のワークスペースを復元",
+      "showTreeIndentGuides": "ツリーのガイド線を表示",
+      "stopIndexingAfterThisManySupportedDocumentsHave": "対応するドキュメントがこの数に達すると、一覧への登録を停止します。",
+      "stopTheScanAfterThisManyFoldersHave": "この数のフォルダを調べるとスキャンを停止します。",
+      "title": "ファイルとワークスペース"
+    },
+    "general": {
+      "behavior": "動作",
+      "chooseHowToHandleChangesToTheOpen": "開いているドキュメントの変更をどう扱うか選びます。テキスト、図、画像が対象です。編集中の内容が更新によって自動的に置き換えられることはありません。",
+      "chooseMarkdownPlusDetailsThenEnableAllowAccess": " を開き、Markdown Plus →「詳細」→「ファイルの URL へのアクセスを許可する」をオンにしてください。",
+      "chromeControlsThisPermissionIfAccessIsBlocked": "この権限は Chrome が管理しています。アクセスが許可されていない場合は、",
+      "chromeExtensions": "chrome://extensions",
+      "controlMarkdownPlusActivationAndViewerBehavior": "Markdown Plus の有効・無効とビューアの動作を設定します。",
+      "enabled": {
+        "description": "対応するローカル Markdown ファイルを、Markdown Plus で自動的に開きます。",
+        "label": "Markdown Plus を有効にする"
+      },
+      "fileAccess": {
+        "label": "ファイル URL へのアクセス"
+      },
+      "language": {
+        "description": "設定、ポップアップ、ビューアの表示言語を選びます。ドキュメントの内容は元の言語のままです。",
+        "label": "表示言語"
+      },
+      "scrollbars": {
+        "description": "使っていないときは縦スクロールバーを隠し、スクロール時、パネルの端に近づいたとき、キーボード操作時に表示します。",
+        "label": "スクロールバーを自動的に隠す"
+      },
+      "statistics": {
+        "description": "Markdown ドキュメントの上部に、単語数、文字数（スペースを含む）、読了時間の目安を表示します。",
+        "label": "ドキュメントの統計を表示"
+      },
+      "title": "全般"
+    },
+    "navigation": {
+      "activationAndAccess": "有効化とアクセス",
+      "colorsAndBackgrounds": "色と背景",
+      "folderAppearanceAndScanLimits": "フォルダの表示とスキャン上限",
+      "limitsBackupAndReset": "上限、バックアップ、リセット",
+      "loadingSettings": "設定を読み込み中",
+      "recentLocalFiles": "最近使ったローカルファイル",
+      "section": "セクション",
+      "settingsCouldNotBeLoaded": "設定を読み込めませんでした",
+      "settingsSections": "設定のセクション",
+      "versionPrivacyAndSupport": "バージョン、プライバシー、サポート"
+    },
+    "notifications": {
+      "activeThemeUpdated": "使用中のテーマを更新しました。",
+      "allSettingsResetToDefaults": "すべての設定を初期値に戻しました。",
+      "checkTheHighlightedField": "強調表示された項目を確認してください。",
+      "checkTheHighlightedFields": "強調表示された項目を確認してください。",
+      "clearingRecentFiles": "最近使ったファイルの一覧を消去中…",
+      "customThemeCreated": "カスタムテーマを作成しました。",
+      "customThemeDeleted": "カスタムテーマを削除しました。",
+      "customThemeSaved": "カスタムテーマを保存しました。",
+      "documentScrollbarsWillAutoHide": "スクロールバーを自動的に隠します。",
+      "documentScrollbarsWillStayVisible": "スクロールバーを常に表示します。",
+      "documentStatisticsWillBeHidden": "ドキュメントの統計を非表示にします。",
+      "documentStatisticsWillBeShown": "ドキュメントの統計を表示します。",
+      "documentViewingLimitResetToTheDefault": "ドキュメントの表示サイズ上限を初期値に戻しました。",
+      "documentViewingLimitSavedTheChangeAppliesThe": "表示サイズ上限を保存しました。次にドキュメントを開くときに適用されます。",
+      "filesWorkspaceBehaviorSavedTheChangeAppliesTo": "ファイルとワークスペースの動作を保存しました。次のスキャンまたはビューア起動時に適用されます。",
+      "filesWorkspaceSettingsResetToDefaults": "ファイルとワークスペースの設定を初期値に戻しました。",
+      "filesWorkspaceSettingsSavedNewLimitsApplyTo": "ファイルとワークスペースの設定を保存しました。新しい上限は次のスキャンまたは一覧更新時に適用されます。",
+      "generalSettingsSaved": "全般設定を保存しました。",
+      "interfaceLanguageUpdated": "表示言語を変更しました。",
+      "loadingSettings": "設定を読み込み中…",
+      "recentFileHistoryClearedFromThisDevice": "この端末の最近使ったファイルの履歴を消去しました。",
+      "recentFileHistoryDisabledExistingEntriesWereKept": "最近使ったファイルの記録をオフにしました。既存の履歴は保持されています。",
+      "recentFileHistoryEnabled": "最近使ったファイルの記録をオンにしました。",
+      "recentFileRetentionSavedTheLimitAppliesOn": "最近使ったファイルの保存件数を変更しました。次に履歴を開くときに適用されます。",
+      "settingsAreUpToDate": "設定は最新です。",
+      "settingsExported": "設定をエクスポートしました。",
+      "settingsImportedAndSaved": "設定をインポートして保存しました。",
+      "treeIndentGuidesSavedOpenViewersUpdateImmediately": "ツリーのガイド線設定を保存しました。開いているビューアにすぐ反映されます。",
+      "validatingSettingsFile": "設定ファイルを検証中…",
+      "watchModeUpdated": "更新の監視モードを変更しました。"
+    },
+    "optionsActions": {
+      "clearAllRecentFilePathsStoredByMarkdown": "Markdown Plus がこの端末に記録した、最近使ったファイルのパスをすべて消去しますか？この操作は取り消せません。元のファイルは削除されません。",
+      "resetAllMarkdownPlusSettingsToTheirDefaults": "Markdown Plus の設定をすべて初期値に戻しますか？閲覧、エディタ、プラグイン、エクスプローラーの設定が対象です。",
+      "settingsFilesMustBeSmallerThan1MiB": "設定ファイルは 1 MiB 未満にしてください。"
+    },
+    "privacy": {
+      "clearRecentFiles": "最近使ったファイルの履歴を消去",
+      "clearRecentFilesNow": "履歴を今すぐ消去",
+      "clearing": "消去中…",
+      "controlWhetherMarkdownPlusRemembersLocalDocumentsAnd": "ローカルドキュメントの履歴を記録するかどうかと、保存する件数を設定します。",
+      "keepOnlyTheNewestEntriesAfterTheNext": "次に履歴を開くときに、新しい項目だけを上限まで残します。",
+      "localData": "ローカルデータ",
+      "recentFileURLsContainLocalPathsTheyAre": "最近使ったファイルの URL にはローカルのパスが含まれます。同期される設定とは別に、この端末の拡張機能のローカル領域にのみ保存されます。",
+      "rememberLocalMarkdownFilesSoTheyCanBe": "ローカル Markdown ファイルを記録し、ポップアップから開き直せるようにします。オフにしても既存の履歴は消去されず、新しい記録の追加だけを停止します。",
+      "saveRecentFiles": "最近使ったファイルを記録",
+      "title": "プライバシーとデータ"
+    },
+    "themes": {
+      "background": {
+        "angle0360": "角度（0〜360°）",
+        "animate": "アニメーションを再生",
+        "backgroundType": "背景の種類",
+        "bottom": "下",
+        "center": "中央",
+        "dimming008": "暗さ（0〜0.8）",
+        "endColor": "終点の色",
+        "fillCanvas": "領域全体を埋める",
+        "fitWithinCanvas": "領域内に収める",
+        "followSystem": "システムに合わせる",
+        "gradient": "グラデーション",
+        "imageFile": "画像ファイル",
+        "imageFit": "画像のサイズ調整",
+        "imagePosition": "画像の位置",
+        "left": "左",
+        "localImageOrAnimation": "ローカルの画像・アニメーション",
+        "motion": "アニメーション",
+        "originalSize": "元のサイズ",
+        "pngJPEGWebPAVIFGIFOrAPNGUp": "PNG、JPEG、WebP、AVIF、GIF、APNG。5 MiB まで。",
+        "repeatImage": "画像を繰り返す",
+        "right": "右",
+        "sceneColor": "背景色",
+        "solidScene": "単色",
+        "startColor": "始点の色",
+        "still": "静止",
+        "storedOnThisDevice": "この端末に保存",
+        "themeColorOnly": "テーマの色のみ",
+        "tileTheImageInsteadOfShowingOneCanvas": "画像を 1 枚だけ表示する代わりに、タイル状に繰り返して表示します。",
+        "top": "上"
+      },
+      "colors": {
+        "borders": "枠線",
+        "contentSurface": "本文の背景",
+        "documentText": "ドキュメントの文字",
+        "headings": "見出し",
+        "inlineFallbackCodeBackground": "インラインコード・未ハイライトコードの背景",
+        "inlineFallbackCodeText": "インラインコード・未ハイライトコードの文字",
+        "interfaceText": "操作画面の文字",
+        "links": "リンク",
+        "mutedText": "補助テキスト",
+        "pageBackground": "ページの背景",
+        "panelSurface": "パネルの背景",
+        "valueColorPicker": "{0} のカラーピッカー",
+        "valueHexValue": "{0} の 16 進数値"
+      },
+      "editor": {
+        "backToThemes": "← テーマに戻る",
+        "background": "背景",
+        "baseTheme": "基本テーマ",
+        "buildAReusableReaderThemeChangesStayIn": "繰り返し使える閲覧テーマを作成します。保存するまで、変更は下書きとして保持されます。",
+        "buildTheSceneBehindTheViewerAndTune": "ビューアの背景を作り、読みやすさを調整します。",
+        "chooseTheSyntaxColorsUsedForRenderedCode": "コードブロックの表示に使うシンタックスカラーを選びます。",
+        "codeHighlighting": "コードハイライト",
+        "colors": "色",
+        "createCustomTheme": "カスタムテーマを作成",
+        "createTheme": "テーマを作成",
+        "discardYourUnsavedThemeChanges": "テーマの未保存の変更を破棄しますか？",
+        "eGMidnightPaper": "例: 真夜中のノート",
+        "editValue": "{0} を編集",
+        "identity": "名前と基本設定",
+        "nameTheThemeAndChooseTheBuiltIn": "テーマに名前を付け、元にする組み込みテーマを選びます。",
+        "newDraft": "新しい下書き",
+        "noChanges": "変更なし",
+        "replacesTheColorsInSection02CodeHighlighting": "セクション 02 の色を置き換えます。コードハイライトもこのテーマに従いますが、下で個別に変更できます。",
+        "resetsColors": "色をリセット",
+        "savingTheme": "テーマを保存中…",
+        "shownInTheThemePickerAndPopup": "テーマ選択画面とポップアップに表示されます。",
+        "themeName": "テーマ名",
+        "themeStudio": "テーマエディタ",
+        "tuneSemanticColorsSoTheViewerStaysVisually": "各要素の色を調整して、ビューアに統一感を持たせます。インラインコード・未ハイライトコードの色は、セクション 03 のシンタックステーマには影響しません。",
+        "unsavedChanges": "未保存の変更"
+      },
+      "library": {
+        "activeReaderTheme": "使用中の閲覧テーマ",
+        "activeTheme": "使用中のテーマ",
+        "addCustomTheme": "カスタムテーマを追加",
+        "appearance": "外観",
+        "builtInThemes": "組み込みテーマ",
+        "chooseTheReaderThemeInUseThenManage": "閲覧用のテーマを選び、繰り返し使えるカスタムテーマを管理します。",
+        "createOneFromYourActiveThemeThenAdjust": "使用中のテーマをもとに作成し、テーマエディタで色や背景を調整できます。",
+        "createYourFirstTheme": "最初のテーマを作成",
+        "customThemesCanBeSelectedInBothSettings": "カスタムテーマは設定とポップアップの両方で選べます。",
+        "customThemesDeleteOneBeforeCreatingAnother": "個のカスタムテーマまで保存できます。新しく作るには、既存のテーマを削除してください。",
+        "deleteValueThisCannotBeUndoneValue": "「{0}」を削除しますか？この操作は取り消せません。{1}",
+        "gradientBackground": "グラデーションの背景",
+        "itIsActiveSoValueWillBecomeActive": " 現在使用中のため、代わりに {0} が有効になります。",
+        "localImageBackground": "ローカル画像の背景",
+        "myTheme": "マイテーマ",
+        "myThemes": "マイテーマ",
+        "noCustomThemesYet": "カスタムテーマはまだありません",
+        "selectionIsAlsoShownInTheExtensionPopup": "この選択は拡張機能のポップアップにも表示されます。",
+        "solidBackground": "単色の背景",
+        "themeColorBackground": "テーマ色の背景",
+        "useTheme": "このテーマを使う",
+        "youHaveReachedTheLimitOf": "保存数の上限に達しました。"
+      },
+      "preview": {
+        "aCalmReadingSpaceForIdeasSnippetsAnd": "アイデアやコードの断片、",
+        "accent": "アクセント",
+        "base": "基本:",
+        "code": "コード:",
+        "designNotesThatFeelLikeHome": "自分らしいデザインノート。",
+        "details": "詳細",
+        "docs": "docs",
+        "everyValidChangeAppearsHereInstantlySavingIs": "有効な変更はすぐにここへ反映されます。保存は不要です。",
+        "examples": "サンプル",
+        "focus": "フォーカス",
+        "guideMd": "guide.md",
+        "javascript": "JavaScript",
+        "link": "リンク",
+        "livePreview": "ライブプレビュー",
+        "liveThemePreview": "テーマのライブプレビュー",
+        "myNOTES": "マイノート",
+        "notesMd": "notes.md",
+        "overview": "概要",
+        "reading": "閲覧",
+        "readmeMd": "README.md",
+        "role": "用途",
+        "surface": "背景",
+        "text": "文字",
+        "theSmallestDetailsMakeTheBiggestDifference": "「小さなこだわりが、大きな違いを生む。」",
+        "token": "色の要素",
+        "untitledTheme": "名前のないテーマ",
+        "usefulLinks": "便利なリンクを読みやすく"
+      },
+      "syntax": {
+        "appliesToRenderedFencedCodeAndSQLDocuments": "コードブロックと SQL ドキュメントの表示に適用されます。Markdown エディタでは独自のハイライトを使用します。",
+        "darkThemes": "ダークテーマ",
+        "followBaseTheme": "基本テーマに合わせる (",
+        "lightThemes": "ライトテーマ",
+        "renderedCodeTheme": "表示コードのシンタックステーマ"
+      },
+      "title": "テーマ"
+    },
+    "title": "設定",
+    "validation": {
+      "fields": {
+        "appearanceSettingsMustBeAnObject": "外観設定はオブジェクトにしてください。",
+        "backgroundAssetRevisionIsInvalid": "背景リソースのリビジョンが無効です。",
+        "backgroundDimmingMustBeBetween0And0": "背景の暗さは 0 から 0.8 の範囲で指定してください。",
+        "backgroundSettingsMustBeAnObject": "背景設定はオブジェクトにしてください。",
+        "chooseAutoHideOrAlwaysVisibleScrollbars": "スクロールバーの自動非表示、または常時表示を選んでください。",
+        "chooseAutomaticAskBeforeUpdatingOrOff": "自動更新、更新前の確認、オフのいずれかを選んでください。",
+        "customThemeIdIsInvalid": "カスタムテーマの ID が無効です。",
+        "customThemeIdsMustBeUnique": "カスタムテーマの ID は重複できません。",
+        "customThemeMustBeAnObject": "カスタムテーマはオブジェクトにしてください。",
+        "customThemesMustBeAList": "カスタムテーマはリストにしてください。",
+        "documentSettingsMustBeAnObject": "ドキュメント設定はオブジェクトにしてください。",
+        "editorSettingsMustBeAnObject": "エディタ設定はオブジェクトにしてください。",
+        "enableExperimentalEditorMustBeTrueOrFalse": "実験的エディタの有効化は true または false にしてください。",
+        "enableMarkdownPlusMustBeTrueOrFalse": "Markdown Plus の有効化は true または false にしてください。",
+        "filesWorkspaceSettingsMustBeAnObject": "ファイルとワークスペースの設定はオブジェクトにしてください。",
+        "folderScanDepth": "フォルダのスキャン階層数",
+        "gradientAngleMustBeBetween0And360": "グラデーションの角度は 0 から 360 の範囲で指定してください。",
+        "maximumIndexedFiles": "一覧に登録するファイル数の上限",
+        "maximumRecentFiles": "最近使ったファイルの保存件数",
+        "maximumScannedFolders": "スキャンするフォルダ数の上限",
+        "privacyDataSettingsMustBeAnObject": "プライバシーとデータの設定はオブジェクトにしてください。",
+        "settingsMustBeAJSONObject": "設定は JSON オブジェクトにしてください。",
+        "showDocumentStatisticsMustBeTrueOrFalse": "ドキュメント統計の表示は true または false にしてください。",
+        "standaloneTextFileLimit": "個別に開くテキストファイルのサイズ上限",
+        "themeColorsMustBeAnObject": "テーマの色はオブジェクトにしてください。",
+        "themeNameMustBeBetween1And48": "テーマ名は 1〜48 文字にしてください。",
+        "themeSettingsMustBeAnObject": "テーマ設定はオブジェクトにしてください。"
+      }
+    }
+  },
+  "plugins": {
+    "alerts": {
+      "caution": "注意",
+      "important": "重要",
+      "note": "注記",
+      "tip": "ヒント",
+      "warning": "警告"
+    },
+    "anchorHeading": {
+      "copyLinkToThisSection": "このセクションへのリンクをコピー",
+      "copySectionLinkClick": "セクションへのリンクをコピー（クリック）"
+    },
+    "colorPreview": {
+      "copyColorValue": "色 {0} をコピー"
+    },
+    "taskList": {
+      "x": "x"
+    }
+  },
+  "popup": {
+    "editor": {
+      "editingIsOffByDefaultWhenEnabledMarkdown": "編集は初期状態ではオフです。オンにすると、編集を始める前に元のファイルを選択して確認するよう求められます。",
+      "editorFontSize": "エディタの文字サイズ",
+      "enableEditor": "エディタを有効にする",
+      "enableExperimentalEditor": "実験的エディタを有効にする",
+      "experimentalEditor": "実験的エディタ",
+      "lineNumbers": "行番号",
+      "optInToEditingLocalMarkdownFiles": "ローカル Markdown ファイルの編集を有効にします。",
+      "resetEditorPreferences": "エディタ設定をリセット",
+      "resetEditorPreferencesToDefaultValues": "エディタ設定を初期値に戻しますか？",
+      "tabSize": "タブ幅",
+      "tabSizeRange": "2〜8 スペース",
+      "wordWrap": "折り返し"
+    },
+    "fileAccess": {
+      "allowAccessToLocalFiles": "ローカルファイルへのアクセスを許可",
+      "checkingFileAccess": "ファイルアクセスを確認中",
+      "confirmingWhetherMarkdownPlusCanOpenLocalFiles": "Markdown Plus でローカルファイルを開けるか確認しています。",
+      "enableAllowAccessToFileURLs": "「ファイルの URL へのアクセスを許可する」をオンにしてください。",
+      "fileAccessIsReady": "ファイルアクセスの準備完了",
+      "fileAccessStatusUnavailable": "ファイルアクセスの状態を確認できません",
+      "openChromeExtensions": "chrome://extensions を開きます。",
+      "selectMarkdownPlusDetails": "Markdown Plus →「詳細」を選びます。"
+    },
+    "footer": {
+      "about": "製品情報",
+      "allSettings": "すべての設定",
+      "saved": "設定を保存しました"
+    },
+    "history": {
+      "fileCount": {
+        "other": "最近使ったファイル: {count} 件"
+      },
+      "loadingRecentFiles": "最近使ったファイルを読み込み中…",
+      "noRecentFilesYet": "最近使ったファイルはありません",
+      "openLocalMarkdownFilesWithMarkdownPlusAnd": "ローカルの Markdown ファイルを Markdown Plus で開くと、ここに表示されます。",
+      "opening": "開いています…"
+    },
+    "page": {
+      "loadingQuickSettings": "クイック設定を読み込み中",
+      "quickControlSections": "クイック設定のセクション",
+      "quickSettingsCouldNotBeLoaded": "クイック設定を読み込めませんでした"
+    },
+    "plugins": {
+      "aCleanerCursorLikeLayoutPoweredByELK": "ELK による、Cursor に似たすっきりしたレイアウト。",
+      "beautiful": "Beautiful",
+      "broadestMermaidSyntaxSupportAndTheSafestDefault": "Mermaid 構文への対応が最も広く、標準の選択肢として安心して使えます。",
+      "cursorLike": "Cursor 風",
+      "i": "i",
+      "items": {
+        "anchorHeading": {
+          "hint": "見出しに「#」ボタンを追加し、セクションへの直接リンクをコピーできるようにします。",
+          "label": "見出しへのリンク",
+          "version": "見出し ID: markdown-it-anchor 9.2.0。"
+        },
+        "codeHighlight": {
+          "hint": "Shiki でコードブロックをハイライトします。オフにすると装飾なしで表示し、負荷を抑えられます。",
+          "label": "コードハイライト",
+          "version": "対応構文: Shiki 4.0.2。"
+        },
+        "colorPreview": {
+          "hint": "色見本を表示し、透明度を含む HEX・RGB・HSL 値をコピーできます。",
+          "label": "色のプレビュー"
+        },
+        "emoji": {
+          "hint": "対応する :shortcode: を絵文字に変換します。",
+          "label": "絵文字",
+          "version": "対応構文: markdown-it-emoji 3.0.0。"
+        },
+        "footnote": {
+          "hint": "脚注の番号、本文、元の位置へ戻るリンクを追加します。",
+          "label": "脚注",
+          "version": "対応構文: markdown-it-footnote 4.0.0。"
+        },
+        "githubAlerts": {
+          "hint": "GitHub 形式の注記、ヒント、重要事項、警告、注意事項を見やすく表示します。",
+          "label": "GitHub アラート"
+        },
+        "math": {
+          "hint": "必要に応じて、KaTeX で LaTeX 形式の数式を表示します。",
+          "label": "数式（KaTeX）",
+          "version": "対応構文: @mdit/plugin-katex 0.25.2、KaTeX 0.16.47。"
+        },
+        "mermaid": {
+          "hint": "Mermaid コードブロックを図として表示し、エクスポートできます。",
+          "label": "Mermaid 図",
+          "version": "対応構文: Mermaid 11.17.2 または Beautiful Mermaid 1.1.3。"
+        },
+        "tableEnhance": {
+          "hint": "幅の広い表を横スクロールできるようにし、見た目を整えます。",
+          "label": "表の表示改善"
+        },
+        "taskList": {
+          "hint": "GitHub 形式のタスクリストを、読み取り専用のチェックボックス付きで表示します。",
+          "label": "タスクリスト"
+        }
+      },
+      "mermaidOfficial": "Mermaid 公式",
+      "official": "公式",
+      "renderer": "描画エンジン"
+    },
+    "reader": {
+      "aboutFontFamily": "フォントについて",
+      "aboutLineHeight": "行の高さについて",
+      "contentWidth": {
+        "label": "本文の幅"
+      },
+      "fontFamilies": {
+        "monoFira": "等幅（Fira Code）",
+        "monospace": "等幅",
+        "sansHumanist": "サンセリフ（ヒューマニスト）",
+        "sansNeutral": "サンセリフ（ニュートラル）",
+        "sansOpenSans": "サンセリフ（Open Sans）",
+        "sansRoboto": "サンセリフ（Roboto / Arial）",
+        "sansVietnamese": "サンセリフ（読みやすさ重視 / ベトナム語）",
+        "serifCharter": "セリフ（Charter）",
+        "serifGeorgia": "セリフ（Georgia）",
+        "serifMerriweather": "セリフ（Merriweather）",
+        "serifNewYork": "セリフ（New York / Georgia）",
+        "serifSource": "セリフ（Source Serif）",
+        "serifVietnamese": "セリフ（Noto / ベトナム語）",
+        "system": "システムフォント"
+      },
+      "fontFamily": {
+        "label": "フォント"
+      },
+      "fontSize": {
+        "label": "文字サイズ"
+      },
+      "lineHeight": {
+        "label": "行の高さ"
+      },
+      "outline": {
+        "label": "目次を表示"
+      },
+      "resetReaderUI": "閲覧設定をリセット",
+      "resetReaderUISettingsToDefaultValues": "閲覧画面の設定を初期値に戻しますか？",
+      "theme": "テーマ",
+      "unitlessLineSpacingMultiplierEG17": "文字サイズに対する行間の倍率です（例: 1.7 ≈ 170%）。単位はなく、ピクセルではありません。",
+      "usesFontsInstalledOnYourSystemPresetsList": "端末にインストールされたフォントを使用します。最初の候補がない場合に備え、各プリセットには代替フォントも設定されています。"
+    },
+    "tabs": {
+      "editor": {
+        "label": "エディタ",
+        "title": "エディタの設定"
+      },
+      "history": {
+        "label": "履歴",
+        "title": "最近使ったファイル"
+      },
+      "plugins": {
+        "label": "プラグイン",
+        "title": "Markdown の機能"
+      },
+      "reader": {
+        "label": "閲覧",
+        "title": "閲覧時の表示"
+      }
+    }
+  },
+  "services": {
+    "fileHistory": {
+      "localFileHistoryStorageIsUnavailable": "ローカルのファイル履歴の保存領域を利用できません。",
+      "tabsAPIIsUnavailable": "タブ API を利用できません。"
+    },
+    "messageRouter": {
+      "enableAllowAccessToFileURLsForMarkdown": "Markdown Plus の「ファイルの URL へのアクセスを許可する」をオンにしてください（chrome://extensions → この拡張機能 →「詳細」）。"
+    },
+    "offscreenFetch": {
+      "chromeOffscreenIsNotAvailableChrome109Required": "chrome.offscreen を利用できません（Chrome 109 以降が必要です）。",
+      "offscreenFetchTimedOut": "バックグラウンドでの取得がタイムアウトしました"
+    },
+    "optionsPage": {
+      "settingsPageIsUnavailableInThisBrowser": "このブラウザでは設定ページを利用できません。"
+    },
+    "themeAsset": {
+      "themeAssetDatabaseRequestFailed": "テーマリソースのデータベース要求に失敗しました。",
+      "themeAssetStorageIsUnavailable": "テーマリソースの保存領域を利用できません。",
+      "themeAssetTransactionFailed": "テーマリソースのトランザクションに失敗しました。"
+    }
+  }
+}

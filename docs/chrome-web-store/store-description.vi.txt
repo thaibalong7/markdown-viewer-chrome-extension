@@ -1,4 +1,4 @@
-Markdown Plus là trình xem và đọc Markdown hoàn toàn miễn phí cho Chrome. Mở tệp .md trên máy ngay trong trình duyệt và đọc tài liệu đã được định dạng thay vì mã Markdown thô. Không cần tài khoản hay tải tài liệu lên máy chủ.
+Markdown Plus là tiện ích đọc Markdown hoàn toàn miễn phí cho Chrome. Mở tệp .md trên máy ngay trong trình duyệt và đọc tài liệu đã được định dạng thay vì mã Markdown thô. Không cần tài khoản hay tải tài liệu lên máy chủ.
 
 TÍNH NĂNG
 
@@ -17,13 +17,13 @@ TÍNH NĂNG
 • Xem rõ sơ đồ và hình ảnh — Mở trong khung xem lớn để phóng to, thu nhỏ và di chuyển.
 • Theo dõi thay đổi từ ứng dụng khác — Phát hiện thay đổi của tệp đang mở và chọn lúc tải lại.
 • Xem phần thay đổi — So sánh các dòng được thêm, xóa và xác định những phần Markdown bị ảnh hưởng.
-• Soạn thảo với bản xem trước trực tiếp — Bật trình soạn thảo thử nghiệm và lưu vào tệp gốc đã được chọn.
+• Soạn thảo và xem trước tức thì — Bật trình soạn thảo thử nghiệm và lưu vào tệp gốc đã được chọn.
 • Xuất tài liệu — Xuất Markdown thành HTML hoặc tệp .doc tương thích với Word.
 • Xuất sơ đồ — Tải sơ đồ Mermaid về dưới dạng SVG hoặc PNG.
 • In hoặc lưu PDF — Sử dụng hộp thoại in của Chrome.
 • Mở lại tệp gần đây — Quay lại các tệp Markdown trên máy đã mở trước đó.
 • Sao lưu cài đặt — Xuất và khôi phục tùy chọn cùng cấu hình giao diện riêng bằng JSON; không bao gồm ảnh nền.
-• Chọn ngôn ngữ giao diện — Tiếng Anh, tiếng Việt hoặc tiếng Trung giản thể.
+• Chọn ngôn ngữ giao diện — Tiếng Anh, tiếng Việt, tiếng Trung giản thể, tiếng Tây Ban Nha, tiếng Đức, tiếng Nhật hoặc tiếng Romania. Đổi ngôn ngữ tại Cài đặt → Chung.
 
 HOÀN TOÀN MIỄN PHÍ
 
@@ -42,7 +42,7 @@ Tính năng soạn thảo đang ở giai đoạn thử nghiệm và mặc địn
 
 QUYỀN RIÊNG TƯ
 
-Nội dung tài liệu được xử lý ngay trong trình duyệt, không tải lên máy chủ do nhà phát triển vận hành. Các tùy chọn có thể được đồng bộ qua Chrome. Đường dẫn tệp gần đây và ảnh nền được lưu trên thiết bị hiện tại. Tài liệu có thể tải ảnh từ bên ngoài; tài liệu toán đã xuất có thể tham chiếu CSS bên ngoài.
+Nội dung tài liệu được xử lý ngay trong trình duyệt, không tải lên máy chủ do nhà phát triển vận hành. Các tùy chọn có thể được đồng bộ qua Chrome. Đường dẫn tệp gần đây và ảnh nền được lưu trên thiết bị hiện tại. Tài liệu có thể tải ảnh từ bên ngoài; tài liệu đã xuất có chứa công thức toán có thể tham chiếu CSS bên ngoài.
 
 Chính sách quyền riêng tư:
 https://thaibalong7.github.io/markdown-viewer-chrome-extension/vi/privacy/

@@ -13,6 +13,10 @@
   <link rel="alternate" hreflang="en" href="../../privacy/">
   <link rel="alternate" hreflang="vi" href="./">
   <link rel="alternate" hreflang="zh-CN" href="../../zh-CN/privacy/">
+  <link rel="alternate" hreflang="es" href="../../es/privacy/">
+  <link rel="alternate" hreflang="de" href="../../de/privacy/">
+  <link rel="alternate" hreflang="ja" href="../../ja/privacy/">
+  <link rel="alternate" hreflang="ro" href="../../ro/privacy/">
   <link rel="alternate" hreflang="x-default" href="../../privacy/">
 </head>
 <body class="privacy-page" id="top">
@@ -25,7 +29,7 @@
       <a href="../guide/">Hướng dẫn</a>
       <a href="./" aria-current="page">Quyền riêng tư</a>
     </nav>
-    <div class="header-actions"><details class="language-control"><summary aria-label="Ngôn ngữ website" title="Ngôn ngữ website"><span aria-hidden="true">◎</span> <span>VI</span></summary><nav aria-label="Ngôn ngữ website"><a href="../../privacy/" lang="en" hreflang="en" data-language-link>English</a><a href="./" lang="vi" hreflang="vi" data-language-link aria-current="true">Tiếng Việt</a><a href="../../zh-CN/privacy/" lang="zh-CN" hreflang="zh-CN" data-language-link>简体中文（中国）</a></nav></details>
+    <div class="header-actions"><details class="language-control"><summary aria-label="Ngôn ngữ website" title="Ngôn ngữ website"><span aria-hidden="true">◎</span> <span>VI</span></summary><nav aria-label="Ngôn ngữ website"><a href="../../privacy/" lang="en" hreflang="en" data-language-link>English</a><a href="./" lang="vi" hreflang="vi" data-language-link aria-current="true">Tiếng Việt</a><a href="../../zh-CN/privacy/" lang="zh-CN" hreflang="zh-CN" data-language-link>简体中文（中国）</a><a href="../../es/privacy/" lang="es" hreflang="es" data-language-link>Español</a><a href="../../de/privacy/" lang="de" hreflang="de" data-language-link>Deutsch</a><a href="../../ja/privacy/" lang="ja" hreflang="ja" data-language-link>日本語</a><a href="../../ro/privacy/" lang="ro" hreflang="ro" data-language-link>Română</a></nav></details>
       <div class="theme-control" role="group" aria-label="Giao diện" hidden="">
         <button type="button" data-theme-choice="light" aria-label="Giao diện sáng" title="Giao diện sáng" aria-pressed="false"><svg class="icon  " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2"></path><path d="M6 4l1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4"></path></svg></button>
         <button type="button" data-theme-choice="dark" aria-label="Giao diện tối" title="Giao diện tối" aria-pressed="false"><svg class="icon  " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg></button>
@@ -49,7 +53,7 @@
 <section class="policy-section" tabindex="-1" id="information-stored-by-the-extension" aria-labelledby="heading-information-stored-by-the-extension"><h2 id="heading-information-stored-by-the-extension"><span class="section-number" aria-hidden="true">03</span> Thông tin tiện ích lưu lại</h2>
         <ul>
           <li>Cài đặt đọc, soạn thảo, duyệt tệp, giao diện và các tính năng mở rộng được lưu trong <code>chrome.storage.sync</code> khi bộ nhớ này khả dụng. Chrome có thể đồng bộ chúng qua tài khoản Google đang đăng nhập trong trình duyệt. Nếu không có bộ nhớ đồng bộ, tiện ích dùng <code>chrome.storage.local</code>. Nếu ghi dữ liệu đồng bộ thất bại, tiện ích không tự chuyển sang lưu cục bộ. Tiện ích cũng giữ bản sao đầy đủ gần nhất của cài đặt trong <code>chrome.storage.local</code> để hiển thị khi dữ liệu đồng bộ chưa đầy đủ.</li>
-          <li>Mô tả, màu sắc của giao diện tùy chỉnh và thông tin tham chiếu đến ảnh nền có thể được đồng bộ cùng cài đặt. Riêng tệp ảnh nền được lưu trên thiết bị hiện tại bằng IndexedDB của trình duyệt, không tải lên nhà phát triển và không đồng bộ sang thiết bị khác. Vì vậy, khi đổi thiết bị, bạn có thể cần chọn lại ảnh nền.</li>
+          <li>Mô tả, màu sắc của giao diện tùy chỉnh và thông tin tham chiếu đến ảnh nền có thể được đồng bộ cùng cài đặt. Riêng tệp ảnh nền được lưu trên thiết bị hiện tại bằng IndexedDB của trình duyệt, không tải lên máy chủ của nhà phát triển và không đồng bộ sang thiết bị khác. Vì vậy, khi đổi thiết bị, bạn có thể cần chọn lại ảnh nền.</li>
           <li>Nếu bật tính năng ghi nhớ tệp đã mở, URL tệp trên máy, tên tệp và thời điểm mở gần nhất chỉ được lưu trong <code>chrome.storage.local</code> của hồ sơ Chrome hiện tại. Đường dẫn các tệp gần đây không được đưa vào bộ nhớ đồng bộ.</li>
           <li>Nếu trình duyệt hỗ trợ, sau khi bạn chọn tệp để lưu, Chrome có thể cho phép tiện ích lưu thông tin truy cập tệp (file handle) trong IndexedDB. Nhờ đó, các lần lưu tiếp theo có thể ghi vào đúng tệp đã chọn. Chrome quản lý việc hỏi và cấp quyền truy cập hệ thống tệp.</li>
         </ul>
@@ -74,7 +78,7 @@
           <li><code>file:///*</code> cho phép tiện ích nhận diện, đọc và hiển thị tệp trên máy.</li>
           <li><code>storage</code> dùng để lưu cài đặt và lịch sử tệp gần đây như đã mô tả ở trên.</li>
           <li><code>offscreen</code> hỗ trợ đọc tài liệu trên máy và danh sách thư mục cho bảng Tệp.</li>
-          <li><code>downloads</code> dùng để lưu bản xuất HTML, tài liệu tương thích Word và sơ đồ Mermaid dạng SVG/PNG. Lệnh Lưu trong trình soạn thảo chỉ ghi vào tệp gốc bạn đã chủ động kết nối; không tải xuống bản sao thay thế.</li>
+          <li><code>downloads</code> dùng để lưu bản xuất HTML, tài liệu tương thích Word và sơ đồ Mermaid dạng SVG/PNG. Lệnh Lưu trong trình soạn thảo chỉ ghi vào tệp gốc bạn đã chủ động chọn và cấp quyền; không tải xuống bản sao thay thế.</li>
         </ul>
 
         </section>

@@ -1,5 +1,13 @@
 # Release notes
 
+## Unreleased — More interface languages
+
+Implemented in the current source; no release version or Chrome Web Store publication has been assigned to these changes.
+
+- Add Spanish, German, Japanese, and Romanian across Settings, Popup, Viewer controls, and editor/search labels.
+- Prepare matching website pages, translated privacy policies, and Chrome Web Store descriptions.
+- Open the website and privacy policy in the selected interface language from About; unsupported languages fall back to English.
+
 ## Unreleased — Find and workspace search
 
 Implemented in the current source; no release version or Chrome Web Store publication has been assigned to these changes.

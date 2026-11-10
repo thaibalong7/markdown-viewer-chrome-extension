@@ -3,7 +3,11 @@ export const LANGUAGES = Object.freeze([
   Object.freeze({ value: 'auto', label: 'common.languages.browser' }),
   Object.freeze({ value: 'en', label: 'common.languages.en' }),
   Object.freeze({ value: 'vi', label: 'common.languages.vi' }),
-  Object.freeze({ value: 'zh-CN', label: 'common.languages.zhCN' })
+  Object.freeze({ value: 'zh-CN', label: 'common.languages.zhCN' }),
+  Object.freeze({ value: 'es', label: 'common.languages.es' }),
+  Object.freeze({ value: 'de', label: 'common.languages.de' }),
+  Object.freeze({ value: 'ja', label: 'common.languages.ja' }),
+  Object.freeze({ value: 'ro', label: 'common.languages.ro' })
 ])
 
 export function resolveLocale(preference = 'auto', browserLanguages = globalThis.navigator?.languages || [globalThis.navigator?.language || 'en']) {

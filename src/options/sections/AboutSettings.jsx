@@ -4,7 +4,7 @@ import React from 'react'
 import { AppIcon } from '../../shared/react/AppIcon.jsx'
 import { Badge } from '../../shared/react/Badge.jsx'
 import { Notice } from '../../shared/react/Notice.jsx'
-import { ABOUT_LINKS, getExtensionMetadata } from '../about-metadata.js'
+import { getAboutLinks, getExtensionMetadata } from '../about-metadata.js'
 
 const FEATURES = Object.freeze([
   Object.freeze({
@@ -22,7 +22,8 @@ const FEATURES = Object.freeze([
 ])
 
 export function AboutSettings({ metadata = getExtensionMetadata() }) {
-  useLocale()
+  const locale = useLocale()
+  const links = getAboutLinks(locale)
   const platformLabels = [metadata.manifestLabel, metadata.minimumChromeLabel, 'options.about.openSource']
     .filter(Boolean)
 
@@ -58,7 +59,7 @@ export function AboutSettings({ metadata = getExtensionMetadata() }) {
 
       <Notice variant="success" title={t('options.about.localFirstByDesign')} className="settings-about-privacy">
         <p>{t('options.about.yourDocumentsAreProcessedInChromeAndAre')}</p>
-        <a href={ABOUT_LINKS.find(({ id }) => id === 'privacy').href} target="_blank" rel="noreferrer">{t('options.about.readThePrivacyPolicy')}<AppIcon name="external" />
+        <a href={links.find(({ id }) => id === 'privacy').href} target="_blank" rel="noreferrer">{t('options.about.readThePrivacyPolicy')}<AppIcon name="external" />
         </a>
       </Notice>
 
@@ -77,7 +78,7 @@ export function AboutSettings({ metadata = getExtensionMetadata() }) {
       <div className="settings-about-block" aria-labelledby="about-links-title">
         <h3 id="about-links-title">{t('options.about.projectSupport')}</h3>
         <div className="mdp-ui-card settings-about-links">
-          {ABOUT_LINKS.map((link) => (
+          {links.map((link) => (
             <a
               className="settings-about-link"
               href={link.href}

@@ -1,0 +1,1451 @@
+{
+  "common": {
+    "actions": {
+      "backToOriginalFile": "Volver al archivo original",
+      "backToTop": "Volver arriba",
+      "cancel": "Cancelar",
+      "clear": "Borrar",
+      "close": "Cerrar",
+      "collapseFolders": "Contraer carpetas",
+      "copyContent": "Copiar contenido",
+      "copyFileLink": "Copiar enlace del archivo",
+      "copyLink": "Copiar enlace",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "explore": "Explorar",
+      "focusMode": "Modo de concentración",
+      "leaveWorkspace": "Salir del espacio de trabajo",
+      "openExtensionDetails": "Ver detalles de la extensión",
+      "openSettings": "Abrir configuración",
+      "read": "Leer",
+      "refreshFileList": "Actualizar lista de archivos",
+      "retry": "Reintentar",
+      "saveChanges": "Guardar cambios",
+      "viewChanges": "Ver cambios",
+      "viewSource": "Ver código fuente"
+    },
+    "backgroundImage": {
+      "imageIsEmpty": "La imagen está vacía.",
+      "themeBackgroundImageDataIsInvalid": "Los datos de la imagen de fondo del tema no son válidos.",
+      "usePNGJPEGWebPAVIFGIFOrAPNG": "Usa PNG, JPEG, WebP, AVIF, GIF o APNG."
+    },
+    "fileAccess": {
+      "allowed": "Permitido",
+      "blocked": "No permitido"
+    },
+    "fileSchemeAccess": {
+      "extensionDetailsAreUnavailableOpenChromeExtensionsManually": "No se pueden abrir los detalles de la extensión. Abre chrome://extensions manualmente."
+    },
+    "fileTypeIcons": {
+      "markdown": "Markdown"
+    },
+    "fileTypes": {
+      "dbmlDocument": "Documento DBML",
+      "image": "Imagen",
+      "markdownDocument": "Documento Markdown",
+      "mermaidDiagram": "Diagrama Mermaid",
+      "plainTextDocument": "Documento de texto sin formato",
+      "sqlDocument": "Documento SQL",
+      "svgImage": "Imagen SVG"
+    },
+    "languages": {
+      "browser": "Idioma del navegador",
+      "en": "English",
+      "vi": "Tiếng Việt",
+      "zhCN": "简体中文（中国）",
+      "es": "Español",
+      "de": "Deutsch",
+      "ja": "日本語",
+      "ro": "Română"
+    },
+    "messages": {
+      "copiedFolderValue": "Carpeta {0} copiada",
+      "settingsResetToDefault": "Se ha restablecido la configuración predeterminada.",
+      "settingsSaved": "Configuración guardada."
+    },
+    "productName": "Markdown Plus",
+    "productNameUppercase": "MARKDOWN PLUS",
+    "status": {
+      "active": "En uso",
+      "checking": "Comprobando…",
+      "copied": "Copiado",
+      "error": "Error",
+      "failed": "Error",
+      "loading": "Cargando…",
+      "modified": "Modificado",
+      "ready": "Listo",
+      "rendering": "Generando imagen",
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "savingChanges": "Guardando cambios…",
+      "unavailable": "No disponible"
+    },
+    "themeModes": {
+      "dark": "oscuro",
+      "light": "claro"
+    },
+    "themes": {
+      "dark": "Oscuro",
+      "highContrastDark": "Oscuro de alto contraste",
+      "highContrastLight": "Claro de alto contraste",
+      "light": "Claro",
+      "vscodeDark": "Oscuro (VS Code)"
+    },
+    "watchModes": {
+      "ask": "Preguntar antes de actualizar",
+      "auto": "Actualizar automáticamente",
+      "off": "Desactivado"
+    }
+  },
+  "viewer": {
+    "editor": {
+      "accessibility": {
+        "controlCharacter": "Carácter de control",
+        "foldLine": "Contraer línea",
+        "foldedCode": "código contraído",
+        "foldedLines": "Líneas contraídas",
+        "selectionDeleted": "Selección eliminada",
+        "unfold": "expandir",
+        "unfoldLine": "Expandir línea",
+        "unfoldedLines": "Líneas expandidas"
+      },
+      "search": {
+        "currentMatch": "coincidencia actual",
+        "go": "ir",
+        "goToLine": "Ir a la línea",
+        "onLine": "en la línea",
+        "replacedMatchOnLine": "coincidencia reemplazada en la línea $",
+        "replacedMatches": "$ coincidencias reemplazadas",
+        "to": "a",
+        "all": "todas",
+        "close": "cerrar",
+        "find": "Buscar",
+        "matchCase": "distinguir mayúsculas y minúsculas",
+        "next": "siguiente",
+        "previous": "anterior",
+        "regexp": "expresión regular",
+        "replaceAction": "reemplazar",
+        "replaceAll": "reemplazar todo",
+        "replaceFieldLabel": "Reemplazar por",
+        "wholeWord": "palabras completas"
+      },
+      "browserCannotConnectALocalFileForSafe": "Este navegador no permite vincular un archivo local para editarlo de forma segura.",
+      "connectDialog": {
+        "checkBothItsFolderAndFilenameDoNot": "Comprueba la carpeta y el nombre del archivo. No elijas una copia que tenga el mismo nombre.",
+        "chooseThisExactFileInChromeSPicker": "Selecciona este mismo archivo en el selector de Chrome.",
+        "chromeDoesNotAutomaticallyGrantWriteAccessFrom": "Abrir una URL de archivo local no concede permiso de escritura en Chrome. Markdown Plus debe verificar el archivo existente antes de abrir el editor.",
+        "connectTheOriginalFileBeforeEditing": "Selecciona el archivo original para editarlo",
+        "currentFile": "Archivo actual",
+        "safeEditing": "Edición segura",
+        "unknownLocalFile": "Archivo local desconocido",
+        "useSaveOrCtrlCmdSToWrite": "Usa Guardar o Ctrl/Cmd+S para guardar en el archivo vinculado.",
+        "verifyFileAndEdit": "Verificar archivo y editar",
+        "verifyingFile": "Verificando archivo…"
+      },
+      "connectedSaveTargetValue": "Archivo vinculado para guardar: {0}",
+      "discard": "Descartar cambios",
+      "exitConfirmation": {
+        "title": "¿Descartar los cambios y salir del editor?",
+        "yourUnsavedChangesWillBeLostTheSaved": "Se perderán los cambios sin guardar. El archivo guardado no se modificará."
+      },
+      "file": "Este archivo",
+      "keepEditing": "Seguir editando",
+      "loadingEditor": "Cargando editor…",
+      "originalFileIsNotConnectedExitEditMode": "El archivo original no está vinculado. Sal del editor y vuelve a seleccionarlo antes de guardar.",
+      "resizeHandle": {
+        "dragToResizeTheEditorAndPreviewWhen": "Arrastra para ajustar el tamaño del editor y la vista previa. Con el control enfocado, usa las flechas izquierda/derecha (16 px por paso).",
+        "resizeEditorAndPreview": "Ajustar tamaño del editor y la vista previa"
+      },
+      "saveFailed": "No se ha podido guardar.",
+      "saveFailedValue": "No se ha podido guardar: {0}",
+      "savedToTheConnectedOriginalFile": "Guardado en el archivo original vinculado",
+      "selectedFile": "El archivo seleccionado",
+      "selectedFileValueIsNotTheFileYou": "El archivo seleccionado («{0}») no es el que estás editando («{1}»). Selecciona el archivo original que se muestra en Markdown Plus.",
+      "statusBar": {
+        "col": ", col.",
+        "ln": "Lín.",
+        "target": "Destino:"
+      },
+      "updateConfirmation": {
+        "discardDraftAndLoadDiskVersion": "Descartar borrador y abrir versión guardada",
+        "editModeWillClose": "Se cerrará el editor",
+        "exitEditModeAndLoadDiskVersion": "Salir del editor y abrir versión guardada",
+        "externalUpdateIsAlreadySavedOnDiskThis": "El cambio externo ya está guardado en el disco. Esta acción solo cambia lo que tienes abierto en Markdown Plus.",
+        "latestVersionIsAlreadyOnDiskMarkdownPlus": "La última versión ya está en el disco. Markdown Plus cerrará el editor y abrirá esa versión.",
+        "loadingDiskVersion": "Cargando versión guardada…",
+        "loadingTheDiskVersionClosesTheEditorAnd": "Abrir la versión del disco cierra el editor y vuelve a cargar el archivo.",
+        "loadingTheDiskVersionPermanentlyReplacesYourDraft": "Abrir la versión del disco descarta el borrador de forma permanente y cierra el editor.",
+        "loadingThisUpdateWillCloseEditMode": "Abrir esta actualización cerrará el editor",
+        "unsavedDraftWillBeDiscarded": "Se descartará el borrador sin guardar",
+        "versionOnDiskChangedOutsideMarkdownPlusLoading": "El archivo se ha modificado fuera de Markdown Plus. Abrir la versión del disco sustituirá tu borrador de forma permanente y cerrará el editor.",
+        "yourUnsavedDraftWillBeDiscarded": "Se descartará tu borrador sin guardar"
+      },
+      "valueChangedOnDiskAfterEditingStartedReload": "«{0}» se ha modificado en el disco desde que empezaste a editar. Vuelve a cargarlo antes de guardar para no sobrescribir los cambios externos.",
+      "valueDoesNotMatchTheDocumentCurrentlyOpen": "«{0}» no coincide con el documento abierto en Markdown Plus. Si el archivo ha cambiado, vuelve a cargar el visor; si no, selecciona el archivo original.",
+      "verifiedSaveTargetValue": "Destino de guardado verificado: {0}",
+      "youHaveUnsavedChangesOpenAnotherDocumentAnd": "Tienes cambios sin guardar. ¿Quieres descartarlos y abrir otro documento?"
+    },
+    "actions": {
+      "copyLinkUnavailableForWorkspaceVirtualFiles": "No se pueden copiar enlaces de archivos virtuales del espacio de trabajo",
+      "copyOpenFileLink": "Copiar enlace del archivo abierto",
+      "customDocumentActionMustBePinnedValue": "La acción personalizada del documento debe estar fijada: {0}",
+      "duplicateDocumentActionValue": "Acción de documento duplicada: {0}",
+      "editMarkdown": "Editar Markdown",
+      "exitEditMode": "Salir del editor",
+      "exitFocusMode": "Salir del modo de concentración",
+      "export": {
+        "copiedFileLink": "Enlace del archivo copiado",
+        "exportHTML": "Exportar HTML",
+        "exportWordDoc": "Exportar Word (.doc)",
+        "exportedValue": "Se ha exportado {0}",
+        "nothingToExportYet": "Todavía no hay nada que exportar."
+      },
+      "exportDocument": "Exportar documento",
+      "exportHTMLOrWordDoc": "Exportar HTML o Word (.doc)",
+      "focusModeHidePreview": "Modo de concentración: ocultar vista previa",
+      "output": "Exportar e imprimir",
+      "printSaveAsPDF": "Imprimir / Guardar como PDF",
+      "printSaveAsPDFInTheDialogTo": "Imprimir: elige «Guardar como PDF» en el cuadro de diálogo para exportar a PDF.",
+      "quickAccess": "Acceso rápido",
+      "saveCtrlS": "Guardar (Ctrl+S)",
+      "saveMarkdownFile": "Guardar archivo Markdown",
+      "saveNoUnsavedChanges": "Guardar: no hay cambios pendientes",
+      "theme": {
+        "switch": "Cambiar al tema {0}",
+        "switched": "Se ha activado el tema {0}",
+        "switching": "Cambiando tema…"
+      },
+      "toolbar": {
+        "documentActions": "Acciones del documento",
+        "moreDocumentActions": "Más acciones del documento"
+      },
+      "unknownDocumentActionGroupValue": "Grupo de acciones de documento desconocido: {0}",
+      "viewDiagram": "Ver diagrama"
+    },
+    "app": {
+      "editModeWillCloseAndTheLatestVersion": "Se cerrará el editor y se abrirá la última versión del disco. ¿Continuar?",
+      "fileRouteInThisURLIsNotSupported": "La ruta del archivo de esta URL no es compatible",
+      "yourUnsavedDraftWillBePermanentlyDiscardedAnd": "Se descartará tu borrador de forma permanente y se cerrará el editor. ¿Abrir la última versión del disco?"
+    },
+    "articleInteractions": {
+      "copiedLink": "Enlace copiado",
+      "openImageZoomView": "Ampliar imagen",
+      "sectionLinksAreUnavailableForThisWorkspaceFile": "Los enlaces a secciones no están disponibles para este archivo del espacio de trabajo",
+      "zoomImageValue": "Ampliar imagen: {0}"
+    },
+    "code": {
+      "copy": {
+        "ariaLabel": "Copiar código al portapapeles",
+        "label": "Copiar código"
+      }
+    },
+    "colors": {
+      "colorFormatsForValue": "Formatos de color de {0}",
+      "copiedValue": "Se ha copiado {0}",
+      "copyValue": "Copiar {0}",
+      "copyValueValue": "Copiar {0}: {1}",
+      "opacityValue": "Opacidad {0}",
+      "valueCopiedToClipboard": "{0} copiado al portapapeles"
+    },
+    "content": {
+      "controlCouldNotBeDisplayed": "No se ha podido mostrar este control."
+    },
+    "document": {
+      "fileTypeIsNotSupported": "Este tipo de archivo no es compatible",
+      "imageKind": "imagen",
+      "textKind": "archivo de texto"
+    },
+    "documentLoader": {
+      "documentLoadWasAborted": "Se ha cancelado la carga del documento.",
+      "documentTypeIsNotLoadableYet": "Todavía no se puede cargar este tipo de documento.",
+      "selectedWorkspaceFileHasAnUnsupportedImageType": "El tipo de imagen del archivo seleccionado no es compatible.",
+      "selectedWorkspaceFileIsNotARegisteredImage": "El archivo seleccionado no tiene un formato de imagen registrado."
+    },
+    "documents": {
+      "dbml": {
+        "colorPreviewsCouldNotBeDisplayedDBMLSource": "No se han podido mostrar las muestras de color. El código DBML sigue disponible.",
+        "dbmlDocumentHostIsUnavailable": "El contenedor del documento DBML no está disponible.",
+        "dbmlFileIsEmpty": "Este archivo DBML está vacío.",
+        "documentRenderWasAborted": "Se ha cancelado la visualización del documento."
+      },
+      "image": {
+        "imageDocumentHostIsUnavailable": "El contenedor de la imagen no está disponible.",
+        "loadingValue": "Cargando {0}…"
+      },
+      "markdown": {
+        "emptyMarkdownDocument": "Documento Markdown vacío",
+        "someMarkdownEnhancementsCouldNotBeAppliedBasic": "No se han podido aplicar algunas mejoras de Markdown. La visualización básica sigue disponible.",
+        "useEditToStartWriting": "Selecciona Editar para empezar a escribir."
+      },
+      "mermaid": {
+        "mermaidDocumentHostIsUnavailable": "El contenedor del documento Mermaid no está disponible.",
+        "mermaidFileIsEmpty": "Este archivo Mermaid está vacío."
+      },
+      "sql": {
+        "sqlDocumentHostIsUnavailable": "El contenedor del documento SQL no está disponible.",
+        "sqlFileIsEmpty": "Este archivo SQL está vacío."
+      },
+      "states": {
+        "diagramSource": "Código del diagrama",
+        "mermaidRenderError": "Error al generar el diagrama Mermaid"
+      },
+      "text": {
+        "textDocumentHostIsUnavailable": "El contenedor del documento de texto no está disponible.",
+        "textFileIsEmpty": "Este archivo de texto está vacío."
+      }
+    },
+    "explorer": {
+      "accessibility": {
+        "supportedFilesInFolderTree": "Archivos compatibles en el árbol de carpetas"
+      },
+      "actions": {
+        "copyFileName": "Copiar nombre del archivo",
+        "copyFolderName": "Copiar nombre de la carpeta",
+        "copyFolderPath": "Copiar ruta de la carpeta",
+        "fileDetailsActions": "Acciones del archivo",
+        "menuLabel": "Acciones de {0}",
+        "moreFileActions": "Más acciones del archivo",
+        "moreLabel": "Más acciones de {0}"
+      },
+      "context": {
+        "currentFolderLabel": "Carpeta de este archivo",
+        "document": "Documento",
+        "noFileSelected": "Ningún archivo seleccionado",
+        "openFileIsNotListedInTheScanned": "El archivo abierto no aparece en el árbol explorado, por los límites o el listado disponible. Se ha añadido al principio para que puedas acceder a él.",
+        "openFileIsNotUnderThisWorkspaceTree": "El archivo abierto no pertenece a este espacio de trabajo. Elige uno de la lista o sal del espacio de trabajo.",
+        "scanningFolder": "Explorando carpeta…",
+        "scanningWorkspace": "Explorando espacio de trabajo…",
+        "workspaceFiles": "Archivos del espacio de trabajo"
+      },
+      "currentFolder": "Carpeta actual",
+      "file": {
+        "copiedFileName": "Nombre del archivo copiado",
+        "openInNewTab": "Abrir en una pestaña nueva",
+        "workspaceFileCannotOpenInABrowserTab": "Este archivo del espacio de trabajo no se puede abrir en una pestaña del navegador"
+      },
+      "fileCount": {
+        "one": "· {count} archivo",
+        "other": "· {count} archivos"
+      },
+      "folder": {
+        "collapseFolder": "Contraer carpeta",
+        "copiedFolderName": "Nombre de la carpeta copiado",
+        "copiedFolderPath": "Ruta de la carpeta copiada",
+        "expandFolder": "Expandir carpeta",
+        "indexedFileCount": "Archivos indexados en esta carpeta y sus subcarpetas: {0}",
+        "toggleLabel": "Expandir o contraer «{0}»."
+      },
+      "folderScanner": {
+        "file": "Archivo"
+      },
+      "header": {
+        "adjustScanLimitsInSettings": "Ajusta los límites de exploración en Configuración",
+        "hideFileDetails": "Ocultar detalles del archivo",
+        "openFile": "Abrir archivo",
+        "openFileDetails": "Abrir detalles del archivo",
+        "openFolder": "Abrir carpeta…",
+        "showFileDetails": "Mostrar detalles del archivo",
+        "switchFolder": "Cambiar carpeta…",
+        "thenRefresh": " y actualiza la lista.",
+        "unavailableForWorkspaceVirtualFiles": "No disponible para archivos virtuales del espacio de trabajo",
+        "workspaceRoot": "Carpeta raíz del espacio de trabajo"
+      },
+      "hide": "Ocultar panel Archivos",
+      "listRefresh": {
+        "openASupportedFileBeforeRefreshingItsFolder": "Abre un archivo compatible antes de actualizar la lista de su carpeta",
+        "refreshedFileList": "Lista de archivos actualizada",
+        "selectTheFolderAgainToRefreshItsFile": "Vuelve a seleccionar la carpeta para actualizar su lista de archivos"
+      },
+      "navigation": {
+        "backToFile": "Volver a {0}",
+        "linkedFileIsNoLongerAvailable": "El archivo enlazado ya no está disponible"
+      },
+      "panel": {
+        "filesInCurrentFolder": "Archivos de la carpeta actual",
+        "filesScrollbar": "Barra de desplazamiento de Archivos",
+        "noSupportedFilesFoundInThisDirectory": "No se han encontrado archivos compatibles en esta carpeta.",
+        "refreshIsAvailableAfterScanningFinishes": "Podrás actualizar la lista cuando termine la exploración",
+        "refreshingFileList": "Actualizando lista de archivos",
+        "supportedFilesInFolder": "Archivos compatibles en la carpeta"
+      },
+      "panelLabel": "Panel Archivos",
+      "scan": {
+        "depthLimit": "Algunas carpetas no se han explorado por el límite de profundidad.",
+        "depthLimitWithValue": "Algunas carpetas no se han explorado por el límite de profundidad ({0}).",
+        "fileLimit": "Exploración detenida: se ha alcanzado el límite de archivos.",
+        "folderLimit": "Exploración detenida: se ha alcanzado el límite de carpetas.",
+        "notices": "{depth} {files} {folders}",
+        "progress": "Explorando… Archivos: {files}, carpetas: {folders}{path}"
+      },
+      "scanSession": {
+        "scanCancelled": "Exploración cancelada",
+        "scanningFolderTree": "Explorando árbol de carpetas…"
+      },
+      "show": "Mostrar panel Archivos",
+      "title": "Archivos",
+      "toolbar": {
+        "allFoldersAreCollapsed": "Todas las carpetas están contraídas",
+        "collapseAllFolders": "Contraer todas las carpetas",
+        "collapseFoldersOutsideTheOpenFilePath": "Contraer las carpetas ajenas a la ruta del archivo abierto",
+        "fileListControls": "Controles de la lista de archivos",
+        "scanning": "Explorando…"
+      },
+      "workspace": "Espacio de trabajo",
+      "workspacePicker": {
+        "expectedADirectoryHandleGotAFileHandle": "Se esperaba una referencia a una carpeta, pero se recibió una referencia a un archivo",
+        "notADirectoryHandle": "La referencia no corresponde a una carpeta"
+      },
+      "workspaceSession": {
+        "scanningImportedFolder": "Explorando carpeta importada…",
+        "scanningPickedFolder": "Explorando carpeta seleccionada…",
+        "scanningWorkspaceFileListing": "Explorando espacio de trabajo (lista de archivos)…"
+      }
+    },
+    "fileLinkActions": {
+      "noCurrentFileURLToCopy": "No hay ninguna URL de archivo actual que copiar"
+    },
+    "fileRowActions": {
+      "noFileHrefToCopy": "No hay ningún enlace de archivo que copiar",
+      "noFileNameToCopy": "No hay ningún nombre de archivo que copiar"
+    },
+    "folderRowActions": {
+      "noFolderIdentityToCopy": "No hay datos de carpeta que copiar"
+    },
+    "imageRevision": {
+      "imageExceedsThe5MiBWatchLimit": "La imagen supera el límite de 5 MiB para detectar actualizaciones.",
+      "noImageBytesReceived": "No se han recibido datos de la imagen."
+    },
+    "layout": {
+      "editorScrollbar": "Barra de desplazamiento del editor",
+      "previewFontSizeAndLineHeightAreSynced": "Al editar, el tamaño de letra y el interlineado de la vista previa se sincronizan con los del editor. Los ajustes de lectura se recuperan al salir del editor.",
+      "previewScrollbar": "Barra de desplazamiento de la vista previa",
+      "resizeHandle": {
+        "dragToResizeValueWhenFocusedUseLeft": "Arrastra para ajustar el tamaño de {0}. Con el control enfocado, usa las flechas izquierda/derecha (16 px por paso).",
+        "resizeValue": "Ajustar tamaño de {0}"
+      },
+      "rightRail": {
+        "documentActionsAndOutline": "Acciones del documento y esquema"
+      }
+    },
+    "lineDiff": {
+      "noNewlineAtEndOfFile": "Sin salto de línea al final del archivo"
+    },
+    "media": {
+      "bitmapLimit16384PxPerSide32": "Límite de imagen: 16.384 px por lado / 32 Mi píxeles.",
+      "bitmapLimit16384PxPerSideOr": "Límite de imagen: 16.384 px por lado o 32 Mi píxeles en total.",
+      "closeImageZoomView": "Cerrar imagen ampliada",
+      "closeMermaidChart": "Cerrar diagrama Mermaid",
+      "decreaseRenderResolution": "Reducir resolución de imagen",
+      "decreaseResolutionBy025": "Reducir resolución en 0,25",
+      "dragAnywhereToPanCtrlScrollPinchTo": "Arrastra para desplazar  |  Ctrl + rueda / gesto de pellizco para ajustar el zoom  |  Desliza con dos dedos para desplazar  |  +/- para ajustar el zoom  |  0 para centrar  |  Esc para cerrar",
+      "dragToPanCtrlScrollPinchToZoom": "Arrastra para desplazar  |  Ctrl + rueda / gesto de pellizco para ajustar el zoom  |  +/- para ajustar el zoom  |  0 para encajar  |  Esc para cerrar",
+      "fitImageToView": "Ajustar imagen a la vista",
+      "higherResolutionUsesMoreMemoryLimit16384": "Una resolución mayor usa más memoria. Límite: 16.384 px por lado / 32 Mi píxeles.",
+      "imageExceedsBitmapLimit16384PxPer": "La imagen supera el límite: 16.384 px por lado / 32 Mi píxeles.",
+      "imageZoomView": "Imagen ampliada",
+      "increaseRenderResolution": "Aumentar resolución de imagen",
+      "increaseResolutionBy025": "Aumentar resolución en 0,25",
+      "maximumForThisImage": ", máximo para esta imagen",
+      "maximumValueForThisImage": "Máximo ×{0} para esta imagen. ",
+      "mermaidChartZoomView": "Diagrama Mermaid ampliado",
+      "openMermaidChartInZoomView": "Abrir diagrama Mermaid ampliado",
+      "reCenterMermaidChart": "Volver a centrar diagrama Mermaid",
+      "rendering2": ", generando imagen",
+      "resolution": {
+        "ariaLabel": "Ajustar resolución de imagen: {0}{1}{2}{3}",
+        "caption": "Resolución",
+        "label": "Resolución de imagen",
+        "maximum": "Máxima",
+        "maximumShort": "Máx.",
+        "unavailableShort": "N/D"
+      },
+      "zoomInImage": "Ampliar imagen",
+      "zoomInMermaidChart": "Ampliar diagrama Mermaid",
+      "zoomOutImage": "Reducir imagen",
+      "zoomOutMermaidChart": "Reducir diagrama Mermaid"
+    },
+    "mermaid": {
+      "copyMermaidSource": "Copiar código Mermaid",
+      "downloadPNG": "Descargar PNG",
+      "downloadSVG": "Descargar SVG",
+      "exportMermaidChart": "Exportar diagrama Mermaid",
+      "exportThisDiagramSVGVectorOrPNGAt": "Exportar este diagrama: SVG (vectorial) o PNG con una resolución de 1× a 4×.",
+      "mermaidChartActions": "Acciones del diagrama Mermaid",
+      "mermaidSVGCouldNotBeSanitized": "No se ha podido sanear el SVG de Mermaid.",
+      "openChartInFullScreenZoomView": "Abrir diagrama ampliado a pantalla completa.",
+      "png": "PNG",
+      "unknownError": "Error desconocido."
+    },
+    "outline": {
+      "empty": "No se han encontrado encabezados.",
+      "headingCount": {
+        "one": "{count} encabezado",
+        "other": "{count} encabezados"
+      },
+      "hide": "Ocultar panel Esquema",
+      "outlineScrollbar": "Barra de desplazamiento del esquema",
+      "show": "Mostrar panel Esquema",
+      "summary": "En esta página",
+      "tableOfContents": "Índice",
+      "title": "Esquema"
+    },
+    "render": {
+      "documentCouldNotBeRendered": "No se ha podido mostrar el documento",
+      "loadingDocument": "Cargando documento",
+      "noLoadableCurrentDocumentIsAvailable": "No hay ningún documento actual que se pueda cargar.",
+      "tryAgainIfTheProblemContinuesRefreshThe": "Inténtalo de nuevo. Si el problema persiste, vuelve a cargar el archivo o desactiva las funciones opcionales de visualización."
+    },
+    "rendererRegistry": {
+      "documentRendererValueHasNoRenderFunction": "El visor de documentos «{0}» no tiene una función render().",
+      "noDocumentRendererIsRegisteredForValue": "No hay ningún visor de documentos registrado para «{0}»."
+    },
+    "review": {
+      "aNewerComparisonIsReady": "Hay una comparación más reciente disponible.",
+      "added": "Añadido",
+      "added2": "líneas añadidas ·",
+      "affectedSections": "Secciones afectadas",
+      "alt": "Alt",
+      "area": "Bloque",
+      "areas": "Bloques",
+      "beforeTheFirstHeading": "Antes del primer encabezado",
+      "calculatingChanges": "Calculando cambios…",
+      "change": "Cambio",
+      "changeSummary": "Resumen de cambios",
+      "changedArea": "Bloque modificado",
+      "changedAreaNavigation": "Navegación por bloques modificados",
+      "changedAreaValue": "Bloque modificado {0}",
+      "changedAreasInThisComparison": "Bloques modificados en esta comparación",
+      "changesAppliedInTheMostRecentDocumentUpdate": "Cambios aplicados en la última actualización del documento.",
+      "checkLatest": "Comprobar cambios",
+      "comparisonIsNoLongerCurrent": "Esta comparación ya no está actualizada.",
+      "deleted": "Eliminado",
+      "detailedReviewIsUnavailableBecauseThisComparisonExceeds": "No se puede mostrar el detalle porque la comparación supera el límite de tamaño, tiempo o resultados. Usa las herramientas de comparación de tu editor. Tu documento y tu borrador se conservan.",
+      "dialog": {
+        "closeReview": "Cerrar comparación",
+        "openingReview": "Abriendo comparación…",
+        "reloadThisViewerAndTryAgain": "Vuelve a cargar este visor e inténtalo de nuevo."
+      },
+      "lastUpdate": "Última actualización",
+      "loadDiskVersion": "Abrir versión guardada…",
+      "movesBetweenChangedAreasInThisComparison": "permite desplazarse entre los bloques modificados de esta comparación",
+      "newLine": "Línea nueva",
+      "newLineValue": "Línea nueva {0}",
+      "nextArea": "Bloque siguiente →",
+      "nextChangedArea": "Siguiente bloque modificado",
+      "noNewLine": "Sin línea nueva",
+      "noOldLine": "Sin línea anterior",
+      "noSourceChangesInThisComparison": "No hay cambios en el código fuente de esta comparación.",
+      "of": "de",
+      "oldLine": "Línea anterior",
+      "oldLineValue": "Línea anterior {0}",
+      "openDocument": "Abrir documento",
+      "openInDocumentValue": "Abrir en el documento: {0}",
+      "previousArea": "← Bloque anterior",
+      "previousChangedArea": "Bloque modificado anterior",
+      "removed": "Eliminado",
+      "removed2": "líneas eliminadas",
+      "reviewChanges": "Revisar cambios",
+      "reviewLatest": "Ver comparación más reciente",
+      "reviewedVersionIsNotOpenYetUpdateThe": "La versión comparada aún no está abierta. Actualiza el documento para activar los enlaces a secciones.",
+      "seeWhatChangedOnDiskBeforeUpdatingThis": "Revisa los cambios guardados en el disco antes de actualizar este documento.",
+      "source": "Código fuente",
+      "sourceLinesInChangedArea": "Líneas del código fuente en el bloque modificado",
+      "updateCheckFailed": "No se han podido comprobar los cambios del archivo",
+      "updateDocument": "Actualizar documento",
+      "updateWaiting": "Actualización pendiente",
+      "yourEditorDraftIsExcludedFromThisComparison": "Tu borrador del editor no se incluye en esta comparación.",
+      "unchanged": "Sin cambios"
+    },
+    "scrollbar": {
+      "documentScrollbar": "Barra de desplazamiento del documento"
+    },
+    "statistics": {
+      "characters": {
+        "one": "{count} carácter",
+        "other": "{count} caracteres"
+      },
+      "readingTime": "{0} min de lectura",
+      "summary": "Estadísticas del documento: {0}, {1}, {2}",
+      "words": {
+        "one": "{count} palabra",
+        "other": "{count} palabras"
+      }
+    },
+    "updates": {
+      "aNewDocumentVersionIsAvailable": "Hay una nueva versión del documento disponible.",
+      "aNewDocumentVersionWillLoadAutomaticallyWhen": "La nueva versión se cargará automáticamente cuando dejes de interactuar con el documento.",
+      "aNewerVersionOfThisDocumentIsReady": "Hay una versión más reciente de este documento lista para abrir.",
+      "anUpdateIsReadyItWillLoadWhen": "Hay una actualización disponible. Se cargará cuando el archivo deje de cambiar y dejes de interactuar con el documento.",
+      "applyingANewDocumentVersionAutomatically": "Aplicando automáticamente una nueva versión del documento.",
+      "ask": "Preguntar",
+      "automatic": "Automático",
+      "automaticChecksArePaused": "Las comprobaciones automáticas están en pausa.",
+      "checkNow": "Comprobar ahora",
+      "documentUpdateCheckFailedOpenDocumentUpdatesTo": "No se han podido buscar cambios en el documento. Abre Actualizaciones del documento para reintentar.",
+      "documentUpdated": "Documento actualizado.",
+      "documentUpdatesCheckFailed": "Actualizaciones del documento: error de comprobación",
+      "documentUpdatesLiveWatchUnavailable": "Actualizaciones del documento: seguimiento en tiempo real no disponible",
+      "documentUpdatesLoadUpdate": "Actualizaciones del documento: cargar actualización",
+      "fileChangedOnDiskLoadItToLeave": "Este archivo ha cambiado en el disco. Abre la versión guardada para salir del editor.",
+      "latestStableVersionIsBeingAppliedAutomatically": "El archivo ha dejado de cambiar. Se está cargando automáticamente su última versión.",
+      "liveUpdatesUnavailable": "Actualizaciones en tiempo real no disponibles",
+      "newVersionAvailable": "Nueva versión disponible",
+      "newVersionsWaitUntilYouChooseToUpdate": "Las nuevas versiones se cargarán cuando decidas actualizar el documento.",
+      "notifications": {
+        "documentUpdated": "Documento actualizado",
+        "documentUpdatesSupportsFilesUpTo5MiB": "La detección de actualizaciones admite archivos de hasta 5 MiB.",
+        "valueTheCurrentContentWasKept": "{0} Se ha conservado el contenido actual."
+      },
+      "selectTheWorkspaceAgainToCheckForUpdated": "Vuelve a seleccionar el espacio de trabajo para buscar archivos actualizados.",
+      "title": "Actualizaciones del documento",
+      "updateNow": "Actualizar ahora",
+      "updatesLoadWhenTheFileIsStableAnd": "Las actualizaciones se cargan cuando el archivo deja de cambiar y dejas de interactuar con el documento.",
+      "updatingAnnouncement": "Actualizando documento.",
+      "updatingLabel": "Actualizando documento…"
+    },
+    "useexplorer": {
+      "selectASupportedFileFromTheFilesPanel": "Selecciona un archivo compatible en el panel Archivos."
+    },
+    "search": {
+      "inDocument": "Buscar en el documento",
+      "workspace": "Buscar en el espacio de trabajo",
+      "workspaceShortcut": "Buscar en el contenido de los archivos · Control+Shift+F",
+      "title": "Buscar",
+      "scope": "Ámbito de búsqueda",
+      "previous": "Coincidencia anterior (Shift+Enter)",
+      "next": "Coincidencia siguiente (Enter)",
+      "closeFind": "Cerrar",
+      "closeWorkspace": "Cerrar búsqueda",
+      "noDocumentResults": "No hay coincidencias en este documento.",
+      "findLimited": "Solo se muestra una parte de las coincidencias. Acota la búsqueda.",
+      "placeholder": "Buscar en el contenido de los archivos…",
+      "sourceScope": "Contenido del archivo, incluido el borrador sin guardar.",
+      "chooseWorkspace": "No se ha podido obtener la lista de esta carpeta. Elige una carpeta para buscar.",
+      "chooseFolder": "Elegir carpeta",
+      "waitForScan": "Esperando a que se exploren los archivos…",
+      "stop": "Detener búsqueda",
+      "progress": {
+        "one": "{count} coincidencia · {scanned}/{total} archivos examinados…",
+        "other": "{count} coincidencias · {scanned}/{total} archivos examinados…"
+      },
+      "summary": {
+        "one": "{count} coincidencia · {scanned}/{total} archivos examinados",
+        "other": "{count} coincidencias · {scanned}/{total} archivos examinados"
+      },
+      "startTyping": "Escribe para buscar en esta carpeta.",
+      "searchAgain": "Volver a buscar",
+      "partial": "Búsqueda incompleta: se ha detenido, se ha alcanzado un límite de exploración o búsqueda, o se han omitido archivos ({skipped}). Acota la búsqueda o vuelve a buscar.",
+      "failed": "La búsqueda ha fallado. Vuelve a buscar para reintentar.",
+      "noPartialResults": "No hay coincidencias en los archivos examinados hasta ahora.",
+      "noWorkspaceResults": "No hay coincidencias en esta carpeta. Prueba con otro texto.",
+      "unsaved": "Sin guardar",
+      "resultLocation": "{path}, línea {line}, columna {column}",
+      "stale": "Este archivo ha cambiado. Vuelve a buscar para actualizar los resultados.",
+      "openFailed": "No se ha podido abrir este resultado. Inténtalo de nuevo.",
+      "sourceTitle": "Coincidencia en el código fuente",
+      "line": "Línea {line}",
+      "sourceExplanation": "No se ha podido localizar esta coincidencia con precisión en el documento mostrado. Su ubicación exacta en el código fuente aparece resaltada abajo.",
+      "resultsScrollbar": "Barra de desplazamiento de los resultados",
+      "inFolder": "Buscar en la carpeta",
+      "folderListPartial": "Solo está disponible la lista de la carpeta actual; pueden faltar subcarpetas. Archivos omitidos: {skipped}.",
+      "clearQuery": "Borrar búsqueda",
+      "matchOptions": "Opciones de coincidencia",
+      "matchCase": "Distinguir mayúsculas y minúsculas",
+      "wholeWord": "Solo palabras completas",
+      "matchDiacritics": "Distinguir tildes y otros signos diacríticos",
+      "updating": "Actualizando resultados…",
+      "outdatedResults": "Resultados anteriores. Vuelve a buscar para actualizarlos.",
+      "cachedScope": "Incluye contenido de archivos en caché. Al volver a buscar se leerán las últimas versiones.",
+      "updatingProgress": "Actualizando resultados… {scanned}/{total} archivos comprobados."
+    }
+  },
+  "errors": {
+    "common": {
+      "backgroundImage": {
+        "chooseAnImageFile": "Elige un archivo de imagen.",
+        "readTheImage": "No se ha podido leer la imagen."
+      },
+      "messages": {
+        "checkTheCurrentDocumentForChanges": "No se han podido comprobar los cambios del documento actual.",
+        "cleanUpThePreviousDocumentRenderer": "No se han podido liberar los recursos del visor anterior.",
+        "clearPersistedFileHandle": "No se ha podido borrar la referencia guardada al archivo.",
+        "connectTheOriginalMarkdownFileForEditing": "No se ha podido vincular el archivo Markdown original para editarlo.",
+        "copyColorFormat": "No se ha podido copiar el formato de color.",
+        "copyDetectedColor": "No se ha podido copiar el color detectado.",
+        "copyFolderValue": "No se ha podido copiar la carpeta {0}",
+        "inspectTheThemePreviewImage": "No se ha podido analizar la imagen de vista previa del tema.",
+        "loadTheActiveThemeBackground": "No se ha podido cargar el fondo del tema activo.",
+        "loadTheThemePreviewImage": "No se ha podido cargar la imagen de vista previa del tema.",
+        "mountViewerReactShell": "No se ha podido montar la interfaz React del visor.",
+        "navigateBrowserHistory": "No se ha podido navegar por el historial del navegador.",
+        "openDocument": "No se ha podido abrir el documento.",
+        "persistFileHandleToIndexedDB": "No se ha podido guardar la referencia al archivo en IndexedDB.",
+        "prepareALocalMarkdownSVGImage": "No se ha podido preparar una imagen SVG local del documento Markdown.",
+        "recordFileHistory": "No se ha podido registrar el archivo en el historial.",
+        "refreshExplorerFileList": "No se ha podido actualizar la lista del explorador.",
+        "releaseDocumentAssetURL": "No se ha podido liberar la URL de un recurso del documento.",
+        "removeAnUnusedThemeAssetAfterSaveFailed": "No se ha podido eliminar un recurso de tema sin usar tras el error de guardado.",
+        "removeTheDeletedThemeAsset": "No se ha podido eliminar el recurso del tema borrado.",
+        "removeTheReplacedThemeAsset": "No se ha podido eliminar el recurso sustituido del tema.",
+        "renderDocument": "No se ha podido mostrar el documento.",
+        "renderTheSyntaxThemePreview": "No se ha podido generar la vista previa del resaltado de sintaxis.",
+        "restoreFileHandleFromIndexedDB": "No se ha podido recuperar la referencia al archivo de IndexedDB.",
+        "saveFilesDetailsPreferenceForThisTab": "No se ha podido guardar la preferencia de detalles de Archivos para esta pestaña",
+        "saveMarkdownFile": "No se ha podido guardar el archivo Markdown.",
+        "switchReaderTheme": "No se ha podido cambiar el tema de lectura."
+      }
+    },
+    "documents": {
+      "readFailed": "No se ha podido leer {0}: {1}",
+      "tooLarge": "Este archivo de texto supera el límite de visualización de {0} MiB."
+    },
+    "options": {
+      "general": {
+        "openExtensionDetails": "No se han podido abrir los detalles de la extensión."
+      },
+      "index": {
+        "missingRootElementForSettingsApp": "Falta el elemento #root de la aplicación de configuración."
+      },
+      "notifications": {
+        "clearRecentFiles": "No se ha podido borrar la lista de archivos recientes.",
+        "exportSettings": "No se ha podido exportar la configuración.",
+        "importSettings": "No se ha podido importar la configuración.",
+        "loadSettings": "No se ha podido cargar la configuración.",
+        "saveSettings": "No se ha podido guardar la configuración."
+      },
+      "optionsActions": {
+        "chooseASettingsJSONFileToImport": "Elige un archivo JSON de configuración para importar."
+      },
+      "settingsImport": {
+        "invalidJSONValue": "JSON no válido: {0}",
+        "parseFile": "No se ha podido analizar el archivo."
+      }
+    },
+    "popup": {
+      "index": {
+        "missingRootElementForPopupApp": "Falta el elemento #root de la ventana de la extensión."
+      },
+      "loadSettings": "No se ha podido cargar la configuración.",
+      "openAbout": "No se ha podido abrir Acerca de.",
+      "openOptionsSection": {
+        "chooseAValidSettingsSection": "Elige una sección válida de Configuración."
+      },
+      "openSettings": "No se ha podido abrir Configuración.",
+      "settings": {
+        "saveSettings": "No se ha podido guardar la configuración."
+      },
+      "usefilehistory": {
+        "clearFileHistory": "No se ha podido borrar el historial de archivos.",
+        "loadFileHistory": "No se ha podido cargar el historial de archivos.",
+        "openFile": "No se ha podido abrir el archivo."
+      }
+    },
+    "services": {
+      "fileHistory": {
+        "invalidFileHistoryURL": "La URL del historial de archivos no es válida"
+      },
+      "messageRouter": {
+        "invalidOrMissingDataUrl": "dataUrl no es válido o no se ha indicado",
+        "invalidUrl": "La URL no es válida",
+        "missingFilename": "Falta el nombre del archivo",
+        "missingUrl": "Falta la URL",
+        "onlyFileURLsAreAllowed": "Solo se permiten URL de tipo file:",
+        "onlyRegisteredImageFilesAreAllowed": "Solo se permiten archivos de imagen de formatos registrados",
+        "unsupportedMessageTypeValue": "Tipo de mensaje no compatible: {0}"
+      },
+      "themeAsset": {
+        "invalidThemeAssetId": "El identificador del recurso del tema no es válido.",
+        "openThemeAssetStorage": "No se ha podido abrir el almacenamiento de recursos de temas."
+      }
+    },
+    "settings": {
+      "language": "Elige un idioma de interfaz compatible.",
+      "validation": {
+        "chooseABuiltInBaseTheme": "Elige un tema base integrado.",
+        "chooseABundledCodeHighlightingTheme": "Elige un tema de resaltado de código incluido.",
+        "chooseASupportedBackgroundMotionPolicy": "Elige una opción de animación de fondo compatible.",
+        "chooseASupportedBackgroundType": "Elige un tipo de fondo compatible.",
+        "chooseAValidHexadecimalColor": "Elige un color hexadecimal válido.",
+        "chooseAnAvailableTheme": "Elige un tema disponible.",
+        "chooseAnImageForThisTheme": "Elige una imagen para este tema.",
+        "resetSettings": "No se ha podido restablecer la configuración.",
+        "settingsAreInvalid": "La configuración no es válida.",
+        "youCanSaveUpToValueCustomThemes": "Puedes guardar hasta {0} temas personalizados."
+      },
+      "storage": {
+        "quota": "El almacenamiento de configuración está lleno. Se ha conservado la configuración anterior.",
+        "rate": "Los cambios se están guardando demasiado rápido. Inténtalo más tarde.",
+        "pending": "La configuración aún se está sincronizando o no se ha podido verificar. Espera y vuelve a intentarlo.",
+        "cached": "Se muestra la última configuración completa mientras Chrome termina de sincronizar. Aún no se pueden guardar nuevos cambios.",
+        "unavailable": "El almacenamiento de configuración no está disponible."
+      }
+    },
+    "theme": {
+      "backgroundImageTooLarge": "La imagen de fondo debe ocupar 5 MiB o menos.",
+      "themeAssetClient": {
+        "loadTheThemeAsset": "No se ha podido cargar el recurso del tema.",
+        "removeTheThemeAsset": "No se ha podido eliminar el recurso del tema.",
+        "saveTheThemeAsset": "No se ha podido guardar el recurso del tema."
+      }
+    },
+    "validation": {
+      "boolean": "El valor de «{0}» debe ser true o false.",
+      "integer": "El valor de «{0}» debe ser un número entero.",
+      "range": "El valor de «{0}» debe estar entre {1} y {2}."
+    },
+    "viewer": {
+      "actions": {
+        "copyFileLink": "No se ha podido copiar el enlace del archivo",
+        "exportHTML": "No se ha podido exportar HTML",
+        "exportWordDocument": "No se ha podido exportar el documento Word",
+        "switchTheme": "No se ha podido cambiar de tema."
+      },
+      "app": {
+        "restoreTheLinkedFileReturnedToTheOriginal": "No se ha podido recuperar el archivo enlazado; se ha vuelto al archivo original",
+        "switchTheme": "No se ha podido cambiar de tema"
+      },
+      "articleInteractions": {
+        "copy": "No se ha podido copiar",
+        "copyLink": "No se ha podido copiar el enlace"
+      },
+      "colors": {
+        "copyColorSelectTheOriginalTextToCopy": "No se ha podido copiar el color. Selecciona el texto original para copiarlo manualmente.",
+        "copySelectAValueToCopyManually": "No se ha podido copiar. Selecciona un valor para copiarlo manualmente.",
+        "copyTryAgain": "No se ha podido copiar. Inténtalo de nuevo."
+      },
+      "document": {
+        "openLinkedFile": "No se ha podido abrir el archivo enlazado",
+        "openThisValue": "No se ha podido abrir: {0}.",
+        "readLinkedFile": "No se ha podido leer el archivo enlazado",
+        "readThisValue": "No se ha podido leer: {0}."
+      },
+      "documentLoader": {
+        "onlyLocalImageFilesCanBeOpened": "Solo se pueden abrir archivos de imagen locales.",
+        "openDocument": "No se ha podido abrir el documento.",
+        "readThisImageFile": "No se ha podido leer este archivo de imagen."
+      },
+      "documents": {
+        "dbml": {
+          "displayThisDBMLFile": "No se ha podido mostrar este archivo DBML."
+        },
+        "image": {
+          "displayValue": "No se ha podido mostrar {0}."
+        },
+        "mermaid": {
+          "displayThisMermaidDocument": "No se ha podido mostrar este documento Mermaid."
+        },
+        "sql": {
+          "displayThisSQLFile": "No se ha podido mostrar este archivo SQL."
+        },
+        "text": {
+          "displayThisTextFile": "No se ha podido mostrar este archivo de texto."
+        }
+      },
+      "editor": {
+        "connectTheOriginalFile": "No se ha podido vincular el archivo original.",
+        "openIndexedDB": "No se ha podido abrir IndexedDB",
+        "writePermissionWasNotGranted": "No se ha concedido permiso de escritura.",
+        "writePermissionWasNotGrantedForTheConnected": "No se ha concedido permiso de escritura para el archivo vinculado.",
+        "writePermissionWasNotGrantedForTheSelected": "No se ha concedido permiso de escritura para el archivo seleccionado."
+      },
+      "explorer": {
+        "file": {
+          "copyFileName": "No se ha podido copiar el nombre del archivo"
+        },
+        "folder": {
+          "copyFolderName": "No se ha podido copiar el nombre de la carpeta",
+          "copyFolderPath": "No se ha podido copiar la ruta de la carpeta"
+        },
+        "listRefresh": {
+          "refreshFileListTheOpenDocumentWasKept": "No se ha podido actualizar la lista de archivos. El documento abierto se ha conservado."
+        },
+        "workspacePicker": {
+          "missingDirectoryHandle": "Falta la referencia a la carpeta"
+        },
+        "workspaceSession": {
+          "openFolder": "No se ha podido abrir la carpeta",
+          "restoreWorkspace": "No se ha podido recuperar el espacio de trabajo",
+          "scanFolder": "No se ha podido explorar la carpeta"
+        }
+      },
+      "imageRevision": {
+        "readImageBytes": "No se han podido leer los datos de la imagen."
+      },
+      "markdownDocumentRenderer": {
+        "missingRenderTargetDocument": "Falta el documento de destino para la visualización."
+      },
+      "media": {
+        "decodeThisImageForResolutionRendering": "No se ha podido decodificar la imagen para mostrarla con esta resolución.",
+        "encodeThisResolution": "No se ha podido codificar la imagen con esta resolución.",
+        "initializeImageRendering": "No se ha podido iniciar la generación de la imagen.",
+        "parseThisSVGForResolutionRendering": "No se ha podido analizar el SVG para mostrarlo con esta resolución.",
+        "readThisSVGForResolutionRendering": "No se ha podido leer el SVG para mostrarlo con esta resolución.",
+        "renderThisResolution": "No se ha podido generar la imagen con esta resolución."
+      },
+      "mermaid": {
+        "missingMermaidRenderTarget": "Falta el destino para generar el diagrama Mermaid."
+      },
+      "renderer": {
+        "missingRenderTargetElement": "Falta el elemento de destino para la visualización."
+      },
+      "review": {
+        "calculateChangesCloseThisReviewAndTryAgain": "No se han podido calcular los cambios. Cierra esta comparación e inténtalo de nuevo.",
+        "dialog": {
+          "openReview": "No se ha podido abrir la comparación"
+        }
+      },
+      "shikiHighlighter": {
+        "missingShikiLanguageModuleForValue": "Falta el módulo de lenguaje de Shiki para «{0}».",
+        "missingShikiThemeModuleForValue": "Falta el módulo de tema de Shiki para «{0}»."
+      },
+      "watch": {
+        "readTheFileTheCurrentContentWasKept": "No se ha podido leer el archivo. Se ha conservado el contenido actual. Comprueba el acceso al archivo e inténtalo de nuevo."
+      }
+    }
+  },
+  "options": {
+    "about": {
+      "aLocalFirstViewerAndEditorForMarkdown": "Un visor y editor de Markdown y archivos relacionados que da prioridad al trabajo local.",
+      "browseSiblingDocumentsOrOpenALocalWorkspace": "Explora los documentos de la misma carpeta o abre un espacio de trabajo local.",
+      "developmentBuild": "Versión de desarrollo",
+      "extensionInformation": "Información de la extensión",
+      "heading": "Acerca de Markdown Plus",
+      "learnWhatMarkdownPlusDoesHowItHandles": "Descubre qué hace Markdown Plus, cómo trata tus archivos y dónde obtener ayuda.",
+      "links": {
+        "license": {
+          "description": "Consulta la licencia de código abierto de Markdown Plus.",
+          "label": "Licencia MIT"
+        },
+        "privacy": {
+          "description": "Consulta cómo se tratan los archivos locales y los datos de la extensión.",
+          "label": "Política de privacidad"
+        },
+        "source": {
+          "description": "Explora el proyecto y contribuye en GitHub.",
+          "label": "Código fuente"
+        },
+        "support": {
+          "description": "Pide ayuda o informa de un problema que se pueda reproducir.",
+          "label": "Informar de un problema"
+        },
+        "website": {
+          "description": "Visita el sitio web del proyecto Markdown Plus.",
+          "label": "Sitio web"
+        }
+      },
+      "localFirstByDesign": "Diseñado para trabajar en local",
+      "metadata": {
+        "chromeExtension": "Extensión de Chrome",
+        "manifestVersion": "Manifest V{0}",
+        "minimumChromeVersion": "Chrome {0}+"
+      },
+      "openSource": "Código abierto",
+      "optInToEditingWithExactFileVerification": "Activa la edición con verificación del archivo original y guardado seguro.",
+      "product": "Producto",
+      "projectSupport": "Proyecto y ayuda",
+      "readThePrivacyPolicy": "Leer la política de privacidad",
+      "renderLocalMarkdownCodeMathDiagramsTextAnd": "Visualiza archivos locales de Markdown, código, fórmulas, diagramas, texto e imágenes.",
+      "title": "Acerca de",
+      "version": "Versión",
+      "whatMarkdownPlusDoes": "Qué hace Markdown Plus",
+      "yourDocumentsAreProcessedInChromeAndAre": "Tus documentos se procesan en Chrome y no se envían a ningún servicio operado por el desarrollador. Los datos locales permanecen en este dispositivo; las preferencias pueden sincronizarse a través de Chrome."
+    },
+    "advanced": {
+      "chooseJSON": "Elegir JSON",
+      "downloadTheCompleteNormalizedSettingsObjectAsJSON": "Descarga la configuración completa y normalizada en formato JSON.",
+      "exportJSON": "Exportar JSON",
+      "exportSettings": "Exportar configuración",
+      "exporting": "Exportando…",
+      "fileIsFullyParsedAndValidatedBeforeAny": "El archivo se analiza y valida por completo antes de guardar cualquier ajuste.",
+      "importSettings": "Importar configuración",
+      "importing": "Importando…",
+      "largeDocumentLoads": "Carga de documentos grandes",
+      "largerFilesUseMoreMemoryAndMayTake": "Los archivos grandes consumen más memoria y pueden tardar más en mostrarse. Los cambios se aplican al abrir el siguiente documento y no recargan el actual.",
+      "limitExpensiveDocumentLoadsMoveSettingsBetweenBrowsers": "Limita la carga de documentos pesados, transfiere la configuración entre navegadores o restaura los valores predeterminados.",
+      "maximumUTF8SizeForStandaloneTxtSql": "Tamaño UTF-8 máximo de archivos .txt, .sql, .dbml y .mermaid abiertos de forma independiente en el visor. No afecta a los documentos Markdown.",
+      "resetAllSettings": "Restablecer toda la configuración",
+      "resetToDefault": "Restaurar valores predeterminados",
+      "resetting": "Restableciendo…",
+      "resourcesRecovery": "Recursos y recuperación",
+      "restoreGeneralReaderEditorPluginsFilesWorkspacePrivacy": "Restablece las preferencias generales, de lectura, edición, funciones Markdown, archivos, espacios de trabajo, privacidad y recursos de documentos. El historial de archivos recientes se borra por separado.",
+      "title": "Avanzado"
+    },
+    "documentTitle": "Configuración de Markdown Plus",
+    "explorer": {
+      "connectFoldersAndFilesWithHierarchyLinesChanges": "Conecta carpetas y archivos con líneas de jerarquía. Los cambios se aplican al instante.",
+      "customizeTheFileTreeAndWorkspaceBehaviorScan": "Personaliza el árbol de archivos y el espacio de trabajo. Los límites de exploración se aplican en la próxima exploración o actualización de la lista.",
+      "excludeFilesAndFoldersIgnoredByNestedGitignore": "Excluye los archivos y carpetas que coincidan con las reglas de los archivos .gitignore anidados al explorar el espacio de trabajo.",
+      "higherLimitsCanMakeLargeWorkspaceScansSlower": "Unos límites más altos pueden ralentizar la exploración de espacios de trabajo grandes y consumir más memoria. Cambiar estos valores nunca reinicia automáticamente una exploración en curso.",
+      "howManyFolderLevelsToScanBelowThe": "Niveles de carpetas que se explorarán bajo la raíz seleccionada. Usa 0 para explorar solo la raíz.",
+      "largeWorkspaceScans": "Exploración de espacios de trabajo grandes",
+      "navigationScanning": "Navegación y exploración",
+      "reopenTheLastFileBackedWorkspaceWhenA": "Vuelve a abrir el último espacio de trabajo basado en archivos al iniciar un visor nuevo. Desactivar esta opción no cierra el espacio de trabajo en uso.",
+      "resetSectionToDefaults": "Restaurar valores de esta sección",
+      "respectGitignoreFiles": "Respetar archivos .gitignore",
+      "restoreLastWorkspace": "Restaurar último espacio de trabajo",
+      "showTreeIndentGuides": "Mostrar líneas del árbol de carpetas",
+      "stopIndexingAfterThisManySupportedDocumentsHave": "Deja de indexar al encontrar esta cantidad de documentos compatibles.",
+      "stopTheScanAfterThisManyFoldersHave": "Detiene la exploración al visitar esta cantidad de carpetas.",
+      "title": "Archivos y espacio de trabajo"
+    },
+    "general": {
+      "behavior": "Comportamiento",
+      "chooseHowToHandleChangesToTheOpen": "Elige cómo gestionar los cambios del documento abierto, incluidos texto, diagramas e imágenes. Las actualizaciones nunca sustituyen una sesión de edición activa.",
+      "chooseMarkdownPlusDetailsThenEnableAllowAccess": ", selecciona Markdown Plus → Detalles y activa «Permitir acceso a URLs de archivo».",
+      "chromeControlsThisPermissionIfAccessIsBlocked": "Chrome controla este permiso. Si el acceso está bloqueado, abre",
+      "chromeExtensions": "chrome://extensions",
+      "controlMarkdownPlusActivationAndViewerBehavior": "Controla la activación de Markdown Plus y el comportamiento del visor.",
+      "enabled": {
+        "description": "Abre automáticamente los archivos Markdown locales compatibles en el visor de Markdown Plus.",
+        "label": "Activar Markdown Plus"
+      },
+      "fileAccess": {
+        "label": "Acceso a URL de archivos"
+      },
+      "language": {
+        "description": "Elige el idioma de Configuración, la ventana de la extensión y el visor. El contenido de los documentos conserva su idioma original.",
+        "label": "Idioma de la interfaz"
+      },
+      "scrollbars": {
+        "description": "Oculta las barras de desplazamiento verticales cuando no se usan y las muestra al desplazarte, acercarte al borde del panel o usar el teclado.",
+        "label": "Ocultar automáticamente las barras de desplazamiento"
+      },
+      "statistics": {
+        "description": "Muestra el número de palabras, caracteres (incluidos los espacios) y el tiempo estimado de lectura encima de los documentos Markdown.",
+        "label": "Mostrar estadísticas del documento"
+      },
+      "title": "General"
+    },
+    "navigation": {
+      "activationAndAccess": "Activación y acceso",
+      "colorsAndBackgrounds": "Colores y fondos",
+      "folderAppearanceAndScanLimits": "Aspecto de las carpetas y límites de exploración",
+      "limitsBackupAndReset": "Límites, copia de seguridad y restablecimiento",
+      "loadingSettings": "Cargando configuración",
+      "recentLocalFiles": "Archivos locales recientes",
+      "section": "Sección",
+      "settingsCouldNotBeLoaded": "No se ha podido cargar la configuración",
+      "settingsSections": "Secciones de configuración",
+      "versionPrivacyAndSupport": "Versión, privacidad y ayuda"
+    },
+    "notifications": {
+      "activeThemeUpdated": "Tema activo actualizado.",
+      "allSettingsResetToDefaults": "Se ha restablecido toda la configuración.",
+      "checkTheHighlightedField": "Revisa el campo resaltado.",
+      "checkTheHighlightedFields": "Revisa los campos resaltados.",
+      "clearingRecentFiles": "Borrando lista de archivos recientes…",
+      "customThemeCreated": "Tema personalizado creado.",
+      "customThemeDeleted": "Tema personalizado eliminado.",
+      "customThemeSaved": "Tema personalizado guardado.",
+      "documentScrollbarsWillAutoHide": "Las barras de desplazamiento se ocultarán automáticamente.",
+      "documentScrollbarsWillStayVisible": "Las barras de desplazamiento permanecerán visibles.",
+      "documentStatisticsWillBeHidden": "Se ocultarán las estadísticas del documento.",
+      "documentStatisticsWillBeShown": "Se mostrarán las estadísticas del documento.",
+      "documentViewingLimitResetToTheDefault": "Se ha restablecido el límite de visualización de documentos.",
+      "documentViewingLimitSavedTheChangeAppliesThe": "Límite de visualización guardado. Se aplicará al abrir el siguiente documento.",
+      "filesWorkspaceBehaviorSavedTheChangeAppliesTo": "Comportamiento de archivos y espacios de trabajo guardado. Se aplicará en la próxima exploración o al abrir un visor nuevo.",
+      "filesWorkspaceSettingsResetToDefaults": "Se ha restablecido la configuración de archivos y espacios de trabajo.",
+      "filesWorkspaceSettingsSavedNewLimitsApplyTo": "Configuración de archivos y espacios de trabajo guardada. Los nuevos límites se aplicarán en la próxima exploración o actualización de la lista.",
+      "generalSettingsSaved": "Configuración general guardada.",
+      "interfaceLanguageUpdated": "Idioma de la interfaz actualizado.",
+      "loadingSettings": "Cargando configuración…",
+      "recentFileHistoryClearedFromThisDevice": "Se ha borrado el historial de archivos recientes de este dispositivo.",
+      "recentFileHistoryDisabledExistingEntriesWereKept": "Historial de archivos recientes desactivado. Se han conservado las entradas existentes.",
+      "recentFileHistoryEnabled": "Historial de archivos recientes activado.",
+      "recentFileRetentionSavedTheLimitAppliesOn": "Límite de archivos recientes guardado. Se aplicará la próxima vez que se acceda al historial.",
+      "settingsAreUpToDate": "La configuración está actualizada.",
+      "settingsExported": "Configuración exportada.",
+      "settingsImportedAndSaved": "Configuración importada y guardada.",
+      "treeIndentGuidesSavedOpenViewersUpdateImmediately": "Preferencia de líneas del árbol guardada. Los visores abiertos se actualizan al instante.",
+      "validatingSettingsFile": "Validando archivo de configuración…",
+      "watchModeUpdated": "Modo de actualización del documento cambiado."
+    },
+    "optionsActions": {
+      "clearAllRecentFilePathsStoredByMarkdown": "¿Borrar todas las rutas de archivos recientes que Markdown Plus guarda en este dispositivo? No se puede deshacer. Los archivos originales se conservarán.",
+      "resetAllMarkdownPlusSettingsToTheirDefaults": "¿Restablecer toda la configuración de Markdown Plus? Se incluyen las preferencias de lectura, edición, funciones Markdown y exploración de archivos.",
+      "settingsFilesMustBeSmallerThan1MiB": "Los archivos de configuración deben ocupar menos de 1 MiB."
+    },
+    "privacy": {
+      "clearRecentFiles": "Borrar historial reciente",
+      "clearRecentFilesNow": "Borrar historial reciente ahora",
+      "clearing": "Borrando…",
+      "controlWhetherMarkdownPlusRemembersLocalDocumentsAnd": "Elige si Markdown Plus recuerda los documentos locales y cuántos puede guardar en la lista.",
+      "keepOnlyTheNewestEntriesAfterTheNext": "Conserva solo las entradas más recientes la próxima vez que se acceda al historial.",
+      "localData": "Datos locales",
+      "recentFileURLsContainLocalPathsTheyAre": "Las URL de los archivos recientes contienen rutas locales. Solo se guardan en el almacenamiento local de la extensión en este dispositivo, separado de las preferencias sincronizadas.",
+      "rememberLocalMarkdownFilesSoTheyCanBe": "Recuerda los archivos Markdown locales para volver a abrirlos desde la ventana de la extensión. Desactivar esta opción impide añadir nuevas entradas, pero conserva las existentes.",
+      "saveRecentFiles": "Recordar archivos recientes",
+      "title": "Privacidad y datos"
+    },
+    "themes": {
+      "background": {
+        "angle0360": "Ángulo (0–360°)",
+        "animate": "Animar",
+        "backgroundType": "Tipo de fondo",
+        "bottom": "Abajo",
+        "center": "Centro",
+        "dimming008": "Oscurecimiento (0–0,8)",
+        "endColor": "Color final",
+        "fillCanvas": "Rellenar área",
+        "fitWithinCanvas": "Encajar en el área",
+        "followSystem": "Seguir al sistema",
+        "gradient": "Degradado",
+        "imageFile": "Archivo de imagen",
+        "imageFit": "Ajuste de imagen",
+        "imagePosition": "Posición de imagen",
+        "left": "Izquierda",
+        "localImageOrAnimation": "Imagen o animación local",
+        "motion": "Animación",
+        "originalSize": "Tamaño original",
+        "pngJPEGWebPAVIFGIFOrAPNGUp": "PNG, JPEG, WebP, AVIF, GIF o APNG; hasta 5 MiB.",
+        "repeatImage": "Repetir imagen",
+        "right": "Derecha",
+        "sceneColor": "Color del fondo",
+        "solidScene": "Color uniforme",
+        "startColor": "Color inicial",
+        "still": "Sin animación",
+        "storedOnThisDevice": "Guardado en este dispositivo",
+        "themeColorOnly": "Solo color del tema",
+        "tileTheImageInsteadOfShowingOneCanvas": "Repite la imagen en mosaico en lugar de mostrar una sola imagen.",
+        "top": "Arriba"
+      },
+      "colors": {
+        "borders": "Bordes",
+        "contentSurface": "Fondo del contenido",
+        "documentText": "Texto del documento",
+        "headings": "Encabezados",
+        "inlineFallbackCodeBackground": "Fondo del código en línea o sin resaltar",
+        "inlineFallbackCodeText": "Texto del código en línea o sin resaltar",
+        "interfaceText": "Texto de la interfaz",
+        "links": "Enlaces",
+        "mutedText": "Texto secundario",
+        "pageBackground": "Fondo de la página",
+        "panelSurface": "Fondo de los paneles",
+        "valueColorPicker": "Selector de color de {0}",
+        "valueHexValue": "Valor hexadecimal de {0}"
+      },
+      "editor": {
+        "backToThemes": "← Volver a temas",
+        "background": "Fondo",
+        "baseTheme": "Tema base",
+        "buildAReusableReaderThemeChangesStayIn": "Crea un tema de lectura reutilizable. Los cambios permanecen en el borrador hasta que guardes.",
+        "buildTheSceneBehindTheViewerAndTune": "Configura el fondo del visor y ajusta su legibilidad.",
+        "chooseTheSyntaxColorsUsedForRenderedCode": "Elige los colores de sintaxis de los bloques de código mostrados.",
+        "codeHighlighting": "Resaltado de código",
+        "colors": "Colores",
+        "createCustomTheme": "Crear tema personalizado",
+        "createTheme": "Crear tema",
+        "discardYourUnsavedThemeChanges": "¿Descartar los cambios del tema sin guardar?",
+        "eGMidnightPaper": "p. ej., Papel de medianoche",
+        "editValue": "Editar {0}",
+        "identity": "Nombre y base",
+        "nameTheThemeAndChooseTheBuiltIn": "Asigna un nombre al tema y elige el tema integrado que usarás como base.",
+        "newDraft": "Nuevo borrador",
+        "noChanges": "Sin cambios",
+        "replacesTheColorsInSection02CodeHighlighting": "Sustituye los colores de la sección 02. El resaltado de código sigue esta base, salvo que lo cambies abajo.",
+        "resetsColors": "Restablece los colores",
+        "savingTheme": "Guardando tema…",
+        "shownInTheThemePickerAndPopup": "Se muestra en el selector de temas y en la ventana de la extensión.",
+        "themeName": "Nombre del tema",
+        "themeStudio": "Editor de temas",
+        "tuneSemanticColorsSoTheViewerStaysVisually": "Ajusta los colores de los elementos para dar coherencia al visor. Los colores del código en línea o sin resaltar no sustituyen el tema de sintaxis de la sección 03.",
+        "unsavedChanges": "Cambios sin guardar"
+      },
+      "library": {
+        "activeReaderTheme": "Tema de lectura en uso",
+        "activeTheme": "Tema activo",
+        "addCustomTheme": "Añadir tema personalizado",
+        "appearance": "Apariencia",
+        "builtInThemes": "Temas integrados",
+        "chooseTheReaderThemeInUseThenManage": "Elige el tema de lectura y gestiona tus temas personalizados reutilizables.",
+        "createOneFromYourActiveThemeThenAdjust": "Crea uno a partir del tema activo y ajusta sus colores y fondo en el editor de temas.",
+        "createYourFirstTheme": "Crea tu primer tema",
+        "customThemesCanBeSelectedInBothSettings": "Puedes elegir tus temas personalizados tanto en Configuración como en la ventana de la extensión.",
+        "customThemesDeleteOneBeforeCreatingAnother": "temas personalizados. Elimina uno antes de crear otro.",
+        "deleteValueThisCannotBeUndoneValue": "¿Eliminar «{0}»? No se puede deshacer.{1}",
+        "gradientBackground": "Fondo degradado",
+        "itIsActiveSoValueWillBecomeActive": " Está en uso, por lo que se activará {0} en su lugar.",
+        "localImageBackground": "Fondo con imagen local",
+        "myTheme": "Mi tema",
+        "myThemes": "Mis temas",
+        "noCustomThemesYet": "Todavía no hay temas personalizados",
+        "selectionIsAlsoShownInTheExtensionPopup": "Esta selección también se muestra en la ventana de la extensión.",
+        "solidBackground": "Fondo uniforme",
+        "themeColorBackground": "Fondo con color del tema",
+        "useTheme": "Usar tema",
+        "youHaveReachedTheLimitOf": "Has alcanzado el límite de"
+      },
+      "preview": {
+        "aCalmReadingSpaceForIdeasSnippetsAnd": "Un espacio de lectura para tus ideas, fragmentos de código y",
+        "accent": "Color de acento",
+        "base": "Base:",
+        "code": "Código:",
+        "designNotesThatFeelLikeHome": "Tus notas de diseño, a tu gusto.",
+        "details": "Detalles",
+        "docs": "docs",
+        "everyValidChangeAppearsHereInstantlySavingIs": "Los cambios válidos aparecen aquí al instante, sin necesidad de guardar.",
+        "examples": "Ejemplos",
+        "focus": "Foco",
+        "guideMd": "guide.md",
+        "javascript": "JavaScript",
+        "link": "Enlace",
+        "livePreview": "Vista previa en tiempo real",
+        "liveThemePreview": "Vista previa del tema en tiempo real",
+        "myNOTES": "MIS NOTAS",
+        "notesMd": "notes.md",
+        "overview": "Resumen",
+        "reading": "Lectura",
+        "readmeMd": "README.md",
+        "role": "Función",
+        "surface": "Fondo",
+        "text": "Texto",
+        "theSmallestDetailsMakeTheBiggestDifference": "«Los pequeños detalles marcan la diferencia».",
+        "token": "Elemento de color",
+        "untitledTheme": "Tema sin nombre",
+        "usefulLinks": "enlaces útiles"
+      },
+      "syntax": {
+        "appliesToRenderedFencedCodeAndSQLDocuments": "Se aplica a los bloques de código delimitados y a los documentos SQL. El editor Markdown conserva su propio resaltado.",
+        "darkThemes": "Temas oscuros",
+        "followBaseTheme": "Seguir tema base (",
+        "lightThemes": "Temas claros",
+        "renderedCodeTheme": "Tema de sintaxis del código"
+      },
+      "title": "Temas"
+    },
+    "title": "Configuración",
+    "validation": {
+      "fields": {
+        "appearanceSettingsMustBeAnObject": "La configuración de apariencia debe ser un objeto.",
+        "backgroundAssetRevisionIsInvalid": "La revisión del recurso de fondo no es válida.",
+        "backgroundDimmingMustBeBetween0And0": "El oscurecimiento del fondo debe estar entre 0 y 0,8.",
+        "backgroundSettingsMustBeAnObject": "La configuración del fondo debe ser un objeto.",
+        "chooseAutoHideOrAlwaysVisibleScrollbars": "Elige barras de desplazamiento que se oculten automáticamente o estén siempre visibles.",
+        "chooseAutomaticAskBeforeUpdatingOrOff": "Elige actualización automática, preguntar antes de actualizar o desactivada.",
+        "customThemeIdIsInvalid": "El identificador del tema personalizado no es válido.",
+        "customThemeIdsMustBeUnique": "Los identificadores de los temas personalizados deben ser únicos.",
+        "customThemeMustBeAnObject": "El tema personalizado debe ser un objeto.",
+        "customThemesMustBeAList": "Los temas personalizados deben ser una lista.",
+        "documentSettingsMustBeAnObject": "La configuración del documento debe ser un objeto.",
+        "editorSettingsMustBeAnObject": "La configuración del editor debe ser un objeto.",
+        "enableExperimentalEditorMustBeTrueOrFalse": "El valor de «Activar editor experimental» debe ser true o false.",
+        "enableMarkdownPlusMustBeTrueOrFalse": "El valor de «Activar Markdown Plus» debe ser true o false.",
+        "filesWorkspaceSettingsMustBeAnObject": "La configuración de archivos y espacios de trabajo debe ser un objeto.",
+        "folderScanDepth": "Profundidad de exploración de carpetas",
+        "gradientAngleMustBeBetween0And360": "El ángulo del degradado debe estar entre 0 y 360.",
+        "maximumIndexedFiles": "Máximo de archivos indexados",
+        "maximumRecentFiles": "Máximo de archivos recientes",
+        "maximumScannedFolders": "Máximo de carpetas exploradas",
+        "privacyDataSettingsMustBeAnObject": "La configuración de privacidad y datos debe ser un objeto.",
+        "settingsMustBeAJSONObject": "La configuración debe ser un objeto JSON.",
+        "showDocumentStatisticsMustBeTrueOrFalse": "El valor de «Mostrar estadísticas del documento» debe ser true o false.",
+        "standaloneTextFileLimit": "Límite de tamaño de los archivos de texto independientes",
+        "themeColorsMustBeAnObject": "Los colores del tema deben ser un objeto.",
+        "themeNameMustBeBetween1And48": "El nombre del tema debe tener entre 1 y 48 caracteres.",
+        "themeSettingsMustBeAnObject": "La configuración del tema debe ser un objeto."
+      }
+    }
+  },
+  "plugins": {
+    "alerts": {
+      "caution": "Precaución",
+      "important": "Importante",
+      "note": "Nota",
+      "tip": "Consejo",
+      "warning": "Advertencia"
+    },
+    "anchorHeading": {
+      "copyLinkToThisSection": "Copiar enlace a esta sección",
+      "copySectionLinkClick": "Copiar enlace a la sección (clic)"
+    },
+    "colorPreview": {
+      "copyColorValue": "Copiar color {0}"
+    },
+    "taskList": {
+      "x": "x"
+    }
+  },
+  "popup": {
+    "editor": {
+      "editingIsOffByDefaultWhenEnabledMarkdown": "La edición está desactivada de forma predeterminada. Al activarla, Markdown Plus te pedirá que selecciones el archivo original exacto antes de empezar a editar.",
+      "editorFontSize": "Tamaño de letra del editor",
+      "enableEditor": "Activar editor",
+      "enableExperimentalEditor": "Activar editor experimental",
+      "experimentalEditor": "Editor experimental",
+      "lineNumbers": "Números de línea",
+      "optInToEditingLocalMarkdownFiles": "Activa la edición de archivos Markdown locales.",
+      "resetEditorPreferences": "Restablecer preferencias del editor",
+      "resetEditorPreferencesToDefaultValues": "¿Restablecer las preferencias del editor?",
+      "tabSize": "Tamaño de tabulación",
+      "tabSizeRange": "2–8 espacios",
+      "wordWrap": "Ajuste de línea"
+    },
+    "fileAccess": {
+      "allowAccessToLocalFiles": "Permitir acceso a archivos locales",
+      "checkingFileAccess": "Comprobando acceso a archivos",
+      "confirmingWhetherMarkdownPlusCanOpenLocalFiles": "Comprobando si Markdown Plus puede abrir archivos locales.",
+      "enableAllowAccessToFileURLs": "Activa «Permitir acceso a URLs de archivo».",
+      "fileAccessIsReady": "Acceso a archivos listo",
+      "fileAccessStatusUnavailable": "Estado de acceso a archivos no disponible",
+      "openChromeExtensions": "Abre chrome://extensions.",
+      "selectMarkdownPlusDetails": "Selecciona Markdown Plus → Detalles."
+    },
+    "footer": {
+      "about": "Acerca de",
+      "allSettings": "Toda la configuración",
+      "saved": "Configuración guardada"
+    },
+    "history": {
+      "fileCount": {
+        "one": "{count} archivo reciente",
+        "other": "{count} archivos recientes"
+      },
+      "loadingRecentFiles": "Cargando archivos recientes…",
+      "noRecentFilesYet": "Todavía no hay archivos recientes",
+      "openLocalMarkdownFilesWithMarkdownPlusAnd": "Abre archivos Markdown locales con Markdown Plus para que aparezcan aquí.",
+      "opening": "Abriendo…"
+    },
+    "page": {
+      "loadingQuickSettings": "Cargando ajustes rápidos",
+      "quickControlSections": "Secciones de ajustes rápidos",
+      "quickSettingsCouldNotBeLoaded": "No se han podido cargar los ajustes rápidos"
+    },
+    "plugins": {
+      "aCleanerCursorLikeLayoutPoweredByELK": "Un diseño más limpio, similar al de Cursor, con ELK.",
+      "beautiful": "Beautiful",
+      "broadestMermaidSyntaxSupportAndTheSafestDefault": "La compatibilidad más amplia con la sintaxis de Mermaid y la opción predeterminada más fiable.",
+      "cursorLike": "Similar a Cursor",
+      "i": "i",
+      "items": {
+        "anchorHeading": {
+          "hint": "Añade un botón «#» a los encabezados para copiar enlaces directos a cada sección.",
+          "label": "Enlaces a encabezados",
+          "version": "Enlaces a encabezados: markdown-it-anchor 9.2.0."
+        },
+        "codeHighlight": {
+          "hint": "Resalta los bloques de código con Shiki; desactívalo para ver el código sin resaltado y reducir la carga.",
+          "label": "Resaltado de código",
+          "version": "Sintaxis compatible: Shiki 4.0.2."
+        },
+        "colorPreview": {
+          "hint": "Presenta muestras de color y permite copiar valores HEX, RGB o HSL, incluida la transparencia.",
+          "label": "Vista previa de colores"
+        },
+        "emoji": {
+          "hint": "Convierte los códigos :shortcode: compatibles en emoji.",
+          "label": "Emoji",
+          "version": "Sintaxis compatible: markdown-it-emoji 3.0.0."
+        },
+        "footnote": {
+          "hint": "Añade marcas de notas al pie, su contenido y enlaces de regreso al texto.",
+          "label": "Notas al pie",
+          "version": "Sintaxis compatible: markdown-it-footnote 4.0.0."
+        },
+        "githubAlerts": {
+          "hint": "Da formato a notas, consejos, mensajes importantes, advertencias y precauciones al estilo de GitHub.",
+          "label": "Avisos de GitHub"
+        },
+        "math": {
+          "hint": "Muestra fórmulas de estilo LaTeX con KaTeX cuando se necesitan.",
+          "label": "Fórmulas (KaTeX)",
+          "version": "Sintaxis compatible: @mdit/plugin-katex 0.25.2, KaTeX 0.16.47."
+        },
+        "mermaid": {
+          "hint": "Convierte los bloques de código Mermaid en diagramas que puedes exportar.",
+          "label": "Diagramas Mermaid",
+          "version": "Sintaxis compatible: Mermaid 11.17.2 o Beautiful Mermaid 1.1.3."
+        },
+        "tableEnhance": {
+          "hint": "Permite desplazar las tablas anchas y mejora su formato.",
+          "label": "Tablas mejoradas"
+        },
+        "taskList": {
+          "hint": "Muestra listas de tareas al estilo de GitHub con casillas de solo lectura.",
+          "label": "Listas de tareas"
+        }
+      },
+      "mermaidOfficial": "Mermaid oficial",
+      "official": "Oficial",
+      "renderer": "Motor de diagramas"
+    },
+    "reader": {
+      "aboutFontFamily": "Acerca del tipo de letra",
+      "aboutLineHeight": "Acerca del interlineado",
+      "contentWidth": {
+        "label": "Ancho del contenido"
+      },
+      "fontFamilies": {
+        "monoFira": "Monoespaciada (Fira Code)",
+        "monospace": "Monoespaciada",
+        "sansHumanist": "Sans serif (humanista)",
+        "sansNeutral": "Sans serif (neutra)",
+        "sansOpenSans": "Sans serif (Open Sans)",
+        "sansRoboto": "Sans serif (Roboto / Arial)",
+        "sansVietnamese": "Sans serif (legible / vietnamita)",
+        "serifCharter": "Serif (Charter)",
+        "serifGeorgia": "Serif (Georgia)",
+        "serifMerriweather": "Serif (Merriweather)",
+        "serifNewYork": "Serif (New York / Georgia)",
+        "serifSource": "Serif (Source Serif)",
+        "serifVietnamese": "Serif (Noto / vietnamita)",
+        "system": "Fuente del sistema"
+      },
+      "fontFamily": {
+        "label": "Tipo de letra"
+      },
+      "fontSize": {
+        "label": "Tamaño de letra"
+      },
+      "lineHeight": {
+        "label": "Interlineado"
+      },
+      "outline": {
+        "label": "Mostrar índice"
+      },
+      "resetReaderUI": "Restablecer ajustes de lectura",
+      "resetReaderUISettingsToDefaultValues": "¿Restablecer los ajustes de apariencia de lectura?",
+      "theme": "Tema",
+      "unitlessLineSpacingMultiplierEG17": "Multiplicador de interlineado sin unidad (p. ej., 1,7 ≈ 170 % del tamaño de letra). No se mide en píxeles.",
+      "usesFontsInstalledOnYourSystemPresetsList": "Usa las fuentes instaladas en tu sistema. Cada opción incluye alternativas por si falta la primera fuente."
+    },
+    "tabs": {
+      "editor": {
+        "label": "Editor",
+        "title": "Preferencias del editor"
+      },
+      "history": {
+        "label": "Recientes",
+        "title": "Archivos recientes"
+      },
+      "plugins": {
+        "label": "Funciones",
+        "title": "Funciones de Markdown"
+      },
+      "reader": {
+        "label": "Lectura",
+        "title": "Aspecto de lectura"
+      }
+    }
+  },
+  "services": {
+    "fileHistory": {
+      "localFileHistoryStorageIsUnavailable": "El almacenamiento local del historial de archivos no está disponible.",
+      "tabsAPIIsUnavailable": "La API de pestañas no está disponible."
+    },
+    "messageRouter": {
+      "enableAllowAccessToFileURLsForMarkdown": "Activa «Permitir acceso a URLs de archivo» para Markdown Plus (chrome://extensions → esta extensión → Detalles)."
+    },
+    "offscreenFetch": {
+      "chromeOffscreenIsNotAvailableChrome109Required": "chrome.offscreen no está disponible (se requiere Chrome 109 o posterior).",
+      "offscreenFetchTimedOut": "Se ha agotado el tiempo de espera de la solicitud en segundo plano"
+    },
+    "optionsPage": {
+      "settingsPageIsUnavailableInThisBrowser": "La página de configuración no está disponible en este navegador."
+    },
+    "themeAsset": {
+      "themeAssetDatabaseRequestFailed": "Ha fallado la solicitud a la base de datos de recursos de temas.",
+      "themeAssetStorageIsUnavailable": "El almacenamiento de recursos de temas no está disponible.",
+      "themeAssetTransactionFailed": "Ha fallado la transacción de recursos de temas."
+    }
+  }
+}

@@ -11,7 +11,13 @@ import re
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / 'scripts' / 'site'
-LANGUAGES = {'en': ('English', 'EN'), 'vi': ('Tiếng Việt', 'VI'), 'zh-CN': ('简体中文（中国）', '简中')}
+LANGUAGES = {
+    'en': ('English', 'EN'), 'vi': ('Tiếng Việt', 'VI'), 'zh-CN': ('简体中文（中国）', '简中'),
+    'es': ('Español', 'ES'), 'de': ('Deutsch', 'DE'), 'ja': ('日本語', '日本語'), 'ro': ('Română', 'RO'),
+}
+# These four guides explicitly describe their screenshots as the English UI.
+# Keep the original captures and dimensions until localized captures are available.
+GUIDE_IMAGE_LOCALES = {'en': 'en', 'vi': 'vi', 'zh-CN': 'zh-CN', 'es': 'en', 'de': 'en', 'ja': 'en', 'ro': 'en'}
 PAGES = {'home': 'index.html', 'guide': 'guide/index.html', 'privacy': 'privacy/index.html', 'releases': 'releases/index.html'}
 MESSAGE = re.compile(r'\{\{([\w.-]+)\}\}')
 SLOT = re.compile(r'\{([A-Za-z][A-Za-z0-9]*)\}')
@@ -69,6 +75,7 @@ def render_pages(source=SOURCE):
                 links.append(f'<a href="{url}" lang="{other}" hreflang="{other}" data-language-link{active}>{label}</a>')
                 alternates.append(f'<link rel="alternate" hreflang="{other}" href="{url}">')
             alternates.append(f'<link rel="alternate" hreflang="x-default" href="{relative_url(current, page_path("en", page))}">')
+            image_locale = GUIDE_IMAGE_LOCALES[locale]
             values = {
                 'locale': locale,
                 'links.store': 'https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk',
@@ -80,8 +87,9 @@ def render_pages(source=SOURCE):
                 'paths.guide': relative_url(current, page_path(locale, 'guide')),
                 'paths.privacy': relative_url(current, page_path(locale, 'privacy')),
                 'paths.releases': relative_url(current, page_path(locale, 'releases')),
+                'images.locale': image_locale,
             }
-            for scene, (width, height) in image_sizes[locale].items():
+            for scene, (width, height) in image_sizes[image_locale].items():
                 if any(type(size) is not int or not 0 < size <= 5000 for size in (width, height)):
                     raise ValueError(f'Invalid guide image dimensions: {locale}/{scene}')
                 values[f'images.{scene}.width'] = str(width)

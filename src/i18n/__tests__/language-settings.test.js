@@ -13,7 +13,7 @@ describe('persisted interface language', () => {
     return area
   }
 
-  it.each(['vi', 'zh-CN'])('loads older preferences and round-trips %s without losing other settings', async (language) => {
+  it.each(['vi', 'zh-CN', 'es', 'de', 'ja', 'ro'])('loads older preferences and round-trips %s without losing other settings', async (language) => {
     storage({ version: 2, typography: { fontSize: 22 }, editor: { enabled: true } })
     expect((await settingsService.getSettings()).language).toBe('auto')
     const saved = await settingsService.saveSettings({ language })

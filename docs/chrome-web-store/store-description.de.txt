@@ -1,0 +1,58 @@
+Markdown Plus ist ein kostenloser Markdown-Viewer und Markdown-Reader für Chrome. Öffne lokale .md-Dateien direkt im Browser und lies formatierte Dokumente statt Markdown-Quelltext. Du brauchst kein Konto und musst keine Dokumente hochladen.
+
+FUNKTIONEN
+
+• Lokale Markdown-Dateien öffnen — Unterstützt .md, .markdown, .mdown und .mdc.
+• Ordner durchsuchen — Öffne einen Ordner und wechsle im Dateibereich zwischen Dokumenten.
+• In langen Dokumenten navigieren — Springe über die Gliederung direkt zu einem Abschnitt.
+• Code mit Syntaxhervorhebung lesen — Hebt die Syntax in Codeblöcken hervor.
+• Tabellen und Aufgabenlisten anzeigen — Klar formatierte, strukturierte Inhalte.
+• Mermaid-Diagramme anzeigen — Diagramme direkt im Dokument betrachten.
+• Mathematische Formeln lesen — Formeln im Fließtext und in eigenen Blöcken mit KaTeX.
+• Markdown-Erweiterungen nutzen — Fußnoten, Emojis und Hinweise im GitHub-Stil.
+• Lesedesign wählen — Helle, dunkle und kontrastreiche Designs.
+• Leseansicht anpassen — Schriftart, Schriftgröße, Zeilenabstand und Inhaltsbreite einstellen.
+• Eigene Designs erstellen — Farben anpassen und Hintergrundbilder oder Animationen hinzufügen.
+• Verwandte Dateien öffnen — Text, SQL, DBML, Mermaid und Bilder über den Dateibereich.
+• Diagramme und Bilder vergrößern — In einer größeren Ansicht zoomen und verschieben.
+• Externe Änderungen verfolgen — Änderungen der geöffneten Datei erkennen und selbst entscheiden, wann sie geladen werden.
+• Änderungen vergleichen — Hinzugefügte und entfernte Zeilen sowie betroffene Markdown-Abschnitte prüfen.
+• Mit Live-Vorschau bearbeiten — Experimentellen Editor aktivieren und in der ausgewählten Originaldatei speichern.
+• Dokumente exportieren — Markdown als HTML oder Word-kompatible .doc-Datei ausgeben.
+• Diagramme exportieren — Mermaid-Diagramme als SVG oder PNG herunterladen.
+• Drucken oder als PDF speichern — Über den Druckdialog von Chrome.
+• Zuletzt geöffnete Dateien wiederfinden — Lokale Markdown-Dokumente aus dem Verlauf erneut öffnen.
+• Einstellungen sichern — Einstellungen und eigene Designdefinitionen als JSON exportieren und wiederherstellen; Hintergrundbilder sind nicht enthalten.
+• Oberflächensprache wählen — Englisch, Vietnamesisch, vereinfachtes Chinesisch, Spanisch, Deutsch, Japanisch oder Rumänisch. Die Auswahl findest du unter Einstellungen → Allgemein.
+
+KOSTENLOS
+
+Alle Funktionen sind kostenlos nutzbar. Kein Abo und kein kostenpflichtiges Upgrade erforderlich.
+
+ERSTE SCHRITTE
+
+1. Installiere Markdown Plus.
+2. Öffne chrome://extensions, suche Markdown Plus - Free Markdown Viewer und wähle Details.
+3. Aktiviere „Zugriff auf Datei-URLs zulassen“ (Allow access to file URLs).
+4. Öffne eine lokale Markdown-Datei in Chrome oder lade sie neu.
+
+Benötigt Chrome ab Version 116. Markdown Plus wird beim Öffnen lokaler Markdown-Dateien aktiv. Öffne für andere unterstützte Formate zuerst den Markdown-Viewer und wähle die Datei im Dateibereich aus.
+
+Der experimentelle Editor ist optional und standardmäßig ausgeschaltet. Zum Speichern musst du die Originaldatei auswählen und den Schreibzugriff erlauben.
+
+DATENSCHUTZ
+
+Dokumente werden lokal im Browser verarbeitet und nicht auf einen vom Entwickler betriebenen Server hochgeladen. Einstellungen können über Chrome synchronisiert werden. Pfade zuletzt geöffneter Dateien und Hintergrundbilder bleiben auf deinem Gerät. Dokumente können externe Bilder laden; exportierte Dokumente mit Formeln können auf externes CSS verweisen.
+
+Datenschutzerklärung:
+https://thaibalong7.github.io/markdown-viewer-chrome-extension/de/privacy/
+
+HILFE UND QUELLCODE
+
+Fehler melden oder Funktion vorschlagen:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues
+
+Nenne die Chrome- und Erweiterungsversion, die Schritte zum Reproduzieren des Problems sowie das erwartete und tatsächliche Ergebnis. Entferne private Inhalte aus Beispieldateien und Screenshots, bevor du sie teilst.
+
+Quellcode auf GitHub:
+https://github.com/thaibalong7/markdown-viewer-chrome-extension

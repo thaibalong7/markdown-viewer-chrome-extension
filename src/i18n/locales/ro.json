@@ -1,0 +1,1458 @@
+{
+  "common": {
+    "actions": {
+      "backToOriginalFile": "Înapoi la fișierul original",
+      "backToTop": "Înapoi sus",
+      "cancel": "Anulează",
+      "clear": "Golește",
+      "close": "Închide",
+      "collapseFolders": "Restrânge dosarele",
+      "copyContent": "Copiază conținutul",
+      "copyFileLink": "Copiază linkul fișierului",
+      "copyLink": "Copiază linkul",
+      "delete": "Șterge",
+      "edit": "Editează",
+      "explore": "Explorează",
+      "focusMode": "Mod de concentrare",
+      "leaveWorkspace": "Închide spațiul de lucru",
+      "openExtensionDetails": "Deschide detaliile extensiei",
+      "openSettings": "Deschide setările",
+      "read": "Citește",
+      "refreshFileList": "Actualizează lista de fișiere",
+      "retry": "Încearcă din nou",
+      "saveChanges": "Salvează modificările",
+      "viewChanges": "Vezi modificările",
+      "viewSource": "Vezi sursa"
+    },
+    "backgroundImage": {
+      "imageIsEmpty": "Imaginea este goală.",
+      "themeBackgroundImageDataIsInvalid": "Datele imaginii de fundal a temei nu sunt valide.",
+      "usePNGJPEGWebPAVIFGIFOrAPNG": "Folosește PNG, JPEG, WebP, AVIF, GIF sau APNG."
+    },
+    "fileAccess": {
+      "allowed": "Permis",
+      "blocked": "Nu este permis"
+    },
+    "fileSchemeAccess": {
+      "extensionDetailsAreUnavailableOpenChromeExtensionsManually": "Detaliile extensiei nu sunt disponibile. Deschide manual chrome://extensions."
+    },
+    "fileTypeIcons": {
+      "markdown": "Markdown"
+    },
+    "fileTypes": {
+      "dbmlDocument": "Document DBML",
+      "image": "Imagine",
+      "markdownDocument": "Document Markdown",
+      "mermaidDiagram": "Diagramă Mermaid",
+      "plainTextDocument": "Document text simplu",
+      "sqlDocument": "Document SQL",
+      "svgImage": "Imagine SVG"
+    },
+    "languages": {
+      "browser": "Limba browserului",
+      "en": "English",
+      "vi": "Tiếng Việt",
+      "zhCN": "简体中文（中国）",
+      "es": "Español",
+      "de": "Deutsch",
+      "ja": "日本語",
+      "ro": "Română"
+    },
+    "messages": {
+      "copiedFolderValue": "Dosarul {0} a fost copiat",
+      "settingsResetToDefault": "Setările au fost resetate la valorile prestabilite.",
+      "settingsSaved": "Setările au fost salvate."
+    },
+    "productName": "Markdown Plus",
+    "productNameUppercase": "MARKDOWN PLUS",
+    "status": {
+      "active": "Activ",
+      "checking": "Se verifică…",
+      "copied": "Copiat",
+      "error": "Eroare",
+      "failed": "Eroare",
+      "loading": "Se încarcă…",
+      "modified": "Modificat",
+      "ready": "Gata",
+      "rendering": "Se generează",
+      "saved": "Salvat",
+      "saving": "Se salvează…",
+      "savingChanges": "Se salvează modificările…",
+      "unavailable": "Indisponibil"
+    },
+    "themeModes": {
+      "dark": "întunecată",
+      "light": "luminoasă"
+    },
+    "themes": {
+      "dark": "Întunecată",
+      "highContrastDark": "Întunecată, cu contrast ridicat",
+      "highContrastLight": "Luminoasă, cu contrast ridicat",
+      "light": "Luminoasă",
+      "vscodeDark": "Întunecată (VS Code)"
+    },
+    "watchModes": {
+      "ask": "Întreabă înainte de actualizare",
+      "auto": "Actualizează automat",
+      "off": "Dezactivat"
+    }
+  },
+  "viewer": {
+    "editor": {
+      "accessibility": {
+        "controlCharacter": "Caracter de control",
+        "foldLine": "Restrânge linia",
+        "foldedCode": "cod restrâns",
+        "foldedLines": "Linii restrânse",
+        "selectionDeleted": "Selecție ștearsă",
+        "unfold": "extinde",
+        "unfoldLine": "Extinde linia",
+        "unfoldedLines": "Linii extinse"
+      },
+      "search": {
+        "currentMatch": "potrivirea curentă",
+        "go": "mergi",
+        "goToLine": "Mergi la linia",
+        "onLine": "la linia",
+        "replacedMatchOnLine": "potrivire înlocuită la linia $",
+        "replacedMatches": "Potriviri înlocuite: $",
+        "to": "până la",
+        "all": "toate",
+        "close": "închide",
+        "find": "Caută",
+        "matchCase": "ține cont de majuscule",
+        "next": "următoarea",
+        "previous": "precedenta",
+        "regexp": "expresie regulată",
+        "replaceAction": "înlocuiește",
+        "replaceAll": "înlocuiește tot",
+        "replaceFieldLabel": "Înlocuiește cu",
+        "wholeWord": "cuvinte întregi"
+      },
+      "browserCannotConnectALocalFileForSafe": "Acest browser nu permite asocierea unui fișier local pentru editare în siguranță.",
+      "connectDialog": {
+        "checkBothItsFolderAndFilenameDoNot": "Verifică atât dosarul, cât și numele fișierului. Nu alege o copie cu același nume.",
+        "chooseThisExactFileInChromeSPicker": "Alege exact acest fișier în fereastra de selectare din Chrome.",
+        "chromeDoesNotAutomaticallyGrantWriteAccessFrom": "Deschiderea unui URL de fișier local nu acordă automat drept de scriere în Chrome. Markdown Plus trebuie să verifice fișierul existent înainte de a deschide editorul.",
+        "connectTheOriginalFileBeforeEditing": "Alege fișierul original înainte de editare",
+        "currentFile": "Fișierul curent",
+        "safeEditing": "Editare în siguranță",
+        "unknownLocalFile": "Fișier local necunoscut",
+        "useSaveOrCtrlCmdSToWrite": "Folosește Salvează sau Ctrl/Cmd+S pentru a salva modificările în fișierul original selectat.",
+        "verifyFileAndEdit": "Verifică fișierul și editează",
+        "verifyingFile": "Se verifică fișierul…"
+      },
+      "connectedSaveTargetValue": "Fișier asociat pentru salvare: {0}",
+      "discard": "Renunță la modificări",
+      "exitConfirmation": {
+        "title": "Renunți la modificări și închizi editorul?",
+        "yourUnsavedChangesWillBeLostTheSaved": "Modificările nesalvate se vor pierde. Fișierul salvat nu va fi modificat."
+      },
+      "file": "Acest fișier",
+      "keepEditing": "Continuă editarea",
+      "loadingEditor": "Se încarcă editorul…",
+      "originalFileIsNotConnectedExitEditMode": "Fișierul original nu este asociat. Închide editorul și selectează-l din nou înainte de salvare.",
+      "resizeHandle": {
+        "dragToResizeTheEditorAndPreviewWhen": "Trage pentru a redimensiona editorul și previzualizarea. Când mânerul are focalizarea, poți folosi săgețile stânga/dreapta (16 px la fiecare pas).",
+        "resizeEditorAndPreview": "Redimensionează editorul și previzualizarea"
+      },
+      "saveFailed": "Salvarea a eșuat.",
+      "saveFailedValue": "Salvarea a eșuat: {0}",
+      "savedToTheConnectedOriginalFile": "Modificările au fost salvate în fișierul original selectat",
+      "selectedFile": "Fișierul selectat",
+      "selectedFileValueIsNotTheFileYou": "Fișierul selectat („{0}”) nu este cel pe care îl editezi („{1}”). Alege fișierul original afișat în Markdown Plus.",
+      "statusBar": {
+        "col": ", col.",
+        "ln": "Lin.",
+        "target": "Destinație:"
+      },
+      "updateConfirmation": {
+        "discardDraftAndLoadDiskVersion": "Renunță la ciornă și deschide versiunea salvată",
+        "editModeWillClose": "Editorul se va închide",
+        "exitEditModeAndLoadDiskVersion": "Închide editorul și deschide versiunea salvată",
+        "externalUpdateIsAlreadySavedOnDiskThis": "Modificările făcute în afara Markdown Plus sunt deja salvate pe disc. Această acțiune schimbă doar versiunea deschisă în Markdown Plus.",
+        "latestVersionIsAlreadyOnDiskMarkdownPlus": "Cea mai recentă versiune este deja pe disc. Markdown Plus va închide editorul și va reîncărca acea versiune.",
+        "loadingDiskVersion": "Se încarcă versiunea salvată…",
+        "loadingTheDiskVersionClosesTheEditorAnd": "Deschiderea versiunii de pe disc închide editorul și reîncarcă fișierul.",
+        "loadingTheDiskVersionPermanentlyReplacesYourDraft": "Deschiderea versiunii de pe disc elimină definitiv ciorna și închide editorul.",
+        "loadingThisUpdateWillCloseEditMode": "Încărcarea acestei actualizări va închide editorul",
+        "unsavedDraftWillBeDiscarded": "Ciorna nesalvată va fi eliminată",
+        "versionOnDiskChangedOutsideMarkdownPlusLoading": "Fișierul de pe disc a fost modificat în afara Markdown Plus. Încărcarea lui va înlocui definitiv ciorna din editor și va încheia editarea.",
+        "yourUnsavedDraftWillBeDiscarded": "Ciorna ta nesalvată va fi eliminată"
+      },
+      "valueChangedOnDiskAfterEditingStartedReload": "„{0}” a fost modificat pe disc după ce ai început editarea. Reîncarcă fișierul înainte de salvare, ca să nu suprascrii modificările externe.",
+      "valueDoesNotMatchTheDocumentCurrentlyOpen": "„{0}” nu corespunde documentului deschis în Markdown Plus. Reîncarcă vizualizatorul dacă fișierul a fost modificat sau alege fișierul original.",
+      "verifiedSaveTargetValue": "Destinație de salvare verificată: {0}",
+      "youHaveUnsavedChangesOpenAnotherDocumentAnd": "Ai modificări nesalvate. Deschizi alt document și renunți la ele?"
+    },
+    "actions": {
+      "copyLinkUnavailableForWorkspaceVirtualFiles": "Copierea linkului nu este disponibilă pentru fișierele virtuale din spațiul de lucru",
+      "copyOpenFileLink": "Copiază linkul fișierului deschis",
+      "customDocumentActionMustBePinnedValue": "Acțiunea personalizată pentru document trebuie fixată: {0}",
+      "duplicateDocumentActionValue": "Acțiune duplicată pentru document: {0}",
+      "editMarkdown": "Editează Markdown",
+      "exitEditMode": "Închide editorul",
+      "exitFocusMode": "Ieși din modul de concentrare",
+      "export": {
+        "copiedFileLink": "Linkul fișierului a fost copiat",
+        "exportHTML": "Exportă HTML",
+        "exportWordDoc": "Exportă Word (.doc)",
+        "exportedValue": "S-a exportat {0}",
+        "nothingToExportYet": "Nu există încă nimic de exportat."
+      },
+      "exportDocument": "Exportă documentul",
+      "exportHTMLOrWordDoc": "Exportă HTML sau Word (.doc)",
+      "focusModeHidePreview": "Mod de concentrare — ascunde previzualizarea",
+      "output": "Export și imprimare",
+      "printSaveAsPDF": "Imprimă / Salvează ca PDF",
+      "printSaveAsPDFInTheDialogTo": "Imprimă — Alege „Salvează ca PDF” în fereastra de imprimare pentru a exporta un PDF.",
+      "quickAccess": "Acces rapid",
+      "saveCtrlS": "Salvează (Ctrl+S)",
+      "saveMarkdownFile": "Salvează fișierul Markdown",
+      "saveNoUnsavedChanges": "Salvează — nu există modificări nesalvate",
+      "theme": {
+        "switch": "Treci la tema {0}",
+        "switched": "Tema {0} a fost activată",
+        "switching": "Se schimbă tema…"
+      },
+      "toolbar": {
+        "documentActions": "Acțiuni pentru document",
+        "moreDocumentActions": "Mai multe acțiuni pentru document"
+      },
+      "unknownDocumentActionGroupValue": "Grup necunoscut de acțiuni pentru document: {0}",
+      "viewDiagram": "Vezi diagrama"
+    },
+    "app": {
+      "editModeWillCloseAndTheLatestVersion": "Editorul se va închide și se va încărca cea mai recentă versiune de pe disc. Continui?",
+      "fileRouteInThisURLIsNotSupported": "Calea fișierului din acest URL nu este acceptată",
+      "yourUnsavedDraftWillBePermanentlyDiscardedAnd": "Ciorna nesalvată va fi eliminată definitiv și editorul se va închide. Încarci cea mai recentă versiune de pe disc?"
+    },
+    "articleInteractions": {
+      "copiedLink": "Linkul a fost copiat",
+      "openImageZoomView": "Deschide imaginea mărită",
+      "sectionLinksAreUnavailableForThisWorkspaceFile": "Linkurile către secțiuni nu sunt disponibile pentru acest fișier din spațiul de lucru",
+      "zoomImageValue": "Mărește imaginea: {0}"
+    },
+    "code": {
+      "copy": {
+        "ariaLabel": "Copiază codul în clipboard",
+        "label": "Copiază codul"
+      }
+    },
+    "colors": {
+      "colorFormatsForValue": "Formate de culoare pentru {0}",
+      "copiedValue": "S-a copiat {0}",
+      "copyValue": "Copiază {0}",
+      "copyValueValue": "Copiază {0}: {1}",
+      "opacityValue": "Opacitate {0}",
+      "valueCopiedToClipboard": "{0} a fost copiat în clipboard"
+    },
+    "content": {
+      "controlCouldNotBeDisplayed": "Acest control nu a putut fi afișat."
+    },
+    "document": {
+      "fileTypeIsNotSupported": "Acest tip de fișier nu este acceptat",
+      "imageKind": "imagine",
+      "textKind": "fișier text"
+    },
+    "documentLoader": {
+      "documentLoadWasAborted": "Încărcarea documentului a fost întreruptă.",
+      "documentTypeIsNotLoadableYet": "Încă nu se pot deschide documente de acest tip.",
+      "selectedWorkspaceFileHasAnUnsupportedImageType": "Formatul imaginii selectate din spațiul de lucru nu este acceptat.",
+      "selectedWorkspaceFileIsNotARegisteredImage": "Fișierul selectat din spațiul de lucru nu are un format de imagine înregistrat."
+    },
+    "documents": {
+      "dbml": {
+        "colorPreviewsCouldNotBeDisplayedDBMLSource": "Previzualizarea culorilor nu a putut fi afișată. Sursa DBML este disponibilă în continuare.",
+        "dbmlDocumentHostIsUnavailable": "Containerul pentru documentul DBML nu este disponibil.",
+        "dbmlFileIsEmpty": "Acest fișier DBML este gol.",
+        "documentRenderWasAborted": "Afișarea documentului a fost întreruptă."
+      },
+      "image": {
+        "imageDocumentHostIsUnavailable": "Containerul pentru imagine nu este disponibil.",
+        "loadingValue": "Se încarcă {0}…"
+      },
+      "markdown": {
+        "emptyMarkdownDocument": "Document Markdown gol",
+        "someMarkdownEnhancementsCouldNotBeAppliedBasic": "Unele îmbunătățiri Markdown nu au putut fi aplicate. Afișarea de bază este disponibilă în continuare.",
+        "useEditToStartWriting": "Alege Editează pentru a începe să scrii."
+      },
+      "mermaid": {
+        "mermaidDocumentHostIsUnavailable": "Containerul pentru documentul Mermaid nu este disponibil.",
+        "mermaidFileIsEmpty": "Acest fișier Mermaid este gol."
+      },
+      "sql": {
+        "sqlDocumentHostIsUnavailable": "Containerul pentru documentul SQL nu este disponibil.",
+        "sqlFileIsEmpty": "Acest fișier SQL este gol."
+      },
+      "states": {
+        "diagramSource": "Sursa diagramei",
+        "mermaidRenderError": "Eroare la generarea diagramei Mermaid"
+      },
+      "text": {
+        "textDocumentHostIsUnavailable": "Containerul pentru documentul text nu este disponibil.",
+        "textFileIsEmpty": "Acest fișier text este gol."
+      }
+    },
+    "explorer": {
+      "accessibility": {
+        "supportedFilesInFolderTree": "Fișiere acceptate în arborele de dosare"
+      },
+      "actions": {
+        "copyFileName": "Copiază numele fișierului",
+        "copyFolderName": "Copiază numele dosarului",
+        "copyFolderPath": "Copiază calea dosarului",
+        "fileDetailsActions": "Acțiuni pentru detaliile fișierului",
+        "menuLabel": "Acțiuni pentru {0}",
+        "moreFileActions": "Mai multe acțiuni pentru fișier",
+        "moreLabel": "Mai multe acțiuni pentru {0}"
+      },
+      "context": {
+        "currentFolderLabel": "Dosarul acestui fișier",
+        "document": "Document",
+        "noFileSelected": "Niciun fișier selectat",
+        "openFileIsNotListedInTheScanned": "Fișierul deschis nu apare în arborele scanat, deoarece s-a atins o limită de scanare sau lista este incompletă. A fost adăugat la început, ca să rămână accesibil.",
+        "openFileIsNotUnderThisWorkspaceTree": "Fișierul deschis nu se află în acest spațiu de lucru. Alege un fișier din listă sau închide spațiul de lucru.",
+        "scanningFolder": "Se scanează dosarul…",
+        "scanningWorkspace": "Se scanează spațiul de lucru…",
+        "workspaceFiles": "Fișierele spațiului de lucru"
+      },
+      "currentFolder": "Dosarul curent",
+      "file": {
+        "copiedFileName": "Numele fișierului a fost copiat",
+        "openInNewTab": "Deschide într-o filă nouă",
+        "workspaceFileCannotOpenInABrowserTab": "Acest fișier din spațiul de lucru nu poate fi deschis într-o filă a browserului"
+      },
+      "fileCount": {
+        "one": "· {count} fișier",
+        "few": "· {count} fișiere",
+        "other": "· {count} de fișiere"
+      },
+      "folder": {
+        "collapseFolder": "Restrânge dosarul",
+        "copiedFolderName": "Numele dosarului a fost copiat",
+        "copiedFolderPath": "Calea dosarului a fost copiată",
+        "expandFolder": "Extinde dosarul",
+        "indexedFileCount": "Fișiere indexate în acest dosar și în subdosarele lui: {0}",
+        "toggleLabel": "Extinde sau restrânge „{0}”."
+      },
+      "folderScanner": {
+        "file": "Fișier"
+      },
+      "header": {
+        "adjustScanLimitsInSettings": "Ajustează limitele de scanare în Setări",
+        "hideFileDetails": "Ascunde detaliile fișierului",
+        "openFile": "Deschide fișierul",
+        "openFileDetails": "Deschide detaliile fișierului",
+        "openFolder": "Deschide un dosar…",
+        "showFileDetails": "Arată detaliile fișierului",
+        "switchFolder": "Schimbă dosarul…",
+        "thenRefresh": ", apoi actualizează lista.",
+        "unavailableForWorkspaceVirtualFiles": "Indisponibil pentru fișierele virtuale din spațiul de lucru",
+        "workspaceRoot": "Rădăcina spațiului de lucru"
+      },
+      "hide": "Ascunde panoul Fișiere",
+      "listRefresh": {
+        "openASupportedFileBeforeRefreshingItsFolder": "Deschide un fișier acceptat înainte de a actualiza lista dosarului său",
+        "refreshedFileList": "Lista de fișiere a fost actualizată",
+        "selectTheFolderAgainToRefreshItsFile": "Selectează din nou dosarul pentru a-i actualiza lista de fișiere"
+      },
+      "navigation": {
+        "backToFile": "Înapoi la {0}",
+        "linkedFileIsNoLongerAvailable": "Fișierul către care duce linkul nu mai este disponibil"
+      },
+      "panel": {
+        "filesInCurrentFolder": "Fișierele din dosarul curent",
+        "filesScrollbar": "Bara de derulare a listei de fișiere",
+        "noSupportedFilesFoundInThisDirectory": "Nu s-au găsit fișiere acceptate în acest dosar.",
+        "refreshIsAvailableAfterScanningFinishes": "Actualizarea este disponibilă după terminarea scanării",
+        "refreshingFileList": "Se actualizează lista de fișiere",
+        "supportedFilesInFolder": "Fișiere acceptate în dosar"
+      },
+      "panelLabel": "Panoul Fișiere",
+      "scan": {
+        "depthLimit": "Unele dosare nu au fost scanate din cauza limitei de adâncime.",
+        "depthLimitWithValue": "Unele dosare nu au fost scanate din cauza limitei de adâncime ({0}).",
+        "fileLimit": "Scanare oprită: s-a atins limita de fișiere.",
+        "folderLimit": "Scanare oprită: s-a atins limita de dosare.",
+        "notices": "{depth} {files} {folders}",
+        "progress": "Se scanează… Fișiere: {files}, dosare: {folders}{path}"
+      },
+      "scanSession": {
+        "scanCancelled": "Scanare anulată",
+        "scanningFolderTree": "Se scanează arborele de dosare…"
+      },
+      "show": "Arată panoul Fișiere",
+      "title": "Fișiere",
+      "toolbar": {
+        "allFoldersAreCollapsed": "Toate dosarele sunt restrânse",
+        "collapseAllFolders": "Restrânge toate dosarele",
+        "collapseFoldersOutsideTheOpenFilePath": "Restrânge dosarele din afara căii fișierului deschis",
+        "fileListControls": "Controale pentru lista de fișiere",
+        "scanning": "Se scanează…"
+      },
+      "workspace": "Spațiu de lucru",
+      "workspacePicker": {
+        "expectedADirectoryHandleGotAFileHandle": "Era așteptată o referință la un dosar, dar s-a primit una la un fișier",
+        "notADirectoryHandle": "Referința nu indică un dosar"
+      },
+      "workspaceSession": {
+        "scanningImportedFolder": "Se scanează dosarul importat…",
+        "scanningPickedFolder": "Se scanează dosarul selectat…",
+        "scanningWorkspaceFileListing": "Se scanează spațiul de lucru (lista de fișiere)…"
+      }
+    },
+    "fileLinkActions": {
+      "noCurrentFileURLToCopy": "Nu există un URL al fișierului curent de copiat"
+    },
+    "fileRowActions": {
+      "noFileHrefToCopy": "Nu există un link al fișierului de copiat",
+      "noFileNameToCopy": "Nu există un nume de fișier de copiat"
+    },
+    "folderRowActions": {
+      "noFolderIdentityToCopy": "Nu există date despre dosar de copiat"
+    },
+    "imageRevision": {
+      "imageExceedsThe5MiBWatchLimit": "Imaginea depășește limita de 5 MiB pentru monitorizarea modificărilor.",
+      "noImageBytesReceived": "Nu s-au primit date pentru imagine."
+    },
+    "layout": {
+      "editorScrollbar": "Bara de derulare a editorului",
+      "previewFontSizeAndLineHeightAreSynced": "În timpul editării, dimensiunea fontului și înălțimea rândurilor din previzualizare sunt sincronizate cu cele din editor. Setările de lectură sunt restabilite când închizi editorul.",
+      "previewScrollbar": "Bara de derulare a previzualizării",
+      "resizeHandle": {
+        "dragToResizeValueWhenFocusedUseLeft": "Trage pentru a redimensiona {0}. Când mânerul are focalizarea, poți folosi săgețile stânga/dreapta (16 px la fiecare pas).",
+        "resizeValue": "Redimensionează {0}"
+      },
+      "rightRail": {
+        "documentActionsAndOutline": "Acțiuni pentru document și schiță"
+      }
+    },
+    "lineDiff": {
+      "noNewlineAtEndOfFile": "Fără linie nouă la sfârșitul fișierului"
+    },
+    "media": {
+      "bitmapLimit16384PxPerSide32": "Limită bitmap: 16.384 px pe latură / 32 Mi pixeli.",
+      "bitmapLimit16384PxPerSideOr": "Limită bitmap: 16.384 px pe latură sau 32 Mi pixeli în total.",
+      "closeImageZoomView": "Închide imaginea mărită",
+      "closeMermaidChart": "Închide diagrama Mermaid",
+      "decreaseRenderResolution": "Redu rezoluția de randare",
+      "decreaseResolutionBy025": "Redu rezoluția cu 0,25",
+      "dragAnywhereToPanCtrlScrollPinchTo": "Trage pentru deplasare  |  Ctrl + derulare / apropie sau depărtează degetele pentru zoom  |  Derulează cu două degete pentru deplasare  |  +/- pentru zoom  |  0 pentru recentrare  |  Esc pentru închidere",
+      "dragToPanCtrlScrollPinchToZoom": "Trage pentru deplasare  |  Ctrl + derulare / apropie sau depărtează degetele pentru zoom  |  +/- pentru zoom  |  0 pentru încadrare  |  Esc pentru închidere",
+      "fitImageToView": "Încadrează imaginea în fereastră",
+      "higherResolutionUsesMoreMemoryLimit16384": "O rezoluție mai mare folosește mai multă memorie. Limită: 16.384 px pe latură / 32 Mi pixeli.",
+      "imageExceedsBitmapLimit16384PxPer": "Imaginea depășește limita bitmap: 16.384 px pe latură / 32 Mi pixeli.",
+      "imageZoomView": "Imagine mărită",
+      "increaseRenderResolution": "Mărește rezoluția de randare",
+      "increaseResolutionBy025": "Mărește rezoluția cu 0,25",
+      "maximumForThisImage": ", maximul pentru această imagine",
+      "maximumValueForThisImage": "Maximum ×{0} pentru această imagine. ",
+      "mermaidChartZoomView": "Diagramă Mermaid mărită",
+      "openMermaidChartInZoomView": "Deschide diagrama Mermaid mărită",
+      "reCenterMermaidChart": "Recentrează diagrama Mermaid",
+      "rendering2": ", se generează",
+      "resolution": {
+        "ariaLabel": "Ajustează rezoluția de randare: {0}{1}{2}{3}",
+        "caption": "Rezoluție",
+        "label": "Rezoluție de randare",
+        "maximum": "Maxim",
+        "maximumShort": "Max.",
+        "unavailableShort": "N/D"
+      },
+      "zoomInImage": "Mărește imaginea",
+      "zoomInMermaidChart": "Mărește diagrama Mermaid",
+      "zoomOutImage": "Micșorează imaginea",
+      "zoomOutMermaidChart": "Micșorează diagrama Mermaid"
+    },
+    "mermaid": {
+      "copyMermaidSource": "Copiază sursa Mermaid",
+      "downloadPNG": "Descarcă PNG",
+      "downloadSVG": "Descarcă SVG",
+      "exportMermaidChart": "Exportă diagrama Mermaid",
+      "exportThisDiagramSVGVectorOrPNGAt": "Exportă diagrama ca SVG (vectorial) sau PNG la o rezoluție de 1×–4×.",
+      "mermaidChartActions": "Acțiuni pentru diagrama Mermaid",
+      "mermaidSVGCouldNotBeSanitized": "Fișierul SVG Mermaid nu a putut fi curățat în siguranță.",
+      "openChartInFullScreenZoomView": "Deschide diagrama mărită pe tot ecranul.",
+      "png": "PNG",
+      "unknownError": "Eroare necunoscută."
+    },
+    "outline": {
+      "empty": "Nu s-au găsit titluri.",
+      "headingCount": {
+        "one": "{count} titlu",
+        "few": "{count} titluri",
+        "other": "{count} de titluri"
+      },
+      "hide": "Ascunde panoul Schiță",
+      "outlineScrollbar": "Bara de derulare a schiței",
+      "show": "Arată panoul Schiță",
+      "summary": "Pe această pagină",
+      "tableOfContents": "Cuprins",
+      "title": "Schiță"
+    },
+    "render": {
+      "documentCouldNotBeRendered": "Documentul nu a putut fi afișat",
+      "loadingDocument": "Se încarcă documentul",
+      "noLoadableCurrentDocumentIsAvailable": "Nu există un document curent care să poată fi încărcat.",
+      "tryAgainIfTheProblemContinuesRefreshThe": "Încearcă din nou. Dacă problema persistă, reîncarcă fișierul sau dezactivează funcțiile opționale de afișare."
+    },
+    "rendererRegistry": {
+      "documentRendererValueHasNoRenderFunction": "Modulul de afișare „{0}” nu are o funcție render().",
+      "noDocumentRendererIsRegisteredForValue": "Nu există un modul de afișare înregistrat pentru „{0}”."
+    },
+    "review": {
+      "aNewerComparisonIsReady": "Este disponibilă o comparație mai recentă.",
+      "added": "Adăugat",
+      "added2": "adăugate ·",
+      "affectedSections": "Secțiuni afectate",
+      "alt": "Alt",
+      "area": "Zonă",
+      "areas": "Zone",
+      "beforeTheFirstHeading": "Înaintea primului titlu",
+      "calculatingChanges": "Se calculează modificările…",
+      "change": "Modificare",
+      "changeSummary": "Rezumatul modificărilor",
+      "changedArea": "Zonă modificată",
+      "changedAreaNavigation": "Navigare între zonele modificate",
+      "changedAreaValue": "Zona modificată {0}",
+      "changedAreasInThisComparison": "Zone modificate în această comparație",
+      "changesAppliedInTheMostRecentDocumentUpdate": "Modificări aplicate la ultima actualizare a documentului.",
+      "checkLatest": "Verifică modificările fișierului",
+      "comparisonIsNoLongerCurrent": "Această comparație nu mai este actuală.",
+      "deleted": "Șters",
+      "detailedReviewIsUnavailableBecauseThisComparisonExceeds": "Detaliile nu sunt disponibile deoarece comparația depășește limita de dimensiune, timp sau rezultate. Folosește instrumentele de comparare din editorul tău. Documentul și ciorna sunt păstrate.",
+      "dialog": {
+        "closeReview": "Închide comparația",
+        "openingReview": "Se deschide comparația…",
+        "reloadThisViewerAndTryAgain": "Reîncarcă vizualizatorul și încearcă din nou."
+      },
+      "lastUpdate": "Ultima actualizare",
+      "loadDiskVersion": "Deschide versiunea salvată…",
+      "movesBetweenChangedAreasInThisComparison": "te deplasează între zonele modificate din această comparație",
+      "newLine": "Linie nouă",
+      "newLineValue": "Linia nouă {0}",
+      "nextArea": "Zona următoare →",
+      "nextChangedArea": "Următoarea zonă modificată",
+      "noNewLine": "Fără linie nouă",
+      "noOldLine": "Fără linie veche",
+      "noSourceChangesInThisComparison": "Nu există modificări în sursă în această comparație.",
+      "of": "din",
+      "oldLine": "Linie veche",
+      "oldLineValue": "Linia veche {0}",
+      "openDocument": "Deschide documentul",
+      "openInDocumentValue": "Deschide în document: {0}",
+      "previousArea": "← Zona precedentă",
+      "previousChangedArea": "Zona modificată precedentă",
+      "removed": "Eliminat",
+      "removed2": "eliminate",
+      "reviewChanges": "Verifică modificările",
+      "reviewLatest": "Vezi ultima comparație",
+      "reviewedVersionIsNotOpenYetUpdateThe": "Versiunea comparată nu este încă deschisă. Actualizează documentul pentru a activa linkurile către secțiuni.",
+      "seeWhatChangedOnDiskBeforeUpdatingThis": "Vezi ce s-a schimbat pe disc înainte de a actualiza documentul.",
+      "source": "Sursă",
+      "sourceLinesInChangedArea": "Liniile sursă din zona modificată",
+      "updateCheckFailed": "Verificarea actualizării a eșuat",
+      "updateDocument": "Actualizează documentul",
+      "updateWaiting": "Actualizare în așteptare",
+      "yourEditorDraftIsExcludedFromThisComparison": "Ciorna din editor nu este inclusă în această comparație.",
+      "unchanged": "Nemodificat"
+    },
+    "scrollbar": {
+      "documentScrollbar": "Bara de derulare a documentului"
+    },
+    "statistics": {
+      "characters": {
+        "one": "{count} caracter",
+        "few": "{count} caractere",
+        "other": "{count} de caractere"
+      },
+      "readingTime": "{0} min de lectură",
+      "summary": "Statistici document: {0}, {1}, {2}",
+      "words": {
+        "one": "{count} cuvânt",
+        "few": "{count} cuvinte",
+        "other": "{count} de cuvinte"
+      }
+    },
+    "updates": {
+      "aNewDocumentVersionIsAvailable": "Este disponibilă o versiune nouă a documentului.",
+      "aNewDocumentVersionWillLoadAutomaticallyWhen": "Noua versiune se va încărca automat când nu mai interacționezi cu documentul.",
+      "aNewerVersionOfThisDocumentIsReady": "O versiune mai recentă a documentului este gata de încărcare.",
+      "anUpdateIsReadyItWillLoadWhen": "O actualizare este pregătită. Se va încărca atunci când fișierul nu se mai modifică și nu mai interacționezi cu documentul.",
+      "applyingANewDocumentVersionAutomatically": "Se aplică automat o versiune nouă a documentului.",
+      "ask": "Întreabă",
+      "automatic": "Automat",
+      "automaticChecksArePaused": "Verificările automate sunt întrerupte.",
+      "checkNow": "Verifică acum",
+      "documentUpdateCheckFailedOpenDocumentUpdatesTo": "Verificarea modificărilor documentului a eșuat. Deschide Actualizări document pentru a încerca din nou.",
+      "documentUpdated": "Documentul a fost actualizat.",
+      "documentUpdatesCheckFailed": "Actualizări document: verificare eșuată",
+      "documentUpdatesLiveWatchUnavailable": "Actualizări document: monitorizarea în timp real nu este disponibilă",
+      "documentUpdatesLoadUpdate": "Actualizări document: încarcă actualizarea",
+      "fileChangedOnDiskLoadItToLeave": "Fișierul a fost modificat pe disc. Încarcă versiunea salvată pentru a ieși din editor.",
+      "latestStableVersionIsBeingAppliedAutomatically": "Fișierul nu se mai modifică. Se încarcă automat cea mai recentă versiune.",
+      "liveUpdatesUnavailable": "Actualizările în timp real nu sunt disponibile",
+      "newVersionAvailable": "Versiune nouă disponibilă",
+      "newVersionsWaitUntilYouChooseToUpdate": "Versiunile noi se încarcă doar când alegi să actualizezi documentul.",
+      "notifications": {
+        "documentUpdated": "Document actualizat",
+        "documentUpdatesSupportsFilesUpTo5MiB": "Monitorizarea actualizărilor acceptă fișiere de până la 5 MiB.",
+        "valueTheCurrentContentWasKept": "{0} Conținutul curent a fost păstrat."
+      },
+      "selectTheWorkspaceAgainToCheckForUpdated": "Selectează din nou spațiul de lucru pentru a verifica fișierele actualizate.",
+      "title": "Actualizări document",
+      "updateNow": "Actualizează acum",
+      "updatesLoadWhenTheFileIsStableAnd": "Actualizările se încarcă atunci când fișierul nu se mai modifică și nu mai interacționezi cu documentul.",
+      "updatingAnnouncement": "Se actualizează documentul.",
+      "updatingLabel": "Se actualizează documentul…"
+    },
+    "useexplorer": {
+      "selectASupportedFileFromTheFilesPanel": "Selectează un fișier acceptat din panoul Fișiere."
+    },
+    "search": {
+      "inDocument": "Caută în document",
+      "workspace": "Caută în spațiul de lucru",
+      "workspaceShortcut": "Caută în conținutul fișierelor · Control+Shift+F",
+      "title": "Căutare",
+      "scope": "Domeniul căutării",
+      "previous": "Potrivirea precedentă (Shift+Enter)",
+      "next": "Potrivirea următoare (Enter)",
+      "closeFind": "Închide",
+      "closeWorkspace": "Închide căutarea",
+      "noDocumentResults": "Nicio potrivire în acest document.",
+      "findLimited": "Se afișează doar o parte dintre potriviri. Restrânge căutarea.",
+      "placeholder": "Caută în conținutul fișierelor…",
+      "sourceScope": "Conținutul fișierului, inclusiv ciorna nesalvată.",
+      "chooseWorkspace": "Lista acestui dosar nu a putut fi obținută. Alege un dosar în care să cauți.",
+      "chooseFolder": "Alege un dosar",
+      "waitForScan": "Se așteaptă scanarea fișierelor…",
+      "stop": "Oprește căutarea",
+      "progress": {
+        "one": "{count} potrivire · fișiere parcurse: {scanned}/{total}…",
+        "few": "{count} potriviri · fișiere parcurse: {scanned}/{total}…",
+        "other": "{count} de potriviri · fișiere parcurse: {scanned}/{total}…"
+      },
+      "summary": {
+        "one": "{count} potrivire · fișiere parcurse: {scanned}/{total}",
+        "few": "{count} potriviri · fișiere parcurse: {scanned}/{total}",
+        "other": "{count} de potriviri · fișiere parcurse: {scanned}/{total}"
+      },
+      "startTyping": "Scrie pentru a căuta în acest dosar.",
+      "searchAgain": "Caută din nou",
+      "partial": "Căutare incompletă: oprită, s-a atins o limită de scanare sau căutare ori s-au omis fișiere ({skipped}). Restrânge căutarea sau caută din nou.",
+      "failed": "Căutarea a eșuat. Caută din nou pentru a reîncerca.",
+      "noPartialResults": "Nicio potrivire în fișierele parcurse până acum.",
+      "noWorkspaceResults": "Nicio potrivire în acest dosar. Încearcă alt text.",
+      "unsaved": "Nesalvat",
+      "resultLocation": "{path}, linia {line}, coloana {column}",
+      "stale": "Fișierul s-a modificat. Caută din nou pentru a-i actualiza rezultatele.",
+      "openFailed": "Rezultatul nu a putut fi deschis. Încearcă din nou.",
+      "sourceTitle": "Potrivire în sursă",
+      "line": "Linia {line}",
+      "sourceExplanation": "Această potrivire nu a putut fi localizată exact în documentul afișat. Poziția exactă din sursă este evidențiată mai jos.",
+      "resultsScrollbar": "Bara de derulare a rezultatelor căutării",
+      "inFolder": "Caută în dosar",
+      "folderListPartial": "Este disponibilă doar lista dosarului curent; pot lipsi subdosare. Fișiere omise: {skipped}.",
+      "clearQuery": "Șterge textul căutării",
+      "matchOptions": "Opțiuni de potrivire",
+      "matchCase": "Ține cont de majuscule",
+      "wholeWord": "Doar cuvinte întregi",
+      "matchDiacritics": "Ține cont de diacritice",
+      "updating": "Se actualizează rezultatele…",
+      "outdatedResults": "Rezultate anterioare. Caută din nou pentru a le actualiza.",
+      "cachedScope": "Include conținutul fișierelor din cache. O nouă căutare citește cele mai recente fișiere.",
+      "updatingProgress": "Se actualizează rezultatele… Fișiere verificate: {scanned}/{total}."
+    }
+  },
+  "errors": {
+    "common": {
+      "backgroundImage": {
+        "chooseAnImageFile": "Alege un fișier imagine.",
+        "readTheImage": "Imaginea nu a putut fi citită."
+      },
+      "messages": {
+        "checkTheCurrentDocumentForChanges": "Documentul curent nu a putut fi verificat pentru modificări.",
+        "cleanUpThePreviousDocumentRenderer": "Resursele modulului de afișare anterior nu au putut fi eliberate.",
+        "clearPersistedFileHandle": "Referința salvată la fișier nu a putut fi eliminată.",
+        "connectTheOriginalMarkdownFileForEditing": "Fișierul Markdown original nu a putut fi asociat pentru editare.",
+        "copyColorFormat": "Formatul culorii nu a putut fi copiat.",
+        "copyDetectedColor": "Culoarea detectată nu a putut fi copiată.",
+        "copyFolderValue": "Dosarul {0} nu a putut fi copiat",
+        "inspectTheThemePreviewImage": "Imaginea de previzualizare a temei nu a putut fi analizată.",
+        "loadTheActiveThemeBackground": "Fundalul temei active nu a putut fi încărcat.",
+        "loadTheThemePreviewImage": "Imaginea de previzualizare a temei nu a putut fi încărcată.",
+        "mountViewerReactShell": "Interfața React a vizualizatorului nu a putut fi montată.",
+        "navigateBrowserHistory": "Navigarea prin istoricul browserului a eșuat.",
+        "openDocument": "Documentul nu a putut fi deschis.",
+        "persistFileHandleToIndexedDB": "Referința la fișier nu a putut fi salvată în IndexedDB.",
+        "prepareALocalMarkdownSVGImage": "O imagine SVG locală din Markdown nu a putut fi pregătită.",
+        "recordFileHistory": "Fișierul nu a putut fi adăugat în istoric.",
+        "refreshExplorerFileList": "Lista de fișiere din explorator nu a putut fi actualizată.",
+        "releaseDocumentAssetURL": "URL-ul unei resurse a documentului nu a putut fi eliberat.",
+        "removeAnUnusedThemeAssetAfterSaveFailed": "O resursă nefolosită a temei nu a putut fi eliminată după eșecul salvării.",
+        "removeTheDeletedThemeAsset": "Resursa temei șterse nu a putut fi eliminată.",
+        "removeTheReplacedThemeAsset": "Resursa înlocuită a temei nu a putut fi eliminată.",
+        "renderDocument": "Documentul nu a putut fi afișat.",
+        "renderTheSyntaxThemePreview": "Previzualizarea temei de sintaxă nu a putut fi generată.",
+        "restoreFileHandleFromIndexedDB": "Referința la fișier nu a putut fi restaurată din IndexedDB.",
+        "saveFilesDetailsPreferenceForThisTab": "Preferința de afișare a detaliilor fișierelor nu a putut fi salvată pentru această filă",
+        "saveMarkdownFile": "Fișierul Markdown nu a putut fi salvat.",
+        "switchReaderTheme": "Tema de lectură nu a putut fi schimbată."
+      }
+    },
+    "documents": {
+      "readFailed": "Nu s-a putut citi {0}: {1}",
+      "tooLarge": "Acest fișier text depășește limita de afișare de {0} MiB."
+    },
+    "options": {
+      "general": {
+        "openExtensionDetails": "Detaliile extensiei nu au putut fi deschise."
+      },
+      "index": {
+        "missingRootElementForSettingsApp": "Lipsește elementul #root pentru aplicația de setări."
+      },
+      "notifications": {
+        "clearRecentFiles": "Lista fișierelor recente nu a putut fi golită.",
+        "exportSettings": "Setările nu au putut fi exportate.",
+        "importSettings": "Setările nu au putut fi importate.",
+        "loadSettings": "Setările nu au putut fi încărcate.",
+        "saveSettings": "Setările nu au putut fi salvate."
+      },
+      "optionsActions": {
+        "chooseASettingsJSONFileToImport": "Alege un fișier JSON cu setări pentru import."
+      },
+      "settingsImport": {
+        "invalidJSONValue": "JSON nevalid: {0}",
+        "parseFile": "Fișierul nu a putut fi analizat."
+      }
+    },
+    "popup": {
+      "index": {
+        "missingRootElementForPopupApp": "Lipsește elementul #root pentru fereastra extensiei."
+      },
+      "loadSettings": "Setările nu au putut fi încărcate.",
+      "openAbout": "Pagina Despre nu a putut fi deschisă.",
+      "openOptionsSection": {
+        "chooseAValidSettingsSection": "Alege o secțiune validă din Setări."
+      },
+      "openSettings": "Setările nu au putut fi deschise.",
+      "settings": {
+        "saveSettings": "Setările nu au putut fi salvate."
+      },
+      "usefilehistory": {
+        "clearFileHistory": "Istoricul fișierelor nu a putut fi golit.",
+        "loadFileHistory": "Istoricul fișierelor nu a putut fi încărcat.",
+        "openFile": "Fișierul nu a putut fi deschis."
+      }
+    },
+    "services": {
+      "fileHistory": {
+        "invalidFileHistoryURL": "URL nevalid în istoricul fișierelor"
+      },
+      "messageRouter": {
+        "invalidOrMissingDataUrl": "dataUrl lipsește sau nu este valid",
+        "invalidUrl": "URL nevalid",
+        "missingFilename": "Lipsește numele fișierului",
+        "missingUrl": "Lipsește URL-ul",
+        "onlyFileURLsAreAllowed": "Sunt permise doar URL-uri file:",
+        "onlyRegisteredImageFilesAreAllowed": "Sunt permise doar fișiere în formatele de imagine înregistrate",
+        "unsupportedMessageTypeValue": "Tip de mesaj neacceptat: {0}"
+      },
+      "themeAsset": {
+        "invalidThemeAssetId": "Identificatorul resursei temei nu este valid.",
+        "openThemeAssetStorage": "Spațiul de stocare pentru resursele temelor nu a putut fi deschis."
+      }
+    },
+    "settings": {
+      "language": "Alege o limbă disponibilă pentru interfață.",
+      "validation": {
+        "chooseABuiltInBaseTheme": "Alege o temă de bază încorporată.",
+        "chooseABundledCodeHighlightingTheme": "Alege o temă de evidențiere a codului inclusă în extensie.",
+        "chooseASupportedBackgroundMotionPolicy": "Alege o opțiune acceptată pentru animația fundalului.",
+        "chooseASupportedBackgroundType": "Alege un tip de fundal acceptat.",
+        "chooseAValidHexadecimalColor": "Alege o culoare hexazecimală validă.",
+        "chooseAnAvailableTheme": "Alege o temă disponibilă.",
+        "chooseAnImageForThisTheme": "Alege o imagine pentru această temă.",
+        "resetSettings": "Setările nu au putut fi resetate.",
+        "settingsAreInvalid": "Setările nu sunt valide.",
+        "youCanSaveUpToValueCustomThemes": "Numărul maxim de teme personalizate este {0}."
+      },
+      "storage": {
+        "quota": "Spațiul de stocare pentru setări este plin. Setările salvate anterior au fost păstrate.",
+        "rate": "Modificările sunt salvate prea des. Încearcă din nou mai târziu.",
+        "pending": "Setările încă se sincronizează sau nu au putut fi verificate. Așteaptă și încearcă din nou.",
+        "cached": "Se afișează ultimele setări complete până se încheie sincronizarea Chrome. Modificările noi nu pot fi salvate încă.",
+        "unavailable": "Spațiul de stocare pentru setări nu este disponibil."
+      }
+    },
+    "theme": {
+      "backgroundImageTooLarge": "Imaginea de fundal nu poate depăși 5 MiB.",
+      "themeAssetClient": {
+        "loadTheThemeAsset": "Resursa temei nu a putut fi încărcată.",
+        "removeTheThemeAsset": "Resursa temei nu a putut fi eliminată.",
+        "saveTheThemeAsset": "Resursa temei nu a putut fi salvată."
+      }
+    },
+    "validation": {
+      "boolean": "Valoarea pentru „{0}” trebuie să fie true sau false.",
+      "integer": "Valoarea pentru „{0}” trebuie să fie un număr întreg.",
+      "range": "Valoarea pentru „{0}” trebuie să fie între {1} și {2}."
+    },
+    "viewer": {
+      "actions": {
+        "copyFileLink": "Linkul fișierului nu a putut fi copiat",
+        "exportHTML": "HTML-ul nu a putut fi exportat",
+        "exportWordDocument": "Documentul Word nu a putut fi exportat",
+        "switchTheme": "Tema nu a putut fi schimbată."
+      },
+      "app": {
+        "restoreTheLinkedFileReturnedToTheOriginal": "Fișierul din link nu a putut fi restaurat; s-a revenit la fișierul original",
+        "switchTheme": "Tema nu a putut fi schimbată"
+      },
+      "articleInteractions": {
+        "copy": "Copierea a eșuat",
+        "copyLink": "Linkul nu a putut fi copiat"
+      },
+      "colors": {
+        "copyColorSelectTheOriginalTextToCopy": "Culoarea nu a putut fi copiată. Selectează textul original pentru a-l copia manual.",
+        "copySelectAValueToCopyManually": "Copierea a eșuat. Selectează o valoare pentru a o copia manual.",
+        "copyTryAgain": "Copierea a eșuat. Încearcă din nou."
+      },
+      "document": {
+        "openLinkedFile": "Fișierul din link nu a putut fi deschis",
+        "openThisValue": "Nu s-a putut deschide: {0}.",
+        "readLinkedFile": "Fișierul din link nu a putut fi citit",
+        "readThisValue": "Nu s-a putut citi: {0}."
+      },
+      "documentLoader": {
+        "onlyLocalImageFilesCanBeOpened": "Pot fi deschise doar fișiere imagine locale.",
+        "openDocument": "Documentul nu a putut fi deschis.",
+        "readThisImageFile": "Acest fișier imagine nu a putut fi citit."
+      },
+      "documents": {
+        "dbml": {
+          "displayThisDBMLFile": "Acest fișier DBML nu a putut fi afișat."
+        },
+        "image": {
+          "displayValue": "Nu s-a putut afișa {0}."
+        },
+        "mermaid": {
+          "displayThisMermaidDocument": "Acest document Mermaid nu a putut fi afișat."
+        },
+        "sql": {
+          "displayThisSQLFile": "Acest fișier SQL nu a putut fi afișat."
+        },
+        "text": {
+          "displayThisTextFile": "Acest fișier text nu a putut fi afișat."
+        }
+      },
+      "editor": {
+        "connectTheOriginalFile": "Fișierul original nu a putut fi asociat.",
+        "openIndexedDB": "IndexedDB nu a putut fi deschis",
+        "writePermissionWasNotGranted": "Nu a fost acordată permisiunea de scriere.",
+        "writePermissionWasNotGrantedForTheConnected": "Nu a fost acordată permisiunea de scriere pentru fișierul asociat.",
+        "writePermissionWasNotGrantedForTheSelected": "Nu a fost acordată permisiunea de scriere pentru fișierul selectat."
+      },
+      "explorer": {
+        "file": {
+          "copyFileName": "Numele fișierului nu a putut fi copiat"
+        },
+        "folder": {
+          "copyFolderName": "Numele dosarului nu a putut fi copiat",
+          "copyFolderPath": "Calea dosarului nu a putut fi copiată"
+        },
+        "listRefresh": {
+          "refreshFileListTheOpenDocumentWasKept": "Lista de fișiere nu a putut fi actualizată. Documentul deschis a fost păstrat."
+        },
+        "workspacePicker": {
+          "missingDirectoryHandle": "Lipsește referința la dosar"
+        },
+        "workspaceSession": {
+          "openFolder": "Dosarul nu a putut fi deschis",
+          "restoreWorkspace": "Spațiul de lucru nu a putut fi restaurat",
+          "scanFolder": "Dosarul nu a putut fi scanat"
+        }
+      },
+      "imageRevision": {
+        "readImageBytes": "Datele imaginii nu au putut fi citite."
+      },
+      "markdownDocumentRenderer": {
+        "missingRenderTargetDocument": "Lipsește documentul țintă pentru afișare."
+      },
+      "media": {
+        "decodeThisImageForResolutionRendering": "Imaginea nu a putut fi decodată pentru randarea la această rezoluție.",
+        "encodeThisResolution": "Imaginea nu a putut fi codificată la această rezoluție.",
+        "initializeImageRendering": "Randarea imaginii nu a putut fi inițializată.",
+        "parseThisSVGForResolutionRendering": "SVG-ul nu a putut fi analizat pentru randarea la această rezoluție.",
+        "readThisSVGForResolutionRendering": "SVG-ul nu a putut fi citit pentru randarea la această rezoluție.",
+        "renderThisResolution": "Imaginea nu a putut fi randată la această rezoluție."
+      },
+      "mermaid": {
+        "missingMermaidRenderTarget": "Lipsește elementul țintă pentru Mermaid."
+      },
+      "renderer": {
+        "missingRenderTargetElement": "Lipsește elementul țintă pentru afișare."
+      },
+      "review": {
+        "calculateChangesCloseThisReviewAndTryAgain": "Modificările nu au putut fi calculate. Închide comparația și încearcă din nou.",
+        "dialog": {
+          "openReview": "Comparația nu a putut fi deschisă"
+        }
+      },
+      "shikiHighlighter": {
+        "missingShikiLanguageModuleForValue": "Lipsește modulul de limbaj Shiki pentru „{0}”.",
+        "missingShikiThemeModuleForValue": "Lipsește modulul de temă Shiki pentru „{0}”."
+      },
+      "watch": {
+        "readTheFileTheCurrentContentWasKept": "Fișierul nu a putut fi citit. Conținutul curent a fost păstrat. Verifică accesul la fișier și încearcă din nou."
+      }
+    }
+  },
+  "options": {
+    "about": {
+      "aLocalFirstViewerAndEditorForMarkdown": "Un vizualizator și editor pentru Markdown și fișiere asociate, conceput pentru lucru local.",
+      "browseSiblingDocumentsOrOpenALocalWorkspace": "Răsfoiește documentele din același dosar sau deschide un spațiu de lucru local.",
+      "developmentBuild": "Versiune de dezvoltare",
+      "extensionInformation": "Informații despre extensie",
+      "heading": "Despre Markdown Plus",
+      "learnWhatMarkdownPlusDoesHowItHandles": "Află ce face Markdown Plus, cum îți gestionează fișierele și unde poți primi ajutor.",
+      "links": {
+        "license": {
+          "description": "Citește licența open-source a Markdown Plus.",
+          "label": "Licență MIT"
+        },
+        "privacy": {
+          "description": "Află cum sunt gestionate fișierele locale și datele extensiei.",
+          "label": "Politica de confidențialitate"
+        },
+        "source": {
+          "description": "Explorează proiectul și contribuie pe GitHub.",
+          "label": "Cod sursă"
+        },
+        "support": {
+          "description": "Cere ajutor sau raportează o problemă care poate fi reprodusă.",
+          "label": "Raportează o problemă"
+        },
+        "website": {
+          "description": "Vizitează site-ul proiectului Markdown Plus.",
+          "label": "Site web"
+        }
+      },
+      "localFirstByDesign": "Conceput pentru lucru local",
+      "metadata": {
+        "chromeExtension": "Extensie Chrome",
+        "manifestVersion": "Manifest V{0}",
+        "minimumChromeVersion": "Chrome {0}+"
+      },
+      "openSource": "Open source",
+      "optInToEditingWithExactFileVerification": "Activează editarea cu verificarea fișierului original și salvare în siguranță.",
+      "product": "Produs",
+      "projectSupport": "Proiect și asistență",
+      "readThePrivacyPolicy": "Citește politica de confidențialitate",
+      "renderLocalMarkdownCodeMathDiagramsTextAnd": "Afișează fișiere locale Markdown, cod, formule, diagrame, text și imagini.",
+      "title": "Despre",
+      "version": "Versiune",
+      "whatMarkdownPlusDoes": "Ce face Markdown Plus",
+      "yourDocumentsAreProcessedInChromeAndAre": "Documentele tale sunt procesate în Chrome și nu sunt trimise unui serviciu operat de dezvoltator. Datele locale rămân pe acest dispozitiv; preferințele se pot sincroniza prin Chrome."
+    },
+    "advanced": {
+      "chooseJSON": "Alege JSON",
+      "downloadTheCompleteNormalizedSettingsObjectAsJSON": "Descarcă toate setările normalizate în format JSON.",
+      "exportJSON": "Exportă JSON",
+      "exportSettings": "Exportă setările",
+      "exporting": "Se exportă…",
+      "fileIsFullyParsedAndValidatedBeforeAny": "Fișierul este analizat și validat în întregime înainte de salvarea oricărei setări.",
+      "importSettings": "Importă setările",
+      "importing": "Se importă…",
+      "largeDocumentLoads": "Încărcarea documentelor mari",
+      "largerFilesUseMoreMemoryAndMayTake": "Fișierele mari folosesc mai multă memorie și pot necesita mai mult timp pentru afișare. Modificările se aplică la următoarea deschidere a unui document și nu reîncarcă documentul curent.",
+      "limitExpensiveDocumentLoadsMoveSettingsBetweenBrowsers": "Limitează încărcarea documentelor care consumă multe resurse, transferă setările între browsere sau revino la valorile prestabilite.",
+      "maximumUTF8SizeForStandaloneTxtSql": "Dimensiunea UTF-8 maximă pentru fișierele .txt, .sql, .dbml și .mermaid deschise individual în vizualizator. Documentele Markdown nu sunt afectate.",
+      "resetAllSettings": "Resetează toate setările",
+      "resetToDefault": "Revino la valorile prestabilite",
+      "resetting": "Se resetează…",
+      "resourcesRecovery": "Resurse și recuperare",
+      "restoreGeneralReaderEditorPluginsFilesWorkspacePrivacy": "Resetează preferințele generale, de lectură, editor, pluginuri, fișiere, spațiu de lucru, confidențialitate și resurse pentru documente. Istoricul local al fișierelor recente se șterge separat.",
+      "title": "Avansat"
+    },
+    "documentTitle": "Setări Markdown Plus",
+    "explorer": {
+      "connectFoldersAndFilesWithHierarchyLinesChanges": "Leagă vizual dosarele și fișierele prin linii de ierarhie. Modificările se aplică imediat.",
+      "customizeTheFileTreeAndWorkspaceBehaviorScan": "Personalizează arborele de fișiere și comportamentul spațiului de lucru. Limitele de scanare se aplică la următoarea scanare sau actualizare a listei.",
+      "excludeFilesAndFoldersIgnoredByNestedGitignore": "La scanarea spațiului de lucru, exclude fișierele și dosarele ignorate de regulile .gitignore, inclusiv cele din subdosare.",
+      "higherLimitsCanMakeLargeWorkspaceScansSlower": "Limitele mai mari pot încetini scanarea spațiilor de lucru mari și pot folosi mai multă memorie. Schimbarea valorilor nu repornește automat o scanare în curs.",
+      "howManyFolderLevelsToScanBelowThe": "Numărul de niveluri de dosare scanate sub rădăcina selectată. Folosește 0 pentru a scana doar rădăcina.",
+      "largeWorkspaceScans": "Scanarea spațiilor de lucru mari",
+      "navigationScanning": "Navigare și scanare",
+      "reopenTheLastFileBackedWorkspaceWhenA": "Redeschide ultimul spațiu de lucru bazat pe fișiere când pornește un vizualizator nou. Dezactivarea nu închide spațiul de lucru folosit în prezent.",
+      "resetSectionToDefaults": "Resetează această secțiune",
+      "respectGitignoreFiles": "Respectă fișierele .gitignore",
+      "restoreLastWorkspace": "Restaurează ultimul spațiu de lucru",
+      "showTreeIndentGuides": "Arată liniile de ierarhie",
+      "stopIndexingAfterThisManySupportedDocumentsHave": "Oprește indexarea după găsirea acestui număr de documente acceptate.",
+      "stopTheScanAfterThisManyFoldersHave": "Oprește scanarea după parcurgerea acestui număr de dosare.",
+      "title": "Fișiere și spațiu de lucru"
+    },
+    "general": {
+      "behavior": "Comportament",
+      "chooseHowToHandleChangesToTheOpen": "Alege cum sunt gestionate modificările documentului deschis, inclusiv text, diagrame și imagini. Actualizările nu înlocuiesc niciodată automat conținutul pe care îl editezi.",
+      "chooseMarkdownPlusDetailsThenEnableAllowAccess": ", alege Markdown Plus → Detalii și activează „Permite accesul la adresele URL ale fișierelor”.",
+      "chromeControlsThisPermissionIfAccessIsBlocked": "Chrome controlează această permisiune. Dacă accesul este blocat, deschide",
+      "chromeExtensions": "chrome://extensions",
+      "controlMarkdownPlusActivationAndViewerBehavior": "Controlează activarea Markdown Plus și comportamentul vizualizatorului.",
+      "enabled": {
+        "description": "Deschide automat fișierele Markdown locale acceptate în vizualizatorul Markdown Plus.",
+        "label": "Activează Markdown Plus"
+      },
+      "fileAccess": {
+        "label": "Acces la URL-uri de fișiere"
+      },
+      "language": {
+        "description": "Alege limba pentru Setări, fereastra extensiei și vizualizator. Conținutul documentelor rămâne în limba originală.",
+        "label": "Limba interfeței"
+      },
+      "scrollbars": {
+        "description": "Ascunde barele verticale de derulare când nu sunt folosite și le afișează la derulare, lângă marginea panoului sau la folosirea tastaturii.",
+        "label": "Ascunde automat barele de derulare"
+      },
+      "statistics": {
+        "description": "Arată numărul de cuvinte, caractere (inclusiv spații) și timpul estimat de lectură deasupra documentelor Markdown.",
+        "label": "Arată statisticile documentului"
+      },
+      "title": "General"
+    },
+    "navigation": {
+      "activationAndAccess": "Activare și acces",
+      "colorsAndBackgrounds": "Culori și fundaluri",
+      "folderAppearanceAndScanLimits": "Aspectul dosarelor și limitele de scanare",
+      "limitsBackupAndReset": "Limite, copie de siguranță și resetare",
+      "loadingSettings": "Se încarcă setările",
+      "recentLocalFiles": "Fișiere locale recente",
+      "section": "Secțiune",
+      "settingsCouldNotBeLoaded": "Setările nu au putut fi încărcate",
+      "settingsSections": "Secțiunile setărilor",
+      "versionPrivacyAndSupport": "Versiune, confidențialitate și asistență"
+    },
+    "notifications": {
+      "activeThemeUpdated": "Tema activă a fost actualizată.",
+      "allSettingsResetToDefaults": "Toate setările au fost resetate.",
+      "checkTheHighlightedField": "Verifică câmpul evidențiat.",
+      "checkTheHighlightedFields": "Verifică câmpurile evidențiate.",
+      "clearingRecentFiles": "Se golește lista fișierelor recente…",
+      "customThemeCreated": "Tema personalizată a fost creată.",
+      "customThemeDeleted": "Tema personalizată a fost ștearsă.",
+      "customThemeSaved": "Tema personalizată a fost salvată.",
+      "documentScrollbarsWillAutoHide": "Barele de derulare se vor ascunde automat.",
+      "documentScrollbarsWillStayVisible": "Barele de derulare vor rămâne vizibile.",
+      "documentStatisticsWillBeHidden": "Statisticile documentului vor fi ascunse.",
+      "documentStatisticsWillBeShown": "Statisticile documentului vor fi afișate.",
+      "documentViewingLimitResetToTheDefault": "Limita de afișare a documentelor a revenit la valoarea prestabilită.",
+      "documentViewingLimitSavedTheChangeAppliesThe": "Limita de afișare a fost salvată. Se aplică la următoarea deschidere a unui document.",
+      "filesWorkspaceBehaviorSavedTheChangeAppliesTo": "Comportamentul pentru fișiere și spațiul de lucru a fost salvat. Se aplică la următoarea scanare sau deschidere a vizualizatorului.",
+      "filesWorkspaceSettingsResetToDefaults": "Setările pentru fișiere și spațiul de lucru au fost resetate.",
+      "filesWorkspaceSettingsSavedNewLimitsApplyTo": "Setările pentru fișiere și spațiul de lucru au fost salvate. Limitele noi se aplică la următoarea scanare sau actualizare a listei.",
+      "generalSettingsSaved": "Setările generale au fost salvate.",
+      "interfaceLanguageUpdated": "Limba interfeței a fost schimbată.",
+      "loadingSettings": "Se încarcă setările…",
+      "recentFileHistoryClearedFromThisDevice": "Istoricul fișierelor recente a fost șters de pe acest dispozitiv.",
+      "recentFileHistoryDisabledExistingEntriesWereKept": "Istoricul fișierelor recente a fost dezactivat. Intrările existente au fost păstrate.",
+      "recentFileHistoryEnabled": "Istoricul fișierelor recente a fost activat.",
+      "recentFileRetentionSavedTheLimitAppliesOn": "Limita istoricului a fost salvată. Se aplică la următoarea accesare a istoricului.",
+      "settingsAreUpToDate": "Setările sunt la zi.",
+      "settingsExported": "Setările au fost exportate.",
+      "settingsImportedAndSaved": "Setările au fost importate și salvate.",
+      "treeIndentGuidesSavedOpenViewersUpdateImmediately": "Liniile de ierarhie au fost salvate. Vizualizatoarele deschise se actualizează imediat.",
+      "validatingSettingsFile": "Se validează fișierul de setări…",
+      "watchModeUpdated": "Modul de monitorizare a fost schimbat."
+    },
+    "optionsActions": {
+      "clearAllRecentFilePathsStoredByMarkdown": "Ștergi toate căile fișierelor recente salvate de Markdown Plus pe acest dispozitiv? Această acțiune nu poate fi anulată. Fișierele originale vor fi păstrate.",
+      "resetAllMarkdownPlusSettingsToTheirDefaults": "Resetezi toate setările Markdown Plus la valorile prestabilite? Sunt incluse preferințele de lectură, editor, pluginuri și explorator.",
+      "settingsFilesMustBeSmallerThan1MiB": "Fișierele de setări trebuie să fie mai mici de 1 MiB."
+    },
+    "privacy": {
+      "clearRecentFiles": "Șterge istoricul fișierelor recente",
+      "clearRecentFilesNow": "Șterge istoricul acum",
+      "clearing": "Se șterge…",
+      "controlWhetherMarkdownPlusRemembersLocalDocumentsAnd": "Alege dacă Markdown Plus reține documentele locale și câte intrări poate avea lista.",
+      "keepOnlyTheNewestEntriesAfterTheNext": "Păstrează doar cele mai recente intrări la următoarea accesare a istoricului.",
+      "localData": "Date locale",
+      "recentFileURLsContainLocalPathsTheyAre": "URL-urile fișierelor recente conțin căi locale. Sunt stocate doar în spațiul local al extensiei de pe acest dispozitiv, separat de preferințele sincronizate.",
+      "rememberLocalMarkdownFilesSoTheyCanBe": "Reține fișierele Markdown locale pentru a le redeschide din fereastra extensiei. Dezactivarea oprește adăugarea de intrări noi, fără să le șteargă pe cele existente.",
+      "saveRecentFiles": "Reține fișierele recente",
+      "title": "Confidențialitate și date"
+    },
+    "themes": {
+      "background": {
+        "angle0360": "Unghi (0–360°)",
+        "animate": "Animează",
+        "backgroundType": "Tip de fundal",
+        "bottom": "Jos",
+        "center": "Centru",
+        "dimming008": "Întunecare (0–0,8)",
+        "endColor": "Culoare finală",
+        "fillCanvas": "Umple zona",
+        "fitWithinCanvas": "Încadrează în zonă",
+        "followSystem": "Urmează setarea sistemului",
+        "gradient": "Degradeu",
+        "imageFile": "Fișier imagine",
+        "imageFit": "Încadrarea imaginii",
+        "imagePosition": "Poziția imaginii",
+        "left": "Stânga",
+        "localImageOrAnimation": "Imagine sau animație locală",
+        "motion": "Animație",
+        "originalSize": "Dimensiune originală",
+        "pngJPEGWebPAVIFGIFOrAPNGUp": "PNG, JPEG, WebP, AVIF, GIF sau APNG; până la 5 MiB.",
+        "repeatImage": "Repetă imaginea",
+        "right": "Dreapta",
+        "sceneColor": "Culoarea fundalului",
+        "solidScene": "Culoare uniformă",
+        "startColor": "Culoare inițială",
+        "still": "Static",
+        "storedOnThisDevice": "Stocat pe acest dispozitiv",
+        "themeColorOnly": "Doar culoarea temei",
+        "tileTheImageInsteadOfShowingOneCanvas": "Repetă imaginea în mozaic în loc să afișeze o singură imagine.",
+        "top": "Sus"
+      },
+      "colors": {
+        "borders": "Borduri",
+        "contentSurface": "Fundalul conținutului",
+        "documentText": "Textul documentului",
+        "headings": "Titluri",
+        "inlineFallbackCodeBackground": "Fundal pentru cod inline sau fără evidențiere",
+        "inlineFallbackCodeText": "Text pentru cod inline sau fără evidențiere",
+        "interfaceText": "Textul interfeței",
+        "links": "Linkuri",
+        "mutedText": "Text secundar",
+        "pageBackground": "Fundalul paginii",
+        "panelSurface": "Fundalul panourilor",
+        "valueColorPicker": "Selector de culoare pentru {0}",
+        "valueHexValue": "Valoarea hexazecimală pentru {0}"
+      },
+      "editor": {
+        "backToThemes": "← Înapoi la teme",
+        "background": "Fundal",
+        "baseTheme": "Temă de bază",
+        "buildAReusableReaderThemeChangesStayIn": "Creează o temă de lectură reutilizabilă. Modificările rămân în ciornă până când salvezi.",
+        "buildTheSceneBehindTheViewerAndTune": "Configurează fundalul vizualizatorului și ajustează lizibilitatea.",
+        "chooseTheSyntaxColorsUsedForRenderedCode": "Alege culorile de sintaxă pentru blocurile de cod afișate.",
+        "codeHighlighting": "Evidențierea codului",
+        "colors": "Culori",
+        "createCustomTheme": "Creează o temă personalizată",
+        "createTheme": "Creează o temă",
+        "discardYourUnsavedThemeChanges": "Renunți la modificările nesalvate ale temei?",
+        "eGMidnightPaper": "de ex., Hârtie de miezul nopții",
+        "editValue": "Editează {0}",
+        "identity": "Nume și bază",
+        "nameTheThemeAndChooseTheBuiltIn": "Dă un nume temei și alege tema încorporată de la care pornește.",
+        "newDraft": "Ciornă nouă",
+        "noChanges": "Fără modificări",
+        "replacesTheColorsInSection02CodeHighlighting": "Înlocuiește culorile din secțiunea 02. Evidențierea codului urmează această bază dacă nu alegi alta mai jos.",
+        "resetsColors": "Resetează culorile",
+        "savingTheme": "Se salvează tema…",
+        "shownInTheThemePickerAndPopup": "Apare în selectorul de teme și în fereastra extensiei.",
+        "themeName": "Numele temei",
+        "themeStudio": "Editor de teme",
+        "tuneSemanticColorsSoTheViewerStaysVisually": "Ajustează culorile elementelor pentru un aspect coerent. Culorile codului inline sau fără evidențiere nu înlocuiesc tema de sintaxă din secțiunea 03.",
+        "unsavedChanges": "Modificări nesalvate"
+      },
+      "library": {
+        "activeReaderTheme": "Tema de lectură activă",
+        "activeTheme": "Tema activă",
+        "addCustomTheme": "Adaugă o temă personalizată",
+        "appearance": "Aspect",
+        "builtInThemes": "Teme încorporate",
+        "chooseTheReaderThemeInUseThenManage": "Alege tema de lectură și gestionează temele personalizate reutilizabile.",
+        "createOneFromYourActiveThemeThenAdjust": "Pornește de la tema activă, apoi ajustează culorile și fundalul în editorul de teme.",
+        "createYourFirstTheme": "Creează prima ta temă",
+        "customThemesCanBeSelectedInBothSettings": "Temele personalizate pot fi selectate atât în Setări, cât și în fereastra extensiei.",
+        "customThemesDeleteOneBeforeCreatingAnother": "de teme personalizate. Șterge una înainte de a crea alta.",
+        "deleteValueThisCannotBeUndoneValue": "Ștergi „{0}”? Această acțiune nu poate fi anulată.{1}",
+        "gradientBackground": "Fundal în degradeu",
+        "itIsActiveSoValueWillBecomeActive": " Este tema activă, așa că {0} va fi activată în locul ei.",
+        "localImageBackground": "Fundal cu imagine locală",
+        "myTheme": "Tema mea",
+        "myThemes": "Temele mele",
+        "noCustomThemesYet": "Nu există încă teme personalizate",
+        "selectionIsAlsoShownInTheExtensionPopup": "Această selecție apare și în fereastra extensiei.",
+        "solidBackground": "Fundal uniform",
+        "themeColorBackground": "Fundal în culoarea temei",
+        "useTheme": "Folosește tema",
+        "youHaveReachedTheLimitOf": "Ai atins limita de"
+      },
+      "preview": {
+        "aCalmReadingSpaceForIdeasSnippetsAnd": "Un spațiu liniștit de lectură pentru idei, fragmente de cod și",
+        "accent": "Accent",
+        "base": "Bază:",
+        "code": "Cod:",
+        "designNotesThatFeelLikeHome": "Notițe de design pe gustul tău.",
+        "details": "Detalii",
+        "docs": "docs",
+        "everyValidChangeAppearsHereInstantlySavingIs": "Orice modificare validă apare aici imediat. Nu trebuie să salvezi.",
+        "examples": "Exemple",
+        "focus": "Focalizare",
+        "guideMd": "guide.md",
+        "javascript": "JavaScript",
+        "link": "Link",
+        "livePreview": "Previzualizare în timp real",
+        "liveThemePreview": "Previzualizarea temei în timp real",
+        "myNOTES": "NOTIȚELE MELE",
+        "notesMd": "notes.md",
+        "overview": "Prezentare generală",
+        "reading": "Lectură",
+        "readmeMd": "README.md",
+        "role": "Rol",
+        "surface": "Fundal",
+        "text": "Text",
+        "theSmallestDetailsMakeTheBiggestDifference": "„Detaliile mici fac diferența.”",
+        "token": "Element de culoare",
+        "untitledTheme": "Temă fără nume",
+        "usefulLinks": "linkuri utile"
+      },
+      "syntax": {
+        "appliesToRenderedFencedCodeAndSQLDocuments": "Se aplică blocurilor de cod delimitate și documentelor SQL. Editorul Markdown își păstrează propria evidențiere.",
+        "darkThemes": "Teme întunecate",
+        "followBaseTheme": "Urmează tema de bază (",
+        "lightThemes": "Teme luminoase",
+        "renderedCodeTheme": "Tema de sintaxă a codului afișat"
+      },
+      "title": "Teme"
+    },
+    "title": "Setări",
+    "validation": {
+      "fields": {
+        "appearanceSettingsMustBeAnObject": "Setările de aspect trebuie să fie un obiect.",
+        "backgroundAssetRevisionIsInvalid": "Revizia resursei de fundal nu este validă.",
+        "backgroundDimmingMustBeBetween0And0": "Întunecarea fundalului trebuie să fie între 0 și 0,8.",
+        "backgroundSettingsMustBeAnObject": "Setările de fundal trebuie să fie un obiect.",
+        "chooseAutoHideOrAlwaysVisibleScrollbars": "Alege bare de derulare ascunse automat sau mereu vizibile.",
+        "chooseAutomaticAskBeforeUpdatingOrOff": "Alege actualizarea automată, confirmarea înainte de actualizare sau dezactivarea.",
+        "customThemeIdIsInvalid": "Identificatorul temei personalizate nu este valid.",
+        "customThemeIdsMustBeUnique": "Identificatorii temelor personalizate trebuie să fie unici.",
+        "customThemeMustBeAnObject": "Tema personalizată trebuie să fie un obiect.",
+        "customThemesMustBeAList": "Temele personalizate trebuie să fie o listă.",
+        "documentSettingsMustBeAnObject": "Setările documentului trebuie să fie un obiect.",
+        "editorSettingsMustBeAnObject": "Setările editorului trebuie să fie un obiect.",
+        "enableExperimentalEditorMustBeTrueOrFalse": "Activarea editorului experimental trebuie să fie true sau false.",
+        "enableMarkdownPlusMustBeTrueOrFalse": "Activarea Markdown Plus trebuie să fie true sau false.",
+        "filesWorkspaceSettingsMustBeAnObject": "Setările pentru fișiere și spațiul de lucru trebuie să fie un obiect.",
+        "folderScanDepth": "Adâncimea scanării dosarelor",
+        "gradientAngleMustBeBetween0And360": "Unghiul degradeului trebuie să fie între 0 și 360.",
+        "maximumIndexedFiles": "Număr maxim de fișiere indexate",
+        "maximumRecentFiles": "Număr maxim de fișiere recente",
+        "maximumScannedFolders": "Număr maxim de dosare scanate",
+        "privacyDataSettingsMustBeAnObject": "Setările de confidențialitate și date trebuie să fie un obiect.",
+        "settingsMustBeAJSONObject": "Setările trebuie să fie un obiect JSON.",
+        "showDocumentStatisticsMustBeTrueOrFalse": "Afișarea statisticilor documentului trebuie să fie true sau false.",
+        "standaloneTextFileLimit": "Limita fișierelor text deschise individual",
+        "themeColorsMustBeAnObject": "Culorile temei trebuie să fie un obiect.",
+        "themeNameMustBeBetween1And48": "Numele temei trebuie să aibă între 1 și 48 de caractere.",
+        "themeSettingsMustBeAnObject": "Setările temei trebuie să fie un obiect."
+      }
+    }
+  },
+  "plugins": {
+    "alerts": {
+      "caution": "Atenție",
+      "important": "Important",
+      "note": "Notă",
+      "tip": "Sfat",
+      "warning": "Avertisment"
+    },
+    "anchorHeading": {
+      "copyLinkToThisSection": "Copiază linkul către această secțiune",
+      "copySectionLinkClick": "Copiază linkul secțiunii (clic)"
+    },
+    "colorPreview": {
+      "copyColorValue": "Copiază culoarea {0}"
+    },
+    "taskList": {
+      "x": "x"
+    }
+  },
+  "popup": {
+    "editor": {
+      "editingIsOffByDefaultWhenEnabledMarkdown": "Editarea este dezactivată implicit. Când o activezi, Markdown Plus îți va cere să alegi exact fișierul original înainte de a începe editarea.",
+      "editorFontSize": "Dimensiunea fontului din editor",
+      "enableEditor": "Activează editorul",
+      "enableExperimentalEditor": "Activează editorul experimental",
+      "experimentalEditor": "Editor experimental",
+      "lineNumbers": "Numere de linie",
+      "optInToEditingLocalMarkdownFiles": "Activează editarea fișierelor Markdown locale.",
+      "resetEditorPreferences": "Resetează preferințele editorului",
+      "resetEditorPreferencesToDefaultValues": "Resetezi preferințele editorului la valorile prestabilite?",
+      "tabSize": "Lățimea tabulatorului",
+      "tabSizeRange": "2–8 spații",
+      "wordWrap": "Încadrare text"
+    },
+    "fileAccess": {
+      "allowAccessToLocalFiles": "Permite accesul la fișiere locale",
+      "checkingFileAccess": "Se verifică accesul la fișiere",
+      "confirmingWhetherMarkdownPlusCanOpenLocalFiles": "Se verifică dacă Markdown Plus poate deschide fișiere locale.",
+      "enableAllowAccessToFileURLs": "Activează „Permite accesul la adresele URL ale fișierelor”.",
+      "fileAccessIsReady": "Accesul la fișiere este pregătit",
+      "fileAccessStatusUnavailable": "Starea accesului la fișiere nu este disponibilă",
+      "openChromeExtensions": "Deschide chrome://extensions.",
+      "selectMarkdownPlusDetails": "Alege Markdown Plus → Detalii."
+    },
+    "footer": {
+      "about": "Despre",
+      "allSettings": "Toate setările",
+      "saved": "Setări salvate"
+    },
+    "history": {
+      "fileCount": {
+        "one": "{count} fișier recent",
+        "few": "{count} fișiere recente",
+        "other": "{count} de fișiere recente"
+      },
+      "loadingRecentFiles": "Se încarcă fișierele recente…",
+      "noRecentFilesYet": "Nu există încă fișiere recente",
+      "openLocalMarkdownFilesWithMarkdownPlusAnd": "Deschide fișiere Markdown locale cu Markdown Plus și vor apărea aici.",
+      "opening": "Se deschide…"
+    },
+    "page": {
+      "loadingQuickSettings": "Se încarcă setările rapide",
+      "quickControlSections": "Secțiunile setărilor rapide",
+      "quickSettingsCouldNotBeLoaded": "Setările rapide nu au putut fi încărcate"
+    },
+    "plugins": {
+      "aCleanerCursorLikeLayoutPoweredByELK": "Un aranjament mai aerisit, asemănător cu Cursor, bazat pe ELK.",
+      "beautiful": "Beautiful",
+      "broadestMermaidSyntaxSupportAndTheSafestDefault": "Cea mai largă compatibilitate cu sintaxa Mermaid și cea mai sigură opțiune implicită.",
+      "cursorLike": "Ca în Cursor",
+      "i": "i",
+      "items": {
+        "anchorHeading": {
+          "hint": "Adaugă un buton „#” la titluri pentru a copia linkuri directe către secțiuni.",
+          "label": "Linkuri către titluri",
+          "version": "Identificatori pentru titluri: markdown-it-anchor 9.2.0."
+        },
+        "codeHighlight": {
+          "hint": "Evidențiază blocurile de cod cu Shiki; dezactivează pentru o afișare simplă, cu un consum mai mic de resurse.",
+          "label": "Evidențierea codului",
+          "version": "Sintaxă acceptată: Shiki 4.0.2."
+        },
+        "colorPreview": {
+          "hint": "Arată mostre de culoare și copiază valori HEX, RGB sau HSL, inclusiv transparența.",
+          "label": "Previzualizarea culorilor"
+        },
+        "emoji": {
+          "hint": "Transformă textele :shortcode: acceptate în emoji.",
+          "label": "Emoji",
+          "version": "Sintaxă acceptată: markdown-it-emoji 3.0.0."
+        },
+        "footnote": {
+          "hint": "Adaugă marcaje de note de subsol, conținutul lor și linkuri de întoarcere.",
+          "label": "Note de subsol",
+          "version": "Sintaxă acceptată: markdown-it-footnote 4.0.0."
+        },
+        "githubAlerts": {
+          "hint": "Formatează note, sfaturi, mesaje importante, avertismente și atenționări în stil GitHub.",
+          "label": "Alerte GitHub"
+        },
+        "math": {
+          "hint": "Afișează formule în stil LaTeX cu KaTeX, când este nevoie.",
+          "label": "Formule (KaTeX)",
+          "version": "Sintaxă acceptată: @mdit/plugin-katex 0.25.2, KaTeX 0.16.47."
+        },
+        "mermaid": {
+          "hint": "Afișează blocurile de cod Mermaid ca diagrame care pot fi exportate.",
+          "label": "Diagrame Mermaid",
+          "version": "Sintaxă acceptată: Mermaid 11.17.2 sau Beautiful Mermaid 1.1.3."
+        },
+        "tableEnhance": {
+          "hint": "Permite derularea tabelelor late și le îmbunătățește aspectul.",
+          "label": "Tabele îmbunătățite"
+        },
+        "taskList": {
+          "hint": "Afișează liste de activități în stil GitHub cu casete de selectare doar pentru citire.",
+          "label": "Liste de activități"
+        }
+      },
+      "mermaidOfficial": "Mermaid oficial",
+      "official": "Oficial",
+      "renderer": "Motor de randare"
+    },
+    "reader": {
+      "aboutFontFamily": "Despre familia de fonturi",
+      "aboutLineHeight": "Despre înălțimea rândurilor",
+      "contentWidth": {
+        "label": "Lățimea conținutului"
+      },
+      "fontFamilies": {
+        "monoFira": "Monospațiat (Fira Code)",
+        "monospace": "Monospațiat",
+        "sansHumanist": "Sans serif (umanist)",
+        "sansNeutral": "Sans serif (neutru)",
+        "sansOpenSans": "Sans serif (Open Sans)",
+        "sansRoboto": "Sans serif (Roboto / Arial)",
+        "sansVietnamese": "Sans serif (lizibil / vietnameză)",
+        "serifCharter": "Serif (Charter)",
+        "serifGeorgia": "Serif (Georgia)",
+        "serifMerriweather": "Serif (Merriweather)",
+        "serifNewYork": "Serif (New York / Georgia)",
+        "serifSource": "Serif (Source Serif)",
+        "serifVietnamese": "Serif (Noto / vietnameză)",
+        "system": "Fontul sistemului"
+      },
+      "fontFamily": {
+        "label": "Familia de fonturi"
+      },
+      "fontSize": {
+        "label": "Dimensiunea fontului"
+      },
+      "lineHeight": {
+        "label": "Înălțimea rândurilor"
+      },
+      "outline": {
+        "label": "Arată cuprinsul"
+      },
+      "resetReaderUI": "Resetează setările de lectură",
+      "resetReaderUISettingsToDefaultValues": "Resetezi aspectul pentru lectură la valorile prestabilite?",
+      "theme": "Temă",
+      "unitlessLineSpacingMultiplierEG17": "Multiplicator fără unitate pentru spațierea rândurilor (de ex., 1,7 ≈ 170% din dimensiunea fontului). Nu se măsoară în pixeli.",
+      "usesFontsInstalledOnYourSystemPresetsList": "Folosește fonturile instalate în sistem. Seturile predefinite includ alternative pentru cazul în care primul font lipsește."
+    },
+    "tabs": {
+      "editor": {
+        "label": "Editor",
+        "title": "Preferințele editorului"
+      },
+      "history": {
+        "label": "Recente",
+        "title": "Fișiere recente"
+      },
+      "plugins": {
+        "label": "Pluginuri",
+        "title": "Funcții Markdown"
+      },
+      "reader": {
+        "label": "Lectură",
+        "title": "Aspectul pentru lectură"
+      }
+    }
+  },
+  "services": {
+    "fileHistory": {
+      "localFileHistoryStorageIsUnavailable": "Stocarea locală a istoricului fișierelor nu este disponibilă.",
+      "tabsAPIIsUnavailable": "API-ul pentru file nu este disponibil."
+    },
+    "messageRouter": {
+      "enableAllowAccessToFileURLsForMarkdown": "Activează „Permite accesul la adresele URL ale fișierelor” pentru Markdown Plus (chrome://extensions → această extensie → Detalii)."
+    },
+    "offscreenFetch": {
+      "chromeOffscreenIsNotAvailableChrome109Required": "chrome.offscreen nu este disponibil (necesită Chrome 109 sau o versiune ulterioară).",
+      "offscreenFetchTimedOut": "Preluarea în fundal a expirat"
+    },
+    "optionsPage": {
+      "settingsPageIsUnavailableInThisBrowser": "Pagina Setări nu este disponibilă în acest browser."
+    },
+    "themeAsset": {
+      "themeAssetDatabaseRequestFailed": "Cererea către baza de date a resurselor pentru teme a eșuat.",
+      "themeAssetStorageIsUnavailable": "Stocarea resurselor pentru teme nu este disponibilă.",
+      "themeAssetTransactionFailed": "Tranzacția cu resursele temei a eșuat."
+    }
+  }
+}

@@ -19,7 +19,7 @@ afterEach(async () => {
   delete globalThis.IS_REACT_ACT_ENVIRONMENT
 })
 
-it('switches an open search panel through Chinese while retaining query, focus, draft and undo', async () => {
+it('switches an open search panel through every locale while retaining query, focus, draft and undo', async () => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   // jsdom has no layout; avoid scheduling CodeMirror measurements in this DOM test.
   vi.stubGlobal('requestAnimationFrame', () => 1)
@@ -42,7 +42,8 @@ it('switches an open search panel through Chinese while retaining query, focus, 
   const field = host.querySelector('.cm-search input[name="search"]')
   field.focus(); field.setSelectionRange(2, 7)
 
-  for (const language of ['zh-CN', 'vi', 'zh-CN', 'en']) {
+  const searchLabels = { es: ['Buscar', 'reemplazar todo'], de: ['Suchen', 'alle ersetzen'], ja: ['検索', 'すべて置換'], ro: ['Caută', 'înlocuiește tot'] }
+  for (const language of ['zh-CN', 'vi', 'es', 'de', 'ja', 'ro', 'zh-CN', 'en']) {
     await act(async () => setLanguage(language))
     expect(host.querySelector('.cm-editor')).toBe(editor)
     expect(view.state.doc.toString()).toBe(draft)
@@ -58,6 +59,10 @@ it('switches an open search panel through Chinese while retaining query, focus, 
     if (language === 'zh-CN') {
       expect(current.getAttribute('aria-label')).toBe('查找')
       expect(host.querySelector('.cm-search').textContent).toContain('全部替换')
+    }
+    if (searchLabels[language]) {
+      expect(current.getAttribute('aria-label')).toBe(searchLabels[language][0])
+      expect(host.querySelector('.cm-search').textContent).toContain(searchLabels[language][1])
     }
   }
   expect(undo(view)).toBe(true)

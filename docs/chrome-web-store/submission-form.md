@@ -23,9 +23,17 @@ The development source also contains unreleased Find/workspace-search work and p
 | English summary | Free Markdown viewer and MD reader for Chrome. Open local .md files with themes, syntax highlighting, math, and Mermaid diagrams. |
 | Vietnamese summary | Đọc tệp Markdown (.md) ngay trong Chrome, hoàn toàn miễn phí. Hỗ trợ giao diện tùy chỉnh, tô màu mã, công thức và sơ đồ Mermaid. |
 | Simplified Chinese summary | 完全免费的 Chrome Markdown 查看器和 MD 阅读器。直接打开本地 .md 文件，支持自定义主题、代码高亮、数学公式和 Mermaid 图表。 |
+| Spanish summary | Visor Markdown gratuito para Chrome. Abre archivos .md locales con temas, resaltado de código, fórmulas y diagramas Mermaid. |
+| German summary | Kostenloser Markdown-Viewer für Chrome. Lokale .md-Dateien mit Designs, Codehervorhebung, Formeln und Mermaid-Diagrammen öffnen. |
+| Japanese summary | Chrome 用の無料 Markdown ビューア。ローカルの .md ファイルを開けます。テーマ、コードハイライト、数式、Mermaid の図に対応しています。 |
+| Romanian summary | Vizualizator Markdown gratuit pentru Chrome. Deschide fișiere .md locale cu teme, evidențierea codului, formule și diagrame Mermaid. |
 | Description — English | Paste all of [store-description.txt](./store-description.txt). |
 | Description — Vietnamese | Select Vietnamese, then paste all of [store-description.vi.txt](./store-description.vi.txt). |
 | Description — Simplified Chinese | Select Simplified Chinese, then paste all of [store-description.zh-CN.txt](./store-description.zh-CN.txt). |
+| Description — Spanish | Select Spanish, then paste all of [store-description.es.txt](./store-description.es.txt). |
+| Description — German | Select German, then paste all of [store-description.de.txt](./store-description.de.txt). |
+| Description — Japanese | Select Japanese, then paste all of [store-description.ja.txt](./store-description.ja.txt). |
+| Description — Romanian | Select Romanian, then paste all of [store-description.ro.txt](./store-description.ro.txt). |
 | Category | Keep the current **Tools** category under **Productivity**, as recorded for the published listing. |
 | Homepage URL | https://thaibalong7.github.io/markdown-viewer-chrome-extension/ |
 | Support URL | https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues |
@@ -45,7 +53,9 @@ Keep this screenshot order:
 4. [04-preview-zoom-export.png](../../assets/chrome-web-store/04-preview-zoom-export.png)
 5. [05-make-it-yours.png](../../assets/chrome-web-store/05-make-it-yours.png)
 
-There is no separate source-code URL needed for this proposal: the full GitHub repository URL is included in all three detailed descriptions. The Support URL points directly to issues.
+After uploading a package containing `_locales/en`, `vi`, `zh_CN`, `es`, `de`, `ja`, and `ro`, select each matching language in the Store listing dropdown and paste its description. The runtime language code `zh-CN` maps to Chrome's `zh_CN` directory. Check each localized preview before saving. These seven listings match the interface languages in the current source; their publication is not yet verified.
+
+There is no separate source-code URL needed for this proposal: the full GitHub repository URL is included in all seven detailed descriptions. The Support URL points directly to issues. The four new descriptions link to their matching localized privacy pages. Publish and verify those website pages before using the URLs in a Store submission.
 
 ## Privacy practices
 
@@ -60,7 +70,7 @@ A private local Markdown workspace for reading, navigating, editing, and exporti
 **storage justification**
 
 ```text
-Stores reader, editor, explorer, theme, and plugin preferences. Preferences and custom-theme definitions may sync through Chrome. Recent local file paths are stored separately on the current device in chrome.storage.local.
+Stores interface-language, reader, editor, explorer, theme, and plugin preferences. Preferences and custom-theme definitions may sync through Chrome. Recent local file paths are stored separately on the current device in chrome.storage.local.
 ```
 
 **offscreen justification**
@@ -122,8 +132,9 @@ No account, subscription, payment, or test credentials are required.
 4. Return to Settings and reopen the popup to confirm file access is ready.
 5. Create a local .md file containing a heading, paragraph, fenced code block, table, and Mermaid block. Open or reload it in Chrome. Confirm formatted rendering and heading outline navigation.
 6. Open a folder through Files and switch between supported documents. Change a reading theme and confirm the document updates.
-7. Optional: enable the experimental editor, connect the exact original .md file, and grant write permission before saving. Editing is off by default.
-8. Turn file URL access off and return to Settings. Confirm the blocked state is shown again.
+7. In Settings > General > Interface language, try English, Vietnamese, Simplified Chinese, Spanish, German, Japanese, and Romanian. Confirm that Settings, the popup, and Viewer controls change language while document content stays unchanged. Select Browser language to verify automatic selection with English fallback. Chrome's native dialogs follow Chrome's language separately.
+8. Optional: enable the experimental editor, select the exact original .md file, and grant write permission before saving. Editing is off by default. Change the interface language while editing and confirm the draft and undo history are preserved.
+9. Turn file URL access off and return to Settings. Confirm the blocked state is shown again.
 ```
 
 These are instructions for reviewers, not a claim that manual browser QA has already passed for a new package.

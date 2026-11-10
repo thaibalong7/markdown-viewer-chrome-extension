@@ -52,7 +52,11 @@
       "browser": "Browser language",
       "en": "English",
       "vi": "Tiếng Việt",
-      "zhCN": "简体中文（中国）"
+      "zhCN": "简体中文（中国）",
+      "es": "Español",
+      "de": "Deutsch",
+      "ja": "日本語",
+      "ro": "Română"
     },
     "messages": {
       "copiedFolderValue": "Copied folder {0}",
@@ -122,7 +126,7 @@
         "regexp": "regexp",
         "replaceAction": "replace",
         "replaceAll": "replace all",
-        "replaceFieldLabel": "Replace",
+        "replaceFieldLabel": "Replace with",
         "wholeWord": "by word"
       },
       "browserCannotConnectALocalFileForSafe": "This browser cannot connect a local file for safe editing.",
@@ -182,12 +186,11 @@
       "youHaveUnsavedChangesOpenAnotherDocumentAnd": "You have unsaved changes. Open another document and discard them?"
     },
     "actions": {
-      "checkGitConnectionExperimental": "Check Git connection (experimental)",
       "copyLinkUnavailableForWorkspaceVirtualFiles": "Copy link unavailable for workspace virtual files",
       "copyOpenFileLink": "Copy open file link",
       "customDocumentActionMustBePinnedValue": "Custom document action must be pinned: {0}",
       "duplicateDocumentActionValue": "Duplicate document action: {0}",
-      "editMarkdown": "Edit markdown",
+      "editMarkdown": "Edit Markdown",
       "exitEditMode": "Exit edit mode",
       "exitFocusMode": "Exit focus mode",
       "export": {
@@ -205,7 +208,7 @@
       "printSaveAsPDFInTheDialogTo": "Print — Save as PDF in the dialog to export PDF.",
       "quickAccess": "Quick access",
       "saveCtrlS": "Save (Ctrl+S)",
-      "saveMarkdownFile": "Save markdown file",
+      "saveMarkdownFile": "Save Markdown file",
       "saveNoUnsavedChanges": "Save — no unsaved changes",
       "theme": {
         "switch": "Switch to {0} theme",
@@ -229,17 +232,6 @@
       "openImageZoomView": "Open image zoom view",
       "sectionLinksAreUnavailableForThisWorkspaceFile": "Section links are unavailable for this workspace file",
       "zoomImageValue": "Zoom image: {0}"
-    },
-    "browserGit": {
-      "binaryFilesAreNotSupportedByTheGit": "Binary files are not supported by the Git probe.",
-      "chooseTheRepositoryRootFolderContainingAGit": "Choose the repository root folder containing a .git directory.",
-      "fileExceedsTheGitProbeLimit192KiB": "File exceeds the Git probe limit (192 KiB per source).",
-      "fileOrHEADChangedDuringTheCheckCheck": "The file or HEAD changed during the check. Check again.",
-      "gitProbeRequiresARealLocalMarkdownFile": "Git probe requires a real local Markdown file.",
-      "gitProbeSupportsUTF8MarkdownOnly": "Git probe supports UTF-8 Markdown only.",
-      "gitWorktreesSubmodulesWithAGitFileAre": "Git worktrees/submodules with a .git file are outside this probe scope.",
-      "selectedRepoFileDiffersFromTheOpenFile": "The selected repo file differs from the open file on disk. Choose the original repo or check again after the file stops changing.",
-      "selectedRepositoryDoesNotUniquelyMatchTheOpen": "The selected repository does not uniquely match the open file path. Choose its original repo folder."
     },
     "code": {
       "copy": {
@@ -340,7 +332,7 @@
         "copiedFolderName": "Copied folder name",
         "copiedFolderPath": "Copied folder path",
         "expandFolder": "Expand folder",
-        "indexedFileCount": "{0} indexed files, including subfolders",
+        "indexedFileCount": "Indexed files, including subfolders: {0}",
         "toggleLabel": "Expand or collapse \"{0}\"."
       },
       "folderScanner": {
@@ -418,43 +410,6 @@
     },
     "folderRowActions": {
       "noFolderIdentityToCopy": "No folder identity to copy"
-    },
-    "git": {
-      "branch": "Branch",
-      "bytesLoaded": "bytes loaded",
-      "checkAgain": "Check again",
-      "checksTheSavedFileAgainstHEADUnsavedEditor": "Checks the saved file against HEAD. Unsaved editor changes are excluded.",
-      "chooseRepoFolder": "Choose repo folder",
-      "chooseTheCurrentFileSRepositoryFolderTo": "Choose the current file’s repository folder to grant read access for this tab.",
-      "clean": "Clean",
-      "comparison": "Comparison",
-      "connectedToGitInTheBrowser": "Connected to Git in the browser",
-      "detachedHEAD": "Detached HEAD",
-      "diffExceedsReviewLimits": "Diff exceeds review limits",
-      "diskSource": "Disk source",
-      "engine": "Engine",
-      "excludedIgnoredFile": "Excluded: ignored file",
-      "fileDoesNotExistInHEAD": "File does not exist in HEAD",
-      "gitCheckFailed": "Git check failed.",
-      "gitConnectionExperimental": "Git connection · Experimental",
-      "gitStatus": "Git status",
-      "headLabel": "HEAD",
-      "headSource": "HEAD source",
-      "ignoredByGit": "Ignored by Git",
-      "inspectHEADSourceReadOnly": "Inspect HEAD source (read-only)",
-      "lineChanges": "+{0} added / −{1} removed lines",
-      "loadedBytes": "{0} bytes loaded",
-      "modifiedStatus": "Modified ({0})",
-      "noCommitsYet": "No commits yet",
-      "readingGitInTheBrowser": "Reading Git in the browser…",
-      "readsGitInsideChromeChooseTheRepositoryRoot": "Reads Git inside Chrome. Choose the repository root containing .git; no helper installation is needed.",
-      "repository": "Repository",
-      "sourceChanges": "Source changes",
-      "untracked": "Untracked"
-    },
-    "gitProbe": {
-      "chromeContextDoesNotSupportSelectingAGit": "This Chrome context does not support selecting a Git folder.",
-      "folderReadAccessExpiredChooseTheRepositoryAgain": "Folder read access expired. Choose the repository again."
     },
     "imageRevision": {
       "imageExceedsThe5MiBWatchLimit": "Image exceeds the 5 MiB Watch limit.",
@@ -632,13 +587,13 @@
       "documentUpdatesLiveWatchUnavailable": "Document updates: live watch unavailable",
       "documentUpdatesLoadUpdate": "Document updates: load update",
       "fileChangedOnDiskLoadItToLeave": "This file changed on disk. Load it to leave edit mode.",
-      "latestStableVersionIsBeingAppliedAutomatically": "The latest stable version is being applied automatically.",
+      "latestStableVersionIsBeingAppliedAutomatically": "The file has stopped changing. Loading its latest version automatically.",
       "liveUpdatesUnavailable": "Live updates unavailable",
       "newVersionAvailable": "New version available",
       "newVersionsWaitUntilYouChooseToUpdate": "New versions wait until you choose to update.",
       "notifications": {
         "documentUpdated": "Document updated",
-        "documentUpdatesSupportsFilesUpTo5MiB": "Document updates supports files up to 5 MiB.",
+        "documentUpdatesSupportsFilesUpTo5MiB": "Document updates support files up to 5 MiB.",
         "valueTheCurrentContentWasKept": "{0} The current content was kept."
       },
       "selectTheWorkspaceAgainToCheckForUpdated": "Select the workspace again to check for updated files.",
@@ -853,20 +808,10 @@
         "copy": "Could not copy",
         "copyLink": "Could not copy link"
       },
-      "browserGit": {
-        "invalidLocalFilePath": "Invalid local file path.",
-        "invalidRepositoryFilePath": "Invalid repository file path.",
-        "onlyRegularGitFilesAreSupported": "Only regular Git files are supported.",
-        "unsupportedGitTreePath": "Unsupported Git tree path."
-      },
       "colors": {
         "copyColorSelectTheOriginalTextToCopy": "Could not copy color. Select the original text to copy manually.",
         "copySelectAValueToCopyManually": "Could not copy. Select a value to copy manually.",
         "copyTryAgain": "Could not copy. Try again."
-      },
-      "directoryFs": {
-        "readADirectoryAsAGitFile": "Cannot read a directory as a Git file.",
-        "unsupportedGitTextEncoding": "Unsupported Git text encoding."
       },
       "document": {
         "openLinkedFile": "Could not open linked file",
@@ -922,9 +867,6 @@
           "restoreWorkspace": "Could not restore workspace",
           "scanFolder": "Could not scan folder"
         }
-      },
-      "gitProbe": {
-        "readTheOpenFileOnDisk": "Could not read the open file on disk."
       },
       "imageRevision": {
         "readImageBytes": "Could not read image bytes."
@@ -1119,7 +1061,7 @@
       "watchModeUpdated": "Watch mode updated."
     },
     "optionsActions": {
-      "clearAllRecentFilePathsStoredByMarkdown": "Clear all recent file paths stored by Markdown Plus on this device? This cannot be undone.",
+      "clearAllRecentFilePathsStoredByMarkdown": "Clear all recent file paths stored by Markdown Plus on this device? This cannot be undone. Your original files will be kept.",
       "resetAllMarkdownPlusSettingsToTheirDefaults": "Reset all Markdown Plus settings to their defaults? This includes reader, editor, plugin, and explorer preferences.",
       "settingsFilesMustBeSmallerThan1MiB": "Settings files must be smaller than 1 MiB."
     },
@@ -1406,12 +1348,12 @@
         "math": {
           "hint": "Renders LaTeX-style math with KaTeX when needed.",
           "label": "Math (KaTeX)",
-          "version": "Syntax support: @mdit/plugin-katex 0.25.2, KaTeX 0.16.44."
+          "version": "Syntax support: @mdit/plugin-katex 0.25.2, KaTeX 0.16.47."
         },
         "mermaid": {
           "hint": "Renders Mermaid code fences as diagrams with export actions.",
           "label": "Mermaid diagrams",
-          "version": "Syntax support: Mermaid 11.13.0 or Beautiful Mermaid 1.1.3."
+          "version": "Syntax support: Mermaid 11.17.2 or Beautiful Mermaid 1.1.3."
         },
         "tableEnhance": {
           "hint": "Makes wide tables scrollable with enhanced table styling.",

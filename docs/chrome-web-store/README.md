@@ -4,7 +4,7 @@ The latest local package is **1.0.0.1**, built on **2026-11-03** with a small ch
 
 Markdown Plus is available on [Chrome Web Store](https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk). The last recorded public listing check, on **2026-11-01**, showed **1.0.0**, **Updated November 1, 2026**, and display version `1.0.0-20261030T075747621Z`.
 
-The next-submission copy uses **Markdown Plus - Free Markdown Viewer**, a free-use summary, scannable feature lists, and GitHub support/source links. English, Vietnamese, and Simplified Chinese descriptions are prepared; the rename and revised copy have not been verified on the public Store. See the [submission form guide](./submission-form.md) for field-by-field inputs.
+The next-submission copy uses **Markdown Plus - Free Markdown Viewer**, a free-use summary, scannable feature lists, and GitHub support/source links. English, Vietnamese, Simplified Chinese, Spanish, German, Japanese, and Romanian descriptions are prepared, matching the seven interface languages in the current source. The rename, revised copy, and additional languages have not been verified on the public Store. See the [submission form guide](./submission-form.md) for field-by-field inputs and the [listing copy](./store-listing.md#detailed-descriptions) for all seven description files.
 
 | Reference | Contents |
 | --- | --- |

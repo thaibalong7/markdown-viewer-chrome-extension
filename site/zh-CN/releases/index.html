@@ -14,6 +14,10 @@
   <link rel="alternate" hreflang="en" href="../../releases/">
   <link rel="alternate" hreflang="vi" href="../../vi/releases/">
   <link rel="alternate" hreflang="zh-CN" href="./">
+  <link rel="alternate" hreflang="es" href="../../es/releases/">
+  <link rel="alternate" hreflang="de" href="../../de/releases/">
+  <link rel="alternate" hreflang="ja" href="../../ja/releases/">
+  <link rel="alternate" hreflang="ro" href="../../ro/releases/">
   <link rel="alternate" hreflang="x-default" href="../../releases/">
 </head>
 <body class="guide-page" id="top">
@@ -26,7 +30,7 @@
       <a href="../guide/">使用指南</a>
       <a href="../privacy/">隐私</a>
     </nav>
-    <div class="header-actions"><details class="language-control"><summary aria-label="网站语言" title="网站语言"><span aria-hidden="true">◎</span> <span>简中</span></summary><nav aria-label="网站语言"><a href="../../releases/" lang="en" hreflang="en" data-language-link>English</a><a href="../../vi/releases/" lang="vi" hreflang="vi" data-language-link>Tiếng Việt</a><a href="./" lang="zh-CN" hreflang="zh-CN" data-language-link aria-current="true">简体中文（中国）</a></nav></details>
+    <div class="header-actions"><details class="language-control"><summary aria-label="网站语言" title="网站语言"><span aria-hidden="true">◎</span> <span>简中</span></summary><nav aria-label="网站语言"><a href="../../releases/" lang="en" hreflang="en" data-language-link>English</a><a href="../../vi/releases/" lang="vi" hreflang="vi" data-language-link>Tiếng Việt</a><a href="./" lang="zh-CN" hreflang="zh-CN" data-language-link aria-current="true">简体中文（中国）</a><a href="../../es/releases/" lang="es" hreflang="es" data-language-link>Español</a><a href="../../de/releases/" lang="de" hreflang="de" data-language-link>Deutsch</a><a href="../../ja/releases/" lang="ja" hreflang="ja" data-language-link>日本語</a><a href="../../ro/releases/" lang="ro" hreflang="ro" data-language-link>Română</a></nav></details>
       <div class="theme-control" role="group" aria-label="外观主题" hidden="">
         <button type="button" data-theme-choice="light" aria-label="浅色主题" title="浅色主题" aria-pressed="false"><svg class="icon  " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2"></path><path d="M6 4l1.5 1.5 m13 13 1.5 1.5 M4 20l1.5-1.5 M18.5 5.5 20 4"></path></svg></button>
         <button type="button" data-theme-choice="dark" aria-label="深色主题" title="深色主题" aria-pressed="false"><svg class="icon  " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg></button>
@@ -38,11 +42,15 @@
   <main id="main" tabindex="-1">
     <section class="guide-hero wrap" aria-labelledby="release-heading">
       <div><p class="eyebrow">版本动态</p><h1 id="release-heading">更新日志</h1><p class="hero-description">查看各版本的更改、发布状态、使用准备和已知限制。</p><div class="guide-hero-actions"><a class="button" href="https://chromewebstore.google.com/detail/markdown-plus/afbdmkpldpbkmmhejjlajocpneaiipmk">添加至 Chrome <span aria-hidden="true">↗</span></a><a class="text-link" href="../guide/">使用指南</a></div></div>
-      <nav class="guide-route" aria-label="更新日志"><a href="#v1-0-0-1"><span>01</span><div><h2>1.0.0.1 — 修复更改对比窗口的滚动问题</h2><p>小幅修复，避免更改对比窗口和较长的受影响章节列表在滚动时溢出。</p></div><b aria-hidden="true">↗</b></a><a href="#v1-0-0"><span>02</span><div><h2>1.0.0 — 首个商店版本</h2><p>在 Chrome 中阅读本地 Markdown、浏览文件夹、编辑和导出文档。</p></div><b aria-hidden="true">↗</b></a><a href="#setup"><span>03</span><div><h2>开始使用</h2><p>需要 Chrome 116 或更新版本，并开启本地文件访问权限。</p></div><b aria-hidden="true">↗</b></a><a href="#limitations"><span>04</span><div><h2>已知限制</h2><p>实验性编辑、本地背景图片和导出注意事项。</p></div><b aria-hidden="true">↗</b></a></nav>
+      <nav class="guide-route" aria-label="更新日志"><a href="#unreleased"><span>01</span><div><h2>尚未发布 — 新增界面语言</h2><p>这些更改已包含在当前源码中，尚未分配发布版本，也未确认在 Chrome 应用商店发布。</p></div><b aria-hidden="true">↗</b></a><a href="#v1-0-0-1"><span>02</span><div><h2>1.0.0.1 — 修复更改对比窗口的滚动问题</h2><p>小幅修复，避免更改对比窗口和较长的受影响章节列表在滚动时溢出。</p></div><b aria-hidden="true">↗</b></a><a href="#v1-0-0"><span>03</span><div><h2>1.0.0 — 首个商店版本</h2><p>在 Chrome 中阅读本地 Markdown、浏览文件夹、编辑和导出文档。</p></div><b aria-hidden="true">↗</b></a><a href="#setup"><span>04</span><div><h2>开始使用</h2><p>需要 Chrome 116 或更新版本，并开启本地文件访问权限。</p></div><b aria-hidden="true">↗</b></a><a href="#limitations"><span>05</span><div><h2>已知限制</h2><p>实验性编辑、本地背景图片和导出注意事项。</p></div><b aria-hidden="true">↗</b></a></nav>
     </section>
     <div class="policy-layout wrap">
-      <aside class="policy-sidebar"><nav class="desktop-toc" aria-label="更新日志"><p class="eyebrow">更新日志</p><a href="#v1-0-0-1"><span>01</span> 1.0.0.1 — 修复更改对比窗口的滚动问题</a><a href="#v1-0-0"><span>02</span> 1.0.0 — 首个商店版本</a><a href="#setup"><span>03</span> 开始使用</a><a href="#limitations"><span>04</span> 已知限制</a></nav><details class="mobile-toc"><summary>更新日志</summary><nav aria-label="更新日志"><a href="#v1-0-0-1"><span>01</span> 1.0.0.1 — 修复更改对比窗口的滚动问题</a><a href="#v1-0-0"><span>02</span> 1.0.0 — 首个商店版本</a><a href="#setup"><span>03</span> 开始使用</a><a href="#limitations"><span>04</span> 已知限制</a></nav></details></aside>
+      <aside class="policy-sidebar"><nav class="desktop-toc" aria-label="更新日志"><p class="eyebrow">更新日志</p><a href="#unreleased"><span>01</span> 尚未发布 — 新增界面语言</a><a href="#v1-0-0-1"><span>02</span> 1.0.0.1 — 修复更改对比窗口的滚动问题</a><a href="#v1-0-0"><span>03</span> 1.0.0 — 首个商店版本</a><a href="#setup"><span>04</span> 开始使用</a><a href="#limitations"><span>05</span> 已知限制</a></nav><details class="mobile-toc"><summary>更新日志</summary><nav aria-label="更新日志"><a href="#unreleased"><span>01</span> 尚未发布 — 新增界面语言</a><a href="#v1-0-0-1"><span>02</span> 1.0.0.1 — 修复更改对比窗口的滚动问题</a><a href="#v1-0-0"><span>03</span> 1.0.0 — 首个商店版本</a><a href="#setup"><span>04</span> 开始使用</a><a href="#limitations"><span>05</span> 已知限制</a></nav></details></aside>
       <article class="policy-content" aria-labelledby="release-heading">
+        <section class="policy-section" id="unreleased" tabindex="-1" aria-labelledby="release-unreleased-title">
+          <h2 id="release-unreleased-title">尚未发布 — 新增界面语言</h2><p>这些更改已包含在当前源码中，尚未分配发布版本，也未确认在 Chrome 应用商店发布。</p>
+          <ul><li>设置页、扩展弹出窗口、查看器控件以及编辑和搜索功能新增西班牙语、德语、日语和罗马尼亚语支持。</li><li>准备了相应语言的网站页面、隐私政策译文和 Chrome 应用商店描述。</li><li>从“关于”打开网站和隐私政策时，使用当前选择的界面语言。</li></ul>
+        </section>
         <section class="policy-section" id="v1-0-0-1" tabindex="-1" aria-labelledby="release-revision-title">
           <h2 id="release-revision-title">1.0.0.1 — 修复更改对比窗口的滚动问题</h2><p class="policy-meta"><time datetime="2026-11-03">打包日期：2026年11月3日</time></p><p>小幅修复，避免更改对比窗口和较长的受影响章节列表在滚动时溢出。</p>
           <ul><li>在窗口外的遮罩区域滚动时，更改对比窗口保持在视口内。</li><li>受影响的章节列表可独立滚动，较长的列表不会将快捷键提示挤出视野或超出对比布局。</li><li>显示简洁的版本号 1.0.0.1，不再附带构建时间戳。</li></ul>

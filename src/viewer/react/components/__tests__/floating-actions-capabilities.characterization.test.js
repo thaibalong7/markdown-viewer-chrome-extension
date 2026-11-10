@@ -74,7 +74,7 @@ describe('current document-action visibility assumptions', () => {
     const html = renderActions('file:///fixtures/navigation/index.md')
 
     expect(html).toContain('role="group" aria-label="Document actions"')
-    expect(html).toContain('aria-label="Edit markdown"')
+    expect(html).toContain('aria-label="Edit Markdown"')
     expect(html).toContain('aria-label="Print / Save as PDF"')
     expect(html).toContain('aria-label="Export document"')
     expect(html).toContain('aria-label="Copy open file link"')
@@ -84,7 +84,7 @@ describe('current document-action visibility assumptions', () => {
   it('keeps print/export visible but disables edit and copy-link for a virtual workspace file', () => {
     const html = renderActions(`${MDP_WS_FILE}${encodeURIComponent('Dự án/README.md')}`)
 
-    expect(html).not.toContain('aria-label="Edit markdown"')
+    expect(html).not.toContain('aria-label="Edit Markdown"')
     expect(html).toContain('aria-label="Print / Save as PDF"')
     expect(html).toContain('aria-label="Export document"')
     expect(html).toMatch(/<button[^>]*aria-label="Copy open file link"[^>]*disabled=""/)
@@ -101,14 +101,14 @@ describe('current document-action visibility assumptions', () => {
       false
     )
 
-    expect(html).not.toContain('aria-label="Edit markdown"')
+    expect(html).not.toContain('aria-label="Edit Markdown"')
     expect(html).toContain('aria-label="Print / Save as PDF"')
   })
 
   it('shows only generic and print actions for a plain text document', () => {
     const html = renderActions('file:///fixtures/notes.txt', 'text')
 
-    expect(html).not.toContain('aria-label="Edit markdown"')
+    expect(html).not.toContain('aria-label="Edit Markdown"')
     expect(html).not.toContain('aria-label="Export document"')
     expect(html).toContain('aria-label="Print / Save as PDF"')
     expect(html).toContain('aria-label="Copy open file link"')
@@ -118,7 +118,7 @@ describe('current document-action visibility assumptions', () => {
   it('shows only generic and print actions for a raster image document', () => {
     const html = renderActions('file:///fixtures/photo.png', 'raster-image')
 
-    expect(html).not.toContain('aria-label="Edit markdown"')
+    expect(html).not.toContain('aria-label="Edit Markdown"')
     expect(html).not.toContain('aria-label="Export document"')
     expect(html).toContain('aria-label="Print / Save as PDF"')
     expect(html).toContain('aria-label="Copy open file link"')
@@ -128,7 +128,7 @@ describe('current document-action visibility assumptions', () => {
   it('shows no raw toggle or Markdown-only actions for an SVG document', () => {
     const html = renderActions('file:///fixtures/diagram.svg', 'svg-image')
 
-    expect(html).not.toContain('aria-label="Edit markdown"')
+    expect(html).not.toContain('aria-label="Edit Markdown"')
     expect(html).not.toContain('aria-label="Export document"')
     expect(html).not.toContain('View source')
     expect(html).toContain('aria-label="Print / Save as PDF"')
@@ -140,7 +140,7 @@ describe('current document-action visibility assumptions', () => {
     const rendered = renderActions('file:///fixtures/chart.mermaid', 'mermaid')
     expect(rendered).toContain('aria-label="View source"')
     expect(rendered).toContain('aria-pressed="false"')
-    expect(rendered).not.toContain('aria-label="Edit markdown"')
+    expect(rendered).not.toContain('aria-label="Edit Markdown"')
     expect(rendered).not.toContain('aria-label="Export document"')
 
     const raw = renderActions('file:///fixtures/chart.mermaid', 'mermaid', 'raw')

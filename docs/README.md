@@ -37,7 +37,7 @@ This directory contains current technical references for developers and contribu
 - Keep the root [README](../README.md) as the user entry point: Store installation, essential workflows, illustrated controls, support, and contribution links. Link the published Chrome Web Store listing directly and keep release notes current.
 - Keep [DEV.md](../DEV.md) as the developer entry point for setup and verification; keep `docs/` focused on current technical behavior, ownership, integration contracts, and maintenance. Detailed UI behavior here defines implementation expectations rather than a second user manual.
 - Keep source-build and **Load unpacked** instructions in developer setup or release QA. Public installation guidance in the README and website uses Chrome Web Store.
-- Keep website copy and installation status aligned across all three locale catalogs and regenerate the published HTML; see [website maintenance](../site/README.md#installation-links-and-store-availability).
+- Keep website copy and installation status aligned across all seven website locale catalogs and regenerate the published HTML; see [website maintenance](../site/README.md#installation-links-and-store-availability).
 - Keep incomplete work under [`../planning/`](../planning/).
 - When a plan is complete, move durable facts into the relevant current-state document and remove the plan. Git history is the archive.
 - Prefer links to stable entry points and ownership boundaries over copied directory trees, dated build output, or phase-by-phase history.

@@ -52,7 +52,11 @@
       "browser": "跟随浏览器",
       "en": "English",
       "vi": "Tiếng Việt",
-      "zhCN": "简体中文（中国）"
+      "zhCN": "简体中文（中国）",
+      "es": "Español",
+      "de": "Deutsch",
+      "ja": "日本語",
+      "ro": "Română"
     },
     "messages": {
       "copiedFolderValue": "已复制文件夹 {0}",
@@ -182,7 +186,6 @@
       "youHaveUnsavedChangesOpenAnotherDocumentAnd": "存在未保存的更改。要放弃这些更改并打开另一份文档吗？"
     },
     "actions": {
-      "checkGitConnectionExperimental": "检查 Git 连接（实验性）",
       "copyLinkUnavailableForWorkspaceVirtualFiles": "工作区虚拟文件无法复制链接",
       "copyOpenFileLink": "复制当前文件链接",
       "customDocumentActionMustBePinnedValue": "自定义文档操作必须固定显示：{0}",
@@ -229,17 +232,6 @@
       "openImageZoomView": "打开图片缩放视图",
       "sectionLinksAreUnavailableForThisWorkspaceFile": "此工作区文件不支持章节链接",
       "zoomImageValue": "缩放图片：{0}"
-    },
-    "browserGit": {
-      "binaryFilesAreNotSupportedByTheGit": "Git 检查不支持二进制文件。",
-      "chooseTheRepositoryRootFolderContainingAGit": "请选择包含 .git 目录的仓库根文件夹。",
-      "fileExceedsTheGitProbeLimit192KiB": "文件超出 Git 检查的大小限制（每份源文件 192 KiB）。",
-      "fileOrHEADChangedDuringTheCheckCheck": "检查期间文件或 HEAD 发生了变化。请重新检查。",
-      "gitProbeRequiresARealLocalMarkdownFile": "Git 检查需要真实的本地 Markdown 文件。",
-      "gitProbeSupportsUTF8MarkdownOnly": "Git 检查仅支持 UTF-8 编码的 Markdown 文件。",
-      "gitWorktreesSubmodulesWithAGitFileAre": "此检查不支持使用 .git 文件的 Git 工作树或子模块。",
-      "selectedRepoFileDiffersFromTheOpenFile": "所选仓库中的文件与当前打开的磁盘文件不一致。请选择原始仓库，或等待文件停止变化后重试。",
-      "selectedRepositoryDoesNotUniquelyMatchTheOpen": "所选仓库无法与当前打开的文件路径唯一匹配。请选择该文件所在的原始仓库文件夹。"
     },
     "code": {
       "copy": {
@@ -418,43 +410,6 @@
     "folderRowActions": {
       "noFolderIdentityToCopy": "没有可复制的文件夹标识"
     },
-    "git": {
-      "branch": "分支",
-      "bytesLoaded": "字节已加载",
-      "checkAgain": "重新检查",
-      "checksTheSavedFileAgainstHEADUnsavedEditor": "将磁盘上已保存的文件与 HEAD 比较，不包含编辑器中未保存的更改。",
-      "chooseRepoFolder": "选择仓库文件夹",
-      "chooseTheCurrentFileSRepositoryFolderTo": "选择当前文件所在的仓库文件夹，为此标签页授予读取权限。",
-      "clean": "无更改",
-      "comparison": "比较",
-      "connectedToGitInTheBrowser": "已在浏览器中连接 Git",
-      "detachedHEAD": "分离的 HEAD",
-      "diffExceedsReviewLimits": "差异超出查看限制",
-      "diskSource": "磁盘源文件",
-      "engine": "Git 库",
-      "excludedIgnoredFile": "已排除：被忽略的文件",
-      "fileDoesNotExistInHEAD": "HEAD 中不存在此文件",
-      "gitCheckFailed": "Git 检查失败。",
-      "gitConnectionExperimental": "Git 连接 · 实验性",
-      "gitStatus": "Git 状态",
-      "headLabel": "HEAD",
-      "headSource": "HEAD 源文件",
-      "ignoredByGit": "已被 Git 忽略",
-      "inspectHEADSourceReadOnly": "查看 HEAD 源文件（只读）",
-      "lineChanges": "新增 +{0} 行 / 删除 −{1} 行",
-      "loadedBytes": "已加载 {0} 字节",
-      "modifiedStatus": "已修改（{0}）",
-      "noCommitsYet": "暂无提交",
-      "readingGitInTheBrowser": "正在浏览器中读取 Git…",
-      "readsGitInsideChromeChooseTheRepositoryRoot": "在 Chrome 内直接读取 Git。请选择包含 .git 的仓库根目录，无需安装辅助程序。",
-      "repository": "仓库",
-      "sourceChanges": "源文件更改",
-      "untracked": "未跟踪"
-    },
-    "gitProbe": {
-      "chromeContextDoesNotSupportSelectingAGit": "当前 Chrome 环境不支持选择 Git 文件夹。",
-      "folderReadAccessExpiredChooseTheRepositoryAgain": "文件夹读取权限已失效。请重新选择仓库。"
-    },
     "imageRevision": {
       "imageExceedsThe5MiBWatchLimit": "图片超出文档更新监测的 5 MiB 限制。",
       "noImageBytesReceived": "未收到图片数据。"
@@ -616,7 +571,7 @@
       "aNewDocumentVersionIsAvailable": "有新的文档版本可用。",
       "aNewDocumentVersionWillLoadAutomaticallyWhen": "停止操作后，将自动加载新的文档版本。",
       "aNewerVersionOfThisDocumentIsReady": "此文档已有更新版本。",
-      "anUpdateIsReadyItWillLoadWhen": "更新已就绪。文件稳定且停止操作后将自动加载。",
+      "anUpdateIsReadyItWillLoadWhen": "更新已就绪。文件停止变化且您暂停操作后，将自动加载。",
       "applyingANewDocumentVersionAutomatically": "正在自动应用新的文档版本。",
       "ask": "询问",
       "automatic": "自动",
@@ -628,7 +583,7 @@
       "documentUpdatesLiveWatchUnavailable": "文档更新：实时监测不可用",
       "documentUpdatesLoadUpdate": "文档更新：加载更新",
       "fileChangedOnDiskLoadItToLeave": "磁盘上的文件已更改。加载该版本将退出编辑模式。",
-      "latestStableVersionIsBeingAppliedAutomatically": "正在自动应用最新的稳定版本。",
+      "latestStableVersionIsBeingAppliedAutomatically": "文件已停止变化，正在自动加载最新内容。",
       "liveUpdatesUnavailable": "实时更新不可用",
       "newVersionAvailable": "有新版本",
       "newVersionsWaitUntilYouChooseToUpdate": "新版本将等待您选择更新后再加载。",
@@ -640,7 +595,7 @@
       "selectTheWorkspaceAgainToCheckForUpdated": "请重新选择工作区以检查文件更新。",
       "title": "文档更新",
       "updateNow": "立即更新",
-      "updatesLoadWhenTheFileIsStableAnd": "文件稳定且停止操作后，将加载更新。",
+      "updatesLoadWhenTheFileIsStableAnd": "文件停止变化且您暂停操作后，将加载更新。",
       "updatingAnnouncement": "正在更新文档。",
       "updatingLabel": "正在更新文档…"
     },
@@ -828,9 +783,9 @@
       }
     },
     "validation": {
-      "boolean": "{0}必须为 true 或 false。",
-      "integer": "{0}必须为整数。",
-      "range": "{0}必须介于 {1} 和 {2} 之间。"
+      "boolean": "“{0}”必须为 true 或 false。",
+      "integer": "“{0}”必须为整数。",
+      "range": "“{0}”必须介于 {1} 和 {2} 之间。"
     },
     "viewer": {
       "actions": {
@@ -847,20 +802,10 @@
         "copy": "无法复制",
         "copyLink": "无法复制链接"
       },
-      "browserGit": {
-        "invalidLocalFilePath": "本地文件路径无效。",
-        "invalidRepositoryFilePath": "仓库文件路径无效。",
-        "onlyRegularGitFilesAreSupported": "仅支持 Git 中的常规文件。",
-        "unsupportedGitTreePath": "不支持此 Git 目录树路径。"
-      },
       "colors": {
         "copyColorSelectTheOriginalTextToCopy": "无法复制颜色。请选择原始文本手动复制。",
         "copySelectAValueToCopyManually": "无法复制。请选择一个值手动复制。",
         "copyTryAgain": "无法复制。请重试。"
-      },
-      "directoryFs": {
-        "readADirectoryAsAGitFile": "无法将目录作为 Git 文件读取。",
-        "unsupportedGitTextEncoding": "不支持此 Git 文本编码。"
       },
       "document": {
         "openLinkedFile": "无法打开链接的文件",
@@ -917,9 +862,6 @@
           "scanFolder": "无法扫描文件夹"
         }
       },
-      "gitProbe": {
-        "readTheOpenFileOnDisk": "无法读取当前打开的磁盘文件。"
-      },
       "imageRevision": {
         "readImageBytes": "无法读取图片字节数据。"
       },
@@ -928,7 +870,7 @@
       },
       "media": {
         "decodeThisImageForResolutionRendering": "无法解码图片以按指定分辨率渲染。",
-        "encodeThisResolution": "无法按此分辨率编码。",
+        "encodeThisResolution": "无法以此分辨率生成图片。",
         "initializeImageRendering": "无法初始化图片渲染。",
         "parseThisSVGForResolutionRendering": "无法解析 SVG 以按指定分辨率渲染。",
         "readThisSVGForResolutionRendering": "无法读取 SVG 以按指定分辨率渲染。",
@@ -1399,12 +1341,12 @@
         "math": {
           "hint": "按需使用 KaTeX 渲染 LaTeX 风格的数学公式。",
           "label": "数学公式（KaTeX）",
-          "version": "语法支持：@mdit/plugin-katex 0.25.2、KaTeX 0.16.44。"
+          "version": "语法支持：@mdit/plugin-katex 0.25.2、KaTeX 0.16.47。"
         },
         "mermaid": {
           "hint": "将 Mermaid 代码块渲染为图表，并提供导出操作。",
           "label": "Mermaid 图表",
-          "version": "语法支持：Mermaid 11.13.0 或 Beautiful Mermaid 1.1.3。"
+          "version": "语法支持：Mermaid 11.17.2 或 Beautiful Mermaid 1.1.3。"
         },
         "tableEnhance": {
           "hint": "为表格添加增强样式，并使宽表格可以横向滚动。",

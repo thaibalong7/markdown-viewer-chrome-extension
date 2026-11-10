@@ -15,6 +15,27 @@ function loadPage(path, hash = '') {
 }
 
 describe('localized public website interactions', () => {
+  it.each(['es', 'de', 'ja', 'ro'])('keeps section links, literal samples and theme controls working in %s', locale => {
+    const guide = loadPage(`${locale}/guide/index.html`, '#editor')
+    const links = guide.window.document.querySelectorAll('[data-language-link]')
+    expect(links).toHaveLength(7)
+    for (const link of links) {
+      expect(link.hash).toBe('#editor')
+      expect(link.pathname).toContain('/guide/')
+    }
+    guide.window.close()
+    const home = loadPage(`${locale}/index.html`)
+    const { document } = home.window
+    const source = document.querySelector('#sample-source').textContent
+    document.querySelector('[data-demo-mode="source"]').click()
+    expect(document.querySelector('#sample-source').hidden).toBe(false)
+    expect(document.querySelector('#sample-source').textContent).toBe(source)
+    document.querySelector('[data-theme-choice="dark"]').click()
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(document.documentElement.lang).toBe(locale)
+    home.window.close()
+  })
+
   it('keeps the guide chapter when switching languages and applies its theme controls', () => {
     const dom = loadPage('vi/guide/index.html', '#themes')
     const { document } = dom.window

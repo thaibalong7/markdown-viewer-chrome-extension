@@ -57,7 +57,7 @@ Use Markdown Plus for project documentation, personal notes, study material, or 
 - **Print or save as PDF** — Use Chrome's print dialog.
 - **Reopen recent files** — Return to previously opened local Markdown documents.
 - **Back up preferences** — Export and restore settings and custom-theme definitions as JSON; background images are excluded.
-- **Choose your interface language** — English, Vietnamese, or Simplified Chinese.
+- **Choose your interface language** — English, Vietnamese, Simplified Chinese, Spanish, German, Japanese, or Romanian.
 
 Available in the development source, **not yet released on Chrome Web Store**:
 
@@ -80,7 +80,7 @@ Requires **Google Chrome 116 or newer**.
 
 *Red markers: **1** open extension details; **2** allow file URL access. The illustrations in this guide show simplified interfaces and example values.*
 
-**Choose your language:** open **All settings → General → Interface language** for English, Vietnamese, Simplified Chinese, or your browser's language. Document content stays in its original language. This guide uses English control names.
+**Choose your language:** open **All settings → General → Interface language** for English, Vietnamese, Simplified Chinese, Spanish, German, Japanese, Romanian, or your browser's language. Document content stays in its original language. This guide uses English control names.
 
 ## Release notes
 

@@ -24,7 +24,8 @@ class SiteLocalizationTests(unittest.TestCase):
 
     def test_all_generated_editions_are_current_and_have_valid_project_links(self):
         outputs = site.render_pages()
-        self.assertEqual(len(outputs), 12)
+        expected_pages = len(site.LANGUAGES) * len(site.PAGES)
+        self.assertEqual(len(outputs), expected_pages)
         for path, content in outputs.items():
             self.assertEqual((site.ROOT / 'site' / path).read_text(), content, str(path))
         with tempfile.TemporaryDirectory() as directory:
@@ -37,7 +38,7 @@ class SiteLocalizationTests(unittest.TestCase):
             (root / 'assets').mkdir()
             for path in (site.ROOT / 'site/assets').iterdir():
                 (root / 'assets' / path.name).write_bytes(path.read_bytes())
-            self.assertEqual(checker.check_site(root), ([], 12))
+            self.assertEqual(checker.check_site(root), ([], expected_pages))
 
     def test_language_links_keep_the_current_page_and_internal_links_keep_the_locale(self):
         outputs = site.render_pages()
@@ -76,13 +77,38 @@ class SiteLocalizationTests(unittest.TestCase):
                 section = re.search(rf'<section class="guide-section" id="{chapter}".*?</section>', html, re.S)[0]
                 self.assertIn('data-guide-scene=', section, chapter)
             for scene in figures:
-                self.assertIn(f'guide-{locale}-{scene}.jpg', html)
+                image_locale = site.GUIDE_IMAGE_LOCALES[locale]
+                self.assertIn(f'guide-{image_locale}-{scene}.jpg', html)
             self.assertIn('<kbd>Ctrl</kbd> + <kbd>S</kbd> / <kbd>⌘</kbd> + <kbd>S</kbd>', html)
         practice = (site.ROOT / 'site/assets/markdown-plus-tour.md').read_text()
         for syntax in ['```mermaid', '```javascript', '> [!TIP]', '$E = mc^2$', '[^local]']:
             self.assertIn(syntax, practice)
         # The downloadable exercise must not initiate remote resource requests.
         self.assertNotIn('https://', practice)
+
+    def test_new_guides_reuse_original_english_captures_and_disclose_their_language(self):
+        catalogs, _ = site.load_catalogs()
+        outputs = site.render_pages()
+        english_words = {'es': 'inglés', 'de': 'englische', 'ja': '英語', 'ro': 'engleză'}
+        for locale, word in english_words.items():
+            self.assertEqual(site.GUIDE_IMAGE_LOCALES[locale], 'en')
+            self.assertIn(word, catalogs[locale]['guide.illustrations'])
+            html = outputs[site.page_path(locale, 'guide')]
+            self.assertNotIn(f'guide-{locale}-', html)
+            for scene, (width, height) in site.json.loads((site.SOURCE / 'guide-images.json').read_text())['en'].items():
+                self.assertRegex(html, rf'guide-en-{scene}\.jpg" width="{width}" height="{height}"')
+
+    def test_unreleased_language_changes_are_separate_from_historical_release_notes(self):
+        catalogs, _ = site.load_catalogs()
+        outputs = site.render_pages()
+        for locale in site.LANGUAGES:
+            html = outputs[site.page_path(locale, 'releases')]
+            upcoming = re.search(r'<section class="policy-section" id="unreleased".*?</section>', html, re.S)[0]
+            self.assertIn(catalogs[locale]['releases.unreleased.languages'], upcoming)
+            self.assertIn(catalogs[locale]['releases.unreleased.summary'], upcoming)
+            historical = re.search(r'<section class="policy-section" id="v1-0-0".*?</section>', html, re.S)[0]
+            self.assertNotIn(catalogs[locale]['releases.unreleased.languages'], historical)
+            self.assertEqual(html.count('href="#unreleased"'), 3)
 
     def test_document_source_filenames_and_policy_technical_values_stay_literal(self):
         outputs = site.render_pages()

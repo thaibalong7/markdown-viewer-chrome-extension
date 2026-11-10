@@ -5,7 +5,10 @@
   --mdp-resolution-trigger-width: 128px;
   --mdp-resolution-caption-width: 60px;
 
-  &:lang(vi) {
+  &:lang(vi),
+  &:lang(es),
+  &:lang(de),
+  &:lang(ro) {
     --mdp-resolution-trigger-width: 152px;
     --mdp-resolution-caption-width: 84px;
   }

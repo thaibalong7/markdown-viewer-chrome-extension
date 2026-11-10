@@ -23,7 +23,7 @@ FEATURES
 • Print or save as PDF — Use Chrome's print dialog.
 • Reopen recent files — Return to previously opened local Markdown documents.
 • Back up preferences — Export and restore settings and custom-theme definitions as JSON; background images are excluded.
-• Choose your interface language — English, Vietnamese, or Simplified Chinese.
+• Choose your interface language — English, Vietnamese, Simplified Chinese, Spanish, German, Japanese, or Romanian. Change it in Settings → General.
 
 COMPLETELY FREE
 

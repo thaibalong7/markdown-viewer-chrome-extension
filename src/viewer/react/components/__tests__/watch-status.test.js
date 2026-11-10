@@ -92,7 +92,7 @@ it('makes a deferred automatic update available as a one-click fallback', () => 
 
 it('does not prompt while a stable automatic update is being applied', () => {
   const state = { available: true, supported: true, pending: true, deferred: false, mode: 'auto' }
-  expect(t(getWatchMessage(state, false), {}, 'en')).toContain('being applied automatically')
+  expect(t(getWatchMessage(state, false), {}, 'en')).toContain('Loading its latest version automatically.')
   expect(getWatchTriggerPresentation(state, false)).toEqual({
     action: 'details',
     label: 'viewer.updates.title'

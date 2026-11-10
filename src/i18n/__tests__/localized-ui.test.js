@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getLocale, setLanguage, translateMessage } from '../index.js'
 import { useLanguageUpdates } from '../react.js'
 import { GeneralSettings } from '../../options/sections/GeneralSettings.jsx'
+import { AboutSettings } from '../../options/sections/AboutSettings.jsx'
 import { DocumentStats } from '../../viewer/react/components/DocumentStats.jsx'
 import { ChangeReviewContent } from '../../viewer/react/components/ChangeReviewPanel.jsx'
 import { FileHistoryPanel } from '../../popup/panels/FileHistoryPanel.jsx'
@@ -61,10 +62,37 @@ it('switches mounted controls and independent portals both ways without replacin
   expect(host.querySelector('textarea')).toBe(draft)
   expect(draft.value).toBe('Settings'); expect(draft.selectionStart).toBe(3)
   expect(document.activeElement).toBe(draft); expect(article.textContent).toBe('Settings')
+  for (const [language, label, copyLabel, words] of [
+    ['es', 'Idioma de la interfaz', 'Copiar código al portapapeles', '2 palabras'],
+    ['de', 'Oberflächensprache', 'Code in die Zwischenablage kopieren', '2 Wörter'],
+    ['ja', '表示言語', 'コードをクリップボードにコピー', '2 語'],
+    ['ro', 'Limba interfeței', 'Copiază codul în clipboard', '2 cuvinte']
+  ]) {
+    await act(async () => receiver({ type: MESSAGE_TYPES.SETTINGS_UPDATED, payload: { language } }))
+    expect(host.querySelector('label[for="general-language"]').textContent).toBe(label)
+    expect(host.querySelector('#general-language').value).toBe(language)
+    expect(host.querySelector(`[aria-label="${copyLabel}"]`)).not.toBeNull()
+    expect(host.textContent).toContain(words)
+    expect(host.querySelector('textarea')).toBe(draft)
+    expect(draft.value).toBe('Settings'); expect(draft.selectionStart).toBe(3)
+    expect(document.activeElement).toBe(draft); expect(article.textContent).toBe('Settings')
+  }
   await act(async () => setLanguage('en'))
   expect(host.querySelector('[aria-label="Copy code to clipboard"]')).not.toBeNull()
   expect(host.textContent).toContain('2 words')
   expect(host.querySelector('textarea')).toBe(draft)
+})
+
+it('updates both About privacy links and the website when the interface language changes', async () => {
+  await act(async () => root.render(React.createElement(AboutSettings)))
+  const base = 'https://thaibalong7.github.io/markdown-viewer-chrome-extension/'
+  for (const locale of ['vi', 'zh-CN', 'es', 'de', 'ja', 'ro', 'en']) {
+    await act(async () => setLanguage(locale))
+    const prefix = locale === 'en' ? '' : `${locale}/`
+    expect(host.querySelectorAll(`a[href="${base}${prefix}privacy/"]`)).toHaveLength(2)
+    expect(host.querySelectorAll(`a[href="${base}${prefix}"]`)).toHaveLength(1)
+    expect(host.querySelector('a[href="https://github.com/thaibalong7/markdown-viewer-chrome-extension/issues"]')).not.toBeNull()
+  }
 })
 
 it('renders Vietnamese dates and counts while preserving history names and diff source verbatim', () => {
@@ -137,6 +165,19 @@ it('translates the workspace file prompt as live UI and removes it when a docume
     expect(prompt.textContent).toBe('请从文件面板中选择受支持的文件。')
     expect(session.getLoadedDocument().text).toBe('')
 
+    for (const [language, text] of [
+      ['es', 'Selecciona un archivo compatible en el panel Archivos.'],
+      ['de', 'Wähle eine unterstützte Datei im Dateibereich aus.'],
+      ['ja', 'ファイルパネルから対応ファイルを選んでください。'],
+      ['ro', 'Selectează un fișier acceptat din panoul Fișiere.']
+    ]) {
+      await act(async () => setLanguage(language))
+      expect(article.querySelector('[role="status"]')).toBe(prompt)
+      expect(prompt.textContent).toBe(text)
+      expect(session.getLoadedDocument().text).toBe('')
+      expect(renderer.getLastSuccessfulRenderMarkdown()).toBe('')
+    }
+
     await act(async () => setLanguage('en'))
     expect(article.querySelector('[role="status"]')).toBe(prompt)
     expect(prompt.textContent).toBe('Select a supported file from the Files panel.')
@@ -165,6 +206,16 @@ it('keeps a visible parameterized toast translated across language changes', asy
   await act(async () => setLanguage('zh-CN'))
   expect(host.querySelector('.mdp-toast').textContent).toBe('已导出 options.general.title.html')
   expect(host.querySelector('.mdp-toast').classList.contains('is-visible')).toBe(true)
+  for (const [language, text] of [
+    ['es', 'Se ha exportado options.general.title.html'],
+    ['de', 'options.general.title.html exportiert'],
+    ['ja', 'options.general.title.html をエクスポートしました'],
+    ['ro', 'S-a exportat options.general.title.html']
+  ]) {
+    await act(async () => setLanguage(language))
+    expect(host.querySelector('.mdp-toast').textContent).toBe(text)
+    expect(host.querySelector('.mdp-toast').classList.contains('is-visible')).toBe(true)
+  }
 })
 
 it('shows Chinese history, literal diff source and distinct draft-loss warnings', async () => {

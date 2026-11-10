@@ -52,7 +52,11 @@
       "browser": "Theo ngôn ngữ trình duyệt",
       "en": "English",
       "vi": "Tiếng Việt",
-      "zhCN": "简体中文（中国）"
+      "zhCN": "简体中文（中国）",
+      "es": "Español",
+      "de": "Deutsch",
+      "ja": "日本語",
+      "ro": "Română"
     },
     "messages": {
       "copiedFolderValue": "Đã sao chép {0} của thư mục",
@@ -182,7 +186,6 @@
       "youHaveUnsavedChangesOpenAnotherDocumentAnd": "Bạn còn thay đổi chưa lưu. Bạn có muốn bỏ các thay đổi này để mở tài liệu khác không?"
     },
     "actions": {
-      "checkGitConnectionExperimental": "Kiểm tra kết nối Git (thử nghiệm)",
       "copyLinkUnavailableForWorkspaceVirtualFiles": "Không thể sao chép liên kết trực tiếp đến tệp này",
       "copyOpenFileLink": "Sao chép liên kết tệp đang mở",
       "customDocumentActionMustBePinnedValue": "Thao tác tài liệu tùy chỉnh phải được ghim: {0}",
@@ -229,17 +232,6 @@
       "openImageZoomView": "Xem ảnh phóng to",
       "sectionLinksAreUnavailableForThisWorkspaceFile": "Không thể tạo liên kết đến từng mục của tệp này",
       "zoomImageValue": "Phóng to ảnh: {0}"
-    },
-    "browserGit": {
-      "binaryFilesAreNotSupportedByTheGit": "Công cụ kiểm tra Git không hỗ trợ tệp nhị phân.",
-      "chooseTheRepositoryRootFolderContainingAGit": "Chọn thư mục gốc của kho mã có chứa thư mục .git.",
-      "fileExceedsTheGitProbeLimit192KiB": "Tệp vượt giới hạn kiểm tra Git (192 KiB cho mỗi bản mã nguồn).",
-      "fileOrHEADChangedDuringTheCheckCheck": "Tệp hoặc HEAD đã thay đổi trong lúc kiểm tra. Hãy kiểm tra lại.",
-      "gitProbeRequiresARealLocalMarkdownFile": "Để kiểm tra Git, hãy mở tệp Markdown có đường dẫn trên máy.",
-      "gitProbeSupportsUTF8MarkdownOnly": "Công cụ kiểm tra Git chỉ hỗ trợ Markdown mã hóa UTF-8.",
-      "gitWorktreesSubmodulesWithAGitFileAre": "Công cụ này chưa hỗ trợ Git worktree hoặc submodule sử dụng tệp .git.",
-      "selectedRepoFileDiffersFromTheOpenFile": "Nội dung tệp trong kho mã đã chọn khác với tệp đang mở. Hãy chọn đúng kho Git hoặc chờ tệp được ghi xong rồi kiểm tra lại.",
-      "selectedRepositoryDoesNotUniquelyMatchTheOpen": "Chưa xác định được tệp đang mở trong kho mã đã chọn. Hãy chọn đúng thư mục kho Git chứa tệp gốc."
     },
     "code": {
       "copy": {
@@ -418,43 +410,6 @@
     "folderRowActions": {
       "noFolderIdentityToCopy": "Không có thông tin thư mục để sao chép"
     },
-    "git": {
-      "branch": "Nhánh",
-      "bytesLoaded": "byte đã tải",
-      "checkAgain": "Kiểm tra lại",
-      "checksTheSavedFileAgainstHEADUnsavedEditor": "So sánh nội dung đã lưu trong tệp với HEAD. Các thay đổi chưa lưu trong trình soạn thảo không được đưa vào so sánh.",
-      "chooseRepoFolder": "Chọn thư mục kho mã",
-      "chooseTheCurrentFileSRepositoryFolderTo": "Chọn thư mục kho Git chứa tệp đang mở để cấp quyền đọc cho thẻ này.",
-      "clean": "Không có thay đổi",
-      "comparison": "So sánh",
-      "connectedToGitInTheBrowser": "Đã kết nối Git trong trình duyệt",
-      "detachedHEAD": "HEAD tách rời (không ở nhánh nào)",
-      "diffExceedsReviewLimits": "Vượt giới hạn so sánh",
-      "diskSource": "Mã nguồn đã lưu trong tệp",
-      "engine": "Thư viện Git",
-      "excludedIgnoredFile": "Không so sánh tệp bị Git bỏ qua",
-      "fileDoesNotExistInHEAD": "Tệp không tồn tại trong HEAD",
-      "gitCheckFailed": "Không thể kiểm tra Git.",
-      "gitConnectionExperimental": "Kết nối Git · Thử nghiệm",
-      "gitStatus": "Trạng thái Git",
-      "headLabel": "HEAD",
-      "headSource": "Mã nguồn tại HEAD",
-      "ignoredByGit": "Git bỏ qua",
-      "inspectHEADSourceReadOnly": "Xem mã nguồn HEAD (chỉ đọc)",
-      "lineChanges": "+{0} dòng thêm / −{1} dòng xóa",
-      "loadedBytes": "Đã tải {0} byte",
-      "modifiedStatus": "Đã sửa ({0})",
-      "noCommitsYet": "Chưa có commit",
-      "readingGitInTheBrowser": "Đang đọc dữ liệu Git…",
-      "readsGitInsideChromeChooseTheRepositoryRoot": "Đọc dữ liệu Git ngay trong Chrome. Hãy chọn thư mục gốc của kho mã có chứa .git. Bạn không cần cài thêm công cụ.",
-      "repository": "Kho mã",
-      "sourceChanges": "Thay đổi mã nguồn",
-      "untracked": "Chưa được Git theo dõi"
-    },
-    "gitProbe": {
-      "chromeContextDoesNotSupportSelectingAGit": "Không thể chọn thư mục Git trong cửa sổ Chrome này.",
-      "folderReadAccessExpiredChooseTheRepositoryAgain": "Quyền đọc thư mục đã hết hạn. Hãy chọn lại kho mã."
-    },
     "imageRevision": {
       "imageExceedsThe5MiBWatchLimit": "Không thể theo dõi thay đổi vì ảnh lớn hơn 5 MiB.",
       "noImageBytesReceived": "Không nhận được dữ liệu ảnh."
@@ -592,7 +547,7 @@
       "reviewedVersionIsNotOpenYetUpdateThe": "Phiên bản đang xem thay đổi chưa được mở trong trình xem. Hãy cập nhật tài liệu để có thể chuyển đến từng mục.",
       "seeWhatChangedOnDiskBeforeUpdatingThis": "Xem những gì đã thay đổi trong tệp trước khi cập nhật tài liệu đang mở.",
       "source": "Mã nguồn",
-      "sourceLinesInChangedArea": "Các dòng mã nguồn trong vùng thay đổi",
+      "sourceLinesInChangedArea": "Các dòng mã nguồn trong đoạn thay đổi",
       "updateCheckFailed": "Không thể kiểm tra cập nhật",
       "updateDocument": "Cập nhật tài liệu",
       "updateWaiting": "Đang chờ cập nhật",
@@ -649,7 +604,7 @@
     },
     "search": {
       "inDocument": "Tìm trong tài liệu",
-      "workspace": "Tìm trong workspace",
+      "workspace": "Tìm trong thư mục làm việc",
       "workspaceShortcut": "Tìm nội dung tệp · Control+Shift+F",
       "title": "Tìm kiếm",
       "scope": "Phạm vi tìm kiếm",
@@ -657,10 +612,10 @@
       "next": "Kết quả tiếp (Enter)",
       "closeFind": "Đóng",
       "closeWorkspace": "Đóng tìm kiếm",
-      "noDocumentResults": "Không tìm thấy trong tài liệu này.",
+      "noDocumentResults": "Không có kết quả trong tài liệu này.",
       "findLimited": "Chỉ hiển thị một phần kết quả. Hãy dùng từ khóa cụ thể hơn.",
       "placeholder": "Tìm nội dung tệp…",
-      "sourceScope": "Tìm nội dung tệp, gồm bản sửa chưa lưu.",
+      "sourceScope": "Nội dung tệp, bao gồm bản nháp chưa lưu.",
       "chooseWorkspace": "Chưa đọc được danh sách tệp. Chọn thư mục để tìm kiếm.",
       "chooseFolder": "Chọn thư mục",
       "waitForScan": "Đang chờ quét danh sách tệp…",
@@ -673,10 +628,10 @@
       },
       "startTyping": "Nhập từ khóa để tìm trong thư mục này.",
       "searchAgain": "Tìm lại",
-      "partial": "Chưa tìm hết: đã dừng, đạt giới hạn quét/tìm kiếm hoặc có tệp bị bỏ qua ({skipped}). Hãy thu hẹp phạm vi hoặc tìm lại.",
+      "partial": "Tìm kiếm chưa hoàn tất: đã dừng, đạt giới hạn quét hoặc tìm kiếm, hoặc có tệp bị bỏ qua ({skipped}). Hãy thu hẹp phạm vi hoặc tìm lại.",
       "failed": "Tìm kiếm thất bại. Hãy thử tìm lại.",
       "noPartialResults": "Chưa có kết quả trong các tệp đã tìm.",
-      "noWorkspaceResults": "Không tìm thấy trong thư mục này. Hãy thử từ khóa khác.",
+      "noWorkspaceResults": "Không có kết quả trong thư mục này. Hãy thử từ khóa khác.",
       "unsaved": "Chưa lưu",
       "resultLocation": "{path}, dòng {line}, cột {column}",
       "stale": "Tệp đã thay đổi. Hãy tìm lại để cập nhật kết quả.",
@@ -689,12 +644,12 @@
       "folderListPartial": "Chỉ có danh sách tệp ở cấp hiện tại; chưa tìm hết thư mục con. Số tệp bị bỏ qua: {skipped}.",
       "clearQuery": "Xóa từ khóa tìm kiếm",
       "matchOptions": "Tùy chọn khớp kết quả",
-      "matchCase": "Phân biệt hoa/thường",
-      "wholeWord": "Khớp nguyên từ",
+      "matchCase": "Phân biệt chữ hoa, chữ thường",
+      "wholeWord": "Khớp toàn bộ từ",
       "matchDiacritics": "Phân biệt dấu",
       "updating": "Đang cập nhật kết quả…",
       "outdatedResults": "Kết quả cũ. Tìm lại để cập nhật.",
-      "cachedScope": "Có dùng dữ liệu đã lưu tạm. Tìm lại để đọc bản mới trên đĩa.",
+      "cachedScope": "Bao gồm nội dung tệp đã lưu tạm. Tìm lại để đọc bản mới nhất của các tệp.",
       "updatingProgress": "Đang cập nhật… Đã kiểm tra {scanned}/{total} tệp."
     }
   },
@@ -707,7 +662,7 @@
       "messages": {
         "checkTheCurrentDocumentForChanges": "Không thể kiểm tra thay đổi của tài liệu hiện tại.",
         "cleanUpThePreviousDocumentRenderer": "Không thể giải phóng bộ hiển thị tài liệu trước đó.",
-        "clearPersistedFileHandle": "Không thể xóa quyền truy cập tệp đã lưu.",
+        "clearPersistedFileHandle": "Không thể xóa thông tin truy cập tệp đã lưu.",
         "connectTheOriginalMarkdownFileForEditing": "Không thể mở tệp Markdown gốc để chỉnh sửa.",
         "copyColorFormat": "Không thể sao chép định dạng màu.",
         "copyDetectedColor": "Không thể sao chép màu đã nhận diện.",
@@ -718,7 +673,7 @@
         "mountViewerReactShell": "Không thể khởi tạo giao diện React của trình xem.",
         "navigateBrowserHistory": "Không thể quay lại hoặc chuyển tiếp trong lịch sử trình duyệt.",
         "openDocument": "Không thể mở tài liệu.",
-        "persistFileHandleToIndexedDB": "Không thể lưu quyền truy cập tệp vào IndexedDB.",
+        "persistFileHandleToIndexedDB": "Không thể lưu thông tin truy cập tệp vào IndexedDB.",
         "prepareALocalMarkdownSVGImage": "Không thể chuẩn bị ảnh SVG trong tệp Markdown trên thiết bị.",
         "recordFileHistory": "Không thể ghi lại lịch sử tệp.",
         "refreshExplorerFileList": "Không thể làm mới danh sách tệp.",
@@ -728,7 +683,7 @@
         "removeTheReplacedThemeAsset": "Không thể xóa tài nguyên giao diện đã thay thế.",
         "renderDocument": "Không thể hiển thị tài liệu.",
         "renderTheSyntaxThemePreview": "Không thể hiển thị bản xem trước màu cú pháp.",
-        "restoreFileHandleFromIndexedDB": "Không thể khôi phục quyền truy cập tệp từ IndexedDB.",
+        "restoreFileHandleFromIndexedDB": "Không thể khôi phục thông tin truy cập tệp từ IndexedDB.",
         "saveFilesDetailsPreferenceForThisTab": "Không thể lưu tùy chọn hiển thị chi tiết tệp cho thẻ này",
         "saveMarkdownFile": "Không thể lưu tệp Markdown.",
         "switchReaderTheme": "Không thể đổi giao diện đọc."
@@ -801,7 +756,7 @@
       "language": "Chọn một ngôn ngữ giao diện được hỗ trợ.",
       "validation": {
         "chooseABuiltInBaseTheme": "Chọn một giao diện gốc có sẵn.",
-        "chooseABundledCodeHighlightingTheme": "Chọn một giao diện tô màu mã có sẵn.",
+        "chooseABundledCodeHighlightingTheme": "Chọn một bộ màu cú pháp có sẵn.",
         "chooseASupportedBackgroundMotionPolicy": "Chọn chế độ chuyển động nền được hỗ trợ.",
         "chooseASupportedBackgroundType": "Chọn loại nền được hỗ trợ.",
         "chooseAValidHexadecimalColor": "Nhập mã màu thập lục phân hợp lệ.",
@@ -847,20 +802,10 @@
         "copy": "Không thể sao chép",
         "copyLink": "Không thể sao chép liên kết"
       },
-      "browserGit": {
-        "invalidLocalFilePath": "Đường dẫn tệp trên thiết bị không hợp lệ.",
-        "invalidRepositoryFilePath": "Đường dẫn tệp trong kho mã không hợp lệ.",
-        "onlyRegularGitFilesAreSupported": "Chỉ hỗ trợ tệp Git thông thường.",
-        "unsupportedGitTreePath": "Đường dẫn cây Git không được hỗ trợ."
-      },
       "colors": {
         "copyColorSelectTheOriginalTextToCopy": "Không thể sao chép màu. Hãy chọn văn bản gốc để sao chép thủ công.",
         "copySelectAValueToCopyManually": "Không thể sao chép. Hãy chọn một giá trị để sao chép thủ công.",
         "copyTryAgain": "Không thể sao chép. Vui lòng thử lại."
-      },
-      "directoryFs": {
-        "readADirectoryAsAGitFile": "Không thể đọc thư mục như một tệp Git.",
-        "unsupportedGitTextEncoding": "Mã hóa văn bản Git không được hỗ trợ."
       },
       "document": {
         "openLinkedFile": "Không thể mở tệp được liên kết",
@@ -916,9 +861,6 @@
           "restoreWorkspace": "Không thể khôi phục thư mục làm việc",
           "scanFolder": "Không thể quét thư mục"
         }
-      },
-      "gitProbe": {
-        "readTheOpenFileOnDisk": "Không thể đọc nội dung đã lưu của tệp đang mở."
       },
       "imageRevision": {
         "readImageBytes": "Không thể đọc dữ liệu ảnh."
@@ -1114,7 +1056,7 @@
     },
     "optionsActions": {
       "clearAllRecentFilePathsStoredByMarkdown": "Xóa toàn bộ danh sách tệp đã mở gần đây trên thiết bị này? Thao tác này không xóa tệp gốc và không thể hoàn tác.",
-      "resetAllMarkdownPlusSettingsToTheirDefaults": "Khôi phục toàn bộ cài đặt Markdown Plus về mặc định? Bao gồm các tùy chọn đọc, soạn thảo, tiện ích bổ sung và duyệt tệp.",
+      "resetAllMarkdownPlusSettingsToTheirDefaults": "Khôi phục toàn bộ cài đặt Markdown Plus về mặc định? Bao gồm các tùy chọn đọc, soạn thảo, tính năng Markdown và duyệt tệp.",
       "settingsFilesMustBeSmallerThan1MiB": "Tệp cài đặt phải nhỏ hơn 1 MiB."
     },
     "privacy": {
@@ -1399,12 +1341,12 @@
         "math": {
           "hint": "Hiển thị công thức toán theo cú pháp LaTeX bằng KaTeX khi cần.",
           "label": "Công thức toán (KaTeX)",
-          "version": "Hỗ trợ cú pháp: @mdit/plugin-katex 0.25.2, KaTeX 0.16.44."
+          "version": "Hỗ trợ cú pháp: @mdit/plugin-katex 0.25.2, KaTeX 0.16.47."
         },
         "mermaid": {
           "hint": "Chuyển khối mã Mermaid thành sơ đồ có thể xuất ra tệp.",
           "label": "Sơ đồ Mermaid",
-          "version": "Hỗ trợ cú pháp: Mermaid 11.13.0 hoặc Beautiful Mermaid 1.1.3."
+          "version": "Hỗ trợ cú pháp: Mermaid 11.17.2 hoặc Beautiful Mermaid 1.1.3."
         },
         "tableEnhance": {
           "hint": "Trình bày bảng dễ đọc hơn và cho phép cuộn ngang khi bảng quá rộng.",
